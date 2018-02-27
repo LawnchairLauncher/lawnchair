@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.ui;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -34,7 +37,6 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 import android.view.MotionEvent;
-
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
@@ -46,17 +48,11 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
-import com.android.launcher3.util.ManagedProfileHeuristic;
-
-import org.junit.Before;
-
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Before;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -221,7 +217,6 @@ public abstract class AbstractLauncherUiTest {
             mMainThreadExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
                     LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
                 }
             });

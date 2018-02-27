@@ -59,7 +59,6 @@ import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
@@ -623,10 +622,6 @@ public class LauncherProvider extends ContentProvider {
 
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
-
-            // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
-                    mContext);
         }
 
         public long getDefaultUserSerial() {
@@ -790,7 +785,7 @@ public class LauncherProvider extends ContentProvider {
                 case 23:
                     // No-op
                 case 24:
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
+                    // No-op
                 case 25:
                     convertShortcutsToLauncherActivities(db);
                 case 26:
