@@ -14,7 +14,7 @@ pipeline:
     volumes:
       - /tmp/cache:/cache
   build:
-    image: runmymind/docker-android-sdk:alpine-standalone
+    image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ awareness_api_key, store_password, key_password ]
     environment:
       - MAJOR_MINOR=alpha
