@@ -64,9 +64,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final boolean DEBUG = false;
     protected static final int INVALID_PAGE = -1;
 
-    // the min drag distance for a fling to register, to prevent random page shifts
-    private static final int MIN_LENGTH_FOR_FLING = 25;
-
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     public static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
@@ -1312,9 +1309,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         SIGNIFICANT_MOVE_THRESHOLD;
 
                 mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
-
-                boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
-                        shouldFlingForVelocity(velocityX);
+                boolean isFling = mTotalMotionX > mTouchSlop && shouldFlingForVelocity(velocityX);
 
                 if (!mFreeScroll) {
                     // In the case that the page is moved far to one direction and then is flung
