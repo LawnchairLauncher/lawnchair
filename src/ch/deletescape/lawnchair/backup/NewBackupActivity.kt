@@ -55,21 +55,21 @@ class NewBackupActivity : AppCompatActivity() {
         backupName.setText(getTimestamp())
 
         startButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = LawnchairBackup.MIME_TYPE
-            intent.putExtra(Intent.EXTRA_TITLE, "${backupName.text}.${LawnchairBackup.EXTENSION}")
-            startActivityForResult(intent, 1)
+            val error = validateOptions()
+            if (error == 0) {
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = LawnchairBackup.MIME_TYPE
+                intent.putExtra(Intent.EXTRA_TITLE, "${backupName.text}.${LawnchairBackup.EXTENSION}")
+                startActivityForResult(intent, 1)
+            } else {
+                Snackbar.make(findViewById(R.id.content), error, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun startBackup() {
-        val error = validateOptions()
-        if (error == 0) {
-            CreateBackupTask(this).execute()
-        } else {
-            Snackbar.make(findViewById(R.id.content), error, Snackbar.LENGTH_SHORT).show()
-        }
+        CreateBackupTask(this).execute()
     }
 
     private fun validateOptions(): Int {
