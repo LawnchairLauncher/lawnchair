@@ -52,7 +52,7 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restore_backup)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(EXTRA_URI)) {

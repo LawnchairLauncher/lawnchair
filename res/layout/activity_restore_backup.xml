@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content"
@@ -7,18 +7,10 @@
     android:layout_height="match_parent"
     tools:context="ch.deletescape.lawnchair.backup.NewBackupActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/SettingsTheme.V2.ActionBar"
-        app:titleTextColor="?attr/colorAccent" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/config"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayout"
@@ -148,4 +140,4 @@
             android:layout_height="wrap_content"
             android:text="@string/backup_restoring" />
     </LinearLayout>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -248,4 +248,5 @@
     <dimen name="hotseat_qsb_scroll_shadow_blur_radius">1.5dp</dimen>
     <dimen name="hotseat_qsb_scroll_key_shadow_offset">2dp</dimen>
     <dimen name="all_apps_extra_search_padding">8dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
 </resources>

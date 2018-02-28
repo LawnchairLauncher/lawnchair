@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context="ch.deletescape.lawnchair.settings.ui.AboutActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/SettingsTheme.V2.ActionBar"
-        app:titleTextColor="?attr/colorAccent" />
-
     <android.support.v7.widget.CardView
         android:id="@+id/lawnchairCard"
         android:foreground="?selectableItemBackground"

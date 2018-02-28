@@ -49,7 +49,7 @@ class NewBackupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_backup)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         backupName.setText(getTimestamp())

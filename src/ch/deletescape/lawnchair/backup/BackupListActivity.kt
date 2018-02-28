@@ -35,8 +35,7 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_backup_list)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         restoreBackup.setOnClickListener {

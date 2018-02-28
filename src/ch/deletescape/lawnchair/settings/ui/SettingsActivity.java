@@ -88,13 +88,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     public final static String SMARTSPACE_PREF = "pref_smartspace";
 
     private LawnchairPreferences sharedPrefs;
+    private int mAppBarHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+//        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
@@ -119,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            updateUpButton(true);
         }
         return true;
     }
@@ -131,7 +133,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     private void updateUpButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+        updateUpButton(getFragmentManager().getBackStackEntryCount() != 0);
+    }
+
+    private void updateUpButton(boolean enabled) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
+        getSupportActionBar().setElevation(enabled ? mAppBarHeight : 0);
     }
 
     @Override
