@@ -8,8 +8,7 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     restore: true
     mount:
-      - ".gradle/caches"
-      - ".gradle/wrapper"
+      - ".gradle/"
     volumes:
       - /tmp/cache:/cache
   build:
@@ -32,8 +31,7 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     rebuild: true
     mount:
-      - ".gradle/caches"
-      - ".gradle/wrapper"
+      - ".gradle/"
     volumes:
       - /tmp/cache:/cache
 
