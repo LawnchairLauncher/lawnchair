@@ -30,10 +30,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,7 +42,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.TwoStatePreference;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -176,6 +178,28 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
+        }
+
+        @Override
+        public void setDivider(Drawable divider) {
+            super.setDivider(null);
+        }
+
+        @Override
+        public void setDividerHeight(int height) {
+            super.setDividerHeight(0);
+        }
+
+        @Override
+        public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+            RecyclerView recyclerView = (RecyclerView) inflater
+                    .inflate(R.layout.settings_recycler_view, parent, false);
+
+            recyclerView.setLayoutManager(onCreateLayoutManager());
+            recyclerView.setAccessibilityDelegateCompat(
+                    new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
+
+            return recyclerView;
         }
 
         @Override
