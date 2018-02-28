@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.weather
 
 import android.content.Context
+import ch.deletescape.lawnchair.R
 import java.util.*
 
 abstract class WeatherAPI {
@@ -48,13 +49,15 @@ abstract class WeatherAPI {
     }
 
     companion object {
-        const val PROVIDER_OPENWEATHERMAP = 0
-        const val PROVIDER_GOOGLE_AWARENESS = 1
-
-        fun create(context: Context, provider: Int) = when (provider) {
-            PROVIDER_OPENWEATHERMAP -> OWMWeatherAPI(context)
-            PROVIDER_GOOGLE_AWARENESS -> AwarenessWeatherAPI(context)
-            else -> throw IllegalArgumentException("Provider must be either PROVIDER_OPENWEATHERMAP or PROVIDER_GOOGLE_AWARENESS")
+        fun create(context: Context, provider: Int): WeatherAPI {
+            try {
+                val providers = context.resources.getStringArray(R.array.weatherProviderClasses)
+                val providerClass = context.classLoader.loadClass(providers[provider])
+                val constructor = providerClass.getConstructor(Context::class.java)
+                return constructor.newInstance(context) as WeatherAPI
+            } catch (ignored: ClassNotFoundException) {
+                throw RuntimeException("Provider $provider not found")
+            }
         }
     }
 }

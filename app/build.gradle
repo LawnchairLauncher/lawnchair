@@ -93,6 +93,7 @@ android {
         }
         fdroid {
             dimension "store"
+            buildConfigField "boolean", "AWARENESS_API_ENABLED", "false"
         }
     }
 
@@ -118,7 +119,7 @@ dependencies {
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:support-dynamic-animation:${supportLibVersion}"
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.1.1'
-    implementation 'com.google.android.gms:play-services-awareness:11.8.0'
+    playImplementation 'com.google.android.gms:play-services-awareness:11.8.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')

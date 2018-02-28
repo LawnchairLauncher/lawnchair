@@ -49,7 +49,7 @@ interface IPreferenceProvider {
     // -------------------
     // 4) Weather
     // -------------------
-    val weatherProvider: String
+    var weatherProvider: String
     val weatherApiKey: String
     val weatherCity: String
     val weatherUnit: String
