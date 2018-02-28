@@ -31,7 +31,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.graphics.GradientView;
+import com.android.launcher3.graphics.ColorScrim;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.SystemUiController;
@@ -48,10 +48,11 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
-    protected GradientView mGradientView;
+    protected final ColorScrim mColorScrim;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mColorScrim = ColorScrim.createExtractedColorScrim(this);
     }
 
     @Override
@@ -80,7 +81,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected void setTranslationShift(float translationShift) {
         super.setTranslationShift(translationShift);
-        mGradientView.setAlpha(1 - mTranslationShift);
+        mColorScrim.setProgress(1 - mTranslationShift);
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {

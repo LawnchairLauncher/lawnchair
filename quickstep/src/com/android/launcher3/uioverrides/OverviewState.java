@@ -18,11 +18,9 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 
-import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -36,7 +34,7 @@ import com.android.quickstep.RecentsView;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE;
+            | FLAG_DISABLE_RESTORE | FLAG_PAGE_BACKGROUNDS;
 
     public OverviewState(int id) {
         super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
@@ -69,11 +67,6 @@ public class OverviewState extends LauncherState {
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
-    }
-
-    @Override
-    public float getVerticalProgress(Launcher launcher) {
-        return getVerticalProgress(launcher.getDeviceProfile(), launcher);
     }
 
     @Override
@@ -117,16 +110,5 @@ public class OverviewState extends LauncherState {
         }
 
         return new float[] {scale, translationX, translationY};
-    }
-
-    public static float getVerticalProgress(DeviceProfile grid, Context context) {
-        if (!grid.isVerticalBarLayout()) {
-            return 1f;
-        }
-
-        float total = grid.heightPx;
-        float searchHeight = total - grid.availableHeightPx +
-                context.getResources().getDimension(R.dimen.all_apps_search_box_full_height);
-        return 1 - (searchHeight / total);
     }
 }

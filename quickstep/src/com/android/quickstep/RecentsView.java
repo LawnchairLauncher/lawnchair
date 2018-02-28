@@ -383,11 +383,14 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
 
         float overviewHeight, overviewWidth;
         if (profile.isVerticalBarLayout()) {
+            float scrimLength = context.getResources()
+                    .getDimension(R.dimen.recents_page_fade_length);
+            float maxPadding = Math.max(padding.left, padding.right);
+
             // Use the same padding on both sides for symmetry.
-            float availableWidth = taskWidth - 2 * Math.max(padding.left, padding.right);
-            float availableHeight = profile.availableHeightPx - padding.top
-                    - sTempStableInsets.top - Math.max(padding.bottom,
-                    profile.heightPx * (1 - OverviewState.getVerticalProgress(profile, context)));
+            float availableWidth = taskWidth - 2 * Math.max(maxPadding, scrimLength);
+            float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
+                    - sTempStableInsets.top;
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
             overviewHeight = taskHeight * scaledRatio;
             overviewWidth = taskWidth * scaledRatio;

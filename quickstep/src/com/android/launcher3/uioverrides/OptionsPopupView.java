@@ -42,7 +42,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.GradientView;
+import com.android.launcher3.graphics.ColorScrim;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 /**
@@ -54,7 +54,7 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
     private final Launcher mLauncher;
     private final PointF mTouchPoint = new PointF();
 
-    private final GradientView mGradientView;
+    private final ColorScrim mScrim;
 
     protected Animator mOpenCloseAnimator;
 
@@ -75,11 +75,7 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
         });
 
         mLauncher = Launcher.getLauncher(context);
-
-        mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
-                R.layout.widgets_bottom_sheet_scrim, mLauncher.getDragLayer(), false);
-        mGradientView.setProgress(1, false);
-        mGradientView.setAlpha(0);
+        mScrim = ColorScrim.createExtractedColorScrim(this);
     }
 
     @Override
@@ -149,7 +145,7 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
         fadeOut.setInterpolator(Interpolators.DEACCEL);
         closeAnim.play(fadeOut);
 
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mGradientView, ALPHA, 0);
+        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 0);
         gradientAlpha.setInterpolator(Interpolators.DEACCEL);
         closeAnim.play(gradientAlpha);
 
@@ -177,7 +173,6 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
         }
         mIsOpen = false;
         mLauncher.getDragLayer().removeView(this);
-        mLauncher.getDragLayer().removeView(mGradientView);
     }
 
     @Override
@@ -213,7 +208,7 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
                 .createRevealAnimator(this, false);
         openAnim.play(revealAnim);
 
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mGradientView, ALPHA, 1);
+        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 1);
         gradientAlpha.setInterpolator(Interpolators.ACCEL);
         openAnim.play(gradientAlpha);
 
@@ -269,7 +264,6 @@ public class OptionsPopupView extends AbstractFloatingView implements OnClickLis
         lp.y = Utilities.boundToRange((int) (y - height / 2), insets.top + margin,
                 maxHeight - insets.bottom - height - margin);
 
-        launcher.getDragLayer().addView(view.mGradientView);
         launcher.getDragLayer().addView(view);
         view.animateOpen();
     }

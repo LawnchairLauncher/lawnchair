@@ -44,11 +44,6 @@
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
-        <com.android.launcher3.views.AllAppsScrim
-            android:id="@+id/all_apps_scrim"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <!-- DO NOT CHANGE THE ID -->
         <include
             android:id="@+id/hotseat"
