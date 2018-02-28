@@ -80,7 +80,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
     private static final int RECENTS_LAUNCH_DURATION = 336;
-    private static final int LAUNCHER_RESUME_START_DELAY = 150;
+    private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
