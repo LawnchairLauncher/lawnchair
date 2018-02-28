@@ -50,6 +50,8 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.shortcuts.DeepShortcutTextView;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.RecentsView;
@@ -494,7 +496,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * @return Animator that controls the icon used to launch the target.
      */
     private AnimatorSet getIconAnimator(View v) {
-        boolean isBubbleTextView = v instanceof BubbleTextView;
+        final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
@@ -506,14 +508,24 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         // Position the floating view exactly on top of the original
         Rect rect = new Rect();
-        mDragLayer.getDescendantRectRelativeToSelf(v, rect);
-        int viewLocationStart = mIsRtl
+        final boolean isDeepShortcutTextView = v instanceof DeepShortcutTextView
+                && v.getParent() != null && v.getParent() instanceof DeepShortcutView;
+        if (isDeepShortcutTextView) {
+            // Deep shortcut views have their icon drawn in a sibling view.
+            DeepShortcutView view = (DeepShortcutView) v.getParent();
+            mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
+        } else {
+            mDragLayer.getDescendantRectRelativeToSelf(v, rect);
+        }
+        final int viewLocationStart = mIsRtl
                 ? mDeviceProfile.widthPx - rect.right
                 : rect.left;
-        int viewLocationTop = rect.top;
+        final int viewLocationTop = rect.top;
 
-        if (isBubbleTextView) {
+        if (isBubbleTextView && !isDeepShortcutTextView) {
             ((BubbleTextView) v).getIconBounds(rect);
+        } else {
+            rect.set(0, 0, rect.width(), rect.height());
         }
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
