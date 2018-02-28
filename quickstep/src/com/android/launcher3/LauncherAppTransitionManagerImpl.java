@@ -500,10 +500,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
-            ItemInfoWithIcon info = (ItemInfoWithIcon) v.getTag();
-            FastBitmapDrawable d = DrawableFactory.get(mLauncher).newIcon(info);
-            d.setIsDisabled(info.isDisabled());
-            mFloatingView.setBackground(d);
+            mFloatingView.setBackground(
+                    DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
         }
 
         // Position the floating view exactly on top of the original

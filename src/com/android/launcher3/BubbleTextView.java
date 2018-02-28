@@ -231,7 +231,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
-        iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
