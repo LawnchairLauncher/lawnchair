@@ -23,7 +23,7 @@ pipeline:
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleDebug check;
-  telegram:
+  deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
     when:
