@@ -4,13 +4,6 @@ pipeline:
     output: changelog.txt
     when:
       event: push
-  restore-cache:
-    image: drillster/drone-volume-cache:latest
-    restore: true
-    mount:
-      - ".gradle/"
-    volumes:
-      - /tmp/cache:/cache
   build:
     image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ awareness_api_key, store_password, key_password ]
@@ -27,13 +20,17 @@ pipeline:
     when:
       event: push
       status: success
-  rebuild-cache:
-    image: drillster/drone-volume-cache:latest
-    rebuild: true
-    mount:
-      - ".gradle/"
-    volumes:
-      - /tmp/cache:/cache
+  telegram:
+    image: appleboy/drone-telegram:latest
+    secrets: [ bot_token ]
+    token: ${BOT_TOKEN}
+    to: -1001092684628
+    message: >
+      {{#success build.status}}
+        Build {{build.number}} succeeded. Good job.
+      {{else}}
+        Build {{build.number}} failed. Fix me please.
+      {{/success}}
 
 branches:
   include: alpha
