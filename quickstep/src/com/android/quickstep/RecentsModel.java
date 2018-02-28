@@ -16,6 +16,8 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -29,6 +31,7 @@ import android.support.annotation.WorkerThread;
 import android.util.LruCache;
 import android.util.SparseArray;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
@@ -51,7 +54,6 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel extends TaskStackChangeListener {
-
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static RecentsModel INSTANCE;
 
@@ -83,9 +85,15 @@ public class RecentsModel extends TaskStackChangeListener {
     private int mTaskChangeId;
     private ISystemUiProxy mSystemUiProxy;
     private boolean mClearAssistCacheOnStackChange = true;
+    private final boolean mPreloadTasksInBackground;
 
     private RecentsModel(Context context) {
         mContext = context;
+
+        ActivityManager activityManager =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        mPreloadTasksInBackground = !activityManager.isLowRamDevice();
+        mMainThreadExecutor = new MainThreadExecutor();
 
         Resources res = context.getResources();
         mRecentsTaskLoader = new RecentsTaskLoader(mContext,
@@ -100,8 +108,6 @@ public class RecentsModel extends TaskStackChangeListener {
             }
         };
         mRecentsTaskLoader.startLoader(mContext);
-
-        mMainThreadExecutor = new MainThreadExecutor();
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
 
         mTaskChangeId = 1;
@@ -162,6 +168,31 @@ public class RecentsModel extends TaskStackChangeListener {
         }
     }
 
+    @Override
+    public void onTaskStackChangedBackground() {
+        int userId = UserHandle.myUserId();
+        if (!mPreloadTasksInBackground || !checkCurrentUserId(userId, false /* debug */)) {
+            // TODO: Only register this for the current user
+            return;
+        }
+
+        // Preload a fixed number of task icons/thumbnails in the background
+        ActivityManager.RunningTaskInfo runningTaskInfo =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        RecentsTaskLoadPlan plan = new RecentsTaskLoadPlan(mContext);
+        RecentsTaskLoadPlan.Options launchOpts = new RecentsTaskLoadPlan.Options();
+        launchOpts.runningTaskId = runningTaskInfo != null ? runningTaskInfo.id : -1;
+        launchOpts.numVisibleTasks = 2;
+        launchOpts.numVisibleTaskThumbnails = 2;
+        launchOpts.onlyLoadForCache = true;
+        launchOpts.onlyLoadPausedActivities = true;
+        launchOpts.loadThumbnails = true;
+        PreloadOptions preloadOpts = new PreloadOptions();
+        preloadOpts.loadTitles = false;
+        plan.preloadPlan(preloadOpts, mRecentsTaskLoader, -1, userId);
+        mRecentsTaskLoader.loadTasks(plan, launchOpts);
+    }
+
     public boolean isLoadPlanValid(int resultId) {
         return mTaskChangeId == resultId;
     }
@@ -176,6 +207,19 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public ISystemUiProxy getSystemUiProxy() {
         return mSystemUiProxy;
+    }
+
+    public void onStart() {
+        mRecentsTaskLoader.startLoader(mContext);
+        mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(true);
+    }
+
+    public void onTrimMemory(int level) {
+        if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+            // We already stop the loader in UI_HIDDEN, so stop the high res loader as well
+            mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
+        }
+        mRecentsTaskLoader.onTrimMemory(level);
     }
 
     @WorkerThread

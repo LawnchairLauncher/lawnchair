@@ -29,6 +29,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
 
@@ -87,5 +88,19 @@ public class UiFactory {
     public static void resetOverview(Launcher launcher) {
         RecentsView recents = launcher.getOverviewPanel();
         recents.reset();
+    }
+
+    public static void onStart(Launcher launcher) {
+        RecentsModel model = RecentsModel.getInstance(launcher);
+        if (model != null) {
+            model.onStart();
+        }
+    }
+
+    public static void onTrimMemory(Launcher launcher, int level) {
+        RecentsModel model = RecentsModel.getInstance(launcher);
+        if (model != null) {
+            model.onTrimMemory(level);
+        }
     }
 }

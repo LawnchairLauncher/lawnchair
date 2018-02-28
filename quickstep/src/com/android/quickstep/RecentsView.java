@@ -22,9 +22,11 @@ import static com.android.quickstep.TaskView.CURVE_FACTOR;
 import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
 import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -38,8 +40,10 @@ import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -82,6 +86,8 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private LayoutTransition mLayoutTransition;
     private Runnable mNextPageSwitchRunnable;
 
+    private float mFastFlingVelocity;
+
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
@@ -114,6 +120,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private boolean mScrimOnLeft;
 
     private boolean mFirstTaskIconScaledDown = false;
+    private SparseBooleanArray mPrevVisibleTasks = new SparseBooleanArray();
 
     public RecentsView(Context context) {
         this(context, null);
@@ -167,19 +174,37 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
 
     private void setupLayoutTransition() {
         // We want to show layout transitions when pages are deleted, to close the gap.
+        // TODO: We should this manually so we can control the animation (fill in the gap as the
+        // dismissing task is being tracked, and also so we can update the visible task data during
+        // the transition. For now, the workaround is to expand the visible tasks to load.
         mLayoutTransition = new LayoutTransition();
         mLayoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
         mLayoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
 
         mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
         mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+        mLayoutTransition.addTransitionListener(new TransitionListener() {
+            @Override
+            public void startTransition(LayoutTransition layoutTransition, ViewGroup viewGroup,
+                    View view, int i) {
+                loadVisibleTaskData();
+            }
+
+            @Override
+            public void endTransition(LayoutTransition layoutTransition, ViewGroup viewGroup,
+                    View view, int i) {
+                loadVisibleTaskData();
+            }
+        });
         setLayoutTransition(mLayoutTransition);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        Resources res = getResources();
         mFirstTaskIndex = getPageCount();
+        mFastFlingVelocity = res.getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
     }
 
     @Override
@@ -307,20 +332,25 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
         while (getChildCount() > requiredChildCount) {
             final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
+            final Task task = taskView.getTask();
             removeView(taskView);
-            loader.unloadTaskData(taskView.getTask());
+            loader.unloadTaskData(task);
+            loader.getHighResThumbnailLoader().onTaskInvisible(task);
         }
         setLayoutTransition(mLayoutTransition);
 
         // Rebind and reset all task views
         for (int i = tasks.size() - 1; i >= 0; i--) {
+            final int pageIndex = tasks.size() - i - 1 + mFirstTaskIndex;
             final Task task = tasks.get(i);
-            final TaskView taskView = (TaskView) getChildAt(tasks.size() - i - 1 + mFirstTaskIndex);
+            final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task);
             taskView.resetVisualProperties();
-            loader.loadTaskData(task);
         }
         updateCurveProperties();
+        // Reload the set of visible task's data
+        mPrevVisibleTasks.clear();
+        loadVisibleTaskData();
         applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
@@ -414,9 +444,24 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     @Override
-    public void computeScroll() {
-        super.computeScroll();
+    protected boolean computeScrollHelper() {
+        boolean scrolling = super.computeScrollHelper();
+        boolean isFlingingFast = false;
         updateCurveProperties();
+        if (scrolling || (mTouchState == TOUCH_STATE_SCROLLING)) {
+            if (scrolling) {
+                // Check if we are flinging quickly to disable high res thumbnail loading
+                isFlingingFast = mScroller.getCurrVelocity() > mFastFlingVelocity;
+            }
+
+            // After scrolling, update the visible task's data
+            loadVisibleTaskData();
+        }
+
+        // Update the high res thumbnail loader
+        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
+        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
+        return scrolling;
     }
 
     /**
@@ -441,6 +486,34 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             mScrollState.linearInterpolation = Math.min(1,
                     Math.abs(mScrollState.distanceFromScreenCenter) / distanceToReachEdge);
             mScrollState.lastScrollType = ((PageCallbacks) page).onPageScroll(mScrollState);
+        }
+    }
+
+    /**
+     * Iterates through all thet asks, and loads the associated task data for newly visible tasks,
+     * and unloads the associated task data for tasks that are no longer visible.
+     */
+    private void loadVisibleTaskData() {
+        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
+        int centerPageIndex = getPageNearestToCenterOfScreen();
+        int lower = Math.max(mFirstTaskIndex, centerPageIndex - 2);
+        int upper = Math.min(centerPageIndex + 2, getChildCount() - 1);
+        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
+            TaskView taskView = (TaskView) getChildAt(i);
+            Task task = taskView.getTask();
+            boolean visible = lower <= i && i <= upper;
+            if (visible) {
+                if (!mPrevVisibleTasks.get(i)) {
+                    loader.loadTaskData(task);
+                    loader.getHighResThumbnailLoader().onTaskVisible(task);
+                }
+            } else {
+                if (mPrevVisibleTasks.get(i)) {
+                    loader.unloadTaskData(task);
+                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                }
+            }
+            mPrevVisibleTasks.put(i, visible);
         }
     }
 
@@ -493,14 +566,16 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             addView(taskView, mFirstTaskIndex);
             setLayoutTransition(mLayoutTransition);
         }
+        mRunningTaskId = runningTaskId;
+        setCurrentPage(mFirstTaskIndex);
         if (!needsReload) {
             needsReload = !mModel.isLoadPlanValid(mLoadPlanId);
         }
         if (needsReload) {
             mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
+        } else {
+            loadVisibleTaskData();
         }
-        mRunningTaskId = runningTaskId;
-        setCurrentPage(mFirstTaskIndex);
         if (mCurrentPage >= mFirstTaskIndex) {
             getPageAt(mCurrentPage).setAlpha(0);
         }
