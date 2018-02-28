@@ -8,9 +8,9 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     restore: true
     mount:
-      - "/root/.gradle/caches/"
-      - "/root/.gradle/wrapper/"
-      - "/root/.android/build-cache"
+      - ".gradle/caches/"
+      - ".gradle/wrapper/"
+      - ".android/build-cache"
     volumes:
       - /tmp/cache:/cache
   build:
@@ -33,9 +33,9 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     rebuild: true
     mount:
-      - "/root/.gradle/caches/"
-      - "/root/.gradle/wrapper/"
-      - "/root/.android/build-cache"
+      - ".gradle/caches/"
+      - ".gradle/wrapper/"
+      - ".android/build-cache"
     volumes:
       - /tmp/cache:/cache
 
