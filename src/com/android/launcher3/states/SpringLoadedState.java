@@ -35,22 +35,28 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
-            FLAG_DISABLE_ACCESSIBILITY | FLAG_DO_NOT_RESTORE;
+            FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
+            FLAG_DISABLE_PAGE_CLIPPING;
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, 1f, STATE_FLAGS);
+        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace ws = launcher.getWorkspace();
-        if (grid.isVerticalBarLayout() || ws.getChildCount() == 0) {
+        if (ws.getChildCount() == 0) {
             return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+
+        if (grid.isVerticalBarLayout()) {
+            float scale = grid.workspaceSpringLoadShrinkFactor;
+            return new float[] {scale, 0, 0};
         }
 
         float scale = grid.workspaceSpringLoadShrinkFactor;
@@ -58,8 +64,8 @@ public class SpringLoadedState extends LauncherState {
 
         float scaledHeight = scale * ws.getNormalChildHeight();
         float shrunkTop = insets.top + grid.dropTargetBarSizePx;
-        float shrunkBottom = ws.getViewportHeight() - insets.bottom
-                - grid.getWorkspacePadding(null).bottom
+        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
+                - grid.workspacePadding.bottom
                 - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
 
@@ -69,7 +75,7 @@ public class SpringLoadedState extends LauncherState {
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new float[] { scale, (desiredCellTop - actualCellTop) / scale};
+        return new float[] { scale, 0, (desiredCellTop - actualCellTop) / scale};
     }
 
     @Override

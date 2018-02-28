@@ -91,10 +91,6 @@
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ButtonDropTarget">
-        <attr name="hideParentOnDisable" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="InvariantDeviceProfile">
         <attr name="name" format="string" />
         <attr name="minWidthDps" format="float" />
@@ -105,8 +101,6 @@
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
-        <!-- minAllAppsPredictionColumns defaults to numColumns, if not specified -->
-        <attr name="minAllAppsPredictionColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
 

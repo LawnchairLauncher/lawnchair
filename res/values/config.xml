@@ -47,10 +47,6 @@
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
-    <!-- This constant stores the ratio of the all apps button drawable which
-         is used for internal (baked-in) padding -->
-    <integer name="config_allAppsButtonPaddingPercent">17</integer>
-
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
 
@@ -96,14 +92,23 @@
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false"></string>
 
+    <!-- Name of an app transition manager class. -->
+    <string name="app_transition_manager_class" translatable="false"></string>
+
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
 
     <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
     <string name="instant_app_resolver_class" translatable="false"></string>
 
+    <!-- Name of a main process initializer class. -->
+    <string name="main_process_initializer_class" translatable="false"></string>
+
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
+
+    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
+    <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />

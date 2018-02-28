@@ -70,7 +70,7 @@ public class InfoDropTarget extends UninstallDropTarget {
             Rect sourceBounds, Bundle opts) {
         if (info instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            context.startActivity(promiseAppInfo.getMarketIntent());
+            context.startActivity(promiseAppInfo.getMarketIntent(context));
             return null;
         }
         ComponentName componentName = null;

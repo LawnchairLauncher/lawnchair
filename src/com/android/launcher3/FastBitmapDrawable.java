@@ -29,10 +29,12 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Property;
 import android.util.SparseArray;
 
-import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.graphics.BitmapInfo;
 
 public class FastBitmapDrawable extends Drawable {
 
@@ -40,19 +42,9 @@ public class FastBitmapDrawable extends Drawable {
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
 
-    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
+    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = (input) ->
+            (input < 0.05f) ? (input / 0.05f) : ((input < 0.3f) ? 1 : (1 - input) / 0.7f);
 
-        @Override
-        public float getInterpolation(float input) {
-            if (input < 0.05f) {
-                return input / 0.05f;
-            } else if (input < 0.3f){
-                return 1;
-            } else {
-                return (1 - input) / 0.7f;
-            }
-        }
-    };
     public static final int CLICK_FEEDBACK_DURATION = 2000;
 
     // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
@@ -69,11 +61,10 @@ public class FastBitmapDrawable extends Drawable {
 
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
+    protected final int mIconColor;
 
     private boolean mIsPressed;
     private boolean mIsDisabled;
-
-    private IconPalette mIconPalette;
 
     private static final Property<FastBitmapDrawable, Float> BRIGHTNESS
             = new Property<FastBitmapDrawable, Float>(Float.TYPE, "brightness") {
@@ -99,21 +90,26 @@ public class FastBitmapDrawable extends Drawable {
     private ObjectAnimator mBrightnessAnimator;
 
     public FastBitmapDrawable(Bitmap b) {
+        this(b, Color.TRANSPARENT);
+    }
+
+    public FastBitmapDrawable(BitmapInfo info) {
+        this(info.icon, info.color);
+    }
+
+    public FastBitmapDrawable(ItemInfoWithIcon info) {
+        this(info.iconBitmap, info.iconColor);
+    }
+
+    protected FastBitmapDrawable(Bitmap b, int iconColor) {
         mBitmap = b;
+        mIconColor = iconColor;
         setFilterBitmap(true);
     }
 
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
-    }
-
-    public IconPalette getIconPalette() {
-        if (mIconPalette == null) {
-            mIconPalette = IconPalette.fromDominantColor(Utilities
-                    .findDominantColorByHue(mBitmap, 20), true /* desaturateBackground */);
-        }
-        return mIconPalette;
     }
 
     @Override
@@ -309,5 +305,31 @@ public class FastBitmapDrawable extends Drawable {
             mPaint.setColorFilter(null);
         }
         invalidateSelf();
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return new MyConstantState(mBitmap, mIconColor);
+    }
+
+    private static class MyConstantState extends ConstantState {
+        private final Bitmap mBitmap;
+        private final int mIconColor;
+
+
+        public MyConstantState(Bitmap bitmap, int color) {
+            mBitmap = bitmap;
+            mIconColor = color;
+        }
+
+        @Override
+        public Drawable newDrawable() {
+            return new FastBitmapDrawable(mBitmap, mIconColor);
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }

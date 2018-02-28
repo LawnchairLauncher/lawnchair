@@ -22,4 +22,10 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:alpha="0.0"
-    android:visibility="invisible" />
+    android:visibility="invisible" >
+
+    <com.android.launcher3.uioverrides.WorkspaceCard
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.android.quickstep.RecentsView>

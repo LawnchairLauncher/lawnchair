@@ -37,10 +37,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 public class IconNormalizer {
 
@@ -64,9 +61,6 @@ public class IconNormalizer {
     private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.005f;
     private static final float SCALE_NOT_INITIALIZED = 0;
 
-    private static final Object LOCK = new Object();
-    private static IconNormalizer sIconNormalizer;
-
     private final int mMaxSize;
     private final Bitmap mBitmap;
     private final Bitmap mBitmapARGB;
@@ -88,11 +82,8 @@ public class IconNormalizer {
     private final Paint mPaintIcon;
     private final Canvas mCanvasARGB;
 
-    private final File mDir;
-    private int mFileId;
-    private final Random mRandom;
-
-    private IconNormalizer(Context context) {
+    /** package private **/
+    IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
         mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
@@ -124,9 +115,6 @@ public class IconNormalizer {
 
         mMatrix = new Matrix();
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
-
-        mDir = context.getExternalFilesDir(null);
-        mRandom = new Random();
     }
 
     /**
@@ -148,17 +136,8 @@ public class IconNormalizer {
         // Condition 2:
         // Actual icon (white) and the fitted shape (e.g., circle)(red) XOR operation
         // should generate transparent image, if the actual icon is equivalent to the shape.
-        mFileId = mRandom.nextInt();
         mBitmapARGB.eraseColor(Color.TRANSPARENT);
         mCanvasARGB.drawBitmap(mBitmap, 0, 0, mPaintIcon);
-
-        if (DEBUG) {
-            final File beforeFile = new File(mDir, "isShape" + mFileId + "_before.png");
-            try {
-                mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
-                        new FileOutputStream(beforeFile));
-            } catch (Exception e) {}
-        }
 
         // Fit the shape within the icon's bounding box
         mMatrix.reset();
@@ -172,24 +151,8 @@ public class IconNormalizer {
         // DST_OUT operation around the mask path outline
         mCanvasARGB.drawPath(maskPath, mPaintMaskShapeOutline);
 
-        boolean isTrans = isTransparentBitmap(mBitmapARGB);
-        if (DEBUG) {
-            final File afterFile = new File(mDir,
-                    "isShape" + mFileId + "_after_" + isTrans + ".png");
-            try {
-                mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
-                        new FileOutputStream(afterFile));
-            } catch (Exception e) {}
-        }
-
         // Check if the result is almost transparent
-        if (!isTrans) {
-            if (DEBUG) {
-                Log.d(TAG, "Not same as mask shape");
-            }
-            return false;
-        }
-        return true;
+        return isTransparentBitmap(mBitmapARGB);
     }
 
     /**
@@ -203,19 +166,13 @@ public class IconNormalizer {
                 mBounds.left, mBounds.top,
                 w, h);
         int sum = 0;
-        for (int i = 0; i < w * h; i++) {
+        for (int i = w * h - 1; i >= 0; i--) {
             if(Color.alpha(mPixelsARGB[i]) > MIN_VISIBLE_ALPHA) {
                     sum++;
             }
         }
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
-        boolean transparentImage = percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
-        if (DEBUG) {
-            Log.d(TAG,
-                    "Total # pixel that is different (id=" + mFileId + "):" + percentageDiffPixels
-                            + "=" + sum + "/" + mBounds.width() * mBounds.height());
-        }
-        return transparentImage;
+        return percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
     }
 
     /**
@@ -415,14 +372,5 @@ public class IconNormalizer {
             }
             last = i;
         }
-    }
-
-    public static IconNormalizer getInstance(Context context) {
-        synchronized (LOCK) {
-            if (sIconNormalizer == null) {
-                sIconNormalizer = new IconNormalizer(context);
-            }
-        }
-        return sIconNormalizer;
     }
 }

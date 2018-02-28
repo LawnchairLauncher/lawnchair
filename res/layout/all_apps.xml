@@ -31,44 +31,7 @@
 
     <include layout="@layout/all_apps_fast_scroller" />
 
-    <RelativeLayout
-        android:id="@+id/all_apps_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:paddingTop="30dp"
-        android:layout_below="@id/search_container_all_apps" >
-
-        <com.android.launcher3.allapps.PredictionRowView
-            android:id="@+id/header_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <com.android.launcher3.views.SlidingTabStrip
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/all_apps_header_tab_height"
-            android:layout_below="@id/header_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/tab_personal"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/all_apps_personal_tab"
-                android:textColor="@color/all_apps_tab_text"
-                android:background="?android:attr/selectableItemBackground"/>
-            <Button
-                android:id="@+id/tab_work"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/all_apps_work_tab"
-                android:textColor="@color/all_apps_tab_text"
-                android:background="?android:attr/selectableItemBackground"/>
-        </com.android.launcher3.views.SlidingTabStrip>
-
-    </RelativeLayout>
+    <include layout="@layout/all_apps_floating_header" />
 
     <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
      platform bug, which prevents using custom attributes in <include> tag -->

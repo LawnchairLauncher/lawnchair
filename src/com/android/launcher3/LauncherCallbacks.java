@@ -37,7 +37,6 @@ public interface LauncherCallbacks {
      * Activity life-cycle methods. These methods are triggered after
      * the code in the corresponding Launcher method is executed.
      */
-    void preOnCreate();
     void onCreate(Bundle savedInstanceState);
     void onResume();
     void onStart();
@@ -48,10 +47,8 @@ public interface LauncherCallbacks {
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults);
-    void onWindowFocusChanged(boolean hasFocus);
     void onAttachedToWindow();
     void onDetachedFromWindow();
-    boolean onPrepareOptionsMenu(Menu menu);
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
     void onHomeIntent();
     boolean handleBackPressed();
@@ -73,4 +70,12 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     boolean hasSettings();
+
+    /**
+     * Called when launcher integrated quickstep and some quickstep gesture started. It can be
+     * called multiple times for a single gesture an UI or background thread.
+     *
+     * @param isVisible if Launcher was visible when the gesture started.
+     */
+    void onQuickstepGestureStarted(boolean isVisible);
 }

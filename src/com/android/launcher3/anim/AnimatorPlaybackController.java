@@ -33,6 +33,12 @@ import java.util.List;
  */
 public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
+    /**
+     * Creates an animation controller for the provided animation.
+     * The actual duration does not matter as the animation is manually controlled. It just
+     * needs to be larger than the total number of pixels so that we don't have jittering due
+     * to float (animation-fraction * total duration) to int conversion.
+     */
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
 
         /**
@@ -45,12 +51,14 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     private final long mDuration;
 
     protected final AnimatorSet mAnim;
+    private AnimatorSet mOriginalTarget;
 
     protected float mCurrentFraction;
     private Runnable mEndAction;
 
     protected AnimatorPlaybackController(AnimatorSet anim, long duration) {
         mAnim = anim;
+        mOriginalTarget = mAnim;
         mDuration = duration;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
@@ -61,6 +69,25 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     public AnimatorSet getTarget() {
         return mAnim;
+    }
+
+    public void setOriginalTarget(AnimatorSet anim) {
+        mOriginalTarget = anim;
+    }
+
+    public AnimatorSet getOriginalTarget() {
+        return mOriginalTarget;
+    }
+
+    public long getDuration() {
+        return mDuration;
+    }
+
+    public AnimatorPlaybackController cloneFor(AnimatorSet anim) {
+        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(anim, mDuration);
+        controller.setOriginalTarget(mOriginalTarget);
+        controller.setPlayFraction(mCurrentFraction);
+        return controller;
     }
 
     /**
@@ -211,6 +238,6 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     }
 
     private static <T> List<T> nonNullList(ArrayList<T> list) {
-        return list == null ? Collections.<T>emptyList() : list;
+        return list == null ? Collections.emptyList() : list;
     }
 }

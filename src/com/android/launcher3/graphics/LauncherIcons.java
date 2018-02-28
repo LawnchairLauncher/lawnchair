@@ -16,17 +16,19 @@
 
 package com.android.launcher3.graphics;
 
-import android.annotation.TargetApi;
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
+import static com.android.launcher3.graphics.ShadowGenerator.BLUR_FACTOR;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -42,44 +44,110 @@ import android.support.annotation.Nullable;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconCache;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Provider;
+import com.android.launcher3.util.Themes;
 
 /**
  * Helper methods for generating various launcher icons
  */
-public class LauncherIcons {
+public class LauncherIcons implements AutoCloseable {
 
-    private static final Rect sOldBounds = new Rect();
-    private static final Canvas sCanvas = new Canvas();
+    public static final Object sPoolSync = new Object();
+    private static LauncherIcons sPool;
 
-    static {
-        sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
-                Paint.FILTER_BITMAP_FLAG));
+    /**
+     * Return a new Message instance from the global pool. Allows us to
+     * avoid allocating new objects in many cases.
+     */
+    public static LauncherIcons obtain(Context context) {
+        synchronized (sPoolSync) {
+            if (sPool != null) {
+                LauncherIcons m = sPool;
+                sPool = m.next;
+                m.next = null;
+                return m;
+            }
+        }
+        return new LauncherIcons(context);
+    }
+
+    /**
+     * Recycles a LauncherIcons that may be in-use.
+     */
+    public void recycle() {
+        synchronized (sPoolSync) {
+            next = sPool;
+            sPool = this;
+        }
+    }
+
+    @Override
+    public void close() {
+        recycle();
+    }
+
+    private final Rect mOldBounds = new Rect();
+    private final Context mContext;
+    private final Canvas mCanvas;
+    private final PackageManager mPm;
+
+    private final int mFillResIconDpi;
+    private final int mIconBitmapSize;
+
+    private IconNormalizer mNormalizer;
+    private ShadowGenerator mShadowGenerator;
+
+    // sometimes we store linked lists of these things
+    private LauncherIcons next;
+
+    private LauncherIcons(Context context) {
+        mContext = context.getApplicationContext();
+        mPm = mContext.getPackageManager();
+
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
+        mFillResIconDpi = idp.fillResIconDpi;
+        mIconBitmapSize = idp.iconBitmapSize;
+
+        mCanvas = new Canvas();
+        mCanvas.setDrawFilter(new PaintFlagsDrawFilter(DITHER_FLAG, FILTER_BITMAP_FLAG));
+    }
+
+    public ShadowGenerator getShadowGenerator() {
+        if (mShadowGenerator == null) {
+            mShadowGenerator = new ShadowGenerator(mContext);
+        }
+        return mShadowGenerator;
+    }
+
+    public IconNormalizer getNormalizer() {
+        if (mNormalizer == null) {
+            mNormalizer = new IconNormalizer(mContext);
+        }
+        return mNormalizer;
     }
 
     /**
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
      */
-    public static Bitmap createIconBitmap(ShortcutIconResource iconRes, Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        // the resource
+    public BitmapInfo createIconBitmap(ShortcutIconResource iconRes) {
         try {
-            Resources resources = packageManager.getResourcesForApplication(iconRes.packageName);
+            Resources resources = mPm.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
                 // do not stamp old legacy shortcuts as the app may have already forgotten about it
-                return createBadgedIconBitmap(resources.getDrawableForDensity(
-                        id, LauncherAppState.getIDP(context).fillResIconDpi),
+                return createBadgedIconBitmap(
+                        resources.getDrawableForDensity(id, mFillResIconDpi),
                         Process.myUserHandle() /* only available on primary user */,
-                        context,
                         0 /* do not apply legacy treatment */);
             }
         } catch (Exception e) {
@@ -91,12 +159,12 @@ public class LauncherIcons {
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
-        final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
-        if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
-            return icon;
+    public BitmapInfo createIconBitmap(Bitmap icon) {
+        if (mIconBitmapSize == icon.getWidth() && mIconBitmapSize == icon.getHeight()) {
+            return BitmapInfo.fromBitmap(icon);
         }
-        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context, 1f);
+        return BitmapInfo.fromBitmap(
+                createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f));
     }
 
     /**
@@ -104,237 +172,195 @@ public class LauncherIcons {
      * view or workspace. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    public static Bitmap createBadgedIconBitmap(
-            Drawable icon, UserHandle user, Context context, int iconAppTargetSdk) {
-
-        IconNormalizer normalizer;
-        float scale = 1f;
-        if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
-            normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
-                boolean[] outShape = new boolean[1];
-                AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
-                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                dr.setBounds(0, 0, 1, 1);
-                scale = normalizer.getScale(icon, null, dr.getIconMask(), outShape);
-                if (FeatureFlags.LEGACY_ICON_TREATMENT &&
-                        !outShape[0]){
-                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
-                    if (wrappedIcon != icon) {
-                        icon = wrappedIcon;
-                        scale = normalizer.getScale(icon, null, null, null);
-                    }
-                }
-            } else {
-                scale = normalizer.getScale(icon, null, null, null);
-            }
-        }
-        Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.ATLEAST_OREO &&
-                icon instanceof AdaptiveIconDrawable) {
-            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk) {
+        float[] scale = new float[1];
+        icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale);
+        Bitmap bitmap = createIconBitmap(icon, scale[0]);
+        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+            mCanvas.setBitmap(bitmap);
+            getShadowGenerator().recreateIcon(Bitmap.createBitmap(bitmap), mCanvas);
+            mCanvas.setBitmap(null);
         }
 
+        final Bitmap result;
         if (user != null && !Process.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
-            Drawable badged = context.getPackageManager().getUserBadgedIcon(
-                    drawable, user);
+            Drawable badged = mPm.getUserBadgedIcon(drawable, user);
             if (badged instanceof BitmapDrawable) {
-                return ((BitmapDrawable) badged).getBitmap();
+                result = ((BitmapDrawable) badged).getBitmap();
             } else {
-                return createIconBitmap(badged, context, 1f);
+                result = createIconBitmap(badged, 1f);
             }
         } else {
-            return bitmap;
+            result = bitmap;
         }
+        return BitmapInfo.fromBitmap(result);
     }
 
     /**
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    public static Bitmap createScaledBitmapWithoutShadow(
-            Drawable icon, Context context, int iconAppTargetSdk) {
+    public Bitmap createScaledBitmapWithoutShadow(Drawable icon, int iconAppTargetSdk) {
         RectF iconBounds = new RectF();
-        IconNormalizer normalizer;
-        float scale = 1f;
-        if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
-            normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
-                boolean[] outShape = new boolean[1];
-                AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
-                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                dr.setBounds(0, 0, 1, 1);
-                scale = normalizer.getScale(icon, iconBounds, dr.getIconMask(), outShape);
-                if (Utilities.ATLEAST_OREO && FeatureFlags.LEGACY_ICON_TREATMENT &&
-                        !outShape[0]) {
-                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
-                    if (wrappedIcon != icon) {
-                        icon = wrappedIcon;
-                        scale = normalizer.getScale(icon, iconBounds, null, null);
-                    }
-                }
-            } else {
-                scale = normalizer.getScale(icon, iconBounds, null, null);
-            }
-
-        }
-        scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
-        return createIconBitmap(icon, context, scale);
+        float[] scale = new float[1];
+        icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, iconBounds, scale);
+        return createIconBitmap(icon,
+                Math.min(scale[0], ShadowGenerator.getScaleForBounds(iconBounds)));
     }
 
-    public static Bitmap badgeWithDrawable(Bitmap srcTgt, Drawable badge, Context context) {
-        int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
-        synchronized (sCanvas) {
-            sCanvas.setBitmap(srcTgt);
-            int iconSize = srcTgt.getWidth();
-            badge.setBounds(iconSize - badgeSize, iconSize - badgeSize, iconSize, iconSize);
-            badge.draw(sCanvas);
-            sCanvas.setBitmap(null);
+    private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
+            RectF outIconBounds, float[] outScale) {
+        float scale = 1f;
+        if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
+            boolean[] outShape = new boolean[1];
+            AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
+                    mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+            dr.setBounds(0, 0, 1, 1);
+            scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
+            if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
+                FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
+                fsd.setDrawable(icon);
+                fsd.setScale(scale);
+                icon = dr;
+                scale = getNormalizer().getScale(icon, outIconBounds, null, null);
+            }
+        } else {
+            scale = getNormalizer().getScale(icon, outIconBounds, null, null);
         }
-        return srcTgt;
+
+        outScale[0] = scale;
+        return icon;
+    }
+
+    /**
+     * Adds the {@param badge} on top of {@param target} using the badge dimensions.
+     */
+    public void badgeWithDrawable(Bitmap target, Drawable badge) {
+        mCanvas.setBitmap(target);
+        badgeWithDrawable(mCanvas, badge);
+        mCanvas.setBitmap(null);
+    }
+
+    /**
+     * Adds the {@param badge} on top of {@param target} using the badge dimensions.
+     */
+    private void badgeWithDrawable(Canvas target, Drawable badge) {
+        int badgeSize = mContext.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
+        badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
+                mIconBitmapSize, mIconBitmapSize);
+        badge.draw(target);
     }
 
     /**
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
-    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
-        synchronized (sCanvas) {
-            final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
-            int width = iconBitmapSize;
-            int height = iconBitmapSize;
+    private Bitmap createIconBitmap(Drawable icon, float scale) {
+        int width = mIconBitmapSize;
+        int height = mIconBitmapSize;
 
-            if (icon instanceof PaintDrawable) {
-                PaintDrawable painter = (PaintDrawable) icon;
-                painter.setIntrinsicWidth(width);
-                painter.setIntrinsicHeight(height);
-            } else if (icon instanceof BitmapDrawable) {
-                // Ensure the bitmap has a density.
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
-                Bitmap bitmap = bitmapDrawable.getBitmap();
-                if (bitmap != null && bitmap.getDensity() == Bitmap.DENSITY_NONE) {
-                    bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
-                }
+        if (icon instanceof PaintDrawable) {
+            PaintDrawable painter = (PaintDrawable) icon;
+            painter.setIntrinsicWidth(width);
+            painter.setIntrinsicHeight(height);
+        } else if (icon instanceof BitmapDrawable) {
+            // Ensure the bitmap has a density.
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            if (bitmap != null && bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+                bitmapDrawable.setTargetDensity(mContext.getResources().getDisplayMetrics());
             }
-
-            int sourceWidth = icon.getIntrinsicWidth();
-            int sourceHeight = icon.getIntrinsicHeight();
-            if (sourceWidth > 0 && sourceHeight > 0) {
-                // Scale the icon proportionally to the icon dimensions
-                final float ratio = (float) sourceWidth / sourceHeight;
-                if (sourceWidth > sourceHeight) {
-                    height = (int) (width / ratio);
-                } else if (sourceHeight > sourceWidth) {
-                    width = (int) (height * ratio);
-                }
-            }
-            // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
-
-            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
-                    Bitmap.Config.ARGB_8888);
-            final Canvas canvas = sCanvas;
-            canvas.setBitmap(bitmap);
-
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
-
-            sOldBounds.set(icon.getBounds());
-            if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
-                int offset = Math.max((int)(ShadowGenerator.BLUR_FACTOR * iconBitmapSize),
-                        Math.min(left, top));
-                int size = Math.max(width, height);
-                icon.setBounds(offset, offset, size, size);
-            } else {
-                icon.setBounds(left, top, left+width, top+height);
-            }
-            canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
-            icon.draw(canvas);
-            canvas.restore();
-            icon.setBounds(sOldBounds);
-            canvas.setBitmap(null);
-
-            return bitmap;
-        }
-    }
-
-    /**
-     * If the platform is running O but the app is not providing AdaptiveIconDrawable, then
-     * shrink the legacy icon and set it as foreground. Use color drawable as background to
-     * create AdaptiveIconDrawable.
-     */
-    @TargetApi(Build.VERSION_CODES.O)
-    private static Drawable wrapToAdaptiveIconDrawable(
-            Context context, Drawable drawable, float scale) {
-        if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.ATLEAST_OREO)) {
-            return drawable;
         }
 
-        try {
-            if (!(drawable instanceof AdaptiveIconDrawable)) {
-                AdaptiveIconDrawable iconWrapper = (AdaptiveIconDrawable)
-                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
-                fsd.setDrawable(drawable);
-                fsd.setScale(scale);
-                return iconWrapper;
+        int sourceWidth = icon.getIntrinsicWidth();
+        int sourceHeight = icon.getIntrinsicHeight();
+        if (sourceWidth > 0 && sourceHeight > 0) {
+            // Scale the icon proportionally to the icon dimensions
+            final float ratio = (float) sourceWidth / sourceHeight;
+            if (sourceWidth > sourceHeight) {
+                height = (int) (width / ratio);
+            } else if (sourceHeight > sourceWidth) {
+                width = (int) (height * ratio);
             }
-        } catch (Exception e) {
-            return drawable;
         }
-        return drawable;
+        // no intrinsic size --> use default size
+        int textureWidth = mIconBitmapSize;
+        int textureHeight = mIconBitmapSize;
+
+        Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                Bitmap.Config.ARGB_8888);
+        mCanvas.setBitmap(bitmap);
+
+        final int left = (textureWidth-width) / 2;
+        final int top = (textureHeight-height) / 2;
+
+        mOldBounds.set(icon.getBounds());
+        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+            int offset = Math.max((int)(BLUR_FACTOR * textureWidth), Math.min(left, top));
+            int size = Math.max(width, height);
+            icon.setBounds(offset, offset, size, size);
+        } else {
+            icon.setBounds(left, top, left+width, top+height);
+        }
+        mCanvas.save(Canvas.MATRIX_SAVE_FLAG);
+        mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+        icon.draw(mCanvas);
+        mCanvas.restore();
+        icon.setBounds(mOldBounds);
+        mCanvas.setBitmap(null);
+
+        return bitmap;
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context) {
-        return createShortcutIcon(shortcutInfo, context, true /* badged */);
+    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo) {
+        return createShortcutIcon(shortcutInfo, true /* badged */);
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
-            boolean badged) {
-        return createShortcutIcon(shortcutInfo, context, badged, null);
+    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, boolean badged) {
+        return createShortcutIcon(shortcutInfo, badged, null);
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
-            final Bitmap fallbackIcon) {
-        // If the shortcut is pinned but no longer has an icon in the system,
-        // keep the current icon instead of reverting to the default icon.
-        return createShortcutIcon(shortcutInfo, context, true, Provider.of(fallbackIcon));
-    }
-
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo,
             boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
-        LauncherAppState app = LauncherAppState.getInstance(context);
-        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
-                .getShortcutIconDrawable(shortcutInfo,
-                        app.getInvariantDeviceProfile().fillResIconDpi);
-        IconCache cache = app.getIconCache();
+        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
+                .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
+        IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
+
         Bitmap unbadgedBitmap = null;
         if (unbadgedDrawable != null) {
-            unbadgedBitmap = LauncherIcons.createScaledBitmapWithoutShadow(
-                    unbadgedDrawable, context, 0);
+            unbadgedBitmap = createScaledBitmapWithoutShadow(unbadgedDrawable, 0);
         } else {
             if (fallbackIconProvider != null) {
                 unbadgedBitmap = fallbackIconProvider.get();
             }
             if (unbadgedBitmap == null) {
-                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle());
+                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
             }
         }
 
+        BitmapInfo result = new BitmapInfo();
         if (!badged) {
-            return unbadgedBitmap;
+            result.color = Themes.getColorAccent(mContext);
+            result.icon = unbadgedBitmap;
+            return result;
         }
-        unbadgedBitmap = ShadowGenerator.getInstance(context).recreateIcon(unbadgedBitmap);
-        return badgeWithDrawable(unbadgedBitmap,
-                new FastBitmapDrawable(getShortcutInfoBadge(shortcutInfo, cache)), context);
+
+        final Bitmap unbadgedfinal = unbadgedBitmap;
+        final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
+
+        result.color = badge.iconColor;
+        result.icon = UiFactory.createFromRenderer(mIconBitmapSize, mIconBitmapSize, false, (c) -> {
+            getShadowGenerator().recreateIcon(unbadgedfinal, c);
+            badgeWithDrawable(c, new FastBitmapDrawable(badge));
+        });
+        return result;
     }
 
-    public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
-        final Bitmap badgeBitmap;
+    public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
-        if (cn != null) {
+        String badgePkg = shortcutInfo.getBadgePackage(mContext);
+        boolean hasBadgePkgSet = !badgePkg.equals(shortcutInfo.getPackage());
+        if (cn != null && !hasBadgePkgSet) {
             // Get the app info for the source activity.
             AppInfo appInfo = new AppInfo();
             appInfo.user = shortcutInfo.getUserHandle();
@@ -343,13 +369,12 @@ public class LauncherIcons {
                     .addCategory(Intent.CATEGORY_LAUNCHER)
                     .setComponent(cn);
             cache.getTitleAndIcon(appInfo, false);
-            badgeBitmap = appInfo.iconBitmap;
+            return appInfo;
         } else {
-            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            PackageItemInfo pkgInfo = new PackageItemInfo(badgePkg);
             cache.getTitleAndIconForApp(pkgInfo, false);
-            badgeBitmap = pkgInfo.iconBitmap;
+            return pkgInfo;
         }
-        return badgeBitmap;
     }
 
     /**

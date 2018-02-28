@@ -1,5 +1,8 @@
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -18,9 +21,6 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
-
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 /**
  * Represents a system shortcut for a given app. The shortcut should have a static label and
@@ -82,7 +82,7 @@ public abstract class SystemShortcut extends ItemInfo {
                 @Override
                 public void onClick(View view) {
                     Rect sourceBounds = launcher.getViewBounds(view);
-                    Bundle opts = launcher.getActivityLaunchOptions(view);
+                    Bundle opts = launcher.getActivityLaunchOptionsAsBundle(view, false);
                     InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, sourceBounds, opts);
                     launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                             ControlType.APPINFO_TARGET, view);
@@ -110,14 +110,15 @@ public abstract class SystemShortcut extends ItemInfo {
             if (!enabled) {
                 return null;
             }
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = PackageManagerHelper.getMarketIntent(itemInfo
-                            .getTargetComponent().getPackageName());
-                    launcher.startActivitySafely(view, intent, itemInfo);
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                }
+            return createOnClickListener(launcher, itemInfo);
+        }
+
+        public View.OnClickListener createOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+            return view -> {
+                Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
+                        itemInfo.getTargetComponent().getPackageName());
+                launcher.startActivitySafely(view, intent, itemInfo);
+                AbstractFloatingView.closeAllOpenViews(launcher);
             };
         }
     }

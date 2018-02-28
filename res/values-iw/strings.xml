@@ -60,6 +60,12 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"זוהי אפליקציית מערכת ולא ניתן להסיר את התקנתה."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"תיקיה ללא שם"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> מושבתת"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="two">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
+      <item quantity="many">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
+      <item quantity="other">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
+      <item quantity="one">לאפליקציה <xliff:g id="APP_NAME_0">%1$s</xliff:g> יש הודעה אחת (<xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>)</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏דף %1$d מתוך %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏מסך דף הבית %1$d מתוך %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"מסך דף הבית חדש"</string>
@@ -129,4 +135,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> קיצורי דרך ו-<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> הודעות של <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגור"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ההודעה נסגרה"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישיות"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"עבודה"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ניתן למצוא כאן את אפליקציות העבודה"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"לכל אפליקציית עבודה יש תג כתום ואבטחתה מטופלת בידי הארגון. אפשר להעביר אפליקציות אל מסך דף הבית כדי להקל את הגישה אליהן."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"מנוהל בידי הארגון"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"הודעות ואפליקציות כבויות"</string>
 </resources>

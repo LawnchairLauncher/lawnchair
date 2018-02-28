@@ -18,6 +18,7 @@ package com.android.launcher3.compat;
 import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.graphics.ColorExtractor.findDominantColorByHue;
 
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
@@ -257,7 +258,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             String value = VERSION_PREFIX + wallpaperId;
 
             if (bitmap != null) {
-                int color = Utilities.findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
+                int color = findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
                 value += "," + color;
             }
 

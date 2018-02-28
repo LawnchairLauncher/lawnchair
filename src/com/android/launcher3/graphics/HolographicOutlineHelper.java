@@ -33,6 +33,7 @@ import android.util.SparseArray;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * Utility class to generate shadow and outline effect, which are used for click feedback
@@ -106,7 +107,11 @@ public class HolographicOutlineHelper {
         int saveCount = mCanvas.save();
         mCanvas.scale(scaleX, scaleY);
         mCanvas.translate(-rect.left, -rect.top);
-        drawable.draw(mCanvas);
+        if (!UiFactory.USE_HARDWARE_BITMAP) {
+            // TODO: Outline generation requires alpha extraction, which is costly for
+            // hardware bitmaps. Instead use canvas layer operations once its available.
+            drawable.draw(mCanvas);
+        }
         mCanvas.restoreToCount(saveCount);
         mCanvas.setBitmap(null);
 

@@ -25,9 +25,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.uioverrides.UiFactory;
 
 /**
@@ -66,7 +66,7 @@ import com.android.launcher3.uioverrides.UiFactory;
  *          - Go back with back key  TODO: make this not go to workspace
  *          - From all apps
  *          - From workspace
- *   - Enter and exit car mode (becuase it causes an extra configuration changed)
+ *   - Enter and exit car mode (becase it causes an extra configuration changed)
  *          - From all apps
  *          - From the center workspace
  *          - From another workspace
@@ -82,6 +82,11 @@ public class LauncherStateManager {
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
 
+    private LauncherState mLastStableState = NORMAL;
+    private LauncherState mCurrentStableState = NORMAL;
+
+    private LauncherState mRestState;
+
     private StateListener mStateListener;
 
     public LauncherStateManager(Launcher l) {
@@ -93,7 +98,7 @@ public class LauncherStateManager {
         return mState;
     }
 
-    private StateHandler[] getStateHandlers() {
+    public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
             mStateHandlers = UiFactory.getStateHandler(mLauncher);
         }
@@ -108,7 +113,7 @@ public class LauncherStateManager {
      * @see #goToState(LauncherState, boolean, Runnable)
      */
     public void goToState(LauncherState state) {
-        goToState(state, true, 0, null);
+        goToState(state, mLauncher.isStarted() /* animated */, 0, null);
     }
 
     /**
@@ -143,10 +148,22 @@ public class LauncherStateManager {
         goToState(state, true, delay, null);
     }
 
+    public void reapplyState() {
+        if (mConfig.mCurrentAnimation == null) {
+            for (StateHandler handler : getStateHandlers()) {
+                handler.setState(mState);
+            }
+        }
+    }
+
     private void goToState(LauncherState state, boolean animated, long delay,
             Runnable onCompleteRunnable) {
-        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {
+        goToState(state, animated, delay, -1, onCompleteRunnable);
+    }
 
+    public void goToState(LauncherState state, boolean animated, long delay, long overrideDuration,
+            Runnable onCompleteRunnable) {
+        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {
             // Run any queued runnable
             if (onCompleteRunnable != null) {
                 onCompleteRunnable.run();
@@ -158,14 +175,15 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
-            setState(state);
+            preOnStateTransitionStart();
+            onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
             }
             if (mStateListener != null) {
                 mStateListener.onStateSetImmediately(state);
             }
-            mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+            onStateTransitionEnd(state);
 
             // Run any queued runnable
             if (onCompleteRunnable != null) {
@@ -177,8 +195,12 @@ public class LauncherStateManager {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
+        if (overrideDuration > -1) {
+            mConfig.duration = overrideDuration;
+        }
 
-        AnimatorSet animation = createAnimationToNewWorkspaceInternal(state, onCompleteRunnable);
+        AnimatorSet animation = createAnimationToNewWorkspaceInternal(
+                state, new AnimatorSetBuilder(), onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
@@ -196,28 +218,34 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
+        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration);
+    }
+
+    public AnimatorPlaybackController createAnimationToNewWorkspace(
+            LauncherState state, AnimatorSetBuilder builder, long duration) {
         mConfig.reset();
         mConfig.userControlled = true;
         mConfig.duration = duration;
         return AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, null), duration);
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration);
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
-            final Runnable onCompleteRunnable) {
-        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-        final AnimationLayerSet layerViews = new AnimationLayerSet();
+            AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
+        preOnStateTransitionStart();
 
         for (StateHandler handler : getStateHandlers()) {
-            handler.setStateWithAnimation(state, layerViews, animation, mConfig);
+            builder.startTag(handler);
+            handler.setStateWithAnimation(state, builder, mConfig);
         }
-        animation.addListener(layerViews);
+
+        final AnimatorSet animation = builder.build();
         animation.addListener(new AnimationSuccessListener() {
 
             @Override
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
-                setState(state);
+                onStateTransitionStart(state);
                 if (mStateListener != null) {
                     mStateListener.onStateTransitionStart(state);
                 }
@@ -237,19 +265,74 @@ public class LauncherStateManager {
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
-
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+                onStateTransitionEnd(state);
             }
         });
         mConfig.setAnimation(animation);
         return mConfig.mCurrentAnimation;
     }
 
-    private void setState(LauncherState state) {
+    private void preOnStateTransitionStart() {
+        // If we are still animating to launcher from an app,
+        // finish it and let this state animation take over.
+        LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
+        if (transitionManager != null) {
+            transitionManager.finishLauncherAnimation();
+        }
+    }
+
+    private void onStateTransitionStart(LauncherState state) {
         mState.onStateDisabled(mLauncher);
         mState = state;
         mState.onStateEnabled(mLauncher);
         mLauncher.getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+
+        if (state.disablePageClipping) {
+            // Only disable clipping if needed, otherwise leave it as previous value.
+            mLauncher.getWorkspace().setClipChildren(false);
+        }
+    }
+
+    private void onStateTransitionEnd(LauncherState state) {
+        // Only change the stable states after the transitions have finished
+        if (state != mCurrentStableState) {
+            mLastStableState = state.getHistoryForState(mCurrentStableState);
+            mCurrentStableState = state;
+        }
+
+        state.onStateTransitionEnd(mLauncher);
+        mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
+        mLauncher.finishAutoCancelActionMode();
+
+        if (state == NORMAL) {
+            setRestState(null);
+        }
+
+        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+    }
+
+    public void onWindowFocusChanged() {
+        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+    }
+
+    public LauncherState getLastState() {
+        return mLastStableState;
+    }
+
+    public void moveToRestState() {
+        if (mState.disableRestore) {
+            goToState(getRestState());
+            // Reset history
+            mLastStableState = NORMAL;
+        }
+    }
+
+    public LauncherState getRestState() {
+        return mRestState == null ? NORMAL : mRestState;
+    }
+
+    public void setRestState(LauncherState restState) {
+        mRestState = restState;
     }
 
     /**
@@ -321,8 +404,8 @@ public class LauncherStateManager {
         /**
          * Sets the UI to {@param state} by animating any changes.
          */
-        void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-                AnimatorSet anim, AnimationConfig config);
+        void setStateWithAnimation(LauncherState toState,
+                AnimatorSetBuilder builder, AnimationConfig config);
     }
 
     public interface StateListener {

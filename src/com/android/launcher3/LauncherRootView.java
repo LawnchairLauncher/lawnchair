@@ -11,10 +11,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
+import com.android.launcher3.util.Themes;
+
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
 public class LauncherRootView extends InsettableFrameLayout {
+
+    private final Launcher mLauncher;
 
     private final Paint mOpaquePaint;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -32,6 +36,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOpaquePaint.setColor(Color.BLACK);
         mOpaquePaint.setStyle(Paint.Style.FILL);
+
+        mLauncher = Launcher.getLauncher(context);
     }
 
     @Override
@@ -57,10 +63,12 @@ public class LauncherRootView extends InsettableFrameLayout {
         } else {
             mLeftInsetBarWidth = mRightInsetBarWidth = 0;
         }
-        Launcher.getLauncher(getContext()).getSystemUiController().updateUiState(
+        mLauncher.getSystemUiController().updateUiState(
                 UI_STATE_ROOT_VIEW, mDrawSideInsetBar ? FLAG_DARK_NAV : 0);
 
-        boolean rawInsetsChanged = !mInsets.equals(insets);
+        // Update device profile before notifying th children.
+        mLauncher.getDeviceProfile().updateInsets(insets);
+        boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
         if (mAlignedView != null) {
@@ -72,14 +80,26 @@ public class LauncherRootView extends InsettableFrameLayout {
                 mAlignedView.setLayoutParams(lp);
             }
         }
-
-        if (rawInsetsChanged) {
-            // Update the grid again
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.onInsetsChanged(insets);
+        if (resetState) {
+            mLauncher.getStateManager().reapplyState();
         }
 
         return true; // I'll take it from here
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
+        // modifying child layout params.
+        if (!insets.equals(mInsets)) {
+            super.setInsets(insets);
+        }
+        setBackground(insets.top == 0 ? null
+                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
+    }
+
+    public void dispatchInsets() {
+        super.setInsets(mInsets);
     }
 
     @Override

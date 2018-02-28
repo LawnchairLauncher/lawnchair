@@ -16,31 +16,35 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LogContainerProvider {
+public class Hotseat extends FrameLayout implements LogContainerProvider, Insettable {
 
+    private final Launcher mLauncher;
     private CellLayout mContent;
 
-    private Launcher mLauncher;
-
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final boolean mHasVerticalHotseat;
+    private boolean mHasVerticalHotseat;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -53,18 +57,10 @@ public class Hotseat extends FrameLayout
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     public CellLayout getLayout() {
         return mContent;
-    }
-
-    /**
-     * Returns whether there are other icons than the all apps button in the hotseat.
-     */
-    public boolean hasIcons() {
-        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
     }
 
     /**
@@ -92,13 +88,7 @@ public class Hotseat extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        mContent = (CellLayout) findViewById(R.id.layout);
-        if (grid.isVerticalBarLayout()) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
-        } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
-        }
+        mContent = findViewById(R.id.layout);
 
         resetLayout();
     }
@@ -127,8 +117,13 @@ public class Hotseat extends FrameLayout
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
             allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             if (mLauncher != null) {
-                mLauncher.setAllAppsButton(allAppsButton);
-                allAppsButton.setOnClickListener(mLauncher);
+                allAppsButton.setOnClickListener((v) -> {
+                    if (!mLauncher.isInState(ALL_APPS)) {
+                        mLauncher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                                ControlType.ALL_APPS_BUTTON);
+                        mLauncher.getStateManager().goToState(ALL_APPS);
+                    }
+                });
                 allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
             }
 
@@ -155,5 +150,53 @@ public class Hotseat extends FrameLayout
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = ContainerType.HOTSEAT;
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
+
+        if (mHasVerticalHotseat) {
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            if (grid.isSeascape()) {
+                lp.gravity = Gravity.LEFT;
+                lp.width = grid.hotseatBarSizePx + insets.left + grid.hotseatBarSidePaddingPx;
+                getLayout().setPadding(
+                        insets.left, insets.top, grid.hotseatBarSidePaddingPx, insets.bottom);
+
+            } else {
+                lp.gravity = Gravity.RIGHT;
+                lp.width = grid.hotseatBarSizePx + insets.right + grid.hotseatBarSidePaddingPx;
+                getLayout().setPadding(
+                        grid.hotseatBarSidePaddingPx, insets.top, insets.right, insets.bottom);
+            }
+        } else {
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
+
+            lp.gravity = Gravity.BOTTOM;
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = grid.hotseatBarSizePx + insets.bottom;
+
+            // We want the edges of the hotseat to line up with the edges of the workspace, but the
+            // icons in the hotseat are a different size, and so don't line up perfectly. To account for
+            // this, we pad the left and right of the hotseat with half of the difference of a workspace
+            // cell vs a hotseat cell.
+            float workspaceCellWidth = (float) grid.widthPx / grid.inv.numColumns;
+            float hotseatCellWidth = (float) grid.widthPx / grid.inv.numHotseatIcons;
+            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            Rect workspacePadding = grid.workspacePadding;
+
+            getLayout().setPadding(
+                    hotseatAdjustment + workspacePadding.left + grid.cellLayoutPaddingLeftRightPx,
+                    grid.hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + grid.cellLayoutPaddingLeftRightPx,
+                    grid.hotseatBarBottomPaddingPx + insets.bottom + grid.cellLayoutBottomPaddingPx);
+        }
+        setLayoutParams(lp);
+        InsettableFrameLayout.dispatchInsets(this, insets);
     }
 }

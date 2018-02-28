@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <FrameLayout
+    <com.android.launcher3.views.TopRoundedCornerView
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -60,5 +60,5 @@
             android:layout_gravity="bottom"
             android:background="?attr/allAppsNavBarScrimColor"
             android:focusable="false"  />
-    </FrameLayout>
+    </com.android.launcher3.views.TopRoundedCornerView>
 </com.android.launcher3.widget.WidgetsFullSheet>

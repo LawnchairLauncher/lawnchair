@@ -54,7 +54,6 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
-import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
@@ -215,9 +214,10 @@ public class LoaderTask implements Runnable {
 
     public void loadUiResources() {
         if (Utilities.ATLEAST_OREO) {
-            ClickShadowView.setAdaptiveIconScaleFactor(
-                    IconNormalizer.getInstance(mApp.getContext()).getScale(
-                            new AdaptiveIconDrawable(null, null), null, null, null));
+            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
+            ClickShadowView.setAdaptiveIconScaleFactor(li.getNormalizer()
+                    .getScale(new AdaptiveIconDrawable(null, null), null, null, null));
+            li.recycle();
         }
     }
 
@@ -472,12 +472,14 @@ public class LoaderTask implements Runnable {
                                         public Bitmap get() {
                                             // If the pinned deep shortcut is no longer published,
                                             // use the last saved icon instead of the default.
-                                            return c.loadIcon(finalInfo);
+                                            return c.loadIcon(finalInfo)
+                                                    ? finalInfo.iconBitmap : null;
                                         }
                                     };
-                                    info.iconBitmap = LauncherIcons
-                                            .createShortcutIcon(pinnedShortcut, context,
-                                                    true /* badged */, fallbackIconProvider);
+                                    LauncherIcons li = LauncherIcons.obtain(context);
+                                    li.createShortcutIcon(pinnedShortcut,
+                                            true /* badged */, fallbackIconProvider).applyTo(info);
+                                    li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;

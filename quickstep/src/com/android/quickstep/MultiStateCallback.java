@@ -55,4 +55,8 @@ public class MultiStateCallback {
     public void addCallback(int stateMask, Runnable callback) {
         mCallbacks.put(stateMask, callback);
     }
+
+    public int getState() {
+        return mState;
+    }
 }

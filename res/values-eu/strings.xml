@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Sistema-aplikazioa da hau eta ezin da desinstalatu."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Izenik gabeko karpeta"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desgaituta dago"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> jakinarazpen dauzka <xliff:g id="APP_NAME_2">%1$s</xliff:g> aplikazioak</item>
+      <item quantity="one"><xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> jakinarazpen dauka <xliff:g id="APP_NAME_0">%1$s</xliff:g> aplikazioak</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d/%2$d orria"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d/%2$d hasierako pantaila"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Hasierako pantailaren orri berria"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> aplikazioaren <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> lasterbide eta <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> jakinarazpen"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Baztertu"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Baztertu egin da jakinarazpena"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pertsonalak"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Lanekoak"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Hemen dituzu laneko aplikazioak"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Laneko aplikazio bakoitzak bereizgarri laranja bat dauka eta erakundeak babesten du. Aplikazioak errazago atzitzeko, eraman itzazu hasierako pantailara."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Erakundeak kudeatzen du"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Jakinarazpenak eta aplikazioak desaktibatuta daude"</string>
 </resources>

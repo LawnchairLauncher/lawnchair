@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp, som ikke kan afinstalleres."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Unavngiven mappe"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> er deaktiveret"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> underretning</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> underretninger</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d ud af %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startskærm %1$d ud af %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ny startskærm"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genveje og <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> underretninger for <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Afvis"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Underretningen blev afvist"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personlige"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbejde"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Arbejdsprofil"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Find arbejdsapps her"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Alle arbejdsapps har et orange badge og beskyttes af din organisation. Flyt apps til din startskærm, så du nemmere kan få adgang til dem."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Administreret af din organisation"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Underretninger og apps er slået fra"</string>
 </resources>

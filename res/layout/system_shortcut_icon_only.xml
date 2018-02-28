@@ -20,5 +20,6 @@
     android:layout_height="@dimen/system_shortcut_header_icon_touch_size"
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:tint="?android:attr/textColorHint"
+    android:tintMode="src_in"
     android:padding="@dimen/system_shortcut_header_icon_padding"
     android:theme="@style/PopupItem" />

@@ -20,9 +20,13 @@ LOCAL_PATH := $(call my-dir)
 # Prebuilt Java Libraries
 #
 include $(CLEAR_VARS)
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    libSharedSystemUI:quickstep/libs/sysui_shared.jar
-include $(BUILD_MULTI_PREBUILT)
+LOCAL_MODULE := libSharedSystemUI
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := quickstep/libs/sysui_shared.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := current
+include $(BUILD_PREBUILT)
 
 #
 # Build rule for Launcher3 app.
@@ -120,8 +124,6 @@ LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/AndroidManifest.xml \
     $(LOCAL_PATH)/AndroidManifest-common.xml
-
-LOCAL_MANIFEST_FILE := go/AndroidManifest.xml
 
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 

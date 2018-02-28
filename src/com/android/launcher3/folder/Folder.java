@@ -18,6 +18,8 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -346,7 +348,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         mFolderName.setHint(sDefaultFolderName.contentEquals(newTitle) ? sHintText : null);
 
-        Utilities.sendCustomAccessibilityEvent(
+        sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                 getContext().getString(R.string.folder_renamed, newTitle));
 
@@ -411,17 +413,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
-
-        ArrayList<ShortcutInfo> overflow = mContent.bindItems(children);
-
-        // If our folder has too many items we prune them from the list. This is an issue
-        // when upgrading from the old Folders implementation which could contain an unlimited
-        // number of items.
-        // TODO: Remove this, as with multi-page folders, there will never be any overflow
-        for (ShortcutInfo item: overflow) {
-            mInfo.remove(item, false);
-            mLauncher.getModelWriter().deleteItemFromDatabase(item);
-        }
+        mContent.bindItems(children);
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
@@ -462,9 +454,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(
-                FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
-                        ? R.layout.user_folder : R.layout.user_folder_icon_normalized, null);
+        return (Folder) launcher.getLayoutInflater()
+                .inflate(R.layout.user_folder_icon_normalized, null);
     }
 
     private void startAnimation(final AnimatorSet a) {
@@ -531,7 +522,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
             }
         };
         anim.addListener(new AnimatorListenerAdapter() {
@@ -540,7 +531,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mFolderIcon.setBackgroundVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
 
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         mContent.getAccessibilityDescription());
@@ -654,7 +645,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
             @Override
             public void onAnimationStart(Animator animation) {
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.folder_closed));
@@ -709,8 +700,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                    !isFull());
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
     }
 
     public void onDragEnter(DragObject d) {
@@ -925,10 +915,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         return mState != STATE_ANIMATING;
     }
 
-    public boolean isFull() {
-        return mContent.isFull();
-    }
-
     private void centerAboutIcon() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
@@ -944,7 +930,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         int centeredTop = centerY - height / 2;
 
         // We need to bound the folder to the currently visible workspace area
-        mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
+        if (mLauncher.isInState(OVERVIEW)) {
+            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(),
+                    sTempRect);
+        } else {
+            mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
+        }
         int left = Math.min(Math.max(sTempRect.left, centeredLeft),
                 sTempRect.right- width);
         int top = Math.min(Math.max(sTempRect.top, centeredTop),

@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Det här är en systemapp som inte kan avinstalleras."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Namnlös mapp"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> har inaktiverats"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> aviseringar</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> har <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> avisering</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Sidan %1$d av %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startskärmen %1$d av %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ny sida på startskärmen"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> har <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genvägar och <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> aviseringar"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorera"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Aviseringen togs bort"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Privat"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbete"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Jobbprofil"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Här hittar du jobbappar"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Alla jobbappar har ett orange märke och organisationen ser till att de är skyddade. Flytta apparna till startskärmen så kommer du åt dem lättare."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Hanteras av organisationen"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Aviseringar och appar är inaktiverade"</string>
 </resources>

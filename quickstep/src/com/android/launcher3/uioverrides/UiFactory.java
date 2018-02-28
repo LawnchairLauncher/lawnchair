@@ -16,22 +16,42 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.content.Intent;
+import static com.android.launcher3.LauncherState.NORMAL;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.view.View.AccessibilityDelegate;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.R;
-import com.android.launcher3.VerticalSwipeController;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.RecentsView;
+import com.android.systemui.shared.recents.view.RecentsTransition;
 
 public class UiFactory {
 
+    private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
+            "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
+
+    public static final boolean USE_HARDWARE_BITMAP = false; // FeatureFlags.IS_DOGFOOD_BUILD;
+
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new VerticalSwipeController(launcher)};
+        if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
+            return new TouchController[] {
+                    new IgnoreTouchesInQuickScrub(),
+                    new EdgeSwipeController(launcher),
+                    new TwoStepSwipeController(launcher),
+                    new OverviewSwipeController(launcher)};
+        } else {
+            return new TouchController[] {
+                    new IgnoreTouchesInQuickScrub(),
+                    new TwoStepSwipeController(launcher),
+                    new OverviewSwipeController(launcher)};
+        }
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
@@ -44,28 +64,28 @@ public class UiFactory {
                 new RecentsViewStateController(launcher)};
     }
 
-    public static void onWorkspaceLongPress(Launcher launcher) {
-        PopupMenu menu = new PopupMenu(launcher, launcher.getWorkspace().getPageIndicator());
-        menu.getMenu().add(R.string.wallpaper_button_text).setOnMenuItemClickListener((i) -> {
-            launcher.onClickWallpaperPicker(null);
-            return true;
-        });
-        menu.getMenu().add(R.string.widget_button_text).setOnMenuItemClickListener((i) -> {
-            if (launcher.getPackageManager().isSafeMode()) {
-                Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-            } else {
-                WidgetsFullSheet.show(launcher, true /* animated */);
-            }
-            return true;
-        });
-        if (launcher.hasSettings()) {
-            menu.getMenu().add(R.string.settings_button_text).setOnMenuItemClickListener((i) -> {
-                launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                        .setPackage(launcher.getPackageName())
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                return true;
-            });
+    public static void onWorkspaceLongPress(Launcher launcher, PointF touchPoint) {
+        OptionsPopupView.show(launcher, touchPoint.x, touchPoint.y);
+    }
+
+    public static void onLauncherStateOrFocusChanged(Launcher launcher) {
+        OverviewInteractionState.setBackButtonVisible(launcher, launcher == null
+                || !launcher.isInState(NORMAL) || !launcher.hasWindowFocus());
+    }
+
+    public static Bitmap createFromRenderer(int width, int height, boolean forceSoftwareRenderer,
+            BitmapRenderer renderer) {
+        if (USE_HARDWARE_BITMAP && !forceSoftwareRenderer) {
+            return RecentsTransition.createHardwareBitmap(width, height, renderer::render);
+        } else {
+            Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            renderer.render(new Canvas(result));
+            return result;
         }
-        menu.show();
+    }
+
+    public static void resetOverview(Launcher launcher) {
+        RecentsView recents = launcher.getOverviewPanel();
+        recents.reset();
     }
 }

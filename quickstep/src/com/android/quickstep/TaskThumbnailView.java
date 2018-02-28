@@ -22,36 +22,44 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ComposeShader;
 import android.graphics.LightingColorFilter;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * A task in the Recents view.
  */
-public class TaskThumbnailView extends FrameLayout {
+public class TaskThumbnailView extends View {
 
+    private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
+
+    private final float mCornerRadius;
+    private final float mFadeLength;
+
+    private final TaskOverlay mOverlay;
+    private final Paint mPaint = new Paint();
+
+    private final Matrix mMatrix = new Matrix();
+
+    private Task mTask;
     private ThumbnailData mThumbnailData;
-
-    private Rect mThumbnailRect = new Rect();
-    private float mThumbnailScale;
-
-    private Matrix mMatrix = new Matrix();
-    private Paint mDrawPaint = new Paint();
-    protected Paint mBgFillPaint = new Paint();
     protected BitmapShader mBitmapShader;
 
     private float mDimAlpha = 1f;
-    private LightingColorFilter mLightingColorFilter = new LightingColorFilter(Color.WHITE, 0);
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -63,32 +71,36 @@ public class TaskThumbnailView extends FrameLayout {
 
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
-        setClipToOutline(true);
+        mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
+        mFadeLength = getResources().getDimension(R.dimen.task_fade_length);
+        mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
+    }
+
+    public void bind() {
+        mOverlay.reset();
     }
 
     /**
      * Updates this thumbnail.
      */
-    public void setThumbnail(ThumbnailData thumbnailData) {
+    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+        mTask = task;
+        mPaint.setColor(task == null ? Color.BLACK : task.colorBackground | 0xFF000000);
+
         if (thumbnailData != null && thumbnailData.thumbnail != null) {
             Bitmap bm = thumbnailData.thumbnail;
             bm.prepareToDraw();
-            mThumbnailScale = thumbnailData.scale;
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            mDrawPaint.setShader(mBitmapShader);
-            mThumbnailRect.set(0, 0,
-                    bm.getWidth() - thumbnailData.insets.left - thumbnailData.insets.right,
-                    bm.getHeight() - thumbnailData.insets.top - thumbnailData.insets.bottom);
+            mPaint.setShader(mBitmapShader);
             mThumbnailData = thumbnailData;
             updateThumbnailMatrix();
-            updateThumbnailPaintFilter();
         } else {
             mBitmapShader = null;
-            mDrawPaint.setShader(null);
-            mThumbnailRect.setEmpty();
             mThumbnailData = null;
+            mPaint.setShader(null);
+            mOverlay.reset();
         }
+        updateThumbnailPaintFilter();
     }
 
     /**
@@ -99,81 +111,106 @@ public class TaskThumbnailView extends FrameLayout {
         updateThumbnailPaintFilter();
     }
 
+    public Rect getInsets() {
+        if (mThumbnailData != null) {
+            return mThumbnailData.insets;
+        }
+        return new Rect();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        int viewWidth = getMeasuredWidth();
-        int viewHeight = getMeasuredHeight();
-        int thumbnailWidth = Math.min(viewWidth,
-                (int) (mThumbnailRect.width() * mThumbnailScale));
-        int thumbnailHeight = Math.min(viewHeight,
-                (int) (mThumbnailRect.height() * mThumbnailScale));
-
-        if (mBitmapShader != null && thumbnailWidth > 0 && thumbnailHeight > 0) {
-            // Draw the background, there will be some small overdraw with the thumbnail
-            if (thumbnailWidth < viewWidth) {
-                // Portrait thumbnail on a landscape task view
-                canvas.drawRect(Math.max(0, thumbnailWidth), 0, viewWidth, viewHeight,
-                        mBgFillPaint);
-            }
-            if (thumbnailHeight < viewHeight) {
-                // Landscape thumbnail on a portrait task view
-                canvas.drawRect(0, Math.max(0, thumbnailHeight), viewWidth, viewHeight,
-                        mBgFillPaint);
-            }
-
-            // Draw the thumbnail
-            canvas.drawRect(0, 0, thumbnailWidth, thumbnailHeight, mDrawPaint);
-        } else {
-            canvas.drawRect(0, 0, viewWidth, viewHeight, mBgFillPaint);
-        }
+        canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
+                mCornerRadius, mCornerRadius, mPaint);
     }
 
     private void updateThumbnailPaintFilter() {
         int mul = (int) (mDimAlpha * 255);
         if (mBitmapShader != null) {
-            mLightingColorFilter = new LightingColorFilter(Color.argb(255, mul, mul, mul), 0);
-            mDrawPaint.setColorFilter(mLightingColorFilter);
-            mDrawPaint.setColor(0xFFffffff);
-            mBgFillPaint.setColorFilter(mLightingColorFilter);
+            mPaint.setColorFilter(getLightingColorFilter(mul));
         } else {
-            mDrawPaint.setColorFilter(null);
-            mDrawPaint.setColor(Color.argb(255, mul, mul, mul));
+            mPaint.setColorFilter(null);
+            mPaint.setColor(Color.argb(255, mul, mul, mul));
         }
         invalidate();
     }
 
     private void updateThumbnailMatrix() {
-        mThumbnailScale = 1f;
         if (mBitmapShader != null && mThumbnailData != null) {
+            float scale = mThumbnailData.scale;
+            float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
+                    (mThumbnailData.insets.left + mThumbnailData.insets.right) * scale;
+            float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
+                    (mThumbnailData.insets.top + mThumbnailData.insets.bottom) * scale;
+            final float thumbnailScale;
+
             if (getMeasuredWidth() == 0) {
                 // If we haven't measured , skip the thumbnail drawing and only draw the background
                 // color
-                mThumbnailScale = 0f;
+                thumbnailScale = 0f;
             } else {
-                float invThumbnailScale = 1f / mThumbnailScale;
                 final Configuration configuration =
                         getContext().getApplicationContext().getResources().getConfiguration();
                 final DeviceProfile profile = Launcher.getLauncher(getContext()).getDeviceProfile();
-                if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    if (mThumbnailData.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        // If we are in the same orientation as the screenshot, just scale it to the
-                        // width of the task view
-                        mThumbnailScale = (float) getMeasuredWidth() / mThumbnailRect.width();
-                    } else {
-                        // Scale the landscape thumbnail up to app size, then scale that to the task
-                        // view size to match other portrait screenshots
-                        mThumbnailScale = invThumbnailScale *
-                                ((float) getMeasuredWidth() / profile.getCurrentWidth());
-                    }
+                if (configuration.orientation == mThumbnailData.orientation) {
+                    // If we are in the same orientation as the screenshot, just scale it to the
+                    // width of the task view
+                    thumbnailScale = getMeasuredWidth() / thumbnailWidth;
+                } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    // Scale the landscape thumbnail up to app size, then scale that to the task
+                    // view size to match other portrait screenshots
+                    thumbnailScale = ((float) getMeasuredWidth() / profile.widthPx);
                 } else {
                     // Otherwise, scale the screenshot to fit 1:1 in the current orientation
-                    mThumbnailScale = invThumbnailScale;
+                    thumbnailScale = 1;
                 }
             }
-            mMatrix.setTranslate(-mThumbnailData.insets.left, -mThumbnailData.insets.top);
-            mMatrix.postScale(mThumbnailScale, mThumbnailScale);
+            mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
+                    -mThumbnailData.insets.top * scale);
+            mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
+
+            float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
+            Shader shader = mBitmapShader;
+            if (bitmapHeight < getMeasuredHeight()) {
+                int color = mPaint.getColor();
+                LinearGradient fade = new LinearGradient(
+                        0, bitmapHeight - mFadeLength, 0, bitmapHeight,
+                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
+                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+            }
+
+            float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
+            if (bitmapWidth < getMeasuredWidth()) {
+                int color = mPaint.getColor();
+                LinearGradient fade = new LinearGradient(
+                        bitmapWidth - mFadeLength, 0, bitmapWidth, 0,
+                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
+                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+            }
+            mPaint.setShader(shader);
         }
+
+        mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
         invalidate();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updateThumbnailMatrix();
+    }
+
+    private static LightingColorFilter getLightingColorFilter(int dimColor) {
+        if (dimColor < 0) {
+            dimColor = 0;
+        } else if (dimColor > 255) {
+            dimColor = 255;
+        }
+        if (sDimFilterCache[dimColor] == null) {
+            sDimFilterCache[dimColor] =
+                    new LightingColorFilter(Color.argb(255, dimColor, dimColor, dimColor), 0);
+        }
+        return sDimFilterCache[dimColor];
     }
 }

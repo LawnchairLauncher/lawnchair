@@ -26,11 +26,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.widget.DeferredAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.util.ArrayList;
 
@@ -83,6 +86,14 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
             // RemoteViews which is being passed back. The startListening relationship will
             // have been established by this point, and we will end up populating the
             // widgets upon bind anyway. See issue 14255011 for more context.
+        }
+
+        // We go in reverse order and inflate any deferred widget
+        for (int i = mViews.size() - 1; i >= 0; i--) {
+            LauncherAppWidgetHostView view = mViews.valueAt(i);
+            if (view instanceof DeferredAppWidgetHostView) {
+                view.reInflate();
+            }
         }
     }
 
@@ -178,6 +189,11 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
             inflater.inflate(appWidget.initialLayout, lahv);
             lahv.setAppWidget(0, appWidget);
             return lahv;
+        } else if ((mFlags & FLAG_LISTENING) == 0) {
+            DeferredAppWidgetHostView view = new DeferredAppWidgetHostView(context);
+            view.setAppWidget(appWidgetId, appWidget);
+            mViews.put(appWidgetId, view);
+            return view;
         } else {
             try {
                 return super.createView(context, appWidgetId, appWidget);

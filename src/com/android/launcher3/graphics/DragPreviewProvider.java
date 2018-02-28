@@ -31,10 +31,11 @@ import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.UiThreadHelper;
 
 import java.nio.ByteBuffer;
@@ -77,8 +78,10 @@ public class DragPreviewProvider {
     /**
      * Draws the {@link #mView} into the given {@param destCanvas}.
      */
-    private void drawDragView(Canvas destCanvas) {
+    private void drawDragView(Canvas destCanvas, float scale) {
         destCanvas.save();
+        destCanvas.scale(scale, scale);
+
         if (mView instanceof BubbleTextView) {
             Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
@@ -120,6 +123,7 @@ public class DragPreviewProvider {
         int width = mView.getWidth();
         int height = mView.getHeight();
 
+        boolean forceSoftwareRenderer = false;
         if (mView instanceof BubbleTextView) {
             Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
@@ -129,20 +133,14 @@ public class DragPreviewProvider {
             scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
             width = (int) (mView.getWidth() * scale);
             height = (int) (mView.getHeight() * scale);
+
+            // Use software renderer for widgets as we know that they already work
+            forceSoftwareRenderer = true;
         }
 
-        Bitmap b = Bitmap.createBitmap(width + blurSizeOutline, height + blurSizeOutline,
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(b);
-
-        canvas.save();
-        canvas.scale(scale, scale);
-        drawDragView(canvas);
-        canvas.restore();
-
-        canvas.setBitmap(null);
-
-        return b;
+        final float scaleFinal = scale;
+        return UiFactory.createFromRenderer(width + blurSizeOutline, height + blurSizeOutline,
+                forceSoftwareRenderer, (c) -> drawDragView(c, scaleFinal));
     }
 
     public final void generateDragOutline(Bitmap preview) {
