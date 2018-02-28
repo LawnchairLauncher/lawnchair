@@ -131,7 +131,7 @@ public class FloatingHeaderView extends LinearLayout implements
                 mSnappedScrolledY = currentScrollY - mMaxTranslation;
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
-                mSnappedScrolledY = currentScrollY;
+                mSnappedScrolledY = -mMaxTranslation;
             }
         }
     }
