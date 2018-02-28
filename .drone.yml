@@ -8,9 +8,8 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     restore: true
     mount:
-      - ".gradle/caches/"
-      - ".gradle/wrapper/"
-      - ".android/build-cache"
+      - ".gradle/caches"
+      - ".gradle/wrapper"
     volumes:
       - /tmp/cache:/cache
   build:
@@ -23,7 +22,6 @@ pipeline:
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleDebug check;
-      - "ls -la"
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
@@ -34,9 +32,8 @@ pipeline:
     image: drillster/drone-volume-cache:latest
     rebuild: true
     mount:
-      - ".gradle/caches/"
-      - ".gradle/wrapper/"
-      - ".android/build-cache"
+      - ".gradle/caches"
+      - ".gradle/wrapper"
     volumes:
       - /tmp/cache:/cache
 
