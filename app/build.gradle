@@ -85,6 +85,16 @@ android {
             }
         }
     }
+    
+    flavorDimensions "store"
+    productFlavors {
+        play {
+            dimension "store"
+        }
+        fdroid {
+            dimension "store"
+        }
+    }
 
     lintOptions {
         abortOnError false
