@@ -66,6 +66,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
 
     <application
         android:backupAgent=".LauncherBackupAgent"
@@ -222,7 +223,37 @@
             android:name="ch.deletescape.lawnchair.backup.RestoreBackupActivity"
             android:label="@string/restore_backup"
             android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.V2" />
+            android:theme="@style/SettingsTheme.V2" >
+            <intent-filter>
+                <data
+                    android:scheme="content"
+                    android:mimeType="application/vnd.lawnchair.backup" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+                <!--
+                    Work around Android's ugly primitive PatternMatcher
+                    implementation that can't cope with finding a . early in
+                    the path unless it's explicitly matched.
+                -->
+                <data android:pathPattern=".*\\.shed" />
+                <data android:pathPattern=".*\\..*\\.shed" />
+                <data android:pathPattern=".*\\..*\\..*\\.shed" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.shed" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="ch.deletescape.lawnchair.settings.ui.AboutActivity"
             android:label="@string/about"

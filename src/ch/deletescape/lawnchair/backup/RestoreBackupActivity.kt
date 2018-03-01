@@ -27,7 +27,12 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
     private val backupSettings by lazy { findViewById<CheckBox>(R.id.content_settings) }
     private val backupWallpaper by lazy { findViewById<CheckBox>(R.id.content_wallpaper) }
 
-    private val backup by lazy { LawnchairBackup(this, Uri.parse(intent.getStringExtra(EXTRA_URI))) }
+    private val backup by lazy {
+        if (intent.hasExtra(EXTRA_URI))
+            LawnchairBackup(this, Uri.parse(intent.getStringExtra(EXTRA_URI)))
+        else
+            LawnchairBackup(this, intent.data)
+    }
     private val backupMetaLoader by lazy { LawnchairBackup.MetaLoader(backup) }
 
     private val config by lazy { findViewById<View>(R.id.config) }
@@ -36,6 +41,8 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
     private val progressBar by lazy { findViewById<View>(R.id.progressBar) }
     private val progressText by lazy { findViewById<TextView>(R.id.progress_text) }
     private val successIcon by lazy { findViewById<ImageView>(R.id.success_icon) }
+
+    private var fromExternal = false
 
     private var inProgress = false
         set(value) {
@@ -55,19 +62,27 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
         supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent.hasExtra(EXTRA_URI)) {
-            startButton.setOnClickListener {
-                startRestore()
+        when {
+            intent.hasExtra(EXTRA_URI) -> {  }
+            intent.data != null -> { fromExternal = true }
+            intent.hasExtra(EXTRA_SUCCESS) -> {
+                inProgress = true
+                showMessage(R.drawable.ic_check, R.string.restore_success)
+                Utilities.getLawnchairPrefs(this).blockingEdit { restoreSuccess = false }
+                Handler().postDelayed({ finish() }, 2000)
+                return
             }
-
-            loadMeta()
-        } else if (intent.hasExtra(EXTRA_SUCCESS)) {
-            inProgress = true
-
-            showMessage(R.drawable.ic_check, R.string.restore_success)
-
-            Handler().postDelayed({ finish() }, 2000)
+            else -> {
+                finish()
+                return
+            }
         }
+
+        startButton.setOnClickListener {
+            startRestore()
+        }
+
+        loadMeta()
     }
 
     fun loadMeta() {
@@ -167,7 +182,14 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
                     }
                 }
 
-                Handler().postDelayed({ Utilities.killLauncher() }, 1000)
+                Handler().postDelayed({
+                    if (fromExternal) {
+                        val intent = Intent(this@RestoreBackupActivity,
+                                RestoreBackupActivity::class.java).putExtra(EXTRA_SUCCESS, true)
+                        startActivity(intent)
+                    }
+                    Utilities.killLauncher()
+                }, 500)
             } else {
                 inProgress = false
 
