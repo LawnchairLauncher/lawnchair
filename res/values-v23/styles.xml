@@ -14,5 +14,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:colorEdgeEffect">?colorAccent</item>
     </style>
 </resources>
