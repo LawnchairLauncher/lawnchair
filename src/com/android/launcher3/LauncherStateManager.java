@@ -162,13 +162,26 @@ public class LauncherStateManager {
     }
 
     public void goToState(LauncherState state, boolean animated, long delay, long overrideDuration,
-            Runnable onCompleteRunnable) {
-        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {
-            // Run any queued runnable
-            if (onCompleteRunnable != null) {
-                onCompleteRunnable.run();
+            final Runnable onCompleteRunnable) {
+        if (mLauncher.isInState(state)) {
+            if (mConfig.mCurrentAnimation == null) {
+                // Run any queued runnable
+                if (onCompleteRunnable != null) {
+                    onCompleteRunnable.run();
+                }
+                return;
+            } else if (!mConfig.userControlled && animated) {
+                // We are running the same animation as requested
+                if (onCompleteRunnable != null) {
+                    mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
+                        @Override
+                        public void onAnimationSuccess(Animator animator) {
+                            onCompleteRunnable.run();
+                        }
+                    });
+                }
+                return;
             }
-            return;
         }
 
         // Cancel the current animation
