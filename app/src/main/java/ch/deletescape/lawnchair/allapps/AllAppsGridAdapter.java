@@ -42,6 +42,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 import ch.deletescape.lawnchair.anim.SpringAnimationHandler;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * The grid view adapter of all the apps.
@@ -239,7 +240,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mEmptySearchMessage = res.getString(R.string.all_apps_loading_message);
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
         mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
-        mLayoutInflater = LayoutInflater.from(launcher);
+        mLayoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_ALLAPPS));
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mTheme = Utilities.getThemer().allAppsTheme(launcher);

@@ -61,6 +61,7 @@
         <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color</item>
         <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color</item>
         <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color</item>
+        <item name="searchBarTextColor">@color/search_bar_text_color</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -81,7 +82,7 @@
         <item name="popupColorTertiary">#ff757575</item>
         <item name="allAppsContainerColor">@color/all_apps_container_color_dark</item>
         <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur_dark</item>
-        <item name="allAppsEmptySearchTextColor">@color/all_apps_empty_search_text_color</item>
+        <item name="allAppsEmptySearchTextColor">?android:textColorSecondary</item>
         <item name="blurTintColor">@color/blur_tint_color_dark</item>
         <item name="qsbBgColor">@color/qsb_background_dark</item>
         <item name="folderBgColorBlur">@color/folder_bg_color_blur_dark</item>
@@ -89,6 +90,7 @@
         <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color_dark</item>
         <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color_dark</item>
         <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color_dark</item>
+        <item name="searchBarTextColor">?android:textColorSecondary</item>
     </style>
 
     <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">

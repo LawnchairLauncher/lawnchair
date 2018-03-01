@@ -152,6 +152,7 @@
     <attr name="roundSearchBarDividerColor" format="color" />
     <attr name="roundSearchBarHintColor" format="color" />
     <attr name="roundSearchBarTextColor" format="color" />
+    <attr name="searchBarTextColor" format="color" />
 
     <!-- SnowfallView snowflake attributes -->
     <declare-styleable name="SnowfallView">
