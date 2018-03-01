@@ -182,7 +182,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (sysUiProxy == null) {
                 return null;
             }
-            if (!ActivityManagerWrapper.getInstance().isLockToAppEnabled()) {
+            if (!ActivityManagerWrapper.getInstance().isScreenPinningEnabled()) {
+                return null;
+            }
+            if (ActivityManagerWrapper.getInstance().isLockToAppActive()) {
+                // We shouldn't be able to pin while an app is locked.
                 return null;
             }
             return view -> {
