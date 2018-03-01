@@ -34,13 +34,13 @@
     name in the permissions. eq com.mypackage.permission.READ_SETTINGS
     -->
     <permission
-        android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS"
+        android:name="${applicationId}.permission.READ_SETTINGS"
         android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
+        android:name="${applicationId}.permission.WRITE_SETTINGS"
         android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
@@ -50,16 +50,16 @@
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
     <!-- Pixel -->
     <permission
-        android:name="ch.deletescape.lawnchair.permission.QSB"
+        android:name="${applicationId}.permission.QSB"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem" />
 
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
+    <uses-permission android:name="${applicationId}.permission.QSB" />
 
     <!-- Custom -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
@@ -129,10 +129,10 @@
         -->
         <provider
             android:name=".LauncherProvider"
-            android:authorities="ch.deletescape.lawnchair.settings"
+            android:authorities="${applicationId}.settings"
             android:exported="true"
-            android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
-            android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
+            android:readPermission="${applicationId}.permission.READ_SETTINGS"
+            android:writePermission="${applicationId}.permission.WRITE_SETTINGS" />
 
         <!-- Pixel -->
         <activity
@@ -158,7 +158,7 @@
 
         <provider
             android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
-            android:authorities="ch.deletescape.lawnchair.appssearch"
+            android:authorities="${applicationId}.appssearch"
             android:exported="true" />
 
         <!--

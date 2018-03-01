@@ -23,6 +23,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
@@ -141,6 +142,11 @@ public class InvariantDeviceProfile {
                 minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
         InvariantDeviceProfile interpolatedDeviceProfileOut =
                 invDistWeightedInterpolate(minWidthDps,  minHeightDps, closestProfiles);
+
+        for (InvariantDeviceProfile profile : closestProfiles) {
+            Log.d("IDP", "numRows: " + profile.numRows);
+            Log.d("IDP", "numColumns: " + profile.numColumns);
+        }
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;

@@ -37,7 +37,7 @@ android {
             versionName = System.getenv("MAJOR_MINOR") + (System.getenv("DRONE") ? "-" : ".") + System.getenv("TRAVIS_BUILD_NUMBER")
         } else {
             versionCode 1
-            versionName "v2-dev"
+            versionName "2.0"
         }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -60,18 +60,35 @@ android {
         }
     }
 
-    flavorDimensions "type"
+    flavorDimensions "tier", "build"
     productFlavors {
         aosp {
-            dimension "type"
+            dimension "tier"
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
-            dimension "type"
+            dimension "tier"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
+        }
+
+        dev {
+            dimension "build"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        ci {
+            dimension "build"
+            applicationIdSuffix ".ci"
+            versionNameSuffix "-ci"
+        }
+
+        plah {
+            dimension "build"
+            applicationIdSuffix ".plah"
         }
     }
     sourceSets {
@@ -106,6 +123,12 @@ android {
             // different attributes than the build system.
             manifest.srcFile "AndroidManifest.xml"
         }
+    }
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.resValue 'string', 'application_id', variant.applicationId
     }
 }
 
