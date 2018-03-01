@@ -216,6 +216,7 @@
   <plurals name="number_of_items_selected">
     <item quantity="one">Wybrana %1$d</item>
     <item quantity="few">Wybrane: %1$d</item>
+    <item quantity="many">Wybrana %1$d</item>
     <item quantity="other">Wybrana %1$d</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
@@ -273,6 +274,8 @@
   <string name="num_hotseat_icons_pref_title">Liczba ikon w docku</string>
   <string name="icon_scale_pref_title">Rozmiar ikon</string>
   <string name="hotseat_height_scale">Skala wysokości</string>
+  <string name="hotseat_custom_opacity">Nieprzezroczystość docka</string>
+  <string name="hotseat_uses_custom_opacity">Włącz niestandardową nieprzezroczystość docka</string>
   <string name="icon_text_scale_pref_title">Rozmiar tekstu</string>
   <string name="icon_text_padding_scale_pref_title">Skala odstępu ikon</string>
   <string name="full_width_width_widgets_pref_title">Widżety na całej szerokości</string>
