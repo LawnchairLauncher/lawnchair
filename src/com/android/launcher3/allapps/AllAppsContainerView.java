@@ -204,7 +204,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mHeader.reset();
         }
         // Reset the search bar and base recycler view after transitioning home
-        mSearchUiManager.reset();
+        mSearchUiManager.resetSearch();
     }
 
     @Override
@@ -291,11 +291,10 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         if (grid.isVerticalBarLayout()) {
             mlp.leftMargin = insets.left;
-            mlp.topMargin = insets.top;
             mlp.rightMargin = insets.right;
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            mlp.leftMargin = mlp.rightMargin = mlp.topMargin = 0;
+            mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
         }
         setLayoutParams(mlp);

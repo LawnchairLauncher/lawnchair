@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.NO_ANIM_PROPERTY_SETTER;
 
 import android.content.Context;
@@ -174,7 +175,8 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
     }
 
     private void setState(LauncherState state, PropertySetter setter) {
-        setter.setViewAlpha(this, 1f - state.getHoseatAlpha(mLauncher), Interpolators.ACCEL);
+        float myAlpha = state == OVERVIEW ? 1 : 0;
+        setter.setViewAlpha(this, myAlpha, Interpolators.ACCEL);
     }
 
     public static int getButtonBarHeight(Launcher launcher) {
