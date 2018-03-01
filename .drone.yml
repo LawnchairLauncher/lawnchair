@@ -24,7 +24,7 @@ pipeline:
     image: appleboy/drone-telegram:latest
     secrets: [ bot_token ]
     token: ${BOT_TOKEN}
-    to: -1001092684628
+    to: "-1001092684628"
     message: >
       {{#success build.status}}
         Build {{build.number}} succeeded. Good job mate!
