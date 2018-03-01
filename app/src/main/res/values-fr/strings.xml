@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Nombre d\'icônes dans le dock</string>
   <string name="icon_scale_pref_title">Taille des icônes</string>
   <string name="hotseat_height_scale">Échelle de hauteur</string>
+  <string name="hotseat_custom_opacity">Opacité du dock</string>
+  <string name="hotseat_uses_custom_opacity">Personnaliser l\'opacité du dock</string>
   <string name="icon_text_scale_pref_title">Taille de la police des libellés des icônes</string>
   <string name="icon_text_padding_scale_pref_title">Échelle de remplissage des icônes</string>
   <string name="full_width_width_widgets_pref_title">Widgets de pleine largeur</string>
