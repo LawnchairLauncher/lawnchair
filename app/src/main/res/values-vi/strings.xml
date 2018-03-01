@@ -250,7 +250,7 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Gói Biểu Tượng</string>
   <string name="icon_pack_preference_summary">Chọn Gói Biểu tượng</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Sử dụng màu sắc hình nền cho thanh dock</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Chọn màu sắc của hình nền cho thanh dock</string>
   <string name="hotseat_show_arrow">Hiển thị mũi tên</string>
   <string name="hotseat_show_page_indicator">Hiển thị chỉ số trang</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Thanh dock sẽ đổi màu theo màu sắc chủ đạo của hình nền</string>
@@ -271,6 +271,8 @@
   <string name="num_hotseat_icons_pref_title">Số lượng các biểu tượng trong thanh dock</string>
   <string name="icon_scale_pref_title">Kích thước biểu tượng</string>
   <string name="hotseat_height_scale">Chiều cao</string>
+  <string name="hotseat_custom_opacity">Độ mờ Dock</string>
+  <string name="hotseat_uses_custom_opacity">Cho phép chỉnh dock mờ</string>
   <string name="icon_text_scale_pref_title">Kích thước nhãn biểu tượng</string>
   <string name="icon_text_padding_scale_pref_title">Kích thước phần lề biểu tượng</string>
   <string name="full_width_width_widgets_pref_title">Lấp đầy chiều rộng tiện ích con</string>
@@ -368,7 +370,7 @@
   <string name="pref_weather_provider">Dịch vụ cung cấp thông tin thời tiết</string>
   <string name="loading">Đang tải…</string>
   <string name="icon_shape_override_label">Hình dạng biểu tượng</string>
-  <string name="icon_shape_system_default">Vui lòng đừng thay đổi</string>
+  <string name="icon_shape_system_default">Không thay đổi</string>
   <string name="icon_shape_none">Không</string>
   <string name="icon_shape_square">Vuông</string>
   <string name="icon_shape_rounded_square">Hình vuông bo góc</string>
@@ -415,12 +417,12 @@
   <string name="reset_alternative_icons_title">Đặt lại biểu tượng ứng dụng thay thế?</string>
   <string name="reset_alternative_icons">Bạn có %1$d ứng dụng với các biểu tượng khác, bạn có muốn đặt lại chúng?</string>
   <string name="error_no_browser">Không có hành động nào phù hợp để xử lý URL</string>
-  <string name="snowfall_title">Tuyết rơi</string>
-  <string name="enable_snowfall_title">Bật hiệu ứng tuyết rơi trên màn hình chính</string>
+  <string name="snowfall_title">Hiệu ứng tuyết rơi</string>
+  <string name="enable_snowfall_title">Bật hiệu ứng tuyết rơi</string>
   <string name="enable_snowfall_summary">Có thể ảnh hưởng đến hiệu năng máy.</string>
   <string name="snowfall_enabled">\'Hãy để tuyết rơi, hãy để tuyết rơi, tuyết ơi hãy rơi!\'</string>
   <string name="snowflake_size_scale">Kích cỡ bông tuyết</string>
-  <string name="snowflakes_num">Số lượng bông tuyết tối đa</string>
+  <string name="snowflakes_num">Số lượng bông tuyết</string>
   <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
   <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
 </resources>
