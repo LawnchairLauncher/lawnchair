@@ -39,9 +39,11 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.metrics.LogMaker;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -76,6 +78,40 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.StringJoiner;
+
+class EventLogTags {
+    private EventLogTags() {
+    }  // don't instantiate
+
+    /** 524292 sysui_multi_action (content|4) */
+    public static final int SYSUI_MULTI_ACTION = 524292;
+
+    public static void writeSysuiMultiAction(Object[] content) {
+        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
+    }
+}
+
+class MetricsLogger {
+    private static MetricsLogger sMetricsLogger;
+
+    private static MetricsLogger getLogger() {
+        if (sMetricsLogger == null) {
+            sMetricsLogger = new MetricsLogger();
+        }
+        return sMetricsLogger;
+    }
+
+    protected void saveLog(Object[] rep) {
+        EventLogTags.writeSysuiMultiAction(rep);
+    }
+
+    public void write(LogMaker content) {
+        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
+            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
+        }
+        saveLog(content.serialize());
+    }
+}
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
@@ -189,10 +225,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
+    private final long mTouchTimeMs;
+    private long mLauncherFrameDrawnTime;
+    private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
-    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
+    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs) {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
+        mTouchTimeMs = touchTimeMs;
         mInputConsumer.registerInputConsumer();
         initStateCallbacks();
     }
@@ -416,11 +456,22 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         if (mLauncherDrawnCallback != null) {
             mLauncherDrawnCallback.run();
         }
+        mLauncherFrameDrawnTime = SystemClock.uptimeMillis();
     }
 
     private void initializeLauncherAnimationController() {
         mLauncherLayoutListener.setHandler(this);
         onLauncherLayoutChanged();
+
+        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
+        // "Recents" activity for app transition tests for the app-to-recents case.
+        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
+        builder.setPackageName("com.android.systemui");
+        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
+                "com.android.systemui.recents.RecentsActivity");
+        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
+                mLauncherFrameDrawnTime - mTouchTimeMs);
+        mMetricsLogger.write(builder);
     }
 
     public void updateInteractionType(@InteractionType int interactionType) {
