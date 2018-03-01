@@ -274,6 +274,7 @@ Waitin\' t\' install</string>
   <string name="num_hotseat_icons_pref_title">Numb\'r of treasures on yee deck</string>
   <string name="icon_scale_pref_title">Largeness o\' icon</string>
   <string name="hotseat_height_scale">Mast height</string>
+  <string name="hotseat_custom_opacity">Deck opac\'ty</string>
   <string name="icon_text_scale_pref_title">Scale o\' icon text</string>
   <string name="icon_text_padding_scale_pref_title">Flag paddlin\' scale</string>
   <string name="full_width_width_widgets_pref_title">How wide yee flags be</string>
