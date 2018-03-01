@@ -32,6 +32,7 @@ import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.graphics.ViewScrim;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -90,8 +91,6 @@ public class WorkspaceStateTransitionAnimation {
 
     public static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
 
-    public final int mWorkspaceScrimAlpha;
-
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
 
@@ -100,8 +99,6 @@ public class WorkspaceStateTransitionAnimation {
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
-        mWorkspaceScrimAlpha = launcher.getResources()
-                .getInteger(R.integer.config_workspaceScrimAlpha);
     }
 
     public void setState(LauncherState toState) {
@@ -142,8 +139,10 @@ public class WorkspaceStateTransitionAnimation {
                 pageAlphaProvider.interpolator);
 
         // Set scrim
-        propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
-                state.hasScrim ? mWorkspaceScrimAlpha : 0, Interpolators.DEACCEL_1_5);
+        propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,
+                state.hasScrim ? 1 : 0, Interpolators.LINEAR);
+        propertySetter.setFloat(ViewScrim.get(mLauncher.getAppsView()), ViewScrim.PROGRESS,
+                state.hasAllAppsScrim ? 1 : 0, Interpolators.LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
@@ -154,7 +153,7 @@ public class WorkspaceStateTransitionAnimation {
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        int drawableAlpha = Math.round(pageAlpha * (state.hasScrim ? 255 : 0));
+        int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
         propertySetter.setInt(cl.getScrimBackground(),
                 DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_IN);

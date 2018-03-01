@@ -1003,7 +1003,7 @@ public class Launcher extends BaseActivity
         mDragController.setMoveTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
+        mAllAppsController.setupViews(mAppsView, mHotseat);
     }
 
     /**

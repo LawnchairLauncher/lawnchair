@@ -24,6 +24,7 @@
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="task_fade_length">20dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
+    <dimen name="recents_page_fade_length">100dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
              loading full resolution screenshots. -->
@@ -33,9 +34,6 @@
     <dimen name="quickstep_fling_min_velocity">250dp</dimen>
 
     <dimen name="workspace_overview_offset_x">-24dp</dimen>
-
-    <!-- TODO: This can be calculated using other resource values -->
-    <dimen name="all_apps_search_box_full_height">90dp</dimen>
 
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">25dp</dimen>

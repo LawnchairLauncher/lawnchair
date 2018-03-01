@@ -36,7 +36,7 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
             FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
-            FLAG_DISABLE_PAGE_CLIPPING;
+            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS;
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.

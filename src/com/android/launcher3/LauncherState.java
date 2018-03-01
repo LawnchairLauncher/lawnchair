@@ -44,6 +44,8 @@ public class LauncherState {
     protected static final int FLAG_DISABLE_RESTORE = 1 << 3;
     protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 4;
     protected static final int FLAG_DISABLE_PAGE_CLIPPING = 1 << 5;
+    protected static final int FLAG_PAGE_BACKGROUNDS = 1 << 6;
+    protected static final int FLAG_ALL_APPS_SCRIM = 1 << 7;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
             new PageAlphaProvider(ACCEL_2) {
@@ -96,6 +98,9 @@ public class LauncherState {
      * @see WorkspaceStateTransitionAnimation
      */
     public final boolean hasScrim;
+    public final boolean hasWorkspacePageBackground;
+    public final boolean hasAllAppsScrim;
+
     public final int transitionDuration;
 
     /**
@@ -114,6 +119,9 @@ public class LauncherState {
         this.transitionDuration = transitionDuration;
 
         this.hasScrim = (flags & FLAG_SHOW_SCRIM) != 0;
+        this.hasWorkspacePageBackground = (flags & FLAG_PAGE_BACKGROUNDS) != 0;
+        this.hasAllAppsScrim = (flags & FLAG_ALL_APPS_SCRIM) != 0;
+
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS

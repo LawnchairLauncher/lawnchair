@@ -71,9 +71,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setApplyBitmapDeferred(true, mRecyclerView);
 
-        mGradientView = findViewById(R.id.gradient_bg);
-        mGradientView.setProgress(1, false);
-
         onWidgetsBound();
     }
 
@@ -110,12 +107,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthUsed;
         if (mInsets.bottom > 0) {
-            // If we have bottom insets, we do not show the scrim as it would overlap
-            // with the navbar scrim
-            mGradientView.setVisibility(View.INVISIBLE);
             widthUsed = 0;
         } else {
-            mGradientView.setVisibility(View.VISIBLE);
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
@@ -124,15 +117,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         int heightUsed = mInsets.top + mLauncher.getDeviceProfile().edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
                 widthUsed, heightMeasureSpec, heightUsed);
-        measureChild(mGradientView, widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(mGradientView.getMeasuredWidth(), mGradientView.getMeasuredHeight());
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int width = r - l;
         int height = b - t;
-        mGradientView.layout(0, 0, width, height);
 
         // Content is laid out as center bottom aligned
         int contentWidth = mContent.getMeasuredWidth();
@@ -177,13 +169,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     mOpenCloseAnimator.removeListener(this);
                 }
             });
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    mRecyclerView.setLayoutFrozen(true);
-                    mOpenCloseAnimator.start();
-                    mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
-                }
+            post(() -> {
+                mRecyclerView.setLayoutFrozen(true);
+                mOpenCloseAnimator.start();
+                mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
         } else {
             setTranslationShift(TRANSLATION_SHIFT_OPENED);
