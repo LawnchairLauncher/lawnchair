@@ -69,7 +69,7 @@
   <string name="app_info_drop_target_label">ऐप कि जानकारी</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">शॉर्टकट स्थापित करें</string>
+  <string name="permlab_install_shortcut">शॉर्टकट‌ इंस्टॉल करें</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">उपयोगकर्ताके हस्तक्षेप के बिना शॉर्टकट जोड़ने के लिए ऐपको अनुमति दे</string>
   <!-- Permission short label -->
@@ -138,7 +138,7 @@
   <string name="abandoned_promises_title">यह ऐप स्थापित नहीं है</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं.    </string>
+  <string name="abandoned_promise_explanation">इस आइक के लिए ऐप स्थापित नहीं है।         आप इसे  हटा सकते हैं या ऐप के लिए खोजें और इसे स्वयं स्थापित करें।    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g id="Name">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="Progress">%2$s</xliff:g> पूर्ण</string>
   <!-- Title for an app whose download has been started. -->
@@ -155,7 +155,7 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">आइटम ले जाएं</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">पंक्ति में जाएं <xliff:g example= "1" id="number">%1$d</xliff:g>कॉलम<xliff:g example= "1" id="number">%2$d</xliff:g></string>
+  <string name="move_to_empty_cell">पंक्ति में जाएं <xliff:g example="1" id="number">%1$d</xliff:g>कॉलम<xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">स्थान पर जाएं <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">डोक में चिह्नों की संख्या</string>
   <string name="icon_scale_pref_title">आइकोन स्केल</string>
   <string name="hotseat_height_scale">ऊँचाई पैमाने</string>
+  <string name="hotseat_custom_opacity">डॉक अस्पष्टता</string>
+  <string name="hotseat_uses_custom_opacity">कस्टम डॉक अस्पष्टता सक्षम करें</string>
   <string name="icon_text_scale_pref_title">आइकोन लेबल स्केल</string>
   <string name="icon_text_padding_scale_pref_title">चिह्न भराई मापक</string>
   <string name="full_width_width_widgets_pref_title">पूर्ण चौड़ाई विजेट</string>

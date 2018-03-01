@@ -273,6 +273,8 @@
   <string name="num_hotseat_icons_pref_title">Број икона на Доку</string>
   <string name="icon_scale_pref_title">Величина икона</string>
   <string name="hotseat_height_scale">Промени висину</string>
+  <string name="hotseat_custom_opacity">Доk провидност</string>
+  <string name="hotseat_uses_custom_opacity">Омогући прилагођенy доk провидност</string>
   <string name="icon_text_scale_pref_title">Величина текста икона</string>
   <string name="icon_text_padding_scale_pref_title">Ikona punjenja skale</string>
   <string name="full_width_width_widgets_pref_title">Пуна ширина виџета</string>

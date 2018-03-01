@@ -271,6 +271,8 @@
   <string name="num_hotseat_icons_pref_title">독 아이콘 개수</string>
   <string name="icon_scale_pref_title">아이콘 크기</string>
   <string name="hotseat_height_scale">독 높이</string>
+  <string name="hotseat_custom_opacity">독 불투명도</string>
+  <string name="hotseat_uses_custom_opacity">사용자 지정 독 불투명도 설정</string>
   <string name="icon_text_scale_pref_title">아이콘 글자 크기</string>
   <string name="icon_text_padding_scale_pref_title">아이콘 패딩 크기</string>
   <string name="full_width_width_widgets_pref_title">위젯 너비 화면 폭에 꽉차게 하기</string>

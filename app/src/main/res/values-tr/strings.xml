@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Alt paneldeki simge sayısı</string>
   <string name="icon_scale_pref_title">Simge boyutu</string>
   <string name="hotseat_height_scale">Yükseklik ölçeği</string>
+  <string name="hotseat_custom_opacity">Alt panel saydamlığı</string>
+  <string name="hotseat_uses_custom_opacity">Özel alt panel saydamlığını etkinleştir</string>
   <string name="icon_text_scale_pref_title">Simge yazı boyutu</string>
   <string name="icon_text_padding_scale_pref_title">Simge boşluğu ölçeği</string>
   <string name="full_width_width_widgets_pref_title">Widget\'lara tam genişlik</string>

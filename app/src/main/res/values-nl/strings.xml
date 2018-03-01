@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Aantal iconen in favorietenbalk</string>
   <string name="icon_scale_pref_title">Icoon grootte</string>
   <string name="hotseat_height_scale">Hoogte schaal</string>
+  <string name="hotseat_custom_opacity">Favorieten balk doorzichtigheid</string>
+  <string name="hotseat_uses_custom_opacity">Aangepaste favorieten balk doorzichtigheid inschakelen</string>
   <string name="icon_text_scale_pref_title">Icoon label grootte</string>
   <string name="icon_text_padding_scale_pref_title">Icoon opvulling schaal</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>

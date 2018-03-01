@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Dokk ikonok száma</string>
   <string name="icon_scale_pref_title">Ikonok mérete</string>
   <string name="hotseat_height_scale">Magasság léptéke</string>
+  <string name="hotseat_custom_opacity">Dokk áttetszősége</string>
+  <string name="hotseat_uses_custom_opacity">Egyéni dokk-áttetszőség engedélyezése</string>
   <string name="icon_text_scale_pref_title">Ikonok szövegének mérete</string>
   <string name="icon_text_padding_scale_pref_title">Ikonok közti térköz mértéke</string>
   <string name="full_width_width_widgets_pref_title">Teljes szélességű modulok</string>

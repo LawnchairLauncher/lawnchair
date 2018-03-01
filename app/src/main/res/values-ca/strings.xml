@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Número d\'icones a la barra d\'aplicacions</string>
   <string name="icon_scale_pref_title">Escala d\'icona</string>
   <string name="hotseat_height_scale">Escala d\'alçada</string>
+  <string name="hotseat_custom_opacity">Opacitat de la barra d\'aplicacions</string>
+  <string name="hotseat_uses_custom_opacity">Activa l\'opacitat personalitzada de la barra d\'aplicacions</string>
   <string name="icon_text_scale_pref_title">Color del text de la icona</string>
   <string name="icon_text_padding_scale_pref_title">Escala de farciment d\'icona</string>
   <string name="full_width_width_widgets_pref_title">Ginys d\'amplada completa</string>

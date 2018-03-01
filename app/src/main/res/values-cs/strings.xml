@@ -216,6 +216,7 @@
   <plurals name="number_of_items_selected">
     <item quantity="one">Vybráno: %1$d</item>
     <item quantity="few">Vybráno: %1$d</item>
+    <item quantity="many">%1$d vybráno</item>
     <item quantity="other">%1$d vybráno</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
@@ -273,6 +274,8 @@
   <string name="num_hotseat_icons_pref_title">Počet zástupců v doku</string>
   <string name="icon_scale_pref_title">Velikost ikon</string>
   <string name="hotseat_height_scale">Měřítko výšky</string>
+  <string name="hotseat_custom_opacity">Průhlednost doku</string>
+  <string name="hotseat_uses_custom_opacity">Povolit vlastní průhlednost doku</string>
   <string name="icon_text_scale_pref_title">Velikost textu ikon</string>
   <string name="icon_text_padding_scale_pref_title">Ikona stupnice odsazení</string>
   <string name="full_width_width_widgets_pref_title">Widgety s plnou šířkou</string>
