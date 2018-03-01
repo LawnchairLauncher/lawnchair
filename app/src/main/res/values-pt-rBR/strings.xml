@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">O Aplicativo não está disponível</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Download de aplicativo esta desativado no modo de segurança</string>
+  <string name="safemode_shortcut_error">Download de aplicativos está desativado no modo de segurança</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgets desativados no modo de segurança</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -251,7 +251,7 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do papel de parede no dock</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do plano de fundo no dock</string>
   <string name="hotseat_show_arrow">Mostrar indicador de exibição</string>
   <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
   <string name="hotseat_uses_extracted_colors_pref_on">O dock será colorido com uma cor extraída do papel de parede</string>
@@ -263,7 +263,7 @@
   <string name="blur_radius_pref_title">Raio de desfoque</string>
   <string name="pref_iconLabelsInTwoLines">Nome de ícones em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco do Google</string>
-  <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
+  <string name="hide_icon_labels_pref_title">Ocultar textos dos ícones na tela inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
   <string name="all_apps_opacity_pref_title">Opacidade de gaveta</string>
@@ -273,16 +273,17 @@
   <string name="icon_scale_pref_title">Tamanho de ícones</string>
   <string name="hotseat_height_scale">Escala de altura</string>
   <string name="hotseat_custom_opacity">Opacidade do dock</string>
+  <string name="hotseat_uses_custom_opacity">Habilitar a opacidade do dock personalizada</string>
   <string name="icon_text_scale_pref_title">Escala de texto dos ícones</string>
   <string name="icon_text_padding_scale_pref_title">Escala de títulos dos ícones</string>
   <string name="full_width_width_widgets_pref_title">Widgets encostam nas bordas</string>
   <string name="full_width_widgets_pref_summary">Permite que os widgets encostem nas bordas laterais</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
-  <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para mostra uma previa delas</string>
+  <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para exibir prévias</string>
   <string name="general_pref_title">Geral</string>
   <string name="dock_pref_title">Barra de aplicativos</string>
   <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="general_pref_summary">Tela inicial, dock e gaveta de aplicativos</string>
@@ -290,14 +291,14 @@
   <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
   <string name="pixel_ui_pref_summary">Habilitar funções exclusivas do Pixel Launcher</string>
   <string name="backup_pref_title">Backup</string>
-  <string name="behavior_pref_summary">Adicionar funções extras ao Lawnchair</string>
+  <string name="behavior_pref_summary">Adicione funções extras ao Lawnchair</string>
   <string name="backup_pref_summary">Fazer backup das suas configurações</string>
   <string name="debug_pref_summary">Refazer imagem dos ícones</string>
   <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de pesquisa circular</string>
   <string name="show_mic_pref_title">Mostrar botão do Google Assistente</string>
   <string name="use_round_searhbar">Usar barra de pesquisa arredondada</string>
-  <string name="pixel_style_icons_pref_title">Usar ícones Pixel</string>
+  <string name="pixel_style_icons_pref_title">Usar ícones redondos</string>
   <string name="pixel_style_icons_pref_summary">Quando habilitados, ícones circulares serão usados quando possível</string>
   <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>
   <string name="restart_lawnchair_pref_title">Reiniciar o Lawnchair</string>
@@ -307,11 +308,11 @@
   <string name="pinch_to_overview_pref_summary">Pinçar na tela inicial para abrir a visão geral</string>
   <string name="light_statusbar_pref_title">Ícones da barra de status brancos</string>
   <string name="light_statusbar_pref_force">A barra de status mostrará ícones escuros</string>
-  <string name="light_statusbar_pref_off">A barra de status sempre mostrará ícones claros</string>
+  <string name="light_statusbar_pref_off">A barra de status mostrará ícones claros</string>
   <string name="keep_scroll_state_pref_title">Salvar a posição da rolagem</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição da rolagem da gaveta de apps</string>
   <string name="home_opens_drawer_pref_title">Botão de início abre a gaveta de apps</string>
-  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial mostrará a gaveta de apps</string>
+  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial abrirá a gaveta de apps</string>
   <string name="show_hidden_pref_title">Mostrar apps ocultos</string>
   <string name="show_hidden_pref_on">Apps ocultos serão mostrados para alterar as configurações de visibilidade</string>
   <string name="show_hidden_pref_off">Apps ocultos não serão mostrados</string>
@@ -325,7 +326,7 @@
   <string name="visibility">Visibilidade</string>
   <string name="default_text">Padrão</string>
   <string name="edit_icon_reset">Redefinir</string>
-  <string name="show_top_shadow_title">Mostrar sombra sobre</string>
+  <string name="show_top_shadow_title">Escurecer barra de notificação</string>
   <string name="pref_cat_homescreen">Tela inicial</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Claro</string>
@@ -382,7 +383,7 @@
   <string name="animated_clock_icon_alternative_clock_apps_summary">Ative isso se você não usa o relógio da Google como relógio padrão</string>
   <string name="about_summary_title">Resumo</string>
   <string name="about_version">Versão</string>
-  <string name="about_icon_designer">Criador do Ícones</string>
+  <string name="about_icon_designer">Criador do Ícone</string>
   <string name="about_contributors_title">Colaboradores</string>
   <string name="location_permission_warn">Permissão de localização necessária para mudar de provedor!</string>
   <string name="num_cols_drawer_pref_title">Número de colunas na exibição na gaveta de aplicativos</string>
