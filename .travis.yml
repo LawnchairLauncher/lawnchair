@@ -1,6 +1,5 @@
 language: android
 dist: trusty
-group: edge
 jdk: oraclejdk8
 branches:
    except:
