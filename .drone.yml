@@ -27,9 +27,9 @@ pipeline:
     to: -1001092684628
     message: >
       {{#success build.status}}
-        Build {{build.number}} succeeded. Good job.
+        Build {{build.number}} succeeded. Good job mate!
       {{else}}
-        Build {{build.number}} failed. Fix me please.
+        Build {{build.number}} failed. Fix me please sir!
       {{/success}}
 
 branches:
