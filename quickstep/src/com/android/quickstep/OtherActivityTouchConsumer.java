@@ -37,10 +37,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -65,40 +63,6 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-class EventLogTags {
-    private EventLogTags() {
-    }  // don't instantiate
-
-    /** 524292 sysui_multi_action (content|4) */
-    public static final int SYSUI_MULTI_ACTION = 524292;
-
-    public static void writeSysuiMultiAction(Object[] content) {
-        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
-    }
-}
-
-class MetricsLogger {
-    private static MetricsLogger sMetricsLogger;
-
-    private static MetricsLogger getLogger() {
-        if (sMetricsLogger == null) {
-            sMetricsLogger = new MetricsLogger();
-        }
-        return sMetricsLogger;
-    }
-
-    protected void saveLog(Object[] rep) {
-        EventLogTags.writeSysuiMultiAction(rep);
-    }
-
-    public void write(LogMaker content) {
-        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
-            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
-        }
-        saveLog(content.serialize());
-    }
-}
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
@@ -128,8 +92,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
-
-    private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
@@ -312,7 +274,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         // Create the shared handler
         final WindowTransformSwipeHandler handler =
-                new WindowTransformSwipeHandler(mRunningTask, this);
+                new WindowTransformSwipeHandler(mRunningTask, this, touchTimeMs);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
@@ -350,16 +312,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);
                         }
-
-                        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
-                        // "Recents" activity for app transition tests.
-                        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
-                        builder.setPackageName("com.android.systemui");
-                        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
-                                "com.android.systemui.recents.RecentsActivity");
-                        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                                SystemClock.uptimeMillis() - touchTimeMs);
-                        mMetricsLogger.write(builder);
                     }
 
                     public void onAnimationCanceled() {
