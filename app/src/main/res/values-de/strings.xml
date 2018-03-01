@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Anzahl der Icons im Dock</string>
   <string name="icon_scale_pref_title">Icon-Größe</string>
   <string name="hotseat_height_scale">Höhen-Skalierung</string>
+  <string name="hotseat_custom_opacity">Dock Transparenz</string>
+  <string name="hotseat_uses_custom_opacity">Benutzerdefinierte Dock Transparenz aktivieren</string>
   <string name="icon_text_scale_pref_title">Größe Icon-Text</string>
   <string name="icon_text_padding_scale_pref_title">Skalierung des Padding für Icons</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
