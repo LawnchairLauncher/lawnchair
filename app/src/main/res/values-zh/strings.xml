@@ -271,6 +271,8 @@
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="hotseat_height_scale">高度</string>
+  <string name="hotseat_custom_opacity">Dock 栏不透明度</string>
+  <string name="hotseat_uses_custom_opacity">启用自定义 Dock 栏不透明度</string>
   <string name="icon_text_scale_pref_title">图标文本大小</string>
   <string name="icon_text_padding_scale_pref_title">图标间距大小</string>
   <string name="full_width_width_widgets_pref_title">全宽微件</string>
