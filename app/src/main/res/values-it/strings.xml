@@ -258,7 +258,7 @@
   <string name="hotseat_uses_extracted_colors_pref_off">La dock sarà grigia ma adattata alla luminosità dello sfondo</string>
   <string name="transparent_hotseat_pref_title">Dock trasparente</string>
   <string name="dynamic_ui_pref_title">Estrai colore secondario dallo sfondo</string>
-  <string name="blur_pref_title">Attiva effetto sfocato</string>
+  <string name="blur_pref_title">Abilita effetto sfocato</string>
   <string name="blur_pref_summary">Applica un effetto di sfocatura a parti dell\'interfaccia\nNon compatibile con sfondi animati</string>
   <string name="blur_radius_pref_title">Raggio sfocatura</string>
   <string name="pref_iconLabelsInTwoLines">Etichette delle icone su due righe</string>
@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Numero di icone</string>
   <string name="icon_scale_pref_title">Grandezza icone</string>
   <string name="hotseat_height_scale">Scala di altezza</string>
+  <string name="hotseat_custom_opacity">Opacità dock</string>
+  <string name="hotseat_uses_custom_opacity">Abilita una opacità personalizzata per la dock</string>
   <string name="icon_text_scale_pref_title">Grandezza testo icone</string>
   <string name="icon_text_padding_scale_pref_title">Scala per il padding delle icone</string>
   <string name="full_width_width_widgets_pref_title">Widget a piena larghezza</string>
@@ -337,7 +339,7 @@
   <string name="pull_down_notis">Mostra notifiche</string>
   <string name="pull_down_search">Apri ricerca</string>
   <string name="pull_down_apps_search">Ricerca app</string>
-  <string name="enable_screen_rotation">Attiva rotazione schermo</string>
+  <string name="enable_screen_rotation">Abilita rotazione schermo</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importa</string>
   <string name="backup_export_title">Esporta</string>
@@ -354,7 +356,7 @@
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Meteo</string>
-  <string name="pref_weather_title">Attiva meteo</string>
+  <string name="pref_weather_title">Abilita meteo</string>
   <string name="pref_weather_units">Unità meteo</string>
   <string name="pref_weather_city_summary">Per ottenere migliori risultati includi il codice paese</string>
   <string name="pref_weather_city_title">Città</string>
@@ -378,7 +380,7 @@
   <string name="icon_shape_teardrop">Goccia</string>
   <string name="animated_clock_icon_title">Icona dell\'orologio animata</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Icona animata per app alternative per l\'orologio</string>
-  <string name="animated_clock_icon_alternative_clock_apps_summary">Attiva quest\'opzione se non usi l\'orologio Google come app predefinita per l\'orologio</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Abilita quest\'opzione se non usi l\'orologio Google come app predefinita per l\'orologio</string>
   <string name="about_summary_title">Sommario</string>
   <string name="about_version">Versione</string>
   <string name="about_icon_designer">Designer delle icone</string>
