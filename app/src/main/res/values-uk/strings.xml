@@ -216,6 +216,7 @@
   <plurals name="number_of_items_selected">
     <item quantity="one">Вибрано %1$d</item>
     <item quantity="few">Вибрано %1$d</item>
+    <item quantity="many">Обрано: %1$d</item>
     <item quantity="other">Обрано: %1$d</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
