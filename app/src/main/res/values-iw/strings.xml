@@ -274,6 +274,8 @@
   <string name="num_hotseat_icons_pref_title">מספר האייקונים בשורת העגינה</string>
   <string name="icon_scale_pref_title">גודל אייקון</string>
   <string name="hotseat_height_scale">סולם הגובה</string>
+  <string name="hotseat_custom_opacity">אטימות ה-Dock</string>
+  <string name="hotseat_uses_custom_opacity">אפשר אטימות Dock מותאמת אישית</string>
   <string name="icon_text_scale_pref_title">גודל טקסט סמל</string>
   <string name="icon_text_padding_scale_pref_title">גודל ריווח הסמל</string>
   <string name="full_width_width_widgets_pref_title">וויד\'גטים ברוחב מלא</string>
