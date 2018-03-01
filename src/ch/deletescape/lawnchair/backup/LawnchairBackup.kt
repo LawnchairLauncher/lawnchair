@@ -1,8 +1,11 @@
 package ch.deletescape.lawnchair.backup
 
 import android.annotation.SuppressLint
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
@@ -75,6 +78,11 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                     } else if (entry.name == settingsFile.name) {
                         if (contents and INCLUDE_SETTINGS == 0) continue
                         settingsFile
+                    } else if (entry.name == WALLPAPER_FILE_NAME) {
+                        if (contents and INCLUDE_WALLPAPER == 0) continue
+                        val wallpaperManager = WallpaperManager.getInstance(context)
+                        wallpaperManager.setBitmap(BitmapFactory.decodeStream(zipIs))
+                        continue
                     } else {
                         continue
                     }
@@ -176,6 +184,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         const val MIME_TYPE = "application/vnd.lawnchair.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
+        const val WALLPAPER_FILE_NAME = "wallpaper.png"
+
         fun getFolder(): File {
             val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
             if (!folder.exists()) {
@@ -205,6 +215,16 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
                 out.write(getMeta(name, contents).toString().toByteArray())
+                if (contents or INCLUDE_WALLPAPER != 0) {
+                    val wallpaperManager = WallpaperManager.getInstance(context)
+                    val wallpaperDrawable = wallpaperManager.drawable
+                    val wallpaperBitmap = Utilities.drawableToBitmap(wallpaperDrawable)
+                    if (wallpaperBitmap != null) {
+                        val wallpaperEntry = ZipEntry(WALLPAPER_FILE_NAME)
+                        out.putNextEntry(wallpaperEntry)
+                        wallpaperBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    }
+                }
                 files.forEach { file ->
                     val input = BufferedInputStream(FileInputStream(file), BUFFER)
                     val entry = ZipEntry(file.name)

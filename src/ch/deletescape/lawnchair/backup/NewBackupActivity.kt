@@ -75,7 +75,7 @@ class NewBackupActivity : AppCompatActivity() {
     private fun validateOptions(): Int {
         return if (backupName.text == null || backupName.text.toString() == "") {
             R.string.backup_error_blank_name
-        } else if (!backupHomescreen.isChecked && !backupSettings.isChecked) {
+        } else if (!backupHomescreen.isChecked && !backupSettings.isChecked && !backupWallpaper.isChecked) {
             R.string.backup_error_blank_contents
         } else {
             0
