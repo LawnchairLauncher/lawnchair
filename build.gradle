@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.1.0-beta4'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -18,13 +18,27 @@ apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 
+    signingConfigs {
+        travis {
+            storeFile file("debug.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias "Lawnchair"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "v2-dev"
+
+        if (System.getenv("TRAVIS") == "true") {
+            versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
+            versionName = System.getenv("MAJOR_MINOR") + (System.getenv("DRONE") ? "-" : ".") + System.getenv("TRAVIS_BUILD_NUMBER")
+        } else {
+            versionCode 1
+            versionName "v2-dev"
+        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -38,16 +52,24 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
+            if (System.getenv("TRAVIS") == "true") {
+                if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                    signingConfig signingConfigs.travis
+                }
+            }
         }
     }
 
+    flavorDimensions "type"
     productFlavors {
         aosp {
+            dimension "type"
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
+            dimension "type"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
@@ -77,20 +99,12 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
 
-        aospAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
-        }
-
         l3go {
             res.srcDirs = ['go/res']
             java.srcDirs = ['go/src_flags']
             // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
             // different attributes than the build system.
             manifest.srcFile "AndroidManifest.xml"
-        }
-
-        l3goAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
 }
@@ -103,27 +117,27 @@ repositories {
 
 final String SUPPORT_LIBS_VERSION = '27.0.2'
 dependencies {
-    compile "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:design:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:preference-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
-    compile 'com.github.florent37:fiftyshadesof:1.0.0'
-    compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:design:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:preference-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
+    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
+    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestCompile "com.android.support:support-annotations:${SUPPORT_LIBS_VERSION}"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation "org.mockito:mockito-core:1.10.19"
+    androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
+    androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+    androidTestImplementation "com.android.support:support-annotations:${SUPPORT_LIBS_VERSION}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 protobuf {
