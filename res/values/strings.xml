@@ -402,4 +402,12 @@
     <string name="hide_apps_sum">Hide app from the app drawer</string>
     <string name="grid_size">Grid size</string>
     <string name="grid_size_default">Default</string>
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+    <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
+    <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="show_debug_info_pref_title">Show debug info</string>
+    <string name="debug_pref_title">Debug</string>
+    <string name="debug_component_name">Component name</string>
+    <string name="debug_component_name_copied">Copied</string>
 </resources>

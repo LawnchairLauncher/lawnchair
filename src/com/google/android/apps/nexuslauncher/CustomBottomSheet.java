@@ -18,6 +18,8 @@ package com.google.android.apps.nexuslauncher;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -31,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
@@ -38,6 +41,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
@@ -111,23 +115,29 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     protected void onWidgetsBound() {
     }
 
-    public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+    public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_PACK = "pref_app_icon_pack";
         private final static String PREF_HIDE = "pref_app_hide";
         private SwitchPreference mPrefPack;
         private SwitchPreference mPrefHide;
 
-        private String mComponentName;
+        private ComponentName mComponentName;
         private String mPackageName;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.app_edit_prefs);
+
+            if (!Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
+                getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
+            } else {
+                getPreferenceScreen().findPreference("componentName").setOnPreferenceClickListener(this);
+            }
         }
 
         public void loadForApp(ItemInfo itemInfo) {
-            mComponentName = itemInfo.getTargetComponent().toString();
+            mComponentName = itemInfo.getTargetComponent();
             mPackageName = itemInfo.getTargetComponent().getPackageName();
 
             mPrefPack = (SwitchPreference) findPreference(PREF_PACK);
@@ -136,10 +146,9 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             Context context = getActivity();
             CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(context);
 
-            ComponentName componentName = itemInfo.getTargetComponent();
-            boolean enable = factory.packCalendars.containsKey(componentName) || factory.packComponents.containsKey(componentName);
+            boolean enable = factory.packCalendars.containsKey(mComponentName) || factory.packComponents.containsKey(mComponentName);
             mPrefPack.setEnabled(enable);
-            mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mComponentName));
+            mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mComponentName.toString()));
             if (enable) {
                 PackageManager pm = context.getPackageManager();
                 try {
@@ -149,10 +158,14 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 }
             }
 
-            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mComponentName, mPackageName));
+            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mComponentName.toString(), mPackageName));
 
             mPrefPack.setOnPreferenceChangeListener(this);
             mPrefHide.setOnPreferenceChangeListener(this);
+
+            if (Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
+                getPreferenceScreen().findPreference("componentName").setSummary(mComponentName.flattenToString());
+            }
         }
 
         @Override
@@ -161,13 +174,22 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             Launcher launcher = Launcher.getLauncher(getActivity());
             switch (preference.getKey()) {
                 case PREF_PACK:
-                    CustomIconProvider.setAppState(launcher, mComponentName, enabled);
+                    CustomIconProvider.setAppState(launcher, mComponentName.toString(), enabled);
                     CustomIconUtils.reloadIcons(launcher, mPackageName);
                     break;
                 case PREF_HIDE:
-                    CustomAppFilter.setComponentNameState(launcher, mComponentName, mPackageName, enabled);
+                    CustomAppFilter.setComponentNameState(launcher, mComponentName.toString(), mPackageName, enabled);
                     break;
             }
+            return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), mComponentName.flattenToString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
             return true;
         }
     }

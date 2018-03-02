@@ -55,6 +55,13 @@
             android:targetClass="ch.deletescape.lawnchair.backup.BackupListActivity"/>
     </Preference>
 
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:key="developerOptions"
+        android:icon="@drawable/ic_settings_development"
+        android:title="@string/developer_options_title"
+        app:content="@xml/lawnchair_dev_options_preference"
+        android:layout="@layout/sub_preference" />
+
     <Preference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"

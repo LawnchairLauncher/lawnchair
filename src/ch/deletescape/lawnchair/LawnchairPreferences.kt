@@ -47,6 +47,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
 
+    // Dev
+    var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
+    val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
+
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentName, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentName) = key.flattenToString()

@@ -205,7 +205,12 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
 
-            Utilities.getLawnchairPrefs(context).blockingEdit { restoreSuccess = true }
+            val devOptionsEnabled = Utilities.getLawnchairPrefs(context)
+                    .developerOptionsEnabled
+            Utilities.getLawnchairPrefs(context).blockingEdit {
+                restoreSuccess = true
+                developerOptionsEnabled = false
+            }
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
             val outStream = FileOutputStream(pfd.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
@@ -244,7 +249,10 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 out.close()
                 outStream.close()
                 pfd.close()
-                Utilities.getLawnchairPrefs(context).blockingEdit { restoreSuccess = false }
+                Utilities.getLawnchairPrefs(context).blockingEdit {
+                    restoreSuccess = false
+                    developerOptionsEnabled = devOptionsEnabled
+                }
                 return success
             }
         }

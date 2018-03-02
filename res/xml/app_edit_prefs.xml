@@ -30,4 +30,13 @@
         android:defaultValue="false"
         android:persistent="false" />
 
+    <PreferenceCategory
+        android:key="debug"
+        android:title="@string/debug_pref_title">
+
+        <Preference
+            android:key="componentName"
+            android:title="@string/debug_component_name" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -174,6 +174,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
      */
     public static class LauncherSettingsFragment extends BaseFragment {
 
+        private Preference mDeveloperOptions;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -183,6 +185,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
+            if (!Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
+                mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
+                getPreferenceScreen().removePreference(mDeveloperOptions);
+            }
         }
 
         @Override
@@ -211,6 +217,11 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
+            if (mDeveloperOptions != null &&
+                    Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
+                getPreferenceScreen().addPreference(mDeveloperOptions);
+                mDeveloperOptions = null;
+            }
         }
     }
 
@@ -288,6 +299,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 mIconPackPref.setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+            } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
+                findPreference("kill").setOnPreferenceClickListener(this);
             }
         }
 
@@ -419,6 +432,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             if (SMARTSPACE_PREF.equals(preference.getKey())) {
                 SmartspaceController.get(mContext).cZ();
                 return true;
+            } else if ("kill".equals(preference.getKey())) {
+                Utilities.killLauncher();
             }
             return false;
         }

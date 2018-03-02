@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Process
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -15,9 +16,12 @@ import android.widget.TextView
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 
-class AboutActivity : SettingsBaseActivity() {
+class AboutActivity : SettingsBaseActivity(), View.OnClickListener {
+
+    private var tapCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,22 @@ class AboutActivity : SettingsBaseActivity() {
         findViewById<RecyclerView>(R.id.recyclerView).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ContributorAdapter(context)
+        }
+        findViewById<View>(R.id.contributors_card).setOnClickListener(this)
+
+        tapCount = if (Utilities.getLawnchairPrefs(this).developerOptionsEnabled) 7 else 0
+    }
+
+    override fun onClick(v: View) {
+        if (tapCount == 6 && tapCount < 7) {
+            Utilities.getLawnchairPrefs(this).developerOptionsEnabled = true
+            Snackbar.make(
+                    findViewById(R.id.content),
+                    R.string.developer_options_enabled,
+                    Snackbar.LENGTH_LONG).show()
+            tapCount++
+        } else {
+            tapCount++
         }
     }
 
