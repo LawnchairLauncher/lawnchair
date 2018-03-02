@@ -138,7 +138,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Posao"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Radni profil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Ovdje možete pronaći radne aplikacije"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Svaka radna aplikacija ima narančastu značku i štiti je vaša organizacija. Premjestite aplikacije na početni zaslon radi lakšeg pristupa."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"Pod upravljanjem vaše organizacije"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Obavijesti i aplikacije isključeni su"</string>
 </resources>
