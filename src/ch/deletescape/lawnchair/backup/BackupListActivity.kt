@@ -4,16 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
+class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
     private val bottomSheet by lazy { BottomSheetDialog(this) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
@@ -35,7 +34,6 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_backup_list)
 
-        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         restoreBackup.setOnClickListener {

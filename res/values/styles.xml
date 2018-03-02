@@ -217,13 +217,16 @@
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
-    <style name="SettingsTheme.V2" parent="@style/Theme.AppCompat.Light">
+    <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">?android:windowBackground</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
+        <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:colorEdgeEffect">?colorAccent</item>
+    </style>
+    <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
+        <item name="android:statusBarColor">@color/lollipopStatusBar</item>
     </style>
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="android:textColorPrimary">?attr/colorAccent</item>

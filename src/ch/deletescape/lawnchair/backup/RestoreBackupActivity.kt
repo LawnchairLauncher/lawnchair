@@ -9,16 +9,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Callback {
+class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback {
 
     private val backupName by lazy { findViewById<EditText>(R.id.name) }
     private val backupTimestamp by lazy { findViewById<EditText>(R.id.timestamp) }
@@ -59,7 +59,6 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restore_backup)
 
-        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         when {

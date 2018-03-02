@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@android:id/content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/action_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:windowBackground">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?colorPrimary"
+                app:titleTextColor="?colorAccent"
+                android:theme="@style/SettingsTheme.V2.ActionBar" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <View
+        android:id="@+id/status_bar_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:statusBarColor"/>
+
+    <View
+        android:id="@+id/nav_bar_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:navigationBarColor"/>
+
+    <View
+        android:id="@+id/nav_bar_divider"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#1f000000"/>
+</merge>

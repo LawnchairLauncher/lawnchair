@@ -9,19 +9,15 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
+import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import java.text.SimpleDateFormat
 import java.util.*
-import com.android.launcher3.R.attr.uri
 
-
-
-class NewBackupActivity : AppCompatActivity() {
+class NewBackupActivity : SettingsBaseActivity() {
 
     private val backupName by lazy { findViewById<EditText>(R.id.name) }
 
@@ -49,7 +45,6 @@ class NewBackupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_backup)
 
-        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         backupName.setText(getTimestamp())

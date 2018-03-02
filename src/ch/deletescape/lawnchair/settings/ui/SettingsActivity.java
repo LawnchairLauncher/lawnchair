@@ -38,7 +38,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -74,7 +73,7 @@ import ch.deletescape.lawnchair.LawnchairPreferences;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends SettingsBaseActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
@@ -92,9 +91,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setLightUi(getWindow());
         setContentView(R.layout.activity_settings);
 
-//        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
         if (savedInstanceState == null) {
@@ -137,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     private void updateUpButton(boolean enabled) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
-        getSupportActionBar().setElevation(enabled ? mAppBarHeight : 0);
+        setActionBarElevation(enabled ? mAppBarHeight : 0);
     }
 
     @Override

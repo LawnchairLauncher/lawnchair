@@ -52,6 +52,7 @@ import android.util.Pair;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
@@ -727,4 +728,17 @@ public final class Utilities {
         drawable.draw(canvas);
         return bitmap;
     }
+
+    public static void setLightUi(Window window) {
+        int flags = window.getDecorView().getSystemUiVisibility();
+        if (ATLEAST_MARSHMALLOW)
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        if (ATLEAST_OREO)
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+        flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        window.getDecorView().setSystemUiVisibility(flags);
+    }
 }
+
