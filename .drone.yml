@@ -16,13 +16,25 @@ pipeline:
       - bash ./gradlew assembleAospCiOptimized;
   deploy:
     image: paphonb/drone-telegram:latest
-    secrets: [ bot_token, channel_id ]
+    secrets: [ bot_token, channel_id, dev_channel_id ]
     environment:
       - APK_PATH=build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
+      - MAPPING_PATH=build/outputs/mapping/aospCi/optimized/mapping.txt
       - MAJOR_MINOR=v2-alpha
     when:
       event: push
       status: success
+  telegram:
+      image: appleboy/drone-telegram:latest
+      secrets: [ bot_token, dev_channel_id ]
+      token: ${BOT_TOKEN}
+      to: ${DEV_CHANNEL_ID}
+      message: >
+        {{#success build.status}}
+          Build {{build.number}} succeeded. Good job mate!
+        {{else}}
+          Build {{build.number}} failed. Fix me please sir!
+        {{/success}}
 
 branches:
   include: v2-alpha
