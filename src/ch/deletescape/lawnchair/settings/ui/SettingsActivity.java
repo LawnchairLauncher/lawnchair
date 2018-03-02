@@ -45,7 +45,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -216,7 +215,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         }
     }
 
-    public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+    public static class SubSettingsFragment extends BaseFragment implements
+            Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
         static final String TITLE = "title";
         static final String CONTENT_RES_ID = "content_res_id";
@@ -338,6 +338,19 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 mIconBadgingObserver = null;
             }
             super.onDestroy();
+        }
+
+        @Override
+        public void onDisplayPreferenceDialog(Preference preference) {
+            final DialogFragment f;
+            if (preference instanceof GridSizePreference) {
+                f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
+            } else {
+                super.onDisplayPreferenceDialog(preference);
+                return;
+            }
+            f.setTargetFragment(this, 0);
+            f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {

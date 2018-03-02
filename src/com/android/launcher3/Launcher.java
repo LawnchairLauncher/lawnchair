@@ -383,6 +383,7 @@ public class Launcher extends BaseActivity
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
+        Utilities.getLawnchairPrefs(this).getGridSize();
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
@@ -4032,6 +4033,10 @@ public class Launcher extends BaseActivity
         } else {
             Utilities.restartLauncher(this);
         }
+    }
+
+    public void refreshGrid() {
+        getWorkspace().refreshChildren();
     }
 
     public static CustomAppWidget getCustomAppWidget(String name) {

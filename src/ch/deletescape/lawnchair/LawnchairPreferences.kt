@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import android.preference.PreferenceManager
+import ch.deletescape.lawnchair.settings.GridSize
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
 import org.json.JSONArray
@@ -22,7 +24,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
     private var onChangeCallback: LawnchairPreferencesChangeCallback? = null
-    private val sharedPrefs: SharedPreferences = getSharedPrefs()
+    val sharedPrefs: SharedPreferences = context.applicationContext
+            .getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
 
     private val doNothing = { }
     private val recreate = { recreate() }
@@ -31,10 +34,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val restart = { restart() }
 
     // Theme
-    var iconPack by MutableStringPref("pref_icon_pack", "", doNothing)
+    var iconPack by StringPref("pref_icon_pack", "", doNothing)
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
+    val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
 
     // Dock
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
@@ -43,7 +47,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
 
-    var hiddenAppSet by MutableStringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
+    var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentName, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentName) = key.flattenToString()
         override fun unflattenKey(key: String) = ComponentName.unflattenFromString(key)
@@ -54,7 +58,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             PreferenceManager.getDefaultSharedPreferences(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
-    var restoreSuccess by MutableBooleanPref("pref_restoreSuccess", false)
+    var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
 
     private fun recreate() {
         onChangeCallback?.recreate()
@@ -70,6 +74,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun restart() {
         onChangeCallback?.restart()
+    }
+
+    fun refreshGrid() {
+        onChangeCallback?.refreshGrid()
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
@@ -188,65 +196,49 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
     }
 
+    open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
+            PrefDelegate<String>(key, defaultValue, onChange) {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): String = sharedPrefs.getString(getKey(property), defaultValue)
 
-    private inner class MutableStringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
-            StringPref(key, defaultValue, onChange), MutablePrefDelegate<String> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
             edit { putString(getKey(property), value) }
         }
     }
 
-    private inner open class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
-            PrefDelegate<String>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): String = sharedPrefs.getString(getKey(property), defaultValue)
-    }
+    open inner class StringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Set<String>?>(key, defaultValue, onChange) {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Set<String>? = sharedPrefs.getStringSet(getKey(property), defaultValue)
 
-    private inner class MutableStringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
-            StringSetPref(key, defaultValue, onChange), MutablePrefDelegate<Set<String>?> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Set<String>?) {
             edit { putStringSet(getKey(property), value) }
         }
     }
 
-    private inner open class StringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Set<String>?>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Set<String>? = sharedPrefs.getStringSet(getKey(property), defaultValue)
-    }
+    open inner class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Int = sharedPrefs.getInt(getKey(property), defaultValue)
 
-    private inner class MutableIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
-            IntPref(key, defaultValue, onChange), MutablePrefDelegate<Int> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
             edit { putInt(getKey(property), value) }
         }
     }
 
-    private inner open class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Int>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Int = sharedPrefs.getInt(getKey(property), defaultValue)
-    }
+    open inner class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Float>(key, defaultValue, onChange) {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Float = sharedPrefs.getFloat(getKey(property), defaultValue)
 
-    private inner class MutableFloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
-            FloatPref(key, defaultValue, onChange), MutablePrefDelegate<Float> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
             edit { putFloat(getKey(property), value) }
         }
     }
 
-    private inner open class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Float>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Float = sharedPrefs.getFloat(getKey(property), defaultValue)
-    }
+    open inner class BooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Boolean>(key, defaultValue, onChange) {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean = sharedPrefs.getBoolean(getKey(property), defaultValue)
 
-    private inner class MutableBooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
-            BooleanPref(key, defaultValue, onChange), MutablePrefDelegate<Boolean> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
             edit { putBoolean(getKey(property), value) }
         }
-    }
-
-    private inner open class BooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Boolean>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean = sharedPrefs.getBoolean(getKey(property), defaultValue)
     }
 
     // ----------------
@@ -331,10 +323,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         editor = null
     }
 
-    fun getSharedPrefs() : SharedPreferences {
-        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-    }
-
     inline fun blockingEdit(body: LawnchairPreferences.() -> Unit) {
         beginBlockingEdit()
         body(this)
@@ -347,7 +335,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         endBulkEdit()
     }
 
-    private abstract inner class PrefDelegate<T>(val key: String, val defaultValue: T, onChange: () -> Unit) {
+    abstract inner class PrefDelegate<T>(val key: String, val defaultValue: T, onChange: () -> Unit) {
 
         init {
             if (onChange !== doNothing) {
@@ -356,6 +344,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
 
         abstract operator fun getValue(thisRef: Any?, property: KProperty<*>): T
+
+        abstract operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
 
         protected inline fun edit(body: SharedPreferences.Editor.() -> Unit) {
             @SuppressLint("CommitPrefEdits")
@@ -367,10 +357,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         @Suppress("USELESS_ELVIS")
         internal fun getKey(property: KProperty<*>) = key ?: getPrefKey(property.name)
-    }
-
-    private interface MutablePrefDelegate<T> {
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {

@@ -400,4 +400,6 @@
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="hide_apps">Hide apps</string>
     <string name="hide_apps_sum">Hide app from the app drawer</string>
+    <string name="grid_size">Grid size</string>
+    <string name="grid_size_default">Default</string>
 </resources>

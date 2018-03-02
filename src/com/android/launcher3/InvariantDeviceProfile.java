@@ -23,7 +23,6 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
@@ -63,7 +62,9 @@ public class InvariantDeviceProfile {
      * Number of icons per row and column in the workspace.
      */
     public int numRows;
+    public int numRowsOriginal;
     public int numColumns;
+    public int numColumnsOriginal;
 
     /**
      * The minimum number of predicted apps in all apps.
@@ -143,14 +144,11 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile interpolatedDeviceProfileOut =
                 invDistWeightedInterpolate(minWidthDps,  minHeightDps, closestProfiles);
 
-        for (InvariantDeviceProfile profile : closestProfiles) {
-            Log.d("IDP", "numRows: " + profile.numRows);
-            Log.d("IDP", "numColumns: " + profile.numColumns);
-        }
-
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
+        numRowsOriginal = numRows;
         numColumns = closestProfile.numColumns;
+        numColumnsOriginal = numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;

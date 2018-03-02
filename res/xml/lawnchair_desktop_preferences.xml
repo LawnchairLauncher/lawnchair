@@ -50,6 +50,10 @@
         android:persistent="true"
         android:title="@string/hide_icon_labels_pref_title" />
 
+    <ch.deletescape.lawnchair.settings.ui.GridSizePreference
+        android:key="pref_desktop_grid_size"
+        android:title="@string/grid_size" />
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_fullWidthWidgets"

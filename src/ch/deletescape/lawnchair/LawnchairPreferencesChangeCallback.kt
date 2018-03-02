@@ -20,4 +20,8 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
     fun restart() {
         launcher.scheduleRestart()
     }
+
+    fun refreshGrid() {
+        launcher.refreshGrid()
+    }
 }
