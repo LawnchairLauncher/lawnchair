@@ -37,4 +37,4 @@ pipeline:
         {{/success}}
 
 branches:
-  include: v2-alpha
+  include: alpha
