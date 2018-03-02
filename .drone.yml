@@ -13,13 +13,16 @@ pipeline:
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
-      - bash ./gradlew assembleAospOptimized check;
+      - bash ./gradlew assembleAospCiOptimized;
   deploy:
-    image: lawnchairlauncher/drone-telegram:latest
+    image: paphonb/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
+    environment:
+      - APK_PATH=build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
+      - MAJOR_MINOR=v2-alpha
     when:
       event: push
       status: success
 
 branches:
-  include: drone
+  include: v2-alpha
