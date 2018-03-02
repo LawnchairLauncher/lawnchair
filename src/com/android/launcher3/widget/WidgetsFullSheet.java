@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.Insettable;
@@ -31,6 +30,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
+import com.android.launcher3.views.RecyclerViewFastScroller;
+import com.android.launcher3.views.TopRoundedCornerView;
 
 /**
  * Popup for showing the full list of available widgets
@@ -46,7 +47,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private final WidgetsListAdapter mAdapter;
 
-    private View mNavBarScrim;
     private WidgetsRecyclerView mRecyclerView;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -65,7 +65,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
-        mNavBarScrim = findViewById(R.id.nav_bar_bg);
 
         mRecyclerView = findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
@@ -91,7 +90,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void setInsets(Rect insets) {
         mInsets.set(insets);
 
-        mNavBarScrim.getLayoutParams().height = insets.bottom;
         mRecyclerView.setPadding(
                 mRecyclerView.getPaddingLeft(), mRecyclerView.getPaddingTop(),
                 mRecyclerView.getPaddingRight(), insets.bottom);
@@ -100,6 +98,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             clearNavBarColor();
         }
+
+        ((TopRoundedCornerView) mContent).setNavBarScrimHeight(mInsets.bottom);
         requestLayout();
     }
 
@@ -195,7 +195,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
+            RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
+            if (scroller.getThumbOffsetY() >= 0 &&
+                    mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
+                mNoIntercept = true;
+            } else if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
                 mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, mLauncher.getDragLayer());
             }
         }

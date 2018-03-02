@@ -18,6 +18,9 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Process;
 import android.support.annotation.NonNull;
@@ -57,6 +60,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
+import com.android.launcher3.views.RecyclerViewFastScroller;
 
 /**
  * The all apps view container.
@@ -70,6 +74,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
+    private final Paint mNavBarScrimPaint;
+    private int mNavBarScrimHeight = 0;
+
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
@@ -79,6 +86,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     private boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
+
+    private RecyclerViewFastScroller mTouchHandler;
+    private final Point mFastScrollerOffset = new Point();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -101,6 +111,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
         mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
 
+        mNavBarScrimPaint = new Paint();
+        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
         // Attach a scrim to be drawn behind all-apps and hotseat
@@ -108,24 +121,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 .attach();
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        applyTouchDelegate();
-    }
-
-    private void applyTouchDelegate() {
-        // TODO: Reimplement once fast scroller is fixed.
-    }
-
     public AllAppsStore getAppsStore() {
         return mAllAppsStore;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        applyTouchDelegate();
     }
 
     @Override
@@ -163,7 +160,38 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return true;
         }
         AllAppsRecyclerView rv = getActiveRecyclerView();
-        return rv == null || rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
+        if (rv == null) {
+            return true;
+        }
+        if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
+                mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
+            return false;
+        }
+        return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            AllAppsRecyclerView rv = getActiveRecyclerView();
+            if (rv != null &&
+                    rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(), mFastScrollerOffset)) {
+                mTouchHandler = rv.getScrollbar();
+            }
+        }
+        if (mTouchHandler != null) {
+            return mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mTouchHandler != null) {
+            mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
+            return true;
+        }
+        return false;
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {
@@ -282,12 +310,18 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
         setLayoutParams(mlp);
 
-        View navBarBg = findViewById(R.id.nav_bar_bg);
-        ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
-        navBarBgLp.height = insets.bottom;
-        navBarBg.setLayoutParams(navBarBgLp);
-
+        mNavBarScrimHeight = insets.bottom;
         InsettableFrameLayout.dispatchInsets(this, insets);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        if (mNavBarScrimHeight > 0) {
+            canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
+                    mNavBarScrimPaint);
+        }
     }
 
     public SpringAnimationHandler getSpringAnimationHandler() {
@@ -320,8 +354,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.MAIN].recyclerView);
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
-
-        applyTouchDelegate();
     }
 
     private void replaceRVContainer(boolean showTabs) {
@@ -352,7 +384,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     public void onTabChanged(int pos) {
         mHeader.setMainActive(pos == 0);
         reset();
-        applyTouchDelegate();
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
 

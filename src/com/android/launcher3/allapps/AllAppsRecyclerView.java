@@ -97,7 +97,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
-        addOnItemTouchListener(this);
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
 

@@ -17,12 +17,14 @@ package com.android.launcher3.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * View with top rounded corners.
@@ -33,15 +35,28 @@ public class TopRoundedCornerView extends FrameLayout {
     private final Path mClipPath = new Path();
     private float[] mRadii;
 
+    private final Paint mNavBarScrimPaint;
+    private int mNavBarScrimHeight = 0;
+
     public TopRoundedCornerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         int radius = getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
         mRadii = new float[] {radius, radius, radius, radius, 0, 0, 0, 0};
+
+        mNavBarScrimPaint = new Paint();
+        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
     }
 
     public TopRoundedCornerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+    public void setNavBarScrimHeight(int height) {
+        if (mNavBarScrimHeight != height) {
+            mNavBarScrimHeight = height;
+            invalidate();
+        }
     }
 
     @Override
@@ -50,6 +65,11 @@ public class TopRoundedCornerView extends FrameLayout {
         canvas.clipPath(mClipPath);
         super.draw(canvas);
         canvas.restore();
+
+        if (mNavBarScrimHeight > 0) {
+            canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
+                    mNavBarScrimPaint);
+        }
     }
 
     @Override

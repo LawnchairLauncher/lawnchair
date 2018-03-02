@@ -47,13 +47,5 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
-
-        <View
-            android:id="@+id/nav_bar_bg"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="bottom"
-            android:background="?attr/allAppsNavBarScrimColor"
-            android:focusable="false"  />
     </com.android.launcher3.views.TopRoundedCornerView>
 </com.android.launcher3.widget.WidgetsFullSheet>
