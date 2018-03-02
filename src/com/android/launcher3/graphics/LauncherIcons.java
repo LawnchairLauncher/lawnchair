@@ -302,7 +302,7 @@ public class LauncherIcons implements AutoCloseable {
         } else {
             icon.setBounds(left, top, left+width, top+height);
         }
-        mCanvas.save(Canvas.MATRIX_SAVE_FLAG);
+        mCanvas.save();
         mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
         icon.draw(mCanvas);
         mCanvas.restore();
