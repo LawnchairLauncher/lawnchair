@@ -43,13 +43,11 @@ public class UiFactory {
     public static TouchController[] createTouchControllers(Launcher launcher) {
         if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
             return new TouchController[] {
-                    new IgnoreTouchesInQuickScrub(),
                     new EdgeSwipeController(launcher),
                     new TwoStepSwipeController(launcher),
                     new OverviewSwipeController(launcher)};
         } else {
             return new TouchController[] {
-                    new IgnoreTouchesInQuickScrub(),
                     new TwoStepSwipeController(launcher),
                     new OverviewSwipeController(launcher)};
         }

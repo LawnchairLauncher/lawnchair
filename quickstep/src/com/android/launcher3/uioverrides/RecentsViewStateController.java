@@ -60,10 +60,10 @@ public class RecentsViewStateController implements StateHandler {
 
     @Override
     public void setState(LauncherState state) {
-        mWorkspaceCard.setWorkspaceScrollingEnabled(state == OVERVIEW);
-        setVisibility(state == OVERVIEW);
-        setTransitionProgress(state == OVERVIEW ? 1 : 0);
-        if (state == OVERVIEW) {
+        mWorkspaceCard.setWorkspaceScrollingEnabled(state.overviewUi);
+        setVisibility(state.overviewUi);
+        setTransitionProgress(state.overviewUi ? 1 : 0);
+        if (state.overviewUi) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 ((TaskView) mRecentsView.getPageAt(i)).resetVisualProperties();
             }
@@ -92,20 +92,20 @@ public class RecentsViewStateController implements StateHandler {
         }
 
         ObjectAnimator progressAnim =
-                mTransitionProgress.animateToValue(toState == OVERVIEW ? 1 : 0);
+                mTransitionProgress.animateToValue(toState.overviewUi ? 1 : 0);
         progressAnim.setDuration(config.duration);
         progressAnim.setInterpolator(Interpolators.LINEAR);
         progressAnim.addListener(new AnimationSuccessListener() {
 
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mWorkspaceCard.setWorkspaceScrollingEnabled(toState == OVERVIEW);
+                mWorkspaceCard.setWorkspaceScrollingEnabled(toState.overviewUi);
                 mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
             }
         });
         builder.play(progressAnim);
 
-        ObjectAnimator visibilityAnim = animateVisibility(toState == OVERVIEW);
+        ObjectAnimator visibilityAnim = animateVisibility(toState.overviewUi);
         visibilityAnim.setDuration(config.duration);
         visibilityAnim.setInterpolator(Interpolators.LINEAR);
         builder.play(visibilityAnim);

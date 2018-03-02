@@ -34,10 +34,14 @@ import com.android.quickstep.RecentsView;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_PAGE_BACKGROUNDS;
+            | FLAG_DISABLE_RESTORE | FLAG_PAGE_BACKGROUNDS | FLAG_OVERVIEW_UI;
 
     public OverviewState(int id) {
-        super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        this(id, STATE_FLAGS);
+    }
+
+    protected OverviewState(int id, int stateFlags) {
+        super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, stateFlags);
     }
 
     @Override
