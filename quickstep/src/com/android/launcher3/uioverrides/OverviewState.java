@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -71,6 +72,11 @@ public class OverviewState extends LauncherState {
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
+    }
+
+    @Override
+    public void onStateTransitionEnd(Launcher launcher) {
+        launcher.getRotationHelper().setCurrentStateRequest(REQUEST_ROTATE);
     }
 
     @Override

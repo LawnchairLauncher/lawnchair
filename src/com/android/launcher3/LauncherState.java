@@ -20,12 +20,13 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.states.SpringLoadedState;
+import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -211,6 +212,8 @@ public class LauncherState {
     public void onStateTransitionEnd(Launcher launcher) {
         if (this == NORMAL) {
             UiFactory.resetOverview(launcher);
+            // Clear any rotation locks when going to normal state
+            launcher.getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }
     }
 

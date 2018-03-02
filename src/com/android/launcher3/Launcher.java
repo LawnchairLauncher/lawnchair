@@ -18,8 +18,7 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
@@ -53,7 +52,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -116,6 +114,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -272,10 +271,9 @@ public class Launcher extends BaseActivity
     private final PointF mLastDispatchTouchEvent = new PointF();
 
     public ViewGroupFocusHelper mFocusHandler;
-    private boolean mRotationEnabled = false;
     private boolean mAppLaunchSuccess;
 
-    private RotationPrefChangeHandler mRotationPrefChangeHandler;
+    private RotationHelper mRotationHelper;
     private ActionMode mCurrentActionMode;
 
     @Override
@@ -327,20 +325,10 @@ public class Launcher extends BaseActivity
         setupViews();
         mPopupDataProvider = new PopupDataProvider(this);
 
-        mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
-        // In case we are on a device with locked rotation, we should look at preferences to check
-        // if the user has specifically allowed rotation.
-        if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
-            mRotationPrefChangeHandler = new RotationPrefChangeHandler();
-            mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
-        }
+        mRotationHelper = new RotationHelper(this);
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
         if (internalStateHandled) {
-            // Temporarily enable the rotation
-            mRotationEnabled = true;
-
             if (savedInstanceState != null) {
                 // InternalStateHandler has already set the appropriate state.
                 // We dont need to do anything.
@@ -372,7 +360,6 @@ public class Launcher extends BaseActivity
         // For handling default keys
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
-        updateRequestedOrientation();
         setContentView(mLauncherView);
         getRootView().dispatchInsets();
 
@@ -391,15 +378,9 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+        mRotationHelper.initialize();
 
         TraceHelper.endSection("Launcher-onCreate");
-    }
-
-    public void updateRequestedOrientation() {
-        // On large interfaces, or on devices that a user has specifically enabled screen rotation,
-        // we want the screen to auto-rotate based on the current orientation
-        setRequestedOrientation(mRotationEnabled
-                ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
     }
 
     @Override
@@ -440,6 +421,10 @@ public class Launcher extends BaseActivity
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
+    }
+
+    public RotationHelper getRotationHelper() {
+        return mRotationHelper;
     }
 
     @Override
@@ -1381,10 +1366,7 @@ public class Launcher extends BaseActivity
             mModel.stopLoader();
             LauncherAppState.getInstance(this).setLauncher(null);
         }
-
-        if (mRotationPrefChangeHandler != null) {
-            mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
-        }
+        mRotationHelper.destroy();
 
         try {
             mAppWidgetHost.stopListening();
@@ -2727,10 +2709,6 @@ public class Launcher extends BaseActivity
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
-    public boolean isRotationEnabled () {
-        return mRotationEnabled;
-    }
-
     /**
      * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
      */
@@ -2866,18 +2844,6 @@ public class Launcher extends BaseActivity
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
-    }
-
-    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener {
-
-        @Override
-        public void onSharedPreferenceChanged(
-                SharedPreferences sharedPreferences, String key) {
-            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                // Recreate the activity so that it initializes the rotation preference again.
-                recreate();
-            }
-        }
     }
 
     @Override
