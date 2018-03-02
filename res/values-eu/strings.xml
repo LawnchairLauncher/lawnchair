@@ -137,7 +137,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lanekoak"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Hemen dituzu laneko aplikazioak"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Laneko aplikazio bakoitzak bereizgarri laranja bat dauka eta erakundeak babesten du. Aplikazioak errazago atzitzeko, eraman itzazu hasierako pantailara."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"Erakundeak kudeatzen du"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Jakinarazpenak eta aplikazioak desaktibatuta daude"</string>
 </resources>
