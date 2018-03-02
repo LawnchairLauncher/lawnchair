@@ -21,12 +21,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -50,15 +53,23 @@ public class ModelWriter {
     public static final boolean DEBUG_DELETE = true;
 
     private final Context mContext;
+    private final LauncherModel mModel;
     private final BgDataModel mBgDataModel;
+    private final Handler mUiHandler;
+
     private final Executor mWorkerExecutor;
     private final boolean mHasVerticalHotseat;
+    private final boolean mVerifyChanges;
 
-    public ModelWriter(Context context, BgDataModel dataModel, boolean hasVerticalHotseat) {
+    public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
+            boolean hasVerticalHotseat, boolean verifyChanges) {
         mContext = context;
+        mModel = model;
         mBgDataModel = dataModel;
         mWorkerExecutor = new LooperExecutor(LauncherModel.getWorkerLooper());
         mHasVerticalHotseat = hasVerticalHotseat;
+        mVerifyChanges = verifyChanges;
+        mUiHandler = new Handler(Looper.getMainLooper());
     }
 
     private void updateItemInfoProps(
@@ -214,15 +225,16 @@ public class ModelWriter {
         item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID).getLong(Settings.EXTRA_VALUE);
         writer.put(Favorites._ID, item.id);
 
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        mWorkerExecutor.execute(new Runnable() {
-            public void run() {
-                cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
+        ModelVerifier verifier = new ModelVerifier();
 
-                synchronized (mBgDataModel) {
-                    checkItemInfoLocked(item.id, item, stackTrace);
-                    mBgDataModel.addItem(mContext, item, true);
-                }
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        mWorkerExecutor.execute(() -> {
+            cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
+
+            synchronized (mBgDataModel) {
+                checkItemInfoLocked(item.id, item, stackTrace);
+                mBgDataModel.addItem(mContext, item, true);
+                verifier.verifyModel();
             }
         });
     }
@@ -253,6 +265,7 @@ public class ModelWriter {
             }
             FileLog.d(TAG, "Finished deleting items");
         }
+        ModelVerifier verifier = new ModelVerifier();
 
         mWorkerExecutor.execute(() -> {
             for (ItemInfo item : items) {
@@ -260,6 +273,7 @@ public class ModelWriter {
                 mContext.getContentResolver().delete(uri, null, null);
 
                 mBgDataModel.removeItem(mContext, item);
+                verifier.verifyModel();
             }
         });
     }
@@ -273,6 +287,8 @@ public class ModelWriter {
             FileLog.d(TAG, "Deleting folder " + info, new Exception());
         }
 
+        ModelVerifier verifier = new ModelVerifier();
+
         mWorkerExecutor.execute(() -> {
             ContentResolver cr = mContext.getContentResolver();
             cr.delete(LauncherSettings.Favorites.CONTENT_URI,
@@ -282,6 +298,7 @@ public class ModelWriter {
 
             cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
             mBgDataModel.removeItem(mContext, info);
+            verifier.verifyModel();
         });
     }
 
@@ -336,6 +353,7 @@ public class ModelWriter {
 
     private abstract class UpdateItemBaseRunnable implements Runnable {
         private final StackTraceElement[] mStackTrace;
+        private final ModelVerifier mVerifier = new ModelVerifier();
 
         UpdateItemBaseRunnable() {
             mStackTrace = new Throwable().getStackTrace();
@@ -380,7 +398,45 @@ public class ModelWriter {
                 } else {
                     mBgDataModel.workspaceItems.remove(modelItem);
                 }
+                mVerifier.verifyModel();
             }
+        }
+    }
+
+    /**
+     * Utility class to verify model updates are propagated properly to the callback.
+     */
+    public class ModelVerifier {
+
+        final int startId;
+
+        ModelVerifier() {
+            startId = mBgDataModel.lastBindId;
+        }
+
+        void verifyModel() {
+            if (!mVerifyChanges || mModel.getCallback() == null) {
+                return;
+            }
+
+            int executeId = mBgDataModel.lastBindId;
+
+            mUiHandler.post(() -> {
+                int currentId = mBgDataModel.lastBindId;
+                if (currentId > executeId) {
+                    // Model was already bound after job was executed.
+                    return;
+                }
+                if (executeId == startId) {
+                    // Bound model has not changed during the job
+                    return;
+                }
+                // Bound model was changed between submitting the job and executing the job
+                Callbacks callbacks = mModel.getCallback();
+                if (callbacks != null) {
+                    callbacks.rebindModel();
+                }
+            });
         }
     }
 }

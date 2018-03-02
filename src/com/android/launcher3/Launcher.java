@@ -400,15 +400,20 @@ public class Launcher extends BaseActivity
             getStateManager().reapplyState();
 
             // TODO: We can probably avoid rebind when only screen size changed.
-            int currentPage = mWorkspace.getNextPage();
-            if (mModel.startLoader(currentPage)) {
-                mWorkspace.setCurrentPage(currentPage);
-                setWorkspaceLoading(true);
-            }
+            rebindModel();
         }
 
         mOldConfig.setTo(newConfig);
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void rebindModel() {
+        int currentPage = mWorkspace.getNextPage();
+        if (mModel.startLoader(currentPage)) {
+            mWorkspace.setCurrentPage(currentPage);
+            setWorkspaceLoading(true);
+        }
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -420,7 +425,7 @@ public class Launcher extends BaseActivity
             display.getSize(mwSize);
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
-        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
+        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout(), true);
     }
 
     public RotationHelper getRotationHelper() {
