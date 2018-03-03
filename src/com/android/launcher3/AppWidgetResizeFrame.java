@@ -129,6 +129,7 @@ public class AppWidgetResizeFrame extends FrameLayout
             Resources r = getContext().getResources();
             int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
             mWidgetPadding = new Rect(padding, padding, padding, padding);
+            
         }
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
