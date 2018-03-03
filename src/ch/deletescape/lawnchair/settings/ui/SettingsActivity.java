@@ -131,7 +131,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     }
 
     private void updateUpButton() {
-        updateUpButton(getFragmentManager().getBackStackEntryCount() != 0);
+        updateUpButton(getSupportFragmentManager().getBackStackEntryCount() != 0);
     }
 
     private void updateUpButton(boolean enabled) {
