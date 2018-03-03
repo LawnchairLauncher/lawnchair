@@ -104,6 +104,7 @@ public class LauncherIcons implements AutoCloseable {
 
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
+    private Drawable mWrapperIcon;
 
     // sometimes we store linked lists of these things
     private LauncherIcons next;
@@ -172,6 +173,16 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
+    }
+
+    /**
+     * Returns a bitmap suitable for displaying as an icon at various launcher UIs like all apps
+     * view or workspace. The icon is badged for {@param user}.
+     * The bitmap is also visually normalized with other icons.
+     */
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
+            boolean isInstantApp) {
         float[] scale = new float[1];
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
@@ -190,6 +201,9 @@ public class LauncherIcons implements AutoCloseable {
             } else {
                 result = createIconBitmap(badged, 1f);
             }
+        } else if (isInstantApp) {
+            badgeWithDrawable(bitmap, mContext.getDrawable(R.drawable.ic_instant_app_badge));
+            result = bitmap;
         } else {
             result = bitmap;
         }
@@ -213,8 +227,11 @@ public class LauncherIcons implements AutoCloseable {
         float scale = 1f;
         if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
             boolean[] outShape = new boolean[1];
-            AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
-                    mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+            if (mWrapperIcon == null) {
+                mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
+                        .mutate();
+            }
+            AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
             if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {

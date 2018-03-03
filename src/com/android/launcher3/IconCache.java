@@ -641,11 +641,8 @@ public class IconCache {
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
                     BitmapInfo iconInfo = li.createBadgedIconBitmap(
-                            appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion);
-                    if (mInstantAppResolver.isInstantApp(appInfo)) {
-                        li.badgeWithDrawable(iconInfo.icon,
-                                mContext.getDrawable(R.drawable.ic_instant_app_badge));
-                    }
+                            appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion,
+                            mInstantAppResolver.isInstantApp(appInfo));
                     li.recycle();
 
                     Bitmap lowResIcon =  generateLowResIcon(iconInfo.icon);
