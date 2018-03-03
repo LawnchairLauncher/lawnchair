@@ -129,6 +129,22 @@
         launcher:defaultLayoutId="@xml/default_workspace_6x6"
         />
 
+    <profile
+        launcher:name="Pixel C"
+        launcher:minWidthDps="820"
+        launcher:minHeightDps="1200"
+        launcher:numRows="5"
+        launcher:numColumns="6"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:minAllAppsPredictionColumns="4"
+        launcher:numHotseatIcons="6"
+        launcher:iconSize="64"
+        launcher:landscapeIconSize="64"
+        launcher:iconTextSize="13.0"
+        launcher:defaultLayoutId="@xml/default_workspace_5x6"
+        />
+
     <!--
     <profile
         launcher:name="Super Short Stubby"
