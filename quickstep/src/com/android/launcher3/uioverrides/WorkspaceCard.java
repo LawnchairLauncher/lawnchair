@@ -69,6 +69,7 @@ public class WorkspaceCard extends View implements PageCallbacks, OnClickListene
         super.onLayout(changed, left, top, right, bottom);
 
         // Initiate data
+        // TODO: can remove most of this as workspace card is no longer scrolling
         mLinearInterpolationForPage2 = RecentsView.getScaledDownPageRect(
                 mLauncher.getDeviceProfile(), mLauncher, mTempRect);
 
@@ -98,11 +99,17 @@ public class WorkspaceCard extends View implements PageCallbacks, OnClickListene
     }
 
     public void setWorkspaceScrollingEnabled(boolean isEnabled) {
+        // TODO can remove
         mIsWorkspaceScrollingEnabled = isEnabled;
     }
 
     @Override
     public int onPageScroll(ScrollState scrollState) {
+        // TODO: can remove
+        if (true) {
+            return SCROLL_TYPE_WORKSPACE;
+        }
+
         float factor = scrollState.linearInterpolation;
         float translateX = scrollState.distanceFromScreenCenter;
         if (mIsWorkspaceScrollingEnabled) {

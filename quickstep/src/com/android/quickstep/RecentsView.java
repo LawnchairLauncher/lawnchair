@@ -17,7 +17,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.TaskView.CURVE_FACTOR;
 import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
@@ -52,7 +51,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -637,6 +635,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         canvas.restoreToCount(saveCount);
     }
 
+    // TODO: can remove
     public interface PageCallbacks {
 
         /**

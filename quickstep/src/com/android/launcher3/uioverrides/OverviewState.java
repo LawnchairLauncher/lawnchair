@@ -98,9 +98,8 @@ public class OverviewState extends LauncherState {
             Rect pageRect) {
         Workspace ws = launcher.getWorkspace();
         float childWidth = ws.getNormalChildWidth();
-        float childHeight = ws.getNormalChildHeight();
 
-        float scale = pageRect.height() / childHeight;
+        float scale = pageRect.width() / childWidth;
         Rect insets = launcher.getDragLayer().getInsets();
 
         float halfHeight = ws.getExpectedHeight() / 2;

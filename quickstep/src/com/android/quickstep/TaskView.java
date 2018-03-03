@@ -47,17 +47,19 @@ import java.util.function.Consumer;
  */
 public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
 
+    // TODO: can remove
     /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
-    public static final float CURVE_FACTOR = 0.25f;
-    /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
+    public static final float CURVE_FACTOR = 0;
+
+    /** A curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
     public static final TimeInterpolator CURVE_INTERPOLATOR
-            = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
+            = x -> (float) -Math.cos(x * Math.PI) / 2f + .5f;
 
     /**
      * The alpha of a black scrim on a page in the carousel as it leaves the screen.
      * In the resting position of the carousel, the adjacent pages have about half this scrim.
      */
-    private static final float MAX_PAGE_SCRIM_ALPHA = 0.8f;
+    private static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
     private static final long SCALE_ICON_DURATION = 120;
 
