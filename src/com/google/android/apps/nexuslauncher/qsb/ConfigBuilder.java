@@ -192,7 +192,7 @@ public class ConfigBuilder {
                 .getSpanSizeLookup();
         int i3 = this.mActivity.getDeviceProfile().allAppsNumCols;
         int childCount = bX.getChildCount();
-        BubbleTextView[] bubbleTextViewArr = new BubbleTextView[i3];
+        BubbleTextView[] icons = new BubbleTextView[i3];
         int i4 = -1;
         for (i = 0; i < childCount; i++) {
             RecyclerView.ViewHolder childViewHolder = bX.getChildViewHolder(bX.getChildAt(i));
@@ -208,20 +208,20 @@ public class ConfigBuilder {
                         }
                     }
                     i4 = spanGroupIndex;
-                    bubbleTextViewArr[((GridLayoutManager.LayoutParams) childViewHolder.itemView.getLayoutParams()).getSpanIndex()] = (BubbleTextView) childViewHolder.itemView;
+                    icons[((GridLayoutManager.LayoutParams) childViewHolder.itemView.getLayoutParams()).getSpanIndex()] = (BubbleTextView) childViewHolder.itemView;
                 }
             }
         }
-        if (bubbleTextViewArr[0] == null) {
+        if (icons.length < i3 || icons[0] == null || icons[i3 - 1] == null) {
             Log.e("ConfigBuilder", "No icons rendered in all apps");
             cf();
             return;
         }
-        this.cq = bubbleTextViewArr[0];
+        this.cq = icons[0];
         this.cl.es = i3;
-        this.co = bX.getChildViewHolder(bubbleTextViewArr[0]).getItemViewType() == 4;
-        a_search viewBounds = getViewBounds(bubbleTextViewArr[i3 - 1]);
-        a_search viewBounds2 = getViewBounds(bubbleTextViewArr[0]);
+        this.co = bX.getChildViewHolder(icons[0]).getItemViewType() == 4;
+        a_search viewBounds = getViewBounds(icons[i3 - 1]);
+        a_search viewBounds2 = getViewBounds(icons[0]);
         if (Utilities.isRtl(this.mActivity.getResources())) {
             a_search aVar = viewBounds;
             viewBounds = viewBounds2;
