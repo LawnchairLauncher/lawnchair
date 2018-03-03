@@ -9,15 +9,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import ch.deletescape.lawnchair.MultiSelectRecyclerViewAdapter
+import ch.deletescape.lawnchair.HiddenAppsAdapter
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.google.android.apps.nexuslauncher.CustomAppFilter
 
-class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickListener {
+class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
 
     private lateinit var installedApps: List<LauncherActivityInfo>
-    private lateinit var adapter: MultiSelectRecyclerViewAdapter
+    private lateinit var adapter: HiddenAppsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
         val context = view.context
         val recyclerView = view as RecyclerView
         installedApps = getAppsList(context).apply { sortBy { it.label.toString() } }
-        adapter = MultiSelectRecyclerViewAdapter(view.context, installedApps, this)
+        adapter = HiddenAppsAdapter(view.context, installedApps, this)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
@@ -52,9 +52,8 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
         }
     }
 
-    override fun onItemClicked(position: Int) {
-        val title = adapter.toggleSelection(position, installedApps[position].componentName.toString())
-        activity!!.title = title
+    override fun setTitle(newTitle: String) {
+        activity!!.title = newTitle
     }
 
     private fun getAppsList(context: Context?) =
