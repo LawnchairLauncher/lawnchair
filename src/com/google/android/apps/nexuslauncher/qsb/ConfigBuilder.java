@@ -190,7 +190,7 @@ public class ConfigBuilder {
         AllAppsRecyclerView bX = bX();
         GridLayoutManager.SpanSizeLookup spanSizeLookup = ((GridLayoutManager) bX.getLayoutManager())
                 .getSpanSizeLookup();
-        int i3 = this.mActivity.getDeviceProfile().allAppsNumCols;
+        int i3 = Math.min(this.mActivity.getDeviceProfile().allAppsNumCols, bX.getChildCount());
         int childCount = bX.getChildCount();
         BubbleTextView[] bubbleTextViewArr = new BubbleTextView[i3];
         int i4 = -1;
@@ -212,7 +212,7 @@ public class ConfigBuilder {
                 }
             }
         }
-        if (bubbleTextViewArr[0] == null) {
+        if (bubbleTextViewArr.length == 0 || bubbleTextViewArr[0] == null) {
             Log.e("ConfigBuilder", "No icons rendered in all apps");
             cf();
             return;
