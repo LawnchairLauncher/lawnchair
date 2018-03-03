@@ -36,13 +36,11 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DeepShortcutManagerBackport {
-    public static Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+    static Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
         return ((ShortcutInfoCompatBackport) shortcutInfo).getIcon(density);
     }
 
@@ -61,15 +59,6 @@ public class DeepShortcutManagerBackport {
 
     private static void parsePackageXml(Context context, String packageName, ComponentName activity, List<ShortcutInfoCompat> shortcutInfoCompats) {
         PackageManager pm = context.getPackageManager();
-
-        Intent intent = new Intent();
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setPackage(packageName);
-
-        Set<String> exportedActivities = new HashSet<>();
-        for (ResolveInfo ri : pm.queryIntentActivities(intent, 0)) {
-            exportedActivities.add(ri.activityInfo.name);
-        }
 
         String resource = null;
         String currActivity = "";
@@ -93,14 +82,6 @@ public class DeepShortcutManagerBackport {
                         }
                         if (parsedData.containsKey("name")) {
                             currActivity = parsedData.get("name");
-                        }
-                        if (parsedData.containsKey("exported")) {
-                            String exported = parsedData.get("exported").toLowerCase();
-                            if (exported.equals("true")) {
-                                exportedActivities.add(currActivity);
-                            } else if (exported.equals("false")) {
-                                exportedActivities.remove(currActivity);
-                            }
                         }
                     } else if (name.equals("meta-data") && currActivity.equals(searchActivity)) {
                         parsedData.clear();
@@ -127,8 +108,13 @@ public class DeepShortcutManagerBackport {
                                     packageName,
                                     parseXml);
 
-                            if (info != null && info.getId() != null && exportedActivities.contains(info.getActivity().getClassName())) {
-                                shortcutInfoCompats.add(info);
+                            if (info != null && info.getId() != null) {
+                                for (ResolveInfo ri : pm.queryIntentActivities(ShortcutInfoCompatBackport.stripPackage(info.makeIntent()), 0)) {
+                                    if (ri.isDefault || ri.activityInfo.exported) {
+                                        shortcutInfoCompats.add(info);
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }

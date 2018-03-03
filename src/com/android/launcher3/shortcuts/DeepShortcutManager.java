@@ -111,19 +111,17 @@ public class DeepShortcutManager {
      */
     @TargetApi(25)
     public void unpinShortcut(final ShortcutKey key) {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            String packageName = key.componentName.getPackageName();
-            String id = key.getId();
-            UserHandle user = key.user;
-            List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
-            pinnedIds.remove(id);
-            try {
-                mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
-                mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
-                Log.w(TAG, "Failed to unpin shortcut", e);
-                mWasLastCallSuccess = false;
-            }
+        String packageName = key.componentName.getPackageName();
+        String id = key.getId();
+        UserHandle user = key.user;
+        List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
+        pinnedIds.remove(id);
+        try {
+            mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
+            mWasLastCallSuccess = true;
+        } catch (SecurityException|IllegalStateException e) {
+            Log.w(TAG, "Failed to unpin shortcut", e);
+            mWasLastCallSuccess = false;
         }
     }
 
@@ -133,19 +131,17 @@ public class DeepShortcutManager {
      */
     @TargetApi(25)
     public void pinShortcut(final ShortcutKey key) {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            String packageName = key.componentName.getPackageName();
-            String id = key.getId();
-            UserHandle user = key.user;
-            List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
-            pinnedIds.add(id);
-            try {
-                mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
-                mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
-                Log.w(TAG, "Failed to pin shortcut", e);
-                mWasLastCallSuccess = false;
-            }
+        String packageName = key.componentName.getPackageName();
+        String id = key.getId();
+        UserHandle user = key.user;
+        List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
+        pinnedIds.add(id);
+        try {
+            mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
+            mWasLastCallSuccess = true;
+        } catch (SecurityException|IllegalStateException e) {
+            Log.w(TAG, "Failed to pin shortcut", e);
+            mWasLastCallSuccess = false;
         }
     }
 
@@ -162,7 +158,7 @@ public class DeepShortcutManager {
                 mWasLastCallSuccess = false;
             }
         } else {
-            mContext.startActivity(intent, startActivityOptions);
+            mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
         }
     }
 
