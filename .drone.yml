@@ -13,7 +13,7 @@ pipeline:
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
-      - bash ./gradlew assembleDebug
+      - bash ./gradlew assembleCi
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
@@ -23,7 +23,8 @@ pipeline:
   telegram:
     image: appleboy/drone-telegram:latest
     secrets: [ bot_token ]
-    token: ${BOT_TOKEN}
+    environment:
+      - PLUGIN_TOKEN=${BOT_TOKEN}
     to: "-1001092684628"
     message: >
       {{#success build.status}}
