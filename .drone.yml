@@ -17,13 +17,17 @@ pipeline:
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
+    apk_path: app/build/outputs/apk/debug/app-debug.apk
+    mapping_path: app/build/outputs/mapping/debug/mapping.txt
+    channel_id: "-1001180711841"
     when:
       event: push
       status: success
   telegram:
     image: appleboy/drone-telegram:latest
     secrets: [ bot_token ]
-    token: ${BOT_TOKEN}
+    environment:
+      - PLUGIN_TOKEN=${BOT_TOKEN}
     to: "-1001092684628"
     message: >
       {{#success build.status}}
