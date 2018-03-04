@@ -66,14 +66,6 @@ android {
                 minifyEnabled false
             }
         }
-        ci {
-            debuggable true
-            applicationIdSuffix ".ci"
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
-                signingConfig signingConfigs.travis
-            }
-        }
         release {
             applicationIdSuffix ".plah"
             buildConfigField "boolean", "ENABLE_LAWNFEED", "true"
