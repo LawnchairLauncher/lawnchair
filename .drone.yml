@@ -25,9 +25,7 @@ pipeline:
       status: success
   telegram:
     image: appleboy/drone-telegram:latest
-    secrets: [ bot_token ]
-    environment:
-      - PLUGIN_TOKEN=${BOT_TOKEN}
+    secrets: [ telegram_token ]
     to: "-1001092684628"
     message: >
       {{#success build.status}}
