@@ -60,7 +60,6 @@ android {
                 shrinkResources true
                 if (System.getenv("DRONE") == "true") {
                     applicationIdSuffix ".ci"
-                    versionNameSuffix "-ci"
                 }
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -71,6 +70,7 @@ android {
                 minifyEnabled false
             }
         }
+        release {
             applicationIdSuffix ".plah"
             buildConfigField "boolean", "ENABLE_LAWNFEED", "true"
 
