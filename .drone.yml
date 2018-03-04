@@ -32,6 +32,8 @@ pipeline:
       {{else}}
         Build {{build.number}} failed. Fix me please sir!
       {{/success}}
+    when:
+      status: [ failure, success ]
 
 branches:
   include: alpha
