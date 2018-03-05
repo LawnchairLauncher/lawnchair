@@ -172,11 +172,6 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mLauncher.getStateManager().getState().disableInteraction) {
-            // You Shall Not Pass!!!
-            return true;
-        }
-
         if (mDragController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mDragController;
             return true;

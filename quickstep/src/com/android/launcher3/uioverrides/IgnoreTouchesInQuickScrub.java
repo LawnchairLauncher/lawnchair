@@ -13,14 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.launcher3.uioverrides;
 
-/**
- * A dummy overview state
- */
-public class FastOverviewState extends OverviewState {
+import android.view.MotionEvent;
 
-    public FastOverviewState(int id) {
-        super(id);
+import com.android.launcher3.util.TouchController;
+import com.android.quickstep.TouchInteractionService;
+
+/**
+ * Consumes touches when quick scrub is enabled.
+ */
+public class IgnoreTouchesInQuickScrub implements TouchController {
+
+    public IgnoreTouchesInQuickScrub() {
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        return true;
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        return TouchInteractionService.isQuickScrubEnabled();
     }
 }

@@ -930,7 +930,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         int centeredTop = centerY - height / 2;
 
         // We need to bound the folder to the currently visible workspace area
-        if (mLauncher.getStateManager().getState().overviewUi) {
+        if (mLauncher.isInState(OVERVIEW)) {
             mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(),
                     sTempRect);
         } else {
