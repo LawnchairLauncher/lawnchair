@@ -78,11 +78,6 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
-        Utilities.getPrefs(mTargetContext)
-                .edit()
-                .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
-                .commit();
-
         if (naturalOrientation) {
             mDevice.setOrientationNatural();
         } else {
