@@ -127,7 +127,7 @@
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
-    <item type="id" name="action_info" />
+    <item type="id" name="action_reconfigure" />
     <item type="id" name="action_add_to_workspace" />
     <item type="id" name="action_move" />
     <item type="id" name="action_move_to_workspace" />
