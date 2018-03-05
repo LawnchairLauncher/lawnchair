@@ -20,8 +20,11 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.android.launcher3.ButtonDropTarget;
+import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.userevent.nano.LauncherLogExtensions.TargetExtension;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -162,8 +165,12 @@ public class LoggerUtils {
             return newTarget(Target.Type.CONTAINER);
         }
         Target t = newTarget(Target.Type.CONTROL);
-        if (v instanceof ButtonDropTarget) {
-            t.controlType = ((ButtonDropTarget) v).getControlTypeForLogging();
+        if (v instanceof InfoDropTarget) {
+            t.controlType = ControlType.APPINFO_TARGET;
+        } else if (v instanceof UninstallDropTarget) {
+            t.controlType = ControlType.UNINSTALL_TARGET;
+        } else if (v instanceof DeleteDropTarget) {
+            t.controlType = ControlType.REMOVE_TARGET;
         }
         return t;
     }
