@@ -162,7 +162,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void drawInternal(Canvas canvas, Rect bounds) {
         if (mRanFinishAnimation) {
             super.draw(canvas);
             return;
@@ -172,13 +172,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mProgressPaint.setColor(mIndicatorColor);
         mProgressPaint.setAlpha(mTrackAlpha);
         if (mShadowBitmap != null) {
-            canvas.drawBitmap(mShadowBitmap, getBounds().left, getBounds().top, mProgressPaint);
+            canvas.drawBitmap(mShadowBitmap, bounds.left, bounds.top, mProgressPaint);
         }
         canvas.drawPath(mScaledProgressPath, mProgressPaint);
 
         int saveCount = canvas.save();
-        Rect bounds = getBounds();
-
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
         super.draw(canvas);
         canvas.restoreToCount(saveCount);
