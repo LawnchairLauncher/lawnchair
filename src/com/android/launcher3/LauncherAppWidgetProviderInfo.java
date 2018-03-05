@@ -94,12 +94,4 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public boolean isCustomWidget() {
         return provider.getClassName().startsWith(CLS_CUSTOM_WIDGET_PREFIX);
     }
-
-    public int getWidgetFeatures() {
-        if (Utilities.ATLEAST_P) {
-            return widgetFeatures;
-        } else {
-            return 0;
-        }
-    }
  }

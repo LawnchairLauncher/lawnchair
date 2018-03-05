@@ -32,8 +32,18 @@
         android:gravity="center"
         android:text="@string/remove_drop_target_label" />
 
+    <!-- App Info -->
+    <com.android.launcher3.InfoDropTarget
+        android:id="@+id/info_target_text"
+        style="@style/DropTargetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/app_info_drop_target_label" />
+
     <!-- Uninstall target -->
-    <com.android.launcher3.SecondaryDropTarget
+    <com.android.launcher3.UninstallDropTarget
         android:id="@+id/uninstall_target_text"
         style="@style/DropTargetButton"
         android:layout_width="wrap_content"
