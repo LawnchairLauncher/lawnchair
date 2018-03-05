@@ -335,7 +335,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             final Task task = taskView.getTask();
             removeView(taskView);
             loader.unloadTaskData(task);
-            loader.getHighResThumbnailLoader().onTaskInvisible(task);
+//            loader.getHighResThumbnailLoader().onTaskInvisible(task);
         }
         setLayoutTransition(mLayoutTransition);
 
@@ -463,7 +463,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
 
         // Update the high res thumbnail loader
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
-        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
+//        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
         return scrolling;
     }
 
@@ -508,12 +508,12 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             if (visible) {
                 if (!mPrevVisibleTasks.get(i)) {
                     loader.loadTaskData(task);
-                    loader.getHighResThumbnailLoader().onTaskVisible(task);
+//                    loader.getHighResThumbnailLoader().onTaskVisible(task);
                 }
             } else {
                 if (mPrevVisibleTasks.get(i)) {
                     loader.unloadTaskData(task);
-                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+//                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
                 }
             }
             mPrevVisibleTasks.put(i, visible);
