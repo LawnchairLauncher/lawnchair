@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
@@ -35,6 +36,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -520,8 +522,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 : rect.left;
         final int viewLocationTop = rect.top;
 
+        float startScale = 1f;
         if (isBubbleTextView && !isDeepShortcutTextView) {
-            ((BubbleTextView) v).getIconBounds(rect);
+            BubbleTextView btv = (BubbleTextView) v;
+            btv.getIconBounds(rect);
+            Drawable dr = btv.getIcon();
+            if (dr instanceof FastBitmapDrawable) {
+                startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
+            }
         } else {
             rect.set(0, 0, rect.width(), rect.height());
         }
@@ -563,14 +571,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         float maxScaleX = mDeviceProfile.widthPx / (float) rect.width();
         float maxScaleY = mDeviceProfile.heightPx / (float) rect.height();
         float scale = Math.max(maxScaleX, maxScaleY);
-        ObjectAnimator sX = ObjectAnimator.ofFloat(mFloatingView, View.SCALE_X, 1f, scale);
-        ObjectAnimator sY = ObjectAnimator.ofFloat(mFloatingView, View.SCALE_Y, 1f, scale);
-        sX.setDuration(500);
-        sY.setDuration(500);
-        sX.setInterpolator(Interpolators.EXAGGERATED_EASE);
-        sY.setInterpolator(Interpolators.EXAGGERATED_EASE);
-        appIconAnimatorSet.play(sX);
-        appIconAnimatorSet.play(sY);
+        ObjectAnimator scaleAnim = ObjectAnimator
+                .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
+        scaleAnim.setDuration(500).setInterpolator(Interpolators.EXAGGERATED_EASE);
+        appIconAnimatorSet.play(scaleAnim);
 
         // Fade out the app icon.
         ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);

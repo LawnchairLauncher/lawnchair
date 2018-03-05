@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -45,7 +46,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
@@ -70,7 +70,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
-public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
+public class CellLayout extends ViewGroup {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
@@ -127,8 +127,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     // Used as an index into the above 3 arrays; indicates which is the most current value.
     private int mDragOutlineCurrent = 0;
     private final Paint mDragOutlinePaint = new Paint();
-
-    private final ClickShadowView mTouchFeedbackView;
 
     @Thunk final ArrayMap<LayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
     @Thunk final ArrayMap<View, ReorderPreviewAnimation> mShakeAnimators = new ArrayMap<>();
@@ -285,9 +283,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-
-        mTouchFeedbackView = new ClickShadowView(context);
-        addView(mTouchFeedbackView);
         addView(mShortcutsAndWidgets);
     }
 
@@ -382,11 +377,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public boolean isDropPending() {
         return mDropPending;
-    }
-
-    @Override
-    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
-        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     void setIsDragOverlapping(boolean isDragOverlapping) {
@@ -785,13 +775,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-        // Make the feedback view large enough to hold the blur bitmap.
-        mTouchFeedbackView.measure(
-                MeasureSpec.makeMeasureSpec(mCellWidth + mTouchFeedbackView.getExtraSize(),
-                        MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(mCellHeight + mTouchFeedbackView.getExtraSize(),
-                        MeasureSpec.EXACTLY));
-
         mShortcutsAndWidgets.measure(
                 MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY));
@@ -815,11 +798,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int top = getPaddingTop();
         int bottom = b - t - getPaddingBottom();
 
-        mTouchFeedbackView.layout(left, top,
-                left + mTouchFeedbackView.getMeasuredWidth(),
-                top + mTouchFeedbackView.getMeasuredHeight());
         mShortcutsAndWidgets.layout(left, top, right, bottom);
-
         // Expand the background drawing bounds by the padding baked into the background drawable
         mBackground.getPadding(mTempRect);
         mBackground.setBounds(
@@ -1012,6 +991,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
+    @SuppressLint("StringFormatMatches")
     public String getItemMoveDescription(int cellX, int cellY) {
         if (mContainerType == HOTSEAT) {
             return getContext().getString(R.string.move_to_hotseat_position,

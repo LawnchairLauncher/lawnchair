@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Process;
 import android.support.annotation.NonNull;
@@ -37,9 +36,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
-import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
@@ -66,11 +62,10 @@ import com.android.launcher3.views.BottomUserEducationView;
  * The all apps view container.
  */
 public class AllAppsContainerView extends RelativeLayout implements DragSource,
-        OnLongClickListener, Insettable, BubbleTextShadowHandler, OnDeviceProfileChangeListener {
+        OnLongClickListener, Insettable, OnDeviceProfileChangeListener {
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
-    private final ClickShadowView mTouchFeedbackView;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
@@ -100,14 +95,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mLauncher.addOnDeviceProfileChangeListener(this);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
-
         Selection.setSelection(mSearchQueryBuilder, 0);
-
-        mTouchFeedbackView = new ClickShadowView(context);
-        // Make the feedback view large enough to hold the blur bitmap.
-        int size = mLauncher.getDeviceProfile().allAppsIconSizePx
-                + mTouchFeedbackView.getExtraSize();
-        addView(mTouchFeedbackView, size, size);
 
         mAH = new AdapterHolder[2];
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
@@ -163,11 +151,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             }
             rebindAdapters(hasWorkApps);
         }
-    }
-
-    @Override
-    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
-        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     /**
