@@ -218,7 +218,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private LauncherTransitionAnimator composeRecentsLaunchAnimator(View v,
             RemoteAnimationTargetCompat[] targets) {
         // Ensure recents is actually visible
-        if (!mLauncher.isInState(LauncherState.OVERVIEW)) {
+        if (!mLauncher.getStateManager().getState().overviewUi) {
             return null;
         }
 
@@ -720,7 +720,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 postAtFrontOfQueueAsynchronously(handler, () -> {
                     if ((Utilities.getPrefs(mLauncher)
                             .getBoolean("pref_use_screenshot_for_swipe_up", false)
-                            && mLauncher.isInState(LauncherState.OVERVIEW))
+                            && mLauncher.getStateManager().getState().overviewUi)
                             || !launcherIsATargetWithMode(targets, MODE_OPENING)) {
                         // We use a separate transition for Overview mode. And we can skip the
                         // animation in cases where Launcher is not in the set of opening targets.
