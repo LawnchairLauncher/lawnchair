@@ -339,7 +339,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
-            mQuickScrubController.snapToPageForCurrentQuickScrubSection();
+            mQuickScrubController.snapToNextTaskIfAvailable();
         }
     }
 
