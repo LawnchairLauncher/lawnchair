@@ -83,7 +83,8 @@ public class RecentsViewStateController implements StateHandler {
 
         // Scroll to the workspace card before changing to the NORMAL state.
         int currPage = mRecentsView.getCurrentPage();
-        if (toState == NORMAL && currPage != 0 && !config.userControlled) {
+        LauncherState fromState = mLauncher.getStateManager().getState();
+        if (fromState.overviewUi && toState == NORMAL && currPage != 0 && !config.userControlled) {
             int maxSnapDuration = PagedView.SLOW_PAGE_SNAP_ANIMATION_DURATION;
             int durationPerPage = maxSnapDuration / 10;
             int snapDuration = Math.min(maxSnapDuration, durationPerPage * currPage);
