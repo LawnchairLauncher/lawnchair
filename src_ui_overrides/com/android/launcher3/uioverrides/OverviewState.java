@@ -37,7 +37,7 @@ public class OverviewState extends LauncherState {
     private static final float SCALE_FACTOR = 0.7f;
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
-            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS;
+            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS | FLAG_OVERVIEW_UI;
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
