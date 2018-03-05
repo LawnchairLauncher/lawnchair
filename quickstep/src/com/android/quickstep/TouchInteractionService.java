@@ -21,8 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 
@@ -119,6 +117,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
+            sQuickScrubEnabled = true;
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
@@ -131,15 +130,21 @@ public class TouchInteractionService extends Service {
         public void onQuickScrubEnd() {
             mEventQueue.onQuickScrubEnd();
             TraceHelper.endSection("SysUiBinder", "onQuickScrubEnd");
+            sQuickScrubEnabled = false;
         }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
 
     private static boolean sConnected = false;
+    private static boolean sQuickScrubEnabled = false;
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    public static boolean isQuickScrubEnabled() {
+        return sQuickScrubEnabled;
     }
 
     private ActivityManagerWrapper mAM;
@@ -185,6 +190,7 @@ public class TouchInteractionService extends Service {
     @Override
     public void onDestroy() {
         sConnected = false;
+        sQuickScrubEnabled = false;
         super.onDestroy();
     }
 
@@ -309,7 +315,7 @@ public class TouchInteractionService extends Service {
                     } else if (interactionType == INTERACTION_QUICK_SWITCH) {
                         onComplete = mQuickScrubController::onQuickSwitch;
                     }
-                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true, 0,
+                    mLauncher.getStateManager().goToState(OVERVIEW, true, 0,
                             QUICK_SWITCH_START_DURATION, onComplete);
                 };
 

@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -494,8 +493,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void onQuickInteractionStart() {
-        mLauncher.getStateManager().goToState(FAST_OVERVIEW,
-                mWasLauncherAlreadyVisible || mGestureStarted);
         mQuickScrubController.onQuickScrubStart(false);
     }
 
