@@ -211,13 +211,13 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public void onStart() {
         mRecentsTaskLoader.startLoader(mContext);
-        mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(true);
+//        mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(true);
     }
 
     public void onTrimMemory(int level) {
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             // We already stop the loader in UI_HIDDEN, so stop the high res loader as well
-            mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
+//            mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
         }
         mRecentsTaskLoader.onTrimMemory(level);
     }
