@@ -333,6 +333,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // updating current page on the pass.
         if (resetNextPage) {
             mNextPage = INVALID_PAGE;
+            pageEndTransition();
         }
     }
 
@@ -342,6 +343,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // updating current page on the pass.
         if (resetNextPage) {
             mNextPage = INVALID_PAGE;
+            pageEndTransition();
         }
     }
 
