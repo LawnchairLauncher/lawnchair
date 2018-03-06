@@ -52,7 +52,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
 
@@ -349,7 +348,7 @@ public class LauncherIcons implements AutoCloseable {
         final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
 
         result.color = badge.iconColor;
-        result.icon = UiFactory.createFromRenderer(mIconBitmapSize, mIconBitmapSize, false, (c) -> {
+        result.icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
             getShadowGenerator().recreateIcon(unbadgedfinal, c);
             badgeWithDrawable(c, new FastBitmapDrawable(badge));
         });
