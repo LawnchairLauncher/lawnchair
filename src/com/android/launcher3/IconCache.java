@@ -45,12 +45,10 @@ import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.ColorExtractor;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
@@ -126,7 +124,7 @@ public class IconCache {
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        if (UiFactory.USE_HARDWARE_BITMAP) {
+        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
             mHighResOptions = new BitmapFactory.Options();
             mHighResOptions.inPreferredConfig = Bitmap.Config.HARDWARE;
         } else {
