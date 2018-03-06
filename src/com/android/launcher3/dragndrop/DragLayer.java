@@ -709,12 +709,14 @@ public class DragLayer extends InsettableFrameLayout {
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         updateChildIndices();
+        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         updateChildIndices();
+        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     @Override

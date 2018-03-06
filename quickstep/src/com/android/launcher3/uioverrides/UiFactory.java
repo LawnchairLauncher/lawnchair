@@ -19,11 +19,14 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.graphics.PointF;
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -62,8 +65,21 @@ public class UiFactory {
     }
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
-        OverviewInteractionState.setBackButtonVisible(launcher, launcher == null
-                || !launcher.isInState(NORMAL) || !launcher.hasWindowFocus());
+        boolean shouldBackButtonBeVisible = launcher == null
+                || !launcher.isInState(NORMAL)
+                || !launcher.hasWindowFocus();
+        if (!shouldBackButtonBeVisible) {
+            // Show the back button if there is a floating view visible.
+            DragLayer dragLayer = launcher.getDragLayer();
+            for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
+                View child = dragLayer.getChildAt(i);
+                if (child instanceof AbstractFloatingView) {
+                    shouldBackButtonBeVisible = true;
+                    break;
+                }
+            }
+        }
+        OverviewInteractionState.setBackButtonVisible(launcher, shouldBackButtonBeVisible);
     }
 
     public static void resetOverview(Launcher launcher) {
