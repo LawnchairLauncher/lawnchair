@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
@@ -48,6 +49,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -227,7 +229,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         // Resolve the opening task id
         int openingTaskId = -1;
         for (RemoteAnimationTargetCompat target : targets) {
-            if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
+            if (target.mode == MODE_OPENING) {
                 openingTaskId = target.taskId;
                 break;
             }
@@ -247,8 +249,36 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
-        return new LauncherTransitionAnimator(getRecentsLauncherAnimator(recentsView, taskView),
-                getRecentsWindowAnimator(taskView, targets));
+        Animator launcherAnim;
+        AnimatorListenerAdapter windowAnimEndListener;
+        boolean launcherClosing = launcherIsATargetWithMode(targets, MODE_CLOSING);
+        if (launcherClosing) {
+            launcherAnim = getRecentsLauncherAnimator(recentsView, taskView);
+            windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Make sure recents gets fixed up by resetting task alphas and scales, etc.
+                    mLauncher.getStateManager().reapplyState();
+                }
+            };
+        } else {
+            AnimatorPlaybackController controller =
+                    mLauncher.getStateManager()
+                            .createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
+            controller.dispatchOnStart();
+            launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
+            windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLauncher.getStateManager().goToState(NORMAL, false);
+                }
+            };
+        }
+
+        MutableBoolean skipLauncherChanges = new MutableBoolean(!launcherClosing);
+        Animator windowAnim = getRecentsWindowAnimator(taskView, skipLauncherChanges, targets);
+        windowAnim.addListener(windowAnimEndListener);
+        return new LauncherTransitionAnimator(launcherAnim, windowAnim, skipLauncherChanges);
     }
 
     /**
@@ -318,7 +348,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         launcherAnimator.play(allAppsSlideOut);
 
         Workspace workspace = mLauncher.getWorkspace();
-        float[] workspaceScaleAndTranslation = LauncherState.NORMAL
+        float[] workspaceScaleAndTranslation = NORMAL
                 .getWorkspaceScaleAndTranslation(mLauncher);
         Animator recenterWorkspace = LauncherAnimUtils.ofPropertyValuesHolder(
                 workspace, new PropertyListBuilder()
@@ -338,7 +368,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * @return Animator that controls the window of the opening targets for the recents launch
      * animation.
      */
-    private ValueAnimator getRecentsWindowAnimator(TaskView v,
+    private ValueAnimator getRecentsWindowAnimator(TaskView v, MutableBoolean skipLauncherChanges,
             RemoteAnimationTargetCompat[] targets) {
         Rect taskViewBounds = new Rect();
         mDragLayer.getDescendantRectRelativeToSelf(v, taskViewBounds);
@@ -374,13 +404,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 final float percent = animation.getAnimatedFraction();
                 TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
 
-                v.setScaleX(tw.taskScale);
-                v.setScaleY(tw.taskScale);
-                v.setTranslationX(tw.taskX);
-                v.setTranslationY(tw.taskY);
-                // Defer fading out the view until after the app window gets faded in
-                v.setAlpha(getValue(1f, 0f, 75, 75,
-                        appAnimator.getDuration() * percent, Interpolators.LINEAR));
+                if (!skipLauncherChanges.value) {
+                    v.setScaleX(tw.taskScale);
+                    v.setScaleY(tw.taskScale);
+                    v.setTranslationX(tw.taskX);
+                    v.setTranslationY(tw.taskY);
+                    // Defer fading out the view until after the app window gets faded in
+                    v.setAlpha(getValue(1f, 0f, 75, 75,
+                            appAnimator.getDuration() * percent, Interpolators.LINEAR));
+                }
 
                 matrix.setScale(tw.winScale, tw.winScale);
                 matrix.postTranslate(tw.winX, tw.winY);
@@ -402,7 +434,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         matrix.postTranslate(target.position.x, target.position.y);
                         t.setMatrix(target.leash, matrix);
                         t.setWindowCrop(target.leash, crop);
-                        t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
+
+                        if (!skipLauncherChanges.value) {
+                            t.deferTransactionUntil(target.leash, surface, frameNumber);
+                        }
                     }
                     if (isFirstFrame) {
                         t.show(target.leash);
@@ -412,13 +447,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 matrix.reset();
                 isFirstFrame = false;
-            }
-        });
-        appAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Make sure recents gets fixed up by resetting task alphas and scales, etc.
-                mLauncher.getStateManager().reapplyState();
             }
         });
         return appAnimator;
