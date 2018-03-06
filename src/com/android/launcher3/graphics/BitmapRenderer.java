@@ -25,7 +25,7 @@ import com.android.launcher3.Utilities;
 
 public class BitmapRenderer {
 
-     public static final boolean USE_HARDWARE_BITMAP = false && Utilities.ATLEAST_P;
+     public static final boolean USE_HARDWARE_BITMAP = Utilities.ATLEAST_P;
 
      public static Bitmap createSoftwareBitmap(int width, int height, Renderer renderer) {
           Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
