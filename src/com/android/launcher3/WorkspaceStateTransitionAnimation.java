@@ -137,6 +137,8 @@ public class WorkspaceStateTransitionAnimation {
 
         propertySetter.setViewAlpha(mLauncher.getHotseat(), state.getHoseatAlpha(mLauncher),
                 pageAlphaProvider.interpolator);
+        propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
+                state.getHoseatAlpha(mLauncher), pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,
