@@ -63,6 +63,7 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -159,14 +160,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 .inflate(resId, group, false);
 
         icon.setClipToPadding(false);
-        icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
+        icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
         lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
 
         icon.setTag(folderInfo);
-        icon.setOnClickListener(launcher);
+        icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
         icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;

@@ -25,6 +25,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
@@ -358,29 +359,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             mDragInfo.dragType = DragType.WIDGET;
         }
 
-        CellLayout.CellInfo cellInfo = new CellLayout.CellInfo(item, info);
-
         Rect pos = new Rect();
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
         mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
-
-        Folder folder = Folder.getOpen(mLauncher);
-        if (folder != null) {
-            if (!folder.getItemsInReadingOrder().contains(item)) {
-                folder.close(true);
-                folder = null;
-            }
-        }
-
         mLauncher.getDragController().addDragListener(this);
 
         DragOptions options = new DragOptions();
         options.isAccessibleDrag = true;
-        if (folder != null) {
-            folder.startDrag(cellInfo.cell, options);
-        } else {
-            mLauncher.getWorkspace().startDrag(cellInfo, options);
-        }
+        ItemLongClickListener.beginDrag(item, mLauncher, info, options);
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.ColorScrim;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.SystemUiController;
@@ -71,7 +72,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     @Override
     public final boolean onLongClick(View v) {
-        if (!mLauncher.isDraggingEnabled()) return false;
+        if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
 
         if (v instanceof WidgetCell) {
             return beginDraggingWidget((WidgetCell) v);

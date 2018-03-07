@@ -34,24 +34,19 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragController;
-import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.ColorScrim;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -65,7 +60,7 @@ import com.android.launcher3.views.SpringRelativeLayout;
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        OnLongClickListener, Insettable, OnDeviceProfileChangeListener {
+        Insettable, OnDeviceProfileChangeListener {
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -249,37 +244,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public boolean dispatchKeyEvent(KeyEvent event) {
         mSearchUiManager.preDispatchKeyEvent(event);
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public boolean onLongClick(final View v) {
-        // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isInState(LauncherState.ALL_APPS) ||
-                mLauncher.getWorkspace().isSwitchingState()) return false;
-        // Return if global dragging is not enabled or we are already dragging
-        if (!mLauncher.isDraggingEnabled()) return false;
-        if (mLauncher.getDragController().isDragging()) return false;
-
-        // Start the drag
-        final DragController dragController = mLauncher.getDragController();
-        dragController.addDragListener(new DragController.DragListener() {
-            @Override
-            public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-                v.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onDragEnd() {
-                v.setVisibility(VISIBLE);
-                dragController.removeDragListener(this);
-            }
-        });
-
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        DragOptions options = new DragOptions();
-        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
-        mLauncher.getWorkspace().beginDragShared(v, this, options);
-        return false;
     }
 
     @Override
@@ -476,8 +440,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         AdapterHolder(boolean isWork) {
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
-            adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
-                    AllAppsContainerView.this, true);
+            adapter = new AllAppsGridAdapter(mLauncher, appsList);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }

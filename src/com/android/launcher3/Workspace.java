@@ -81,6 +81,7 @@ import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -935,10 +936,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
         }
 
-        if (!(child instanceof Folder)) {
-            child.setHapticFeedbackEnabled(false);
-            child.setOnLongClickListener(mLongClickListener);
-        }
+        child.setHapticFeedbackEnabled(false);
+        child.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
+
         if (child instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) child);
         }
@@ -1634,7 +1634,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         beginDragShared(child, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
-
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
