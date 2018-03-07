@@ -106,6 +106,11 @@ public class BgDataModel {
     public final WidgetsModel widgetsModel = new WidgetsModel();
 
     /**
+     * Id when the model was last bound
+     */
+    public int lastBindId = 0;
+
+    /**
      * Clears all the data
      */
     public synchronized void clear() {
