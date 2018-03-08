@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.ui;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -37,22 +34,27 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 import android.view.MotionEvent;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
+
+import org.junit.Before;
+
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -63,6 +65,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
     public static final long DEFAULT_UI_TIMEOUT = 3000;
+    public static final long LARGE_UI_TIMEOUT = 10000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -95,8 +98,13 @@ public abstract class AbstractLauncherUiTest {
     protected UiObject2 openAllApps() {
         mDevice.waitForIdle();
         if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // clicking on the page indicator brings up all apps tray on non tablets.
-            findViewById(R.id.page_indicator).click();
+            UiObject2 hotseat = mDevice.wait(
+                    Until.findObject(getSelectorForId(R.id.hotseat)), 2500);
+            Point start = hotseat.getVisibleCenter();
+            int endY = (int) (mDevice.getDisplayHeight() * 0.1f);
+            // 100 px/step
+            mDevice.swipe(start.x, start.y, start.x, endY, (start.y - endY) / 100);
+
         } else {
             mDevice.wait(Until.findObject(
                     By.desc(mTargetContext.getString(R.string.all_apps_button_label))),
