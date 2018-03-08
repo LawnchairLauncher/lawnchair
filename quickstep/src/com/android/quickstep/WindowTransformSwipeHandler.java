@@ -235,7 +235,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
         mTouchTimeMs = touchTimeMs;
-        mInputConsumer.registerInputConsumer();
+        // Register the input consumer on the UI thread, to ensure that it runs after any pending
+        // unregister calls
+        mMainExecutor.execute(mInputConsumer::registerInputConsumer);
         initStateCallbacks();
     }
 
