@@ -292,7 +292,7 @@ public class CellLayout extends ViewGroup {
             ViewCompat.setAccessibilityDelegate(this, null);
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
             getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            setOnClickListener(mLauncher);
+            setOnClickListener(null);
         } else {
             if (dragType == WORKSPACE_ACCESSIBILITY_DRAG &&
                     !(mTouchHelper instanceof WorkspaceAccessibilityHelper)) {

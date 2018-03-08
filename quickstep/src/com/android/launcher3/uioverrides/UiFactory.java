@@ -18,7 +18,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
-import android.graphics.PointF;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
@@ -33,9 +32,6 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsView;
 
 public class UiFactory {
-
-    private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
-            "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
@@ -58,10 +54,6 @@ public class UiFactory {
         return new StateHandler[] {
                 launcher.getAllAppsController(), launcher.getWorkspace(),
                 new RecentsViewStateController(launcher)};
-    }
-
-    public static void onWorkspaceLongPress(Launcher launcher, PointF touchPoint) {
-        OptionsPopupView.show(launcher, touchPoint.x, touchPoint.y);
     }
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {

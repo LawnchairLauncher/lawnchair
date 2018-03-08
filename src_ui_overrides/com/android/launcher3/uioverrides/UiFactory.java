@@ -16,9 +16,6 @@
 
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
-
-import android.graphics.PointF;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
@@ -28,8 +25,7 @@ import com.android.launcher3.util.TouchController;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {
-                new AllAppsSwipeController(launcher), new PinchToOverviewListener(launcher)};
+        return new TouchController[] {new AllAppsSwipeController(launcher)};
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
@@ -38,12 +34,7 @@ public class UiFactory {
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {
-                (OverviewPanel) launcher.getOverviewPanel(),
                 launcher.getAllAppsController(), launcher.getWorkspace() };
-    }
-
-    public static void onWorkspaceLongPress(Launcher launcher, PointF touchPoint) {
-        launcher.getStateManager().goToState(OVERVIEW);
     }
 
     public static void resetOverview(Launcher launcher) { }

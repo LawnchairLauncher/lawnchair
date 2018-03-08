@@ -23,10 +23,6 @@
     <dimen name="dynamic_grid_min_page_indicator_size">24dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
-    <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
@@ -227,5 +223,5 @@
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
 <!-- Overview -->
-    <dimen name="options_menu_icon_size">48dp</dimen>
+    <dimen name="options_menu_icon_size">24dp</dimen>
 </resources>

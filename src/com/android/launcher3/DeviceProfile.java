@@ -515,12 +515,6 @@ public class DeviceProfile {
         }
     }
 
-    public boolean shouldIgnoreLongPressToOverview(float touchX) {
-        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
-        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
-        return !isMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
-    }
-
     private static Context getContext(Context c, int orientation) {
         Configuration context = new Configuration(c.getResources().getConfiguration());
         context.orientation = orientation;

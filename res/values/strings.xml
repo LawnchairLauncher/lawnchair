@@ -169,8 +169,6 @@
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
-    <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-    <string name="accessibility_action_overview">Overview</string>
 
     <!-- Strings for settings -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
@@ -277,15 +275,6 @@
 
     <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
     <string name="action_move_to_workspace">Move to Home screen</string>
-
-    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-    <string name="action_move_screen_left">Move screen to left</string>
-
-    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-    <string name="action_move_screen_right">Move screen to right</string>
-
-    <!-- Accessibility confirmation when a screen was moved. -->
-    <string name="screen_moved">Screen moved</string>
 
     <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
     <string name="action_resize">Resize</string>

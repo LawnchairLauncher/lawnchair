@@ -31,7 +31,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetHostView;
@@ -49,7 +48,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -65,16 +63,12 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.ActionMode;
 import android.view.Display;
-import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
@@ -109,7 +103,6 @@ import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -126,6 +119,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -147,10 +141,8 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseActivity
-        implements LauncherExterns, OnClickListener, OnLongClickListener,
-                   LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
-                   WallpaperColorInfo.OnThemeChangeListener {
+public class Launcher extends BaseActivity implements LauncherExterns, LauncherModel.Callbacks,
+        LauncherProviderChangeListener, WallpaperColorInfo.OnThemeChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -228,7 +220,7 @@ public class Launcher extends BaseActivity
     AllAppsTransitionController mAllAppsController;
 
     // UI and state for the overview panel
-    private ViewGroup mOverviewPanel;
+    private View mOverviewPanel;
 
     @Thunk boolean mWorkspaceLoading = true;
 
@@ -260,8 +252,6 @@ public class Launcher extends BaseActivity
      * {@link #startActivityForResult(Intent, int)} or {@link #requestPermissions(String[], int)}
      */
     private PendingRequestArgs mPendingRequestArgs;
-
-    private final PointF mLastDispatchTouchEvent = new PointF();
 
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mAppLaunchSuccess;
@@ -952,6 +942,7 @@ public class Launcher extends BaseActivity
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
+        mHotseat = findViewById(R.id.hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -960,15 +951,6 @@ public class Launcher extends BaseActivity
         // Setup the drag layer
         mDragLayer.setup(this, mDragController);
 
-        // Setup the hotseat
-        mHotseat = (Hotseat) findViewById(R.id.hotseat);
-        if (mHotseat != null) {
-            mHotseat.setOnLongClickListener(this);
-        }
-
-        // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(false);
-        mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
@@ -1222,7 +1204,7 @@ public class Launcher extends BaseActivity
         return mHotseat;
     }
 
-    public <T extends ViewGroup> T getOverviewPanel() {
+    public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
     }
 
@@ -1659,51 +1641,6 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Launches the intent referred by the clicked shortcut.
-     *
-     * @param v The view representing the clicked shortcut.
-     */
-    @Override
-    public void onClick(View v) {
-        // Make sure that rogue clicks don't get through while allapps is launching, or after the
-        // view has detached (it's possible for this to happen if the view is removed mid touch).
-        if (v.getWindowToken() == null) {
-            return;
-        }
-
-        if (!mWorkspace.isFinishedSwitchingState()) {
-            return;
-        }
-
-        if (v instanceof Workspace) {
-            if (isInState(OVERVIEW)) {
-                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Touch.TAP,
-                        LauncherLogProto.Action.Direction.NONE,
-                        LauncherLogProto.ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
-                mStateManager.goToState(NORMAL);
-            }
-            return;
-        }
-
-        if (v instanceof CellLayout) {
-            if (isInState(OVERVIEW)) {
-                int page = mWorkspace.indexOfChild(v);
-                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Touch.TAP,
-                        LauncherLogProto.Action.Direction.NONE,
-                        LauncherLogProto.ContainerType.OVERVIEW, page);
-                mWorkspace.snapToPageFromOverView(page);
-                mStateManager.goToState(NORMAL);
-            }
-            return;
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
-
-    /**
      * Event handler for the wallpaper picker button that appears after a long press
      * on the home screen.
      */
@@ -1858,62 +1795,6 @@ public class Launcher extends BaseActivity
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
         return mAppLaunchSuccess;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        mLastDispatchTouchEvent.set(ev.getX(), ev.getY());
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        if (!isDraggingEnabled()) return false;
-        if (isWorkspaceLocked()) return false;
-        if (!isInState(NORMAL) && !isInState(OVERVIEW)) return false;
-
-        boolean ignoreLongPressToOverview =
-                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEvent.x);
-
-        if (v instanceof Workspace) {
-            if (!isInState(OVERVIEW)) {
-                if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
-                    getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                            Action.Direction.NONE, ContainerType.WORKSPACE,
-                            mWorkspace.getCurrentPage());
-                    UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
-        // The hotseat touch handling does not go through Workspace, and we always allow long press
-        // on hotseat items.
-        if (!mDragController.isDragging()) {
-            // User long pressed on empty space
-            if (mWorkspace.isPageRearrangeEnabled()) {
-                mWorkspace.startReordering(v);
-                getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                        Action.Direction.NONE, ContainerType.OVERVIEW);
-            } else {
-                if (ignoreLongPressToOverview) {
-                    return false;
-                }
-                getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                        Action.Direction.NONE, ContainerType.WORKSPACE,
-                        mWorkspace.getCurrentPage());
-                UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
-            }
-            mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-        }
-        return true;
     }
 
     boolean isHotseatLayout(View layout) {
@@ -2628,8 +2509,7 @@ public class Launcher extends BaseActivity
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
-                mLastDispatchTouchEvent.set(-1, -1);
-                UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
+                OptionsPopupView.show(this, -1, -1);
             }
             return true;
         }
