@@ -2970,8 +2970,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
         }
-        if (d.cancelled && mDragInfo != null && mDragInfo.cell != null) {
-            mDragInfo.cell.setVisibility(VISIBLE);
+        View cell = getHomescreenIconByItemId(d.originalDragInfo.id);
+        if (d.cancelled && cell != null) {
+            cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
     }
