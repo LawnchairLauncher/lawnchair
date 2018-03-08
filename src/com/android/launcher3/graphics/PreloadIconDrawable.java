@@ -164,7 +164,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     @Override
     public void drawInternal(Canvas canvas, Rect bounds) {
         if (mRanFinishAnimation) {
-            super.draw(canvas);
+            super.drawInternal(canvas, bounds);
             return;
         }
 
@@ -178,7 +178,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
         int saveCount = canvas.save();
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
-        super.draw(canvas);
+        super.drawInternal(canvas, bounds);
         canvas.restoreToCount(saveCount);
     }
 
