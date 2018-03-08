@@ -36,7 +36,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
@@ -50,7 +49,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -61,11 +59,12 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
+import com.android.launcher3.views.SpringRelativeLayout;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends RelativeLayout implements DragSource,
+public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         OnLongClickListener, Insettable, OnDeviceProfileChangeListener {
 
     private final Launcher mLauncher;
@@ -119,6 +118,10 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         // Attach a scrim to be drawn behind all-apps and hotseat
         new ColorScrim(this, Themes.getAttrColor(context, R.attr.allAppsScrimColor), DEACCEL_2)
                 .attach();
+
+        addSpringView(R.id.all_apps_header);
+        addSpringView(R.id.apps_list_view);
+        addSpringView(R.id.all_apps_tabs_view_pager);
     }
 
     public AllAppsStore getAppsStore() {
@@ -324,10 +327,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
     }
 
-    public SpringAnimationHandler getSpringAnimationHandler() {
-        return mUsingTabs ? null : mAH[AdapterHolder.MAIN].animationHandler;
-    }
-
     private void rebindAdapters(boolean showTabs) {
         rebindAdapters(showTabs, false /* force */);
     }
@@ -470,7 +469,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
         public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
-        final SpringAnimationHandler animationHandler;
         final AlphabeticalAppsList appsList;
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
@@ -481,22 +479,19 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
                     AllAppsContainerView.this, true);
             appsList.setAdapter(adapter);
-            animationHandler = adapter.getSpringAnimationHandler();
             layoutManager = adapter.getLayoutManager();
         }
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
+            recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
             recyclerView.setApps(appsList, mUsingTabs);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
             recyclerView.setHasFixedSize(true);
             // No animations will occur when changes occur to the items in this RecyclerView.
             recyclerView.setItemAnimator(null);
-            if (FeatureFlags.LAUNCHER3_PHYSICS && animationHandler != null) {
-                recyclerView.setSpringAnimationHandler(animationHandler);
-            }
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
             recyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
