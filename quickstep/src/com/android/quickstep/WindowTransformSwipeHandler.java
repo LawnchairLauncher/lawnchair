@@ -606,6 +606,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                         mTargetRect.offset(offsetX, 0);
                     }
                 }
+                if (mRecentsAnimationWrapper.controller != null) {
+
+                    // TODO: This logic is spartanic!
+                    mRecentsAnimationWrapper.controller.setAnimationTargetsBehindSystemBars(
+                            shift < 0.12f);
+                }
             };
             if (Looper.getMainLooper() == Looper.myLooper()) {
                 runOnUi.run();
