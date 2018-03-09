@@ -773,6 +773,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             try {
                 RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
                 definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
+                        WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
                         new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(),
                                 CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
 
