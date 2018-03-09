@@ -31,21 +31,22 @@
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            />
+            android:clipToPadding="false" />
 
         <!-- Fast scroller popup -->
         <TextView
             android:id="@+id/fast_scroller_popup"
             style="@style/FastScrollerPopup"
-            android:layout_gravity="top|end"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <com.android.launcher3.views.RecyclerViewFastScroller
             android:id="@+id/fast_scroller"
             android:layout_width="@dimen/fastscroll_width"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
     </com.android.launcher3.views.TopRoundedCornerView>
 </com.android.launcher3.widget.WidgetsFullSheet>

@@ -29,7 +29,7 @@ import com.android.launcher3.util.Themes;
 /**
  * View with top rounded corners.
  */
-public class TopRoundedCornerView extends FrameLayout {
+public class TopRoundedCornerView extends SpringRelativeLayout {
 
     private final RectF mRect = new RectF();
     private final Path mClipPath = new Path();

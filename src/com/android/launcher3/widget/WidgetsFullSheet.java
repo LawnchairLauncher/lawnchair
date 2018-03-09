@@ -70,6 +70,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setApplyBitmapDeferred(true, mRecyclerView);
 
+        TopRoundedCornerView springLayout = (TopRoundedCornerView) mContent;
+        springLayout.addSpringView(R.id.widgets_list_view);
+        mRecyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
         onWidgetsBound();
     }
 
