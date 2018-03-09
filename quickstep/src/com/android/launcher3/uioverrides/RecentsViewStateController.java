@@ -60,7 +60,6 @@ public class RecentsViewStateController implements StateHandler {
 
     @Override
     public void setState(LauncherState state) {
-        mWorkspaceCard.setWorkspaceScrollingEnabled(state.overviewUi);
         setVisibility(state.overviewUi);
         setTransitionProgress(state.overviewUi ? 1 : 0);
         if (state.overviewUi) {
@@ -78,8 +77,6 @@ public class RecentsViewStateController implements StateHandler {
             .getBoolean("pref_scroll_to_first_task_default_true", true);
         mIsRecentsScrollingToFirstTask = mLauncher.isInState(NORMAL) && toState == OVERVIEW
                 && settingEnabled;
-        // TODO: Instead of animating the workspace translationX, move the contents
-        mWorkspaceCard.setWorkspaceScrollingEnabled(mIsRecentsScrollingToFirstTask);
 
         // Scroll to the workspace card before changing to the NORMAL state.
         int currPage = mRecentsView.getCurrentPage();
@@ -100,7 +97,6 @@ public class RecentsViewStateController implements StateHandler {
 
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mWorkspaceCard.setWorkspaceScrollingEnabled(toState.overviewUi);
                 mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
             }
         });

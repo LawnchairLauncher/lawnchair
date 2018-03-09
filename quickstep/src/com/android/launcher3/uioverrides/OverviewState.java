@@ -24,7 +24,6 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsView;
@@ -48,18 +47,13 @@ public class OverviewState extends LauncherState {
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         Rect pageRect = new Rect();
-        RecentsView.getScaledDownPageRect(launcher.getDeviceProfile(), launcher, pageRect);
-        RecentsView rv = launcher.getOverviewPanel();
+        RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, pageRect);
 
         if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        float overlap = 0;
-        if (rv.getCurrentPage() >= rv.getFirstTaskIndex()) {
-            overlap = launcher.getResources().getDimension(R.dimen.workspace_overview_offset_x);
-        }
-        return getScaleAndTranslationForPageRect(launcher, overlap, pageRect);
+        return getScaleAndTranslationForPageRect(launcher, pageRect);
     }
 
     @Override
@@ -94,8 +88,7 @@ public class OverviewState extends LauncherState {
         };
     }
 
-    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, float offsetX,
-            Rect pageRect) {
+    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
         Workspace ws = launcher.getWorkspace();
         float childWidth = ws.getNormalChildWidth();
 
@@ -106,18 +99,6 @@ public class OverviewState extends LauncherState {
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
         float translationY = pageRect.top - childTop;
 
-        // Align the workspace horizontally centered with the task rect
-        float halfWidth = ws.getExpectedWidth() / 2;
-        float childCenter = halfWidth -
-                scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
-        float translationX = pageRect.centerX() - childCenter;
-
-        if (launcher.<RecentsView>getOverviewPanel().isRtl()) {
-            translationX -= offsetX / scale;
-        } else {
-            translationX += offsetX / scale;
-        }
-
-        return new float[] {scale, translationX, translationY};
+        return new float[] {scale, 0, translationY};
     }
 }

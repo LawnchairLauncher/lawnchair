@@ -16,34 +16,19 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
-import com.android.quickstep.RecentsView;
 import com.android.quickstep.RecentsView.PageCallbacks;
-import com.android.quickstep.RecentsView.ScrollState;
 
 public class WorkspaceCard extends View implements PageCallbacks, OnClickListener {
 
-    private final Rect mTempRect = new Rect();
-
     private Launcher mLauncher;
-    private Workspace mWorkspace;
-
-    private float mLinearInterpolationForPage2 = 1;
-    private float mTranslateXPage0, mTranslateXPage1;
-    private float mExtraScrollShift;
-
-    private boolean mIsWorkspaceScrollingEnabled;
 
     public WorkspaceCard(Context context) {
         this(context, null);
@@ -65,70 +50,11 @@ public class WorkspaceCard extends View implements PageCallbacks, OnClickListene
     public void draw(Canvas canvas) { }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        // Initiate data
-        // TODO: can remove most of this as workspace card is no longer scrolling
-        mLinearInterpolationForPage2 = RecentsView.getScaledDownPageRect(
-                mLauncher.getDeviceProfile(), mLauncher, mTempRect);
-
-        float[] scale = OverviewState.getScaleAndTranslationForPageRect(mLauncher, 0, mTempRect);
-        mTranslateXPage0 = scale[1];
-        mTranslateXPage1 = OverviewState
-                .getScaleAndTranslationForPageRect(mLauncher,
-                        getResources().getDimension(R.dimen.workspace_overview_offset_x) / scale[0],
-                        mTempRect)[1];
-
-        mExtraScrollShift = 0;
-        if (mWorkspace != null && getWidth() > 0) {
-            float workspaceWidth = mWorkspace.getNormalChildWidth() * scale[0];
-            mExtraScrollShift = (workspaceWidth - getWidth()) / 2;
-            setScaleX(workspaceWidth / getWidth());
-        }
-    }
-
-    @Override
     public void onClick(View view) {
         mLauncher.getStateManager().goToState(NORMAL);
     }
 
     public void setup(Launcher launcher) {
         mLauncher = launcher;
-        mWorkspace = mLauncher.getWorkspace();
-    }
-
-    public void setWorkspaceScrollingEnabled(boolean isEnabled) {
-        // TODO can remove
-        mIsWorkspaceScrollingEnabled = isEnabled;
-    }
-
-    @Override
-    public int onPageScroll(ScrollState scrollState) {
-        // TODO: can remove
-        if (true) {
-            return SCROLL_TYPE_WORKSPACE;
-        }
-
-        float factor = scrollState.linearInterpolation;
-        float translateX = scrollState.distanceFromScreenCenter;
-        if (mIsWorkspaceScrollingEnabled) {
-            float shift = factor * (mTranslateXPage1 - mTranslateXPage0);
-            mWorkspace.setTranslationX(shift + mTranslateXPage0);
-            translateX += shift;
-        }
-
-        setTranslationX(translateX);
-
-        // If the workspace card is still the first page, shift all the other pages.
-        if (scrollState.linearInterpolation > mLinearInterpolationForPage2) {
-            scrollState.prevPageExtraWidth = 0;
-        } else if (mLinearInterpolationForPage2 > 0) {
-            scrollState.prevPageExtraWidth = mExtraScrollShift *
-                    (1 - scrollState.linearInterpolation / mLinearInterpolationForPage2);
-        } else {
-            scrollState.prevPageExtraWidth = mExtraScrollShift;
-        }
-        return SCROLL_TYPE_WORKSPACE;
     }
 }
