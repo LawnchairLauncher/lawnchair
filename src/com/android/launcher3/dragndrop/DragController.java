@@ -17,6 +17,7 @@
 package com.android.launcher3.dragndrop;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -35,7 +36,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
@@ -138,11 +138,9 @@ public class DragController implements DragDriver.EventListener, TouchController
             android.os.Debug.startMethodTracing("Launcher");
         }
 
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            // Hide soft keyboard, if visible
-            mLauncher.getSystemService(InputMethodManager.class)
-                    .hideSoftInputFromWindow(mWindowToken, 0);
-        }
+        // Hide soft keyboard, if visible
+        ((InputMethodManager) mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(mWindowToken, 0);
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
