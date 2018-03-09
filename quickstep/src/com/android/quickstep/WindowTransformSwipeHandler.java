@@ -567,8 +567,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
                         transaction.setMatrix(app.leash, mTmpMatrix)
-                                .setWindowCrop(app.leash, mClipRect)
-                                .show(app.leash);
+                                .setWindowCrop(app.leash, mClipRect);
+
+                        if (app.isNotInRecents) {
+                            transaction.setAlpha(app.leash, 1 - shift);
+                        }
+
+                        transaction.show(app.leash);
                     }
                 }
                 transaction.apply();
