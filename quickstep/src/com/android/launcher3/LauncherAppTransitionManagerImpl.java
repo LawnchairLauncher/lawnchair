@@ -295,7 +295,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         boolean launchingCenterTask = launchedTaskIndex == centerTaskIndex;
         boolean isRtl = recentsView.isRtl();
         if (launchingCenterTask) {
-            if (launchedTaskIndex - 1 >= recentsView.getFirstTaskIndex()) {
+            if (launchedTaskIndex - 1 >= 0) {
                 TaskView adjacentPage1 = (TaskView) recentsView.getPageAt(launchedTaskIndex - 1);
                 ObjectAnimator adjacentTask1ScaleAndTranslate =
                         LauncherAnimUtils.ofPropertyValuesHolder(adjacentPage1,
@@ -317,7 +317,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                         .build());
                 launcherAnimator.play(adjacentTask2ScaleAndTranslate);
             }
-        } else if (centerTaskIndex >= recentsView.getFirstTaskIndex()) {
+        } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
             TaskView centerTask = (TaskView) recentsView.getPageAt(centerTaskIndex);
             float translationX = Math.abs(v.getTranslationX());
@@ -329,7 +329,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                     .build());
             launcherAnimator.play(centerTaskParallaxToRight);
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - launchedTaskIndex);
-            if (otherAdjacentTaskIndex >= recentsView.getFirstTaskIndex()
+            if (otherAdjacentTaskIndex >= 0
                     && otherAdjacentTaskIndex < recentsView.getPageCount()) {
                 TaskView otherAdjacentTask = (TaskView) recentsView.getPageAt(
                         otherAdjacentTaskIndex);

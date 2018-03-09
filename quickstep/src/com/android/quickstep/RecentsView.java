@@ -265,7 +265,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     public TaskView getTaskView(int taskId) {
-        for (int i = getFirstTaskIndex(); i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             TaskView tv = (TaskView) getChildAt(i);
             if (tv.getTask().key.id == taskId) {
                 return tv;

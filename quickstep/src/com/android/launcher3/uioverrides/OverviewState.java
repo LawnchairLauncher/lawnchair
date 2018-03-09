@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.graphics.Rect;
@@ -34,7 +34,7 @@ import com.android.quickstep.RecentsView;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_PAGE_BACKGROUNDS | FLAG_OVERVIEW_UI;
+            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI;
 
     public OverviewState(int id) {
         this(id, STATE_FLAGS);
@@ -79,11 +79,10 @@ public class OverviewState extends LauncherState {
     }
 
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        final int centerPage = launcher.getWorkspace().getNextPage();
-        return new PageAlphaProvider(ACCEL_2) {
+        return new PageAlphaProvider(DEACCEL_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return  pageIndex != centerPage ? 0 : 1f;
+                return 0;
             }
         };
     }

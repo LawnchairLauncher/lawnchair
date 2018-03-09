@@ -588,9 +588,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 mLauncherTransitionController.setPlayFraction(shift);
 
                 // Make sure the window follows the first task if it moves, e.g. during quick scrub.
-                int firstTaskIndex = mRecentsView.getFirstTaskIndex();
-                View firstTask = mRecentsView.getPageAt(firstTaskIndex);
-                int scrollForFirstTask = mRecentsView.getScrollForPage(firstTaskIndex);
+                View firstTask = mRecentsView.getPageAt(0);
+                int scrollForFirstTask = mRecentsView.getScrollForPage(0);
                 int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
                 if (offsetFromFirstTask != 0) {
                     synchronized (mTargetRect) {
