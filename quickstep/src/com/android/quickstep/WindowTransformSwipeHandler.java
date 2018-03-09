@@ -74,6 +74,7 @@ import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -468,6 +469,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mLauncherLayoutListener.setHandler(this);
         onLauncherLayoutChanged();
 
+        final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
         // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
         // "Recents" activity for app transition tests for the app-to-recents case.
         final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
@@ -475,8 +477,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
                 "com.android.systemui.recents.RecentsActivity");
         builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                mLauncherFrameDrawnTime - mTouchTimeMs);
+                transitionDelay);
         mMetricsLogger.write(builder);
+        if (LatencyTrackerCompat.isEnabled(mContext)) {
+            LatencyTrackerCompat.logToggleRecents((int) transitionDelay);
+        }
     }
 
     public void updateInteractionType(@InteractionType int interactionType) {
