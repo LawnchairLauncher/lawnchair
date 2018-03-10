@@ -74,6 +74,7 @@ public class TaskThumbnailView extends View {
         mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
         mFadeLength = getResources().getDimension(R.dimen.task_fade_length);
         mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
+        mPaint.setFilterBitmap(true);
     }
 
     public void bind() {
