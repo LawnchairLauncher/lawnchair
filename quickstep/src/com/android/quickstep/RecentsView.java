@@ -17,9 +17,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.TaskView.CURVE_FACTOR;
-import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -52,7 +49,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -71,10 +67,6 @@ import java.util.ArrayList;
 public class RecentsView extends PagedView implements Insettable, OnSharedPreferenceChangeListener {
 
     private static final Rect sTempStableInsets = new Rect();
-
-    public static final int SCROLL_TYPE_NONE = 0;
-    public static final int SCROLL_TYPE_TASK = 1;
-    public static final int SCROLL_TYPE_WORKSPACE = 2;
 
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
 
@@ -152,7 +144,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
                 mIsRtl = !mIsRtl;
             }
             setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-            mScrollState.isRtl = mIsRtl;
         }
     }
 
@@ -274,7 +265,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     public TaskView getTaskView(int taskId) {
-        for (int i = getFirstTaskIndex(); i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             TaskView tv = (TaskView) getChildAt(i);
             if (tv.getTask().key.id == taskId) {
                 return tv;
@@ -407,33 +398,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         return padding;
     }
 
-    /**
-     * Sets the {@param outRect} to match the position of the first tile such that it is scaled
-     * down to match the 2nd taskView.
-     * @return returns the factor which determines the scaling factor for the second task.
-     */
-    public static float getScaledDownPageRect(DeviceProfile dp, Context context, Rect outRect) {
-        getPageRect(dp, context, outRect);
-
-        int pageSpacing = context.getResources()
-                .getDimensionPixelSize(R.dimen.recents_page_spacing);
-        float halfScreenWidth = dp.widthPx * 0.5f;
-        float halfPageWidth = outRect.width() * 0.5f;
-        float pageCenter = outRect.right + pageSpacing + halfPageWidth;
-        float distanceFromCenter = Math.abs(halfScreenWidth - pageCenter);
-        float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
-        float linearInterpolation = Math.min(1, distanceFromCenter / distanceToReachEdge);
-
-        float scale = 1 - CURVE_INTERPOLATOR.getInterpolation(linearInterpolation) * CURVE_FACTOR;
-
-        int topMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        outRect.top -= topMargin;
-        Utilities.scaleRectAboutCenter(outRect, scale);
-        outRect.top += (int) (scale * topMargin);
-        return linearInterpolation;
-    }
-
     public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
         Rect targetPadding = getPadding(grid, context);
         Rect insets = grid.getInsets();
@@ -474,8 +438,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
             return;
         }
-        final int halfPageWidth = mScrollState.halfPageWidth = getNormalChildWidth() / 2;
-        mScrollState.lastScrollType = SCROLL_TYPE_NONE;
+        final int halfPageWidth = getNormalChildWidth() / 2;
         final int screenCenter = mInsets.left + getPaddingLeft() + getScrollX() + halfPageWidth;
         final int halfScreenWidth = getMeasuredWidth() / 2;
         final int pageSpacing = mPageSpacing;
@@ -484,11 +447,11 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
             int pageCenter = page.getLeft() + halfPageWidth;
-            mScrollState.distanceFromScreenCenter = screenCenter - pageCenter;
+            float distanceFromScreenCenter = screenCenter - pageCenter;
             float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
             mScrollState.linearInterpolation = Math.min(1,
-                    Math.abs(mScrollState.distanceFromScreenCenter) / distanceToReachEdge);
-            mScrollState.lastScrollType = ((PageCallbacks) page).onPageScroll(mScrollState);
+                    Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
+            ((PageCallbacks) page).onPageScroll(mScrollState);
         }
     }
 
@@ -640,25 +603,17 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     public interface PageCallbacks {
 
         /**
-         * Updates the page UI based on scroll params and returns the type of scroll
-         * effect performed.
-         *
-         * @see #SCROLL_TYPE_NONE
-         * @see #SCROLL_TYPE_TASK
-         * @see #SCROLL_TYPE_WORKSPACE
+         * Updates the page UI based on scroll params.
          */
-        int onPageScroll(ScrollState scrollState);
+        default void onPageScroll(ScrollState scrollState) {};
     }
 
     public static class ScrollState {
 
-        public boolean isRtl;
-        public int lastScrollType;
-
-        public int halfPageWidth;
-        public float distanceFromScreenCenter;
+        /**
+         * The progress from 0 to 1, where 0 is the center
+         * of the screen and 1 is the edge of the screen.
+         */
         public float linearInterpolation;
-
-        public float prevPageExtraWidth;
     }
 }

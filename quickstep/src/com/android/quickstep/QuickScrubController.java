@@ -22,10 +22,9 @@ import com.android.launcher3.Alarm;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 /**
  * Responds to quick scrub callbacks to page through and launch recent tasks.
@@ -52,6 +51,7 @@ public class QuickScrubController implements OnAlarmListener {
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
     private int mStartPage;
+    private boolean mStartedFromHome;
     private boolean mHasAlarmRun;
 
     public QuickScrubController(Launcher launcher, RecentsView recentsView) {
@@ -65,7 +65,8 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void onQuickScrubStart(boolean startingFromHome) {
         mInQuickScrub = true;
-        mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
+        mStartPage = 0;
+        mStartedFromHome = startingFromHome;
         mQuickScrubSection = 0;
         mHasAlarmRun = false;
         mLauncher.getUserEventDispatcher().resetActionDurationMillis();
@@ -78,11 +79,7 @@ public class QuickScrubController implements OnAlarmListener {
         }
         int page = mRecentsView.getNextPage();
         Runnable launchTaskRunnable = () -> {
-            if (page < mRecentsView.getFirstTaskIndex()) {
-                mRecentsView.getPageAt(page).performClick();
-            } else {
-                ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
-            }
+            ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
         };
         int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
                 * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
@@ -94,7 +91,7 @@ public class QuickScrubController implements OnAlarmListener {
             launchTaskRunnable.run();
         }
         mLauncher.getUserEventDispatcher().logActionOnControl(Touch.DRAGDROP,
-                ControlType.QUICK_SCRUB_BUTTON, null, mStartPage == 0 ?
+                ControlType.QUICK_SCRUB_BUTTON, null, mStartedFromHome ?
                         ContainerType.WORKSPACE : ContainerType.APP);
     }
 
@@ -116,7 +113,7 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void onQuickSwitch() {
-        for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
+        for (int i = 0; i < mRecentsView.getPageCount(); i++) {
             TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
             if (taskView.getTask().key.id != mRecentsView.getRunningTaskId()) {
                 Runnable launchTaskRunnable = () -> taskView.launchTask(true);
@@ -131,13 +128,13 @@ public class QuickScrubController implements OnAlarmListener {
             }
         }
         mLauncher.getUserEventDispatcher().logActionOnControl(Touch.FLING,
-                ControlType.QUICK_SCRUB_BUTTON, null, mStartPage == 0 ?
+                ControlType.QUICK_SCRUB_BUTTON, null, mStartedFromHome ?
                         ContainerType.WORKSPACE : ContainerType.APP);
     }
 
     public void snapToPageForCurrentQuickScrubSection() {
         if (mInQuickScrub) {
-            goToPageWithHaptic(mRecentsView.getFirstTaskIndex() + mQuickScrubSection);
+            goToPageWithHaptic(mQuickScrubSection);
         }
     }
 

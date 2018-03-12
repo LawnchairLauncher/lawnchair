@@ -33,8 +33,6 @@
     <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>
     <dimen name="quickstep_fling_min_velocity">250dp</dimen>
 
-    <dimen name="workspace_overview_offset_x">-24dp</dimen>
-
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">25dp</dimen>
     <dimen name="workspace_trans_y">80dp</dimen>

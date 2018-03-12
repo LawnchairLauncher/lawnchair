@@ -15,6 +15,13 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -32,19 +39,12 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.RecentsView;
 import com.android.quickstep.TaskView;
-
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 /**
  * Touch controller for swipe interaction in Overview state
@@ -132,28 +132,22 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                 mTaskBeingDragged = null;
                 mSwipeDownEnabled = true;
 
-                int currentPage = mRecentsView.getCurrentPage();
-                if (currentPage == 0) {
-                    // User is on home tile
+                View view = mRecentsView.getChildAt(mRecentsView.getCurrentPage());
+                if (mLauncher.getDragLayer().isEventOverView(view, ev) &&
+                        view instanceof TaskView) {
+                    // The tile can be dragged down to open the task.
+                    mTaskBeingDragged = (TaskView) view;
                     directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
+                    mStartingTarget = LauncherLogProto.ItemType.TASK;
+                } else if (isEventOverHotseat(ev)) {
+                    // The hotseat is being dragged
+                    directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+                    mSwipeDownEnabled = false;
+                    mStartingTarget = ContainerType.HOTSEAT;
                 } else {
-                    View view = mRecentsView.getChildAt(currentPage);
-                    if (mLauncher.getDragLayer().isEventOverView(view, ev) &&
-                            view instanceof TaskView) {
-                        // The tile can be dragged down to open the task.
-                        mTaskBeingDragged = (TaskView) view;
-                        directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
-                        mStartingTarget = LauncherLogProto.ItemType.TASK;
-                    } else if (isEventOverHotseat(ev)) {
-                        // The hotseat is being dragged
-                        directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
-                        mSwipeDownEnabled = false;
-                        mStartingTarget = ContainerType.HOTSEAT;
-                    } else {
-                        mNoIntercept = true;
-                        mStartingTarget = ContainerType.WORKSPACE;
-                        return false;
-                    }
+                    mNoIntercept = true;
+                    mStartingTarget = ContainerType.WORKSPACE;
+                    return false;
                 }
             }
 
