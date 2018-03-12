@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -113,6 +112,11 @@ public class Hotseat extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        if (Utilities.getLawnchairPrefs(getContext()).getDockSearchBar()) {
+            inflate(getContext(), R.layout.search_container_hotseat, this);
+        }
+
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isVerticalBarLayout()) {

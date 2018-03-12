@@ -220,10 +220,8 @@ public class DeviceProfile {
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
-        hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarTopPaddingPx = getHotseatTopPadding(res);
+        hotseatBarBottomPaddingPx = getHotseatBottomPadding(res);
         hotseatBarLeftNavBarRightPaddingPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_left_nav_bar_right_padding);
         hotseatBarRightNavBarRightPaddingPx = res.getDimensionPixelSize(
@@ -232,10 +230,7 @@ public class DeviceProfile {
                 R.dimen.dynamic_grid_hotseat_land_left_nav_bar_left_padding);
         hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
-        hotseatBarSizePx = isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
-                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+        hotseatBarSizePx = getHotseatSize(inv, res, dm);
 
         mBottomMarginHw = res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw);
         if (!isVerticalBarLayout()) {
@@ -276,6 +271,24 @@ public class DeviceProfile {
 
         // This is done last, after iconSizePx is calculated above.
         mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
+    }
+
+    public int getHotseatSize(InvariantDeviceProfile inv, Resources res, DisplayMetrics dm) {
+        return isVerticalBarLayout()
+                ? Utilities.pxFromDp(inv.iconSize, dm)
+                : res.getDimensionPixelSize(Utilities.getLawnchairPrefs(mContext).getDockSearchBar() ?
+                    R.dimen.dynamic_grid_hotseat_size : R.dimen.v1_dynamic_grid_hotseat_size)
+                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+    }
+
+    public int getHotseatBottomPadding(Resources res) {
+        return res.getDimensionPixelSize(Utilities.getLawnchairPrefs(mContext).getDockSearchBar() ?
+                R.dimen.dynamic_grid_hotseat_bottom_padding : R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
+    }
+
+    public int getHotseatTopPadding(Resources res) {
+        return res.getDimensionPixelSize(Utilities.getLawnchairPrefs(mContext).getDockSearchBar() ?
+                R.dimen.dynamic_grid_hotseat_top_padding : R.dimen.v1_dynamic_grid_hotseat_top_padding);
     }
 
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {

@@ -47,6 +47,9 @@
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
 
+    <dimen name="v1_dynamic_grid_hotseat_top_padding">4dp</dimen>
+    <dimen name="v1_dynamic_grid_hotseat_bottom_padding">2dp</dimen>
+    <dimen name="v1_dynamic_grid_hotseat_size">80dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
