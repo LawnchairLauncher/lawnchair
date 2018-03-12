@@ -25,9 +25,9 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.quickstep.RemoteRunnable.executeSafely;
 import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -39,6 +39,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -70,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
     private static final String TAG = "ActivityTouchConsumer";
 
@@ -97,16 +99,17 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
+    private boolean mIsGoingToHome;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
-            @HitTarget int downHitTarget) {
+            @HitTarget int downHitTarget, VelocityTracker velocityTracker) {
         super(base);
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
-        mVelocityTracker = VelocityTracker.obtain();
+        mVelocityTracker = velocityTracker;
         mISystemUiProxy = systemUiProxy;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
@@ -374,6 +377,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             final BaseSwipeInteractionHandler handler = mInteractionHandler;
             mInteractionHandler = null;
+            mIsGoingToHome = handler.mIsGoingToHome;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -427,5 +431,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                mVelocityTracker.clear();
            }
         }
+    }
+
+    @Override
+    public boolean forceToLauncherConsumer() {
+        return mIsGoingToHome;
+    }
+
+    @Override
+    public boolean deferNextEventToMainThread() {
+        // TODO: Consider also check if the eventQueue is using mainThread of not.
+        return mInteractionHandler != null;
     }
 }

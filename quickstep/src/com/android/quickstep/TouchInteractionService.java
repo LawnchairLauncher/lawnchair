@@ -39,6 +39,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 
@@ -161,7 +162,6 @@ public class TouchInteractionService extends Service {
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
-    private MotionEventQueue mNoOpEventQueue;
 
     @Override
     public void onCreate() {
@@ -171,8 +171,7 @@ public class TouchInteractionService extends Service {
         mMainThreadExecutor = new MainThreadExecutor();
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
-        mNoOpEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
-        mEventQueue = mNoOpEventQueue;
+        mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
 
         sConnected = true;
 
@@ -194,31 +193,45 @@ public class TouchInteractionService extends Service {
     }
 
     private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
-        RunningTaskInfo runningTaskInfo = mAM.getRunningTask();
-
         mEventQueue.reset();
-
-        if (runningTaskInfo == null) {
-            mEventQueue = mNoOpEventQueue;
-        } else if (runningTaskInfo.topActivity.equals(mOverviewCommandHelper.launcher)) {
-            mEventQueue = getLauncherEventQueue();
-        } else {
+        TouchConsumer oldConsumer = mEventQueue.getConsumer();
+        if (oldConsumer.deferNextEventToMainThread()) {
             mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
-                    new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                            mOverviewCommandHelper.homeIntent, mISystemUiProxy, mMainThreadExecutor,
-                            mBackgroundThreadChoreographer, downHitTarget));
+                    new DeferredTouchConsumer((v) -> getCurrentTouchConsumer(downHitTarget,
+                            oldConsumer.forceToLauncherConsumer(), v)));
+            mEventQueue.deferInit();
+        } else {
+            mEventQueue = new MotionEventQueue(
+                    mMainThreadChoreographer, getCurrentTouchConsumer(downHitTarget, false, null));
         }
     }
 
-    private MotionEventQueue getLauncherEventQueue() {
+    private TouchConsumer getCurrentTouchConsumer(
+            @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
+        RunningTaskInfo runningTaskInfo = mAM.getRunningTask();
+
+        if (runningTaskInfo == null && !forceToLauncher) {
+            return mNoOpTouchConsumer;
+        } else if (forceToLauncher ||
+                runningTaskInfo.topActivity.equals(mOverviewCommandHelper.launcher)) {
+            return getLauncherConsumer();
+        } else {
+            if (tracker == null) {
+                tracker = VelocityTracker.obtain();
+            }
+            return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
+                            mOverviewCommandHelper.homeIntent, mISystemUiProxy, mMainThreadExecutor,
+                            mBackgroundThreadChoreographer, downHitTarget, tracker);
+        }
+    }
+
+    private TouchConsumer getLauncherConsumer() {
         Launcher launcher = (Launcher) LauncherAppState.getInstance(this).getModel().getCallback();
         if (launcher == null) {
-            return mNoOpEventQueue;
+            return mNoOpTouchConsumer;
         }
-
         View target = launcher.getDragLayer();
-        return new MotionEventQueue(mMainThreadChoreographer,
-                new LauncherTouchConsumer(launcher, target));
+        return new LauncherTouchConsumer(launcher, target);
     }
 
     private static class LauncherTouchConsumer implements TouchConsumer {

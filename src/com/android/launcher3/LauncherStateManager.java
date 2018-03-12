@@ -333,6 +333,10 @@ public class LauncherStateManager {
     }
 
     public void moveToRestState() {
+        if (mConfig.mCurrentAnimation != null && mConfig.userControlled) {
+            // The user is doing something. Lets not mess it up
+            return;
+        }
         if (mState.disableRestore) {
             goToState(getRestState());
             // Reset history

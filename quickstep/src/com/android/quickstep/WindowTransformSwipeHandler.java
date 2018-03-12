@@ -725,13 +725,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
     private void animateToProgress(float progress, long duration) {
+        mIsGoingToHome = Float.compare(progress, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
         anim.setInterpolator(Interpolators.SCROLL);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                setStateOnUiThread((Float.compare(mCurrentShift.value, 0) == 0)
-                        ? STATE_SCALED_CONTROLLER_APP : STATE_SCALED_CONTROLLER_RECENTS);
+                setStateOnUiThread(mIsGoingToHome ?
+                        STATE_SCALED_CONTROLLER_RECENTS : STATE_SCALED_CONTROLLER_APP);
             }
         });
         anim.start();
@@ -752,7 +753,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void invalidateHandler() {
-        mCurrentShift.cancelAnimation();
+        mCurrentShift.finishAnimation();
 
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
