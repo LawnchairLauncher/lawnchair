@@ -29,11 +29,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
@@ -60,6 +62,8 @@ import com.android.launcher3.util.Themes;
  */
 public class LauncherIcons implements AutoCloseable {
 
+    private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
+
     public static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
 
@@ -84,6 +88,9 @@ public class LauncherIcons implements AutoCloseable {
      */
     public void recycle() {
         synchronized (sPoolSync) {
+            // Clear any temporary state variables
+            mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+
             next = sPool;
             sPool = this;
         }
@@ -104,7 +111,9 @@ public class LauncherIcons implements AutoCloseable {
 
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
+
     private Drawable mWrapperIcon;
+    private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
     // sometimes we store linked lists of these things
     private LauncherIcons next;
@@ -222,6 +231,13 @@ public class LauncherIcons implements AutoCloseable {
                 Math.min(scale[0], ShadowGenerator.getScaleForBounds(iconBounds)));
     }
 
+    /**
+     * Sets the background color used for wrapped adaptive icon
+     */
+    public void setWrapperBackgroundColor(int color) {
+        mWrapperBackgroundColor = (Color.alpha(color) < 255) ? DEFAULT_WRAPPER_BACKGROUND : color;
+    }
+
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
             RectF outIconBounds, float[] outScale) {
         float scale = 1f;
@@ -240,6 +256,8 @@ public class LauncherIcons implements AutoCloseable {
                 fsd.setScale(scale);
                 icon = dr;
                 scale = getNormalizer().getScale(icon, outIconBounds, null, null);
+
+                ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
             }
         } else {
             scale = getNormalizer().getScale(icon, outIconBounds, null, null);

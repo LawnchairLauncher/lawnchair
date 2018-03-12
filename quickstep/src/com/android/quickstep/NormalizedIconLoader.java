@@ -16,13 +16,13 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager.TaskDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.os.UserHandle;
 import android.util.LruCache;
 import android.util.SparseArray;
@@ -56,7 +56,7 @@ public class NormalizedIconLoader extends IconLoader {
             BitmapInfo info = mDefaultIcons.get(userId);
             if (info == null) {
                 info = getBitmapInfo(Resources.getSystem()
-                        .getDrawable(android.R.drawable.sym_def_app_icon), userId, false);
+                        .getDrawable(android.R.drawable.sym_def_app_icon), userId, 0, false);
                 mDefaultIcons.put(userId, info);
             }
 
@@ -65,26 +65,30 @@ public class NormalizedIconLoader extends IconLoader {
     }
 
     @Override
-    protected Drawable createBadgedDrawable(Drawable drawable, int userId) {
-        return new FastBitmapDrawable(getBitmapInfo(drawable, userId, false));
+    protected Drawable createBadgedDrawable(Drawable drawable, int userId, TaskDescription desc) {
+        return new FastBitmapDrawable(getBitmapInfo(drawable, userId, desc.getPrimaryColor(),
+                false));
     }
 
     private synchronized BitmapInfo getBitmapInfo(Drawable drawable, int userId,
-            boolean isInstantApp) {
+            int primaryColor, boolean isInstantApp) {
         if (mLauncherIcons == null) {
             mLauncherIcons = LauncherIcons.obtain(mContext);
         }
 
+        mLauncherIcons.setWrapperBackgroundColor(primaryColor);
         // User version code O, so that the icon is always wrapped in an adaptive icon container.
         return mLauncherIcons.createBadgedIconBitmap(drawable, UserHandle.of(userId),
                 Build.VERSION_CODES.O, isInstantApp);
     }
 
     @Override
-    protected synchronized Drawable getBadgedActivityIcon(ActivityInfo activityInfo, int userId) {
+    protected Drawable getBadgedActivityIcon(ActivityInfo activityInfo, int userId,
+            TaskDescription desc) {
         BitmapInfo bitmapInfo = getBitmapInfo(
                 activityInfo.loadUnbadgedIcon(mContext.getPackageManager()),
                 userId,
+                desc.getPrimaryColor(),
                 activityInfo.applicationInfo.isInstantApp());
         return mDrawableFactory.newIcon(bitmapInfo, activityInfo);
     }
