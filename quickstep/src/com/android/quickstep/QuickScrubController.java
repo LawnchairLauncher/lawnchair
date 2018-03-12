@@ -50,7 +50,6 @@ public class QuickScrubController implements OnAlarmListener {
 
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
-    private int mStartPage;
     private boolean mStartedFromHome;
     private boolean mHasAlarmRun;
 
@@ -65,7 +64,6 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void onQuickScrubStart(boolean startingFromHome) {
         mInQuickScrub = true;
-        mStartPage = 0;
         mStartedFromHome = startingFromHome;
         mQuickScrubSection = 0;
         mHasAlarmRun = false;
@@ -139,7 +137,7 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {
-        pageToGoTo = Utilities.boundToRange(pageToGoTo, mStartPage, mRecentsView.getPageCount() - 1);
+        pageToGoTo = Utilities.boundToRange(pageToGoTo, 0, mRecentsView.getPageCount() - 1);
         if (pageToGoTo != mRecentsView.getNextPage()) {
             int duration = Math.abs(pageToGoTo - mRecentsView.getNextPage())
                     * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
@@ -155,7 +153,7 @@ public class QuickScrubController implements OnAlarmListener {
         if (mQuickScrubSection == NUM_QUICK_SCRUB_SECTIONS
                 && currPage < mRecentsView.getPageCount() - 1) {
             goToPageWithHaptic(currPage + 1);
-        } else if (mQuickScrubSection == 0 && currPage > mStartPage) {
+        } else if (mQuickScrubSection == 0 && currPage > 0) {
             goToPageWithHaptic(currPage - 1);
         }
         mHasAlarmRun = true;
