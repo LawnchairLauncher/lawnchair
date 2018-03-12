@@ -291,7 +291,7 @@
   <string name="pixel_ui_pref_summary">為不同元素應用主題</string>
   <string name="backup_pref_title">備份 &amp; 恢復</string>
   <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
-  <string name="backup_pref_summary">備份您的資料和設定</string>
+  <string name="backup_pref_summary">備份 / 恢復您的設定和資料庫</string>
   <string name="debug_pref_summary">重新啟動或重建圖示資料庫</string>
   <string name="show_pixel_bar_pref_title">顯示 Pixel 頂欄</string>
   <string name="use_wide_searchbar_pref_title">使用寬的搜尋欄</string>
@@ -304,7 +304,7 @@
   <string name="restart_lawnchair_pref_summary">如果某些設置未正確應用，可能會有所幫助</string>
   <string name="rebuild_icondb_pref_title">重建圖示快取</string>
   <string name="pinch_to_overview_pref_title">捏合來概覽</string>
-  <string name="pinch_to_overview_pref_summary">捏合以概覽</string>
+  <string name="pinch_to_overview_pref_summary">在主螢幕捏合來概覽</string>
   <string name="light_statusbar_pref_title">亮色狀態欄</string>
   <string name="light_statusbar_pref_force">狀態列將顯示深色圖示</string>
   <string name="light_statusbar_pref_off">狀態欄將顯示亮色圖示。</string>
@@ -315,10 +315,10 @@
   <string name="show_hidden_pref_title">顯示隱藏的應用程式</string>
   <string name="show_hidden_pref_on">顯示隱藏的應用程式來調整可見性設置</string>
   <string name="show_hidden_pref_off">不顯示隱藏的應用程式</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">匯出資料庫</string>
+  <string name="import_db_title">匯入資料庫</string>
+  <string name="export_prefs_title">匯出設定</string>
+  <string name="import_prefs_title">匯入設定</string>
   <string name="notification_listener_label">Lawnchair - 未讀計數</string>
   <string name="color_extraction_label">Lawnchair - 顏色提取</string>
   <string name="test_title">測試</string>
@@ -340,7 +340,7 @@
   <string name="pull_down_apps_search">應用程式搜尋</string>
   <string name="enable_screen_rotation">允許螢幕旋轉</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">匯入</string>
+  <string name="backup_import_title">恢復</string>
   <string name="backup_export_title">匯出</string>
   <string name="settings_export_success">設定備份成功</string>
   <string name="db_export_success">資料庫備份成功</string>
@@ -362,9 +362,9 @@
   <string name="none">無</string>
   <string name="pref_applyTheme">套用主題至</string>
   <string name="pref_applyBlur">套用模糊效果至</string>
-  <string name="search_bar">搜尋列</string>
+  <string name="search_bar">搜索欄</string>
   <string name="folder">資料夾</string>
-  <string name="dock_allapps"><![CDATA[Dock欄與所有應用程式]]></string>
+  <string name="dock_allapps"><![CDATA[Dock 欄與應用程式抽屜]]></string>
   <string name="app_shortcuts">應用程式捷徑</string>
   <string name="blur_effect">模糊效果</string>
   <string name="pref_weather_provider">天氣供應商</string>
@@ -374,11 +374,11 @@
   <string name="icon_shape_none">無</string>
   <string name="icon_shape_square">正方形</string>
   <string name="icon_shape_rounded_square">圓角方形</string>
-  <string name="icon_shape_squircle">圓角正方形</string>
+  <string name="icon_shape_squircle">圓方形</string>
   <string name="icon_shape_circle">圓形</string>
   <string name="icon_shape_teardrop">水滴型</string>
   <string name="animated_clock_icon_title">動態時鐘圖示</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">動畫替代時鐘</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">為其他時鐘應用顯示動態圖標</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">如果您不使用 Google 時鐘作為默認時鐘，請啟用此功能</string>
   <string name="about_summary_title">概要</string>
   <string name="about_version">版本</string>
@@ -387,7 +387,7 @@
   <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供商</string>
   <string name="num_cols_drawer_pref_title">應用程式抽屜的列數</string>
   <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
-  <string name="pref_backport_shortcuts">向前移植的應用程式快捷操作</string>
+  <string name="pref_backport_shortcuts">向低版本 Android 啟用應用捷徑</string>
   <string name="weather_api_key_not_set">API Key 尚未設定</string>
   <string name="pref_weather_api_key_title">API Key</string>
   <string name="about_changelog">更新日誌</string>
@@ -416,7 +416,7 @@
   <string name="two_row_dock">兩行 Dock 欄</string>
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
-  <string name="error_no_browser">找不到處理網址的應用程式活動</string>
+  <string name="error_no_browser">找不到處理 URL 的 Activity</string>
   <string name="snowfall_title">降雪</string>
   <string name="enable_snowfall_title">在主畫面上啟用降雪</string>
   <string name="enable_snowfall_summary">可能會導致性能問題</string>
