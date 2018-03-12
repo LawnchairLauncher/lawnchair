@@ -27,6 +27,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
@@ -264,15 +265,17 @@ public class BgDataModel {
                     workspaceItems.remove(item);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    // Decrement pinned shortcut count
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if ((count == null || --count.value == 0)
-                            && !InstallShortcutReceiver.getPendingShortcuts(context)
+                    if (Utilities.ATLEAST_NOUGAT_MR1) {
+                        // Decrement pinned shortcut count
+                        ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                        MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                        if ((count == null || --count.value == 0)
+                                && !InstallShortcutReceiver.getPendingShortcuts(context)
                                 .contains(pinnedShortcut)) {
-                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
+                            DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
+                        }
+                        // Fall through.
                     }
-                    // Fall through.
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -295,21 +298,23 @@ public class BgDataModel {
                 workspaceItems.add(item);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                // Increment the count for the given shortcut
-                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                if (count == null) {
-                    count = new MutableInt(1);
-                    pinnedShortcutCounts.put(pinnedShortcut, count);
-                } else {
-                    count.value++;
-                }
+                if (Utilities.ATLEAST_NOUGAT_MR1) {
+                    // Increment the count for the given shortcut
+                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                    if (count == null) {
+                        count = new MutableInt(1);
+                        pinnedShortcutCounts.put(pinnedShortcut, count);
+                    } else {
+                        count.value++;
+                    }
 
-                // Since this is a new item, pin the shortcut in the system server.
-                if (newItem && count.value == 1) {
-                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                    // Since this is a new item, pin the shortcut in the system server.
+                    if (newItem && count.value == 1) {
+                        DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                    }
+                    // Fall through
                 }
-                // Fall through
             }
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:

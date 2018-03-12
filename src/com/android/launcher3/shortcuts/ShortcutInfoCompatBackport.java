@@ -37,6 +37,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
+    private final static String USE_PACKAGE = "shortcut_backport_use_package";
+
+    static Intent stripPackage(Intent intent) {
+        intent = new Intent(intent);
+        if (!intent.getBooleanExtra(ShortcutInfoCompatBackport.USE_PACKAGE, true)) {
+            intent.setPackage(null);
+        }
+        intent.removeExtra(ShortcutInfoCompatBackport.USE_PACKAGE);
+        return intent;
+    }
+
     private final Context mContext;
     private final String mPackageName;
     private final ComponentName mActivity;
@@ -110,27 +121,29 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
                 xmlDataIntent.get("action") :
                 Intent.ACTION_MAIN;
 
-        String targetPackage = xmlDataIntent.containsKey("targetPackage") ?
+        boolean useTargetPackage = xmlDataIntent.containsKey("targetPackage");
+        String targetPackage = useTargetPackage ?
                 xmlDataIntent.get("targetPackage") :
                 mPackageName;
-
-        Uri data = xmlDataIntent.containsKey("data") ?
-                Uri.parse(xmlDataIntent.get("data")) :
-                null;
 
         mIntent = new Intent(action)
                 .setPackage(targetPackage)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME)
-                .putExtra(EXTRA_SHORTCUT_ID, mId)
-                .setData(data);
+                .putExtra(EXTRA_SHORTCUT_ID, mId);
 
         if (xmlDataIntent.containsKey("targetClass")) {
             mIntent.setComponent(new ComponentName(targetPackage, xmlDataIntent.get("targetClass")));
         }
 
+        if (xmlDataIntent.containsKey("data")) {
+            mIntent.setData(Uri.parse(xmlDataIntent.get("data")));
+        }
+
         for (Map.Entry<String, String> entry : extras.entrySet()) {
             mIntent.putExtra(entry.getKey(), entry.getValue());
         }
+        
+        mIntent.putExtra(USE_PACKAGE, useTargetPackage);
     }
 
     public Drawable getIcon(int density) {

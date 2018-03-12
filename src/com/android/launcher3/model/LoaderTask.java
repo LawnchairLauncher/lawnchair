@@ -711,15 +711,17 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
             }
 
-            // Unpin shortcuts that don't exist on the workspace.
-            HashSet<ShortcutKey> pendingShortcuts =
-                    InstallShortcutReceiver.getPendingShortcuts(context);
-            for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
-                MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
-                if ((numTimesPinned == null || numTimesPinned.value == 0)
-                        && !pendingShortcuts.contains(key)) {
-                    // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                    mShortcutManager.unpinShortcut(key);
+            if (Utilities.ATLEAST_NOUGAT_MR1) {
+                // Unpin shortcuts that don't exist on the workspace.
+                HashSet<ShortcutKey> pendingShortcuts =
+                        InstallShortcutReceiver.getPendingShortcuts(context);
+                for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
+                    MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
+                    if ((numTimesPinned == null || numTimesPinned.value == 0)
+                            && !pendingShortcuts.contains(key)) {
+                        // Shortcut is pinned but doesn't exist on the workspace; unpin it.
+                        mShortcutManager.unpinShortcut(key);
+                    }
                 }
             }
 
