@@ -23,8 +23,10 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.quickstep.RemoteRunnable.executeSafely;
+import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -61,6 +63,7 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +74,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private static final String TAG = "ActivityTouchConsumer";
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
+    private static final int[] DEFERRED_HIT_TARGETS = DEBUG_SHOW_OVERVIEW_BUTTON
+            ? new int[] {HIT_TARGET_BACK, HIT_TARGET_OVERVIEW} : new int[] {HIT_TARGET_BACK};
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
@@ -79,6 +84,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
 
+    private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -88,7 +94,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private BaseSwipeInteractionHandler mInteractionHandler;
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
-    private @HitTarget int mDownHitTarget = HIT_TARGET_NONE;
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
@@ -105,7 +110,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mISystemUiProxy = systemUiProxy;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-        mDownHitTarget = downHitTarget;
+        mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
     }
 
     @Override
@@ -124,7 +129,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
-                if (!isUsingScreenShot() && mDownHitTarget != HIT_TARGET_BACK) {
+                if (!isUsingScreenShot() && !mIsDeferredDownTarget) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
@@ -166,7 +171,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         if (isUsingScreenShot()) {
                             startTouchTrackingForScreenshotAnimation();
-                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
+                        } else if (mIsDeferredDownTarget) {
                             // If we deferred starting the window animation on touch down, then
                             // start tracking now
                             startTouchTrackingForWindowAnimation(ev.getEventTime());

@@ -23,15 +23,12 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Handler;
@@ -61,6 +58,8 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
+
+    public static final boolean DEBUG_SHOW_OVERVIEW_BUTTON = false;
 
     private static final SparseArray<String> sMotionEventNames;
 
@@ -132,6 +131,17 @@ public class TouchInteractionService extends Service {
             mEventQueue.onQuickScrubEnd();
             TraceHelper.endSection("SysUiBinder", "onQuickScrubEnd");
         }
+
+        @Override
+        public void onOverviewToggle() {
+            mOverviewCommandHelper.onOverviewToggle();
+        }
+
+        @Override
+        public void onOverviewShown(boolean triggeredFromAltTab) { }
+
+        @Override
+        public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) { }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
@@ -143,13 +153,11 @@ public class TouchInteractionService extends Service {
     }
 
     private ActivityManagerWrapper mAM;
-    private RunningTaskInfo mRunningTask;
     private RecentsModel mRecentsModel;
-    private Intent mHomeIntent;
-    private ComponentName mLauncher;
     private MotionEventQueue mEventQueue;
     private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
+    private OverviewCommandHelper mOverviewCommandHelper;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -161,16 +169,7 @@ public class TouchInteractionService extends Service {
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.getInstance(this);
         mMainThreadExecutor = new MainThreadExecutor();
-
-        mHomeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(getPackageName())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ResolveInfo info = getPackageManager().resolveActivity(mHomeIntent, 0);
-        mLauncher = new ComponentName(getPackageName(), info.activityInfo.name);
-        // Clear the packageName as system can fail to dedupe it b/64108432
-        mHomeIntent.setComponent(mLauncher).setPackage(null);
-
+        mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
         mNoOpEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
         mEventQueue = mNoOpEventQueue;
@@ -195,19 +194,19 @@ public class TouchInteractionService extends Service {
     }
 
     private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
-        mRunningTask = mAM.getRunningTask();
+        RunningTaskInfo runningTaskInfo = mAM.getRunningTask();
 
         mEventQueue.reset();
 
-        if (mRunningTask == null) {
+        if (runningTaskInfo == null) {
             mEventQueue = mNoOpEventQueue;
-        } else if (mRunningTask.topActivity.equals(mLauncher)) {
+        } else if (runningTaskInfo.topActivity.equals(mOverviewCommandHelper.launcher)) {
             mEventQueue = getLauncherEventQueue();
         } else {
             mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
-                    new OtherActivityTouchConsumer(this, mRunningTask, mRecentsModel,
-                    mHomeIntent, mISystemUiProxy, mMainThreadExecutor,
-                    mBackgroundThreadChoreographer, downHitTarget));
+                    new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
+                            mOverviewCommandHelper.homeIntent, mISystemUiProxy, mMainThreadExecutor,
+                            mBackgroundThreadChoreographer, downHitTarget));
         }
     }
 
