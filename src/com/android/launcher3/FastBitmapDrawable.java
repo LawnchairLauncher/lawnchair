@@ -58,7 +58,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap mBitmap;
+    protected Bitmap mBitmap;
     protected final int mIconColor;
 
     private boolean mIsPressed;
@@ -324,10 +324,9 @@ public class FastBitmapDrawable extends Drawable {
         return new MyConstantState(mBitmap, mIconColor);
     }
 
-    private static class MyConstantState extends ConstantState {
-        private final Bitmap mBitmap;
-        private final int mIconColor;
-
+    protected static class MyConstantState extends ConstantState {
+        protected final Bitmap mBitmap;
+        protected final int mIconColor;
 
         public MyConstantState(Bitmap bitmap, int color) {
             mBitmap = bitmap;
