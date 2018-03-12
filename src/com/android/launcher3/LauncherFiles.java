@@ -15,7 +15,8 @@ public class LauncherFiles {
     private static final String XML = ".xml";
 
     public static final String LAUNCHER_DB = "launcher.db";
-    public static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
+    public static final String SHARED_PREFERENCES_KEY = BuildConfig.APPLICATION_ID + "_preferences";
+    public static final String OLD_SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
     public static final String MANAGED_USER_PREFERENCES_KEY = "com.android.launcher3.managedusers.prefs";
     // This preference file is not backed up to cloud.
     public static final String DEVICE_PREFERENCES_KEY = "com.android.launcher3.device.prefs";

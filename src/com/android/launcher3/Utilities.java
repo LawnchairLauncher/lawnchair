@@ -557,8 +557,7 @@ public final class Utilities {
     }
 
     public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        return getLawnchairPrefs(context).getSharedPrefs();
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {

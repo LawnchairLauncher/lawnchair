@@ -6,13 +6,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
-import android.preference.PreferenceManager
 import ch.deletescape.lawnchair.settings.GridSize
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
+import com.android.launcher3.Utilities
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -24,8 +25,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
     private var onChangeCallback: LawnchairPreferencesChangeCallback? = null
-    val sharedPrefs: SharedPreferences = context.applicationContext
-            .getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+    val sharedPrefs = migratePrefs()
+
+    private fun migratePrefs() : SharedPreferences {
+        val dir = context.cacheDir.parent
+        val oldFile = File(dir, "shared_prefs/" + LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")
+        val newFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+        if (oldFile.exists() && !newFile.exists()) {
+            oldFile.renameTo(newFile)
+            oldFile.delete()
+        }
+        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+    }
 
     private val doNothing = { }
     private val recreate = { recreate() }
@@ -60,7 +71,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun unflattenValue(value: String) = value
     }
     val recentBackups = object : MutableListPref<Uri>(
-            PreferenceManager.getDefaultSharedPreferences(context), "pref_recentBackups") {
+            Utilities.getDevicePrefs(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)

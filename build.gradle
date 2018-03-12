@@ -138,7 +138,7 @@ repositories {
     google()
 }
 
-final String SUPPORT_LIBS_VERSION = '27.0.2'
+final String SUPPORT_LIBS_VERSION = '27.1.0'
 dependencies {
     implementation "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
     implementation "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
