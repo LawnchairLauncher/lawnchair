@@ -319,13 +319,14 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
     private void animateToProgress(float progress, long duration) {
+        mIsGoingToHome = Float.compare(progress, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
         anim.setInterpolator(Interpolators.SCROLL);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mStateCallback.setState((Float.compare(mCurrentShift.value, 0) == 0)
-                        ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
+                mStateCallback.setState(mIsGoingToHome
+                        ? STATE_SCALED_SNAPSHOT_RECENTS : STATE_SCALED_SNAPSHOT_APP);
             }
         });
         anim.start();
