@@ -320,26 +320,24 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
             TaskView centerTask = (TaskView) recentsView.getPageAt(centerTaskIndex);
-            float translationX = Math.abs(v.getTranslationX());
-            ObjectAnimator centerTaskParallaxToRight =
+            float translationX = mRecentsTransX / 2;
+            ObjectAnimator centerTaskParallaxOffscreen =
                     LauncherAnimUtils.ofPropertyValuesHolder(centerTask,
                             new PropertyListBuilder()
-                                    .scale(v.getScaleX())
                                     .translationX(isRtl ? -translationX : translationX)
                                     .build());
-            launcherAnimator.play(centerTaskParallaxToRight);
+            launcherAnimator.play(centerTaskParallaxOffscreen);
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - launchedTaskIndex);
             if (otherAdjacentTaskIndex >= 0
                     && otherAdjacentTaskIndex < recentsView.getPageCount()) {
                 TaskView otherAdjacentTask = (TaskView) recentsView.getPageAt(
                         otherAdjacentTaskIndex);
-                ObjectAnimator otherAdjacentTaskParallaxToRight =
+                ObjectAnimator otherAdjacentTaskParallaxOffscreen =
                         LauncherAnimUtils.ofPropertyValuesHolder(otherAdjacentTask,
                                 new PropertyListBuilder()
-                                        .translationX(otherAdjacentTask.getTranslationX()
-                                                + (isRtl ? -translationX : translationX))
+                                        .translationX(isRtl ? -translationX : translationX)
                                         .build());
-                launcherAnimator.play(otherAdjacentTaskParallaxToRight);
+                launcherAnimator.play(otherAdjacentTaskParallaxOffscreen);
             }
         }
 
