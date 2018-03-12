@@ -86,7 +86,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
-            for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
+            for (int i = 0; i < getChildCount(); i++) {
                 final TaskView taskView = (TaskView) getChildAt(i);
                 if (taskView.getTask().key.id == taskId) {
                     taskView.getThumbnail().setThumbnail(taskView.getTask(), snapshot);
@@ -97,7 +97,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     };
 
     private RecentsViewStateController mStateController;
-    private int mFirstTaskIndex;
 
     private final RecentsModel mModel;
     private int mLoadPlanId = -1;
@@ -152,7 +151,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
-        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             final TaskView taskView = (TaskView) getChildAt(i);
             if (taskView.getTask().key.id == taskId) {
                 taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
@@ -194,7 +193,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     protected void onFinishInflate() {
         super.onFinishInflate();
         Resources res = getResources();
-        mFirstTaskIndex = getPageCount();
         mFastFlingVelocity = res.getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
     }
 
@@ -255,10 +253,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
     }
 
-    public int getFirstTaskIndex() {
-        return mFirstTaskIndex;
-    }
-
     public boolean isTaskViewVisible(TaskView tv) {
         // For now, just check if it's the active task or an adjacent task
         return Math.abs(indexOfChild(tv) - getNextPage()) <= 1;
@@ -316,7 +310,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
         setLayoutTransition(null);
 
-        final int requiredChildCount = tasks.size() + mFirstTaskIndex;
+        final int requiredChildCount = tasks.size();
         for (int i = getChildCount(); i < requiredChildCount; i++) {
             final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
             addView(taskView);
@@ -331,8 +325,8 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         setLayoutTransition(mLayoutTransition);
 
         // Rebind and reset all task views
-        for (int i = tasks.size() - 1; i >= 0; i--) {
-            final int pageIndex = tasks.size() - i - 1 + mFirstTaskIndex;
+        for (int i = requiredChildCount - 1; i >= 0; i--) {
+            final int pageIndex = requiredChildCount - i - 1;
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task);
@@ -462,9 +456,9 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private void loadVisibleTaskData() {
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         int centerPageIndex = getPageNearestToCenterOfScreen();
-        int lower = Math.max(mFirstTaskIndex, centerPageIndex - 2);
+        int lower = Math.max(0, centerPageIndex - 2);
         int upper = Math.min(centerPageIndex + 2, getChildCount() - 1);
-        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             TaskView taskView = (TaskView) getChildAt(i);
             Task task = taskView.getTask();
             boolean visible = lower <= i && i <= upper;
@@ -486,7 +480,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     public void onTaskDismissed(TaskView taskView) {
         ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
         removeView(taskView);
-        if (getTaskCount() == 0) {
+        if (getChildCount() == 0) {
             mLauncher.getStateManager().goToState(NORMAL);
         }
     }
@@ -494,10 +488,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     public void reset() {
         mRunningTaskId = -1;
         setCurrentPage(0);
-    }
-
-    public int getTaskCount() {
-        return getChildCount() - mFirstTaskIndex;
     }
 
     public int getRunningTaskId() {
@@ -523,17 +513,17 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
      */
     public void showTask(int runningTaskId) {
         boolean needsReload = false;
-        if (getTaskCount() == 0) {
+        if (getChildCount() == 0) {
             needsReload = true;
             // Add an empty view for now
             setLayoutTransition(null);
             final TaskView taskView = (TaskView) LayoutInflater.from(getContext())
                     .inflate(R.layout.task, this, false);
-            addView(taskView, mFirstTaskIndex);
+            addView(taskView, 0);
             setLayoutTransition(mLayoutTransition);
         }
         mRunningTaskId = runningTaskId;
-        setCurrentPage(mFirstTaskIndex);
+        setCurrentPage(0);
         if (!needsReload) {
             needsReload = !mModel.isLoadPlanValid(mLoadPlanId);
         }
@@ -542,9 +532,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         } else {
             loadVisibleTaskData();
         }
-        if (mCurrentPage >= mFirstTaskIndex) {
-            getPageAt(mCurrentPage).setAlpha(0);
-        }
+        getPageAt(mCurrentPage).setAlpha(0);
     }
 
     public QuickScrubController getQuickScrubController() {
@@ -561,7 +549,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
 
     private void applyIconScale(boolean animate) {
         float scale = mFirstTaskIconScaledDown ? 0 : 1;
-        TaskView firstTask = (TaskView) getChildAt(mFirstTaskIndex);
+        TaskView firstTask = (TaskView) getChildAt(0);
         if (firstTask != null) {
             if (animate) {
                 firstTask.animateIconToScale(scale);
