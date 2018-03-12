@@ -276,6 +276,8 @@
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dok</string>
   <string name="icon_scale_pref_title">Skala ikon</string>
   <string name="hotseat_height_scale">Skala ketinggian</string>
+  <string name="hotseat_custom_opacity">Kegelapan dok</string>
+  <string name="hotseat_uses_custom_opacity">Aktifkan kegelapan dok kustom</string>
   <string name="icon_text_scale_pref_title">Skala teks ikon</string>
   <string name="icon_text_padding_scale_pref_title">Skala bantalan ikon</string>
   <string name="full_width_width_widgets_pref_title">Widget lebar penuh</string>
