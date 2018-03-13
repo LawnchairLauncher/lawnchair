@@ -206,7 +206,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (notificationListener == null) {
             return;
         }
-        notificationListener.cancelNotification(notificationKey);
+        notificationListener.cancelNotificationFromLauncher(notificationKey);
     }
 
     public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {
