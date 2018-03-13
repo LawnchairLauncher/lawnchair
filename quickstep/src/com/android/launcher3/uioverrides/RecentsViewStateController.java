@@ -57,10 +57,7 @@ public class RecentsViewStateController implements StateHandler {
         setVisibility(state.overviewUi);
         setTransitionProgress(state.overviewUi ? 1 : 0);
         if (state.overviewUi) {
-            for (int i = 0; i < mRecentsView.getPageCount(); i++) {
-                ((TaskView) mRecentsView.getPageAt(i)).resetVisualProperties();
-            }
-            mRecentsView.updateCurveProperties();
+            mRecentsView.resetTaskVisuals();
         }
     }
 
