@@ -29,8 +29,10 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The default search implementation.
@@ -38,6 +40,7 @@ import java.util.List;
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     public final static String SEARCH_HIDDEN_APPS = "pref_search_hidden_apps";
+    private final static Pattern complementaryGlyphs = Pattern.compile("\\p{M}");
     private final Context mContext;
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
@@ -111,6 +114,9 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             return false;
         }
 
+        title = normalize(title);
+        query = normalize(query);
+
         int lastType;
         int thisType = Character.UNASSIGNED;
         int nextType = Character.getType(title.codePointAt(0));
@@ -127,6 +133,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             }
         }
         return false;
+    }
+
+    private static String normalize(String in) {
+        return complementaryGlyphs.matcher(Normalizer.normalize(in, Normalizer.Form.NFKD)).replaceAll("");
     }
 
     /**
