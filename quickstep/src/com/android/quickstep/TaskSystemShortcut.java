@@ -16,7 +16,6 @@
 
 package com.android.quickstep;
 
-import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,6 +36,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;

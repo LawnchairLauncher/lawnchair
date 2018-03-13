@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-     Copyright (C) 2017 The Android Open Source Project
+     Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,20 +13,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.TaskView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.quickstep.RecentsRootView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:elevation="4dp">
+    android:layout_height="match_parent">
 
-    <com.android.quickstep.views.TaskThumbnailView
-        android:id="@+id/snapshot"
+    <com.android.quickstep.FallbackRecentsView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:theme="@style/HomeScreenElementTheme"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/task_thumbnail_top_margin" />
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:layout_gravity="top|center_horizontal" />
-</com.android.quickstep.views.TaskView>
+</com.android.quickstep.RecentsRootView>

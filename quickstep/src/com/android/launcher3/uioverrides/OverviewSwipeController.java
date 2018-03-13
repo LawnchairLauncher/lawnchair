@@ -43,8 +43,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.RecentsView;
-import com.android.quickstep.TaskView;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 /**
  * Touch controller for swipe interaction in Overview state

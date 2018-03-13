@@ -36,7 +36,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.VerticalSwipeController;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 class EventLogTags {
     private EventLogTags() {

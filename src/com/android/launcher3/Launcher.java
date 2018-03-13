@@ -47,7 +47,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -62,7 +61,6 @@ import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
@@ -401,13 +399,7 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = idp.getDeviceProfile(this);
-        if (isInMultiWindowModeCompat()) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
-        }
+        setDeviceProfile(idp.getDeviceProfile(this));
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout(), true);
     }
 

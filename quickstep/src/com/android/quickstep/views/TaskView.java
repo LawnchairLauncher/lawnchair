@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
+package com.android.quickstep.views;
 
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
@@ -30,8 +30,8 @@ import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.quickstep.RecentsView.PageCallbacks;
-import com.android.quickstep.RecentsView.ScrollState;
+import com.android.quickstep.views.RecentsView.PageCallbacks;
+import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;

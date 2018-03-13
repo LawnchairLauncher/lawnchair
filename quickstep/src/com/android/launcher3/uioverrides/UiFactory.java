@@ -29,7 +29,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 public class UiFactory {
 

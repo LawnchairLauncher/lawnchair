@@ -32,8 +32,8 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.RecentsView;
-import com.android.quickstep.TaskView;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 public class RecentsViewStateController implements StateHandler {
 
@@ -50,7 +50,6 @@ public class RecentsViewStateController implements StateHandler {
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
-        mRecentsView.setStateController(this);
     }
 
     @Override

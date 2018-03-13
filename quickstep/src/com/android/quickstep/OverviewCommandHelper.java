@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RecentTaskInfo;
@@ -40,6 +41,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 @TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper extends InternalStateHandler {
 
+    private static final boolean DEBUG_START_FALLBACK_ACTIVITY = DEBUG_SHOW_OVERVIEW_BUTTON;
+
     private final Context mContext;
     private final ActivityManagerWrapper mAM;
 
@@ -63,6 +66,12 @@ public class OverviewCommandHelper extends InternalStateHandler {
     }
 
     public void onOverviewToggle() {
+        if (DEBUG_START_FALLBACK_ACTIVITY) {
+            mContext.startActivity(new Intent(mContext, RecentsActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            return;
+        }
+
         long elapsedTime = SystemClock.elapsedRealtime() - mLastToggleTime;
         mLastToggleTime = SystemClock.elapsedRealtime();
 

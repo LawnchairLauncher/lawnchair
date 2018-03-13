@@ -19,12 +19,14 @@ package com.android.quickstep;
 import android.view.HapticFeedbackConstants;
 
 import com.android.launcher3.Alarm;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 /**
  * Responds to quick scrub callbacks to page through and launch recent tasks.
@@ -45,7 +47,7 @@ public class QuickScrubController implements OnAlarmListener {
 
     private final Alarm mAutoAdvanceAlarm;
     private final RecentsView mRecentsView;
-    private final Launcher mLauncher;
+    private final BaseActivity mActivity;
 
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
@@ -54,8 +56,8 @@ public class QuickScrubController implements OnAlarmListener {
     private boolean mQuickSwitched;
     private boolean mFinishedTransitionToQuickScrub;
 
-    public QuickScrubController(Launcher launcher, RecentsView recentsView) {
-        mLauncher = launcher;
+    public QuickScrubController(BaseActivity activity, RecentsView recentsView) {
+        mActivity = activity;
         mRecentsView = recentsView;
         if (ENABLE_AUTO_ADVANCE) {
             mAutoAdvanceAlarm = new Alarm();
@@ -72,7 +74,7 @@ public class QuickScrubController implements OnAlarmListener {
         mFinishedTransitionToQuickScrub = false;
 
         snapToNextTaskIfAvailable();
-        mLauncher.getUserEventDispatcher().resetActionDurationMillis();
+        mActivity.getUserEventDispatcher().resetActionDurationMillis();
     }
 
     public void onQuickScrubEnd() {
@@ -93,7 +95,7 @@ public class QuickScrubController implements OnAlarmListener {
             // No page move needed, just launch it
             launchTaskRunnable.run();
         }
-        mLauncher.getUserEventDispatcher().logActionOnControl(Touch.DRAGDROP,
+        mActivity.getUserEventDispatcher().logActionOnControl(Touch.DRAGDROP,
                 ControlType.QUICK_SCRUB_BUTTON, null, mStartedFromHome ?
                         ContainerType.WORKSPACE : ContainerType.APP);
     }
@@ -134,7 +136,7 @@ public class QuickScrubController implements OnAlarmListener {
     private void quickSwitchIfReady() {
         if (mQuickSwitched && mFinishedTransitionToQuickScrub) {
             onQuickScrubEnd();
-            mLauncher.getUserEventDispatcher().logActionOnControl(Touch.FLING,
+            mActivity.getUserEventDispatcher().logActionOnControl(Touch.FLING,
                     ControlType.QUICK_SCRUB_BUTTON, null, mStartedFromHome ?
                             ContainerType.WORKSPACE : ContainerType.APP);
         }

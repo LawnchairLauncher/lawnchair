@@ -26,7 +26,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Definition for overview state

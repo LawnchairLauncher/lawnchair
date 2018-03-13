@@ -14,42 +14,27 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
-
-import static com.android.launcher3.LauncherState.NORMAL;
+package com.android.quickstep.views;
 
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Shader;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.RecentsViewStateController;
+import com.android.quickstep.QuickScrubController;
+import com.android.quickstep.RecentsModel;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
@@ -64,26 +49,26 @@ import java.util.ArrayList;
 /**
  * A list of recent tasks.
  */
-public class RecentsView extends PagedView implements Insettable, OnSharedPreferenceChangeListener {
-
-    private static final Rect sTempStableInsets = new Rect();
+public abstract class RecentsView<T extends BaseActivity>
+        extends PagedView implements OnSharedPreferenceChangeListener {
 
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
 
-    private final Launcher mLauncher;
-    private QuickScrubController mQuickScrubController;
-    private final ScrollState mScrollState = new ScrollState();
-    private boolean mOverviewStateEnabled;
-    private boolean mTaskStackListenerRegistered;
-    private LayoutTransition mLayoutTransition;
-    private Runnable mNextPageSwitchRunnable;
+    private static final Rect sTempStableInsets = new Rect();
 
-    private float mFastFlingVelocity;
+    protected final T mActivity;
+    private final QuickScrubController mQuickScrubController;
+    private final float mFastFlingVelocity;
+    private final RecentsModel mModel;
+
+    private final ScrollState mScrollState = new ScrollState();
+    // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
+    private final SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
-    private TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
+    private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
             for (int i = 0; i < getChildCount(); i++) {
@@ -96,32 +81,17 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
     };
 
-    private RecentsViewStateController mStateController;
-
-    private final RecentsModel mModel;
     private int mLoadPlanId = -1;
 
     // Only valid until the launcher state changes to NORMAL
     private int mRunningTaskId = -1;
 
-    private Bitmap mScrim;
-    private Paint mFadePaint;
-    private Shader mFadeShader;
-    private Matrix mFadeMatrix;
-    private boolean mScrimOnLeft;
-
     private boolean mFirstTaskIconScaledDown = false;
 
-    // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
-    private SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
-
-    public RecentsView(Context context) {
-        this(context, null);
-    }
-
-    public RecentsView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+    private boolean mOverviewStateEnabled;
+    private boolean mTaskStackListenerRegistered;
+    private LayoutTransition mLayoutTransition;
+    private Runnable mNextPageSwitchRunnable;
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -130,8 +100,10 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         setupLayoutTransition();
         setClipToOutline(true);
 
-        mLauncher = Launcher.getLauncher(context);
-        mQuickScrubController = new QuickScrubController(mLauncher, this);
+        mFastFlingVelocity = getResources()
+                .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
+        mActivity = (T) BaseActivity.fromContext(context);
+        mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.getInstance(context);
 
         onSharedPreferenceChanged(Utilities.getPrefs(context), PREF_FLIP_RECENTS);
@@ -192,13 +164,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        Resources res = getResources();
-        mFastFlingVelocity = res.getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
-    }
-
-    @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         updateTaskStackListenerState();
@@ -232,43 +197,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
     }
 
-    @Override
-    public void setInsets(Rect insets) {
-        mInsets.set(insets);
-        DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
-        Rect padding = getPadding(dp, getContext());
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.bottomMargin = padding.bottom;
-        setLayoutParams(lp);
-
-        setPadding(padding.left, padding.top, padding.right, 0);
-
-        if (dp.isVerticalBarLayout()) {
-            boolean wasScrimOnLeft = mScrimOnLeft;
-            mScrimOnLeft = dp.isSeascape();
-
-            if (mScrim == null || wasScrimOnLeft != mScrimOnLeft) {
-                Drawable scrim = getContext().getDrawable(mScrimOnLeft
-                        ? R.drawable.recents_horizontal_scrim_left
-                        : R.drawable.recents_horizontal_scrim_right);
-                if (scrim instanceof BitmapDrawable) {
-                    mScrim = ((BitmapDrawable) scrim).getBitmap();
-                    mFadePaint = new Paint();
-                    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-                    mFadeShader = new BitmapShader(mScrim, TileMode.CLAMP, TileMode.REPEAT);
-                    mFadeMatrix = new Matrix();
-                } else {
-                    mScrim = null;
-                }
-            }
-        } else {
-            mScrim = null;
-            mFadePaint = null;
-            mFadeShader = null;
-            mFadeMatrix = null;
-        }
-    }
-
     public boolean isTaskViewVisible(TaskView tv) {
         // For now, just check if it's the active task or an adjacent task
         return Math.abs(indexOfChild(tv) - getNextPage()) <= 1;
@@ -282,14 +210,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             }
         }
         return null;
-    }
-
-    public void setStateController(RecentsViewStateController stateController) {
-        mStateController = stateController;
-    }
-
-    public RecentsViewStateController getStateController() {
-        return mStateController;
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
@@ -374,7 +294,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
     }
 
-    private static Rect getPadding(DeviceProfile profile, Context context) {
+    protected static Rect getPadding(DeviceProfile profile, Context context) {
         WindowManagerWrapper.getInstance().getStableInsets(sTempStableInsets);
         Rect padding = new Rect(profile.workspacePadding);
 
@@ -516,9 +436,11 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
         removeView(taskView);
         if (getChildCount() == 0) {
-            mLauncher.getStateManager().goToState(NORMAL);
+            onAllTasksRemoved();
         }
     }
+
+    protected abstract void onAllTasksRemoved();
 
     public void reset() {
         unloadVisibleTaskData();
@@ -589,35 +511,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
                 firstTask.setIconScale(scale);
             }
         }
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        if (mScrim == null) {
-            super.draw(canvas);
-            return;
-        }
-
-        final int flags = Canvas.HAS_ALPHA_LAYER_SAVE_FLAG;
-
-        int length = mScrim.getWidth();
-        int height = getHeight();
-        int saveCount = canvas.getSaveCount();
-
-        int scrimLeft;
-        if (mScrimOnLeft) {
-            scrimLeft = getScrollX();
-        } else {
-            scrimLeft = getScrollX() + getWidth() - length;
-        }
-        canvas.saveLayer(scrimLeft, 0, scrimLeft + length, height, null, flags);
-        super.draw(canvas);
-
-        mFadeMatrix.setTranslate(scrimLeft, 0);
-        mFadeShader.setLocalMatrix(mFadeMatrix);
-        mFadePaint.setShader(mFadeShader);
-        canvas.drawRect(scrimLeft, 0, scrimLeft + length, height, mFadePaint);
-        canvas.restoreToCount(saveCount);
     }
 
     public interface PageCallbacks {

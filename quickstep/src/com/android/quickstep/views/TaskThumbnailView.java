@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
+package com.android.quickstep.views;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -33,9 +33,10 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -152,7 +153,8 @@ public class TaskThumbnailView extends View {
             } else {
                 final Configuration configuration =
                         getContext().getApplicationContext().getResources().getConfiguration();
-                final DeviceProfile profile = Launcher.getLauncher(getContext()).getDeviceProfile();
+                final DeviceProfile profile = BaseActivity.fromContext(getContext())
+                        .getDeviceProfile();
                 if (configuration.orientation == mThumbnailData.orientation) {
                     // If we are in the same orientation as the screenshot, just scale it to the
                     // width of the task view

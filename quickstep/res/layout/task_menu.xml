@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.TaskMenuView
+<com.android.quickstep.views.TaskMenuView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
@@ -33,4 +33,4 @@
             android:paddingTop="18dp"
             android:drawablePadding="8dp"
             android:gravity="center_horizontal"/>
-</com.android.quickstep.TaskMenuView>
+</com.android.quickstep.views.TaskMenuView>

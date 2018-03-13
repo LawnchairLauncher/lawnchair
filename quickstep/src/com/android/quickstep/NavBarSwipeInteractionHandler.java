@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 import static com.android.quickstep.TouchConsumer.isInteractionQuick;
 
@@ -51,6 +50,8 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchConsumer.InteractionType;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;

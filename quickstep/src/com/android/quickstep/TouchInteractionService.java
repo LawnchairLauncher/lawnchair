@@ -49,6 +49,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;

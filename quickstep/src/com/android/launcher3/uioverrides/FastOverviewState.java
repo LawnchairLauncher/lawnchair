@@ -17,7 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import com.android.launcher3.Launcher;
 import com.android.quickstep.QuickScrubController;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Extension of overview state used for QuickScrub
