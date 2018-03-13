@@ -133,8 +133,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                 mSwipeDownEnabled = true;
 
                 View view = mRecentsView.getChildAt(mRecentsView.getCurrentPage());
-                if (mLauncher.getDragLayer().isEventOverView(view, ev) &&
-                        view instanceof TaskView) {
+                if (view instanceof TaskView && mLauncher.getDragLayer().isEventOverView(view, ev)) {
                     // The tile can be dragged down to open the task.
                     mTaskBeingDragged = (TaskView) view;
                     directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
