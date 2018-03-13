@@ -157,11 +157,6 @@ public class LauncherStateManager {
     }
 
     private void goToState(LauncherState state, boolean animated, long delay,
-            Runnable onCompleteRunnable) {
-        goToState(state, animated, delay, -1, onCompleteRunnable);
-    }
-
-    public void goToState(LauncherState state, boolean animated, long delay, long overrideDuration,
             final Runnable onCompleteRunnable) {
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
@@ -208,9 +203,6 @@ public class LauncherStateManager {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
-        if (overrideDuration > -1) {
-            mConfig.duration = overrideDuration;
-        }
 
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
                 state, new AnimatorSetBuilder(), onCompleteRunnable);

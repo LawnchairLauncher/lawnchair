@@ -16,6 +16,8 @@
 package com.android.launcher3.uioverrides;
 
 import com.android.launcher3.Launcher;
+import com.android.quickstep.QuickScrubController;
+import com.android.quickstep.RecentsView;
 
 /**
  * Extension of overview state used for QuickScrub
@@ -28,7 +30,14 @@ public class FastOverviewState extends OverviewState {
     private static final boolean DEBUG_DIFFERENT_UI = false;
 
     public FastOverviewState(int id) {
-        super(id, STATE_FLAGS);
+        super(id, QuickScrubController.QUICK_SWITCH_START_DURATION, STATE_FLAGS);
+    }
+
+    @Override
+    public void onStateTransitionEnd(Launcher launcher) {
+        super.onStateTransitionEnd(launcher);
+        RecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.getQuickScrubController().onFinishedTransitionToQuickScrub();
     }
 
     @Override

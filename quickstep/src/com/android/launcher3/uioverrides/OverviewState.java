@@ -37,11 +37,11 @@ public class OverviewState extends LauncherState {
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI;
 
     public OverviewState(int id) {
-        this(id, STATE_FLAGS);
+        this(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
-    protected OverviewState(int id, int stateFlags) {
-        super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, stateFlags);
+    protected OverviewState(int id, int transitionDuration, int stateFlags) {
+        super(id, ContainerType.TASKSWITCHER, transitionDuration, stateFlags);
     }
 
     @Override

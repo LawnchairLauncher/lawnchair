@@ -21,9 +21,8 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
+import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -45,6 +44,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -316,13 +316,12 @@ public class TouchInteractionService extends Service {
             if (TouchConsumer.isInteractionQuick(interactionType)) {
                 Runnable action = () -> {
                     Runnable onComplete = null;
-                    if (interactionType == INTERACTION_QUICK_SCRUB) {
-                        mQuickScrubController.onQuickScrubStart(true);
-                    } else if (interactionType == INTERACTION_QUICK_SWITCH) {
+                    if (interactionType == INTERACTION_QUICK_SWITCH) {
                         onComplete = mQuickScrubController::onQuickSwitch;
                     }
-                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true, 0,
-                            QUICK_SWITCH_START_DURATION, onComplete);
+                    LauncherState fromState = mLauncher.getStateManager().getState();
+                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true, onComplete);
+                    mQuickScrubController.onQuickScrubStart(fromState == NORMAL);
                 };
 
                 if (mLauncher.getWorkspace().runOnOverlayHidden(action)) {
