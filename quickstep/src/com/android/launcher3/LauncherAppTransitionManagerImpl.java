@@ -619,7 +619,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      */
     private ValueAnimator getWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
         Rect bounds = new Rect();
-        if (v instanceof BubbleTextView) {
+        boolean isDeepShortcutTextView = v instanceof DeepShortcutTextView
+                && v.getParent() != null && v.getParent() instanceof DeepShortcutView;
+        if (isDeepShortcutTextView) {
+            // Deep shortcut views have their icon drawn in a sibling view.
+            DeepShortcutView view = (DeepShortcutView) v.getParent();
+            mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), bounds);
+        } else if (v instanceof BubbleTextView) {
             ((BubbleTextView) v).getIconBounds(bounds);
         } else {
             mDragLayer.getDescendantRectRelativeToSelf(v, bounds);
