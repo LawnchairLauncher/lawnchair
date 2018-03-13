@@ -152,5 +152,9 @@ public class RecentsViewStateController implements StateHandler {
 
     private void applyProgress() {
         mRecentsView.setAlpha(mTransitionProgress.value * mVisibilityMultiplier.value);
+        if (mIsRecentsSlidingInOrOut) {
+            // While animating into recents, update the visible task data as needed
+            mRecentsView.loadVisibleTaskData();
+        }
     }
 }
