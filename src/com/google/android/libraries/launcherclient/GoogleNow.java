@@ -77,13 +77,10 @@ public class GoogleNow {
         final String packageName = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
                 .setPackage("com.google.android.googlequicksearchbox"
-                ).setData(Uri.parse(new StringBuilder(
-                        String.valueOf(packageName).length() + 18)
-                        .append("app://")
-                        .append(packageName)
-                        .append(":")
-                        .append(Process.myUid()).toString())
-                        .buildUpon().appendQueryParameter("v", Integer.toString(7)).build());
+                ).setData(
+                    Uri.parse("app://" + packageName + ":" + Process.myUid())
+                        .buildUpon().appendQueryParameter("v", "7").appendQueryParameter("cv", "9").build()
+                );
     }
 
     private void reloadScrollCallback(int flags) {
