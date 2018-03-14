@@ -17,7 +17,7 @@ pipeline:
     commands:
       - bash ./gradlew assembleDebug
   deploy:
-    image: lawnchairlauncher/drone-telegram:latest
+    image: lawnchairlauncher/drone-telegram:dev
     secrets: [ bot_token, channel_id ]
     apk_path: app/build/outputs/apk/debug/app-debug.apk
     mapping_path: app/build/outputs/mapping/debug/mapping.txt
@@ -26,7 +26,7 @@ pipeline:
       event: push
       status: success
   telegram:
-    image: appleboy/drone-telegram:dev
+    image: appleboy/drone-telegram:latest
     secrets: [ telegram_token ]
     to: "-1001092684628"
     message: >
