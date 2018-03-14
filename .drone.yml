@@ -1,7 +1,9 @@
 pipeline:
   changelog:
-    image: lawnchairlauncher/drone-changelog:latest
+    image: lawnchairlauncher/drone-changelog:dev
     output: changelog.txt
+    volumes:
+      - /opt/drone/cache:/cache
     when:
       event: push
   build:
@@ -24,7 +26,7 @@ pipeline:
       event: push
       status: success
   telegram:
-    image: appleboy/drone-telegram:latest
+    image: appleboy/drone-telegram:dev
     secrets: [ telegram_token ]
     to: "-1001092684628"
     message: >
