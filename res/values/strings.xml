@@ -80,6 +80,9 @@
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
+    <string name="all_apps_button_personal_label">Personal apps list</string>
+    <string name="all_apps_button_work_label">Work apps list</string>
+
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>

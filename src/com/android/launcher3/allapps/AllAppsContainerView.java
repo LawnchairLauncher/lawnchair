@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -190,6 +191,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return true;
         }
         return false;
+    }
+
+    public String getDescription() {
+        @StringRes int descriptionRes;
+        if (mUsingTabs) {
+            descriptionRes =
+                    mViewPager.getNextPage() == 0
+                            ? R.string.all_apps_button_personal_label
+                            : R.string.all_apps_button_work_label;
+        } else {
+            descriptionRes = R.string.all_apps_button_label;
+        }
+        return getContext().getString(descriptionRes);
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {

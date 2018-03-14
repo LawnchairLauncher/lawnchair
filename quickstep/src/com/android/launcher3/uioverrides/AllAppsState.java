@@ -25,6 +25,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -58,7 +59,8 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public String getDescription(Launcher launcher) {
-        return launcher.getString(R.string.all_apps_button_label);
+        AllAppsContainerView appsView = launcher.getAppsView();
+        return appsView.getDescription();
     }
 
     @Override
