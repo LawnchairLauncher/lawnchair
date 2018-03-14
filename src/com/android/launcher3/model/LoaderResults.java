@@ -25,7 +25,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
@@ -37,7 +36,6 @@ import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
-import com.android.launcher3.widget.WidgetsListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -100,6 +98,7 @@ public class LoaderResults {
             workspaceItems.addAll(mBgDataModel.workspaceItems);
             appWidgets.addAll(mBgDataModel.appWidgets);
             orderedScreenIds.addAll(mBgDataModel.workspaceScreens);
+            mBgDataModel.lastBindId++;
         }
 
         final int currentScreen;

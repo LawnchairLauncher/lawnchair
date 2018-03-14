@@ -25,6 +25,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
@@ -47,8 +48,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     private static final String TAG = "LauncherAccessibilityDelegate";
 
     public static final int REMOVE = R.id.action_remove;
-    public static final int INFO = R.id.action_info;
     public static final int UNINSTALL = R.id.action_uninstall;
+    public static final int RECONFIGURE = R.id.action_reconfigure;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
@@ -77,10 +78,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         mActions.put(REMOVE, new AccessibilityAction(REMOVE,
                 launcher.getText(R.string.remove_drop_target_label)));
-        mActions.put(INFO, new AccessibilityAction(INFO,
-                launcher.getText(R.string.app_info_drop_target_label)));
         mActions.put(UNINSTALL, new AccessibilityAction(UNINSTALL,
                 launcher.getText(R.string.uninstall_drop_target_label)));
+        mActions.put(RECONFIGURE, new AccessibilityAction(RECONFIGURE,
+                launcher.getText(R.string.gadget_setup_text)));
         mActions.put(ADD_TO_WORKSPACE, new AccessibilityAction(ADD_TO_WORKSPACE,
                 launcher.getText(R.string.action_add_to_workspace)));
         mActions.put(MOVE, new AccessibilityAction(MOVE,
@@ -110,7 +111,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         for (ButtonDropTarget target : mLauncher.getDropTargetBar().getDropTargets()) {
-            if (target.supportsAccessibilityDrop(item)) {
+            if (target.supportsAccessibilityDrop(item, host)) {
                 info.addAction(mActions.get(target.getAccessibilityAction()));
             }
         }
@@ -222,7 +223,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
         } else {
             for (ButtonDropTarget dropTarget : mLauncher.getDropTargetBar().getDropTargets()) {
-                if (action == dropTarget.getAccessibilityAction()) {
+                if (dropTarget.supportsAccessibilityDrop(item, host) &&
+                        action == dropTarget.getAccessibilityAction()) {
                     dropTarget.onAccessibilityDrop(host, item);
                     return true;
                 }
@@ -357,29 +359,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             mDragInfo.dragType = DragType.WIDGET;
         }
 
-        CellLayout.CellInfo cellInfo = new CellLayout.CellInfo(item, info);
-
         Rect pos = new Rect();
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
         mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
-
-        Folder folder = Folder.getOpen(mLauncher);
-        if (folder != null) {
-            if (!folder.getItemsInReadingOrder().contains(item)) {
-                folder.close(true);
-                folder = null;
-            }
-        }
-
         mLauncher.getDragController().addDragListener(this);
 
         DragOptions options = new DragOptions();
         options.isAccessibleDrag = true;
-        if (folder != null) {
-            folder.startDrag(cellInfo.cell, options);
-        } else {
-            mLauncher.getWorkspace().startDrag(cellInfo, options);
-        }
+        ItemLongClickListener.beginDrag(item, mLauncher, info, options);
     }
 
     @Override

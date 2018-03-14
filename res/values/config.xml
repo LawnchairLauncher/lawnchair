@@ -116,6 +116,9 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
+    <!-- Tag id used for view scrim -->
+    <item type="id" name="view_scrim" />
+
 <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
     <integer name="config_popupArrowOpenDuration">80</integer>
@@ -124,7 +127,7 @@
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
-    <item type="id" name="action_info" />
+    <item type="id" name="action_reconfigure" />
     <item type="id" name="action_add_to_workspace" />
     <item type="id" name="action_move" />
     <item type="id" name="action_move_to_workspace" />

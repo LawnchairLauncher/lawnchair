@@ -139,7 +139,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Praca"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil służbowy"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Aplikacje do pracy"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Każda aplikacja do pracy ma pomarańczową plakietkę, a o jej bezpieczeństwo dba Twoja organizacja. Aplikacje można przenieść na ekran główny, by były łatwiej dostępne."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"Profil zarządzany przez Twoją organizację"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Powiadomienia i aplikacje są wyłączone"</string>
 </resources>
