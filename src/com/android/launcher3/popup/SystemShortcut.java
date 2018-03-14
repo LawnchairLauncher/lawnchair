@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  */
-public abstract class SystemShortcut extends ItemInfo {
+public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo {
     public final int iconResId;
     public final int labelResId;
 
@@ -36,10 +37,9 @@ public abstract class SystemShortcut extends ItemInfo {
         this.labelResId = labelResId;
     }
 
-    public abstract View.OnClickListener getOnClickListener(final Launcher launcher,
-            final ItemInfo itemInfo);
+    public abstract View.OnClickListener getOnClickListener(T activity, ItemInfo itemInfo);
 
-    public static class Widgets extends SystemShortcut {
+    public static class Widgets extends SystemShortcut<Launcher> {
 
         public Widgets() {
             super(R.drawable.ic_widget, R.string.widget_button_text);
@@ -54,17 +54,14 @@ public abstract class SystemShortcut extends ItemInfo {
             if (widgets == null) {
                 return null;
             }
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                    WidgetsBottomSheet widgetsBottomSheet =
-                            (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
-                                    R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
-                    widgetsBottomSheet.populateAndShow(itemInfo);
-                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                            ControlType.WIDGETS_BUTTON, view);
-                }
+            return (view) -> {
+                AbstractFloatingView.closeAllOpenViews(launcher);
+                WidgetsBottomSheet widgetsBottomSheet =
+                        (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
+                                R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
+                widgetsBottomSheet.populateAndShow(itemInfo);
+                launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                        ControlType.WIDGETS_BUTTON, view);
             };
         }
     }
@@ -75,18 +72,15 @@ public abstract class SystemShortcut extends ItemInfo {
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(final Launcher launcher,
-                final ItemInfo itemInfo) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Rect sourceBounds = launcher.getViewBounds(view);
-                    Bundle opts = launcher.getActivityLaunchOptionsAsBundle(view, false);
-                    new PackageManagerHelper(launcher).startDetailsActivityForInfo(
-                            itemInfo, sourceBounds, opts);
-                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                            ControlType.APPINFO_TARGET, view);
-                }
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, ItemInfo itemInfo) {
+            return (view) -> {
+                Rect sourceBounds = activity.getViewBounds(view);
+                Bundle opts = activity.getActivityLaunchOptionsAsBundle(view, false);
+                new PackageManagerHelper(activity).startDetailsActivityForInfo(
+                        itemInfo, sourceBounds, opts);
+                activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                        ControlType.APPINFO_TARGET, view);
             };
         }
     }
@@ -97,28 +91,29 @@ public abstract class SystemShortcut extends ItemInfo {
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(final Launcher launcher,
-                final ItemInfo itemInfo) {
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, ItemInfo itemInfo) {
             boolean supportsWebUI = (itemInfo instanceof ShortcutInfo) &&
                     ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
             boolean isInstantApp = false;
             if (itemInfo instanceof com.android.launcher3.AppInfo) {
                 com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;
-                isInstantApp = InstantAppResolver.newInstance(launcher).isInstantApp(appInfo);
+                isInstantApp = InstantAppResolver.newInstance(activity).isInstantApp(appInfo);
             }
             boolean enabled = supportsWebUI || isInstantApp;
             if (!enabled) {
                 return null;
             }
-            return createOnClickListener(launcher, itemInfo);
+            return createOnClickListener(activity, itemInfo);
         }
 
-        public View.OnClickListener createOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+        public View.OnClickListener createOnClickListener(
+                BaseDraggingActivity activity, ItemInfo itemInfo) {
             return view -> {
                 Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
                         itemInfo.getTargetComponent().getPackageName());
-                launcher.startActivitySafely(view, intent, itemInfo);
-                AbstractFloatingView.closeAllOpenViews(launcher);
+                activity.startActivitySafely(view, intent, itemInfo);
+                AbstractFloatingView.closeAllOpenViews(activity);
             };
         }
     }

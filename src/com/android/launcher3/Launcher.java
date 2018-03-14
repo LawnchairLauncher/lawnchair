@@ -25,7 +25,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -47,7 +46,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,7 +58,6 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
@@ -73,14 +70,13 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
@@ -88,6 +84,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
@@ -139,7 +136,7 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseActivity implements LauncherExterns, LauncherModel.Callbacks,
+public class Launcher extends BaseDraggingActivity implements LauncherExterns, LauncherModel.Callbacks,
         LauncherProviderChangeListener, WallpaperColorInfo.OnThemeChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
@@ -166,10 +163,6 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
      */
     protected static final int REQUEST_LAST = 100;
 
-    // The Intent extra that defines whether to ignore the launch animation
-    static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
-            "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
-
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
@@ -181,13 +174,7 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
 
-    // When starting an action mode, setting this tag will cause the action mode to be cancelled
-    // automatically when user interacts with the launcher.
-    public static final Object AUTO_CANCEL_ACTION_MODE = new Object();
-
     private LauncherStateManager mStateManager;
-
-    private boolean mIsSafeModeEnabled;
 
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
@@ -255,7 +242,6 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
     private boolean mAppLaunchSuccess;
 
     private RotationHelper mRotationHelper;
-    private ActionMode mCurrentActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -288,7 +274,6 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
         initDeviceProfile(app.getInvariantDeviceProfile());
 
         mSharedPrefs = Utilities.getPrefs(this);
-        mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
@@ -480,6 +465,22 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
 
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
+    }
+
+    @Override
+    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+        return mPopupDataProvider.getBadgeInfoForItem(info);
+    }
+
+    @Override
+    public void invalidateParent(ItemInfo info) {
+        FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(getDeviceProfile().inv);
+        if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
+            View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
+            if (folderIcon != null) {
+                folderIcon.invalidate();
+            }
+        }
     }
 
     /**
@@ -941,7 +942,7 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         // Setup the drag layer
-        mDragLayer.setup(this, mDragController);
+        mDragLayer.setup(mDragController);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1180,6 +1181,7 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
         return (LauncherRootView) mLauncherView;
     }
 
+    @Override
     public DragLayer getDragLayer() {
         return mDragLayer;
     }
@@ -1672,119 +1674,45 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
         }
     }
 
-    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
-        try {
-            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
-            try {
-                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
-                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
-                // is enabled by default on NYC.
-                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                        .penaltyLog().build());
-
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((ShortcutInfo) info).getDeepShortcutId();
-                    String packageName = intent.getPackage();
-                    DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
-                } else {
-                    // Could be launching some bookkeeping activity
-                    startActivity(intent, optsBundle);
-                }
-            } finally {
-                StrictMode.setVmPolicy(oldPolicy);
-            }
-        } catch (SecurityException e) {
-            // Due to legacy reasons, direct call shortcuts require Launchers to have the
-            // corresponding permission. Show the appropriate permission prompt if that
-            // is the case.
-            if (intent.getComponent() == null
-                    && Intent.ACTION_CALL.equals(intent.getAction())
-                    && checkSelfPermission(Manifest.permission.CALL_PHONE) !=
-                    PackageManager.PERMISSION_GRANTED) {
-
-                setWaitingForResult(PendingRequestArgs
-                        .forIntent(REQUEST_PERMISSION_CALL_PHONE, intent, info));
-                requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
-                        REQUEST_PERMISSION_CALL_PHONE);
-            } else {
-                // No idea why this was thrown.
-                throw e;
-            }
-        }
-    }
-
-    public Bundle getActivityLaunchOptionsAsBundle(View v, boolean useDefaultLaunchOptions) {
-        ActivityOptions activityOptions = getActivityLaunchOptions(v, useDefaultLaunchOptions);
-        return activityOptions == null ? null : activityOptions.toBundle();
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
+    @Override
     public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
         return useDefaultLaunchOptions
                 ? mAppTransitionManager.getDefaultActivityLaunchOptions(this, v)
                 : mAppTransitionManager.getActivityLaunchOptions(this, v);
     }
 
-    public Rect getViewBounds(View v) {
-        int[] pos = new int[2];
-        v.getLocationOnScreen(pos);
-        return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
+        // Due to legacy reasons, direct call shortcuts require Launchers to have the
+        // corresponding permission. Show the appropriate permission prompt if that
+        // is the case.
+        if (intent.getComponent() == null
+                && Intent.ACTION_CALL.equals(intent.getAction())
+                && checkSelfPermission(android.Manifest.permission.CALL_PHONE) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            setWaitingForResult(PendingRequestArgs
+                    .forIntent(REQUEST_PERMISSION_CALL_PHONE, intent, info));
+            requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE},
+                    REQUEST_PERMISSION_CALL_PHONE);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        mAppLaunchSuccess = false;
-        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
-            Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
-            return mAppLaunchSuccess;
-        }
-
-        // Only launch using the new animation if the shortcut has not opted out (this is a
-        // private contract between launcher and may be ignored in the future).
-        boolean useLaunchAnimation = (v != null) &&
-                !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
-        Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
-                : null;
-
-        UserHandle user = item == null ? null : item.user;
-
-        // Prepare intent
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (v != null) {
-            intent.setSourceBounds(getViewBounds(v));
-        }
-        try {
-            boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof ShortcutInfo)
-                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((ShortcutInfo) item).isPromise();
-            if (isShortcut) {
-                // Shortcuts need some special checks due to legacy reasons.
-                startShortcutIntentSafely(intent, optsBundle, item);
-            } else if (user == null || user.equals(Process.myUserHandle())) {
-                // Could be launching some bookkeeping activity
-                startActivity(intent, optsBundle);
-            } else {
-                LauncherAppsCompat.getInstance(this).startActivityForProfile(
-                        intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
-            }
-
-            if (v instanceof BubbleTextView) {
-                // This is set to the view that launched the activity that navigated the user away
-                // from launcher. Since there is no callback for when the activity has finished
-                // launching, enable the press state and keep this reference to reset the press
-                // state when we return to launcher.
-                BubbleTextView btv = (BubbleTextView) v;
-                btv.setStayPressed(true);
-                setOnResumeCallback(btv);
-            }
-            mAppLaunchSuccess = true;
-            getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
-        } catch (ActivityNotFoundException|SecurityException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
+        mAppLaunchSuccess = super.startActivitySafely(v, intent, item);
+        if (mAppLaunchSuccess && v instanceof BubbleTextView) {
+            // This is set to the view that launched the activity that navigated the user away
+            // from launcher. Since there is no callback for when the activity has finished
+            // launching, enable the press state and keep this reference to reset the press
+            // state when we return to launcher.
+            BubbleTextView btv = (BubbleTextView) v;
+            btv.setStayPressed(true);
+            setOnResumeCallback(btv);
         }
         return mAppLaunchSuccess;
     }
@@ -2513,26 +2441,6 @@ public class Launcher extends BaseActivity implements LauncherExterns, LauncherM
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
-    }
-
-    @Override
-    public void onActionModeStarted(ActionMode mode) {
-        super.onActionModeStarted(mode);
-        mCurrentActionMode = mode;
-    }
-
-    @Override
-    public void onActionModeFinished(ActionMode mode) {
-        super.onActionModeFinished(mode);
-        mCurrentActionMode = null;
-    }
-
-    public boolean finishAutoCancelActionMode() {
-        if (mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag()) {
-            mCurrentActionMode.finish();
-            return true;
-        }
-        return false;
     }
 
     /**

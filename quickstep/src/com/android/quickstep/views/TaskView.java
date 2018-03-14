@@ -28,6 +28,7 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -110,7 +111,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                opts = Launcher.getLauncher(getContext()).getActivityLaunchOptions(this, false);
+                opts = BaseDraggingActivity.fromContext(getContext())
+                        .getActivityLaunchOptions(this, false);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }

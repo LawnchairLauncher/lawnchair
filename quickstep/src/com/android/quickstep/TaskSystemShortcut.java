@@ -30,8 +30,8 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -70,11 +70,12 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
     }
 
     @Override
-    public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+    public View.OnClickListener getOnClickListener(
+            BaseDraggingActivity activity, ItemInfo itemInfo) {
         return null;
     }
 
-    public View.OnClickListener getOnClickListener(final Launcher launcher, final TaskView view) {
+    public View.OnClickListener getOnClickListener(BaseDraggingActivity activity, TaskView view) {
         Task task = view.getTask();
 
         ShortcutInfo dummyInfo = new ShortcutInfo();
@@ -82,14 +83,14 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         ComponentName component = task.getTopComponent();
         dummyInfo.intent.setComponent(component);
         dummyInfo.user = UserHandle.of(task.key.userId);
-        dummyInfo.title = TaskUtils.getTitle(launcher, task);
+        dummyInfo.title = TaskUtils.getTitle(activity, task);
 
-        return getOnClickListenerForTask(launcher, task, dummyInfo);
+        return getOnClickListenerForTask(activity, task, dummyInfo);
     }
 
-    protected View.OnClickListener getOnClickListenerForTask(final Launcher launcher,
-            final Task task, final ItemInfo dummyInfo) {
-        return mSystemShortcut.getOnClickListener(launcher, dummyInfo);
+    protected View.OnClickListener getOnClickListenerForTask(
+            BaseDraggingActivity activity, Task task, ItemInfo dummyInfo) {
+        return mSystemShortcut.getOnClickListener(activity, dummyInfo);
     }
 
     public static class AppInfo extends TaskSystemShortcut<SystemShortcut.AppInfo> {
@@ -109,8 +110,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
-            if (launcher.getDeviceProfile().isMultiWindowMode) {
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, TaskView taskView) {
+            if (activity.getDeviceProfile().isMultiWindowMode) {
                 return null;
             }
             final Task task  = taskView.getTask();
@@ -119,12 +121,12 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             }
             mTaskView = taskView;
             return (v -> {
-                AbstractFloatingView.closeOpenViews(launcher, true,
+                AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
                 if (ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key.id,
                         ActivityOptionsCompat.makeSplitScreenOptions(true))) {
-                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
                     try {
                         sysUiProxy.onSplitScreenInvoked();
                     } catch (RemoteException e) {
@@ -134,7 +136,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
                     final Runnable animStartedListener = () -> {
                         mTaskView.getViewTreeObserver().addOnPreDrawListener(SplitScreen.this);
-                        launcher.<RecentsView>getOverviewPanel().removeView(taskView);
+                        activity.<RecentsView>getOverviewPanel().removeView(taskView);
                     };
 
                     final int[] position = new int[2];
@@ -178,8 +180,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
-            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, TaskView taskView) {
+            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
             if (sysUiProxy == null) {
                 return null;
             }
@@ -211,11 +214,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected View.OnClickListener getOnClickListenerForTask(Launcher launcher, Task task,
-                ItemInfo itemInfo) {
-            if (InstantAppResolver.newInstance(launcher).isInstantApp(launcher,
+        protected View.OnClickListener getOnClickListenerForTask(
+                BaseDraggingActivity activity, Task task, ItemInfo itemInfo) {
+            if (InstantAppResolver.newInstance(activity).isInstantApp(activity,
                         task.getTopComponent().getPackageName())) {
-                return mSystemShortcut.createOnClickListener(launcher, itemInfo);
+                return mSystemShortcut.createOnClickListener(activity, itemInfo);
             }
             return null;
         }

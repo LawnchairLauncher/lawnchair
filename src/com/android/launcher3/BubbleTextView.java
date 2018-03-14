@@ -44,7 +44,6 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
@@ -65,7 +64,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mActivity;
     private Drawable mIcon;
     private final boolean mCenterVertically;
 
@@ -133,8 +132,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = Launcher.getLauncher(context);
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mActivity = BaseDraggingActivity.fromContext(context);
+        DeviceProfile grid = mActivity.getDeviceProfile();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -164,7 +163,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+        setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
 
     }
 
@@ -493,10 +492,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
             boolean wasBadged = mBadgeInfo != null;
-            mBadgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
+            mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
             boolean isBadged = mBadgeInfo != null;
             float newBadgeScale = isBadged ? 1f : 0;
-            mBadgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
+            mBadgeRenderer = mActivity.getDeviceProfile().mBadgeRenderer;
             if (wasBadged || isBadged) {
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
@@ -572,15 +571,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info);
-                FolderIconPreviewVerifier verifier =
-                        new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
-                if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
-                    View folderIcon =
-                            mLauncher.getWorkspace().getHomescreenIconByItemId(info.container);
-                    if (folderIcon != null) {
-                        folderIcon.invalidate();
-                    }
-                }
+                mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
             }

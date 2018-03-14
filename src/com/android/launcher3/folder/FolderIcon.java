@@ -568,7 +568,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Override
     public void onAdd(ShortcutInfo item, int rank) {
         boolean wasBadged = mBadgeInfo.hasBadge();
-        mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        mBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(item));
         boolean isBadged = mBadgeInfo.hasBadge();
         updateBadgeScale(wasBadged, isBadged);
         invalidate();
@@ -578,7 +578,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Override
     public void onRemove(ShortcutInfo item) {
         boolean wasBadged = mBadgeInfo.hasBadge();
-        mBadgeInfo.subtractBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        mBadgeInfo.subtractBadgeInfo(mLauncher.getBadgeInfoForItem(item));
         boolean isBadged = mBadgeInfo.hasBadge();
         updateBadgeScale(wasBadged, isBadged);
         invalidate();

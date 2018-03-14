@@ -24,9 +24,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -92,7 +92,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public final void close(boolean animate) {
         animate &= !Utilities.isPowerSaverOn(getContext());
         handleClose(animate);
-        Launcher.getLauncher(getContext()).getUserEventDispatcher()
+        BaseActivity.fromContext(getContext()).getUserEventDispatcher()
                 .resetElapsedContainerMillis("container closed");
     }
 
@@ -120,8 +120,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
-            Launcher launcher, @FloatingViewType int type) {
-        DragLayer dragLayer = launcher.getDragLayer();
+            BaseDraggingActivity activity, @FloatingViewType int type) {
+        BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
@@ -136,16 +136,17 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         return null;
     }
 
-    public static void closeOpenContainer(Launcher launcher, @FloatingViewType int type) {
-        AbstractFloatingView view = getOpenView(launcher, type);
+    public static void closeOpenContainer(BaseDraggingActivity activity,
+            @FloatingViewType int type) {
+        AbstractFloatingView view = getOpenView(activity, type);
         if (view != null) {
             view.close(true);
         }
     }
 
-    public static void closeOpenViews(Launcher launcher, boolean animate,
+    public static void closeOpenViews(BaseDraggingActivity activity, boolean animate,
             @FloatingViewType int type) {
-        DragLayer dragLayer = launcher.getDragLayer();
+        BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
@@ -159,16 +160,16 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         }
     }
 
-    public static void closeAllOpenViews(Launcher launcher, boolean animate) {
-        closeOpenViews(launcher, animate, TYPE_ALL);
-        launcher.finishAutoCancelActionMode();
+    public static void closeAllOpenViews(BaseDraggingActivity activity, boolean animate) {
+        closeOpenViews(activity, animate, TYPE_ALL);
+        activity.finishAutoCancelActionMode();
     }
 
-    public static void closeAllOpenViews(Launcher launcher) {
-        closeAllOpenViews(launcher, true);
+    public static void closeAllOpenViews(BaseDraggingActivity activity) {
+        closeAllOpenViews(activity, true);
     }
 
-    public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_ALL);
+    public static AbstractFloatingView getTopOpenView(BaseDraggingActivity activity) {
+        return getOpenView(activity, TYPE_ALL);
     }
 }

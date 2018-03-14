@@ -15,17 +15,25 @@
  */
 package com.android.quickstep;
 
+import android.app.ActivityOptions;
 import android.os.Bundle;
+import android.view.View;
 
-import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.views.BaseDragLayer;
 
 /**
  * A simple activity to show the recently launched tasks
  */
-public class RecentsActivity extends BaseActivity {
+public class RecentsActivity extends BaseDraggingActivity {
+
+    private RecentsRootView mRecentsRootView;
+    private FallbackRecentsView mFallbackRecentsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,5 +47,30 @@ public class RecentsActivity extends BaseActivity {
                 : new InvariantDeviceProfile(this).getDeviceProfile(this));
 
         setContentView(R.layout.fallback_recents_activity);
+        mRecentsRootView = findViewById(R.id.drag_layer);
+        mFallbackRecentsView = findViewById(R.id.overview_panel);
     }
+
+    @Override
+    public BaseDragLayer getDragLayer() {
+        return mRecentsRootView;
+    }
+
+    @Override
+    public <T extends View> T getOverviewPanel() {
+        return (T) mFallbackRecentsView;
+    }
+
+    @Override
+    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+        return null;
+    }
+
+    @Override
+    public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
+        return null;
+    }
+
+    @Override
+    public void invalidateParent(ItemInfo info) { }
 }

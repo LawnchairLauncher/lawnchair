@@ -25,7 +25,8 @@ import com.android.launcher3.util.TouchController;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new AllAppsSwipeController(launcher)};
+        return new TouchController[] {
+                launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
