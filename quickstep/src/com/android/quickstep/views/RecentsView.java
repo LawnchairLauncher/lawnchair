@@ -16,23 +16,32 @@
 
 package com.android.quickstep.views;
 
-import android.animation.LayoutTransition;
-import android.animation.LayoutTransition.TransitionListener;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.quickstep.PendingAnimation;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsModel;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -49,6 +58,7 @@ import java.util.ArrayList;
 /**
  * A list of recent tasks.
  */
+@TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity>
         extends PagedView implements OnSharedPreferenceChangeListener {
 
@@ -90,14 +100,14 @@ public abstract class RecentsView<T extends BaseActivity>
 
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
-    private LayoutTransition mLayoutTransition;
     private Runnable mNextPageSwitchRunnable;
+
+    private PendingAnimation mPendingAnimation;
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         enableFreeScroll(true);
-        setupLayoutTransition();
         setClipToOutline(true);
 
         mFastFlingVelocity = getResources()
@@ -134,33 +144,6 @@ public abstract class RecentsView<T extends BaseActivity>
             }
         }
         return null;
-    }
-
-    private void setupLayoutTransition() {
-        // We want to show layout transitions when pages are deleted, to close the gap.
-        // TODO: We should this manually so we can control the animation (fill in the gap as the
-        // dismissing task is being tracked, and also so we can update the visible task data during
-        // the transition. For now, the workaround is to expand the visible tasks to load.
-        mLayoutTransition = new LayoutTransition();
-        mLayoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
-        mLayoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
-
-        mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
-        mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        mLayoutTransition.addTransitionListener(new TransitionListener() {
-            @Override
-            public void startTransition(LayoutTransition layoutTransition, ViewGroup viewGroup,
-                    View view, int i) {
-                loadVisibleTaskData();
-            }
-
-            @Override
-            public void endTransition(LayoutTransition layoutTransition, ViewGroup viewGroup,
-                    View view, int i) {
-                loadVisibleTaskData();
-            }
-        });
-        setLayoutTransition(mLayoutTransition);
     }
 
     @Override
@@ -231,6 +214,10 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
+        if (mPendingAnimation != null) {
+            mPendingAnimation.addEndListener((b) -> applyLoadPlan(loadPlan));
+            return;
+        }
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();
@@ -243,7 +230,6 @@ public abstract class RecentsView<T extends BaseActivity>
         // necessary)
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
-        setLayoutTransition(null);
 
         final int requiredChildCount = tasks.size();
         for (int i = getChildCount(); i < requiredChildCount; i++) {
@@ -254,7 +240,6 @@ public abstract class RecentsView<T extends BaseActivity>
             final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
             removeView(taskView);
         }
-        setLayoutTransition(mLayoutTransition);
 
         // Unload existing visible task data
         unloadVisibleTaskData();
@@ -265,17 +250,23 @@ public abstract class RecentsView<T extends BaseActivity>
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task);
-            taskView.resetVisualProperties();
         }
-        updateCurveProperties();
-
-        // Update the set of visible task's data
-        loadVisibleTaskData();
+        resetTaskVisuals();
         applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
             mQuickScrubController.snapToNextTaskIfAvailable();
         }
+    }
+
+    public void resetTaskVisuals() {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            ((TaskView) getChildAt(i)).resetVisualProperties();
+        }
+
+        updateCurveProperties();
+        // Update the set of visible task's data
+        loadVisibleTaskData();
     }
 
     private void updateTaskStackListenerState() {
@@ -375,7 +366,7 @@ public abstract class RecentsView<T extends BaseActivity>
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            int pageCenter = page.getLeft() + halfPageWidth;
+            float pageCenter = page.getLeft() + page.getTranslationX() + halfPageWidth;
             float distanceFromScreenCenter = screenCenter - pageCenter;
             float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
             mScrollState.linearInterpolation = Math.min(1,
@@ -432,13 +423,6 @@ public abstract class RecentsView<T extends BaseActivity>
         mHasVisibleTaskData.clear();
     }
 
-    public void onTaskDismissed(TaskView taskView) {
-        ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
-        removeView(taskView);
-        if (getChildCount() == 0) {
-            onAllTasksRemoved();
-        }
-    }
 
     protected abstract void onAllTasksRemoved();
 
@@ -470,11 +454,9 @@ public abstract class RecentsView<T extends BaseActivity>
         if (getChildCount() == 0) {
             needsReload = true;
             // Add an empty view for now
-            setLayoutTransition(null);
             final TaskView taskView = (TaskView) LayoutInflater.from(getContext())
                     .inflate(R.layout.task, this, false);
             addView(taskView, 0);
-            setLayoutTransition(mLayoutTransition);
         }
         mRunningTaskId = runningTaskId;
         setCurrentPage(0);
@@ -528,5 +510,79 @@ public abstract class RecentsView<T extends BaseActivity>
          * of the screen and 1 is the edge of the screen.
          */
         public float linearInterpolation;
+    }
+
+    public PendingAnimation createTaskDismissAnimation(TaskView taskView, long duration) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+            throw new IllegalStateException("Another pending animation is still running");
+        }
+        AnimatorSet anim = new AnimatorSet();
+        PendingAnimation pendingAnimation = new PendingAnimation(anim);
+
+        int count = getChildCount();
+        if (count == 0) {
+            return pendingAnimation;
+        }
+
+        int[] oldScroll = new int[count];
+        getPageScrolls(oldScroll, false, SIMPLE_SCROLL_LOGIC);
+
+        int[] newScroll = new int[count];
+        getPageScrolls(newScroll, false, (v) -> v.getVisibility() != GONE && v != taskView);
+
+        int maxScrollDiff = 0;
+        int lastPage = mIsRtl ? 0 : count - 1;
+        if (getChildAt(lastPage) == taskView) {
+            if (count > 1) {
+                int secondLastPage = mIsRtl ? 1 : count - 2;
+                maxScrollDiff = oldScroll[lastPage] - newScroll[secondLastPage];
+            }
+        }
+
+        boolean needsCurveUpdates = false;
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child == taskView) {
+                addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
+                addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                        duration, LINEAR, anim);
+            } else {
+                int scrollDiff = newScroll[i] - oldScroll[i] + maxScrollDiff;
+                if (scrollDiff != 0) {
+                    addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff),
+                            duration, ACCEL, anim);
+                    needsCurveUpdates = true;
+                }
+            }
+        }
+
+        if (needsCurveUpdates) {
+            ValueAnimator va = ValueAnimator.ofFloat(0, 1);
+            va.addUpdateListener((a) -> updateCurveProperties());
+            anim.play(va);
+        }
+
+        // Add a tiny bit of translation Z, so that it draws on top of other views
+        taskView.setTranslationZ(0.1f);
+
+        mPendingAnimation = pendingAnimation;
+        mPendingAnimation.addEndListener((isSuccess) -> {
+           if (isSuccess) {
+               ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+               removeView(taskView);
+               if (getChildCount() == 0) {
+                   onAllTasksRemoved();
+               }
+           }
+           resetTaskVisuals();
+           mPendingAnimation = null;
+        });
+        return pendingAnimation;
+    }
+
+    private static void addAnim(ObjectAnimator anim, long duration,
+            TimeInterpolator interpolator, AnimatorSet set) {
+        anim.setDuration(duration).setInterpolator(interpolator);
+        set.play(anim);
     }
 }

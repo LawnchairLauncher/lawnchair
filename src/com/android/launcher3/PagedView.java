@@ -56,7 +56,9 @@ import java.util.ArrayList;
 public abstract class PagedView<T extends View & PageIndicator> extends ViewGroup {
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
+
     protected static final int INVALID_PAGE = -1;
+    protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     public static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
@@ -540,43 +542,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         final int childCount = getChildCount();
 
-        final int startIndex = mIsRtl ? childCount - 1 : 0;
-        final int endIndex = mIsRtl ? -1 : childCount;
-        final int delta = mIsRtl ? -1 : 1;
-
-        int verticalPadding = getPaddingTop() + getPaddingBottom();
-
-        int scrollOffsetLeft = mInsets.left + getPaddingLeft();
-        int childLeft = scrollOffsetLeft;
-
         boolean pageScrollChanged = false;
         if (mPageScrolls == null || childCount != mChildCountOnLastLayout) {
             mPageScrolls = new int[childCount];
             pageScrollChanged = true;
         }
-
-        for (int i = startIndex; i != endIndex; i += delta) {
-            final View child = getPageAt(i);
-            if (child.getVisibility() != View.GONE) {
-                int childTop = getPaddingTop() + mInsets.top;
-                childTop += (getMeasuredHeight() - mInsets.top - mInsets.bottom - verticalPadding
-                        - child.getMeasuredHeight()) / 2;
-
-                final int childWidth = child.getMeasuredWidth();
-                final int childHeight = child.getMeasuredHeight();
-
-                if (DEBUG) Log.d(TAG, "\tlayout-child" + i + ": " + childLeft + ", " + childTop);
-                child.layout(childLeft, childTop,
-                        childLeft + child.getMeasuredWidth(), childTop + childHeight);
-
-                final int pageScroll = childLeft - scrollOffsetLeft;
-                if (mPageScrolls[i] != pageScroll) {
-                    pageScrollChanged = true;
-                    mPageScrolls[i] = pageScroll;
-                }
-
-                childLeft += childWidth + mPageSpacing + getChildGap();
-            }
+        if (getPageScrolls(mPageScrolls, true, SIMPLE_SCROLL_LOGIC)) {
+            pageScrollChanged = true;
         }
 
         final LayoutTransition transition = getLayoutTransition();
@@ -612,6 +584,51 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             setCurrentPage(getNextPage());
         }
         mChildCountOnLastLayout = childCount;
+    }
+
+    /**
+     * Initializes {@code outPageScrolls} with scroll positions for view at that index. The length
+     * of {@code outPageScrolls} should be same as the the childCount
+     *
+     */
+    protected boolean getPageScrolls(int[] outPageScrolls, boolean layoutChildren,
+            ComputePageScrollsLogic scrollLogic) {
+        final int childCount = getChildCount();
+
+        final int startIndex = mIsRtl ? childCount - 1 : 0;
+        final int endIndex = mIsRtl ? -1 : childCount;
+        final int delta = mIsRtl ? -1 : 1;
+
+        int verticalPadding = getPaddingTop() + getPaddingBottom();
+
+        int scrollOffsetLeft = mInsets.left + getPaddingLeft();
+        int childLeft = scrollOffsetLeft;
+        boolean pageScrollChanged = false;
+
+        for (int i = startIndex; i != endIndex; i += delta) {
+            final View child = getPageAt(i);
+            if (scrollLogic.shouldIncludeView(child)) {
+                int childTop = getPaddingTop() + mInsets.top;
+                childTop += (getMeasuredHeight() - mInsets.top - mInsets.bottom - verticalPadding
+                        - child.getMeasuredHeight()) / 2;
+                final int childWidth = child.getMeasuredWidth();
+
+                if (layoutChildren) {
+                    final int childHeight = child.getMeasuredHeight();
+                    child.layout(childLeft, childTop,
+                            childLeft + child.getMeasuredWidth(), childTop + childHeight);
+                }
+
+                final int pageScroll = childLeft - scrollOffsetLeft;
+                if (outPageScrolls[i] != pageScroll) {
+                    pageScrollChanged = true;
+                    outPageScrolls[i] = pageScroll;
+                }
+
+                childLeft += childWidth + mPageSpacing + getChildGap();
+            }
+        }
+        return pageScrollChanged;
     }
 
     protected int getChildGap() {
@@ -1524,5 +1541,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public boolean onHoverEvent(android.view.MotionEvent event) {
         return true;
+    }
+
+    protected interface ComputePageScrollsLogic {
+
+        boolean shouldIncludeView(View view);
     }
 }
