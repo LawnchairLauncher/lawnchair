@@ -90,6 +90,11 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public float getOverviewTranslationX(Launcher launcher) {
+        return 0;
+    }
+
+    @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         return previousState == OVERVIEW ? OVERVIEW : NORMAL;
     }

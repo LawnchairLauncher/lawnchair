@@ -165,6 +165,10 @@ public class LauncherState {
         return 1f;
     }
 
+    public float getOverviewTranslationX(Launcher launcher) {
+        return launcher.getDragLayer().getMeasuredWidth();
+    }
+
     public void onStateEnabled(Launcher launcher) {
         dispatchWindowStateChanged(launcher);
     }

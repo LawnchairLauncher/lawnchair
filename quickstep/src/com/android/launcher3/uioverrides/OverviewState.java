@@ -57,6 +57,11 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getOverviewTranslationX(Launcher launcher) {
+        return 0;
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);

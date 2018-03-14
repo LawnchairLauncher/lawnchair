@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,7 +32,6 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 
 public class RecentsViewStateController implements StateHandler {
 
@@ -44,8 +42,6 @@ public class RecentsViewStateController implements StateHandler {
     // The fraction representing the visibility of the RecentsView. This allows delaying the
     // overall transition while the RecentsView is being shown or hidden.
     private final AnimatedFloat mVisibilityMultiplier = new AnimatedFloat(this::onVisibilityProgress);
-
-    private boolean mIsRecentsSlidingInOrOut;
 
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
@@ -59,16 +55,17 @@ public class RecentsViewStateController implements StateHandler {
         if (state.overviewUi) {
             mRecentsView.resetTaskVisuals();
         }
+        float overviewTranslationX = state.getOverviewTranslationX(mLauncher);
+        int direction = mRecentsView.isRtl() ? -1 : 1;
+        mRecentsView.setTranslationX(overviewTranslationX * direction);
     }
 
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        LauncherState fromState = mLauncher.getStateManager().getState();
-        mIsRecentsSlidingInOrOut = fromState == NORMAL && toState.overviewUi
-                || fromState.overviewUi && toState == NORMAL;
 
         // Scroll to the workspace card before changing to the NORMAL state.
+        LauncherState fromState = mLauncher.getStateManager().getState();
         int currPage = mRecentsView.getCurrentPage();
         if (fromState.overviewUi && toState == NORMAL && currPage != 0 && !config.userControlled) {
             int maxSnapDuration = PagedView.SLOW_PAGE_SNAP_ANIMATION_DURATION;
@@ -83,19 +80,27 @@ public class RecentsViewStateController implements StateHandler {
                 mTransitionProgress.animateToValue(toState.overviewUi ? 1 : 0);
         progressAnim.setDuration(config.duration);
         progressAnim.setInterpolator(Interpolators.LINEAR);
-        progressAnim.addListener(new AnimationSuccessListener() {
-
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
-            }
-        });
         builder.play(progressAnim);
 
         ObjectAnimator visibilityAnim = animateVisibility(toState.overviewUi);
         visibilityAnim.setDuration(config.duration);
         visibilityAnim.setInterpolator(Interpolators.LINEAR);
         builder.play(visibilityAnim);
+
+        int direction = mRecentsView.isRtl() ? -1 : 1;
+        float fromTranslationX = fromState.getOverviewTranslationX(mLauncher) * direction;
+        float toTranslationX = toState.getOverviewTranslationX(mLauncher) * direction;
+        ObjectAnimator translationXAnim = ObjectAnimator.ofFloat(mRecentsView, View.TRANSLATION_X,
+                fromTranslationX, toTranslationX);
+        translationXAnim.setDuration(config.duration);
+        translationXAnim.setInterpolator(Interpolators.ACCEL);
+        if (toState.overviewUi) {
+            translationXAnim.addUpdateListener(valueAnimator -> {
+                // While animating into recents, update the visible task data as needed
+                mRecentsView.loadVisibleTaskData();
+            });
+        }
+        builder.play(translationXAnim);
     }
 
     public void setVisibility(boolean isVisible) {
@@ -131,15 +136,6 @@ public class RecentsViewStateController implements StateHandler {
 
     private void onTransitionProgress() {
         applyProgress();
-        if (mIsRecentsSlidingInOrOut) {
-            float interpolatedProgress = ACCEL.getInterpolation(mTransitionProgress.value);
-            // Slide in from the side as we swipe.
-            int translation = mRecentsView.getWidth();
-            if (mRecentsView.isRtl()) {
-                translation = -translation;
-            }
-            mRecentsView.setTranslationX(translation * (1 - interpolatedProgress));
-        }
     }
 
     private void onVisibilityProgress() {
@@ -148,9 +144,5 @@ public class RecentsViewStateController implements StateHandler {
 
     private void applyProgress() {
         mRecentsView.setAlpha(mTransitionProgress.value * mVisibilityMultiplier.value);
-        if (mIsRecentsSlidingInOrOut) {
-            // While animating into recents, update the visible task data as needed
-            mRecentsView.loadVisibleTaskData();
-        }
     }
 }
