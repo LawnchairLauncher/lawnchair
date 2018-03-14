@@ -62,6 +62,7 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 public class TouchInteractionService extends Service {
 
     public static final boolean DEBUG_SHOW_OVERVIEW_BUTTON = false;
+    public static final boolean DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB = false;
 
     private static final SparseArray<String> sMotionEventNames;
 
@@ -140,10 +141,18 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onOverviewShown(boolean triggeredFromAltTab) { }
+        public void onOverviewShown(boolean triggeredFromAltTab) {
+            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
+                mOverviewCommandHelper.onOverviewShown();
+            }
+        }
 
         @Override
-        public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) { }
+        public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
+            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
+                mOverviewCommandHelper.onOverviewHidden();
+            }
+        }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
