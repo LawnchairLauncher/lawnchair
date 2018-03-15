@@ -95,6 +95,7 @@
         android:defaultValue="true"
         android:key="pref_centerWallpaper"
         android:persistent="true"
+        android:summary="center_wallpaper_pref_summary"
         android:title="@string/center_wallpaper_pref_title" />
 
     <Preference

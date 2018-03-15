@@ -325,8 +325,8 @@
     <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
     <string name="blur_pref_title">Enable blur</string>
     <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-    <string name="blur_radius_pref_title">Blur radius</string>
-    <string name="pref_iconLabelsInTwoLines">Icon labels in two lines</string>
+    <string name="blur_radius_pref_title">Blur amount</string>
+    <string name="pref_iconLabelsInTwoLines">Icon labels use two lines</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
@@ -359,7 +359,7 @@
     <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
     <string name="backup_pref_summary">Backup\/restore your settings and database</string>
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
-    <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
+    <string name="show_pixel_bar_pref_title">Show Pixel searchbar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>
     <string name="use_round_searhbar">Use round apps searchbar</string>
@@ -447,7 +447,7 @@
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_circle">Circle</string>
     <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="animated_clock_icon_title">Animated clock icon</string>
+    <string name="animated_clock_icon_title">Animate clock icon</string>
     <string name="animated_clock_icon_alternative_clock_apps_title">Animate alternative clock apps</string>
     <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
     <string name="about_summary_title">Summary</string>
@@ -464,7 +464,8 @@
     <string name="pref_all_apps_custom_label_color">Use custom label color</string>
     <string name="pref_all_apps_label_color">Color of icon labels in drawer</string>
     <string name="pref_num_rows_drawer">Number of rows in drawer</string>
-    <string name="center_wallpaper_pref_title">Center wallpaper when there is only one page</string>
+    <string name="center_wallpaper_pref_title">Center wallpaper</string>
+    <string name="center_wallpaper_pref_summary">Only works if homescreen uses one page</string>
     <string name="vertical_drawer_layout_pref_title">Display as vertical list</string>
 
     <!-- Time format for Weather Widget -->
@@ -477,8 +478,8 @@
     <string name="lawnfeed_incompatible">Incompatible Lawnfeed version installed</string>
     <string name="set_default_launcher">Set default launcher</string>
     <string name="enable_spring_pref_title">Enable spring effect</string>
-    <string name="hide_app">Hide app</string>
-    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app">Hidden apps</string>
+    <string name="hide_app_sum">Hide apps from the app drawer</string>
     <string name="hide_app_selected">&#160;selected</string>
     <string name="hidden_app">Hidden app</string>
     <string name="hide_app_apply">Apply</string>
