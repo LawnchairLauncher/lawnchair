@@ -427,4 +427,6 @@
   <string name="snowflakes_num">Максималан број пахуљица</string>
   <string name="lawnfeed_outdated_title">Потребно је ажурирање Lawnfeed</string>
   <string name="lawnfeed_outdated">За рад са овом верзијом Lawnfeed-а неопходна је нова верзија Lawnfeed-а.\n\nПре него што инсталирате исправку, вероватно ћете морати да деинсталирате тренутну верзију Lawnfeed-а.\n\nЖелите ли да је преузмете сада?</string>
+  <string name="title_storage_permission_required">Потребанa дозвола за складиштење</string>
+  <string name="content_storage_permission_required">У Андроид 8.1 и изнад дозволе за складиштење је потребно да апликације приступе позадини. Без поменуте дозволе се може срушити или показати неочекивано понашање.</string>
 </resources>
