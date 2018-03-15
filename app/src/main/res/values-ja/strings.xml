@@ -425,4 +425,6 @@
   <string name="snowflakes_num">降雪量の調整</string>
   <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
   <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
+  <string name="title_storage_permission_required">ストレージへのアクセス許可</string>
+  <string name="content_storage_permission_required">Android 8.1以上ではアプリで壁紙を設定する時にストレージへのアクセス許可が必要です。アクセス許可をしていない場合、Lawnchairがクラッシュしたり予期しない動作をします。</string>
 </resources>
