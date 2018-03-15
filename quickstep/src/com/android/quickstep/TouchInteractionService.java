@@ -21,9 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -54,8 +54,6 @@ import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
-
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -112,12 +110,6 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onQuickSwitch() {
-            mEventQueue.onQuickSwitch();
-            TraceHelper.endSection("SysUiBinder", "onQuickSwitch");
-        }
-
-        @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
@@ -160,7 +152,7 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onQuickStep(MotionEvent motionEvent) throws RemoteException {
+        public void onQuickStep(MotionEvent motionEvent) {
 
         }
     };
@@ -336,14 +328,10 @@ public class TouchInteractionService extends Service {
             if (mInvalidated) {
                 return;
             }
-            if (TouchConsumer.isInteractionQuick(interactionType)) {
+            if (interactionType == INTERACTION_QUICK_SCRUB) {
                 Runnable action = () -> {
-                    Runnable onComplete = null;
-                    if (interactionType == INTERACTION_QUICK_SWITCH) {
-                        onComplete = mQuickScrubController::onQuickSwitch;
-                    }
                     LauncherState fromState = mLauncher.getStateManager().getState();
-                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true, onComplete);
+                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true);
                     mQuickScrubController.onQuickScrubStart(fromState == NORMAL);
                 };
 

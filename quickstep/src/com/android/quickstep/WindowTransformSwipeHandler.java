@@ -15,11 +15,11 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
-import static com.android.quickstep.TouchConsumer.isInteractionQuick;
 import static com.android.systemui.shared.recents.utilities.Utilities
         .postAtFrontOfQueueAsynchronously;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -44,6 +44,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
@@ -101,9 +102,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     // States for quick switch/scrub
     private static final int STATE_SWITCH_TO_SCREENSHOT_COMPLETE = 1 << 10;
-    private static final int STATE_QUICK_SWITCH = 1 << 11;
-    private static final int STATE_QUICK_SCRUB_START = 1 << 12;
-    private static final int STATE_QUICK_SCRUB_END = 1 << 13;
+    private static final int STATE_QUICK_SCRUB_START = 1 << 11;
+    private static final int STATE_QUICK_SCRUB_END = 1 << 12;
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
@@ -250,13 +250,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_QUICK_SWITCH,
-                this::onQuickInteractionStart);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_QUICK_SCRUB_START,
-                this::onQuickInteractionStart);
-
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SWITCH_TO_SCREENSHOT_COMPLETE
-                | STATE_QUICK_SWITCH, this::switchToFinalAppAfterQuickSwitch);
+                this::onQuickScrubStart);
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_QUICK_SCRUB_START
+                | STATE_SCALED_CONTROLLER_RECENTS, this::onFinishedTransitionToQuickScrub);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SWITCH_TO_SCREENSHOT_COMPLETE
                 | STATE_QUICK_SCRUB_END, this::switchToFinalAppAfterQuickScrub);
     }
@@ -365,7 +362,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityControlHelper.prepareRecentsUI(mActivity, mWasLauncherAlreadyVisible);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
-
         if (mWasLauncherAlreadyVisible) {
             mLauncherTransitionController = mActivityControlHelper
                     .createControllerForVisibleActivity(activity);
@@ -439,23 +435,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             throw new IllegalArgumentException(
                     "Can't change interaction type from " + mInteractionType);
         }
-        if (!isInteractionQuick(interactionType)) {
+        if (interactionType != INTERACTION_QUICK_SCRUB) {
             throw new IllegalArgumentException(
                     "Can't change interaction type to " + interactionType);
         }
         mInteractionType = interactionType;
 
-        setStateOnUiThread(interactionType == INTERACTION_QUICK_SWITCH
-                ? STATE_QUICK_SWITCH : STATE_QUICK_SCRUB_START);
+        setStateOnUiThread(STATE_QUICK_SCRUB_START);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(1f, QUICK_SWITCH_START_DURATION);
-    }
-
-    private void onQuickInteractionStart() {
-        mActivityControlHelper.onQuickInteractionStart(mActivity,
-                mWasLauncherAlreadyVisible || mGestureStarted);
-        mQuickScrubController.onQuickScrubStart(false);
+        animateToProgress(1f, QUICK_SCRUB_START_DURATION);
     }
 
     @WorkerThread
@@ -488,7 +477,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             if (mRecentsAnimationWrapper.controller != null) {
                 RectF currentRect;
                 synchronized (mTargetRect) {
-                    currentRect = mRectFEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+                    Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
+                            ? ACCEL_2 : LINEAR;
+                    float interpolated = interpolator.getInterpolation(shift);
+                    currentRect = mRectFEvaluator.evaluate(interpolated, mSourceRect, mTargetRect);
+                    // Stay lined up with the center of the target, since it moves for quick scrub.
+                    currentRect.offset(mTargetRect.centerX() - currentRect.centerX(), 0);
                 }
 
                 mClipRect.left = (int) (mSourceWindowClipInsets.left * shift);
@@ -528,13 +522,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 View firstTask = mRecentsView.getPageAt(0);
                 int scrollForFirstTask = mRecentsView.getScrollForPage(0);
                 int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
-                if (offsetFromFirstTask != 0) {
-                    synchronized (mTargetRect) {
-                        mTargetRect.set(mInitialTargetRect);
-                        Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
-                        float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
-                        mTargetRect.offset(offsetX, 0);
-                    }
+                synchronized (mTargetRect) {
+                    mTargetRect.set(mInitialTargetRect);
+                    Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
+                    float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
+                    float offsetY = mRecentsView.getTranslationY();
+                    mTargetRect.offset(offsetX, offsetY);
                 }
                 if (mRecentsAnimationWrapper.controller != null) {
 
@@ -764,21 +757,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         reset();
     }
 
-    public void onQuickScrubEnd() {
-        setStateOnUiThread(STATE_QUICK_SCRUB_END);
+    private void onQuickScrubStart() {
+        mActivityControlHelper.onQuickInteractionStart(mActivity, mWasLauncherAlreadyVisible);
+        mQuickScrubController.onQuickScrubStart(false);
     }
 
-    private void switchToFinalAppAfterQuickSwitch() {
-        mQuickScrubController.onQuickSwitch();
-    }
-
-    private void switchToFinalAppAfterQuickScrub() {
-        mQuickScrubController.onQuickScrubEnd();
-
-        // Normally this is handled in reset(), but since we are still scrubbing after the
-        // transition into recents, we need to defer the handler invalidation for quick scrub until
-        // after the gesture ends
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+    private void onFinishedTransitionToQuickScrub() {
+        mQuickScrubController.onFinishedTransitionToQuickScrub();
     }
 
     public void onQuickScrubProgress(float progress) {
@@ -789,6 +774,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             return;
         }
         mQuickScrubController.onQuickScrubProgress(progress);
+    }
+
+    public void onQuickScrubEnd() {
+        setStateOnUiThread(STATE_QUICK_SCRUB_END);
+    }
+
+    private void switchToFinalAppAfterQuickScrub() {
+        mQuickScrubController.onQuickScrubEnd();
+
+        // Normally this is handled in reset(), but since we are still scrubbing after the
+        // transition into recents, we need to defer the handler invalidation for quick scrub until
+        // after the gesture ends
+        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     private void debugNewState(int stateFlag) {

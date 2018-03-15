@@ -47,17 +47,31 @@ import com.android.launcher3.R;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> implements Insettable {
 
-    public static final FloatProperty<LauncherRecentsView> TRANSLATION_FACTOR =
-            new FloatProperty<LauncherRecentsView>("translationFactor") {
+    public static final FloatProperty<LauncherRecentsView> TRANSLATION_X_FACTOR =
+            new FloatProperty<LauncherRecentsView>("translationXFactor") {
 
                 @Override
                 public void setValue(LauncherRecentsView view, float v) {
-                    view.setTranslationFactor(v);
+                    view.setTranslationXFactor(v);
                 }
 
                 @Override
                 public Float get(LauncherRecentsView view) {
-                    return view.mTranslationFactor;
+                    return view.mTranslationXFactor;
+                }
+            };
+
+    public static final FloatProperty<LauncherRecentsView> TRANSLATION_Y_FACTOR =
+            new FloatProperty<LauncherRecentsView>("translationYFactor") {
+
+                @Override
+                public void setValue(LauncherRecentsView view, float v) {
+                    view.setTranslationYFactor(v);
+                }
+
+                @Override
+                public Float get(LauncherRecentsView view) {
+                    return view.mTranslationYFactor;
                 }
             };
 
@@ -67,7 +81,9 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     private Matrix mFadeMatrix;
     private boolean mScrimOnLeft;
 
-    private float mTranslationFactor;
+    private float mTranslationXFactor;
+    private float mTranslationYFactor;
+    private Rect mPagePadding = new Rect();
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -91,6 +107,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         setLayoutParams(lp);
 
         setPadding(padding.left, padding.top, padding.right, 0);
+        mPagePadding.set(padding);
+        mPagePadding.top += getResources().getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
 
         if (dp.isVerticalBarLayout()) {
             boolean wasScrimOnLeft = mScrimOnLeft;
@@ -157,15 +175,25 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         super.onLayout(changed, left, top, right, bottom);
 
         int width = right - left;
-        setTranslationX(mTranslationFactor * (mIsRtl ? -width : width));
+        setTranslationX(mTranslationXFactor * (mIsRtl ? -width : width));
+        setTranslationYFactor(mTranslationYFactor);
     }
 
-    public void setTranslationFactor(float translationFactor) {
-        mTranslationFactor = translationFactor;
+    public void setTranslationXFactor(float translationFactor) {
+        mTranslationXFactor = translationFactor;
         setTranslationX(translationFactor * (mIsRtl ? -getWidth() : getWidth()));
     }
 
-    public float getTranslationFactor() {
-        return mTranslationFactor;
+    public float getTranslationXFactor() {
+        return mTranslationXFactor;
+    }
+
+    public void setTranslationYFactor(float translationFactor) {
+        mTranslationYFactor = translationFactor;
+        setTranslationY(mTranslationYFactor * (mPagePadding.bottom - mPagePadding.top));
+    }
+
+    public float getTranslationYFactor() {
+        return mTranslationYFactor;
     }
 }
