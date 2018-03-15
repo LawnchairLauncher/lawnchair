@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.Insettable;
@@ -31,6 +30,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
+import com.android.launcher3.views.RecyclerViewFastScroller;
+import com.android.launcher3.views.TopRoundedCornerView;
 
 /**
  * Popup for showing the full list of available widgets
@@ -46,7 +47,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private final WidgetsListAdapter mAdapter;
 
-    private View mNavBarScrim;
     private WidgetsRecyclerView mRecyclerView;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -65,15 +65,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
-        mNavBarScrim = findViewById(R.id.nav_bar_bg);
 
         mRecyclerView = findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setApplyBitmapDeferred(true, mRecyclerView);
 
-        mGradientView = findViewById(R.id.gradient_bg);
-        mGradientView.setProgress(1, false);
-
+        TopRoundedCornerView springLayout = (TopRoundedCornerView) mContent;
+        springLayout.addSpringView(R.id.widgets_list_view);
+        mRecyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
         onWidgetsBound();
     }
 
@@ -94,7 +93,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void setInsets(Rect insets) {
         mInsets.set(insets);
 
-        mNavBarScrim.getLayoutParams().height = insets.bottom;
         mRecyclerView.setPadding(
                 mRecyclerView.getPaddingLeft(), mRecyclerView.getPaddingTop(),
                 mRecyclerView.getPaddingRight(), insets.bottom);
@@ -103,6 +101,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             clearNavBarColor();
         }
+
+        ((TopRoundedCornerView) mContent).setNavBarScrimHeight(mInsets.bottom);
         requestLayout();
     }
 
@@ -110,12 +110,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthUsed;
         if (mInsets.bottom > 0) {
-            // If we have bottom insets, we do not show the scrim as it would overlap
-            // with the navbar scrim
-            mGradientView.setVisibility(View.INVISIBLE);
             widthUsed = 0;
         } else {
-            mGradientView.setVisibility(View.VISIBLE);
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
@@ -124,15 +120,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         int heightUsed = mInsets.top + mLauncher.getDeviceProfile().edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
                 widthUsed, heightMeasureSpec, heightUsed);
-        measureChild(mGradientView, widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(mGradientView.getMeasuredWidth(), mGradientView.getMeasuredHeight());
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int width = r - l;
         int height = b - t;
-        mGradientView.layout(0, 0, width, height);
 
         // Content is laid out as center bottom aligned
         int contentWidth = mContent.getMeasuredWidth();
@@ -177,13 +172,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     mOpenCloseAnimator.removeListener(this);
                 }
             });
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    mRecyclerView.setLayoutFrozen(true);
-                    mOpenCloseAnimator.start();
-                    mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
-                }
+            post(() -> {
+                mRecyclerView.setLayoutFrozen(true);
+                mOpenCloseAnimator.start();
+                mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
         } else {
             setTranslationShift(TRANSLATION_SHIFT_OPENED);
@@ -206,7 +198,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
+            RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
+            if (scroller.getThumbOffsetY() >= 0 &&
+                    mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
+                mNoIntercept = true;
+            } else if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
                 mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, mLauncher.getDragLayer());
             }
         }

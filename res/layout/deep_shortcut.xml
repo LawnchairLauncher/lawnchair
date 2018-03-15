@@ -35,7 +35,6 @@
         android:textColor="?android:attr/textColorPrimary"
         android:fontFamily="sans-serif"
         launcher:layoutHorizontal="true"
-        launcher:deferShadowGeneration="true"
         launcher:iconDisplay="shortcut_popup"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size" />
 

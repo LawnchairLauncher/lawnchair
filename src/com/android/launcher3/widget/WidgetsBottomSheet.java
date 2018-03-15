@@ -32,7 +32,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -55,10 +54,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mInsets = new Rect();
-
-        mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
-                R.layout.widgets_bottom_sheet_scrim, mLauncher.getDragLayer(), false);
-        mGradientView.setProgress(1, false);
         mContent = this;
     }
 
@@ -75,7 +70,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         onWidgetsBound();
 
-        mLauncher.getDragLayer().addView(mGradientView);
         mLauncher.getDragLayer().addView(this);
         mIsOpen = false;
         open(true);
@@ -154,12 +148,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     @Override
     protected void handleClose(boolean animate) {
         handleClose(animate, DEFAULT_CLOSE_DURATION);
-    }
-
-    @Override
-    protected void onCloseComplete() {
-        super.onCloseComplete();
-        mLauncher.getDragLayer().removeView(mGradientView);
     }
 
     @Override

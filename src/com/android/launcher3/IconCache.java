@@ -45,12 +45,10 @@ import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.ColorExtractor;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
@@ -126,7 +124,7 @@ public class IconCache {
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        if (UiFactory.USE_HARDWARE_BITMAP) {
+        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
             mHighResOptions = new BitmapFactory.Options();
             mHighResOptions.inPreferredConfig = Bitmap.Config.HARDWARE;
         } else {
@@ -643,11 +641,8 @@ public class IconCache {
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
                     BitmapInfo iconInfo = li.createBadgedIconBitmap(
-                            appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion);
-                    if (mInstantAppResolver.isInstantApp(appInfo)) {
-                        li.badgeWithDrawable(iconInfo.icon,
-                                mContext.getDrawable(R.drawable.ic_instant_app_badge));
-                    }
+                            appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion,
+                            mInstantAppResolver.isInstantApp(appInfo));
                     li.recycle();
 
                     Bitmap lowResIcon =  generateLowResIcon(iconInfo.icon);

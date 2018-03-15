@@ -17,10 +17,9 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import android.view.MotionEvent;
+
 import com.android.launcher3.PagedView;
-import com.android.launcher3.R;
 
 public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
@@ -42,8 +41,8 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
     @Override
     protected String getCurrentPageDescription() {
-        return getResources().getString(
-                getNextPage() == 0 ? R.string.all_apps_personal_tab : R.string.all_apps_work_tab);
+        // Not necessary, tab-bar already has two tabs with their own descriptions.
+        return "";
     }
 
     @Override
