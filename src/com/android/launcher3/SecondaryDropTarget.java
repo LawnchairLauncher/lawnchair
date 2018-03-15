@@ -1,8 +1,19 @@
 package com.android.launcher3;
 
+import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
+
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.SETTINGS_BUTTON;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.UNINSTALL_TARGET;
 
+import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,27 +31,33 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.Themes;
 
 import java.net.URISyntaxException;
 
-public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmListener {
+/**
+ * Drop target which provides a secondary option for an item.
+ *    For app targets: shows as uninstall
+ *    For configurable widgets: shows as setup
+ */
+public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmListener {
 
-    private static final String TAG = "UninstallDropTarget";
+    private static final String TAG = "SecondaryDropTarget";
 
     private static final long CACHE_EXPIRE_TIMEOUT = 5000;
     private final ArrayMap<UserHandle, Boolean> mUninstallDisabledCache = new ArrayMap<>(1);
 
     private final Alarm mCacheExpireAlarm;
 
-    public UninstallDropTarget(Context context, AttributeSet attrs) {
+    private int mCurrentAccessibilityAction = -1;
+    public SecondaryDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UninstallDropTarget(Context context, AttributeSet attrs, int defStyle) {
+    public SecondaryDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mCacheExpireAlarm = new Alarm();
@@ -50,13 +67,24 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setupUi();
+        setupUi(UNINSTALL);
     }
 
-    protected void setupUi() {
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
-        setDrawable(R.drawable.ic_uninstall_shadow);
+    private void setupUi(int action) {
+        if (action == mCurrentAccessibilityAction) {
+            return;
+        }
+        mCurrentAccessibilityAction = action;
+
+        if (action == UNINSTALL) {
+            mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
+            setDrawable(R.drawable.ic_uninstall_shadow);
+            updateText(R.string.uninstall_drop_target_label);
+        } else {
+            mHoverColor = Themes.getColorAccent(getContext());
+            setDrawable(R.drawable.ic_setup_shadow);
+            updateText(R.string.gadget_setup_text);
+        }
     }
 
     @Override
@@ -66,11 +94,30 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
 
     @Override
     public int getAccessibilityAction() {
-        return LauncherAccessibilityDelegate.UNINSTALL;
+        return mCurrentAccessibilityAction;
+    }
+
+    @Override
+    public int getControlTypeForLogging() {
+        return mCurrentAccessibilityAction == UNINSTALL ? UNINSTALL_TARGET : SETTINGS_BUTTON;
     }
 
     @Override
     protected boolean supportsDrop(ItemInfo info) {
+        return supportsAccessibilityDrop(info, getViewUnderDrag(info));
+    }
+
+    @Override
+    public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
+        if (view instanceof AppWidgetHostView) {
+            if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
+                setupUi(RECONFIGURE);
+                return true;
+            }
+            return false;
+        }
+
+        setupUi(UNINSTALL);
         Boolean uninstallDisabled = mUninstallDisabledCache.get(info.user);
         if (uninstallDisabled == null) {
             UserManager userManager =
@@ -126,7 +173,7 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
 
     @Override
     public void completeDrop(final DragObject d) {
-        ComponentName target = performDropAction(d.dragInfo);
+        ComponentName target = performDropAction(getViewUnderDrag(d.dragInfo), d.dragInfo);
         if (d.dragSource instanceof DeferredOnComplete) {
             DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
             if (target != null) {
@@ -138,11 +185,48 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
         }
     }
 
+    private View getViewUnderDrag(ItemInfo info) {
+        if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP &&
+                mLauncher.getWorkspace().getDragInfo() != null) {
+            return mLauncher.getWorkspace().getDragInfo().cell;
+        }
+        return null;
+    }
+
+    /**
+     * Verifies that the view is an reconfigurable widget and returns the corresponding widget Id,
+     * otherwise return {@code INVALID_APPWIDGET_ID}
+     */
+    private int getReconfigurableWidgetId(View view) {
+        if (!(view instanceof AppWidgetHostView)) {
+            return INVALID_APPWIDGET_ID;
+        }
+        AppWidgetHostView hostView = (AppWidgetHostView) view;
+        AppWidgetProviderInfo widgetInfo = hostView.getAppWidgetInfo();
+        if (widgetInfo == null || widgetInfo.configure == null) {
+            return INVALID_APPWIDGET_ID;
+        }
+        if ( (LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(), widgetInfo)
+                .getWidgetFeatures() & WIDGET_FEATURE_RECONFIGURABLE) == 0) {
+            return INVALID_APPWIDGET_ID;
+        }
+        return hostView.getAppWidgetId();
+    }
+
     /**
      * Performs the drop action and returns the target component for the dragObject or null if
      * the action was not performed.
      */
-    protected ComponentName performDropAction(ItemInfo info) {
+    protected ComponentName performDropAction(View view, ItemInfo info) {
+        if (mCurrentAccessibilityAction == RECONFIGURE) {
+            int widgetId = getReconfigurableWidgetId(view);
+            if (widgetId != INVALID_APPWIDGET_ID) {
+                mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId, -1);
+            }
+            return null;
+        }
+        // else: mCurrentAccessibilityAction == UNINSTALL
+
         ComponentName cn = getUninstallTarget(info);
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
@@ -164,7 +248,7 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
 
     @Override
     public void onAccessibilityDrop(View view, ItemInfo item) {
-        performDropAction(item);
+        performDropAction(view, item);
     }
 
     /**
@@ -203,7 +287,7 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
                     .getApplicationInfo(mPackageName, PackageManager.MATCH_UNINSTALLED_PACKAGES,
                             mDragObject.dragInfo.user) == null) {
                 mDragObject.dragSource = mOriginal;
-                mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, true);
+                mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
             } else {
                 sendFailure();
             }
@@ -212,7 +296,7 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
         public void sendFailure() {
             mDragObject.dragSource = mOriginal;
             mDragObject.cancelled = true;
-            mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false);
+            mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, false);
         }
     }
 }

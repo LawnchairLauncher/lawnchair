@@ -36,8 +36,13 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
 
-        <service android:name="com.android.quickstep.TouchInteractionService"
-            android:exported="true" />
+        <service
+            android:name="com.android.quickstep.TouchInteractionService"
+            android:permission="android.permission.STATUS_BAR_SERVICE" >
+            <intent-filter>
+                <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
+            </intent-filter>
+        </service>
 
         <!-- STOPSHIP: Change exported to false once all the integration is complete.
         It is set to true so that the activity can be started from command line -->

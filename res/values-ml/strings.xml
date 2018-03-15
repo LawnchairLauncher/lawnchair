@@ -137,7 +137,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ഔദ്യോഗിക ആപ്പുകൾ ഇവിടെ കണ്ടെത്തുക"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഓറഞ്ച് നിറത്തിലുള്ള ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"നിങ്ങളുടെ സ്ഥാപനം നിയന്ത്രിക്കുന്നത്"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
 </resources>

@@ -137,7 +137,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணி விவரம்"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"பணி ஆப்ஸை இங்கு காணலாம்"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"ஒவ்வொரு பணிப் பயன்பாடும் ஆரஞ்சு நிற பேட்ஜைக் கொண்டிருக்கும். இவை, உங்கள் நிறுவனத்தால் பாதுகாப்பாக வைக்கப்பட்டுள்ளன. இந்த ஆப்ஸை எளிதாக அணுக, முகப்புத் திரைக்கு நகர்த்திக்கொள்ளவும்."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"உங்கள் நிறுவனம் நிர்வகிக்கிறது"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"ஆப்ஸும் அறிவிப்புகளும் ஆஃப் செய்யப்பட்டுள்ளன"</string>
 </resources>

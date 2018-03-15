@@ -53,6 +53,8 @@ public class MotionEventQueue {
             ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_RESET =
             ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_DEFER_INIT =
+            ACTION_VIRTUAL | (6 << ACTION_POINTER_INDEX_SHIFT);
 
     private final EventArray mEmptyArray = new EventArray();
     private final Object mExecutionLock = new Object();
@@ -76,10 +78,10 @@ public class MotionEventQueue {
     public MotionEventQueue(Choreographer choreographer, TouchConsumer consumer) {
         mMainChoreographer = choreographer;
         mConsumer = consumer;
-
         mCurrentChoreographer = mMainChoreographer;
         mCurrentRunnable = mMainFrameCallback;
-        setInterimChoreographerLocked(consumer.getIntrimChoreographer(this));
+
+        setInterimChoreographer(consumer.getIntrimChoreographer(this));
     }
 
     public void setInterimChoreographer(Choreographer choreographer) {
@@ -156,6 +158,9 @@ public class MotionEventQueue {
                         case ACTION_RESET:
                             mConsumer.reset();
                             break;
+                        case ACTION_DEFER_INIT:
+                            mConsumer.deferInit();
+                            break;
                         default:
                             Log.e(TAG, "Invalid virtual event: " + event.getAction());
                     }
@@ -202,6 +207,14 @@ public class MotionEventQueue {
 
     public void reset() {
         queueVirtualAction(ACTION_RESET, 0);
+    }
+
+    public void deferInit() {
+        queueVirtualAction(ACTION_DEFER_INIT, 0);
+    }
+
+    public TouchConsumer getConsumer() {
+        return mConsumer;
     }
 
     private static class EventArray extends ArrayList<MotionEvent> {

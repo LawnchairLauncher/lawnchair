@@ -23,9 +23,11 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.quickstep.RemoteRunnable.executeSafely;
+import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -37,10 +39,9 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.metrics.LogMaker;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -63,50 +64,20 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-class EventLogTags {
-    private EventLogTags() {
-    }  // don't instantiate
-
-    /** 524292 sysui_multi_action (content|4) */
-    public static final int SYSUI_MULTI_ACTION = 524292;
-
-    public static void writeSysuiMultiAction(Object[] content) {
-        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
-    }
-}
-
-class MetricsLogger {
-    private static MetricsLogger sMetricsLogger;
-
-    private static MetricsLogger getLogger() {
-        if (sMetricsLogger == null) {
-            sMetricsLogger = new MetricsLogger();
-        }
-        return sMetricsLogger;
-    }
-
-    protected void saveLog(Object[] rep) {
-        EventLogTags.writeSysuiMultiAction(rep);
-    }
-
-    public void write(LogMaker content) {
-        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
-            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
-        }
-        saveLog(content.serialize());
-    }
-}
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
     private static final String TAG = "ActivityTouchConsumer";
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
+    private static final int[] DEFERRED_HIT_TARGETS = DEBUG_SHOW_OVERVIEW_BUTTON
+            ? new int[] {HIT_TARGET_BACK, HIT_TARGET_OVERVIEW} : new int[] {HIT_TARGET_BACK};
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
@@ -115,6 +86,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
 
+    private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -124,26 +96,24 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private BaseSwipeInteractionHandler mInteractionHandler;
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
-    private @HitTarget int mDownHitTarget = HIT_TARGET_NONE;
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
-
-    private final MetricsLogger mMetricsLogger = new MetricsLogger();
+    private boolean mIsGoingToHome;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
-            @HitTarget int downHitTarget) {
+            @HitTarget int downHitTarget, VelocityTracker velocityTracker) {
         super(base);
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
-        mVelocityTracker = VelocityTracker.obtain();
+        mVelocityTracker = velocityTracker;
         mISystemUiProxy = systemUiProxy;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-        mDownHitTarget = downHitTarget;
+        mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
     }
 
     @Override
@@ -162,7 +132,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
-                if (!isUsingScreenShot() && mDownHitTarget != HIT_TARGET_BACK) {
+                if (!isUsingScreenShot() && !mIsDeferredDownTarget) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
@@ -204,7 +174,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         if (isUsingScreenShot()) {
                             startTouchTrackingForScreenshotAnimation();
-                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
+                        } else if (mIsDeferredDownTarget) {
                             // If we deferred starting the window animation on touch down, then
                             // start tracking now
                             startTouchTrackingForWindowAnimation(ev.getEventTime());
@@ -312,7 +282,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         // Create the shared handler
         final WindowTransformSwipeHandler handler =
-                new WindowTransformSwipeHandler(mRunningTask, this);
+                new WindowTransformSwipeHandler(mRunningTask, this, touchTimeMs);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
@@ -350,16 +320,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);
                         }
-
-                        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
-                        // "Recents" activity for app transition tests.
-                        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
-                        builder.setPackageName("com.android.systemui");
-                        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
-                                "com.android.systemui.recents.RecentsActivity");
-                        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                                SystemClock.uptimeMillis() - touchTimeMs);
-                        mMetricsLogger.write(builder);
                     }
 
                     public void onAnimationCanceled() {
@@ -417,6 +377,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             final BaseSwipeInteractionHandler handler = mInteractionHandler;
             mInteractionHandler = null;
+            mIsGoingToHome = handler.mIsGoingToHome;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -470,5 +431,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                mVelocityTracker.clear();
            }
         }
+    }
+
+    @Override
+    public boolean forceToLauncherConsumer() {
+        return mIsGoingToHome;
+    }
+
+    @Override
+    public boolean deferNextEventToMainThread() {
+        // TODO: Consider also check if the eventQueue is using mainThread of not.
+        return mInteractionHandler != null;
     }
 }

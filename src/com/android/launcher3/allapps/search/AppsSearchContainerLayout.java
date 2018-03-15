@@ -15,6 +15,12 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.getSize;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
+import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.animation.FloatValueHolder;
@@ -29,7 +35,7 @@ import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup.MarginLayoutParams;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
@@ -47,20 +53,16 @@ import java.util.ArrayList;
 /**
  * Layout to contain the All-apps search UI.
  */
-public class AppsSearchContainerLayout extends FrameLayout
+public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
         AllAppsStore.OnUpdateListener {
 
+
     private final Launcher mLauncher;
-    private final int mMinHeight;
-    private final int mSearchBoxHeight;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
-    private ExtendedEditText mSearchInput;
     private AlphabeticalAppsList mApps;
-    private View mDivider;
-    private HeaderElevationController mElevationController;
     private AllAppsContainerView mAppsView;
     private SpringAnimation mSpring;
 
@@ -76,39 +78,22 @@ public class AppsSearchContainerLayout extends FrameLayout
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
-        mMinHeight = getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
-        mSearchBoxHeight = getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height);
         mSearchBarController = new AllAppsSearchBarController();
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
 
-        // Note: This spring does nothing.
-        mSpring = new SpringAnimation(new FloatValueHolder()).setSpring(new SpringForce(0));
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mSearchInput = findViewById(R.id.search_box_input);
-        mDivider = findViewById(R.id.search_divider);
-        mElevationController = new HeaderElevationController(mDivider);
-
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon
         // using span. The second space is used for a singe space character between the hint
         // and the icon.
-        SpannableString spanned = new SpannableString("  " + mSearchInput.getHint());
+        SpannableString spanned = new SpannableString("  " + getHint());
         spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        mSearchInput.setHint(spanned);
+        setHint(spanned);
 
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        if (!dp.isVerticalBarLayout()) {
-            LayoutParams lp = (LayoutParams) mDivider.getLayoutParams();
-            lp.leftMargin = lp.rightMargin = dp.edgeMarginPx;
-        }
+        // Note: This spring does nothing.
+        mSpring = new SpringAnimation(new FloatValueHolder()).setSpring(new SpringForce(0));
     }
 
     @Override
@@ -125,21 +110,39 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // Update the width to match the grid padding
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        if (!dp.isVerticalBarLayout()) {
-            getLayoutParams().height = dp.getInsets().top + mMinHeight;
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int myRequestedWidth = getSize(widthMeasureSpec);
+        int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
+                - mAppsView.getActiveRecyclerView().getPaddingRight();
+
+        int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
+        int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
+        int iconPadding = cellWidth - iconVisibleSize;
+
+        int myWidth = rowWidth - iconPadding + getPaddingLeft() + getPaddingRight();
+        super.onMeasure(makeMeasureSpec(myWidth, EXACTLY), heightMeasureSpec);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        // Shift the widget horizontally so that its centered in the parent (b/63428078)
+        View parent = (View) getParent();
+        int availableWidth = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight();
+        int myWidth = right - left;
+        int expectedLeft = parent.getPaddingLeft() + (availableWidth - myWidth) / 2;
+        int shift = expectedLeft - left;
+        setTranslationX(shift);
+    }
 
     @Override
     public void initialize(AllAppsContainerView appsView) {
         mApps = appsView.getApps();
         mAppsView = appsView;
-        appsView.addElevationController(mElevationController);
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mApps.getApps()), mSearchInput, mLauncher, this);
+                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
     }
 
     @Override
@@ -153,8 +156,7 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     @Override
-    public void reset() {
-        mElevationController.reset();
+    public void resetSearch() {
         mSearchBarController.reset();
     }
 
@@ -200,7 +202,6 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     private void notifyResultChanged() {
-        mElevationController.reset();
         mAppsView.onSearchResultsChanged();
     }
 
@@ -214,9 +215,9 @@ public class AppsSearchContainerLayout extends FrameLayout
                 if (!dp.isVerticalBarLayout()) {
                     Rect insets = dp.getInsets();
                     int hotseatBottom = bottom - dp.hotseatBarBottomPaddingPx - insets.bottom;
-                    int searchTopMargin = insets.top + (mMinHeight - mSearchBoxHeight)
-                            + ((MarginLayoutParams) getLayoutParams()).bottomMargin;
-                    listener.onScrollRangeChanged(hotseatBottom - searchTopMargin);
+                    MarginLayoutParams mlp = ((MarginLayoutParams) getLayoutParams());
+                    int myBot = mlp.topMargin + (int) getTranslationY() + mlp.height;
+                    listener.onScrollRangeChanged(hotseatBottom - myBot);
                 } else {
                     listener.onScrollRangeChanged(bottom);
                 }

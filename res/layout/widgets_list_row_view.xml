@@ -42,7 +42,6 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
         android:textAlignment="viewStart"
-        launcher:deferShadowGeneration="true"
         launcher:iconDisplay="widget_section"
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />

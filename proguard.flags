@@ -102,6 +102,11 @@
     public <init>(...);
 }
 
+# InstantAppResolver
+-keep class com.android.quickstep.InstantAppResolverImpl {
+    public <init>(...);
+}
+
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }
