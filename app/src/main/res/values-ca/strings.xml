@@ -426,4 +426,6 @@
   <string name="snowflakes_num">Número màxim de flocs de neu</string>
   <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
   <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
+  <string name="title_storage_permission_required">Cal permís d\'emmagatzematge</string>
+  <string name="content_storage_permission_required">A Android 8.1 i versions superiors, es requereix permís d\'emmagatzematge perquè les aplicacions accedeixin al fons de pantalla. Sense aquest permís Lawnchair podria bloquejar o mostrar comportaments inesperats.</string>
 </resources>
