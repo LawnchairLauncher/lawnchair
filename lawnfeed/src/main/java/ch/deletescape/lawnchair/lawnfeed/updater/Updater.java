@@ -37,7 +37,7 @@ public class Updater {
 
     public static final String PREFERENCES_CACHED_UPDATE = "cached_update";
 
-    private static final long SIX_HOURS = 21600000;
+    private static final long TWELVE_HOURS = 43200000;
 
     private static final String TAG = "Updater";
 
@@ -101,8 +101,8 @@ public class Updater {
 
         // Don't check for updates if last update check was not longer than 6 hours ago
         long lastChecked = prefs.getLong(PREFERENCES_LAST_CHECKED, 0);
-        if (lastChecked + SIX_HOURS >= System.currentTimeMillis()) {
-            Log.i(TAG, "Last update check was earlier than 6 hours ago, using cached info");
+        if (lastChecked + TWELVE_HOURS >= System.currentTimeMillis()) {
+            Log.i(TAG, "Last update check was earlier than 12 hours ago, using cached info");
 
             task.onPostExecute(Update.fromString(prefs.getString(PREFERENCES_CACHED_UPDATE, "")));
             return;
