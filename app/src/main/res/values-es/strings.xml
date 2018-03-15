@@ -426,4 +426,6 @@
   <string name="snowflakes_num">Número máximo de copos de nieve</string>
   <string name="lawnfeed_outdated_title">Actualización de Lawnfeed requerida</string>
   <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de Lawnchair.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
+  <string name="title_storage_permission_required">Permiso de almacenamiento requerido</string>
+  <string name="content_storage_permission_required">En Android 8.1 y versiones superiores, se requiere permiso de almacenamiento para que las aplicaciones accedan al fondo de pantalla. Sin dicho permiso Lawnchair podría bloquearse o mostrar comportamientos inesperados.</string>
 </resources>
