@@ -426,4 +426,6 @@
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">需要新版本的 Lawnfeed 才能使用此版本的 Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的
  Lawnfeed。\n\n您想現在下載嗎？</string>
+  <string name="title_storage_permission_required">需要儲存權限</string>
+  <string name="content_storage_permission_required">在Android 8.1及以上版本中，應用使用壁紙需要存儲權限。如果沒有權限，Lawnchair可能會崩潰或顯示錯誤信息。</string>
 </resources>

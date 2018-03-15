@@ -428,4 +428,6 @@
   <string name="snowflakes_num">Максимальное количество снежинок</string>
   <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
   <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
+  <string name="title_storage_permission_required">Нужно разрешение на доступ к памяти устройства</string>
+  <string name="content_storage_permission_required">На Android 8.1 и выше для доступа к обоям требуется разрешение на доступ к памяти устройства. Без указанного разрешения Lawnchair может неожиданно завершить работу или показать неожиданное поведение.</string>
 </resources>

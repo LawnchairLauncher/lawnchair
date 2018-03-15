@@ -425,4 +425,6 @@
   <string name="snowflakes_num">Số lượng bông tuyết</string>
   <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
   <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
+  <string name="title_storage_permission_required">Yêu cầu cấp quyền bộ nhớ</string>
+  <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép Lawnchair có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
 </resources>

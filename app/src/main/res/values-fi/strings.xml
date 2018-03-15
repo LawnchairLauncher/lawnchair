@@ -272,6 +272,8 @@
   <string name="num_hotseat_icons_pref_title">Kuvakkeiden lukumäärä telakassa</string>
   <string name="icon_scale_pref_title">Kuvakkeen skaalaus</string>
   <string name="hotseat_height_scale">Korkeuden skaalaus</string>
+  <string name="hotseat_custom_opacity">Telakan läpinäkyvyys</string>
+  <string name="hotseat_uses_custom_opacity">Käytä muokattua telakan läpinäkyvyyttä</string>
   <string name="icon_text_scale_pref_title">Kuvakkeen tekstin skaalaus</string>
   <string name="icon_text_padding_scale_pref_title">Kuvakkeiden etäisyyden skaalaus</string>
   <string name="full_width_width_widgets_pref_title">Koko leveyden widgetit</string>
@@ -424,4 +426,5 @@
   <string name="snowflakes_num">Lumihiutaleiden maksimimäärä</string>
   <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
   <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
+  <string name="title_storage_permission_required">Tallennustilan käyttöoikeus vaaditaan</string>
 </resources>

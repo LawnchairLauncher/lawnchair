@@ -430,4 +430,6 @@
   <string name="snowflakes_num">Jumlah maksimal kepingan salju</string>
   <string name="lawnfeed_outdated_title">Dibutuhkan pembaharuan Lawfeed</string>
   <string name="lawnfeed_outdated">Dibutuhkan versi baru dari Lawnfeed agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
+  <string name="title_storage_permission_required">Izin akses penyimpanan diperlukan</string>
+  <string name="content_storage_permission_required">Di Android 8.1 keatas izin penyimpanan diperlukan aplikasi untuk mengakses wallpaper. Tanpa izin Lawnchair mungkin crash atau menunjukkan perilaku tak terduga.</string>
 </resources>

@@ -426,4 +426,6 @@
   <string name="snowflakes_num">Maksimum kar tanesi sayısı</string>
   <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
   <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
+  <string name="title_storage_permission_required">Depolama İzni Gerekiyor</string>
+  <string name="content_storage_permission_required">Android 8.1 ve üzeri sürümlerde, uygulamalar duvar kağıdına erişmek için depolama iznine ihtiyaç duyar. Söz konusu izin olmadan Lawnchair bozulmasına veya beklenmeyen davranışlar gösterebilir.</string>
 </resources>

@@ -275,6 +275,7 @@ Waitin\' t\' install</string>
   <string name="icon_scale_pref_title">Largeness o\' icon</string>
   <string name="hotseat_height_scale">Mast height</string>
   <string name="hotseat_custom_opacity">Deck opac\'ty</string>
+  <string name="hotseat_uses_custom_opacity">Change how muddy th\' deck is</string>
   <string name="icon_text_scale_pref_title">Scale o\' icon text</string>
   <string name="icon_text_padding_scale_pref_title">Flag paddlin\' scale</string>
   <string name="full_width_width_widgets_pref_title">How wide yee flags be</string>
@@ -428,4 +429,6 @@ Waitin\' t\' install</string>
   <string name="snowflakes_num">How many Frozen rain yo want?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed needs to be worked on</string>
   <string name="lawnfeed_outdated">A newer version o\' Lawnfeed be required in order t\' duty wit\' this version o\' Lawnchair.\n\nBefore installing thar update ye will probably need t\' uninstall thar current version o\' Lawnfeed.\n\nDo ye want t\' download it now?</string>
+  <string name="title_storage_permission_required">Let me plunder ye\' storage</string>
+  <string name="content_storage_permission_required">On Android 8.1 and up th\' storage permis\'n be a must fer\' apps to touch ye, paint. Without said permis\'n ye may crash into isles.</string>
 </resources>

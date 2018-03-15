@@ -428,4 +428,6 @@
   <string name="snowflakes_num">Maximální počet sněhových vloček</string>
   <string name="lawnfeed_outdated_title">Vyžadována aktualizace Lawnfeed</string>
   <string name="lawnfeed_outdated">V této verzi Lawnchair je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
+  <string name="title_storage_permission_required">Vyžadováno oprávnění k úložišti</string>
+  <string name="content_storage_permission_required">V zařízeních s Android 8.1 a vyšším je pro přístup k tapetám vyžadováno oprávnění k úložišti. Bez zmíněného oprávnění se může stát, že aplikace Lawnchair selže nebo bude mít neočekávané chování.</string>
 </resources>
