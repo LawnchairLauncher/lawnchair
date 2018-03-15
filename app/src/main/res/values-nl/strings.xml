@@ -426,4 +426,6 @@
   <string name="snowflakes_num">Maximale hoeveelheid sneeuwvlokken</string>
   <string name="lawnfeed_outdated_title">Lawnfeed vereist een update</string>
   <string name="lawnfeed_outdated">Een nieuwe versie van Lawnfeed is vereist om te werken met deze versie van Lawnchair.\n\nVoordat de update van Lawnfeed geïnstalleerd wordt, dien je de huidige versie van Lawnfeed te verwijderen.\n\nWil je de nieuwe versie van Lawnfeed nu downloaden?</string>
+  <string name="title_storage_permission_required">Opslag Toestemming Vereist</string>
+  <string name="content_storage_permission_required">Op Android 8.1 en hoger is de opslag toestemming vereist voor apps om toegang te krijgen tot de achtergrond. Zonder de genoemde toestemming zou Lawnchair vast kunnen lopen of onverwachte gedragingen vertonen.</string>
 </resources>
