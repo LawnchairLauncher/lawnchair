@@ -364,6 +364,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
             getRootView().dispatchInsets();
             getStateManager().reapplyState();
 
+            // Recreate touch controllers
+            mDragLayer.setup(mDragController);
+
             // TODO: We can probably avoid rebind when only screen size changed.
             rebindModel();
         }
@@ -956,7 +959,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         mDragController.setMoveTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView, mHotseat);
+        mAllAppsController.setupViews(mAppsView);
     }
 
     /**
@@ -1258,7 +1261,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
 
                 // Reset the apps view
                 if (!alreadyOnHome && mAppsView != null) {
-                    mAppsView.reset();
+                    mAppsView.reset(isStarted() /* animate */);
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {

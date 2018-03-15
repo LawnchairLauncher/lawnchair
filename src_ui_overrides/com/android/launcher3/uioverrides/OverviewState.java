@@ -16,16 +16,8 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
-import android.graphics.Rect;
-import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**

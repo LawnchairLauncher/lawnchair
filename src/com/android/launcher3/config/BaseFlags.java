@@ -51,6 +51,4 @@ abstract class BaseFlags {
 
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
-
-    public static final boolean ENABLE_TWO_SWIPE_TARGETS = true;
 }

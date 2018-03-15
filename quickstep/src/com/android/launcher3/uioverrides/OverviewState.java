@@ -22,6 +22,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 import android.graphics.Rect;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
@@ -104,5 +105,30 @@ public class OverviewState extends LauncherState {
         float translationY = pageRect.top - childTop;
 
         return new float[] {scale, 0, translationY};
+    }
+
+    @Override
+    public int getVisibleElements(Launcher launcher) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            // TODO: Remove hotseat from overview
+            return HOTSEAT;
+        } else {
+            return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                    ? ALL_APPS_HEADER : HOTSEAT;
+        }
+    }
+
+    @Override
+    public float getVerticalProgress(Launcher launcher) {
+        if (getVisibleElements(launcher) == HOTSEAT) {
+            return super.getVerticalProgress(launcher);
+        }
+        return 1 - (getDefaultSwipeHeight(launcher)
+                / launcher.getAllAppsController().getShiftRange());
+    }
+
+    public static float getDefaultSwipeHeight(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 }

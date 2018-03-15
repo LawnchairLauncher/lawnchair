@@ -29,6 +29,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     private int mRightInsetBarWidth;
 
     private View mAlignedView;
+    private WindowStateListener mWindowStateListener;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -116,5 +117,32 @@ public class LauncherRootView extends InsettableFrameLayout {
                 canvas.drawRect(0, 0, mLeftInsetBarWidth, getHeight(), mOpaquePaint);
             }
         }
+    }
+
+    public void setWindowStateListener(WindowStateListener listener) {
+        mWindowStateListener = listener;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (mWindowStateListener != null) {
+            mWindowStateListener.onWindowFocusChanged(hasWindowFocus);
+        }
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        if (mWindowStateListener != null) {
+            mWindowStateListener.onWindowVisibilityChanged(visibility);
+        }
+    }
+
+    public interface WindowStateListener {
+
+        void onWindowFocusChanged(boolean hasFocus);
+
+        void onWindowVisibilityChanged(int visibility);
     }
 }

@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,7 +29,11 @@ import android.view.View;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.uioverrides.UiFactory;
+
+import java.util.ArrayList;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -78,6 +83,7 @@ public class LauncherStateManager {
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
     private final Launcher mLauncher;
+    private final ArrayList<StateListener> mListeners = new ArrayList<>();
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
@@ -86,8 +92,6 @@ public class LauncherStateManager {
     private LauncherState mCurrentStableState = NORMAL;
 
     private LauncherState mRestState;
-
-    private StateListener mStateListener;
 
     public LauncherStateManager(Launcher l) {
         mUiHandler = new Handler(Looper.getMainLooper());
@@ -105,8 +109,12 @@ public class LauncherStateManager {
         return mStateHandlers;
     }
 
-    public void setStateListener(StateListener stateListener) {
-        mStateListener = stateListener;
+    public void addStateListener(StateListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void removeStateListener(StateListener listener) {
+        mListeners.remove(listener);
     }
 
     /**
@@ -188,8 +196,9 @@ public class LauncherStateManager {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
             }
-            if (mStateListener != null) {
-                mStateListener.onStateSetImmediately(state);
+
+            for (int i = mListeners.size() - 1; i >= 0; i--) {
+                mListeners.get(i).onStateSetImmediately(state);
             }
             onStateTransitionEnd(state);
 
@@ -251,16 +260,16 @@ public class LauncherStateManager {
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
                 onStateTransitionStart(state);
-                if (mStateListener != null) {
-                    mStateListener.onStateTransitionStart(state);
+                for (int i = mListeners.size() - 1; i >= 0; i--) {
+                    mListeners.get(i).onStateTransitionStart(state);
                 }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (mStateListener != null) {
-                    mStateListener.onStateTransitionComplete(mState);
+                for (int i = mListeners.size() - 1; i >= 0; i--) {
+                    mListeners.get(i).onStateTransitionComplete(state);
                 }
             }
 
@@ -376,18 +385,28 @@ public class LauncherStateManager {
     public static class AnimationConfig extends AnimatorListenerAdapter {
         public long duration;
         public boolean userControlled;
+        private PropertySetter mProperSetter;
 
         private AnimatorSet mCurrentAnimation;
 
         public void reset() {
             duration = 0;
             userControlled = false;
+            mProperSetter = null;
 
             if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);
                 mCurrentAnimation.cancel();
                 mCurrentAnimation = null;
             }
+        }
+
+        public PropertySetter getProperSetter(AnimatorSetBuilder builder) {
+            if (mProperSetter == null) {
+                mProperSetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
+                        : new AnimatedPropertySetter(duration, builder);
+            }
+            return mProperSetter;
         }
 
         @Override

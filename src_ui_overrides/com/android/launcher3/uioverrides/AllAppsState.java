@@ -63,8 +63,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
-        return 0;
+    public int getVisibleElements(Launcher launcher) {
+        return ALL_APPS_HEADER | ALL_APPS_CONTENT;
     }
 
     @Override

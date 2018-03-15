@@ -35,7 +35,6 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.metrics.LogMaker;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -64,6 +63,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
+import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -76,40 +76,6 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.StringJoiner;
-
-class EventLogTags {
-    private EventLogTags() {
-    }  // don't instantiate
-
-    /** 524292 sysui_multi_action (content|4) */
-    public static final int SYSUI_MULTI_ACTION = 524292;
-
-    public static void writeSysuiMultiAction(Object[] content) {
-        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
-    }
-}
-
-class MetricsLogger {
-    private static MetricsLogger sMetricsLogger;
-
-    private static MetricsLogger getLogger() {
-        if (sMetricsLogger == null) {
-            sMetricsLogger = new MetricsLogger();
-        }
-        return sMetricsLogger;
-    }
-
-    protected void saveLog(Object[] rep) {
-        EventLogTags.writeSysuiMultiAction(rep);
-    }
-
-    public void write(LogMaker content) {
-        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
-            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
-        }
-        saveLog(content.serialize());
-    }
-}
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
@@ -229,7 +195,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private Matrix mTmpMatrix = new Matrix();
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
-    private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
             ActivityControlHelper<T> controller) {
@@ -453,15 +418,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         onLauncherLayoutChanged();
 
         final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
-        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
-        // "Recents" activity for app transition tests for the app-to-recents case.
-        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
-        builder.setPackageName("com.android.systemui");
-        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
-                "com.android.systemui.recents.RecentsActivity");
-        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                transitionDelay);
-        mMetricsLogger.write(builder);
+        SysuiEventLogger.writeDummyRecentsTransition(transitionDelay);
+
         if (LatencyTrackerCompat.isEnabled(mContext)) {
             LatencyTrackerCompat.logToggleRecents((int) transitionDelay);
         }

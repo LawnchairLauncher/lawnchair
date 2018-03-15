@@ -1,7 +1,10 @@
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
@@ -13,16 +16,15 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
-import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.SearchUiManager.OnScrollRangeChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -55,7 +57,6 @@ public class AllAppsTransitionController
     public static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
-    private Hotseat mHotseat;
 
     private final Launcher mLauncher;
     private final boolean mIsDarkTheme;
@@ -88,7 +89,6 @@ public class AllAppsTransitionController
 
     private void onProgressAnimationStart() {
         // Initialize values that should not change until #onDragEnd
-        mHotseat.setVisibility(View.VISIBLE);
         mAppsView.setVisibility(View.VISIBLE);
     }
 
@@ -116,14 +116,10 @@ public class AllAppsTransitionController
         mProgress = progress;
         float shiftCurrent = progress * mShiftRange;
 
-        float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
-        float alpha = 1 - workspaceHotseatAlpha;
-
         mAppsView.setTranslationY(shiftCurrent);
         float hotseatTranslation = -mShiftRange + shiftCurrent;
 
         if (!mIsVerticalLayout) {
-            mAppsView.setAlpha(alpha);
             mLauncher.getHotseat().setTranslationY(hotseatTranslation);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(hotseatTranslation);
         }
@@ -149,6 +145,7 @@ public class AllAppsTransitionController
     @Override
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
+        setAlphas(state, NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
     }
 
@@ -161,6 +158,7 @@ public class AllAppsTransitionController
             AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
+            setAlphas(toState, config.getProperSetter(builder));
             // Fail fast
             onProgressAnimationEnd();
             return;
@@ -174,6 +172,19 @@ public class AllAppsTransitionController
         anim.addListener(getProgressAnimatorListener());
 
         builder.play(anim);
+
+        setAlphas(toState, config.getProperSetter(builder));
+    }
+
+    private void setAlphas(LauncherState toState, PropertySetter setter) {
+        int visibleElements = toState.getVisibleElements(mLauncher);
+        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
+        boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
+
+        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, LINEAR);
+        setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, LINEAR);
+        setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, LINEAR);
+        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeader, hasContent, setter);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
@@ -190,10 +201,8 @@ public class AllAppsTransitionController
         };
     }
 
-    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat) {
+    public void setupViews(AllAppsContainerView appsView) {
         mAppsView = appsView;
-        mHotseat = hotseat;
-        mHotseat.bringToFront();
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
     }
 
@@ -210,15 +219,12 @@ public class AllAppsTransitionController
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.setVisibility(View.INVISIBLE);
-            mHotseat.setVisibility(View.VISIBLE);
-            mAppsView.reset();
+            mAppsView.reset(false /* animate */);
         } else if (Float.compare(mProgress, 0f) == 0) {
-            mHotseat.setVisibility(View.INVISIBLE);
             mAppsView.setVisibility(View.VISIBLE);
             mAppsView.onScrollUpEnd();
         } else {
             mAppsView.setVisibility(View.VISIBLE);
-            mHotseat.setVisibility(View.VISIBLE);
         }
     }
 }
