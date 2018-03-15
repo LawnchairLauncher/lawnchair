@@ -4,4 +4,5 @@
     <string name="update_available">A new version of Lawnfeed is available to download!</string>
     <string name="downloading_toast">Downloading...</string>
     <string name="download_file_error">Error downloading file</string>
+    <string name="lawnfeed_updates">Lawnfeed Updates</string>
 </resources>
