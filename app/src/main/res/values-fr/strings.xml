@@ -426,4 +426,6 @@
   <string name="snowflakes_num">Nombre max de flocons de neige</string>
   <string name="lawnfeed_outdated_title">Mise à jour de Lawnfeed requise</string>
   <string name="lawnfeed_outdated">Une nouvelle version de Lawnfeed est nécessaire pour fonctionner avec cette version de Lawnchair.\n\nAvant l\'installation de la mise à jour, vous aurez probablement besoin de désinstaller la version actuelle de Lawnfeed.\n\nVoulez-vous la télécharger maintenant ?</string>
+  <string name="title_storage_permission_required">Autorisation de stockage requise</string>
+  <string name="content_storage_permission_required">À partir d\'Android 8.1, l\'autorisation d’accéder au stockage est requise pour les applis voulant accéder aux fonds d\'écran. Sans cette autorisation Lawnchair pourrait planter ou montrer des comportements inattendus.</string>
 </resources>
