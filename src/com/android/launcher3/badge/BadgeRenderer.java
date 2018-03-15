@@ -80,7 +80,7 @@ public class BadgeRenderer {
             Log.e(TAG, "Invalid null argument(s) passed in call to draw.");
             return;
         }
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.save();
         // We draw the badge relative to its center.
         float badgeCenterX = iconBounds.right - mDotCenterOffset / 2;
         float badgeCenterY = iconBounds.top + mDotCenterOffset / 2;

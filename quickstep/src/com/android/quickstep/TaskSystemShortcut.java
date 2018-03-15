@@ -16,27 +16,39 @@
 
 package com.android.quickstep;
 
-import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
+import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
+import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -86,9 +98,10 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
     }
 
-    public static class SplitScreen extends TaskSystemShortcut {
+    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener {
 
         private Handler mHandler;
+        private TaskView mTaskView;
 
         public SplitScreen() {
             super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
@@ -104,21 +117,54 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (!task.isDockable) {
                 return null;
             }
+            mTaskView = taskView;
             return (v -> {
-                final ActivityOptions options = ActivityOptionsCompat.makeSplitScreenOptions(true);
-                final Consumer<Boolean> resultCallback = success -> {
-                    if (success) {
-                        launcher.<RecentsView>getOverviewPanel().removeView(taskView);
-                    }
-                };
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
-                        task.key, options, resultCallback, mHandler);
+                AbstractFloatingView.closeOpenViews(launcher, true,
+                        AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
-                // TODO improve transition; see:
-                // DockedFirstAnimationFrameEvent
-                // RecentsTransitionHelper#composeDockAnimationSpec
-                // WindowManagerWrapper#overridePendingAppTransitionMultiThumbFuture
+                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key.id,
+                        ActivityOptionsCompat.makeSplitScreenOptions(true))) {
+                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+                    try {
+                        sysUiProxy.onSplitScreenInvoked();
+                    } catch (RemoteException e) {
+                        Log.w(TAG, "Failed to notify SysUI of split screen: ", e);
+                        return;
+                    }
+
+                    final Runnable animStartedListener = () -> {
+                        mTaskView.getViewTreeObserver().addOnPreDrawListener(SplitScreen.this);
+                        launcher.<RecentsView>getOverviewPanel().removeView(taskView);
+                    };
+
+                    final int[] position = new int[2];
+                    taskView.getLocationOnScreen(position);
+                    final int width = (int) (taskView.getWidth() * taskView.getScaleX());
+                    final int height = (int) (taskView.getHeight() * taskView.getScaleY());
+                    final Rect taskBounds = new Rect(position[0], position[1],
+                            position[0] + width, position[1] + height);
+
+                    Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
+                            taskBounds.width(), taskBounds.height(), taskView, 1f, Color.BLACK);
+                    AppTransitionAnimationSpecsFuture future =
+                            new AppTransitionAnimationSpecsFuture(mHandler) {
+                        @Override
+                        public List<AppTransitionAnimationSpecCompat> composeSpecs() {
+                            return Collections.singletonList(new AppTransitionAnimationSpecCompat(
+                                    task.key.id, thumbnail, taskBounds));
+                        }
+                    };
+                    WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
+                            future, animStartedListener, mHandler, true /* scaleUp */);
+                }
             });
+        }
+
+        @Override
+        public boolean onPreDraw() {
+            mTaskView.getViewTreeObserver().removeOnPreDrawListener(this);
+            WindowManagerWrapper.getInstance().endProlongedAnimations();
+            return true;
         }
     }
 
@@ -137,7 +183,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (sysUiProxy == null) {
                 return null;
             }
-            if (!ActivityManagerWrapper.getInstance().isLockToAppEnabled()) {
+            if (!ActivityManagerWrapper.getInstance().isScreenPinningEnabled()) {
+                return null;
+            }
+            if (ActivityManagerWrapper.getInstance().isLockToAppActive()) {
+                // We shouldn't be able to pin while an app is locked.
                 return null;
             }
             return view -> {

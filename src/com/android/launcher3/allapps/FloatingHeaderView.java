@@ -27,7 +27,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.android.launcher3.R;
 
@@ -68,6 +67,7 @@ public class FloatingHeaderView extends LinearLayout implements
     private int mTranslationY;
     private boolean mForwardToRecyclerView;
 
+    protected boolean mTabsHidden;
     protected int mMaxTranslation;
 
     public FloatingHeaderView(@NonNull Context context) {
@@ -85,6 +85,7 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+        mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
@@ -105,7 +106,13 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public int getMaxTranslation() {
-        return mMaxTranslation;
+        if (mMaxTranslation == 0 && mTabsHidden) {
+            return getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_bottom_padding);
+        } else if (mMaxTranslation > 0 && mTabsHidden) {
+            return mMaxTranslation + getPaddingTop();
+        } else {
+            return mMaxTranslation;
+        }
     }
 
     private boolean canSnapAt(int currentScrollY) {
@@ -131,7 +138,7 @@ public class FloatingHeaderView extends LinearLayout implements
                 mSnappedScrolledY = currentScrollY - mMaxTranslation;
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
-                mSnappedScrolledY = currentScrollY;
+                mSnappedScrolledY = -mMaxTranslation;
             }
         }
     }

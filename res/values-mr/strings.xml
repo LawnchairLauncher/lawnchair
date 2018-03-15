@@ -137,7 +137,8 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"कामाची अ‍ॅप्स येथे मिळवा"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"प्रत्येक कार्य अ‍ॅपमध्ये नारिंगी बॅज असतो आणि तो तुमच्या संस्थेकडून सुरक्षित ठेवला जातो. अधिक सहज अ‍ॅक्सेससाठी अ‍ॅप्स तुमच्या होम स्क्रीनवर हलवा."</string>
+    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
+    <skip />
     <string name="work_mode_on_label" msgid="4781128097185272916">"तुमच्या संस्थेकडून व्यवस्थापित"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना आणि अॅप्स बंद आहेत"</string>
 </resources>

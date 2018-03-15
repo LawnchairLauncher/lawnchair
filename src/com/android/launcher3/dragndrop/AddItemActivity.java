@@ -16,6 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
@@ -23,7 +28,6 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.pm.LauncherApps.PinItemRequest;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -43,7 +47,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
@@ -54,11 +57,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
-
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
@@ -154,15 +152,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
-        if (!getResources().getBoolean(R.bool.allow_rotation) &&
-                !Utilities.isAllowRotationPrefEnabled(this) &&
-                (getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_LANDSCAPE && !isInMultiWindowMode())) {
-            // If we are starting the drag in landscape even though home is locked in portrait,
-            // restart the home activity to temporarily allow rotation.
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
-
+        listener.initWhenReady();
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
         mFinishOnPause = true;

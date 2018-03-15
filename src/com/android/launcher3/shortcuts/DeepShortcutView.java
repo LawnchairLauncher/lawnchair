@@ -30,6 +30,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.touch.ItemClickHandler;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -120,7 +121,7 @@ public class DeepShortcutView extends FrameLayout {
         mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
 
         // TODO: Add the click handler to this view directly and not the child view.
-        mBubbleText.setOnClickListener(Launcher.getLauncher(getContext()));
+        mBubbleText.setOnClickListener(ItemClickHandler.INSTANCE);
         mBubbleText.setOnLongClickListener(container);
         mBubbleText.setOnTouchListener(container);
     }

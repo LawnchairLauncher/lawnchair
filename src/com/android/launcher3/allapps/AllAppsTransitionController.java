@@ -16,17 +16,14 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.SearchUiManager.OnScrollRangeChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.views.AllAppsScrim;
 
 /**
  * Handles AllApps view transition.
@@ -58,7 +55,6 @@ public class AllAppsTransitionController
     public static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
-    private Workspace mWorkspace;
     private Hotseat mHotseat;
 
     private final Launcher mLauncher;
@@ -75,8 +71,6 @@ public class AllAppsTransitionController
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
-
-    private AllAppsScrim mAllAppsScrim;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -106,7 +100,6 @@ public class AllAppsTransitionController
             mAppsView.setAlpha(1);
             mLauncher.getHotseat().setTranslationY(0);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
     }
 
@@ -127,25 +120,21 @@ public class AllAppsTransitionController
         float alpha = 1 - workspaceHotseatAlpha;
 
         mAppsView.setTranslationY(shiftCurrent);
-        if (mAllAppsScrim == null) {
-            mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
-        }
         float hotseatTranslation = -mShiftRange + shiftCurrent;
-        mAllAppsScrim.setProgress(hotseatTranslation, alpha);
 
         if (!mIsVerticalLayout) {
             mAppsView.setAlpha(alpha);
             mLauncher.getHotseat().setTranslationY(hotseatTranslation);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(hotseatTranslation);
+        }
 
-            // Use a light system UI (dark icons) if all apps is behind at least half of the
-            // status bar.
-            boolean forceChange = shiftCurrent <= mShiftRange / 4;
-            if (forceChange) {
-                mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
-            } else {
-                mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
-            }
+        // Use a light system UI (dark icons) if all apps is behind at least half of the
+        // status bar.
+        boolean forceChange = shiftCurrent <= mShiftRange / 4;
+        if (forceChange) {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
     }
 
@@ -201,10 +190,9 @@ public class AllAppsTransitionController
         };
     }
 
-    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
+    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat) {
         mAppsView = appsView;
         mHotseat = hotseat;
-        mWorkspace = workspace;
         mHotseat.bringToFront();
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
     }
