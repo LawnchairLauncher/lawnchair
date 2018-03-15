@@ -425,4 +425,6 @@
   <string name="snowflakes_num">最大雪花数量</string>
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
+  <string name="title_storage_permission_required">需要存储权限</string>
+  <string name="content_storage_permission_required">在Android 8.1及以上版本中，应用使用壁纸需要存储权限。 如果没有权限，Lawnchair可能会崩溃或显示错误信息。</string>
 </resources>
