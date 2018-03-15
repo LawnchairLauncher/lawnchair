@@ -428,4 +428,6 @@
   <string name="snowflakes_num">מספר מרבי של פתיתי שלג</string>
   <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
   <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
+  <string name="title_storage_permission_required">דרושה הרשאה לאחסון</string>
+  <string name="content_storage_permission_required">ב- 8.1 אנדרואיד ומעלה הרשאת האחסון נדרשת על ידי יישומים לגישה לטפט. ללא הרשאה זו Lawnchair עלול לקרוס או להתנהג באופן בלתי צפוי.</string>
 </resources>
