@@ -205,11 +205,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted();
-
-        // Notify the system that we have started tracking the event
-        if (mISystemUiProxy != null) {
-            executeSafely(mISystemUiProxy::onRecentsAnimationStarted);
-        }
     }
 
     private boolean isNavBarOnRight() {

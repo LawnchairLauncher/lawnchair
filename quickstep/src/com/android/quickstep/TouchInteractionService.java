@@ -153,6 +153,11 @@ public class TouchInteractionService extends Service {
                 mOverviewCommandHelper.onOverviewHidden();
             }
         }
+
+        @Override
+        public void onQuickStep(MotionEvent motionEvent) throws RemoteException {
+
+        }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
