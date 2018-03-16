@@ -33,6 +33,7 @@ import android.os.Build;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -606,5 +607,27 @@ public abstract class RecentsView<T extends BaseActivity>
             TimeInterpolator interpolator, AnimatorSet set) {
         anim.setDuration(duration).setInterpolator(interpolator);
         set.play(anim);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_TAB
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            setCurrentPage((getCurrentPage()
+                    + (event.isShiftPressed() ? getPageCount() - 1 : 1)) % getPageCount());
+            loadVisibleTaskData();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    public void selectNextTask() {
+        setCurrentPage((getCurrentPage() + 1) % getPageCount());
+        loadVisibleTaskData();
+    }
+
+    public void launchCurrentTask() {
+        final TaskView currentTask = (TaskView) getChildAt(getCurrentPage());
+        currentTask.launchTask(true);
     }
 }

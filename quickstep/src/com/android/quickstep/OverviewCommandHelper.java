@@ -33,6 +33,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
@@ -65,6 +66,12 @@ public class OverviewCommandHelper extends InternalStateHandler {
         homeIntent.setComponent(launcher).setPackage(null);
     }
 
+    private void openRecents() {
+        Intent intent = addToIntent(new Intent(homeIntent));
+        mContext.startActivity(intent);
+        initWhenReady();
+    }
+
     public void onOverviewToggle() {
         if (DEBUG_START_FALLBACK_ACTIVITY) {
             mContext.startActivity(new Intent(mContext, RecentsActivity.class)
@@ -79,10 +86,22 @@ public class OverviewCommandHelper extends InternalStateHandler {
             boolean isQuickTap = elapsedTime < ViewConfiguration.getDoubleTapTimeout();
             startNonLauncherTask(isQuickTap ? 2 : 1);
         } else {
-            Intent intent = addToIntent(new Intent(homeIntent));
-            mContext.startActivity(intent);
-            initWhenReady();
+            openRecents();
         }
+    }
+
+    public void onOverviewShown() {
+        if (isOverviewAlmostVisible()) {
+            final RecentsView rv = getLauncher().getOverviewPanel();
+            rv.selectNextTask();
+        } else {
+            openRecents();
+        }
+    }
+
+    public void onOverviewHidden() {
+        final RecentsView rv = getLauncher().getOverviewPanel();
+        rv.launchCurrentTask();
     }
 
     private void startNonLauncherTask(int backStackCount) {
@@ -90,6 +109,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
             backStackCount--;
             if (backStackCount == 0) {
                 mAM.startActivityFromRecents(rti.id, null);
+                break;
             }
         }
     }
