@@ -15,27 +15,92 @@
  */
 package com.android.launcher3;
 
+import static com.android.systemui.shared.recents.utilities.Utilities
+        .postAtFrontOfQueueAsynchronously;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.BinderThread;
+import android.support.annotation.UiThread;
 
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
+@TargetApi(Build.VERSION_CODES.P)
+public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
+        implements RemoteAnimationRunnerCompat {
 
-public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+    private static final int REFRESH_RATE_MS = 16;
 
-    AnimatorSet mAnimator;
-    private Launcher mLauncher;
+    private final Handler mHandler;
 
-    LauncherAnimationRunner(Launcher launcher) {
-        mLauncher = launcher;
+    private Runnable mSysFinishRunnable;
+
+    private AnimatorSet mAnimator;
+
+    public LauncherAnimationRunner(Handler handler) {
+        mHandler = handler;
     }
 
+    @BinderThread
+    @Override
+    public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
+        postAtFrontOfQueueAsynchronously(mHandler, () -> {
+            // Finish any previous animation
+            finishSystemAnimation();
+
+            mSysFinishRunnable = runnable;
+            mAnimator = getAnimator(targetCompats);
+            if (mAnimator == null) {
+                finishSystemAnimation();
+                return;
+            }
+            mAnimator.addListener(this);
+            mAnimator.start();
+            // Because t=0 has the app icon in its original spot, we can skip the
+            // first frame and have the same movement one frame earlier.
+            mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
+
+        });
+    }
+
+
+    @UiThread
+    public abstract AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats);
+
+    @UiThread
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        if (animation == mAnimator) {
+            mAnimator = null;
+            finishSystemAnimation();
+        }
+    }
+
+    /**
+     * Called by the system
+     */
+    @BinderThread
     @Override
     public void onAnimationCancelled() {
-        postAtFrontOfQueueAsynchronously(mLauncher.getWindow().getDecorView().getHandler(), () -> {
+        postAtFrontOfQueueAsynchronously(mHandler, () -> {
             if (mAnimator != null) {
-                mAnimator.cancel();
+                mAnimator.removeListener(this);
+                mAnimator.end();
+                mAnimator = null;
             }
         });
+    }
+
+    @UiThread
+    private void finishSystemAnimation() {
+        if (mSysFinishRunnable != null) {
+            mSysFinishRunnable.run();
+            mSysFinishRunnable = null;
+        }
     }
 }

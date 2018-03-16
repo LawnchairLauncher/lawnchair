@@ -183,7 +183,6 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
-            preOnStateTransitionStart();
             onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
@@ -237,7 +236,6 @@ public class LauncherStateManager {
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
             AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
-        preOnStateTransitionStart();
 
         for (StateHandler handler : getStateHandlers()) {
             builder.startTag(handler);
@@ -275,15 +273,6 @@ public class LauncherStateManager {
         });
         mConfig.setAnimation(animation);
         return mConfig.mCurrentAnimation;
-    }
-
-    private void preOnStateTransitionStart() {
-        // If we are still animating to launcher from an app,
-        // finish it and let this state animation take over.
-        LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
-        if (transitionManager != null) {
-            transitionManager.finishLauncherAnimation();
-        }
     }
 
     private void onStateTransitionStart(LauncherState state) {
@@ -349,6 +338,15 @@ public class LauncherStateManager {
      */
     public void cancelAnimation() {
         mConfig.reset();
+    }
+
+    /**
+     * Sets the animation as the current state animation, i.e., canceled when
+     * starting another animation and may block some launcher interactions while running.
+     */
+    public void setCurrentAnimation(AnimatorSet anim) {
+        cancelAnimation();
+        mConfig.setAnimation(anim);
     }
 
     private class StartAnimRunnable implements Runnable {

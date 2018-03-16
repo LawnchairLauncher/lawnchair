@@ -400,10 +400,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         return mStateManager;
     }
 
-    public LauncherAppTransitionManager getAppTransitionManager() {
-        return mAppTransitionManager;
-    }
-
     protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
         if (isDark) {
             setTheme(R.style.LauncherThemeDark);
@@ -1254,7 +1250,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                 // In all these cases, only animate if we're already on home
                 AbstractFloatingView.closeAllOpenViews(this, isStarted());
 
-                mStateManager.goToState(NORMAL);
+                if (!isInState(NORMAL)) {
+                    // Only change state, if not already the same. This prevents cancelling any
+                    // animations running as part of resume
+                    mStateManager.goToState(NORMAL);
+                }
 
                 // Reset the apps view
                 if (!alreadyOnHome && mAppsView != null) {
