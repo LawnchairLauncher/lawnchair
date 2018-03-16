@@ -836,9 +836,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public void onDragEnter(DragObject d) {
         mPrevTargetRank = -1;
         mOnExitAlarm.cancelAlarm();
-        // Get the area offset such that the folder only closes if half the drag icon width
+        // Get the area offset such that the folder only closes if the drag icon width
         // is outside the folder area
-        mScrollAreaOffset = d.dragView.getDragRegionWidth() / 2 - d.xOffset;
+        mScrollAreaOffset = d.dragView.getDragRegionWidth() - d.xOffset;
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
