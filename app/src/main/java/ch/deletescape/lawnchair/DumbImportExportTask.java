@@ -44,12 +44,10 @@ public class DumbImportExportTask {
             Toast.makeText(activity, activity.getString(R.string.imexport_external_storage_unwritable), Toast.LENGTH_LONG).show();
             return;
         }
-
         File backup = new File(getFolder(), file.getName());
         if (backup.exists()) {
             backup.delete();
         }
-
         if (copy(file, backup)) {
             if (file.getName().equals(LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")) {
                 Toast.makeText(activity, activity.getString(R.string.settings_export_success), Toast.LENGTH_LONG).show();
@@ -66,17 +64,14 @@ public class DumbImportExportTask {
             Toast.makeText(activity, activity.getString(R.string.imexport_external_storage_unreadable), Toast.LENGTH_LONG).show();
             return;
         }
-
         File backup = new File(getFolder(), file.getName());
         if (!backup.exists()) {
             Toast.makeText(activity, activity.getString(R.string.imexport_no_backup_found), Toast.LENGTH_LONG).show();
             return;
         }
-
         if (file.exists()) {
             file.delete();
         }
-
         if (copy(backup, file)) {
             if (file.getName().equals(LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")) {
                 Toast.makeText(activity, activity.getString(R.string.settings_import_success), Toast.LENGTH_LONG).show();
@@ -94,7 +89,6 @@ public class DumbImportExportTask {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-
         return folder;
     }
 
@@ -106,7 +100,6 @@ public class DumbImportExportTask {
     private static boolean copy(File inFile, File outFile) {
         FileInputStream in;
         FileOutputStream out;
-
         try {
             in = new FileInputStream(inFile);
             out = new FileOutputStream(outFile);
@@ -124,7 +117,6 @@ public class DumbImportExportTask {
         } catch (Exception e) {
             Log.e("copy", e.getMessage(), e);
         }
-
         return false;
     }
 
