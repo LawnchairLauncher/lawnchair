@@ -809,18 +809,22 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 postAtFrontOfQueueAsynchronously(handler, () -> {
                     if ((Utilities.getPrefs(mLauncher)
                             .getBoolean("pref_use_screenshot_for_swipe_up", false)
-                            && mLauncher.getStateManager().getState().overviewUi)
-                            || !launcherIsATargetWithMode(targets, MODE_OPENING)) {
-                        // We use a separate transition for Overview mode. And we can skip the
-                        // animation in cases where Launcher is not in the set of opening targets.
-                        // This can happen when Launcher is already visible. ie. Closing a dialog.
+                            && mLauncher.getStateManager().getState().overviewUi)) {
+                        // We use a separate transition for Overview mode.
                         setCurrentAnimator(null);
                         finishedCallback.run();
                         return;
                     }
 
+                    // We can skip the Launcher content animation in cases where Launcher is not in
+                    // the set of opening targets. This can happen when Launcher is already visible.
+                    // ie. closing a dialog. We still need to animate the window though.
                     LauncherTransitionAnimator animator = new LauncherTransitionAnimator(
-                            getLauncherResumeAnimation(), getClosingWindowAnimators(targets));
+                            launcherIsATargetWithMode(targets, MODE_OPENING)
+                                    ? getLauncherResumeAnimation()
+                                    : null,
+                            getClosingWindowAnimators(targets));
+
                     setCurrentAnimator(animator);
                     mAnimator = animator.getAnimatorSet();
                     mAnimator.addListener(new AnimatorListenerAdapter() {
