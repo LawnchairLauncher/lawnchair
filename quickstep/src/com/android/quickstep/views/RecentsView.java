@@ -613,7 +613,7 @@ public abstract class RecentsView<T extends BaseActivity>
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_TAB
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
-            setCurrentPage((getCurrentPage()
+            snapToPage((getNextPage()
                     + (event.isShiftPressed() ? getPageCount() - 1 : 1)) % getPageCount());
             loadVisibleTaskData();
             return true;
@@ -621,13 +621,13 @@ public abstract class RecentsView<T extends BaseActivity>
         return super.dispatchKeyEvent(event);
     }
 
-    public void selectNextTask() {
-        setCurrentPage((getCurrentPage() + 1) % getPageCount());
+    public void snapToTaskAfterNext() {
+        snapToPage((getNextPage() + 1) % getPageCount());
         loadVisibleTaskData();
     }
 
-    public void launchCurrentTask() {
-        final TaskView currentTask = (TaskView) getChildAt(getCurrentPage());
-        currentTask.launchTask(true);
+    public void launchNextTask() {
+        final TaskView nextTask = (TaskView) getChildAt(getNextPage());
+        nextTask.launchTask(true);
     }
 }

@@ -93,7 +93,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
     public void onOverviewShown() {
         if (isOverviewAlmostVisible()) {
             final RecentsView rv = getLauncher().getOverviewPanel();
-            rv.selectNextTask();
+            rv.snapToTaskAfterNext();
         } else {
             openRecents();
         }
@@ -101,7 +101,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
 
     public void onOverviewHidden() {
         final RecentsView rv = getLauncher().getOverviewPanel();
-        rv.launchCurrentTask();
+        rv.launchNextTask();
     }
 
     private void startNonLauncherTask(int backStackCount) {
