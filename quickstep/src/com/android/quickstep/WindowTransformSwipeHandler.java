@@ -497,6 +497,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
+                        mTmpMatrix.postTranslate(app.position.x, app.position.y);
                         transaction.setMatrix(app.leash, mTmpMatrix)
                                 .setWindowCrop(app.leash, mClipRect);
 
@@ -534,10 +535,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     }
                 }
                 if (mRecentsAnimationWrapper.controller != null) {
-
                     // TODO: This logic is spartanic!
-                    mRecentsAnimationWrapper.controller.setAnimationTargetsBehindSystemBars(
-                            shift < 0.12f);
+                    boolean passedThreshold = shift > 0.12f;
+                    mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
+                    mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
                 }
             };
             if (Looper.getMainLooper() == Looper.myLooper()) {
