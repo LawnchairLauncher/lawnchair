@@ -20,7 +20,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,7 +36,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
-import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
@@ -48,7 +46,6 @@ import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
@@ -73,13 +70,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final boolean mCenterVertically;
 
     private final CheckLongPressHelper mLongPressHelper;
-    private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
     private final float mSlop;
 
-    private Bitmap mPressedBackground;
-
-    private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -147,8 +140,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
-        mDeferShadowGenerationOnTouch =
-                a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
@@ -173,7 +164,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        mOutlineHelper = HolographicOutlineHelper.getInstance(getContext());
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
 
     }
@@ -231,7 +221,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
-        iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
@@ -291,13 +280,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                // So that the pressed outline is visible immediately on setStayPressed(),
-                // we pre-create it on ACTION_DOWN (it takes a small but perceptible amount of time
-                // to create it)
-                if (!mDeferShadowGenerationOnTouch && mPressedBackground == null) {
-                    mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
-                }
-
                 // If we're in a stylus button press, don't check for long press.
                 if (!mStylusEventHelper.inStylusButtonPressed()) {
                     mLongPressHelper.postCheckForLongPress();
@@ -305,12 +287,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                // If we've touched down and up on an item, and it's still not "pressed", then
-                // destroy the pressed outline
-                if (!isPressed()) {
-                    mPressedBackground = null;
-                }
-
                 mLongPressHelper.cancelLongPress();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -324,22 +300,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
-        if (!stayPressed) {
-            HolographicOutlineHelper.getInstance(getContext()).recycleShadowBitmap(mPressedBackground);
-            mPressedBackground = null;
-        } else {
-            if (mPressedBackground == null) {
-                mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
-            }
-        }
-
-        // Only show the shadow effect when persistent pressed state is set.
-        ViewParent parent = getParent();
-        if (parent != null && parent.getParent() instanceof BubbleTextShadowHandler) {
-            ((BubbleTextShadowHandler) parent.getParent()).setPressedIcon(
-                    this, mPressedBackground);
-        }
-
         refreshDrawableState();
     }
 
@@ -356,26 +316,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (super.onKeyDown(keyCode, event)) {
-            // Pre-create shadow so show immediately on click.
-            if (mPressedBackground == null) {
-                mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Unlike touch events, keypress event propagate pressed state change immediately,
         // without waiting for onClickHandler to execute. Disable pressed state changes here
         // to avoid flickering.
         mIgnorePressedStateChange = true;
         boolean result = super.onKeyUp(keyCode, event);
-
-        mPressedBackground = null;
         mIgnorePressedStateChange = false;
         refreshDrawableState();
         return result;
@@ -662,12 +608,5 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
-    }
-
-    /**
-     * Interface to be implemented by the grand parent to allow click shadow effect.
-     */
-    public interface BubbleTextShadowHandler {
-        void setPressedIcon(BubbleTextView icon, Bitmap background);
     }
 }

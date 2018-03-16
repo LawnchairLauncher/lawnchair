@@ -79,7 +79,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * A message to display when the user tries to start a disabled shortcut.
      * This is currently only used for deep shortcuts.
      */
-    CharSequence disabledMessage;
+    public CharSequence disabledMessage;
 
     public int status;
 

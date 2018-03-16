@@ -31,13 +31,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.VerticalSwipeController;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 class EventLogTags {
     private EventLogTags() {
@@ -140,11 +139,6 @@ public class EdgeSwipeController extends VerticalSwipeController implements
                     ContainerType.TASKSWITCHER,                    // dst target
                     mLauncher.getWorkspace().getCurrentPage());
         }
-    }
-
-    @Override
-    protected void initSprings() {
-        mSpringHandlers = new SpringAnimationHandler[0];
     }
 
     @Override

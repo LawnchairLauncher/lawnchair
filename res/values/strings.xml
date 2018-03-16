@@ -80,6 +80,9 @@
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
+    <string name="all_apps_button_personal_label">Personal apps list</string>
+    <string name="all_apps_button_work_label">Work apps list</string>
+
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
@@ -169,16 +172,8 @@
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
-    <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-    <string name="accessibility_action_overview">Overview</string>
 
     <!-- Strings for settings -->
-    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-    <string name="allow_rotation_title">Allow Home screen rotation</string>
-    <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
-    <string name="allow_rotation_desc">When phone is rotated</string>
-    <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
-    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
     <string name="icon_badging_title">Notification dots</string>
     <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
@@ -191,6 +186,8 @@
     <string name="msg_missing_notification_access">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!-- Button text in the confirmation dialog which would take the user to the system settings [CHAR LIMIT=50] -->
     <string name="title_change_settings">Change settings</string>
+    <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
+    <string name="icon_badging_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
     <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
@@ -281,15 +278,6 @@
 
     <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
     <string name="action_move_to_workspace">Move to Home screen</string>
-
-    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-    <string name="action_move_screen_left">Move screen to left</string>
-
-    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-    <string name="action_move_screen_right">Move screen to right</string>
-
-    <!-- Accessibility confirmation when a screen was moved. -->
-    <string name="screen_moved">Screen moved</string>
 
     <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
     <string name="action_resize">Resize</string>

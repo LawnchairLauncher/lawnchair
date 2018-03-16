@@ -21,8 +21,6 @@ import android.support.annotation.IntDef;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 
-import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
@@ -63,5 +61,15 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default Choreographer getIntrimChoreographer(MotionEventQueue queue) {
         return null;
+    }
+
+    default void deferInit() { }
+
+    default boolean deferNextEventToMainThread() {
+        return false;
+    }
+
+    default boolean forceToLauncherConsumer() {
+        return false;
     }
 }
