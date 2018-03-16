@@ -198,8 +198,8 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
             }
         } else {
             if (goingUp) {
-                mPendingAnimation = mRecentsView
-                        .createTaskDismissAnimation(mTaskBeingDragged, maxDuration);
+                mPendingAnimation = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
+                        true /* animateTaskView */, true /* removeTask */, maxDuration);
                 mCurrentAnimation = AnimatorPlaybackController
                         .wrap(mPendingAnimation.anim, maxDuration);
                 mEndDisplacement = -mTaskBeingDragged.getHeight();

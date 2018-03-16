@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,12 +33,15 @@ import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -57,6 +62,7 @@ import java.util.function.Consumer;
 public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut {
 
     private static final String TAG = "TaskSystemShortcut";
+    private static final int DISMISS_TASK_DURATION = 300;
 
     protected T mSystemShortcut;
 
@@ -99,10 +105,13 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
     }
 
-    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener {
+    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener,
+            DeviceProfile.OnDeviceProfileChangeListener, View.OnLayoutChangeListener {
 
         private Handler mHandler;
+        private RecentsView mRecentsView;
         private TaskView mTaskView;
+        private BaseDraggingActivity mActivity;
 
         public SplitScreen() {
             super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
@@ -116,15 +125,19 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 return null;
             }
             final Task task  = taskView.getTask();
+            final int taskId = task.key.id;
             if (!task.isDockable) {
                 return null;
             }
+            mActivity = activity;
+            mRecentsView = activity.getOverviewPanel();
             mTaskView = taskView;
+            final TaskThumbnailView thumbnailView = taskView.getThumbnail();
             return (v -> {
                 AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
-                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key.id,
+                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                         ActivityOptionsCompat.makeSplitScreenOptions(true))) {
                     ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
                     try {
@@ -134,26 +147,35 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         return;
                     }
 
+                    // Add a device profile change listener to kick off animating the side tasks
+                    // once we enter multiwindow mode and relayout
+                    activity.addOnDeviceProfileChangeListener(this);
+
                     final Runnable animStartedListener = () -> {
+                        // Hide the task view and wait for the window to be resized
+                        // TODO: Consider animating in launcher and do an in-place start activity
+                        //       afterwards
+                        mRecentsView.addIgnoreResetTask(mTaskView);
+                        mTaskView.setAlpha(0f);
                         mTaskView.getViewTreeObserver().addOnPreDrawListener(SplitScreen.this);
-                        activity.<RecentsView>getOverviewPanel().removeView(taskView);
                     };
 
                     final int[] position = new int[2];
-                    taskView.getLocationOnScreen(position);
-                    final int width = (int) (taskView.getWidth() * taskView.getScaleX());
-                    final int height = (int) (taskView.getHeight() * taskView.getScaleY());
+                    thumbnailView.getLocationOnScreen(position);
+                    final int width = (int) (thumbnailView.getWidth() * taskView.getScaleX());
+                    final int height = (int) (thumbnailView.getHeight() * taskView.getScaleY());
                     final Rect taskBounds = new Rect(position[0], position[1],
                             position[0] + width, position[1] + height);
 
                     Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
-                            taskBounds.width(), taskBounds.height(), taskView, 1f, Color.BLACK);
+                            taskBounds.width(), taskBounds.height(), thumbnailView, 1f,
+                            Color.BLACK);
                     AppTransitionAnimationSpecsFuture future =
                             new AppTransitionAnimationSpecsFuture(mHandler) {
                         @Override
                         public List<AppTransitionAnimationSpecCompat> composeSpecs() {
                             return Collections.singletonList(new AppTransitionAnimationSpecCompat(
-                                    task.key.id, thumbnail, taskBounds));
+                                    taskId, thumbnail, taskBounds));
                         }
                     };
                     WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
@@ -167,6 +189,31 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             mTaskView.getViewTreeObserver().removeOnPreDrawListener(this);
             WindowManagerWrapper.getInstance().endProlongedAnimations();
             return true;
+        }
+
+        @Override
+        public void onDeviceProfileChanged(DeviceProfile dp) {
+            mActivity.removeOnDeviceProfileChangeListener(this);
+            if (dp.isMultiWindowMode) {
+                mTaskView.getRootView().addOnLayoutChangeListener(this);
+            }
+        }
+
+        @Override
+        public void onLayoutChange(View v, int l, int t, int r, int b,
+                int oldL, int oldT, int oldR, int oldB) {
+            mTaskView.getRootView().removeOnLayoutChangeListener(this);
+            mRecentsView.removeIgnoreResetTask(mTaskView);
+
+            // Start animating in the side pages once launcher has been resized
+            PendingAnimation pendingAnim = mRecentsView.createTaskDismissAnimation(mTaskView,
+                    false, false, DISMISS_TASK_DURATION);
+            AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
+                    pendingAnim.anim, DISMISS_TASK_DURATION);
+            controller.dispatchOnStart();
+            controller.setEndAction(() -> pendingAnim.finish(true));
+            controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
+            controller.start();
         }
     }
 

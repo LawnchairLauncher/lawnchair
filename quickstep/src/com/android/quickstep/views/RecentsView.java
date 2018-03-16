@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -103,6 +104,9 @@ public abstract class RecentsView<T extends BaseActivity>
     private Runnable mNextPageSwitchRunnable;
 
     private PendingAnimation mPendingAnimation;
+
+    // Keeps track of task views whose visual state should not be reset
+    private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -261,7 +265,10 @@ public abstract class RecentsView<T extends BaseActivity>
 
     public void resetTaskVisuals() {
         for (int i = getChildCount() - 1; i >= 0; i--) {
-            ((TaskView) getChildAt(i)).resetVisualProperties();
+            TaskView taskView = (TaskView) getChildAt(i);
+            if (!mIgnoreResetTaskViews.contains(taskView)) {
+                taskView.resetVisualProperties();
+            }
         }
 
         updateCurveProperties();
@@ -512,7 +519,16 @@ public abstract class RecentsView<T extends BaseActivity>
         public float linearInterpolation;
     }
 
-    public PendingAnimation createTaskDismissAnimation(TaskView taskView, long duration) {
+    public void addIgnoreResetTask(TaskView taskView) {
+        mIgnoreResetTaskViews.add(taskView);
+    }
+
+    public void removeIgnoreResetTask(TaskView taskView) {
+        mIgnoreResetTaskViews.remove(taskView);
+    }
+
+    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
+            boolean removeTask, long duration) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
@@ -543,9 +559,11 @@ public abstract class RecentsView<T extends BaseActivity>
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             if (child == taskView) {
-                addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-                addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
-                        duration, LINEAR, anim);
+                if (animateTaskView) {
+                    addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
+                    addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                            duration, LINEAR, anim);
+                }
             } else {
                 int scrollDiff = newScroll[i] - oldScroll[i] + maxScrollDiff;
                 if (scrollDiff != 0) {
@@ -563,12 +581,16 @@ public abstract class RecentsView<T extends BaseActivity>
         }
 
         // Add a tiny bit of translation Z, so that it draws on top of other views
-        taskView.setTranslationZ(0.1f);
+        if (animateTaskView) {
+            taskView.setTranslationZ(0.1f);
+        }
 
         mPendingAnimation = pendingAnimation;
         mPendingAnimation.addEndListener((isSuccess) -> {
            if (isSuccess) {
-               ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+               if (removeTask) {
+                   ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+               }
                removeView(taskView);
                if (getChildCount() == 0) {
                    onAllTasksRemoved();
