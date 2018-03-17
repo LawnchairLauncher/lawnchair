@@ -11,6 +11,8 @@ interface IPreferenceProvider {
     // SORTED by Feature
     // -------------------
 
+    var restoreSuccess: Boolean
+
     // -------------------
     // 1) App Theme
     // -------------------

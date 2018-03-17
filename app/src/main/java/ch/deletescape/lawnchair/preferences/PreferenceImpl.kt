@@ -18,6 +18,8 @@ import kotlin.reflect.KProperty
 open class PreferenceImpl(context: Context) : IPreferenceProvider {
     val context = context.applicationContext!!
 
+    override var restoreSuccess by MutableBooleanPref("pref_restoreSuccess", false)
+
     override val workSpaceLabelColor by IntPref(PreferenceFlags.KEY_PREF_WS_LABEL_COLOR, Color.WHITE)
     override val allAppsLabelColor by IntPref(PreferenceFlags.KEY_PREF_ALL_APPS_LABEL_COLOR, Color.BLACK)
 
