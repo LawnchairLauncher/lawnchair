@@ -263,7 +263,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                 }
             }
 
-            if (drawable != null) {
+            if (drawable != null && drawable.getIntrinsicWidth() > 0 && drawable.getIntrinsicHeight() > 0) {
                 // Calculate how big the bitmap needs to be.
                 // This avoids unnecessary processing and allocation inside Palette.
                 final int requestedArea = drawable.getIntrinsicWidth() *
