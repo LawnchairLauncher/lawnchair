@@ -44,6 +44,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
 
+    var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
+    var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
+
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
 
@@ -74,7 +77,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             Utilities.getDevicePrefs(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
-    var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
 
     private fun recreate() {
         onChangeCallback?.recreate()
@@ -389,10 +391,29 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback = null
     }
 
+    init {
+        migrateConfig()
+    }
+
+    private fun migrateConfig() {
+        if (configVersion != CURRENT_VERSION) {
+            blockingEdit {
+                bulkEdit {
+                    // Migration codes here
+
+
+                    configVersion = CURRENT_VERSION
+                }
+            }
+        }
+    }
+
     companion object {
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: LawnchairPreferences? = null
+
+        const val CURRENT_VERSION = 200
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {

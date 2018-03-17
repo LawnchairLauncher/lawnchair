@@ -9,7 +9,9 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
+import android.support.v4.content.FileProvider
 import android.util.Log
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.Utilities
 import org.json.JSONArray
@@ -188,10 +190,33 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
         fun getFolder(): File {
             val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
+            Log.d(TAG, "path: $folder")
             if (!folder.exists()) {
                 folder.mkdirs()
             }
             return folder
+        }
+
+        fun listLocalBackups(context: Context): List<LawnchairBackup> {
+            return getFolder().listFiles { file -> file.extension == EXTENSION }
+                    ?.sortedByDescending { it.lastModified() }
+                    ?.map { FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", it) }
+                    ?.map { LawnchairBackup(context, it) }
+                    ?: Collections.emptyList()
+        }
+
+        private fun prepareConfig(context: Context) {
+            Utilities.getLawnchairPrefs(context).blockingEdit {
+                restoreSuccess = true
+                developerOptionsEnabled = false
+            }
+        }
+
+        private fun cleanupConfig(context: Context, devOptionsEnabled: Boolean) {
+            Utilities.getLawnchairPrefs(context).blockingEdit {
+                restoreSuccess = false
+                developerOptionsEnabled = devOptionsEnabled
+            }
         }
 
         fun create(context: Context, name: String, location: Uri, contents: Int): Boolean {
@@ -207,10 +232,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
             val devOptionsEnabled = Utilities.getLawnchairPrefs(context)
                     .developerOptionsEnabled
-            Utilities.getLawnchairPrefs(context).blockingEdit {
-                restoreSuccess = true
-                developerOptionsEnabled = false
-            }
+            prepareConfig(context)
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
             val outStream = FileOutputStream(pfd.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
@@ -249,10 +271,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 out.close()
                 outStream.close()
                 pfd.close()
-                Utilities.getLawnchairPrefs(context).blockingEdit {
-                    restoreSuccess = false
-                    developerOptionsEnabled = devOptionsEnabled
-                }
+                cleanupConfig(context, devOptionsEnabled)
                 return success
             }
         }

@@ -740,4 +740,3 @@ public final class Utilities {
         window.getDecorView().setSystemUiVisibility(flags);
     }
 }
-

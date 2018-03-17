@@ -410,4 +410,8 @@
     <string name="debug_pref_title">Debug</string>
     <string name="debug_component_name">Component name</string>
     <string name="debug_component_name_copied">Copied</string>
+    <string name="read_external_storage_required">Storage permission is required to create backup</string>
+    <string name="local_backups">Local backups</string>
+    <string name="backup_location_device_storage">Device storage</string>
+    <string name="backup_location_documents_storage">Documents storage</string>
 </resources>

@@ -21,9 +21,11 @@ open class SettingsBaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         super.setContentView(decorLayout)
 
-        Utilities.setLightUi(window)
-        window.statusBarColor = 0
-        window.navigationBarColor = 0
+        if (!Utilities.ATLEAST_OREO_MR1 && Utilities.ATLEAST_OREO) {
+            Utilities.setLightUi(window)
+            window.statusBarColor = 0
+            window.navigationBarColor = 0
+        }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

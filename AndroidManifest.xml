@@ -229,14 +229,15 @@
             android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
             android:theme="@style/SettingsTheme.V2" >
             <intent-filter>
-                <data
-                    android:scheme="content"
-                    android:mimeType="application/vnd.lawnchair.backup" />
-
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/vnd.lawnchair.backup" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/x-zip-compressed" />
+                <data android:mimeType="application/zip" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -244,18 +245,48 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="file" />
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <!--
                     Work around Android's ugly primitive PatternMatcher
                     implementation that can't cope with finding a . early in
                     the path unless it's explicitly matched.
                 -->
-                <data android:pathPattern=".*\\.shed" />
-                <data android:pathPattern=".*\\..*\\.shed" />
-                <data android:pathPattern=".*\\..*\\..*\\.shed" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.shed" />
+                <data android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\.shed" android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\.shed" android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!--
+                    Work around Android's ugly primitive PatternMatcher
+                    implementation that can't cope with finding a . early in
+                    the path unless it's explicitly matched.
+                -->
+                <data android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\.shed" android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\.shed" android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\..*\\.shed" android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\.shed" android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
             </intent-filter>
         </activity>
         <activity
@@ -263,6 +294,15 @@
             android:label="@string/about"
             android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
             android:theme="@style/SettingsTheme.V2" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>

@@ -1,29 +1,39 @@
 package ch.deletescape.lawnchair.backup
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.RadioButton
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NewBackupActivity : SettingsBaseActivity() {
+
+    private val permissionRequestReadExternalStorage = 0
 
     private val backupName by lazy { findViewById<EditText>(R.id.name) }
 
     private val backupHomescreen by lazy { findViewById<CheckBox>(R.id.content_homescreen) }
     private val backupSettings by lazy { findViewById<CheckBox>(R.id.content_settings) }
     private val backupWallpaper by lazy { findViewById<CheckBox>(R.id.content_wallpaper) }
+
+    private val backupLocationDevice by lazy { findViewById<RadioButton>(R.id.location_device) }
 
     private val config by lazy { findViewById<View>(R.id.config) }
     private val startButton by lazy { findViewById<FloatingActionButton>(R.id.fab) }
@@ -50,13 +60,35 @@ class NewBackupActivity : SettingsBaseActivity() {
         backupName.setText(getTimestamp())
 
         startButton.setOnClickListener {
+            onStartBackup()
+        }
+    }
+
+    private fun onStartBackup() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
+                        Snackbar.LENGTH_SHORT).show()
+            }
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    permissionRequestReadExternalStorage)
+        } else {
             val error = validateOptions()
             if (error == 0) {
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                intent.type = LawnchairBackup.MIME_TYPE
-                intent.putExtra(Intent.EXTRA_TITLE, "${backupName.text}.${LawnchairBackup.EXTENSION}")
-                startActivityForResult(intent, 1)
+                val fileName = "${backupName.text}.${LawnchairBackup.EXTENSION}"
+                if (backupLocationDevice.isChecked) {
+                    backupUri = Uri.fromFile(File(LawnchairBackup.getFolder(), fileName))
+                    startBackup()
+                } else {
+                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    intent.type = LawnchairBackup.MIME_TYPE
+                    intent.putExtra(Intent.EXTRA_TITLE, fileName)
+                    startActivityForResult(intent, 1)
+                }
             } else {
                 Snackbar.make(findViewById(R.id.content), error, Snackbar.LENGTH_SHORT).show()
             }
@@ -80,6 +112,23 @@ class NewBackupActivity : SettingsBaseActivity() {
     fun getTimestamp(): String {
         val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US)
         return simpleDateFormat.format(Date())
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            permissionRequestReadExternalStorage -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    onStartBackup()
+                } else {
+                    Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
+                            Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            else -> {
+
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {

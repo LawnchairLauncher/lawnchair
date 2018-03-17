@@ -1,9 +1,14 @@
 package ch.deletescape.lawnchair.backup
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -13,6 +18,8 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
+
+    private val permissionRequestReadExternalStorage = 0
 
     private val bottomSheet by lazy { BottomSheetDialog(this) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
@@ -51,12 +58,40 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         bottomSheet.setContentView(bottomSheetView)
 
         adapter.callbacks = this
-        adapter.setData(Utilities.getLawnchairPrefs(this)
-                .recentBackups.toList().map { LawnchairBackup(this, it) })
+        loadLocalBackups()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
         Utilities.checkRestoreSuccess(this)
+    }
+
+    private fun loadLocalBackups() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Snackbar.make(findViewById(android.R.id.content), R.string.read_external_storage_required,
+                        Snackbar.LENGTH_SHORT).show()
+            }
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    permissionRequestReadExternalStorage)
+        } else {
+            adapter.setData(LawnchairBackup.listLocalBackups(this))
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            permissionRequestReadExternalStorage -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    adapter.setData(LawnchairBackup.listLocalBackups(this))
+                }
+            }
+            else -> {
+
+            }
+        }
     }
 
     override fun openBackup() {
