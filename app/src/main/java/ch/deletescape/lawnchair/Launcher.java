@@ -440,8 +440,8 @@ public class Launcher extends Activity
         IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
         registerReceiver(mUiBroadcastReceiver, filter);
 
-        mLauncherTab = new LauncherTab(this);
         Utilities.showOutdatedLawnfeedPopup(this);
+        mLauncherTab = new LauncherTab(this);
 
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
