@@ -8,10 +8,12 @@ import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -136,10 +138,29 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
 
     @Override
     protected void noGoogleAppSearch() {
-        try {
-            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
-            playQsbAnimation();
-        } catch (ActivityNotFoundException ignored) {
+        final Intent searchIntent = new Intent("com.google.android.apps.searchlite.WIDGET_ACTION")
+                .setComponent(ComponentName.unflattenFromString("com.google.android.apps.searchlite/.ui.SearchActivity"))
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .putExtra("showKeyboard", true)
+                .putExtra("contentType", 12);
+
+        final Context context = getContext();
+        final PackageManager pm = context.getPackageManager();
+
+        if (pm.queryIntentActivities(searchIntent, 0).isEmpty()) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                openQSB();
+            } catch (ActivityNotFoundException ignored) {
+            }
+        } else {
+            openQSB();
+            mAnimatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    context.startActivity(searchIntent);
+                }
+            });
         }
     }
 
