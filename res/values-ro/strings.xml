@@ -43,6 +43,8 @@
     <string name="out_of_space" msgid="4691004494942118364">"Nu mai este loc pe acest Ecran de pornire."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spațiu epuizat în bara Preferate"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicații"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicații personale"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista de aplicații de serviciu"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Ecran de pornire"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Eliminați"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Dezinstalați"</string>
@@ -78,19 +80,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagini de fundal"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Setări pentru ecranul de pornire"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dezactivată de administrator"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Prezentare generală"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Permiteți rotirea ecranului de pornire"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Când telefonul este rotit"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Setarea actuală a afișajului nu permite rotirea"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Puncte de notificare"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activat"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Dezactivat"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Este necesar accesul la notificări"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pentru a afișa punctele de notificare, activați notificările din aplicație pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modificați setările"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Afișați punctele de notificare"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Adaugă pictograme în ecranul de pornire"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pentru aplicații noi"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Schimbați forma pictogramei"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"pe ecranul de pornire"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Folosiți setarea prestabilită a sistemului"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Pătrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Pătrat cu colțuri rotunjite"</string>
@@ -120,9 +120,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Creați dosar cu: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Dosar creat"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Mutați pe ecranul de pornire"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Mutați ecranul la stânga"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Mutați ecranul la dreapta"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Ecran mutat"</string>
     <string name="action_resize" msgid="1802976324781771067">"Redimensionați"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Creșteți lățimea"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Creșteți înălțimea"</string>
@@ -138,8 +135,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Profesionale"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil de serviciu"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Găsiți aplicații de serviciu aici"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Fiecare aplicație de serviciu are o insignă și este păstrată în siguranță de organizația dvs. Mutați aplicațiile pe ecranul de pornire pentru acces mai ușor."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat de organizația dvs."</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notificările și aplicațiile sunt dezactivate"</string>
 </resources>
