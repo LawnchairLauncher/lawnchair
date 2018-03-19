@@ -25,6 +25,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.views.BaseDragLayer;
 
 /**
@@ -49,10 +50,17 @@ public class RecentsActivity extends BaseDraggingActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
+
+        RecentsActivityTracker.onRecentsActivityCreate(this);
     }
 
     @Override
     public BaseDragLayer getDragLayer() {
+        return mRecentsRootView;
+    }
+
+    @Override
+    public View getRootView() {
         return mRecentsRootView;
     }
 
@@ -73,4 +81,16 @@ public class RecentsActivity extends BaseDraggingActivity {
 
     @Override
     public void invalidateParent(ItemInfo info) { }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        UiFactory.onStart(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        UiFactory.onTrimMemory(this, level);
+    }
 }

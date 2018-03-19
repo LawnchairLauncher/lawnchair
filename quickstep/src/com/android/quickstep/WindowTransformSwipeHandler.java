@@ -15,22 +15,16 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
-import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 import static com.android.quickstep.TouchConsumer.isInteractionQuick;
-import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.recents.utilities.Utilities
+        .postAtFrontOfQueueAsynchronously;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -53,24 +47,22 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -120,7 +112,7 @@ class MetricsLogger {
 }
 
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler extends InternalStateHandler {
+public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
     private static final boolean DEBUG_STATES = false;
 
@@ -209,12 +201,14 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
 
     private final Context mContext;
     private final int mRunningTaskId;
+    private final ActivityControlHelper<T> mActivityControlHelper;
+    private final ActivityInitListener mActivityInitListener;
 
     private MultiStateCallback mStateCallback;
     private AnimatorPlaybackController mLauncherTransitionController;
 
-    private Launcher mLauncher;
-    private LauncherLayoutListener mLauncherLayoutListener;
+    private T mActivity;
+    private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
     private QuickScrubController mQuickScrubController;
 
@@ -237,10 +231,15 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     private long mLauncherFrameDrawnTime;
     private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
-    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs) {
+    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
+            ActivityControlHelper<T> controller) {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
         mTouchTimeMs = touchTimeMs;
+        mActivityControlHelper = controller;
+        mActivityInitListener = mActivityControlHelper
+                .createActivityInitListener(this::onActivityInit);
+
         // Register the input consumer on the UI thread, to ensure that it runs after any pending
         // unregister calls
         mMainExecutor.execute(mInputConsumer::registerInputConsumer);
@@ -313,7 +312,8 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
                 mSourceStackBounds.height() - mSourceInsets.bottom);
 
         Rect tempRect = new Rect();
-        RecentsView.getPageRect(dp, mContext, tempRect);
+        mTransitionDragLength = mActivityControlHelper
+                .getSwipeUpDestinationAndLength(dp, mContext, tempRect);
 
         mTargetRect.set(tempRect);
         mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
@@ -334,14 +334,6 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
                 Math.max(mSourceStackBounds.width() - scaledTargetRect.right, 0),
                 Math.max(mSourceStackBounds.height() - scaledTargetRect.bottom, 0));
         mSourceRect.set(scaledTargetRect);
-
-        Rect targetInsets = dp.getInsets();
-        if (dp.isVerticalBarLayout()) {
-            int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-            mTransitionDragLength = dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
-        } else {
-            mTransitionDragLength = dp.heightPx - tempRect.bottom;
-        }
     }
 
     private long getFadeInDuration() {
@@ -356,40 +348,39 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
         }
     }
 
-    @Override
-    protected boolean init(final Launcher launcher, boolean alreadyOnHome) {
-        if (launcher == mLauncher) {
+    public void initWhenReady() {
+        mActivityInitListener.register();
+    }
+
+    private boolean onActivityInit(final T activity, Boolean alreadyOnHome) {
+        if (mActivity == activity) {
             return true;
         }
-        if (mLauncher != null) {
+        if (mActivity != null) {
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
             initStateCallbacks();
             mStateCallback.setState(oldState);
-            mLauncherLayoutListener.setHandler(null);
+            mLayoutListener.setHandler(null);
         }
         mWasLauncherAlreadyVisible = alreadyOnHome;
-        mLauncher = launcher;
+        mActivity = activity;
 
-        // For the duration of the gesture, lock the screen orientation to ensure that we do not
-        // rotate mid-quickscrub
-        mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
-
-        mRecentsView = mLauncher.getOverviewPanel();
+        mRecentsView = activity.getOverviewPanel();
         mQuickScrubController = mRecentsView.getQuickScrubController();
-        mLauncherLayoutListener = new LauncherLayoutListener(mLauncher);
+        mLayoutListener = mActivityControlHelper.createLayoutListener(mActivity);
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
-            onLauncherStart(launcher);
+            onLauncherStart(activity);
         } else {
-            launcher.setOnStartCallback(this::onLauncherStart);
+            activity.setOnStartCallback(this::onLauncherStart);
         }
         return true;
     }
 
-    private void onLauncherStart(final Launcher launcher) {
-        if (mLauncher != launcher) {
+    private void onLauncherStart(final T activity) {
+        if (mActivity != activity) {
             return;
         }
         if ((mStateCallback.getState() & STATE_HANDLER_INVALIDATED) != 0) {
@@ -397,31 +388,21 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
         }
 
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
-        LauncherState startState = mLauncher.getStateManager().getState();
-        if (startState.disableRestore) {
-            startState = mLauncher.getStateManager().getRestState();
-        }
-        mLauncher.getStateManager().setRestState(startState);
-
-        AbstractFloatingView.closeAllOpenViews(mLauncher, mWasLauncherAlreadyVisible);
+        mActivityControlHelper.prepareRecentsUI(mActivity, mWasLauncherAlreadyVisible);
+        AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
 
-        if (mWasLauncherAlreadyVisible && !mLauncher.getAppTransitionManager().isAnimating()) {
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-            long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-            mLauncherTransitionController = mLauncher.getStateManager()
-                    .createAnimationToNewWorkspace(OVERVIEW, accuracy);
+        if (mWasLauncherAlreadyVisible) {
+            mLauncherTransitionController = mActivityControlHelper
+                    .createControllerForVisibleActivity(activity);
             mLauncherTransitionController.dispatchOnStart();
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
 
             mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
         } else {
             TraceHelper.beginSection("WTS-init");
-            mLauncher.getStateManager().goToState(OVERVIEW, false);
-            TraceHelper.partitionSection("WTS-init", "State changed");
-
             // TODO: Implement a better animation for fading in
-            View rootView = mLauncher.getRootView();
+            View rootView = activity.getRootView();
             rootView.setAlpha(0);
             rootView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
 
@@ -430,21 +411,18 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
                     TraceHelper.endSection("WTS-init", "Launcher frame is drawn");
                     rootView.post(() ->
                             rootView.getViewTreeObserver().removeOnDrawListener(this));
-                    if (launcher != mLauncher) {
+                    if (activity != mActivity) {
                         return;
                     }
 
                     mStateCallback.setState(STATE_LAUNCHER_DRAWN);
                 }
             });
-
-            // Optimization, hide the all apps view to prevent layout while initializing
-            mLauncher.getAppsView().setVisibility(View.GONE);
         }
 
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
-        mLauncherLayoutListener.open();
+        mLayoutListener.open();
     }
 
     public void setLauncherOnDrawCallback(Runnable callback) {
@@ -452,7 +430,7 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     }
 
     private void launcherFrameDrawn() {
-        View rootView = mLauncher.getRootView();
+        View rootView = mActivity.getRootView();
         if (rootView.getAlpha() < 1) {
             if (mGestureStarted) {
                 final MultiStateCallback callback = mStateCallback;
@@ -471,7 +449,7 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     }
 
     private void initializeLauncherAnimationController() {
-        mLauncherLayoutListener.setHandler(this);
+        mLayoutListener.setHandler(this);
         onLauncherLayoutChanged();
 
         final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
@@ -508,7 +486,7 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     }
 
     private void onQuickInteractionStart() {
-        mLauncher.getStateManager().goToState(FAST_OVERVIEW,
+        mActivityControlHelper.onQuickInteractionStart(mActivity,
                 mWasLauncherAlreadyVisible || mGestureStarted);
         mQuickScrubController.onQuickScrubStart(false);
     }
@@ -523,32 +501,14 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     }
 
     /**
-     * Called by {@link #mLauncherLayoutListener} when launcher layout changes
+     * Called by {@link #mLayoutListener} when launcher layout changes
      */
     public void onLauncherLayoutChanged() {
-        initTransitionEndpoints(mLauncher.getDeviceProfile());
+        initTransitionEndpoints(mActivity.getDeviceProfile());
 
         if (!mWasLauncherAlreadyVisible) {
-            float startProgress;
-            AllAppsTransitionController controller = mLauncher.getAllAppsController();
-
-            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                startProgress = 1;
-            } else {
-                float scrollRange = Math.max(controller.getShiftRange(), 1);
-                startProgress = (mTransitionDragLength / scrollRange) + 1;
-            }
-            AnimatorSet anim = new AnimatorSet();
-            ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
-                    startProgress, OVERVIEW.getVerticalProgress(mLauncher));
-            shiftAnim.setInterpolator(LINEAR);
-            anim.play(shiftAnim);
-
-            // TODO: Link this animation to state animation, so that it is cancelled
-            // automatically on state change
-            anim.setDuration(mTransitionDragLength * 2);
-            mLauncherTransitionController =
-                    AnimatorPlaybackController.wrap(anim, mTransitionDragLength * 2);
+            mLauncherTransitionController = mActivityControlHelper
+                    .createControllerForHiddenActivity(mActivity, mTransitionDragLength);
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
         }
     }
@@ -661,14 +621,13 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
                 }
             }
         }
-
         mRecentsAnimationWrapper.setController(controller, apps);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
     public void onRecentsAnimationCanceled() {
         mRecentsAnimationWrapper.setController(null, null);
-        clearReference();
+        mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
     }
 
@@ -684,9 +643,10 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
      * on both background and UI threads
      */
     private void notifyGestureStarted() {
-        final Launcher curLauncher = mLauncher;
-        if (curLauncher != null) {
-            curLauncher.onQuickstepGestureStarted(mWasLauncherAlreadyVisible);
+        final T curActivity = mActivity;
+        if (curActivity != null) {
+            mActivityControlHelper.onQuickstepGestureStarted(
+                    curActivity, mWasLauncherAlreadyVisible);
         }
     }
 
@@ -770,25 +730,20 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
             mGestureEndCallback.run();
         }
 
-        clearReference();
+        mActivityInitListener.unregister();
         mInputConsumer.unregisterInputConsumer();
     }
 
     private void invalidateHandlerWithLauncher() {
         mLauncherTransitionController = null;
-        mLauncherLayoutListener.setHandler(null);
-        mLauncherLayoutListener.close(false);
-
-        // Restore the requested orientation to the user preference after the gesture has ended
-        mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
+        mLayoutListener.finish();
 
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
     }
 
     private void resetStateForAnimationCancel() {
-        LauncherState startState = mLauncher.getStateManager().getRestState();
-        boolean animate = mWasLauncherAlreadyVisible || mGestureStarted;
-        mLauncher.getStateManager().goToState(startState, animate);
+        boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
+        mActivityControlHelper.onTransitionCancelled(mActivity, wasVisible);
     }
 
     public void layoutListenerClosed() {
@@ -817,17 +772,8 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
                         if (taskView != null) {
                             // Defer finishing the animation until the next launcher frame with the
                             // new thumbnail
-                            ViewOnDrawExecutor executor = new ViewOnDrawExecutor() {
-                                @Override
-                                public void onViewDetachedFromWindow(View v) {
-                                    if (!isCompleted()) {
-                                        runAllTasks();
-                                    }
-                                }
-                            };
-                            executor.attachTo(mLauncher, taskView,
-                                    false /* waitForLoadAnimation */);
-                            executor.execute(finishTransitionRunnable);
+                            mActivityControlHelper.executeOnNextDraw(mActivity, taskView,
+                                    finishTransitionRunnable);
                             finishTransitionPosted = true;
                         }
                     }
@@ -843,8 +789,7 @@ public class WindowTransformSwipeHandler extends InternalStateHandler {
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
-        // Re apply state in case we did something funky during the transition.
-        mLauncher.getStateManager().reapplyState();
+        mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);

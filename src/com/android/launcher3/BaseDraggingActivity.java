@@ -55,6 +55,8 @@ public abstract class BaseDraggingActivity extends BaseActivity {
     private ActionMode mCurrentActionMode;
     protected boolean mIsSafeModeEnabled;
 
+    private OnStartCallback mOnStartCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,8 @@ public abstract class BaseDraggingActivity extends BaseActivity {
     public abstract BaseDragLayer getDragLayer();
 
     public abstract <T extends View> T getOverviewPanel();
+
+    public abstract View getRootView();
 
     public abstract BadgeInfo getBadgeInfoForItem(ItemInfo info);
 
@@ -187,5 +191,27 @@ public abstract class BaseDraggingActivity extends BaseActivity {
 
     protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
         return false;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mOnStartCallback != null) {
+            mOnStartCallback.onActivityStart(this);
+            mOnStartCallback = null;
+        }
+    }
+
+    public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {
+        mOnStartCallback = callback;
+    }
+
+    /**
+     * Callback for listening for onStart
+     */
+    public interface OnStartCallback<T extends BaseDraggingActivity> {
+
+        void onActivityStart(T activity);
     }
 }

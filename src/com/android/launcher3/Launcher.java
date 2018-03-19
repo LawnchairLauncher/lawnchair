@@ -209,7 +209,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
 
     @Thunk boolean mWorkspaceLoading = true;
 
-    private OnStartCallback mOnStartCallback;
     private OnResumeCallback mOnResumeCallback;
 
     private ViewOnDrawExecutor mPendingExecutor;
@@ -767,10 +766,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
 
-        if (mOnStartCallback != null) {
-            mOnStartCallback.onLauncherStart(this);
-            mOnStartCallback = null;
-        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
@@ -1177,6 +1172,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         return mAllAppsController;
     }
 
+    @Override
     public LauncherRootView getRootView() {
         return (LauncherRootView) mLauncherView;
     }
@@ -1773,10 +1769,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
             mOnResumeCallback.onLauncherResume();
         }
         mOnResumeCallback = callback;
-    }
-
-    public void setOnStartCallback(OnStartCallback callback) {
-        mOnStartCallback = callback;
     }
 
     /**
@@ -2449,13 +2441,5 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
     public interface OnResumeCallback {
 
         void onLauncherResume();
-    }
-
-    /**
-     * Callback for listening for onStart
-     */
-    public interface OnStartCallback {
-
-        void onLauncherStart(Launcher launcher);
     }
 }

@@ -48,10 +48,21 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> implements
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
     }
 
-    public static void verticalCenter(Rect padding, DeviceProfile dp) {
+    private static void verticalCenter(Rect padding, DeviceProfile dp) {
         Rect insets = dp.getInsets();
         int totalSpace = (padding.top + padding.bottom - insets.top - insets.bottom) / 2;
         padding.top = insets.top + totalSpace;
         padding.bottom = insets.bottom + totalSpace;
+    }
+
+    public static void getCenterPageRect(DeviceProfile grid, Context context, Rect outRect) {
+        Rect targetPadding = getPadding(grid, context);
+        verticalCenter(targetPadding, grid);
+        Rect insets = grid.getInsets();
+        outRect.set(
+                targetPadding.left + insets.left,
+                targetPadding.top + insets.top,
+                grid.widthPx - targetPadding.right - insets.right,
+                grid.heightPx - targetPadding.bottom - insets.bottom);
     }
 }

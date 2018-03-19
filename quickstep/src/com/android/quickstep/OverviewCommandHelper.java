@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RecentTaskInfo;
@@ -33,6 +32,8 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
+import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -42,7 +43,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 @TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper extends InternalStateHandler {
 
-    private static final boolean DEBUG_START_FALLBACK_ACTIVITY = DEBUG_SHOW_OVERVIEW_BUTTON;
+    private static final boolean DEBUG_START_FALLBACK_ACTIVITY = false;
 
     private final Context mContext;
     private final ActivityManagerWrapper mAM;
@@ -61,7 +62,15 @@ public class OverviewCommandHelper extends InternalStateHandler {
                 .setPackage(context.getPackageName())
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ResolveInfo info = context.getPackageManager().resolveActivity(homeIntent, 0);
-        launcher = new ComponentName(context.getPackageName(), info.activityInfo.name);
+
+        if (DEBUG_START_FALLBACK_ACTIVITY) {
+            launcher = new ComponentName(context, RecentsActivity.class);
+            homeIntent.addCategory(Intent.CATEGORY_DEFAULT)
+                    .removeCategory(Intent.CATEGORY_HOME);
+        } else {
+            launcher = new ComponentName(context.getPackageName(), info.activityInfo.name);
+        }
+
         // Clear the packageName as system can fail to dedupe it b/64108432
         homeIntent.setComponent(launcher).setPackage(null);
     }
@@ -74,7 +83,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
 
     public void onOverviewToggle() {
         getLauncher().runOnUiThread(() -> {
-                    if (DEBUG_START_FALLBACK_ACTIVITY) {
+                    if (isUsingFallbackActivity()) {
                         mContext.startActivity(new Intent(mContext, RecentsActivity.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent
                                         .FLAG_ACTIVITY_CLEAR_TASK));
@@ -147,4 +156,15 @@ public class OverviewCommandHelper extends InternalStateHandler {
         return false;
     }
 
+    public boolean isUsingFallbackActivity() {
+        return DEBUG_START_FALLBACK_ACTIVITY;
+    }
+
+    public ActivityControlHelper getActivityControlHelper() {
+        if (DEBUG_START_FALLBACK_ACTIVITY) {
+            return new FallbackActivityControllerHelper();
+        } else {
+            return new LauncherActivityControllerHelper();
+        }
+    }
 }

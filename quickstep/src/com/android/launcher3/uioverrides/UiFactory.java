@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
+import android.content.Context;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
@@ -73,7 +74,8 @@ public class UiFactory {
                 }
             }
         }
-        OverviewInteractionState.setBackButtonVisible(launcher, shouldBackButtonBeVisible);
+        OverviewInteractionState.getInstance(launcher)
+                .setBackButtonVisible(shouldBackButtonBeVisible);
     }
 
     public static void resetOverview(Launcher launcher) {
@@ -81,15 +83,15 @@ public class UiFactory {
         recents.reset();
     }
 
-    public static void onStart(Launcher launcher) {
-        RecentsModel model = RecentsModel.getInstance(launcher);
+    public static void onStart(Context context) {
+        RecentsModel model = RecentsModel.getInstance(context);
         if (model != null) {
             model.onStart();
         }
     }
 
-    public static void onTrimMemory(Launcher launcher, int level) {
-        RecentsModel model = RecentsModel.getInstance(launcher);
+    public static void onTrimMemory(Context context, int level) {
+        RecentsModel model = RecentsModel.getInstance(context);
         if (model != null) {
             model.onTrimMemory(level);
         }

@@ -47,7 +47,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -61,7 +60,6 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
-    public static final boolean DEBUG_SHOW_OVERVIEW_BUTTON = false;
     public static final boolean DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB = false;
 
     private static final SparseArray<String> sMotionEventNames;
@@ -107,9 +105,7 @@ public class TouchInteractionService extends Service {
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
             RemoteRunnable.executeSafely(() -> mISystemUiProxy.setRecentsOnboardingText(
                     getResources().getString(R.string.recents_swipe_up_onboarding)));
-            Launcher launcher = (Launcher) LauncherAppState.getInstance(
-                    TouchInteractionService.this).getModel().getCallback();
-            UiFactory.onLauncherStateOrFocusChanged(launcher);
+            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
         }
 
         @Override
@@ -174,6 +170,7 @@ public class TouchInteractionService extends Service {
     private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
+    private OverviewInteractionState mOverviewInteractionState;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -187,6 +184,7 @@ public class TouchInteractionService extends Service {
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
+        mOverviewInteractionState = OverviewInteractionState.getInstance(this);
 
         sConnected = true;
 
@@ -235,7 +233,8 @@ public class TouchInteractionService extends Service {
                 tracker = VelocityTracker.obtain();
             }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                            mOverviewCommandHelper.homeIntent, mISystemUiProxy, mMainThreadExecutor,
+                            mOverviewCommandHelper.homeIntent,
+                            mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, tracker);
         }
     }
