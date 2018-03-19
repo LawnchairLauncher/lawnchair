@@ -65,6 +65,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -119,7 +120,7 @@ class MetricsLogger {
 }
 
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
+public class WindowTransformSwipeHandler extends InternalStateHandler {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
     private static final boolean DEBUG_STATES = false;
 
@@ -193,6 +194,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     // The clip rect in source app window coordinates
     private final Rect mClipRect = new Rect();
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
+    protected Runnable mGestureEndCallback;
+    protected boolean mIsGoingToHome;
     private DeviceProfile mDp;
     private int mTransitionDragLength;
 
@@ -894,5 +897,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
         Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding " + stateFlagStr + " to "
                 + currentStateStr);
+    }
+
+    public void setGestureEndCallback(Runnable gestureEndCallback) {
+        mGestureEndCallback = gestureEndCallback;
     }
 }
