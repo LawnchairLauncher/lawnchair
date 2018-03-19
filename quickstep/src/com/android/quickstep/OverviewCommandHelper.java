@@ -73,35 +73,45 @@ public class OverviewCommandHelper extends InternalStateHandler {
     }
 
     public void onOverviewToggle() {
-        if (DEBUG_START_FALLBACK_ACTIVITY) {
-            mContext.startActivity(new Intent(mContext, RecentsActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            return;
-        }
+        getLauncher().runOnUiThread(() -> {
+                    if (DEBUG_START_FALLBACK_ACTIVITY) {
+                        mContext.startActivity(new Intent(mContext, RecentsActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent
+                                        .FLAG_ACTIVITY_CLEAR_TASK));
+                        return;
+                    }
 
-        long elapsedTime = SystemClock.elapsedRealtime() - mLastToggleTime;
-        mLastToggleTime = SystemClock.elapsedRealtime();
+                    long elapsedTime = SystemClock.elapsedRealtime() - mLastToggleTime;
+                    mLastToggleTime = SystemClock.elapsedRealtime();
 
-        if (isOverviewAlmostVisible()) {
-            boolean isQuickTap = elapsedTime < ViewConfiguration.getDoubleTapTimeout();
-            startNonLauncherTask(isQuickTap ? 2 : 1);
-        } else {
-            openRecents();
-        }
+                    if (isOverviewAlmostVisible()) {
+                        boolean isQuickTap = elapsedTime < ViewConfiguration.getDoubleTapTimeout();
+                        startNonLauncherTask(isQuickTap ? 2 : 1);
+                    } else {
+                        openRecents();
+                    }
+                }
+        );
     }
 
     public void onOverviewShown() {
-        if (isOverviewAlmostVisible()) {
-            final RecentsView rv = getLauncher().getOverviewPanel();
-            rv.snapToTaskAfterNext();
-        } else {
-            openRecents();
-        }
+        getLauncher().runOnUiThread(() -> {
+                    if (isOverviewAlmostVisible()) {
+                        final RecentsView rv = getLauncher().getOverviewPanel();
+                        rv.snapToTaskAfterNext();
+                    } else {
+                        openRecents();
+                    }
+                }
+        );
     }
 
     public void onOverviewHidden() {
-        final RecentsView rv = getLauncher().getOverviewPanel();
-        rv.launchNextTask();
+        getLauncher().runOnUiThread(() -> {
+                    final RecentsView rv = getLauncher().getOverviewPanel();
+                    rv.launchNextTask();
+                }
+        );
     }
 
     private void startNonLauncherTask(int backStackCount) {
