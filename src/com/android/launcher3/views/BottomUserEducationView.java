@@ -22,10 +22,14 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.TouchDelegate;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 public class BottomUserEducationView extends AbstractSlideInView implements Insettable {
 
@@ -90,6 +94,10 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
             // close action.
             mLauncher.getSharedPrefs().edit()
                     .putBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, true).apply();
+            sendCustomAccessibilityEvent(
+                    BottomUserEducationView.this,
+                    AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                    getContext().getString(R.string.bottom_work_tab_user_education_closed));
         }
     }
 
