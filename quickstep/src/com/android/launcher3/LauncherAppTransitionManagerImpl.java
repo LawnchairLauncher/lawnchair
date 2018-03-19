@@ -807,9 +807,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                          Runnable finishedCallback) {
                 Handler handler = mLauncher.getWindow().getDecorView().getHandler();
                 postAtFrontOfQueueAsynchronously(handler, () -> {
-                    if ((Utilities.getPrefs(mLauncher)
-                            .getBoolean("pref_use_screenshot_for_swipe_up", false)
-                            && mLauncher.getStateManager().getState().overviewUi)) {
+                    if (mLauncher.getStateManager().getState().overviewUi) {
                         // We use a separate transition for Overview mode.
                         setCurrentAnimator(null);
                         finishedCallback.run();
