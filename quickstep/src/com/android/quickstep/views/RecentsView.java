@@ -610,6 +610,16 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+        if (isVisible && !isFocused()) {
+            // Having focus, even in touch mode, keeps us from losing [Alt+]Tab by preventing
+            // switching to keyboard mode.
+            requestFocus();
+        }
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_TAB
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
