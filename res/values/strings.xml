@@ -330,5 +330,6 @@
     <string name="work_mode_on_label">Managed by your organization</string>
     <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
     <string name="work_mode_off_label">Notifications and apps are off</string>
-
+    <string name="bottom_work_tab_user_education_close_button">Close</string>
+    <string name="bottom_work_tab_user_education_closed">Closed</string>
 </resources>

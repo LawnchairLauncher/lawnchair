@@ -20,6 +20,7 @@
     android:layout_gravity="bottom"
     android:background="?android:attr/colorAccent"
     android:elevation="2dp"
+    android:focusable="true"
     android:orientation="horizontal">
 
   <ImageView
@@ -42,6 +43,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
         android:layout_gravity="right"
+        android:contentDescription="@string/bottom_work_tab_user_education_close_button"
         android:src="@drawable/ic_close"/>
 
     <TextView
