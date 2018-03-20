@@ -9,7 +9,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
 import java.util.*
 
-class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<WeatherResult> {
+class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<WeatherResult>{
 
     override var units = Units.METRIC
     override var city = ""
@@ -51,9 +51,14 @@ class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<Weath
         } else {
             onWeatherData(WeatherData(
                     success = false,
+                    icon = WeatherIconProvider.CONDITION_UNKNOWN + iconSuffix,
                     units = units
             ))
         }
+    }
+
+    override fun getForecastURL(): String {
+        return "https://www.google.ch/search?q=weather"
     }
 
     private fun getWeatherIcon(condition: IntArray): String {

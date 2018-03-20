@@ -11,6 +11,7 @@ abstract class WeatherAPI {
     var weatherCallback: WeatherCallback? = null
 
     abstract fun getCurrentWeather()
+    abstract fun getForecastURL():String
 
     fun onWeatherData(data: WeatherData) {
         weatherCallback?.onWeatherData(data)
