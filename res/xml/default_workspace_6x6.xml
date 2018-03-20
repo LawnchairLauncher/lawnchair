@@ -17,6 +17,6 @@
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
 
     <!-- Hotseat -->
-    <include launcher:workspace="@xml/dw_tablet_hotseat" />
+    <include launcher:workspace="@xml/dw_hotseat_6" />
 
 </favorites>
