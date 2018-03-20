@@ -556,10 +556,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else {
             mDragLayer.getDescendantRectRelativeToSelf(v, rect);
         }
-        final int viewLocationStart = mIsRtl
-                ? mDeviceProfile.widthPx - rect.right
-                : rect.left;
-        final int viewLocationTop = rect.top;
+        int viewLocationLeft = rect.left;
+        int viewLocationTop = rect.top;
 
         float startScale = 1f;
         if (isBubbleTextView && !isDeepShortcutTextView) {
@@ -572,11 +570,23 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else {
             rect.set(0, 0, rect.width(), rect.height());
         }
+        viewLocationLeft += rect.left;
+        viewLocationTop += rect.top;
+        int viewLocationStart = mIsRtl
+                ? mDeviceProfile.widthPx - rect.right
+                : viewLocationLeft;
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
-        lp.setMarginStart(viewLocationStart + rect.left);
-        lp.topMargin = viewLocationTop + rect.top;
+        lp.setMarginStart(viewLocationStart);
+        lp.topMargin = viewLocationTop;
         mFloatingView.setLayoutParams(lp);
+
+        // Set the properties here already to make sure they'are available when running the first
+        // animation frame.
+        mFloatingView.setLeft(viewLocationLeft);
+        mFloatingView.setTop(viewLocationTop);
+        mFloatingView.setRight(viewLocationLeft + rect.width());
+        mFloatingView.setBottom(viewLocationTop + rect.height());
 
         // Swap the two views in place.
         ((ViewGroup) mDragLayer.getParent()).addView(mFloatingView);
