@@ -35,7 +35,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
+import android.os.SystemClock;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -104,6 +104,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
         mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
+    }
+
+    @Override
+    public void onShowOverviewFromAltTab() {
+        startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
     }
 
     @Override

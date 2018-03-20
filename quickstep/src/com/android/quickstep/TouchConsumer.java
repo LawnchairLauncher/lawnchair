@@ -72,4 +72,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     default boolean forceToLauncherConsumer() {
         return false;
     }
+
+    default void onShowOverviewFromAltTab() {}
 }

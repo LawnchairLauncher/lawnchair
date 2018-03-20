@@ -55,6 +55,8 @@ public class MotionEventQueue {
             ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_DEFER_INIT =
             ACTION_VIRTUAL | (6 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_SHOW_OVERVIEW_FROM_ALT_TAB =
+            ACTION_VIRTUAL | (7 << ACTION_POINTER_INDEX_SHIFT);
 
     private final EventArray mEmptyArray = new EventArray();
     private final Object mExecutionLock = new Object();
@@ -161,6 +163,10 @@ public class MotionEventQueue {
                         case ACTION_DEFER_INIT:
                             mConsumer.deferInit();
                             break;
+                        case ACTION_SHOW_OVERVIEW_FROM_ALT_TAB:
+                            mConsumer.onShowOverviewFromAltTab();
+                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
+                            break;
                         default:
                             Log.e(TAG, "Invalid virtual event: " + event.getAction());
                     }
@@ -195,6 +201,10 @@ public class MotionEventQueue {
 
     public void onQuickScrubStart() {
         queueVirtualAction(ACTION_QUICK_SCRUB_START, 0);
+    }
+
+    public void onOverviewShownFromAltTab() {
+        queueVirtualAction(ACTION_SHOW_OVERVIEW_FROM_ALT_TAB, 0);
     }
 
     public void onQuickScrubProgress(float progress) {
