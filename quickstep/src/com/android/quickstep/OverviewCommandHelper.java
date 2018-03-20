@@ -108,8 +108,10 @@ public class OverviewCommandHelper extends InternalStateHandler {
 
     public void onOverviewHidden() {
         getLauncher().runOnUiThread(() -> {
-                    final RecentsView rv = getLauncher().getOverviewPanel();
-                    rv.launchNextTask();
+                    if (isOverviewAlmostVisible()) {
+                        final RecentsView rv = getLauncher().getOverviewPanel();
+                        rv.launchNextTask();
+                    }
                 }
         );
     }
