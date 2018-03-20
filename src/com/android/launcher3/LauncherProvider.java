@@ -60,7 +60,7 @@ import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.NoLocaleSqliteContext;
+import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
@@ -546,7 +546,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    public static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private long mMaxItemId = -1;
@@ -572,7 +572,7 @@ public class LauncherProvider extends ContentProvider {
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, SCHEMA_VERSION);
+            super(context, tableName, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
         }
