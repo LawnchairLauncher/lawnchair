@@ -25,7 +25,6 @@ import android.view.View.AccessibilityDelegate;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
@@ -35,17 +34,17 @@ import com.android.quickstep.views.RecentsView;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
-                    new EdgeSwipeController(launcher),
-                    new TwoStepSwipeController(launcher),
-                    new OverviewSwipeController(launcher)};
+                    new LandscapeStatesTouchController(launcher),
+                    new LandscapeEdgeSwipeController(launcher),
+                    new TaskViewTouchController(launcher)};
         } else {
             return new TouchController[] {
                     launcher.getDragController(),
-                    new TwoStepSwipeController(launcher),
-                    new OverviewSwipeController(launcher)};
+                    new PortraitStatesTouchController(launcher),
+                    new TaskViewTouchController(launcher)};
         }
     }
 

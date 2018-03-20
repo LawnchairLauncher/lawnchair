@@ -143,10 +143,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             activity.getStateManager().setRestState(startState);
 
             if (!activityVisible) {
+                // Since the launcher is not visible, we can safely reset the scroll position.
+                // This ensures then the next swipe up to all-apps starts from scroll 0.
+                activity.getAppsView().reset(false /* animate */);
                 activity.getStateManager().goToState(OVERVIEW, false);
 
                 // Optimization, hide the all apps view to prevent layout while initializing
-                activity.getAppsView().setVisibility(View.GONE);
+                activity.getAppsView().getContentView().setVisibility(View.GONE);
             }
         }
 
@@ -160,20 +163,21 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public AnimatorPlaybackController createControllerForHiddenActivity(
                 Launcher activity, int transitionLength) {
-            float startProgress;
             AllAppsTransitionController controller = activity.getAllAppsController();
-
+            AnimatorSet anim = new AnimatorSet();
             if (activity.getDeviceProfile().isVerticalBarLayout()) {
-                startProgress = 1;
+                // TODO:
             } else {
                 float scrollRange = Math.max(controller.getShiftRange(), 1);
-                startProgress = (transitionLength / scrollRange) + 1;
+                float progressDelta = (transitionLength / scrollRange);
+
+                float endProgress = OVERVIEW.getVerticalProgress(activity);
+                float startProgress = endProgress + progressDelta;
+                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
+                        controller, ALL_APPS_PROGRESS, startProgress, endProgress);
+                shiftAnim.setInterpolator(LINEAR);
+                anim.play(shiftAnim);
             }
-            AnimatorSet anim = new AnimatorSet();
-            ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
-                    startProgress, OVERVIEW.getVerticalProgress(activity));
-            shiftAnim.setInterpolator(LINEAR);
-            anim.play(shiftAnim);
 
             // TODO: Link this animation to state animation, so that it is cancelled
             // automatically on state change

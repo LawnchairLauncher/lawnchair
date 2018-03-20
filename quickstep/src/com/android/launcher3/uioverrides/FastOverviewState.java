@@ -41,10 +41,10 @@ public class FastOverviewState extends OverviewState {
     }
 
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
+    public int getVisibleElements(Launcher launcher) {
         if (DEBUG_DIFFERENT_UI) {
-            return 0;
+            return NONE;
         }
-        return super.getHoseatAlpha(launcher);
+        return super.getVisibleElements(launcher);
     }
 }

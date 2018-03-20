@@ -428,7 +428,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    private void setTextAlpha(int alpha) {
+    public void setTextAlpha(int alpha) {
         super.setTextColor(ColorUtils.setAlphaComponent(mTextColor, alpha));
     }
 

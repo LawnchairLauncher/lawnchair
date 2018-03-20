@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
@@ -78,8 +79,8 @@ public class ItemLongClickListener {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks
-        if (!launcher.isInState(LauncherState.ALL_APPS) ||
-                launcher.getWorkspace().isSwitchingState()) return false;
+        if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW)) return false;
+        if (launcher.getWorkspace().isSwitchingState()) return false;
 
         // Start the drag
         final DragController dragController = launcher.getDragController();
