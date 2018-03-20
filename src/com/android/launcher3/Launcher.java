@@ -1727,7 +1727,9 @@ public class Launcher extends BaseActivity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                showWorkspace(true);
+                if (!mAllAppsController.isDragging()) {
+                    showWorkspace(true);
+                }
             } else {
                 mOnResumeState = State.WORKSPACE;
             }
