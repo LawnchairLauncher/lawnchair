@@ -60,6 +60,7 @@ public class LauncherState {
     protected static final int FLAG_ALL_APPS_SCRIM = 1 << 7;
     protected static final int FLAG_DISABLE_INTERACTION = 1 << 8;
     protected static final int FLAG_OVERVIEW_UI = 1 << 9;
+    protected static final int FLAG_HIDE_BACK_BUTTON = 1 << 10;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
             new PageAlphaProvider(ACCEL_2) {
@@ -75,7 +76,7 @@ public class LauncherState {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
+            0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON);
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
@@ -140,6 +141,12 @@ public class LauncherState {
      */
     public final boolean overviewUi;
 
+    /**
+     * True if the back button should be hidden when in this state (assuming no floating views are
+     * open, launcher has window focus, etc).
+     */
+    public final boolean hideBackButton;
+
     public LauncherState(int id, int containerType, int transitionDuration, int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
@@ -157,6 +164,7 @@ public class LauncherState {
         this.disablePageClipping = (flags & FLAG_DISABLE_PAGE_CLIPPING) != 0;
         this.disableInteraction = (flags & FLAG_DISABLE_INTERACTION) != 0;
         this.overviewUi = (flags & FLAG_OVERVIEW_UI) != 0;
+        this.hideBackButton = (flags & FLAG_HIDE_BACK_BUTTON) != 0;
 
         this.ordinal = id;
         sAllStates[id] = this;
