@@ -1047,6 +1047,9 @@ public class Launcher extends BaseActivity
         // Refresh shortcuts if the permission changed.
         mModel.refreshShortcutsIfRequired();
 
+        if (mAllAppsController.isTransitioning()) {
+            mAppsView.setVisibility(View.VISIBLE);
+        }
         if (shouldShowDiscoveryBounce()) {
             mAllAppsController.showDiscoveryBounce();
         }
