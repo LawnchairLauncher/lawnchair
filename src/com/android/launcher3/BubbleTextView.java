@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
+import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.util.TypedValue;
@@ -163,8 +164,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
+        setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
 
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        // Disable marques when not focused to that, so that updating text does not cause relayout.
+        setEllipsize(focused ? TruncateAt.MARQUEE : TruncateAt.END);
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
 
     /**
@@ -521,31 +530,30 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Sets the icon for this view based on the layout direction.
      */
     private void setIcon(Drawable icon) {
-        mIcon = icon;
-        mIcon.setBounds(0, 0, mIconSize, mIconSize);
         if (mIsIconVisible) {
-            applyCompoundDrawables(mIcon);
+            applyCompoundDrawables(icon);
         }
+        mIcon = icon;
     }
 
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
-        mDisableRelayout = true;
-        Drawable icon = mIcon;
-        if (!visible) {
-            icon = new ColorDrawable(Color.TRANSPARENT);
-            icon.setBounds(0, 0, mIconSize, mIconSize);
-        }
+        Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
-        mDisableRelayout = false;
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
+        // If we had already set an icon before, disable relayout as the icon size is the
+        // same as before.
+        mDisableRelayout = mIcon != null;
+
+        icon.setBounds(0, 0, mIconSize, mIconSize);
         if (mLayoutHorizontal) {
             setCompoundDrawablesRelative(icon, null, null, null);
         } else {
             setCompoundDrawables(null, icon, null, null);
         }
+        mDisableRelayout = false;
     }
 
     @Override
