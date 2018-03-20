@@ -84,7 +84,10 @@ public class QuickScrubController implements OnAlarmListener {
         }
         int page = mRecentsView.getNextPage();
         Runnable launchTaskRunnable = () -> {
-            ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
+            TaskView taskView = ((TaskView) mRecentsView.getPageAt(page));
+            if (taskView != null) {
+                taskView.launchTask(true);
+            }
         };
         int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
                 * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
