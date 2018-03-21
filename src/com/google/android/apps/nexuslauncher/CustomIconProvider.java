@@ -113,7 +113,7 @@ public class CustomIconProvider extends DynamicIconProvider {
         if (drawable == null && !"com.google.android.calendar".equals(packageName)) {
             drawable = getRoundIcon(packageName, iconDpi);
         }
-        return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable;
+        return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable.mutate();
     }
 
     private Drawable getRoundIcon(String packageName, int iconDpi) {
