@@ -31,7 +31,6 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -45,13 +44,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.pageindicators.PageIndicator;
-import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.LauncherEdgeEffect;
 import ch.deletescape.lawnchair.util.Thunk;
 
