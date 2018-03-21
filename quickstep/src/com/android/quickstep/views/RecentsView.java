@@ -609,6 +609,10 @@ public abstract class RecentsView<T extends BaseActivity>
         set.play(anim);
     }
 
+    private void snapToPageRelative(int delta) {
+        snapToPage((getNextPage() + getPageCount() + delta) % getPageCount());
+    }
+
     @Override
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
@@ -621,19 +625,24 @@ public abstract class RecentsView<T extends BaseActivity>
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_TAB
-                && event.getAction() == KeyEvent.ACTION_DOWN) {
-            snapToPage((getNextPage()
-                    + (event.isShiftPressed() ? getPageCount() - 1 : 1)) % getPageCount());
-            loadVisibleTaskData();
-            return true;
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_TAB:
+                    snapToPageRelative(event.isShiftPressed() ? -1 : 1);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    snapToPageRelative(mIsRtl ? -1 : 1);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    snapToPageRelative(mIsRtl ? 1 : -1);
+                    return true;
+            }
         }
         return super.dispatchKeyEvent(event);
     }
 
     public void snapToTaskAfterNext() {
-        snapToPage((getNextPage() + 1) % getPageCount());
-        loadVisibleTaskData();
+        snapToPageRelative(1);
     }
 
     public void launchNextTask() {
