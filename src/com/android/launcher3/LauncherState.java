@@ -46,9 +46,11 @@ public class LauncherState {
      * Note that workspace is not included here as in that case, we animate individual pages
      */
     public static final int NONE = 0;
-    public static final int HOTSEAT = 1 << 0;
-    public static final int ALL_APPS_HEADER = 1 << 1;
-    public static final int ALL_APPS_CONTENT = 1 << 2;
+    public static final int HOTSEAT_ICONS = 1 << 0;
+    public static final int HOTSEAT_EXTRA = 1 << 1; // e.g. a search box
+    public static final int ALL_APPS_HEADER = 1 << 2;
+    public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
+    public static final int ALL_APPS_CONTENT = 1 << 4;
 
     protected static final int FLAG_SHOW_SCRIM = 1 << 0;
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
@@ -193,7 +195,10 @@ public class LauncherState {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        return HOTSEAT;
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            return HOTSEAT_ICONS;
+        }
+        return HOTSEAT_ICONS | HOTSEAT_EXTRA;
     }
 
     /**

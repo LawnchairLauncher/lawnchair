@@ -18,16 +18,10 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.HOTSEAT;
+import static com.android.launcher3.LauncherState.HOTSEAT_EXTRA;
+import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
@@ -36,6 +30,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.ViewScrim;
+import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -85,11 +80,14 @@ public class WorkspaceStateTransitionAnimation {
                 scaleAndTranslation[2], Interpolators.ZOOM_IN);
 
         int elements = state.getVisibleElements(mLauncher);
-        float hotseatAlpha = (elements & HOTSEAT) != 0 ? 1 : 0;
-        propertySetter.setViewAlpha(mLauncher.getHotseat(), hotseatAlpha,
+        float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
+        float hotseatExtraAlpha = (elements & HOTSEAT_EXTRA) != 0 ? 1 : 0;
+        propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
                 pageAlphaProvider.interpolator);
+        propertySetter.setViewAlpha(UiFactory.getHotseatExtraContent(mLauncher.getHotseat()),
+                hotseatExtraAlpha, pageAlphaProvider.interpolator);
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
-                hotseatAlpha, pageAlphaProvider.interpolator);
+                hotseatIconsAlpha, pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,

@@ -16,8 +16,10 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
@@ -45,4 +47,8 @@ public class UiFactory {
     public static void onStart(Launcher launcher) { }
 
     public static void onTrimMemory(Launcher launcher, int level) { }
+
+    public static View getHotseatExtraContent(Hotseat hotseat) {
+        return null;
+    }
 }
