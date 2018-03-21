@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.pixelify;
 
 import android.animation.ObjectAnimator;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -9,7 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,8 +132,15 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     public void onClick(View view) {
         if (view.getId() == R.id.mic_icon) {
             startQsbActivity(VOICE_ASSIST);
-        } else if (BuildConfig.ENABLE_LAWNFEED && PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), LawnfeedClient.PROXY_PACKAGE, 0)) {
-            ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
+            return;
+        }
+
+        if (BuildConfig.ENABLE_LAWNFEED) {
+            if (mLauncher.isClientConnected()) {
+                ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
+            } else {
+                startQsbActivity(TEXT_ASSIST);
+            }
         } else {
             getContext().sendOrderedBroadcast(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), null, new C0287l(this), null, 0, null, null);
         }
