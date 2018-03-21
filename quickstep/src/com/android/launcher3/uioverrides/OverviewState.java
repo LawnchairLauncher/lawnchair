@@ -111,16 +111,17 @@ public class OverviewState extends LauncherState {
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             // TODO: Remove hotseat from overview
-            return HOTSEAT;
+            return HOTSEAT_ICONS;
         } else {
             return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
-                    ? ALL_APPS_HEADER : HOTSEAT;
+                    ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
         }
     }
 
     @Override
     public float getVerticalProgress(Launcher launcher) {
-        if (getVisibleElements(launcher) == HOTSEAT) {
+        if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
+            // We have no all apps content, so we're still at the fully down progress.
             return super.getVerticalProgress(launcher);
         }
         return 1 - (getDefaultSwipeHeight(launcher)

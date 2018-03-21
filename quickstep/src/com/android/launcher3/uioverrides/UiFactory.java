@@ -17,11 +17,14 @@
 package com.android.launcher3.uioverrides;
 
 import android.content.Context;
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -83,5 +86,9 @@ public class UiFactory {
         if (model != null) {
             model.onTrimMemory(level);
         }
+    }
+
+    public static View getHotseatExtraContent(Hotseat hotseat) {
+        return hotseat.findViewById(R.id.search_container_hotseat);
     }
 }

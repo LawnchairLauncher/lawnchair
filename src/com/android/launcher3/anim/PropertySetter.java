@@ -32,8 +32,10 @@ public class PropertySetter {
     public static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
 
     public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
-        view.setAlpha(alpha);
-        AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
+        if (view != null) {
+            view.setAlpha(alpha);
+            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
+        }
     }
 
     public <T> void setFloat(T target, Property<T, Float> property, float value,
@@ -58,7 +60,7 @@ public class PropertySetter {
 
         @Override
         public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
-            if (view.getAlpha() == alpha) {
+            if (view == null || view.getAlpha() == alpha) {
                 return;
             }
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);

@@ -2,6 +2,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -179,12 +180,13 @@ public class AllAppsTransitionController
     private void setAlphas(LauncherState toState, PropertySetter setter) {
         int visibleElements = toState.getVisibleElements(mLauncher);
         boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
+        boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, LINEAR);
         setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, LINEAR);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, LINEAR);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeader, hasContent, setter);
+        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
