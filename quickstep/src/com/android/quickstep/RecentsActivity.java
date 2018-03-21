@@ -93,4 +93,10 @@ public class RecentsActivity extends BaseDraggingActivity {
         super.onTrimMemory(level);
         UiFactory.onTrimMemory(this, level);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RecentsActivityTracker.onRecentsActivityDestroy(this);
+    }
 }

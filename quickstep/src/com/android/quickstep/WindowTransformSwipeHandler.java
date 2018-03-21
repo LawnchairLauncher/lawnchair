@@ -301,6 +301,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mSourceRect.set(scaledTargetRect);
     }
 
+    public int getTransitionLength() {
+        return mTransitionDragLength;
+    }
+
+    public RectF getTargetRect(Point outWindowSize) {
+        outWindowSize.set(mDp.widthPx, mDp.heightPx);
+        return mInitialTargetRect;
+    }
+
     private long getFadeInDuration() {
         if (mCurrentShift.getCurrentAnimation() != null) {
             ObjectAnimator anim = mCurrentShift.getCurrentAnimation();

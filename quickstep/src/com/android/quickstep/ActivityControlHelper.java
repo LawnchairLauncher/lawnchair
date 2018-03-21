@@ -28,11 +28,14 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -78,6 +81,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void startRecents(Context context, Intent intent, AssistDataReceiver assistDataReceiver,
             RecentsAnimationListener remoteAnimationListener);
+
+    @UiThread
+    @Nullable
+    RecentsView getVisibleRecentsView();
+
+    @UiThread
+    boolean switchToRecentsIfVisible();
 
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
@@ -198,6 +208,36 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             ActivityManagerWrapper.getInstance().startRecentsActivity(
                     intent, assistDataReceiver, remoteAnimationListener, null, null);
         }
+
+        @Nullable
+        @UiThread
+        private Launcher getVisibleLaucher() {
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app == null) {
+                return null;
+            }
+            Launcher launcher = (Launcher) app.getModel().getCallback();
+            return (launcher != null) && launcher.isStarted() && launcher.hasWindowFocus() ?
+                    launcher : null;
+        }
+
+        @Nullable
+        @Override
+        public RecentsView getVisibleRecentsView() {
+            Launcher launcher = getVisibleLaucher();
+            return launcher != null && launcher.isInState(OVERVIEW)
+                    ? launcher.getOverviewPanel() : null;
+        }
+
+        @Override
+        public boolean switchToRecentsIfVisible() {
+            Launcher launcher = getVisibleLaucher();
+            if (launcher != null) {
+                launcher.getStateManager().goToState(OVERVIEW);
+                return true;
+            }
+            return false;
+        }
     }
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
@@ -291,6 +331,21 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                     ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
                             new FallbackActivityOptions(remoteAnimationListener), 10000, 10000));
             context.startActivity(intent, options.toBundle());
+        }
+
+        @Nullable
+        @Override
+        public RecentsView getVisibleRecentsView() {
+            RecentsActivity activity = RecentsActivityTracker.getCurrentActivity();
+            if (activity != null && activity.hasWindowFocus()) {
+                return activity.getOverviewPanel();
+            }
+            return null;
+        }
+
+        @Override
+        public boolean switchToRecentsIfVisible() {
+            return false;
         }
     }
 

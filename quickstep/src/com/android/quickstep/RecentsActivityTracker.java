@@ -31,6 +31,7 @@ public class RecentsActivityTracker implements ActivityInitListener {
 
     private static final Object LOCK = new Object();
     private static WeakReference<RecentsActivityTracker> sTracker = new WeakReference<>(null);
+    private static WeakReference<RecentsActivity> sCurrentActivity = new WeakReference<>(null);
 
     private final BiPredicate<RecentsActivity, Boolean> mOnInitListener;
 
@@ -60,6 +61,21 @@ public class RecentsActivityTracker implements ActivityInitListener {
             if (tracker != null && tracker.mOnInitListener.test(activity, false)) {
                 sTracker.clear();
             }
+            sCurrentActivity = new WeakReference<>(activity);
+        }
+    }
+
+    public static void onRecentsActivityDestroy(RecentsActivity activity) {
+        synchronized (LOCK) {
+            if (sCurrentActivity.get() == activity) {
+                sCurrentActivity.clear();
+            }
+        }
+    }
+
+    public static RecentsActivity getCurrentActivity() {
+        synchronized (LOCK) {
+            return sCurrentActivity.get();
         }
     }
 }
