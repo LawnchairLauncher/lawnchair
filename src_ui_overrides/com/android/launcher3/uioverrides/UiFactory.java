@@ -48,7 +48,7 @@ public class UiFactory {
 
     public static void onTrimMemory(Launcher launcher, int level) { }
 
-    public static View getHotseatExtraContent(Hotseat hotseat) {
-        return null;
+    public static View[] getHotseatExtraContent(Hotseat hotseat) {
+        return new View[0];
     }
 }
