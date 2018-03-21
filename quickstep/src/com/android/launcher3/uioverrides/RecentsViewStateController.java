@@ -16,32 +16,30 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATION;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_FACTOR;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.view.View;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.Interpolators;
-import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.views.RecentsView;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.quickstep.views.LauncherRecentsView;
 
+@TargetApi(Build.VERSION_CODES.O)
 public class RecentsViewStateController implements StateHandler {
 
     private final Launcher mLauncher;
-    private final RecentsView mRecentsView;
-
-    private final AnimatedFloat mTransitionProgress = new AnimatedFloat(this::onTransitionProgress);
-    // The fraction representing the visibility of the RecentsView. This allows delaying the
-    // overall transition while the RecentsView is being shown or hidden.
-    private final AnimatedFloat mVisibilityMultiplier = new AnimatedFloat(this::onVisibilityProgress);
+    private final LauncherRecentsView mRecentsView;
 
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
@@ -50,14 +48,12 @@ public class RecentsViewStateController implements StateHandler {
 
     @Override
     public void setState(LauncherState state) {
-        setVisibility(state.overviewUi);
-        setTransitionProgress(state.overviewUi ? 1 : 0);
+        mRecentsView.setAlpha(state.overviewUi ? 1 : 0);
+        updateVisibility(mRecentsView, isAccessibilityEnabled(mLauncher));
+        mRecentsView.setTranslationFactor(state.getOverviewTranslationFactor(mLauncher));
         if (state.overviewUi) {
             mRecentsView.resetTaskVisuals();
         }
-        float overviewTranslationX = state.getOverviewTranslationX(mLauncher);
-        int direction = mRecentsView.isRtl() ? -1 : 1;
-        mRecentsView.setTranslationX(overviewTranslationX * direction);
     }
 
     @Override
@@ -76,73 +72,20 @@ public class RecentsViewStateController implements StateHandler {
             builder.setStartDelay(snapDuration / 4);
         }
 
-        ObjectAnimator progressAnim =
-                mTransitionProgress.animateToValue(toState.overviewUi ? 1 : 0);
-        progressAnim.setDuration(config.duration);
-        progressAnim.setInterpolator(Interpolators.LINEAR);
-        builder.play(progressAnim);
+        PropertySetter setter = config.getProperSetter(builder);
+        setter.setFloat(mRecentsView, TRANSLATION_FACTOR,
+                toState.getOverviewTranslationFactor(mLauncher),
+                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
+        setter.setViewAlpha(mRecentsView, toState.overviewUi ? 1 : 0, LINEAR);
 
-        ObjectAnimator visibilityAnim = animateVisibility(toState.overviewUi);
-        visibilityAnim.setDuration(config.duration);
-        visibilityAnim.setInterpolator(Interpolators.LINEAR);
-        builder.play(visibilityAnim);
-
-        int direction = mRecentsView.isRtl() ? -1 : 1;
-        float fromTranslationX = fromState.getOverviewTranslationX(mLauncher) * direction;
-        float toTranslationX = toState.getOverviewTranslationX(mLauncher) * direction;
-        ObjectAnimator translationXAnim = ObjectAnimator.ofFloat(mRecentsView, View.TRANSLATION_X,
-                fromTranslationX, toTranslationX);
-        translationXAnim.setDuration(config.duration);
-        translationXAnim.setInterpolator(Interpolators.ACCEL);
         if (toState.overviewUi) {
-            translationXAnim.addUpdateListener(valueAnimator -> {
+            ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);
+            updateAnim.addUpdateListener(valueAnimator -> {
                 // While animating into recents, update the visible task data as needed
                 mRecentsView.loadVisibleTaskData();
             });
+            updateAnim.setDuration(config.duration);
+            builder.play(updateAnim);
         }
-        builder.play(translationXAnim);
-    }
-
-    public void setVisibility(boolean isVisible) {
-        mVisibilityMultiplier.cancelAnimation();
-        mRecentsView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        mVisibilityMultiplier.updateValue(isVisible ? 1 : 0);
-    }
-
-    public ObjectAnimator animateVisibility(boolean isVisible) {
-        ObjectAnimator anim = mVisibilityMultiplier.animateToValue(isVisible ? 1 : 0);
-        if (isVisible) {
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mRecentsView.setVisibility(View.VISIBLE);
-                }
-            });
-        } else {
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    mRecentsView.setVisibility(View.GONE);
-                }
-            });
-        }
-        return anim;
-    }
-
-    public void setTransitionProgress(float progress) {
-        mTransitionProgress.cancelAnimation();
-        mTransitionProgress.updateValue(progress);
-    }
-
-    private void onTransitionProgress() {
-        applyProgress();
-    }
-
-    private void onVisibilityProgress() {
-        applyProgress();
-    }
-
-    private void applyProgress() {
-        mRecentsView.setAlpha(mTransitionProgress.value * mVisibilityMultiplier.value);
     }
 }

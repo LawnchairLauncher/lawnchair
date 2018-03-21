@@ -17,6 +17,7 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -30,7 +31,9 @@ import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -41,13 +44,30 @@ import com.android.launcher3.R;
 /**
  * {@link RecentsView} used in Launcher activity
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> implements Insettable {
+
+    public static final FloatProperty<LauncherRecentsView> TRANSLATION_FACTOR =
+            new FloatProperty<LauncherRecentsView>("translationFactor") {
+
+                @Override
+                public void setValue(LauncherRecentsView view, float v) {
+                    view.setTranslationFactor(v);
+                }
+
+                @Override
+                public Float get(LauncherRecentsView view) {
+                    return view.mTranslationFactor;
+                }
+            };
 
     private Bitmap mScrim;
     private Paint mFadePaint;
     private Shader mFadeShader;
     private Matrix mFadeMatrix;
     private boolean mScrimOnLeft;
+
+    private float mTranslationFactor;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -130,5 +150,22 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     @Override
     protected void onAllTasksRemoved() {
         mActivity.getStateManager().goToState(NORMAL);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        int width = right - left;
+        setTranslationX(mTranslationFactor * (mIsRtl ? -width : width));
+    }
+
+    public void setTranslationFactor(float translationFactor) {
+        mTranslationFactor = translationFactor;
+        setTranslationX(translationFactor * (mIsRtl ? -getWidth() : getWidth()));
+    }
+
+    public float getTranslationFactor() {
+        return mTranslationFactor;
     }
 }

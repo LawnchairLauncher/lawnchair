@@ -180,8 +180,8 @@ public class LauncherState {
         return new float[] {1, 0, 0};
     }
 
-    public float getOverviewTranslationX(Launcher launcher) {
-        return launcher.getDragLayer().getMeasuredWidth();
+    public float getOverviewTranslationFactor(Launcher launcher) {
+        return 1;
     }
 
     public void onStateEnabled(Launcher launcher) {

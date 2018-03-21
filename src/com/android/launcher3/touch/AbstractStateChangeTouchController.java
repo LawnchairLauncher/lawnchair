@@ -19,6 +19,7 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -140,8 +141,12 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     @Override
     public boolean onDrag(float displacement, float velocity) {
         float deltaProgress = mProgressMultiplier * displacement;
-        mCurrentAnimation.setPlayFraction(deltaProgress + mStartProgress);
+        updateProgress(deltaProgress + mStartProgress);
         return true;
+    }
+
+    protected void updateProgress(float fraction) {
+        mCurrentAnimation.setPlayFraction(fraction);
     }
 
     @Override
@@ -173,7 +178,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
                 startProgress = 1;
             } else {
                 startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
+                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0));
             }
@@ -184,7 +189,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
                 startProgress = 0;
             } else {
                 startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
+                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress);
             }
@@ -193,8 +198,14 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         mCurrentAnimation.setEndAction(() -> onSwipeInteractionCompleted(targetState, logAction));
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(startProgress, endProgress);
-        anim.setDuration(duration).setInterpolator(scrollInterpolatorForVelocity(velocity));
+        updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         anim.start();
+    }
+
+    protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
+            LauncherState targetState, float velocity, boolean isFling) {
+        animator.setDuration(expectedDuration)
+                .setInterpolator(scrollInterpolatorForVelocity(velocity));
     }
 
     protected int getDirectionForLog() {
