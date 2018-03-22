@@ -70,7 +70,7 @@ public class OverviewInteractionState implements OnSharedPreferenceChangeListene
         return INSTANCE;
     }
 
-    private static final String KEY_SWIPE_UP_ENABLED = "pref_enable_quickstep";
+    public static final String KEY_SWIPE_UP_ENABLED = "pref_enable_quickstep";
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_VISIBLE = 201;

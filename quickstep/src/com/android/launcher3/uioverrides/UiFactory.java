@@ -16,7 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
@@ -33,6 +37,14 @@ import com.android.quickstep.views.RecentsView;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
+        SharedPreferences prefs = getPrefs(launcher);
+        boolean swipeUpEnabled = prefs.getBoolean(KEY_SWIPE_UP_ENABLED, true);
+        if (!swipeUpEnabled) {
+            return new TouchController[] {
+                    launcher.getDragController(),
+                    new LandscapeStatesTouchController(launcher),
+                    new TaskViewTouchController(launcher)};
+        }
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
