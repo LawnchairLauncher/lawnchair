@@ -58,7 +58,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float getOverviewTranslationX(Launcher launcher) {
+    public float getOverviewTranslationFactor(Launcher launcher) {
         return 0;
     }
 

@@ -3,6 +3,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -54,8 +55,6 @@ public class AllAppsTransitionController
             controller.setProgress(progress);
         }
     };
-
-    public static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
 
@@ -169,7 +168,7 @@ public class AllAppsTransitionController
         ObjectAnimator anim =
                 ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
-        anim.setInterpolator(interpolator);
+        anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
 
         builder.play(anim);

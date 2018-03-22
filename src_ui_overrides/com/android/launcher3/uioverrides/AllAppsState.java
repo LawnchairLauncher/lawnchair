@@ -25,13 +25,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Definition for AllApps state
  */
 public class AllAppsState extends LauncherState {
+
+    private static final float PARALLAX_COEFFICIENT = .125f;
 
     private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY
             | FLAG_SHOW_SCRIM | FLAG_ALL_APPS_SCRIM;
@@ -75,8 +76,7 @@ public class AllAppsState extends LauncherState {
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new float[] { 1f, 0,
-                -launcher.getAllAppsController().getShiftRange()
-                        * AllAppsTransitionController.PARALLAX_COEFFICIENT};
+                -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT};
     }
 
     @Override
