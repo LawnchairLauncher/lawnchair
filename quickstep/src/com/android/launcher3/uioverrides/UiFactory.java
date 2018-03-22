@@ -100,7 +100,10 @@ public class UiFactory {
         }
     }
 
-    public static View getHotseatExtraContent(Hotseat hotseat) {
-        return hotseat.findViewById(R.id.search_container_hotseat);
+    public static View[] getHotseatExtraContent(Hotseat hotseat) {
+        return new View[] {
+                hotseat.findViewById(R.id.drag_indicator),
+                hotseat.findViewById(R.id.search_container_hotseat),
+        };
     }
 }

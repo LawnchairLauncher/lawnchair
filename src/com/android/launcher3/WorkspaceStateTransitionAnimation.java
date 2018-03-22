@@ -84,8 +84,10 @@ public class WorkspaceStateTransitionAnimation {
         float hotseatExtraAlpha = (elements & HOTSEAT_EXTRA) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
                 pageAlphaProvider.interpolator);
-        propertySetter.setViewAlpha(UiFactory.getHotseatExtraContent(mLauncher.getHotseat()),
-                hotseatExtraAlpha, pageAlphaProvider.interpolator);
+        for (View hotseatExtraContent : UiFactory.getHotseatExtraContent(mLauncher.getHotseat())) {
+            propertySetter.setViewAlpha(hotseatExtraContent, hotseatExtraAlpha,
+                    pageAlphaProvider.interpolator);
+        }
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                 hotseatIconsAlpha, pageAlphaProvider.interpolator);
 
