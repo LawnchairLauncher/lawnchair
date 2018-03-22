@@ -19,7 +19,7 @@ public class NexusAppFilter extends AppFilter {
         mHideList.add(ComponentName.unflattenFromString("com.google.android.apps.wallpaper/.picker.CategoryPickerActivity"));
 
         //Google Now Launcher
-        mHideList.add(ComponentName.unflattenFromString("com.google.android.launcher/com.google.android.launcher.StubApp"));
+        mHideList.add(ComponentName.unflattenFromString("com.google.android.launcher/.StubApp"));
     }
 
     @Override
