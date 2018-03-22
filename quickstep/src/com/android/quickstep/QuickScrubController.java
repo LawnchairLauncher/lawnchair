@@ -87,6 +87,9 @@ public class QuickScrubController implements OnAlarmListener {
             TaskView taskView = ((TaskView) mRecentsView.getPageAt(page));
             if (taskView != null) {
                 taskView.launchTask(true);
+            } else {
+                // Break out of quick scrub so user can interact with launcher.
+                mActivity.onBackPressed();
             }
         };
         int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
