@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Process;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
@@ -97,9 +98,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                     Intent intent = mPackageManager.getLaunchIntentForPackage(placeHolder);
                     if (intent != null) {
                         ComponentName componentInfo = intent.getComponent();
-                        String prediction = componentInfo.getPackageName() + '/' + componentInfo.getClassName();
-                        if (!predictionList.contains(prediction)) {
-                            list.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(componentInfo, Process.myUserHandle())));
+                        if (componentInfo != null) {
+                            ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
+                            if (!predictionList.contains(key.toString())) {
+                                list.add(new ComponentKeyMapper<AppInfo>(key));
+                            }
                         }
                     }
                 }
@@ -113,25 +116,26 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     @Override
-    public void logAppLaunch(View v, Intent intent) {
-        super.logAppLaunch(v, intent);
+    public void logAppLaunch(View v, Intent intent, UserHandle user) {
+        super.logAppLaunch(v, intent, user);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
-            clearNonExistentPackages();
-
             ComponentName componentInfo = intent.getComponent();
-            String prediction = componentInfo.getPackageName() + '/' + componentInfo.getClassName();
+            if (componentInfo != null) {
+                clearNonExistentPackages();
+                
+                Set<String> predictionSet = getStringSetCopy();
+                SharedPreferences.Editor edit = mPrefs.edit();
 
-            Set<String> predictionSet = getStringSetCopy();
-            SharedPreferences.Editor edit = mPrefs.edit();
+                String prediction = new ComponentKey(componentInfo, user).toString();
+                if (predictionSet.contains(prediction)) {
+                    edit.putInt(PREDICTION_PREFIX + prediction, getLaunchCount(prediction) + BOOST_ON_OPEN);
+                } else if (predictionSet.size() < MAX_PREDICTIONS || decayHasSpotFree(predictionSet, edit)) {
+                    predictionSet.add(prediction);
+                }
 
-            if (predictionSet.contains(prediction)) {
-                edit.putInt(PREDICTION_PREFIX + prediction, getLaunchCount(prediction) + BOOST_ON_OPEN);
-            } else if (predictionSet.size() < MAX_PREDICTIONS || decayHasSpotFree(predictionSet, edit)) {
-                predictionSet.add(prediction);
+                edit.putStringSet(PREDICTION_SET, predictionSet);
+                edit.apply();
             }
-
-            edit.putStringSet(PREDICTION_SET, predictionSet);
-            edit.apply();
         }
     }
 
@@ -196,8 +200,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
-        int index = str.indexOf('/');
-        return new ComponentKeyMapper<>(new ComponentKey(new ComponentName(str.substring(0, index), str.substring(index + 1)), Process.myUserHandle()));
+        return new ComponentKeyMapper<>(new ComponentKey(mContext, str));
     }
 
     private void clearNonExistentPackages() {
@@ -207,7 +210,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         SharedPreferences.Editor edit = mPrefs.edit();
         for (String prediction : originalSet) {
             try {
-                mPackageManager.getPackageInfo(prediction.substring(0, prediction.indexOf('/')), 0);
+                mPackageManager.getPackageInfo(new ComponentKey(mContext, prediction).componentName.getPackageName(), 0);
             } catch (PackageManager.NameNotFoundException e) {
                 predictionSet.remove(prediction);
                 edit.remove(PREDICTION_PREFIX + prediction);
