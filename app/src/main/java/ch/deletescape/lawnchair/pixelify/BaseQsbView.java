@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.pixelify;
 
 import android.animation.ObjectAnimator;
-import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -10,9 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,7 +50,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     public void applyVoiceSearchPreference() {
-        showMic = Utilities.getPrefs(getContext()).getShowVoiceSearchButton();
+        showMic = Utilities.getPrefs(getContext()).getShowVoiceSearchButton() && Utilities.getPrefs(getContext()).getShowSearchPill();
         boolean useWhiteLogo = Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon();
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId || mUseWhiteLogo != useWhiteLogo) {
@@ -111,7 +108,8 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
         if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str) ||
-                FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON.equals(str)) {
+                FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON.equals(str) ||
+                FeatureFlags.KEY_SHOW_SEARCH_PILL.equals(str)) {
             applyVoiceSearchPreference();
             applyVisibility();
         }
@@ -130,20 +128,23 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.mic_icon) {
-            startQsbActivity(VOICE_ASSIST);
-            return;
+        switch (view.getId()) {
+            case R.id.mic_icon:
+                startQsbActivity(VOICE_ASSIST);
+                break;
+            default:
+                if (BuildConfig.ENABLE_LAWNFEED) {
+                    if (mLauncher.isClientConnected()) {
+                        ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
+                    } else {
+                        startQsbActivity(TEXT_ASSIST);
+                    }
+                } else {
+                    getContext().sendOrderedBroadcast(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), null, new C0287l(this), null, 0, null, null);
+                }
+                break;
         }
 
-        if (BuildConfig.ENABLE_LAWNFEED) {
-            if (mLauncher.isClientConnected()) {
-                ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
-            } else {
-                startQsbActivity(TEXT_ASSIST);
-            }
-        } else {
-            getContext().sendOrderedBroadcast(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), null, new C0287l(this), null, 0, null, null);
-        }
     }
 
     private Intent bm(String str) {
@@ -243,11 +244,13 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     private void applyVisibility() {
-        boolean isQsbAppEnabled = PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), "com.google.android.googlequicksearchbox", 0);
+        boolean isQsbAppEnabled = PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), "com.google.android.googlequicksearchbox", 0) && Utilities.getPrefs(getContext()).getShowSearchPill();
         int visibility = isQsbAppEnabled ? View.VISIBLE : View.GONE;
+
         if (mQsbView != null) {
             mQsbView.setVisibility(visibility);
         }
+
         if (qsbConnector != null) {
             qsbConnector.setVisibility(visibility);
         }

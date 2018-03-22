@@ -63,6 +63,8 @@ object PreferenceFlags {
     const val KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState"
     const val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
     const val KEY_SHOW_PIXEL_BAR = "pref_showPixelBar"
+    const val KEY_SHOW_SEARCH_PILL = "pref_showSearchPill"
+    const val KEY_SHOW_DATE_OR_WEATHER = "pref_showDateOrWeather"
     const val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
     const val KEY_PREF_ALL_APPS_OPACITY = "pref_allAppsOpacitySB"
     const val KEY_PREF_SHOW_HIDDEN_APPS = "pref_showHidden"

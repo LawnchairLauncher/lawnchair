@@ -73,6 +73,8 @@ interface IPreferenceProvider {
     val useFullWidthSearchBar: Boolean
     val showVoiceSearchButton: Boolean
     val showPixelBar: Boolean
+    val showSearchPill: Boolean
+    val showDateOrWeather: Boolean
     val homeOpensDrawer: Boolean
     val usePixelIcons: Boolean
     val enableScreenRotation: Boolean

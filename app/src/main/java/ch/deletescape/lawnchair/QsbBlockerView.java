@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -13,9 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private View mView;
@@ -43,6 +47,8 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
+            IPreferenceProvider sharedPreferences = PreferenceProvider.INSTANCE.getPreferences(getContext());
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
@@ -87,11 +93,20 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         canvas.drawPaint(mBgPaint);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (FeatureFlags.KEY_SHOW_DATE_OR_WEATHER.equals(key)) {
+            switching = true;
+            setupView(true);
+        }
+    }
+
     public void setupView(boolean startListener) {
         if (!Utilities.getPrefs(getContext()).getShowPixelBar()) {
             removeAllViews();
             return;
         }
+
         View view = mView;
         mView = null;
         if (view == null || switching) {
@@ -100,11 +115,13 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             } else if ((Utilities.getPrefs(getContext()).getShowWeather() && !switchToDate) || (switching && !switchToDate)) {
                 weatherShowing = true;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
+
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
                 ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
                 weatherHelper = startListener || weatherHelper == null ? new WeatherHelper(temperature, iconView, getContext()) : weatherHelper;
                 weatherHelper.setListener(this);
                 mView.findViewById(R.id.weather_widget_time).setOnLongClickListener(this);
+
                 temperature.setOnLongClickListener(this);
                 iconView.setOnLongClickListener(this);
             } else {
@@ -113,16 +130,19 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
                 mView.findViewById(R.id.date_text2).setOnLongClickListener(this);
             }
-            if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
+
+            if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar() || !Utilities.getPrefs(getContext()).getShowDateOrWeather()) {
                 mView.setVisibility(GONE);
             }
         } else {
             mView = view;
         }
+
         if (switching) {
             if (view != null) {
                 view.animate().setDuration(200).alpha(0.0f).withEndAction(new QsbBlockerViewViewRemover(this, view));
             }
+
             addView(mView);
             mView.setAlpha(0.0f);
             mView.animate().setDuration(200).alpha(1.0f);
@@ -131,6 +151,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             if (view != null) {
                 removeView(view);
             }
+
             addView(mView);
         }
     }

@@ -361,6 +361,8 @@
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel searchbar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
+    <string name="show_search_pill_title">Show Google Search pill</string>
+    <string name="show_date_or_weather_title">Show date/weather on right side</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>
     <string name="use_round_searhbar">Use round apps searchbar</string>
     <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
