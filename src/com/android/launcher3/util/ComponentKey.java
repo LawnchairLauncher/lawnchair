@@ -80,6 +80,6 @@ public class ComponentKey {
      */
     @Override
     public String toString() {
-        return componentName.flattenToString() + "#" + user;
+        return componentName.flattenToString() + "#" + user.toString().replaceAll("\\D+","");
     }
 }
