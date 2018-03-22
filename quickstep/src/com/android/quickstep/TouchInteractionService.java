@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
 
@@ -54,6 +55,8 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
+
 /**
  * Service connected by system-UI for handling touch interaction.
  */
@@ -85,7 +88,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onPreMotionEvent(@HitTarget int downHitTarget) throws RemoteException {
             TraceHelper.beginSection("SysUiBinder");
-            onBinderPreMotionEvent(downHitTarget);
+            setupTouchConsumer(downHitTarget);
             TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
         }
 
@@ -139,14 +142,20 @@ public class TouchInteractionService extends Service {
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
             if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
-                mOverviewCommandHelper.onOverviewShown();
+                if (triggeredFromAltTab) {
+                    setupTouchConsumer(HIT_TARGET_NONE);
+                    mEventQueue.onOverviewShownFromAltTab();
+                }
             }
         }
 
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
             if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
-                mOverviewCommandHelper.onOverviewHidden();
+                if (triggeredFromAltTab && !triggeredFromHomeKey) {
+                    // onOverviewShownFromAltTab initiates quick scrub. Ending it here.
+                    mEventQueue.onQuickScrubEnd();
+                }
             }
         }
 
@@ -205,7 +214,7 @@ public class TouchInteractionService extends Service {
         return mMyBinder;
     }
 
-    private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
+    private void setupTouchConsumer(@HitTarget int downHitTarget) {
         mEventQueue.reset();
         TouchConsumer oldConsumer = mEventQueue.getConsumer();
         if (oldConsumer.deferNextEventToMainThread()) {
