@@ -2,6 +2,7 @@ package com.google.android.apps.nexuslauncher;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.AppFilter;
 
@@ -22,7 +23,7 @@ public class NexusAppFilter extends AppFilter {
     }
 
     @Override
-    public boolean shouldShowApp(ComponentName componentName) {
+    public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
         return !mHideList.contains(componentName);
     }
 }

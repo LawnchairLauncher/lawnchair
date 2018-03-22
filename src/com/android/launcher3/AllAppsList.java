@@ -72,7 +72,7 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, LauncherActivityInfo activityInfo) {
-        if (!mAppFilter.shouldShowApp(info.componentName)) {
+        if (!mAppFilter.shouldShowApp(info.componentName, info.user)) {
             return;
         }
         if (findAppInfo(info.componentName, info.user) != null) {
@@ -230,7 +230,7 @@ public class AllAppsList {
 
         for (int i = data.size() - 1; i >= 0; i--) {
             final AppInfo applicationInfo = data.get(i);
-            if (user.equals(applicationInfo.user) && !mAppFilter.shouldShowApp(applicationInfo.componentName)) {
+            if (user.equals(applicationInfo.user) && !mAppFilter.shouldShowApp(applicationInfo.componentName, applicationInfo.user)) {
                 removed.add(applicationInfo);
                 data.remove(i);
             }

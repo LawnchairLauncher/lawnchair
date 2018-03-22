@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -23,6 +22,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.clock.CustomClock;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -89,7 +89,7 @@ public class CustomIconProvider extends DynamicIconProvider {
         String packageName = launcherActivityInfo.getApplicationInfo().packageName;
         ComponentName component = launcherActivityInfo.getComponentName();
         Drawable drawable = null;
-        if (isEnabledForApp(mContext, component.toString())) {
+        if (CustomIconUtils.usingValidPack(mContext) && isEnabledForApp(mContext, new ComponentKey(component, launcherActivityInfo.getUser()))) {
             PackageManager pm = mContext.getPackageManager();
             if (mFactory.packCalendars.containsKey(component)) {
                 try {
@@ -137,11 +137,12 @@ public class CustomIconProvider extends DynamicIconProvider {
         setDisabledApps(context, new HashSet<String>());
     }
 
-    static boolean isEnabledForApp(Context context, String comp) {
-        return !getDisabledApps(context).contains(comp);
+    static boolean isEnabledForApp(Context context, ComponentKey key) {
+        return !getDisabledApps(context).contains(key.toString());
     }
 
-    static void setAppState(Context context, String comp, boolean enabled) {
+    static void setAppState(Context context, ComponentKey key, boolean enabled) {
+        String comp = key.toString();
         Set<String> disabledApps = getDisabledApps(context);
         while (disabledApps.contains(comp)) {
             disabledApps.remove(comp);

@@ -14,9 +14,9 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 import com.google.android.apps.nexuslauncher.clock.CustomClock;
-import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
         mAutoUpdatePack = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!CustomIconUtils.isPackProvider(context, CustomIconUtils.getCurrentPack(context))) {
+                if (!CustomIconUtils.usingValidPack(context)) {
                     CustomIconUtils.setCurrentPack(context, "");
                 }
                 CustomIconUtils.applyIconPackAsync(context);
@@ -79,7 +79,7 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
         packComponents.clear();
         packCalendars.clear();
         packClocks.clear();
-        if (CustomIconUtils.isPackProvider(mContext, iconPack)) {
+        if (CustomIconUtils.usingValidPack(mContext)) {
             CustomIconUtils.parsePack(this, mContext.getPackageManager(), iconPack);
         }
     }
@@ -97,7 +97,7 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
         ensureInitialLoadComplete();
         ComponentName componentName = info.getTargetComponent();
         if (packComponents.containsKey(info.getTargetComponent()) &&
-                CustomIconProvider.isEnabledForApp(mContext, componentName.toString())) {
+                CustomIconProvider.isEnabledForApp(mContext, new ComponentKey(componentName, info.user))) {
             if (Utilities.ATLEAST_OREO &&
                     info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                     info.user.equals(Process.myUserHandle())) {
