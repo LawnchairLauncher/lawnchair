@@ -181,7 +181,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private boolean isPredictorEnabled() {
-        return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, false);
+        return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, true);
     }
 
     @Override
