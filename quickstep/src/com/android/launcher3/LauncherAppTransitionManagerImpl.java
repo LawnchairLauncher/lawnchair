@@ -111,18 +111,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private DeviceProfile mDeviceProfile;
     private View mFloatingView;
 
-    private final AnimatorListenerAdapter mUiResetListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mDragLayer.setAlpha(1f);
-            mDragLayer.setTranslationY(0f);
-
-            View appsView = mLauncher.getAppsView();
-            appsView.setAlpha(1f);
-            appsView.setTranslationY(0f);
-        }
-    };
-
     private final AnimatorListenerAdapter mReapplyStateListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
@@ -173,15 +161,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         } else {
                             anim.play(getLauncherAnimators(v, targetCompats));
                             anim.play(getWindowAnimators(v, targetCompats));
-                            anim.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    // Reset launcher to normal state
-                                    v.setVisibility(View.VISIBLE);
-                                    ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
-                                }
-                            });
-                            anim.addListener(mUiResetListener);
                         }
                         mLauncher.getStateManager().setCurrentAnimation(anim);
                         return anim;
@@ -502,7 +481,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         if (mLauncher.isInState(LauncherState.ALL_APPS) && !mDeviceProfile.isVerticalBarLayout()) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
-            View appsView = mLauncher.getAppsView();
+            final View appsView = mLauncher.getAppsView();
+            final float startAlpha = appsView.getAlpha();
+            final float startY = appsView.getTranslationY();
             appsView.setAlpha(alphas[0]);
             appsView.setTranslationY(trans[0]);
 
@@ -515,6 +496,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             launcherAnimator.play(alpha);
             launcherAnimator.play(transY);
+
+            launcherAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    appsView.setAlpha(startAlpha);
+                    appsView.setTranslationY(startY);
+                }
+            });
         } else {
             mDragLayer.setAlpha(alphas[0]);
             mDragLayer.setTranslationY(trans[0]);
@@ -529,6 +518,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             launcherAnimator.play(dragLayerAlpha);
             launcherAnimator.play(dragLayerTransY);
+            launcherAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mDragLayer.setAlpha(1);
+                    mDragLayer.setTranslationY(0);
+                }
+            });
         }
         return launcherAnimator;
     }
@@ -632,6 +628,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         alpha.setInterpolator(Interpolators.LINEAR);
         appIconAnimatorSet.play(alpha);
 
+        appIconAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Reset launcher to normal state
+                v.setVisibility(View.VISIBLE);
+                ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
+            }
+        });
         return appIconAnimatorSet;
     }
 
@@ -856,7 +860,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         if (mLauncher.isInState(LauncherState.ALL_APPS)
                 || mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             AnimatorSet contentAnimator = getLauncherContentAnimator(true /* show */);
-            contentAnimator.addListener(mUiResetListener);
             contentAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
             return contentAnimator;
         } else {
