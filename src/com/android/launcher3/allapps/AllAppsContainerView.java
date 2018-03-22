@@ -392,7 +392,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public RecyclerViewFastScroller getScrollBar() {
-        return getActiveRecyclerView().getScrollbar();
+        AllAppsRecyclerView rv = getActiveRecyclerView();
+        return rv == null ? null : rv.getScrollbar();
     }
 
     public void setupHeader() {
