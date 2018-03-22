@@ -242,6 +242,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
 
     private RotationHelper mRotationHelper;
 
+    // Used to keep track of the swipe up state
+    private SharedPreferences.OnSharedPreferenceChangeListener mSharedPrefsListener =
+            (sharedPreferences, s) -> {
+                mDragLayer.setup(mDragController);
+            };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
@@ -273,6 +279,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         initDeviceProfile(app.getInvariantDeviceProfile());
 
         mSharedPrefs = Utilities.getPrefs(this);
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(mSharedPrefsListener);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
@@ -758,6 +765,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
+
     }
 
     @Override
@@ -1340,6 +1348,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
             LauncherAppState.getInstance(this).setLauncher(null);
         }
         mRotationHelper.destroy();
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mSharedPrefsListener);
 
         try {
             mAppWidgetHost.stopListening();
