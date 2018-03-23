@@ -202,7 +202,7 @@ public class PixelIconProvider {
         }
 
         String packageName = info.getApplicationInfo().packageName;
-        if (isCalendar(packageName) && TextUtils.isEmpty(mPrefs.getIconPackPackage())) {
+        if (isCalendar(packageName) && !Utilities.hasAlternativeIcon(mContext, info.getComponentName()) && TextUtils.isEmpty(mPrefs.getIconPackPackage())) {
             try {
                 ActivityInfo activityInfo = mPackageManager.getActivityInfo(info.getComponentName(), PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
                 Bundle metaData = activityInfo.metaData;
