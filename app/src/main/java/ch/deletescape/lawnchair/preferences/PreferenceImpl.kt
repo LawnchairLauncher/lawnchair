@@ -161,6 +161,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
+    override var disableLawnfeedPopup by MutableBooleanPref(PreferenceFlags.KEY_DISABLE_LAWNFEED_POPUP, false)
 
     override var hiddenAppsSet: Set<String>
         get() {
@@ -223,6 +224,8 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val useFullWidthSearchBar by BooleanPref(FeatureFlags.KEY_FULL_WIDTH_SEARCHBAR, false)
     override val showVoiceSearchButton by BooleanPref(FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON, false)
     override val showPixelBar by BooleanPref(FeatureFlags.KEY_SHOW_PIXEL_BAR, true)
+    override val showSearchPill by BooleanPref(FeatureFlags.KEY_SHOW_SEARCH_PILL, true)
+    override val showDateOrWeather by BooleanPref(FeatureFlags.KEY_SHOW_DATE_OR_WEATHER, true)
     override val homeOpensDrawer by BooleanPref(FeatureFlags.KEY_HOME_OPENS_DRAWER, true)
     override val usePixelIcons by BooleanPref(FeatureFlags.KEY_PREF_PIXEL_STYLE_ICONS, true)
     override val enableScreenRotation by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_SCREEN_ROTATION, false)

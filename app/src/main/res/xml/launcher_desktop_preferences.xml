@@ -17,9 +17,24 @@
     <SwitchPreference
         android:defaultValue="false"
         android:dependency="pref_showPixelBar"
+        android:disableDependentsState="true"
         android:key="pref_fullWidthSearchbar"
         android:persistent="true"
         android:title="@string/use_wide_searchbar_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:dependency="pref_fullWidthSearchbar"
+        android:key="pref_showSearchPill"
+        android:persistent="true"
+        android:title="@string/show_search_pill_title" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:dependency="pref_fullWidthSearchbar"
+        android:key="pref_showDateOrWeather"
+        android:persistent="true"
+        android:title="@string/show_date_or_weather_title" />
 
     <SwitchPreference
         android:defaultValue="false"

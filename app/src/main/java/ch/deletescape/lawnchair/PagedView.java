@@ -187,8 +187,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
 
-    // Edge effect
-    private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect();
+    // Edge effect, add swipe-to-left gesture for Lawnfeed
+    private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect(){
+        @Override
+        public void onRelease() {
+            // Check if user swiped
+            if (mPullDistance > 0) {
+                Utilities.showLawnfeedPopup(getContext());
+            }
+
+            super.onRelease();
+        }
+    };
+
+    // Edge effect for right side
     private final LauncherEdgeEffect mEdgeGlowRight = new LauncherEdgeEffect();
 
     public PagedView(Context context) {

@@ -42,8 +42,8 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     private fun connectProxy() {
-        if (Utilities.checkOutdatedLawnfeed(launcher) || !Utilities.getPrefs(launcher).showGoogleNowTab) {
-            return
+        if (!Utilities.getPrefs(launcher).showGoogleNowTab) {
+            return;
         }
 
         sProxyConnection = ProxyServiceConnection(PROXY_PACKAGE)
@@ -229,7 +229,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     fun onQsbClick(intent: Intent, receiver: QsbReceiver) {
-        ifConnected {
+        if (isConnected) {
             proxy?.onQsbClick(intent)
             qsbReceiver = receiver
         }

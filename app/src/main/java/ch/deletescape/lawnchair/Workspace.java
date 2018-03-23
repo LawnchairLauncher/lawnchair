@@ -1324,7 +1324,6 @@ public class Workspace extends PagedView
 
     @Override
     protected void overScroll(float amount) {
-
         boolean shouldScrollOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 

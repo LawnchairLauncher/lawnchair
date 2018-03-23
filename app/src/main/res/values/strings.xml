@@ -361,6 +361,8 @@
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel searchbar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
+    <string name="show_search_pill_title">Show Google Search pill</string>
+    <string name="show_date_or_weather_title">Show date/weather on right side</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>
     <string name="use_round_searhbar">Use round apps searchbar</string>
     <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
@@ -497,8 +499,12 @@
     <string name="snowflake_size_scale">Snowflake size scale</string>
     <string name="snowflakes_num">Max number of snowflakes</string>
 
+    <!-- Strings for popup dialogs -->
+    <string name="lawnfeed_not_enabled_title">Lawnfeed not enabled</string>
+    <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t enabled the option in the behavior settings.\n\nDo you want to enable it now?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
     <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
     <string name="title_storage_permission_required">Storage Permission Required</string>
     <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
+    <string name="disable_popup">Don\'t show again</string>
 </resources>

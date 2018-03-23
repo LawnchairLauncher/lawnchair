@@ -25,7 +25,6 @@ public class LauncherTab {
 
     public LauncherTab(Launcher launcher) {
         mLauncherClient = ILauncherClient.Companion.create(launcher);
-
         launcher.setLauncherOverlay(new LauncherOverlays());
     }
 

@@ -73,6 +73,8 @@ interface IPreferenceProvider {
     val useFullWidthSearchBar: Boolean
     val showVoiceSearchButton: Boolean
     val showPixelBar: Boolean
+    val showSearchPill: Boolean
+    val showDateOrWeather: Boolean
     val homeOpensDrawer: Boolean
     val usePixelIcons: Boolean
     val enableScreenRotation: Boolean
@@ -113,6 +115,7 @@ interface IPreferenceProvider {
     fun removeAlternateIcon(key: String)
     var hiddenAppsSet : Set<String>
     var previousBuildNumber : Int
+    var disableLawnfeedPopup: Boolean
     var overrideIconShape: String
     val backportAdaptiveIcons: Boolean
     fun removeOverrideIconShape()

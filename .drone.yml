@@ -25,6 +25,12 @@ pipeline:
     when:
       event: push
       status: success
+  upload:
+    image: lawnchairlauncher/drone-transfer.sh:latest
+    upload: app/build/outputs/apk/debug/app-debug.apk
+    when:
+      event: pull_request
+      status: success
   telegram:
     image: appleboy/drone-telegram:latest
     secrets: [ telegram_token ]
@@ -36,6 +42,7 @@ pipeline:
         Build {{build.number}} failed. Fix me please sir!
       {{/success}}
     when:
+      event: [push, tag, deployment]
       status: [ failure, success ]
 
 branches:

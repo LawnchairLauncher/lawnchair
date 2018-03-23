@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -144,6 +145,9 @@ public final class Utilities {
 
     public static final boolean ATLEAST_OREO =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+
+    public static final boolean ATLEAST_OREO_M1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "ch.deletescape.lawnchair.WALLPAPER_OFFSET";
@@ -1081,8 +1085,50 @@ public final class Utilities {
         return BLACKLISTED_APPLICATIONS.length == 0;
     }
 
+    public static void showLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.ENABLED) return;
+        final IPreferenceProvider prefs = getPrefs(context);
+
+        // Don't show anything if the user have selected "Don't show again" or Google Now page is enabled
+        if (prefs.getDisableLawnfeedPopup() || prefs.getShowGoogleNowTab()) {
+            return;
+        }
+
+        // Show a popup about the disabled Google Now page option
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.lawnfeed_not_enabled_title)
+                .setMessage(R.string.lawnfeed_not_enabled)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @SuppressLint("ApplySharedPref")
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Enable Google Now page setting
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                        settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
+
+                        // Restart Lawnchair to enable Lawnfeed
+                        LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
+                    }
+                })
+                .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        prefs.setDisableLawnfeedPopup(true);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     public static void showOutdatedLawnfeedPopup(final Context context) {
         if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
+
+        // Disable Google Now page setting if the user have enabled Google Now page
+        if (Utilities.getPrefs(context).getShowGoogleNowTab()) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, false).commit();
+        }
+
         new AlertDialog.Builder(context)
             .setTitle(R.string.lawnfeed_outdated_title)
             .setMessage(R.string.lawnfeed_outdated)

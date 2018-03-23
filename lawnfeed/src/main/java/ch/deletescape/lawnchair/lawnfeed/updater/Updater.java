@@ -1,7 +1,7 @@
 package ch.deletescape.lawnchair.lawnfeed.updater;
 
 import android.app.Activity;
-import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.json.simple.JSONObject;
@@ -35,12 +37,21 @@ public class Updater {
 
     public static final String PREFERENCES_CACHED_UPDATE = "cached_update";
 
-    private static final long SIX_HOURS = 21600000;
+    private static final long TWELVE_HOURS = 43200000;
 
     private static final String TAG = "Updater";
 
+    public static final String CHANNEL_ID = "lawnfeed_updater";
+
     public static void checkUpdate(final Context context) {
         final SharedPreferences prefs = context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE);
+
+        // Create notification channel on Android O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    context.getResources().getString(R.string.lawnfeed_updates), NotificationManager.IMPORTANCE_DEFAULT);
+            context.getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
 
         UpdaterTask task = new UpdaterTask(context, VERSION_URL, new UpdateListener() {
             @Override
@@ -61,7 +72,7 @@ public class Updater {
 
                 // Build notification
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
-                Notification.Builder builder = new Notification.Builder(context)
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle(context.getResources().getString(R.string.update_available_title))
                         .setContentText(context.getResources().getString(R.string.update_available))
                         .setSmallIcon(R.drawable.ic_lawnchair)
@@ -90,8 +101,8 @@ public class Updater {
 
         // Don't check for updates if last update check was not longer than 6 hours ago
         long lastChecked = prefs.getLong(PREFERENCES_LAST_CHECKED, 0);
-        if (lastChecked + SIX_HOURS >= System.currentTimeMillis()) {
-            Log.i(TAG, "Last update check was earlier than 6 hours ago, using cached info");
+        if (lastChecked + TWELVE_HOURS >= System.currentTimeMillis()) {
+            Log.i(TAG, "Last update check was earlier than 12 hours ago, using cached info");
 
             task.onPostExecute(Update.fromString(prefs.getString(PREFERENCES_CACHED_UPDATE, "")));
             return;

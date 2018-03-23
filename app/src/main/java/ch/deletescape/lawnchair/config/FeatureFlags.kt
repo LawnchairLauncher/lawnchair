@@ -37,6 +37,8 @@ object FeatureFlags {
     const val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
     const val KEY_SHOW_PIXEL_BAR = "pref_showPixelBar"
     const val KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer"
+    const val KEY_SHOW_SEARCH_PILL = "pref_showSearchPill"
+    const val KEY_SHOW_DATE_OR_WEATHER = "pref_showDateOrWeather"
     const val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
     const val KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons"
     const val KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels"
