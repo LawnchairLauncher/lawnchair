@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -32,6 +33,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     private static final String PREDICTION_PREFIX = "pref_prediction_count_";
     private static final Set<String> EMPTY_SET = new HashSet<>();
     private final Context mContext;
+    private final AppFilter mAppFilter;
     private final SharedPreferences mPrefs;
     private final PackageManager mPackageManager;
 
@@ -70,6 +72,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     public CustomAppPredictor(Context context) {
         mContext = context;
+        mAppFilter = AppFilter.newInstance(mContext);
         mPrefs = Utilities.getPrefs(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mPackageManager = context.getPackageManager();
@@ -120,7 +123,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         super.logAppLaunch(v, intent, user);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
-            if (componentInfo != null) {
+            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
                 clearNonExistentPackages();
                 
                 Set<String> predictionSet = getStringSetCopy();
