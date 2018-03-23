@@ -26,6 +26,7 @@ import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -90,15 +91,16 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             return defaultApps;
         }
         final List<AppInfo> apps = new ArrayList<>();
-        final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
-        final UserHandle user = android.os.Process.myUserHandle();
         final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
-        for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
-            if (!duplicatePreventionCache.contains(info.getComponentName())) {
-                duplicatePreventionCache.add(info.getComponentName());
-                final AppInfo appInfo = new AppInfo(context, info, user);
-                iconCache.getTitleAndIcon(appInfo, false);
-                apps.add(appInfo);
+        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+            final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
+            for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+                if (!duplicatePreventionCache.contains(info.getComponentName())) {
+                    duplicatePreventionCache.add(info.getComponentName());
+                    final AppInfo appInfo = new AppInfo(context, info, user);
+                    iconCache.getTitleAndIcon(appInfo, false);
+                    apps.add(appInfo);
+                }
             }
         }
         return apps;

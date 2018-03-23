@@ -631,18 +631,17 @@ public class AlphabeticalAppsList {
         }
 
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mLauncher);
-        final UserHandle user = android.os.Process.myUserHandle();
         final IconCache iconCache = LauncherAppState.getInstance(mLauncher).getIconCache();
-        ArrayList<AppInfo> result = new ArrayList<>();
-        boolean quietMode = UserManagerCompat.getInstance(mLauncher).isQuietModeEnabled(user);
+        final UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(mLauncher);
+        final ArrayList<AppInfo> result = new ArrayList<>();
         for (ComponentKey key : mSearchResults) {
             AppInfo match = mComponentToAppMap.get(key);
             if (match != null) {
                 result.add(match);
             } else {
-                for (LauncherActivityInfo info : launcherApps.getActivityList(key.componentName.getPackageName(), user)) {
+                for (LauncherActivityInfo info : launcherApps.getActivityList(key.componentName.getPackageName(), key.user)) {
                     if (info.getComponentName().equals(key.componentName)) {
-                        final AppInfo appInfo = new AppInfo(info, user, quietMode);
+                        final AppInfo appInfo = new AppInfo(info, key.user, userManagerCompat.isQuietModeEnabled(key.user));
                         iconCache.getTitleAndIcon(appInfo, false);
                         result.add(appInfo);
                         break;
