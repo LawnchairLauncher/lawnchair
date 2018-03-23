@@ -288,8 +288,8 @@ public class OptionsPopupView extends AbstractFloatingView
         lp.y = Utilities.boundToRange((int) (y - height / 2), insets.top + margin,
                 maxHeight - insets.bottom - height - margin);
 
-        launcher.getDragLayer().addView(view);
         view.animateOpen();
+        launcher.getDragLayer().addView(view);
     }
 
     public static boolean onWidgetsClicked(Launcher launcher) {
