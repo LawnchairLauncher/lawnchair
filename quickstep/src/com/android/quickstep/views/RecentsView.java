@@ -323,11 +323,31 @@ public abstract class RecentsView<T extends BaseActivity>
         padding.bottom = profile.availableHeightPx - padding.top - sTempStableInsets.top
                 - Math.round(overviewHeight);
         padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
+
+        // If the height ratio is larger than the width ratio, the screenshot will get cropped
+        // at the bottom when swiping up. In this case, increase the top/bottom padding to make it
+        // the same aspect ratio.
+        Rect pageRect = new Rect();
+        getPageRect(profile, context, pageRect, padding);
+        float widthRatio = (float) pageRect.width() / taskWidth;
+        float heightRatio = (float) pageRect.height() / taskHeight;
+        if (heightRatio > widthRatio) {
+            float additionalVerticalPadding = pageRect.height() - widthRatio * taskHeight;
+            additionalVerticalPadding = Math.round(additionalVerticalPadding);
+            padding.top += additionalVerticalPadding / 2;
+            padding.bottom += additionalVerticalPadding / 2;
+        }
+
         return padding;
     }
 
     public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
         Rect targetPadding = getPadding(grid, context);
+        getPageRect(grid, context, outRect, targetPadding);
+    }
+
+    private static void getPageRect(DeviceProfile grid, Context context, Rect outRect,
+            Rect targetPadding) {
         Rect insets = grid.getInsets();
         outRect.set(
                 targetPadding.left + insets.left,

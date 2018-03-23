@@ -175,7 +175,7 @@ public class TaskThumbnailView extends View {
 
             float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
             Shader shader = mBitmapShader;
-            if (bitmapHeight < getMeasuredHeight()) {
+            if (Math.round(bitmapHeight) < getMeasuredHeight()) {
                 int color = mPaint.getColor();
                 LinearGradient fade = new LinearGradient(
                         0, bitmapHeight - mFadeLength, 0, bitmapHeight,
@@ -184,7 +184,7 @@ public class TaskThumbnailView extends View {
             }
 
             float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
-            if (bitmapWidth < getMeasuredWidth()) {
+            if (Math.round(bitmapWidth) < getMeasuredWidth()) {
                 int color = mPaint.getColor();
                 LinearGradient fade = new LinearGradient(
                         bitmapWidth - mFadeLength, 0, bitmapWidth, 0,
