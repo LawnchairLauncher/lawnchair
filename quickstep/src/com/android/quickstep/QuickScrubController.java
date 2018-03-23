@@ -140,7 +140,7 @@ public class QuickScrubController implements OnAlarmListener {
             int duration = Math.abs(pageToGoTo - mRecentsView.getNextPage())
                             * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
             mRecentsView.snapToPage(pageToGoTo, duration);
-            mRecentsView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP,
+            mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
     }
