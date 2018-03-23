@@ -543,10 +543,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         // Position the floating view exactly on top of the original
         Rect rect = new Rect();
-        final boolean isDeepShortcutTextView = v instanceof DeepShortcutTextView
-                && v.getParent() != null && v.getParent() instanceof DeepShortcutView;
-        if (isDeepShortcutTextView) {
-            // Deep shortcut views have their icon drawn in a sibling view.
+        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
+        if (fromDeepShortcutView) {
+            // Deep shortcut views have their icon drawn in a separate view.
             DeepShortcutView view = (DeepShortcutView) v.getParent();
             mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
         } else {
@@ -556,7 +555,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         int viewLocationTop = rect.top;
 
         float startScale = 1f;
-        if (isBubbleTextView && !isDeepShortcutTextView) {
+        if (isBubbleTextView && !fromDeepShortcutView) {
             BubbleTextView btv = (BubbleTextView) v;
             btv.getIconBounds(rect);
             Drawable dr = btv.getIcon();
@@ -644,10 +643,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      */
     private ValueAnimator getWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
         Rect bounds = new Rect();
-        boolean isDeepShortcutTextView = v instanceof DeepShortcutTextView
-                && v.getParent() != null && v.getParent() instanceof DeepShortcutView;
-        if (isDeepShortcutTextView) {
-            // Deep shortcut views have their icon drawn in a sibling view.
+        if (v.getParent() instanceof DeepShortcutView) {
+            // Deep shortcut views have their icon drawn in a separate view.
             DeepShortcutView view = (DeepShortcutView) v.getParent();
             mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), bounds);
         } else if (v instanceof BubbleTextView) {
