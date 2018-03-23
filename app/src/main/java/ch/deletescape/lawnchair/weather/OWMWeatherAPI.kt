@@ -24,7 +24,7 @@ class OWMWeatherAPI(context: Context) : WeatherAPI(), OpenWeatherMapHelper.Curre
 
     override fun getForecastURL(): String {
         val cityEncoded = URLEncoder.encode(city, "UTF-8")
-        return "http://openweathermap.org/?q=$cityEncoded"
+        return "https://openweathermap.org/?q=$cityEncoded"
     }
 
     override fun onSuccess(currentWeather: CurrentWeather) {
