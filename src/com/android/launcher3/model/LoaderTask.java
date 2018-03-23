@@ -810,9 +810,8 @@ public class LoaderTask implements Runnable {
                 Log.d(TAG, "getActivityList got " + apps.size() + " apps for user " + user);
             }
             // Fail if we don't have any apps
-            // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
-                return;
+                continue;
             }
             boolean quietMode = mUserManager.isQuietModeEnabled(user);
             // Create the ApplicationInfos
