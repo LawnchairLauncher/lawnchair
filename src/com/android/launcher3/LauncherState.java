@@ -180,8 +180,13 @@ public class LauncherState {
         return new float[] {1, 0, 0};
     }
 
-    public float getOverviewTranslationFactor(Launcher launcher) {
-        return 1;
+    /**
+     * Returns 2 floats designating how much to translate overview:
+     *   X factor is based on width, e.g. 0 is fully onscreen and 1 is fully offscreen
+     *   Y factor is based on padding, e.g. 0 is top aligned and 0.5 is centered vertically
+     */
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {1f, 0f};
     }
 
     public void onStateEnabled(Launcher launcher) {

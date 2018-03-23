@@ -28,10 +28,8 @@ public class FastOverviewState extends OverviewState {
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_DISABLE_RESTORE
             | FLAG_DISABLE_INTERACTION | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON;
 
-    private static final boolean DEBUG_DIFFERENT_UI = false;
-
     public FastOverviewState(int id) {
-        super(id, QuickScrubController.QUICK_SWITCH_START_DURATION, STATE_FLAGS);
+        super(id, QuickScrubController.QUICK_SCRUB_START_DURATION, STATE_FLAGS);
     }
 
     @Override
@@ -48,9 +46,11 @@ public class FastOverviewState extends OverviewState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        if (DEBUG_DIFFERENT_UI) {
-            return NONE;
-        }
-        return super.getVisibleElements(launcher);
+        return NONE;
+    }
+
+    @Override
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {0f, 0.5f};
     }
 }

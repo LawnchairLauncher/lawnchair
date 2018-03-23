@@ -20,7 +20,8 @@ import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATION;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
-import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_FACTOR;
+import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_X_FACTOR;
+import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -50,7 +51,9 @@ public class RecentsViewStateController implements StateHandler {
     public void setState(LauncherState state) {
         mRecentsView.setAlpha(state.overviewUi ? 1 : 0);
         updateVisibility(mRecentsView, isAccessibilityEnabled(mLauncher));
-        mRecentsView.setTranslationFactor(state.getOverviewTranslationFactor(mLauncher));
+        float[] translationFactor = state.getOverviewTranslationFactor(mLauncher);
+        mRecentsView.setTranslationXFactor(translationFactor[0]);
+        mRecentsView.setTranslationYFactor(translationFactor[1]);
         if (state.overviewUi) {
             mRecentsView.resetTaskVisuals();
         }
@@ -73,8 +76,12 @@ public class RecentsViewStateController implements StateHandler {
         }
 
         PropertySetter setter = config.getProperSetter(builder);
-        setter.setFloat(mRecentsView, TRANSLATION_FACTOR,
-                toState.getOverviewTranslationFactor(mLauncher),
+        float[] translationFactor = toState.getOverviewTranslationFactor(mLauncher);
+        setter.setFloat(mRecentsView, TRANSLATION_X_FACTOR,
+                translationFactor[0],
+                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
+        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR,
+                translationFactor[1],
                 builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
         setter.setViewAlpha(mRecentsView, toState.overviewUi ? 1 : 0, LINEAR);
 
