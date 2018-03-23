@@ -22,14 +22,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <FrameLayout
-        android:id="@+id/launcher_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:focusable="false"
-        launcher:layout_ignoreInsets="true" />
-
     <ch.deletescape.lawnchair.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:clipChildren="false"
