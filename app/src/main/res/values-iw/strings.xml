@@ -329,7 +329,6 @@
   <string name="default_text">ברירת מחדל</string>
   <string name="edit_icon_reset">איפוס</string>
   <string name="show_top_shadow_title">הצג צל עליון</string>
-  <string name="pref_cat_homescreen">מסך בית</string>
   <string name="theme_pref_title">ערכת נושא</string>
   <string name="theme_light">בהיר</string>
   <string name="theme_dark">כהה</string>
@@ -398,6 +397,7 @@
   <string name="pref_all_apps_label_color">צבע כיתוב הסמלים במגירת היישומים</string>
   <string name="pref_num_rows_drawer">מספר השורות במגירת היישומים</string>
   <string name="center_wallpaper_pref_title">מרכז את הטפט כאשר ישנו רק מסך אחד</string>
+  <string name="center_wallpaper_pref_summary">עובד רק אם במסך הבית יש עמוד אחד</string>
   <string name="vertical_drawer_layout_pref_title">הצג כרשימה אנכית</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -420,14 +420,11 @@
   <string name="reset_alternative_icons_title">האם לאפס את סמלי האפליקציות החלופיים?</string>
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
   <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
-  <string name="snowfall_title">שלג</string>
-  <string name="enable_snowfall_title">אפשר שלג על מסך הבית</string>
-  <string name="enable_snowfall_summary">עלול לגרום לבעיות ביצועים.</string>
-  <string name="snowfall_enabled">\"תן לשלג לרדת, תן לשלג לרדת, תן לשלג לרדת!\"</string>
-  <string name="snowflake_size_scale">גודל פתיתי השלג</string>
-  <string name="snowflakes_num">מספר מרבי של פתיתי שלג</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
   <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
   <string name="title_storage_permission_required">דרושה הרשאה לאחסון</string>
   <string name="content_storage_permission_required">ב- 8.1 אנדרואיד ומעלה הרשאת האחסון נדרשת על ידי יישומים לגישה לטפט. ללא הרשאה זו Lawnchair עלול לקרוס או להתנהג באופן בלתי צפוי.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
