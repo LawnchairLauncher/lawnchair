@@ -329,7 +329,6 @@
   <string name="default_text">Výchozí</string>
   <string name="edit_icon_reset">Resetovat</string>
   <string name="show_top_shadow_title">Zobrazit horní stíny</string>
-  <string name="pref_cat_homescreen">Domovská obrazovka</string>
   <string name="theme_pref_title">Motiv</string>
   <string name="theme_light">Světlý</string>
   <string name="theme_dark">Tmavý</string>
@@ -398,6 +397,7 @@
   <string name="pref_all_apps_label_color">Barva popisků ikon v seznamu aplikací</string>
   <string name="pref_num_rows_drawer">Počet sloupců v seznamu aplikací</string>
   <string name="center_wallpaper_pref_title">Tapeta na střed, je-li pouze jedna strana</string>
+  <string name="center_wallpaper_pref_summary">Funguje pouze v případě, když domovská obrazovka používá jen jednu stránku</string>
   <string name="vertical_drawer_layout_pref_title">Zobrazit jako svislý seznam</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -420,14 +420,11 @@
   <string name="reset_alternative_icons_title">Resetovat alternativní ikony aplikací?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikací s alternativními ikonami, chcete je obnovit?</string>
   <string name="error_no_browser">Nebyla nalezena žádná aktivita pro práci s adresami URL</string>
-  <string name="snowfall_title">Sněžení</string>
-  <string name="enable_snowfall_title">Povolit sněžení na domovské obrazovce</string>
-  <string name="enable_snowfall_summary">Může způsobit problémy s výkonem.</string>
-  <string name="snowfall_enabled">\"Ať sněží, ať sněží, ať sněží!\"</string>
-  <string name="snowflake_size_scale">Velikost sněhové vločky</string>
-  <string name="snowflakes_num">Maximální počet sněhových vloček</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Vyžadována aktualizace Lawnfeed</string>
   <string name="lawnfeed_outdated">V této verzi Lawnchair je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
   <string name="title_storage_permission_required">Vyžadováno oprávnění k úložišti</string>
   <string name="content_storage_permission_required">V zařízeních s Android 8.1 a vyšším je pro přístup k tapetám vyžadováno oprávnění k úložišti. Bez zmíněného oprávnění se může stát, že aplikace Lawnchair selže nebo bude mít neočekávané chování.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
