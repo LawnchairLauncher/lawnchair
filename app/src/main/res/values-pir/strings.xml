@@ -24,7 +24,7 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Sailin\'</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">App isn\'t conquered.</string>
+  <string name="activity_not_found">App ain\'t conquered.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Tharr be no app</string>
   <!-- SafeMode shortcut error string -->
@@ -330,7 +330,6 @@ Waitin\' t\' install</string>
   <string name="default_text">Ye Basics</string>
   <string name="edit_icon_reset">Reconquer</string>
   <string name="show_top_shadow_title">Dark top thing</string>
-  <string name="pref_cat_homescreen">Home port</string>
   <string name="theme_pref_title">Paint job</string>
   <string name="theme_light">It be blindin\'</string>
   <string name="theme_dark">The sun be settin\'</string>
@@ -411,7 +410,7 @@ Waitin\' t\' install</string>
   <string name="set_default_launcher">Dock yee ship</string>
   <string name="enable_spring_pref_title">Enable effect o\' sprin\'</string>
   <string name="hide_app">Hide flag</string>
-  <string name="hide_app_sum">Hide this tresure from th\' treasure room</string>
+  <string name="hide_app_sum">Burry ya treasures</string>
   <string name="hide_app_selected">&#160;selected</string>
   <string name="hidden_app">Hidden flag</string>
   <string name="hide_app_apply">Aye</string>
@@ -421,14 +420,11 @@ Waitin\' t\' install</string>
   <string name="reset_alternative_icons_title">Reconquer alternative treasures?</string>
   <string name="reset_alternative_icons">Ye have %1$d apps wit\' alternative treasures, d\' ye want t\' reset \'em?</string>
   <string name="error_no_browser">No activity found to handle URLs</string>
-  <string name="snowfall_title">Yee feelin\' cold?</string>
-  <string name="enable_snowfall_title">Happy holidays ya\' scurvy dogs</string>
-  <string name="enable_snowfall_summary">Slows down ship.</string>
-  <string name="snowfall_enabled">\"Yo ho, yo ho, I hate frozen water!.\"</string>
-  <string name="snowflake_size_scale">Frozen rain size scale</string>
-  <string name="snowflakes_num">How many Frozen rain yo want?</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed needs to be worked on</string>
   <string name="lawnfeed_outdated">A newer version o\' Lawnfeed be required in order t\' duty wit\' this version o\' Lawnchair.\n\nBefore installing thar update ye will probably need t\' uninstall thar current version o\' Lawnfeed.\n\nDo ye want t\' download it now?</string>
   <string name="title_storage_permission_required">Let me plunder ye\' storage</string>
   <string name="content_storage_permission_required">On Android 8.1 and up th\' storage permis\'n be a must fer\' apps to touch ye, paint. Without said permis\'n ye may crash into isles.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
