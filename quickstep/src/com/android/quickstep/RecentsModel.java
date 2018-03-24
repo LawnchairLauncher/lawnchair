@@ -30,6 +30,7 @@ import android.os.UserHandle;
 import android.support.annotation.WorkerThread;
 import android.util.LruCache;
 import android.util.SparseArray;
+import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -85,6 +86,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private ISystemUiProxy mSystemUiProxy;
     private boolean mClearAssistCacheOnStackChange = true;
     private final boolean mPreloadTasksInBackground;
+    private final AccessibilityManager mAccessibilityManager;
 
     private RecentsModel(Context context) {
         mContext = context;
@@ -111,6 +113,7 @@ public class RecentsModel extends TaskStackChangeListener {
 
         mTaskChangeId = 1;
         loadTasks(-1, null);
+        mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
     }
 
     public RecentsTaskLoader getRecentsTaskLoader() {
@@ -140,7 +143,7 @@ public class RecentsModel extends TaskStackChangeListener {
             // Preload the plan
             RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(mContext);
             PreloadOptions opts = new PreloadOptions();
-            opts.loadTitles = false;
+            opts.loadTitles = mAccessibilityManager.isEnabled();
             loadPlan.preloadPlan(opts, mRecentsTaskLoader, taskId, UserHandle.myUserId());
             // Set the load plan on UI thread
             mMainThreadExecutor.execute(() -> {
@@ -187,7 +190,7 @@ public class RecentsModel extends TaskStackChangeListener {
         launchOpts.onlyLoadPausedActivities = true;
         launchOpts.loadThumbnails = true;
         PreloadOptions preloadOpts = new PreloadOptions();
-        preloadOpts.loadTitles = false;
+        preloadOpts.loadTitles = mAccessibilityManager.isEnabled();
         plan.preloadPlan(preloadOpts, mRecentsTaskLoader, -1, userId);
         mRecentsTaskLoader.loadTasks(plan, launchOpts);
     }

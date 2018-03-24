@@ -96,6 +96,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         mTask = task;
         mSnapshotView.bind();
         task.addCallback(this);
+        setContentDescription(task.titleDescription);
     }
 
     public Task getTask() {
