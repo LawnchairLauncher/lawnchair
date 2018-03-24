@@ -326,7 +326,6 @@
   <string name="default_text">기본</string>
   <string name="edit_icon_reset">다시 설정</string>
   <string name="show_top_shadow_title">그림자 표시</string>
-  <string name="pref_cat_homescreen">홈 화면</string>
   <string name="theme_pref_title">테마</string>
   <string name="theme_light">밝은 테마</string>
   <string name="theme_dark">어두운 테마</string>
@@ -395,6 +394,7 @@
   <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
   <string name="pref_num_rows_drawer">앱 서랍 행 개수</string>
   <string name="center_wallpaper_pref_title">홈 화면이 하나일때 배경화면 가운데 표시</string>
+  <string name="center_wallpaper_pref_summary">홈 화면 페이지가 하나일 경우에만 작동합니다.</string>
   <string name="vertical_drawer_layout_pref_title">세로 목록으로 표시</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -417,12 +417,11 @@
   <string name="reset_alternative_icons_title">대체 아이콘을 재설정 하겠습니까?</string>
   <string name="reset_alternative_icons">대체 아이콘으로 설정 된 %1$d개의 앱을 재 설정 하 시겠습니까?</string>
   <string name="error_no_browser">URL을 처리하기위한 작업을 찾을수가 없음</string>
-  <string name="snowfall_title">눈 내리기</string>
-  <string name="enable_snowfall_title">홈화면에서 눈 내리기 효과 활성화</string>
-  <string name="enable_snowfall_summary">성능이 저하되는 문제가 발생할 수 있습니다.</string>
-  <string name="snowfall_enabled">\"눈아 내려라, 눈아 내려, 눈아 내려!\"</string>
-  <string name="snowflake_size_scale">눈송이 크기</string>
-  <string name="snowflakes_num">최대 눈송이 수</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed 업데이트가 필요합니다.</string>
   <string name="lawnfeed_outdated">현 버전의 Lawnchair와 연동하기위해서 새로운 버전의 Lawnfeed가 필요합니다.\n\n업데이트를 설치하기전에 현 버전의Lawnfeed를 삭제해야할것입니다.\n\n지금 다운로드 하시겠습니까?</string>
+  <string name="title_storage_permission_required">저장소 권한 필요</string>
+  <string name="content_storage_permission_required">Android 8.1 이상부터 앱이 배경화면에 접근하려면 저장소 권한이 필요합니다. 권한이 부여되지 않을 시 Lawnchair는 충돌이나 예기치 못한 동작을 보일 수 있습니다.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
