@@ -331,7 +331,6 @@
   <string name="default_text">Standar</string>
   <string name="edit_icon_reset">Setel ulang</string>
   <string name="show_top_shadow_title">Tampilkan bayangan atas</string>
-  <string name="pref_cat_homescreen">Layar Utama</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>
   <string name="theme_dark">Gelap</string>
@@ -400,6 +399,7 @@
   <string name="pref_all_apps_label_color">Warna ikon label di laci aplikasi</string>
   <string name="pref_num_rows_drawer">Jumlah baris pada laci</string>
   <string name="center_wallpaper_pref_title">Pusatkan Latar Belakang saat hanya ada satu halaman</string>
+  <string name="center_wallpaper_pref_summary">Hanya bekerja jika homescreen menggunakan satu halaman</string>
   <string name="vertical_drawer_layout_pref_title">Tampilkan sebagai daftar vertikal</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -422,14 +422,11 @@
   <string name="reset_alternative_icons_title">Setel ulang ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki %1$d aplikasi dengan ikon alternatif, apakah anda ingin mengulangi setelan?</string>
   <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
-  <string name="snowfall_title">Hujan salju</string>
-  <string name="enable_snowfall_title">Aktifkan hujan salju di Beranda</string>
-  <string name="enable_snowfall_summary">Dapat mempengaruhi masalah kinerja.</string>
-  <string name="snowfall_enabled">\"Bersalju lah, bersalju lah, bersalju lah!\"</string>
-  <string name="snowflake_size_scale">Skala ukuran kepingan salju</string>
-  <string name="snowflakes_num">Jumlah maksimal kepingan salju</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Dibutuhkan pembaharuan Lawfeed</string>
   <string name="lawnfeed_outdated">Dibutuhkan versi baru dari Lawnfeed agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
   <string name="title_storage_permission_required">Izin akses penyimpanan diperlukan</string>
   <string name="content_storage_permission_required">Di Android 8.1 keatas izin penyimpanan diperlukan aplikasi untuk mengakses wallpaper. Tanpa izin Lawnchair mungkin crash atau menunjukkan perilaku tak terduga.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
