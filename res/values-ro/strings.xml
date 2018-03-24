@@ -40,6 +40,10 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nu s-a găsit nicio aplicație pentru „<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Căutați mai multe aplicații"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificări"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Nu mai este loc pe acest Ecran de pornire."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spațiu epuizat în bara Preferate"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicații"</string>
@@ -138,4 +142,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Fiecare aplicație de serviciu are o insignă și este păstrată în siguranță de organizația dvs. Mutați aplicațiile pe ecranul de pornire pentru acces mai ușor."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat de organizația dvs."</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notificările și aplicațiile sunt dezactivate"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Închideți"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Închis"</string>
 </resources>

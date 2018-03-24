@@ -40,6 +40,10 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Inga appar som matchar <xliff:g id="QUERY">%1$s</xliff:g> hittades"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sök efter fler appar"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Aviseringar"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Det finns inte plats för mer på den här startskärmen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritfältet är fullt"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Applista"</string>
@@ -137,4 +141,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Alla jobbappar har ett märke och organisationen ser till att de är skyddade. Flytta apparna till startskärmen så kommer du åt dem lättare."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Hanteras av organisationen"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Aviseringar och appar är inaktiverade"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Stäng"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Stängd"</string>
 </resources>

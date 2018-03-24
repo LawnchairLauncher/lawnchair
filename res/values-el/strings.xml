@@ -40,6 +40,10 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Δεν βρέθηκαν εφαρμογές αντιστοίχισης για \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Αναζήτηση περισσότερων εφαρμογών"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>
@@ -137,4 +141,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Κάθε εφαρμογή εργασίας φέρει ένα σήμα και διατηρείται ασφαλής από τον οργανισμό σας. Μετακινήστε τις εφαρμογές εργασίας στην Αρχική οθόνη, για να έχετε πιο εύκολη πρόσβαση."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Διαχειριζόμενο από τον οργανισμό σας"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Οι ειδοποιήσεις και οι εφαρμογές είναι απενεργοποιημένες"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Κλείσιμο"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Κλειστή"</string>
 </resources>

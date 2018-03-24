@@ -40,9 +40,15 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nem található alkalmazás a(z) „<xliff:g id="QUERY">%1$s</xliff:g>” lekérdezésre"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"További alkalmazások keresése"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Értesítések"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Nincs több hely ezen a kezdőképernyőn."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nincs több hely a Kedvencek tálcán"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Alkalmazások listája"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Személyes alkalmazások listája"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Munkahelyi alkalmazások listája"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Főoldal"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Törlés"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Eltávolítás"</string>
@@ -77,19 +83,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Háttérképek"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"A Home beállításai"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"A rendszergazda letiltotta"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Áttekintés"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"A kezdőképernyő elforgatásának engedélyezése"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"A telefon elforgatásakor"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"A jelenlegi kijelzőbeállítások nem teszik lehetővé az elforgatást"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Értesítési pöttyök"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Bekapcsolva"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Kikapcsolva"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Értesítésekhez való hozzáférésre van szükség"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Az értesítési pöttyök megjelenítéséhez kapcsolja be a(z) <xliff:g id="NAME">%1$s</xliff:g> alkalmazás értesítéseit"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Beállítások módosítása"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Értesítési pöttyök megjelenítése"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ikon hozzáadása a kezdőképernyőhöz"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Új alkalmazásoknál"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Ikon formájának módosítása"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"a kezdőképernyőn"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Alapértelmezett érték használata"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Négyzet"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Squircle"</string>
@@ -119,9 +123,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Mappa létrehozása a következővel: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Mappa létrehozva"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Áthelyezés a kezdőképernyőre"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Képernyő mozgatása balra"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Képernyő mozgatása jobbra"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Képernyő áthelyezve"</string>
     <string name="action_resize" msgid="1802976324781771067">"Átméretezés"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Szélesség növelése"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Magasság növelése"</string>
@@ -137,8 +138,9 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Munkahelyi"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Munkaprofil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Itt kereshet munkahelyi alkalmazásokat"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"A munkahelyi alkalmazásoknál jelvény található, és biztonságukról az Ön szervezete gondoskodik. A könnyebb hozzáférés érdekében helyezze át az alkalmazásokat a kezdőképernyőre."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Az Ön szervezete kezeli"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Az értesítések és az alkalmazások ki vannak kapcsolva"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Bezárás"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Bezárva"</string>
 </resources>
