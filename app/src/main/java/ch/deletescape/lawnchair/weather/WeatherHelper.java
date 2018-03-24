@@ -5,9 +5,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,8 +20,11 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChangeListener, Runnable, WeatherAPI.WeatherCallback {
     private static final int DELAY = 500 * 3600;
@@ -77,26 +83,32 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     private void setUnits(String units) {
-        mApi.setUnits(units.equals("imperial") ? WeatherAPI.Units.IMPERIAL : WeatherAPI.Units.METRIC);
+        mApi.setUnits(units.equals(WeatherAPI.Units.IMPERIAL.getLongName()) ? WeatherAPI.Units.IMPERIAL : WeatherAPI.Units.METRIC);
     }
 
     private void setupOnClickListener(final Context context) {
+        final Launcher launcher = LauncherAppState.getInstance().getLauncher();
+        final Rect sourceBounds = launcher.getViewBounds(mTemperatureView);
+        final Bundle options = launcher.getActivityLaunchOptions(mTemperatureView);
         mTemperatureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Launcher launcher = LauncherAppState.getInstance().getLauncher();
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
-                    intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
-                            "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
-                    intent.setSourceBounds(launcher.getViewBounds(mTemperatureView));
-                    context.startActivity(intent, launcher.getActivityLaunchOptions(mTemperatureView));
-                } catch (ActivityNotFoundException | IllegalArgumentException e) {
-                    Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                if (PackageManagerHelper.isAppEnabled(context.getPackageManager(), "com.google.android.googlequicksearchbox", 0)) {
+                    openGoogleWeather(context, sourceBounds, options);
+                } else {
+                    Utilities.openURLinBrowser(context, mApi.getForecastURL(), sourceBounds, options);
                 }
             }
         });
+    }
+
+    private void openGoogleWeather(Context context, Rect sourceBounds, Bundle options) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
+        intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
+                "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
+        intent.setSourceBounds(sourceBounds);
+        context.startActivity(intent, options);
     }
 
     @Override

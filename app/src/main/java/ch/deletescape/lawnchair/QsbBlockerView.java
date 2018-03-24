@@ -112,7 +112,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (view == null || switching) {
             if (Utilities.getPrefs(getContext()).getEnablePlanes()) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if ((Utilities.getPrefs(getContext()).getShowWeather() && !switchToDate) || (switching && !switchToDate)) {
+            } else if (!switchToDate && (Utilities.getPrefs(getContext()).getShowWeather()  || switching)) {
                 weatherShowing = true;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
 

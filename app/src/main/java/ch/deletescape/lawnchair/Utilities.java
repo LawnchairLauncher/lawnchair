@@ -1130,23 +1130,36 @@ public final class Utilities {
         }
 
         new AlertDialog.Builder(context)
-            .setTitle(R.string.lawnfeed_outdated_title)
-            .setMessage(R.string.lawnfeed_outdated)
-            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    try {
+                .setTitle(R.string.lawnfeed_outdated_title)
+                .setMessage(R.string.lawnfeed_outdated)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         // Open website with download link for Lawnfeed
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
-                        context.startActivity(intent);
-                    } catch (ActivityNotFoundException exc) {
-                        // Believe me, this actually happens.
-                        Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+                        openURLinBrowser(context, "https://lawnchair.info/getlawnfeed.html");
                     }
-                }
-            })
-            .setNegativeButton(android.R.string.no, null)
-            .show();
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    public static void openURLinBrowser(Context context, String url) {
+        openURLinBrowser(context, url, null, null);
+    }
+
+    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.setSourceBounds(sourceBounds);
+            if(options == null){
+                context.startActivity(intent);
+            } else {
+                context.startActivity(intent, options);
+            }
+        } catch (ActivityNotFoundException exc) {
+            // Believe me, this actually happens.
+            Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static boolean checkOutdatedLawnfeed(Context context) {
