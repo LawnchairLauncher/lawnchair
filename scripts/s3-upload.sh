@@ -7,7 +7,7 @@ HOST=$3
 FILE=$1
 BUCKET=$2
 RESOURCE="/${BUCKET}/${FILE}"
-CONTENT_TYPE=$(mimetype -b $FILE)
+CONTENT_TYPE=$(file --mime-type -b $FILE)
 TIMESTAMP=$(date -R)
 STRING_TO_SIGN="PUT\n\n${CONTENT_TYPE}\n${TIMESTAMP}\n${RESOURCE}"
 
