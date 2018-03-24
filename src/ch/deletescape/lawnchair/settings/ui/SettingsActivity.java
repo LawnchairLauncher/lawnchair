@@ -18,10 +18,8 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -32,7 +30,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -69,6 +66,7 @@ import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import static com.android.launcher3.Utilities.restartLauncher;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -398,20 +396,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                                 Log.e("SettingsActivity", "Error waiting", e);
                             }
 
-                            if (Utilities.ATLEAST_MARSHMALLOW) {
-                                // Schedule an alarm before we kill ourself.
-                                Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                                        .addCategory(Intent.CATEGORY_HOME)
-                                        .setPackage(mContext.getPackageName())
-                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                PendingIntent pi = PendingIntent.getActivity(mContext, 0,
-                                        homeIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-                                getContext().getSystemService(AlarmManager.class).setExact(
-                                        AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pi);
-                            }
-
-                            // Kill process
-                            android.os.Process.killProcess(android.os.Process.myPid());
+                            restartLauncher(mContext);
                         }
                     });
                     return true;
