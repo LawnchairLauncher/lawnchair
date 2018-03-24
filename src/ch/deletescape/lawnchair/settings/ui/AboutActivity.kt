@@ -33,7 +33,7 @@ class AboutActivity : SettingsBaseActivity(), View.OnClickListener {
         findViewById<View>(R.id.lawnchairCard).apply {
             setOnClickListener {
                 context.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://github.com/deletescape-media/lawnchair")))
+                        Uri.parse("https://github.com/LawnchairLauncher/Lawnchair")))
             }
             setOnLongClickListener {
                 val componentName = ComponentName(context, Launcher::class.java)
