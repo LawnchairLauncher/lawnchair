@@ -35,6 +35,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,6 +46,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +92,15 @@ import ch.deletescape.lawnchair.util.PackageUserKey;
 @TargetApi(Build.VERSION_CODES.N)
 public class PopupContainerWithArrow extends AbstractFloatingView implements DragSource,
         DragController.DragListener {
+    public static final int ROUNDED_TOP_CORNERS = 1 << 0;
+    public static final int ROUNDED_BOTTOM_CORNERS = 1 << 1;
+
+    @IntDef(flag = true, value = {
+            ROUNDED_TOP_CORNERS,
+            ROUNDED_BOTTOM_CORNERS
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public  @interface RoundedCornerFlags {}
 
     protected final Launcher mLauncher;
     private final int mStartDragThreshold;
@@ -259,72 +271,75 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
-        final int spacing = res.getDimensionPixelSize(mTheme.getItemSpacing());
-        final LayoutInflater inflater = LayoutInflater.from(getContext());
-        int corners = PopupItemView.CORNERS_ALL;
-        boolean i4, i5;
-        int i6;
+        final LayoutInflater inflater = mLauncher.getLayoutInflater();
 
+        int shortcutsItemRoundedCorners = ROUNDED_TOP_CORNERS | ROUNDED_BOTTOM_CORNERS;
         int numItems = itemTypesToPopulate.length;
         for (int i = 0; i < numItems; i++) {
             PopupPopulator.Item itemTypeToPopulate = itemTypesToPopulate[i];
-            PopupPopulator.Item previousItemTypeToPopulate =
+            PopupPopulator.Item prevItemTypeToPopulate =
                     i > 0 ? itemTypesToPopulate[i - 1] : null;
             PopupPopulator.Item nextItemTypeToPopulate =
                     i < numItems - 1 ? itemTypesToPopulate[i + 1] : null;
             final View item = inflater.inflate(itemTypeToPopulate.layoutId, this, false);
-            i4 = previousItemTypeToPopulate != null && previousItemTypeToPopulate.isShortcut != itemTypeToPopulate.isShortcut;
-            i5 = nextItemTypeToPopulate != null && nextItemTypeToPopulate.isShortcut != itemTypeToPopulate.isShortcut;
+
+            boolean shouldUnroundTopCorners = prevItemTypeToPopulate != null
+                    && itemTypeToPopulate.isShortcut ^ prevItemTypeToPopulate.isShortcut;
+            boolean shouldUnroundBottomCorners = nextItemTypeToPopulate != null
+                    && itemTypeToPopulate.isShortcut ^ nextItemTypeToPopulate.isShortcut;
 
             if (itemTypeToPopulate == PopupPopulator.Item.NOTIFICATION) {
                 mNotificationItemView = (NotificationItemView) item;
-                int footerHeight = notificationFooterHasIcons ?
-                        res.getDimensionPixelSize(R.dimen.notification_footer_height) :
-                        res.getDimensionPixelSize(R.dimen.notification_empty_footer_height);
-                if (notificationFooterHasIcons)
-                    mNotificationItemView.findViewById(R.id.divider).setVisibility(VISIBLE);
+                int footerHeight = res.getDimensionPixelSize(
+                        notificationFooterHasIcons ? R.dimen.notification_footer_height
+                                : R.dimen.notification_empty_footer_height);
                 item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
-                i6 = PopupItemView.CORNERS_ALL;
-                if (i4) {
-                    i6 = PopupItemView.CORNERS_BOTTOM;
+                if (notificationFooterHasIcons) {
+                    mNotificationItemView.findViewById(R.id.divider).setVisibility(VISIBLE);
+                }
+
+                int roundedCorners = ROUNDED_TOP_CORNERS | ROUNDED_BOTTOM_CORNERS;
+                if (shouldUnroundTopCorners) {
+                    roundedCorners &= ~ROUNDED_TOP_CORNERS;
                     mNotificationItemView.findViewById(R.id.gutter_top).setVisibility(VISIBLE);
                 }
-                if (i5) {
-                    i6 &= -PopupItemView.CORNERS_ALL;
+                if (shouldUnroundBottomCorners) {
+                    roundedCorners &= ~ROUNDED_BOTTOM_CORNERS;
                     mNotificationItemView.findViewById(R.id.gutter_bottom).setVisibility(VISIBLE);
                 }
                 mNotificationItemView.setBackgroundWithCorners(
-                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorTertiary), i6);
+                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorTertiary), roundedCorners);
                 mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
             } else if (itemTypeToPopulate == PopupPopulator.Item.SHORTCUT) {
                 item.setAccessibilityDelegate(mAccessibilityDelegate);
             }
-
-            boolean shouldAddBottomMargin = nextItemTypeToPopulate != null
-                    && itemTypeToPopulate.isShortcut ^ nextItemTypeToPopulate.isShortcut;
 
             if (itemTypeToPopulate.isShortcut) {
                 if (mShortcutsItemView == null) {
                     mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
                             R.layout.shortcuts_item, this, false);
                     addItem(inflater, mShortcutsItemView);
-                    if (i4) {
-                        corners &= -PopupItemView.CORNERS_BOTTOM;
+                    if (shouldUnroundTopCorners) {
+                        shortcutsItemRoundedCorners &= ~ROUNDED_TOP_CORNERS;
+                    }
+                }
+                if (itemTypeToPopulate != PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
+                    int prevHeight = item.getLayoutParams().height;
+                    if (item instanceof DeepShortcutView) {
+                        float iconScale = (float) item.getLayoutParams().height / prevHeight;
+                        ((DeepShortcutView) item).getIconView().setScaleX(iconScale);
+                        ((DeepShortcutView) item).getIconView().setScaleY(iconScale);
                     }
                 }
                 mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
-                if (shouldAddBottomMargin && spacing != 0) {
-                    ((LayoutParams) mShortcutsItemView.getLayoutParams()).bottomMargin = spacing;
-                }
-                if (i5) {
-                    corners &= -PopupItemView.CORNERS_ALL;
+                if (shouldUnroundBottomCorners) {
+                    shortcutsItemRoundedCorners &= ~ROUNDED_BOTTOM_CORNERS;
                 }
             } else {
                 addItem(inflater, item);
-                ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
             }
         }
-        mShortcutsItemView.setBackgroundWithCorners(Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), corners);
+        mShortcutsItemView.setBackgroundWithCorners(Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), shortcutsItemRoundedCorners);
     }
 
     private void addItem(LayoutInflater inflater, View item) {
@@ -690,7 +705,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                     mNotificationItemView.getHeightMinusFooter(), duration));
             if (mShortcutsItemView != null) {
                 mShortcutsItemView.setBackgroundWithCorners(
-                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), PopupItemView.CORNERS_ALL);
+                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), ROUNDED_BOTTOM_CORNERS | ROUNDED_TOP_CORNERS);
             }
             AnimatorListenerAdapter removeNotificationView = new AnimatorListenerAdapter() {
                 @Override

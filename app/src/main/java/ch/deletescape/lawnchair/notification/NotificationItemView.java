@@ -112,7 +112,7 @@ public class NotificationItemView extends PopupItemView {
         } else {
             rect2.bottom -= heightToRemove;
         }
-        animations.play(new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(), rect, rect2, mCorners).createRevealAnimator(this, false));
+        animations.play(new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(), rect, rect2, mRoundedCorners).createRevealAnimator(this, false));
         View findViewById = findViewById(R.id.gutter_bottom);
         if (findViewById != null && findViewById.getVisibility() == VISIBLE) {
             Animator ofFloat = ObjectAnimator.ofFloat(findViewById, TRANSLATION_Y, -heightToRemove);
