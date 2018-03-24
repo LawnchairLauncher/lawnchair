@@ -15,17 +15,12 @@
  */
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.Utilities.getDevicePrefs;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -39,6 +34,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LooperExecutor;
 
 import java.lang.reflect.Field;
+
+import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.Utilities.restartLauncher;
 
 /**
  * Utility class to override shape of {@link android.graphics.drawable.AdaptiveIconDrawable}.
@@ -175,6 +173,7 @@ public class IconShapeOverride {
             mValue = value;
         }
 
+        @SuppressLint("ApplySharedPref")
         @Override
         public void run() {
             // Synchronously write the preference.
@@ -189,18 +188,7 @@ public class IconShapeOverride {
                 Log.e(TAG, "Error waiting", e);
             }
 
-            // Schedule an alarm before we kill ourself.
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_HOME)
-                    .setPackage(mContext.getPackageName())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pi = PendingIntent.getActivity(mContext, RESTART_REQUEST_CODE,
-                    homeIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-            mContext.getSystemService(AlarmManager.class).setExact(
-                    AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pi);
-
-            // Kill process
-            android.os.Process.killProcess(android.os.Process.myPid());
+            restartLauncher(mContext);
         }
     }
 }
