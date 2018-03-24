@@ -272,6 +272,7 @@
   <string name="num_hotseat_icons_pref_title">Antal ikoner i docken</string>
   <string name="icon_scale_pref_title">Ikon størrelse</string>
   <string name="hotseat_height_scale">Dock højde</string>
+  <string name="hotseat_custom_opacity">Dock opacitet</string>
   <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
   <string name="full_width_width_widgets_pref_title">Fuld bredde widgets</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
@@ -322,7 +323,6 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Nulstil</string>
   <string name="show_top_shadow_title">Vis skygge i toppen</string>
-  <string name="pref_cat_homescreen">Hjemmeskærm</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Lyst</string>
   <string name="theme_dark">Mørkt</string>
@@ -393,6 +393,8 @@
   <string name="hidden_app">Skjulte app</string>
   <string name="hide_app_apply">Anvend</string>
   <string name="hide_app_reset">Nulstil</string>
-  <string name="snowfall_enabled">\"Lad det sne, lad det sne, lad det sne!\"</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated">En nyere version af Lawnfeed er nødvendig for at arbejde med denne version af Lawnchair. \n\nFør du installerer denne opdatering, vil du sandsynligvis blive nødt til at afinstallere den aktuelle version af Lawnfeed.\n\n Ønsker du at hente den nu?</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

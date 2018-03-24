@@ -327,7 +327,6 @@
   <string name="default_text">Par défaut</string>
   <string name="edit_icon_reset">Réinitialiser</string>
   <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
-  <string name="pref_cat_homescreen">Écran d\'accueil</string>
   <string name="theme_pref_title">Thème</string>
   <string name="theme_light">Clair</string>
   <string name="theme_dark">Sombre</string>
@@ -396,6 +395,7 @@
   <string name="pref_all_apps_label_color">Couleur des libellés des icônes dans le tiroir des applications</string>
   <string name="pref_num_rows_drawer">Nombre de lignes dans le tiroir des applications</string>
   <string name="center_wallpaper_pref_title">Centrer le fond d\'écran quand il n\'y a qu\'une page</string>
+  <string name="center_wallpaper_pref_summary">Ne fonctionne que si l’écran d’accueil n\'utilise qu\'une seule page</string>
   <string name="vertical_drawer_layout_pref_title">Affichage en liste verticale</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -418,14 +418,11 @@
   <string name="reset_alternative_icons_title">Réinitialiser les icônes alternatives d\'applications ?</string>
   <string name="reset_alternative_icons">Vous avez %1$d applications avec des icônes alternatives, souhaitez-vous les réinitialiser ?</string>
   <string name="error_no_browser">Aucune application trouvée pour gérer les URLs</string>
-  <string name="snowfall_title">Chutes de neige</string>
-  <string name="enable_snowfall_title">Activer les chutes de neige sur l’écran d’accueil</string>
-  <string name="enable_snowfall_summary">Peut causer des problèmes de performances.</string>
-  <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
-  <string name="snowflake_size_scale">Échelle de taille des flocons de neige</string>
-  <string name="snowflakes_num">Nombre max de flocons de neige</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Mise à jour de Lawnfeed requise</string>
   <string name="lawnfeed_outdated">Une nouvelle version de Lawnfeed est nécessaire pour fonctionner avec cette version de Lawnchair.\n\nAvant l\'installation de la mise à jour, vous aurez probablement besoin de désinstaller la version actuelle de Lawnfeed.\n\nVoulez-vous la télécharger maintenant ?</string>
   <string name="title_storage_permission_required">Autorisation de stockage requise</string>
   <string name="content_storage_permission_required">À partir d\'Android 8.1, l\'autorisation d’accéder au stockage est requise pour les applis voulant accéder aux fonds d\'écran. Sans cette autorisation Lawnchair pourrait planter ou montrer des comportements inattendus.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

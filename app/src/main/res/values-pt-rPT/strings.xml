@@ -325,7 +325,6 @@
   <string name="default_text">Predefinição</string>
   <string name="edit_icon_reset">Restaurar</string>
   <string name="show_top_shadow_title">Mostrar sombra superior</string>
-  <string name="pref_cat_homescreen">Ecrã Inicial</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Escuro</string>
@@ -416,12 +415,9 @@
   <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer para repô-los?</string>
   <string name="error_no_browser">Nenhuma atividade encontrada para manipular URLs</string>
-  <string name="snowfall_title">Neve</string>
-  <string name="enable_snowfall_title">Permitir a queda de neve na tela inicial</string>
-  <string name="enable_snowfall_summary">Pode causar problemas de desempenho.</string>
-  <string name="snowfall_enabled">\"Deixe nevar, deixe nevar, deixe nevar!\"</string>
-  <string name="snowflake_size_scale">Escala de tamanho do floco de neve</string>
-  <string name="snowflakes_num">Número máximo de flocos de neve</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed atualização necessária</string>
   <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessário para trabalhar com esta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-lo agora?</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

@@ -62,14 +62,14 @@
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Inici</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">Eliminar</string>
+  <string name="remove_drop_target_label">Elimina</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">Desinstal·lar</string>
+  <string name="uninstall_drop_target_label">Desinstal·la</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Dades de l\'aplicació</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">instal·lar dreceres</string>
+  <string name="permlab_install_shortcut">instal·la dreceres</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Permet que una aplicació afegeixi dreceres sense la intervenció de l\'usuari.</string>
   <!-- Permission short label -->
@@ -88,7 +88,7 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Configuració</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Aquesta aplicació és una aplicació del sistema i no es pot desinstal·lar.</string>
+  <string name="uninstall_system_app_text">Aquesta és una aplicació del sistema i no es pot desinstal·lar.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Carpeta sense nom</string>
   <!-- Accessibility -->
@@ -99,14 +99,14 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Pantalla d\'inici %1$d de %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Pàgina de la pantalla d\'inici nova</string>
+  <string name="workspace_new_page">Nova pàgina d\'inici</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">S\'ha obert la carpeta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Toca per tancar la carpeta</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Toca per desar el nom nou</string>
+  <string name="folder_tap_to_rename">Toca per desar el canvi de nom</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Carpeta tancada</string>
   <!-- Folder renamed format -->
@@ -131,9 +131,9 @@
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
   <string name="package_state_unknown">Desconegut</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">Suprimeix</string>
+  <string name="abandoned_clean_this">Elimina</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Cercar</string>
+  <string name="abandoned_search">Cerca</string>
   <!-- Title for abandoned promise dialog. -->
   <string name="abandoned_promises_title">Aquesta aplicació no està instal·lada</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
@@ -153,33 +153,33 @@
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">S\'ha suprimit l\'element</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Desplaça l\'element</string>
+  <string name="action_move">Mou l\'element</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Desplaça l\'element a la fila <xliff:g id="NUMBER_0">%1$s</xliff:g> i la columna <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Mou a la fila <xliff:g example="1" id="number">%1$d</xliff:g> i la columna <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Desplaça l\'element a la posició <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_position">Mou a la posició <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Desplaça l\'element a la posició de preferits <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Mou a preferits a la posició <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Element desplaçat</string>
+  <string name="item_moved">S\'ha mogut l\'element</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Afegeix l\'element a la carpeta: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Afegeix a la carpeta: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Afegeix l\'element a la carpeta amb <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Afegeix a la carpeta amb <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Element afegit a la carpeta</string>
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Crea una carpeta amb: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Carpeta creada</string>
+  <string name="folder_created">S\'ha creat la carpeta</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Desplaça a la pantalla d\'inici</string>
+  <string name="action_move_to_workspace">Mou a la pantalla d\'inici</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_left">Desplaça la pantalla cap a l\'esquerra</string>
+  <string name="action_move_screen_left">Mou la pantalla a l\'esquerra</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_right">Desplaça la pantalla cap a la dreta</string>
+  <string name="action_move_screen_right">Mou la pantalla a la dreta</string>
   <!-- Accessibility confirmation when a screen was moved. -->
-  <string name="screen_moved">S\'ha desplaçat la pantalla</string>
+  <string name="screen_moved">S\'ha mogut la pantalla</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
   <string name="action_resize">Canvia la mida</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
@@ -191,7 +191,7 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Redueix l\'alçada</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">S\'ha canviat la mida del giny a l\'amplada <xliff:g example="2" id="number">%1$d</xliff:g> i alçada <xliff:g example="1" id="number">%2$d</xliff:g></string>
+  <string name="widget_resized">S\'ha canviat la mida del giny a l\'amplada <xliff:g example="2" id="number">%1$d</xliff:g> i l\'alçada <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Dreceres</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -201,21 +201,21 @@
   <string name="wallpaper_instructions">Estableix el fons de pantalla</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-  <string name="image_load_fail">No s\'ha pogut carregar la imatge.</string>
+  <string name="image_load_fail">No s\'ha pogut carregar la imatge</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">No s\'ha pogut carregar la imatge com a fons de pantalla.</string>
+  <string name="wallpaper_load_fail">No s\'ha pogut carregar la imatge com a fons de pantalla</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
-  <string name="wallpaper_set_fail">No s\'ha pogut definir la imatge com a fons de pantalla</string>
+  <string name="wallpaper_set_fail">No s\'ha pogut establir la imatge com a fons de pantalla</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="one">Seleccionats: %1$d</item>
-    <item quantity="other">Seleccionats: %1$d</item>
+    <item quantity="one">%1$d seleccionat</item>
+    <item quantity="other">%1$d seleccionats</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
@@ -229,7 +229,7 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">Fons de pantalla</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">Retallar fons de pantalla</string>
+  <string name="crop_wallpaper">Retalla el fons de pantalla</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">Pantalla d\'inici</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
@@ -327,7 +327,6 @@
   <string name="default_text">Per defecte</string>
   <string name="edit_icon_reset">Reinicia</string>
   <string name="show_top_shadow_title">Mostra les ombres superiors</string>
-  <string name="pref_cat_homescreen">Pantalla d\'inici</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Clar</string>
   <string name="theme_dark">Fosc</string>
@@ -396,6 +395,7 @@
   <string name="pref_all_apps_label_color">Color de les etiquetes de les aplicacions al llistat</string>
   <string name="pref_num_rows_drawer">Número de files del llistat d\'aplicacions</string>
   <string name="center_wallpaper_pref_title">Centra el fons de pantalla quan només hi ha una pàgina</string>
+  <string name="center_wallpaper_pref_summary">Només funciona si la pantalla d\'inici fa servir una pàgina</string>
   <string name="vertical_drawer_layout_pref_title">Mostra com a llista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -418,14 +418,11 @@
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
   <string name="error_no_browser">No s\'ha trobat cap activitat per manegar l\'URL</string>
-  <string name="snowfall_title">Neu</string>
-  <string name="enable_snowfall_title">Permet que hi nevi a la pantalla d\'inici</string>
-  <string name="enable_snowfall_summary">Pot provocar problemes de rendiment.</string>
-  <string name="snowfall_enabled">\"Deixa nevar, deixa nevar, deixa nevar!\"</string>
-  <string name="snowflake_size_scale">Escala de mida del floc de neu</string>
-  <string name="snowflakes_num">Número màxim de flocs de neu</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
   <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
   <string name="title_storage_permission_required">Cal permís d\'emmagatzematge</string>
   <string name="content_storage_permission_required">A Android 8.1 i versions superiors, es requereix permís d\'emmagatzematge perquè les aplicacions accedeixin al fons de pantalla. Sense aquest permís Lawnchair podria bloquejar o mostrar comportaments inesperats.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

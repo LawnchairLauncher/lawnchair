@@ -266,8 +266,8 @@
   <string name="hide_all_apps_icon_labels_pref_title">隱藏應用程式清單中的文字</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
   <string name="all_apps_opacity_pref_title">抽屜不透明度</string>
-  <string name="num_cols_pref_title">列數</string>
-  <string name="num_rows_pref_title">行數</string>
+  <string name="num_cols_pref_title">欄數</string>
+  <string name="num_rows_pref_title">列數</string>
   <string name="num_hotseat_icons_pref_title">Dock 欄上的圖示數量</string>
   <string name="icon_scale_pref_title">圖示大小</string>
   <string name="hotseat_height_scale">高度範圍</string>
@@ -326,7 +326,6 @@
   <string name="default_text">預設</string>
   <string name="edit_icon_reset">重設</string>
   <string name="show_top_shadow_title">顯示頂部陰影</string>
-  <string name="pref_cat_homescreen">主螢幕</string>
   <string name="theme_pref_title">主題</string>
   <string name="theme_light">亮色主題</string>
   <string name="theme_dark">暗色主題</string>
@@ -385,7 +384,7 @@
   <string name="about_icon_designer">應用程式圖示的設計者</string>
   <string name="about_contributors_title">貢獻者</string>
   <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供商</string>
-  <string name="num_cols_drawer_pref_title">應用程式抽屜的列數</string>
+  <string name="num_cols_drawer_pref_title">應用程式抽屜的欄數</string>
   <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
   <string name="pref_backport_shortcuts">向低版本 Android 啟用應用捷徑</string>
   <string name="weather_api_key_not_set">API Key 尚未設定</string>
@@ -393,8 +392,9 @@
   <string name="about_changelog">更新日誌</string>
   <string name="pref_all_apps_custom_label_color">使用自訂標籤顏色</string>
   <string name="pref_all_apps_label_color">應用程式抽屜圖示的標籤顏色</string>
-  <string name="pref_num_rows_drawer">應用程式清單的行數</string>
+  <string name="pref_num_rows_drawer">應用程式清單的列數</string>
   <string name="center_wallpaper_pref_title">當僅有一頁時，置中桌布</string>
+  <string name="center_wallpaper_pref_summary">當僅有一頁時才有效</string>
   <string name="vertical_drawer_layout_pref_title">顯示為縱向清單</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -417,15 +417,12 @@
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
   <string name="error_no_browser">找不到處理 URL 的 Activity</string>
-  <string name="snowfall_title">降雪</string>
-  <string name="enable_snowfall_title">在主畫面上啟用降雪</string>
-  <string name="enable_snowfall_summary">可能會導致性能問題</string>
-  <string name="snowfall_enabled">讓他下!! 讓他下!! 讓他下!!</string>
-  <string name="snowflake_size_scale">雪花的大小</string>
-  <string name="snowflakes_num">雪花的最大數量</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">需要新版本的 Lawnfeed 才能使用此版本的 Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的
  Lawnfeed。\n\n您想現在下載嗎？</string>
   <string name="title_storage_permission_required">需要儲存權限</string>
-  <string name="content_storage_permission_required">在Android 8.1及以上版本中，應用使用壁紙需要存儲權限。如果沒有權限，Lawnchair可能會崩潰或顯示錯誤信息。</string>
+  <string name="content_storage_permission_required">在 Android 8.1 及以上版本中，應用程式存取桌布需要存儲權限。 沒有上述權限許可，Lawnchair 可能會發生錯誤或顯示意外的行為。</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

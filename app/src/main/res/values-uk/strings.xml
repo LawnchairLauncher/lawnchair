@@ -325,7 +325,6 @@
   <string name="default_text">За замовчанням</string>
   <string name="edit_icon_reset">Скинути</string>
   <string name="show_top_shadow_title">Показувати тінь зверху</string>
-  <string name="pref_cat_homescreen">Головний екран</string>
   <string name="theme_pref_title">Тема оформлення</string>
   <string name="theme_light">Світла</string>
   <string name="theme_dark">Темна</string>
@@ -401,10 +400,8 @@
   <string name="hide_app">Приховати програму</string>
   <string name="hide_app_apply">Застосувати</string>
   <string name="hide_app_reset">Скинути</string>
-  <string name="snowfall_title">Снігопад</string>
-  <string name="enable_snowfall_title">Увімкнути снігопад на домашньому екрані</string>
-  <string name="snowfall_enabled">Хай сніжить</string>
-  <string name="snowflake_size_scale">Розмір сніжинки</string>
-  <string name="snowflakes_num">Максимальна кількість сніжинок</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Необхідне оновлення Lawnfeed</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

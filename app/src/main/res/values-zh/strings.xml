@@ -326,7 +326,6 @@
   <string name="default_text">默认</string>
   <string name="edit_icon_reset">重置</string>
   <string name="show_top_shadow_title">显示顶部阴影</string>
-  <string name="pref_cat_homescreen">主屏幕</string>
   <string name="theme_pref_title">主题</string>
   <string name="theme_light">亮色主题</string>
   <string name="theme_dark">暗色主题</string>
@@ -395,6 +394,7 @@
   <string name="pref_all_apps_label_color">抽屉应用标签颜色</string>
   <string name="pref_num_rows_drawer">抽屉网格行数</string>
   <string name="center_wallpaper_pref_title">当桌面只有一页时居中壁纸</string>
+  <string name="center_wallpaper_pref_summary">仅当桌面只有一页时才起作用</string>
   <string name="vertical_drawer_layout_pref_title">垂直列表布局</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -417,14 +417,11 @@
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
   <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
-  <string name="snowfall_title">降雪</string>
-  <string name="enable_snowfall_title">在主屏幕开启雪花特效</string>
-  <string name="enable_snowfall_summary">这可能会引起性能问题。</string>
-  <string name="snowfall_enabled">“今天的风儿真喧嚣，不如来点儿雪花飘！”</string>
-  <string name="snowflake_size_scale">雪花大小缩放</string>
-  <string name="snowflakes_num">最大雪花数量</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
   <string name="title_storage_permission_required">需要存储权限</string>
-  <string name="content_storage_permission_required">在Android 8.1及以上版本中，应用使用壁纸需要存储权限。 如果没有权限，Lawnchair可能会崩溃或显示错误信息。</string>
+  <string name="content_storage_permission_required">在 Android 8.1 及以上版本中，应用访问壁纸需要存储权限。 没有上述权限许可，Lawnchair 可能会崩溃或出现意外的行为。</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

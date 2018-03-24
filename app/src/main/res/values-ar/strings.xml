@@ -329,7 +329,6 @@
   <string name="default_text">الافتراضي</string>
   <string name="edit_icon_reset">إعادة ضبط</string>
   <string name="show_top_shadow_title">إظهار الظل العلوي</string>
-  <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
   <string name="theme_pref_title">السمة</string>
   <string name="theme_light">فاتح</string>
   <string name="theme_dark">داكن</string>
@@ -420,12 +419,9 @@
   <string name="reset_alternative_icons_title">إعادة تعيين أيقونات التطبيقات البديلة؟</string>
   <string name="reset_alternative_icons">لديك %1$d برموز بديلة, هل تريد إعادة تعيينها؟</string>
   <string name="error_no_browser">لم يتم العثور علي اي أنشطة للتعامل مع عناوين URL</string>
-  <string name="snowfall_title">تساقط الثلوج</string>
-  <string name="enable_snowfall_title">تفعيل تساقط الثلوج على الشاشة الرئيسية</string>
-  <string name="enable_snowfall_summary">قد يسبب مشاكل في الأداء.</string>
-  <string name="snowfall_enabled">\"فليتساقط الثلج, فليتساقط الثلج, فليتساقط الثلج!\"</string>
-  <string name="snowflake_size_scale">مقياس حجم حبة الثلج</string>
-  <string name="snowflakes_num">أقصى عدد لحبيبات الثلج</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">مطلوب تحديث Lawnfeed</string>
   <string name="lawnfeed_outdated">اصدار اعلي من Lawnfeed مطلوب للعمل مع هذه الاصدار.\n\n قبل تثبيت هذا التحديث عليك ازاله النسخه الحاليه من Lawnfeed. هل تريد الغاء تثبيته الأن؟</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

@@ -326,7 +326,6 @@
   <string name="default_text">Προεπιλογή</string>
   <string name="edit_icon_reset">Επαναφορά</string>
   <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
-  <string name="pref_cat_homescreen">Αρχική οθόνη</string>
   <string name="theme_pref_title">Θέμα</string>
   <string name="theme_light">Φωτεινό</string>
   <string name="theme_dark">Σκοτεινό</string>
@@ -417,12 +416,9 @@
   <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
   <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
   <string name="error_no_browser">Δεν βρέθηκε καμία δραστηριότητα για να διαχειριστεί τις διευθύνσεις URL</string>
-  <string name="snowfall_title">Χιονόπτωση</string>
-  <string name="enable_snowfall_title">Ενεργοποίηση Χιονόπτωσης στην αρχική οθόνη</string>
-  <string name="enable_snowfall_summary">Μπορεί να προκαλέσει προβλήματα επιδόσεων.</string>
-  <string name="snowfall_enabled">\"Ας χιονίσει, ας χιονίσει, ας χιονίσει!\"</string>
-  <string name="snowflake_size_scale">Κλίμακα μεγέθους νιφάδας χιονιού</string>
-  <string name="snowflakes_num">Μέγιστος αριθμός νιφάδων χιονιού</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
   <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>

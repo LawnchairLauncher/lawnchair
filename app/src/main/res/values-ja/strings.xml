@@ -326,7 +326,6 @@
   <string name="default_text">デフォルト</string>
   <string name="edit_icon_reset">リセット</string>
   <string name="show_top_shadow_title">上部にシャドウを表示する</string>
-  <string name="pref_cat_homescreen">ホーム画面</string>
   <string name="theme_pref_title">テーマ</string>
   <string name="theme_light">明るい</string>
   <string name="theme_dark">暗い</string>
@@ -395,6 +394,7 @@
   <string name="pref_all_apps_label_color">ドロワーのアイコンラベルの色</string>
   <string name="pref_num_rows_drawer">ドロワーの行数</string>
   <string name="center_wallpaper_pref_title">ページが1つの場合は壁紙を中心位置にする</string>
+  <string name="center_wallpaper_pref_summary">ホーム画面は、１画面で使用している場合のみ機能します。</string>
   <string name="vertical_drawer_layout_pref_title">縦リストとして表示</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -417,14 +417,11 @@
   <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
   <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
-  <string name="snowfall_title">雪を降らす</string>
-  <string name="enable_snowfall_title">ホーム画面に雪を降らす</string>
-  <string name="enable_snowfall_summary">パフォーマンスに影響を及ぼす場合が有ります</string>
-  <string name="snowfall_enabled">雪よ降れ降れ、もっと降れ！</string>
-  <string name="snowflake_size_scale">雪の大きさを調整</string>
-  <string name="snowflakes_num">降雪量の調整</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
   <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
   <string name="title_storage_permission_required">ストレージへのアクセス許可</string>
   <string name="content_storage_permission_required">Android 8.1以上ではアプリで壁紙を設定する時にストレージへのアクセス許可が必要です。アクセス許可をしていない場合、Lawnchairがクラッシュしたり予期しない動作をします。</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
