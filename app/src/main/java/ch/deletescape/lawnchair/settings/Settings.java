@@ -118,6 +118,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_ARROW:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_PAGE_INDICATOR:
+                case PreferenceFlags.KEY_PREF_USE_SYSTEM_FONTS:
                 case PreferenceFlags.KEY_TWO_ROW_DOCK:
                 case PreferenceFlags.KEY_AYY_MATEY:
                     mLauncher.scheduleKill();
