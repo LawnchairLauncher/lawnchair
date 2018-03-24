@@ -329,7 +329,6 @@
   <string name="default_text">По умолчанию</string>
   <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Показать тень сверху</string>
-  <string name="pref_cat_homescreen">Главный экран</string>
   <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светлая</string>
   <string name="theme_dark">Тёмная</string>
@@ -398,6 +397,7 @@
   <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
   <string name="pref_num_rows_drawer">Количество строк в меню приложений</string>
   <string name="center_wallpaper_pref_title">Центрировать обои, если имеется только один экран</string>
+  <string name="center_wallpaper_pref_summary">Работает, если на рабочем столе используется только одна страница</string>
   <string name="vertical_drawer_layout_pref_title">Отображать в виде вертикального списка</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -420,14 +420,11 @@
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
   <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
-  <string name="snowfall_title">Снегопад</string>
-  <string name="enable_snowfall_title">Включить снегопад на главном экране</string>
-  <string name="enable_snowfall_summary">Может вызвать снижение производительности.</string>
-  <string name="snowfall_enabled">Снегопад</string>
-  <string name="snowflake_size_scale">Размер снежинок</string>
-  <string name="snowflakes_num">Максимальное количество снежинок</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
   <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
   <string name="title_storage_permission_required">Нужно разрешение на доступ к памяти устройства</string>
   <string name="content_storage_permission_required">На Android 8.1 и выше для доступа к обоям требуется разрешение на доступ к памяти устройства. Без указанного разрешения Lawnchair может неожиданно завершить работу или показать неожиданное поведение.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
