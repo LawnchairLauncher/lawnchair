@@ -327,7 +327,6 @@
   <string name="default_text">Oletus</string>
   <string name="edit_icon_reset">Nollaa</string>
   <string name="show_top_shadow_title">Näytä ylävarjo</string>
-  <string name="pref_cat_homescreen">Aloitusnäyttö</string>
   <string name="theme_pref_title">Teema</string>
   <string name="theme_light">Vaalea</string>
   <string name="theme_dark">Tumma</string>
@@ -418,13 +417,10 @@
   <string name="reset_alternative_icons_title">Nollaa vaihtoehtoiset sovelluskuvakkeet?</string>
   <string name="reset_alternative_icons">Sinulla on %1$d sovellusta, joilla on vaihtoehtoiset kuvakkeet. Haluatko nollata ne?</string>
   <string name="error_no_browser">Ei löydetty toimintaa URL:ien käsittelemiseen</string>
-  <string name="snowfall_title">Snowfall</string>
-  <string name="enable_snowfall_title">Ota Snowfall käyttöön aloitusnäytöllä</string>
-  <string name="enable_snowfall_summary">Voi aiheuttaa suoritushäiriöitä.</string>
-  <string name="snowfall_enabled">\"Lunta saa, lunta saa tuiskuttaa!\"</string>
-  <string name="snowflake_size_scale">Lumihiutaleen mittakaava</string>
-  <string name="snowflakes_num">Lumihiutaleiden maksimimäärä</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
   <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
   <string name="title_storage_permission_required">Tallennustilan käyttöoikeus vaaditaan</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
