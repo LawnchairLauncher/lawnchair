@@ -327,7 +327,6 @@
   <string name="default_text">पूर्व निर्धारित</string>
   <string name="edit_icon_reset">रीसेट करें</string>
   <string name="show_top_shadow_title">शीर्ष छाया दिखाएँ</string>
-  <string name="pref_cat_homescreen">होम स्क्रीन</string>
   <string name="theme_pref_title">थीम</string>
   <string name="theme_light">हल्का</string>
   <string name="theme_dark">डार्क</string>
@@ -418,12 +417,9 @@
   <string name="reset_alternative_icons_title">वैकल्पिक एप्लिकेशन आइकन रीसेट करें?</string>
   <string name="reset_alternative_icons">आपके पास वैकल्पिक आइकन के साथ%1$d ऐप्स हैं, क्या आप उन्हें रीसेट करना चाहते हैं?</string>
   <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
-  <string name="snowfall_title">बर्फबारी</string>
-  <string name="enable_snowfall_title">होम स्क्रीन पर बर्फबारी सक्षम करें</string>
-  <string name="enable_snowfall_summary">प्रदर्शन समस्याएं उत्पन्न हो सकती हैं</string>
-  <string name="snowfall_enabled">\"बर्फबारी, बर्फबारी, बर्फबारी!\"</string>
-  <string name="snowflake_size_scale">बर्फ़ के टुकड़े का आकार पैमाने</string>
-  <string name="snowflakes_num">बर्फ़ के टुकड़ों की अधिकतम संख्या</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">लॉनफीड के अपडेट की आवश्यकता है</string>
   <string name="lawnfeed_outdated">लॉनचेयर के इस संस्करण के साथ काम करने के लिए लॉनफीड का एक नया संस्करण आवश्यक है।\n\nअपडेट को स्थापित करने से पहले आपको लॉनफीड के वर्तमान संस्करण को अनइंस्टॉल करने की आवश्यकता होगी।\n\nक्या आप इसे अभी डाउनलोड करना चाहते हैं?</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
