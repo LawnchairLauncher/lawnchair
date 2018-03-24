@@ -414,4 +414,6 @@
     <string name="local_backups">Local backups</string>
     <string name="backup_location_device_storage">Device storage</string>
     <string name="backup_location_documents_storage">Documents storage</string>
+    <string name="grid_size_height">Height</string>
+    <string name="grid_size_width">Width</string>
 </resources>
