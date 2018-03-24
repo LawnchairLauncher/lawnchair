@@ -327,7 +327,6 @@
   <string name="default_text">Predefinito</string>
   <string name="edit_icon_reset">Ripristina</string>
   <string name="show_top_shadow_title">Mostra l\'ombra superiore</string>
-  <string name="pref_cat_homescreen">Schermata home</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Chiaro</string>
   <string name="theme_dark">Scuro</string>
@@ -396,6 +395,7 @@
   <string name="pref_all_apps_label_color">Colore delle icone nel menù delle applicazioni</string>
   <string name="pref_num_rows_drawer">Numero di righe</string>
   <string name="center_wallpaper_pref_title">Centra lo sfondo quando c\'è solo una pagina</string>
+  <string name="center_wallpaper_pref_summary">Funziona solo se la schermata principale possiede una pagina</string>
   <string name="vertical_drawer_layout_pref_title">Visualizza come lista verticale</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -418,14 +418,11 @@
   <string name="reset_alternative_icons_title">Ripristinare le app con icone alternative?</string>
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
   <string name="error_no_browser">Nessuna attività trovata per gestire gli URL</string>
-  <string name="snowfall_title">Nevicata</string>
-  <string name="enable_snowfall_title">Abilita Nevicata nella schermata home</string>
-  <string name="enable_snowfall_summary">Potrebbe causare problemi di prestazioni.</string>
-  <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
-  <string name="snowflake_size_scale">Scala di dimensione del fiocco di neve</string>
-  <string name="snowflakes_num">Numero massimo di fiocchi di neve</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Richiesto aggiornamento Lawnfeed</string>
   <string name="lawnfeed_outdated">Una nuova versione di Lawnfeed è richiesta in modo da funzionare con questa versione di Lawnchair.\n\nPrima di installare l\'aggiornamento dovrai probabilmente disinstallare l\'attuale versione di Lawnfeed.\n\nVuoi scaricarla ora?</string>
   <string name="title_storage_permission_required">Richiesta autorizzazione di archiviazione</string>
   <string name="content_storage_permission_required">Su Android 8.1 e versioni successive viene richiesta l\'autorizzazione di archiviazione per consentire alle app di accedere allo sfondo. Senza il permesso, Lawnchair potrebbe bloccarsi o mostrare comportamenti imprevisti.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
