@@ -48,8 +48,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val iconLabelsInTwoLines by BooleanPref(PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES, false)
     override val animatedClockIconAlternativeClockApps by BooleanPref(PreferenceFlags.KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS, false)
     override val enablePhysics by BooleanPref(PreferenceFlags.KEY_ENABLE_PHYSICS, true)
-    override val snowflakeSizeScale by FloatPref(PreferenceFlags.KEY_PREF_SNOWFLAKE_SIZE_SCALE, 1f)
-    override val snowflakesNum by StringPref(PreferenceFlags.KEY_PREF_SNOWFLAKES_NUM, "200")
 
     override fun lightStatusBarKeyCache(default: Boolean): Boolean {
         return getBoolean(PreferenceFlags.KEY_LIGHT_STATUS_BAR, default)
@@ -201,7 +199,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val showWeather by BooleanPref(FeatureFlags.KEY_PREF_WEATHER, false)
     override val lockDesktop by BooleanPref(FeatureFlags.KEY_PREF_LOCK_DESKTOP, false)
     override val animatedClockIcon by BooleanPref(FeatureFlags.KEY_PREF_ANIMATED_CLOCK_ICON, false)
-    override val enableSnowfall by BooleanPref(FeatureFlags.KEY_PREF_SNOWFALL, false)
 
     override val pinchToOverview by BooleanPref(FeatureFlags.KEY_PREF_PINCH_TO_OVERVIEW, true)
     override val centerWallpaper by BooleanPref(PreferenceFlags.KEY_CENTER_WALLPAPER, true)

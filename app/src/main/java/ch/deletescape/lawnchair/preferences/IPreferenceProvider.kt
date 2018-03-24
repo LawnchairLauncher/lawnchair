@@ -100,7 +100,6 @@ interface IPreferenceProvider {
     val iconLabelsInTwoLines: Boolean
     val twoRowDock: Boolean
     val pulldownAction: String
-    val enableSnowfall: Boolean
 
     // -----------------
     // PREFERENCES
@@ -136,8 +135,6 @@ interface IPreferenceProvider {
     val hotseatShouldUseCustomOpacity: Boolean
     val hotseatCustomOpacity: Float
     val enablePhysics: Boolean
-    val snowflakeSizeScale: Float
-    val snowflakesNum: String
     val ayyMatey: Boolean
 
     // -----------------

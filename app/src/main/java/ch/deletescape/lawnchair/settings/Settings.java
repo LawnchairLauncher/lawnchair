@@ -119,9 +119,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_ARROW:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_PAGE_INDICATOR:
                 case PreferenceFlags.KEY_TWO_ROW_DOCK:
-                case PreferenceFlags.KEY_PREF_SNOWFALL:
-                case PreferenceFlags.KEY_PREF_SNOWFLAKE_SIZE_SCALE:
-                case PreferenceFlags.KEY_PREF_SNOWFLAKES_NUM:
                 case PreferenceFlags.KEY_AYY_MATEY:
                     mLauncher.scheduleKill();
                 case PreferenceFlags.KEY_BACKPORT_ADAPTIVE_ICONS:
