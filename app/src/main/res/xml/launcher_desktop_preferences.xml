@@ -47,7 +47,7 @@
 
     </android.support.v7.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_labels">
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_homescreen">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -63,10 +63,6 @@
             app:chromaColorMode="ARGB"
             app:chromaIndicatorMode="HEX"
             app:chromaInitialColor="@android:color/white" />
-
-    </android.support.v7.preference.PreferenceCategory>
-
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_grid">
 
         <ListPreference
             android:defaultValue="@string/generalDefault"
@@ -85,10 +81,6 @@
             android:persistent="true"
             android:summary="%s"
             android:title="@string/num_rows_pref_title" />
-
-    </android.support.v7.preference.PreferenceCategory>
-
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_misc">
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_iconScaleSB"
@@ -112,6 +104,10 @@
             app:steps="120"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_misc">
 
         <SwitchPreference
             android:defaultValue="false"

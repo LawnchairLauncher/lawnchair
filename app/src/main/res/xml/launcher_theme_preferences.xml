@@ -4,7 +4,7 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:key="prefCat_homeScreen"
-        android:title="@string/pref_cat_homescreen">
+        android:title="@string/pref_category_homescreen">
 
         <ch.deletescape.lawnchair.preferences.IconPackPreference
             android:key="pref_iconPackPackage"

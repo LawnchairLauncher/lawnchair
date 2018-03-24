@@ -395,7 +395,7 @@
     <string name="default_text">Default</string>
     <string name="edit_icon_reset">Reset</string>
     <string name="show_top_shadow_title">Show top shadow</string>
-    <string name="pref_cat_homescreen">Home screen</string>
+    <string name="pref_category_homescreen">Home screen</string>
     <string name="theme_pref_title">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
@@ -534,12 +534,9 @@
     <string name="local_backups">Local backups</string>
     <string name="backup_location_device_storage">Device storage</string>
     <string name="backup_location_documents_storage">Documents storage</string>
+
     <!-- Preference Category Pixel Searchbar Title -->
     <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
-    <!-- Preference Category Labels Title -->
-    <string name="pref_category_labels">Labels</string>
-    <!-- Preference Category Grid Title -->
-    <string name="pref_category_grid">Grid</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Miscellaneous</string>
 </resources>
