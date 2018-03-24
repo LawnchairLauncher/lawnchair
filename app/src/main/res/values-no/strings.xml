@@ -325,7 +325,6 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Tilbakestill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
-  <string name="pref_cat_homescreen">Hjemskjerm</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Lyst</string>
   <string name="theme_dark">Mørkt</string>
@@ -401,6 +400,7 @@
   <string name="hide_app_sum">Skjul app fra app-skuff</string>
   <string name="hidden_app">Skjult app</string>
   <string name="hide_app_reset">Tilbakestill</string>
-  <string name="snowfall_title">Snøfall</string>
-  <string name="snowfall_enabled">\"La det snø, la det snø, la det snø!\"</string>
+  <!-- Strings for popup dialogs -->
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
