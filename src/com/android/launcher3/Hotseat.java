@@ -81,12 +81,17 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.layout);
-
-        resetLayout();
     }
 
-    void resetLayout() {
+    void resetLayout(boolean hasVerticalHotseat) {
         mContent.removeAllViewsInLayout();
+        mHasVerticalHotseat = hasVerticalHotseat;
+        InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
+        if (hasVerticalHotseat) {
+            mContent.setGridSize(1, idp.numHotseatIcons);
+        } else {
+            mContent.setGridSize(idp.numHotseatIcons, 1);
+        }
 
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             // Add the Apps button
@@ -148,10 +153,8 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
 
-        if (mHasVerticalHotseat) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+        if (grid.isVerticalBarLayout()) {
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
@@ -161,8 +164,6 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
                 lp.width = grid.hotseatBarSizePx + insets.right + grid.hotseatBarSidePaddingPx;
             }
         } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
-
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx + insets.bottom;
