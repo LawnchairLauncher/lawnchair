@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">As suxestións non aparecerán na parte superior da lista de aplicacións e os datos de uso utilizados para crealas eliminaranse permanentemente.</string>
     <string name="label_turn_off_suggestions">DESACTIVAR</string>
     <string name="icon_shape_rounded_square">Cadrado redondeado</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

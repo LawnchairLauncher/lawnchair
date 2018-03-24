@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Las sugerencias no aparecerán en la parte superior de la lista de tus apps y los datos de uso que se implementaron para crearlas se borrarán de forma permanente.</string>
     <string name="label_turn_off_suggestions">DESACTIVAR</string>
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

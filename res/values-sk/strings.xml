@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Skryť aplikáciu zo zoznamu aplikácií</string>
   <string name="hide_app">Skryť aplikáciu</string>
     <string name="icon_shape_rounded_square">Okrúhly štvorec</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">ఆఫ్ చేయి</string>
     <string name="action_edit">సవరించు</string>
     <string name="icon_shape_rounded_square">వృత్తాకార చతురస్రం</string>
+    <string name="smartspace_hours_mins">%1$s:%2$s</string>
 </resources>

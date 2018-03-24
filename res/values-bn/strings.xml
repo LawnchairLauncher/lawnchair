@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">আপনার অ্যাপ্লিকেশান তালিকার শীর্ষে প্রস্তাবনাগুলি প্রদর্শিত হবে না, এবং সেগুলি তৈরিতে ব্যবহার করা ব্যবহারের তথ্য স্থায়ীভাবে মুছে ফেলা হবে।</string>
     <string name="label_turn_off_suggestions">বন্ধ করুন</string>
     <string name="icon_shape_rounded_square">গোলাকার কোণের বর্গক্ষেত্র</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

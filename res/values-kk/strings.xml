@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Ұсыныстар қолданбалар тізімінің жоғарғы жағында көрсетілмейді және оларды жасау үшін пайдаланылған қолданыс деректері мүлдем жойылады.</string>
     <string name="label_turn_off_suggestions">ӨШІРУ</string>
     <string name="icon_shape_rounded_square">Бұрышы жұмырланған төртбұрыш</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

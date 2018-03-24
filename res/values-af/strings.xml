@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Voorstelle sal nie boaan jou programlys verskyn nie en die gebruikdata wat gebruik word om hulle te skep, sal permanent uitgevee word.</string>
     <string name="label_turn_off_suggestions">SKAKEL AF</string>
     <string name="icon_shape_rounded_square">Vierkant met geronde hoeke</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

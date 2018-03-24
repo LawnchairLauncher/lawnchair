@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Skrýt aplikaci v seznamu aplikací</string>
   <string name="hide_app">Skrýt aplikaci</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

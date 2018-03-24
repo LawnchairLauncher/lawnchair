@@ -149,4 +149,5 @@
     <string name="action_edit">Редагувати</string>
   <string name="hide_app">Приховати програму</string>
     <string name="icon_shape_rounded_square">Заокруглений квадрат</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

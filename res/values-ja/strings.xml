@@ -150,4 +150,5 @@
   <string name="hide_app_sum">ドロワーからアプリを非表示にする</string>
   <string name="hide_app">アプリを隠す</string>
     <string name="icon_shape_rounded_square">ラウンデッド スクエア</string>
+    <string name="smartspace_hours_mins">%1$s%2$s</string>
 </resources>

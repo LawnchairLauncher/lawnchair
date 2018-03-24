@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Tillögur birtast ekki efst á forritalistanum þínum og notkunargögnunum sem notuð eru til að búa þær til verður eytt fyrir fullt og allt.</string>
     <string name="label_turn_off_suggestions">SLÖKKVA</string>
     <string name="icon_shape_rounded_square">Rúnnaður ferningur</string>
+    <string name="smartspace_hours_mins">%1$s og %2$s</string>
 </resources>

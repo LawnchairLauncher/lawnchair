@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">යෝජනා ඔබේ යෙදුම් ලැයිස්තුවෙහි ඉහළින්ම දිස් නොවනු ඇති අතර, ඒවා සෑදීමට භාවිත කළ භාවිතා දත්ත ස්ථිරවම මකනු ඇත.</string>
     <string name="label_turn_off_suggestions">ක්‍රියා විරහිත කරන්න</string>
     <string name="icon_shape_rounded_square">වටකුරු සමචතුරස්‍රය</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

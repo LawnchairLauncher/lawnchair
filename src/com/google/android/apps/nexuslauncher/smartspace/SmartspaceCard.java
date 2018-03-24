@@ -80,23 +80,20 @@ public class SmartspaceCard {
         return null;
     }
 
-    private String cE(final e e) {
-        final int n = 1;
-        final int cj = this.cJ(e);
-        String s;
-        if (cj >= 60) {
-            final int round = Math.round(cj / 60.0f);
-            final Resources resources = this.mContext.getResources();
-            final Object[] array = new Object[n];
-            array[0] = round;
-            s = resources.getQuantityString(R.plurals.smartspace_hours, round, array);
-        } else {
-            final Resources resources2 = this.mContext.getResources();
-            final Object[] array2 = new Object[n];
-            array2[0] = cj;
-            s = resources2.getQuantityString(R.plurals.smartspace_minutes, cj, array2);
+    private String cE(final e eVar) {
+        final Resources res = mContext.getResources();
+        int minutesToEvent = cJ(eVar);
+        if (minutesToEvent >= 60) {
+            int hours = minutesToEvent / 60;
+            int minutes = minutesToEvent % 60;
+            String hoursString = res.getQuantityString(R.plurals.smartspace_hours, hours, hours);
+            if (minutes <= 0) {
+                return hoursString;
+            }
+            String minutesString = res.getQuantityString(R.plurals.smartspace_minutes, minutes, minutes);
+            return res.getString(R.string.smartspace_hours_mins, hoursString, minutesString);
         }
-        return s;
+        return res.getQuantityString(R.plurals.smartspace_minutes, minutesToEvent, minutesToEvent);
     }
 
     private com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.d cG(final boolean b) {

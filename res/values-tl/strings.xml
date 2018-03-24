@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">I-OFF</string>
     <string name="action_edit">I-edit</string>
     <string name="icon_shape_rounded_square">Bilugang parisukat</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

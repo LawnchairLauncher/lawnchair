@@ -147,4 +147,5 @@
     <string name="msg_disable_suggestions_prompt">Mapendekezo hayataonekana juu ya orodha ya programu zako, na data ya matumizi iliyotumika kuyaunda itafutwa kabisa.</string>
     <string name="label_turn_off_suggestions">ZIMA</string>
     <string name="icon_shape_rounded_square">Mraba wenye pembe duara</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

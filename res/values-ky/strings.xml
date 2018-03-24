@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Колдонмолор тизмесинин башында сунуштар көрсөтүлбөйт жана аларды түзүүгө керектүү дайындар биротоло тазаланат.</string>
     <string name="label_turn_off_suggestions">ӨЧҮРҮҮ</string>
     <string name="icon_shape_rounded_square">Бурчтары тегеректелген чарчы</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

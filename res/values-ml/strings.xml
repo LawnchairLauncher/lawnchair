@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">ഓഫാക്കുക</string>
     <string name="action_edit">തിരുത്തുക</string>
     <string name="icon_shape_rounded_square">വൃത്താകാര ചതുരം</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

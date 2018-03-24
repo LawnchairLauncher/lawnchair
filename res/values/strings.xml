@@ -342,4 +342,5 @@
     <string name="hide_app_sum">Hide app from the app drawer</string>
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

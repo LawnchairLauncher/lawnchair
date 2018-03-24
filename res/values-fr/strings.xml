@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Masquer l\'application de la liste des applications</string>
   <string name="hide_app">Masquer app</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

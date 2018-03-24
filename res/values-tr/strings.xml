@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Uygulamayı uygulama çekmecesinden gizle</string>
   <string name="hide_app">Uygulama gizle</string>
     <string name="icon_shape_rounded_square">Yuvarlanmış kare</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

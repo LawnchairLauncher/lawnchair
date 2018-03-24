@@ -147,4 +147,5 @@
   <string name="hide_app_sum">Ocultar aplicações da gaveta de aplicações</string>
   <string name="hide_app">Ocultar aplicação</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

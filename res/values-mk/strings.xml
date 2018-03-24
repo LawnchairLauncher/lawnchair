@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Предлозите нема да се појавуваат најгоре на списокот со апликации и трајно ќе се избришат податоците за користењето што се употребуваа за нивно создавање.</string>
     <string name="label_turn_off_suggestions">ИСКЛУЧИ</string>
     <string name="icon_shape_rounded_square">Заоблен квадрат</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

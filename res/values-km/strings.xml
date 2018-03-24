@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">ការណែនាំនឹងមិនលេចឡើងនៅផ្នែកខាងលើនៃបញ្ជីកម្មវិធីទេ ហើយទិន្នន័យប្រើប្រាស់ដែលបានប្រើដើម្បីបង្កើតការណែនាំនេះនឹងត្រូវលុបចោលជាអចិន្ត្រៃយ៍។</string>
     <string name="label_turn_off_suggestions">បិទ</string>
     <string name="icon_shape_rounded_square">ការ៉េមានជ្រុងកោង</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

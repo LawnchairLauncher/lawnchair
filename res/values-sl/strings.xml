@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">IZKLOP</string>
     <string name="action_edit">Uredi</string>
     <string name="icon_shape_rounded_square">Zaobljen kvadrat</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

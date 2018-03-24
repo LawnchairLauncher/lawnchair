@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">DESATIVAR</string>
     <string name="action_edit">Editar</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

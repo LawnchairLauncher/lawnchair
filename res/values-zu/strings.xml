@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Iziphakamiso ngeke zivele ngaphezulu kohlu lwezinhlelo zakho zokusebenza, futhi idatha yokusetshenziswa esetshenziselwe ukuzidala izosulwa ingunaphakade.</string>
     <string name="label_turn_off_suggestions">VALA</string>
     <string name="icon_shape_rounded_square">Isikwele esijikelezayo</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>
