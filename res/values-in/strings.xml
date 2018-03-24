@@ -40,6 +40,10 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tidak ditemukan aplikasi yang cocok dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Telusuri aplikasi lainnya"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifikasi"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Tidak ada ruang lagi pada layar Utama ini."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tidak ada ruang tersisa di baki Favorit"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Daftar aplikasi"</string>
@@ -137,4 +141,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Setiap aplikasi kerja memiliki badge dan dibuat tetap aman oleh organisasi. Pindahkan aplikasi ke Layar utama untuk memudahkan akses."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Dikelola oleh organisasi"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikasi dan aplikasi nonaktif"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tutup"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Ditutup"</string>
 </resources>

@@ -40,10 +40,14 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ပ်များကို မတွေ့ပါ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"နောက်ထပ် အက်ပ်များကို ရှာပါ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"အကြောင်းကြားချက်များ"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"ဤပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"အက်ပ်စာရင်း"</string>
-    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ကိုယ်ရေးကိုယ်တာ အက်ပ်စာရင်း"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"တစ်ကိုယ်ရေသုံး အက်ပ်စာရင်း"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"အလုပ်သုံး အက်ပ်စာရင်း"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ပင်မစာမျက်နှာ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
@@ -137,4 +141,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"အလုပ်အက်ပ်တိုင်းတွင် တံဆိပ် တစ်ခုစီရှိပြီး သင်၏ အဖွဲ့အစည်းက လုံခြုံအောင် ထားရှိပါသည်။ အသုံးပြုရ ပိုမိုလွယ်ကူစေရန် အက်ပ်များကို သင်၏ ပင်မမျက်နှာပြင်သို့ ရွှေ့ပါ။"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"သင်၏ အဖွဲ့အစည်းက စီမံခန့်ခွဲထားပါသည်"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"အကြောင်းကြားချက်များနှင့် အက်ပ်များကို ပိတ်ထားသည်"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ပိတ်ရန်"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ပိတ်ထားသည်"</string>
 </resources>
