@@ -260,7 +260,7 @@
   <string name="dynamic_ui_pref_title">Vurgu rengini duvar kağıdından al</string>
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
   <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
-  <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
+  <string name="blur_radius_pref_title">Bulanıklık miktarı</string>
   <string name="pref_iconLabelsInTwoLines">İki satırda simge etiketleri</string>
   <string name="white_google_icon_pref_title">Beyaz Google simgesi kullan</string>
   <string name="hide_icon_labels_pref_title">Ana ekran simge etiketlerini gizle</string>
@@ -294,7 +294,7 @@
   <string name="behavior_pref_summary">Lawnchair hareketlerini değiştir</string>
   <string name="backup_pref_summary">Veritabanınızı ve ayarlarınızı yedekleyin\/geri yükleyin</string>
   <string name="debug_pref_summary">Simge veritabanını yeniden başlat veya yeniden oluştur</string>
-  <string name="show_pixel_bar_pref_title">Pixel üst çubuğunu göster</string>
+  <string name="show_pixel_bar_pref_title">Pixel arama çubuğunu göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan simgesini göster</string>
   <string name="use_round_searhbar">Yuvarlak uygulama arama çubuğunu kullan</string>
@@ -327,7 +327,6 @@
   <string name="default_text">Varsayılan</string>
   <string name="edit_icon_reset">Sıfırla</string>
   <string name="show_top_shadow_title">Üst gölgeyi göster</string>
-  <string name="pref_cat_homescreen">Ana ekran</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Açık</string>
   <string name="theme_dark">Koyu</string>
@@ -395,7 +394,8 @@
   <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
   <string name="pref_all_apps_label_color">Uygulama çekmecesi simge etiketi rengi</string>
   <string name="pref_num_rows_drawer">Uygulama çekmecesi satır sayısı</string>
-  <string name="center_wallpaper_pref_title">Tek bir sayfa olduğunda duvar kağıdını ortala</string>
+  <string name="center_wallpaper_pref_title">Duvar kağıdını ortala</string>
+  <string name="center_wallpaper_pref_summary">Ana ekran yalnızca bir sayfa kullanıyorsa çalışır</string>
   <string name="vertical_drawer_layout_pref_title">Dikey liste olarak görüntüle</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -407,8 +407,8 @@
   <string name="lawnfeed_incompatible">Uyumsuz Lawnfeed sürümü yüklü</string>
   <string name="set_default_launcher">Varsayılan başlatıcı olarak ayarla</string>
   <string name="enable_spring_pref_title">Yay efektini etkinleştir</string>
-  <string name="hide_app">Uygulama gizle</string>
-  <string name="hide_app_sum">Uygulamayı uygulama çekmecesinden gizle</string>
+  <string name="hide_app">Uygulamaları gizle</string>
+  <string name="hide_app_sum">Uygulamaları uygulama çekmecesinden gizleyin</string>
   <string name="hide_app_selected">&#160;seçildi</string>
   <string name="hidden_app">Gizli uygulama</string>
   <string name="hide_app_apply">Uygula</string>
@@ -418,14 +418,11 @@
   <string name="reset_alternative_icons_title">Alternatif uygulama simgeleri sıfırlansın mı?</string>
   <string name="reset_alternative_icons">Alternatif simgelere sahip 5 uygulamanız var, bunları sıfırlamak istiyor musunuz?</string>
   <string name="error_no_browser">URL\'leri işleyecek etkinlik bulunamadı</string>
-  <string name="snowfall_title">Kar Yağışı</string>
-  <string name="enable_snowfall_title">Ana ekranda Kar yağışını etkinleştir</string>
-  <string name="enable_snowfall_summary">Performans sorunlarına neden olabilir.</string>
-  <string name="snowfall_enabled">\"Kar yağsın, kar yağsın, kar yağsın!\"</string>
-  <string name="snowflake_size_scale">Kar tanesi boyutu ölçeği</string>
-  <string name="snowflakes_num">Maksimum kar tanesi sayısı</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
   <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
   <string name="title_storage_permission_required">Depolama İzni Gerekiyor</string>
   <string name="content_storage_permission_required">Android 8.1 ve üzeri sürümlerde, uygulamalar duvar kağıdına erişmek için depolama iznine ihtiyaç duyar. Söz konusu izin olmadan Lawnchair bozulmasına veya beklenmeyen davranışlar gösterebilir.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
