@@ -1,10 +1,12 @@
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,14 +44,16 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
     }
 
     // Create new views
+    @SuppressLint("InflateParams")
+    @NonNull
     @Override
-    public HiddenAppsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public HiddenAppsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                            int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.hide_item, null));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         LauncherActivityInfo info = mResolveInfos.get(position);
         AppInfo appInfo = new AppInfo(mContext, info, Process.myUserHandle());
         LauncherAppState.getInstance(mContext).getIconCache().getTitleAndIcon(appInfo, false);
@@ -62,13 +66,14 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
         viewHolder.checkBox.setChecked(isSelected(component));
     }
 
-    public String toggleSelection(int position) {
+    private String toggleSelection(int position) {
         String componentName = mResolveInfos.get(position).getComponentName().toString();
         if (mSelections.contains(componentName)) {
             mSelections.remove(componentName);
         } else {
             mSelections.add(componentName);
         }
+        CustomAppFilter.setHiddenApps(mContext, mSelections);
         if (!mSelections.isEmpty()) {
             return mSelections.size() + mContext.getString(R.string.hide_app_selected);
         } else {
@@ -80,7 +85,7 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
         return isSelected(mResolveInfos.get(position).getComponentName().toString());
     }
 
-    boolean isSelected(String packageName) {
+    private boolean isSelected(String packageName) {
         return mSelections.contains(packageName);
     }
 
@@ -88,10 +93,6 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
         mSelections.clear();
         notifyDataSetChanged();
         return mContext.getString(R.string.hidden_app);
-    }
-
-    public void addSelectionsToHideList(Context context) {
-        CustomAppFilter.setHiddenApps(context, mSelections);
     }
 
     @Override
