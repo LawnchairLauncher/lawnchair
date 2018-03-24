@@ -139,8 +139,6 @@
     <string name="title_google_app">Google forrit</string>
     <string name="title_app_suggestions">Birta uppástungur um forrit</string>
     <string name="summary_app_suggestions">Efst á listanum yfir öll forrit</string>
-    <string name="about_app_version">Útgáfa</string>
-    <string name="app_name_pixel_launcher">Pixel ræsiforrit</string>
     <string name="title_disable_suggestions_prompt">Slökkva á tillögum að forritum?</string>
     <string name="msg_disable_suggestions_prompt">Tillögur birtast ekki efst á forritalistanum þínum og notkunargögnunum sem notuð eru til að búa þær til verður eytt fyrir fullt og allt.</string>
     <string name="label_turn_off_suggestions">SLÖKKVA</string>

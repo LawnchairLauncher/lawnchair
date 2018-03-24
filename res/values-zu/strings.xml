@@ -139,8 +139,6 @@
     <string name="title_google_app">Uhlelo lokusebenza le-Google</string>
     <string name="title_app_suggestions">Bonisa iziphakamiso zohlelo lokusebenza</string>
     <string name="summary_app_suggestions">Ngaphezulu kohlu lwakho lwazo zonke izinhlelo zokusebenza</string>
-    <string name="about_app_version">Inhlobo</string>
-    <string name="app_name_pixel_launcher">Isiqalisi Sephikseli</string>
     <string name="title_disable_suggestions_prompt">Vala iziphakamiso zohlelo lokusebenza?</string>
     <string name="msg_disable_suggestions_prompt">Iziphakamiso ngeke zivele ngaphezulu kohlu lwezinhlelo zakho zokusebenza, futhi idatha yokusetshenziswa esetshenziselwe ukuzidala izosulwa ingunaphakade.</string>
     <string name="label_turn_off_suggestions">VALA</string>

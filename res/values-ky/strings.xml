@@ -139,8 +139,6 @@
     <string name="title_google_app">Google колдонмосу</string>
     <string name="title_app_suggestions">Колдонмонун сунуштарын көрсөтүү</string>
     <string name="summary_app_suggestions">\"Бардык колдонмолор\" тизмесинин башында</string>
-    <string name="about_app_version">Версиясы</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Колдонмо сунуштары өчүрүлсүнбү?</string>
     <string name="msg_disable_suggestions_prompt">Колдонмолор тизмесинин башында сунуштар көрсөтүлбөйт жана аларды түзүүгө керектүү дайындар биротоло тазаланат.</string>
     <string name="label_turn_off_suggestions">ӨЧҮРҮҮ</string>

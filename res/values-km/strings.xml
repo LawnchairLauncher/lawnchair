@@ -139,8 +139,6 @@
     <string name="title_google_app">កម្មវិធី Google</string>
     <string name="title_app_suggestions">បង្ហាញការណែនាំពីកម្មវិធី</string>
     <string name="summary_app_suggestions">នៅផ្នែកខាងលើបញ្ជីកម្មវិធីទាំងអស់របស់អ្នក</string>
-    <string name="about_app_version">កំណែ</string>
-    <string name="app_name_pixel_launcher">កម្មវិធីចាប់ផ្តើម Pixel</string>
     <string name="title_disable_suggestions_prompt">បិទការណែនាំកម្មវិធី?</string>
     <string name="msg_disable_suggestions_prompt">ការណែនាំនឹងមិនលេចឡើងនៅផ្នែកខាងលើនៃបញ្ជីកម្មវិធីទេ ហើយទិន្នន័យប្រើប្រាស់ដែលបានប្រើដើម្បីបង្កើតការណែនាំនេះនឹងត្រូវលុបចោលជាអចិន្ត្រៃយ៍។</string>
     <string name="label_turn_off_suggestions">បិទ</string>

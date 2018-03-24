@@ -141,8 +141,6 @@
     <string name="title_google_app">Aplikacija Google</string>
     <string name="title_app_suggestions">Prikaz predlogov za aplikacije</string>
     <string name="summary_app_suggestions">Na vrhu seznama »Vse aplikacije«</string>
-    <string name="about_app_version">Različica</string>
-    <string name="app_name_pixel_launcher">Zaganjalnik Pixel</string>
     <string name="title_disable_suggestions_prompt">Želite izklopiti predloge za aplikacije?</string>
     <string name="msg_disable_suggestions_prompt">Predlogi ne bodo prikazani na vrhu seznama aplikacij, podatki o prenesenih podatkih, uporabljeni pri njihovem ustvarjanju, pa bodo trajno izbrisani.</string>
     <string name="label_turn_off_suggestions">IZKLOP</string>

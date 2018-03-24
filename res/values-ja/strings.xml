@@ -141,8 +141,6 @@
     <string name="title_google_app">Google アプリ</string>
     <string name="title_app_suggestions">アプリの候補の表示</string>
     <string name="summary_app_suggestions">[すべてのアプリ] リストの一番上</string>
-    <string name="about_app_version">バージョン</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">おすすめのアプリを非表示にしますか？</string>
     <string name="msg_disable_suggestions_prompt">おすすめがアプリリストの上部に表示されなくなり、おすすめの作成に使用される利用データが完全に消去されます。</string>
     <string name="label_turn_off_suggestions">非表示にする</string>

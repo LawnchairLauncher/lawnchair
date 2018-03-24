@@ -141,8 +141,6 @@
     <string name="title_google_app">‏تطبيق Google</string>
     <string name="title_app_suggestions">عرض اقتراحات التطبيق</string>
     <string name="summary_app_suggestions">في صدارة قائمة \"كل التطبيقات\"</string>
-    <string name="about_app_version">الإصدار</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">هل تريد إيقاف تشغيل اقتراحات التطبيقات؟</string>
     <string name="msg_disable_suggestions_prompt">لن تظهر الاقتراحات في أعلى قائمة التطبيقات، وسيتم محو بيانات الاستخدام المستخدمة لإنشائها نهائيًا.</string>
     <string name="label_turn_off_suggestions">إيقاف</string>

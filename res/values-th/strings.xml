@@ -141,8 +141,6 @@
     <string name="title_google_app">แอป Google</string>
     <string name="title_app_suggestions">แสดงคำแนะนำแอป</string>
     <string name="summary_app_suggestions">ที่ด้านบนของรายการ \"แอปทั้งหมด\"</string>
-    <string name="about_app_version">เวอร์ชัน</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">ปิดคำแนะนำเกี่ยวกับแอปใช่ไหม</string>
     <string name="msg_disable_suggestions_prompt">คำแนะนำจะไม่ปรากฏขึ้นที่ด้านบนของรายการแอป และข้อมูลการใช้งานที่ใช้ในการสร้างคำแนะนำจะถูกลบทิ้งถาวร</string>
     <string name="label_turn_off_suggestions">ปิด</string>

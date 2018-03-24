@@ -139,8 +139,6 @@
     <string name="title_google_app">ແອັບ Google</string>
     <string name="title_app_suggestions">ສະແດງການແນະນຳແອັບ</string>
     <string name="summary_app_suggestions">ຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບທັງໝົດຂອງທ່ານ</string>
-    <string name="about_app_version">ເວີຊັນ</string>
-    <string name="app_name_pixel_launcher">ຕົວເປີດ Pixel</string>
     <string name="title_disable_suggestions_prompt">ປິດການແນະນຳແອັບໄວ້ບໍ?</string>
     <string name="msg_disable_suggestions_prompt">ການແນະນຳຈະບໍ່ປາກົດຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບຂອງທ່ານ ແລະ ຂໍ້ມູນການນຳໃຊ້ທີ່ໃຊ້ເພື່ອສ້າງພວກມັນຈະຖືກລຶບອອກຖາວອນ.</string>
     <string name="label_turn_off_suggestions">ປິດໄວ້</string>

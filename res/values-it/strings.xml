@@ -141,8 +141,6 @@
     <string name="title_google_app">App Google</string>
     <string name="title_app_suggestions">Mostra suggerimenti di app</string>
     <string name="summary_app_suggestions">"In cima all'elenco Tutte le app"</string>
-    <string name="about_app_version">Versione</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Disattivare i suggerimenti di app?</string>
     <string name="msg_disable_suggestions_prompt">"I suggerimenti non verranno mostrati in cima all'elenco delle tue app e i dati sull'utilizzo utilizzati per crearli verranno cancellati definitivamente."</string>
     <string name="label_turn_off_suggestions">DISATTIVA</string>

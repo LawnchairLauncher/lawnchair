@@ -41,7 +41,6 @@
         android:gravity="center"
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
-        android:id="@+id/uninstall_target_text"
         android:layout_marginTop="@dimen/vert_drop_target_vertical_gap"/>
 
     <Space
@@ -56,7 +55,6 @@
         android:gravity="center"
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
-        android:id="@+id/info_target_text"
         android:layout_marginBottom="64dp"/>
 
 </com.android.launcher3.DropTargetBar>

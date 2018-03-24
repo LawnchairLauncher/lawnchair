@@ -139,8 +139,6 @@
     <string name="title_google_app">Google aplikacija</string>
     <string name="title_app_suggestions">Prikaži prijedloge aplikacija</string>
     <string name="summary_app_suggestions">Na vrhu liste Sve aplikacije</string>
-    <string name="about_app_version">Verzija</string>
-    <string name="app_name_pixel_launcher">Pixel pokretač za Nexus</string>
     <string name="title_disable_suggestions_prompt">Isključiti prijedloge za aplikacije?</string>
     <string name="msg_disable_suggestions_prompt">Prijedlozi se neće pojaviti na vrhu liste vaših aplikacija, a podaci o korištenju koji su se koristili za kreiranje prijedloga bit će trajno izbrisani.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>

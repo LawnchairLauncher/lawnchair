@@ -39,7 +39,6 @@
         launcher:keyShadowOffset="0.5dip" />
 
     <LinearLayout
-        android:id="@+id/subtitle_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -92,7 +91,6 @@
             android:paddingTop="6dp">
 
             <View
-                android:id="@+id/subtitle_sep"
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
                 android:layout_marginBottom="4dp"

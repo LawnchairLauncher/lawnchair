@@ -139,8 +139,6 @@
     <string name="title_google_app">Apl Google</string>
     <string name="title_app_suggestions">Paparkan cadangan apl</string>
     <string name="summary_app_suggestions">Di bahagian atas senarai Semua Apl anda</string>
-    <string name="about_app_version">Versi</string>
-    <string name="app_name_pixel_launcher">Pelancar Pixel</string>
     <string name="title_disable_suggestions_prompt">Matikan cadangan apl?</string>
     <string name="msg_disable_suggestions_prompt">Cadangan tidak akan dipaparkan di sebelah atas senarai apl anda dan data penggunaan yang digunakan untuk membuat cadangan itu akan dipadamkan secara kekal.</string>
     <string name="label_turn_off_suggestions">MATIKAN</string>

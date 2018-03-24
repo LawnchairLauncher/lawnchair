@@ -141,8 +141,6 @@
     <string name="title_google_app">Aplikacija Google</string>
     <string name="title_app_suggestions">Prikaz prijedloga za aplikacije</string>
     <string name="summary_app_suggestions">Pri vrhu popisa Sve aplikacije</string>
-    <string name="about_app_version">Verzija</string>
-    <string name="app_name_pixel_launcher">Pokretač Pixela</string>
     <string name="title_disable_suggestions_prompt">Želite li isključiti prijedloge aplikacija?</string>
     <string name="msg_disable_suggestions_prompt">Prijedlozi se neće prikazivati na vrhu popisa aplikacija, a podaci o upotrebi na temelju kojih su izrađeni trajno će se izbrisati.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>

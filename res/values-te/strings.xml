@@ -141,8 +141,6 @@
     <string name="title_google_app">Google యాప్</string>
     <string name="title_app_suggestions">యాప్ సూచనలను చూపు</string>
     <string name="summary_app_suggestions">మీ అన్ని అనువర్తనాల జాబితా ఎగువన</string>
-    <string name="about_app_version">వెర్షన్</string>
-    <string name="app_name_pixel_launcher">Pixel లాంచర్</string>
     <string name="title_disable_suggestions_prompt">అనువర్తన సూచనలను ఆఫ్ చేయాలా?</string>
     <string name="msg_disable_suggestions_prompt">సూచనలు మీ అనువర్తనాల జాబితా పైభాగంలో కనిపించవు మరియు వాటిని సృష్టించడానికి వినియోగించిన వినియోగ డేటా శాశ్వతంగా తొలగించబడుతుంది.</string>
     <string name="label_turn_off_suggestions">ఆఫ్ చేయి</string>

@@ -35,7 +35,7 @@
     <color name="badge_color">@android:color/transparent</color>
     <color name="folder_badge_color">#FFFFFF</color>
 
-    <color name="icon_background">#ff4285f4</color> <!-- Pixel Blue -->
+    <!-- Pixel Blue -->
     <color name="legacy_icon_background">#FFFFFF</color>
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
@@ -47,7 +47,6 @@
 
     <color name="colorPrimary">#fff5f5f5</color>
     <color name="colorPrimaryDark">#ffe0e0e0</color>
-    <color name="colorSecondary">#ffeeeeee</color>
 
     <color name="lollipopStatusBar">#ff9e9e9e</color>
     <color name="all_apps_navbar_color">#28000000</color>

@@ -42,8 +42,6 @@
 
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
 
@@ -66,7 +64,6 @@
     <dimen name="fastscroll_track_max_width">8dp</dimen>
     <dimen name="fastscroll_thumb_padding">1dp</dimen>
     <dimen name="fastscroll_thumb_height">52dp</dimen>
-    <dimen name="fastscroll_thumb_touch_inset">-24dp</dimen>
 
     <dimen name="fastscroll_popup_width">75dp</dimen>
     <dimen name="fastscroll_popup_height">62dp</dimen>
@@ -98,7 +95,6 @@
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-    <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
@@ -118,15 +114,11 @@
     <dimen name="widget_section_horizontal_padding">16dp</dimen>
     <dimen name="widget_section_indent">0dp</dimen>
 
-    <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
 
     <!-- Padding applied to shortcut previews -->
-    <dimen name="shortcut_preview_padding_left">0dp</dimen>
-    <dimen name="shortcut_preview_padding_right">0dp</dimen>
-    <dimen name="shortcut_preview_padding_top">0dp</dimen>
 
-<!-- Dragging -->
+    <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
     <dimen name="drop_target_text_size">14sp</dimen>
@@ -158,9 +150,8 @@
 <!-- Sizes for managed profile badges -->
     <dimen name="profile_badge_size">24dp</dimen>
     <dimen name="profile_badge_margin">5dp</dimen>
-    <dimen name="profile_badge_minimum_top">2dp</dimen>
 
-<!-- Shadows and outlines -->
+    <!-- Shadows and outlines -->
     <dimen name="blur_size_thin_outline">1dp</dimen>
     <dimen name="blur_size_medium_outline">2dp</dimen>
     <dimen name="blur_size_click_shadow">4dp</dimen>
@@ -235,9 +226,8 @@
     <!-- arrow_horizontal_offset_start - (ellipsis_size - arrow_width) / 2 -->
     <dimen name="horizontal_ellipsis_offset">19dp</dimen>
     <dimen name="popup_item_divider_height">0.5dp</dimen>
-    <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
-<!-- Other -->
+    <!-- Other -->
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
 

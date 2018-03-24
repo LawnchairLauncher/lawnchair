@@ -139,8 +139,6 @@
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">အက်ပ်အကြံပြုချက်များကို ပြသပါ</string>
     <string name="summary_app_suggestions">"သင်၏ 'အက်ပ်အားလုံး' စာရင်း၏ ထိပ်တွင်"</string>
-    <string name="about_app_version">ဗားရှင်း</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">အက်ပ်အကြံပြုမှုများကို ပိတ်မလား။</string>
     <string name="msg_disable_suggestions_prompt">အကြံပြုချက်များသည် သင့်အက်ပ်စာရင်း၏ ထိပ်ဆုံးတွင် ပေါ်လာမည်မဟုတ်ပါ။ ထို့အပြင် ၎င်းတို့ကို ရေးသားပေးပို့ရာတွင် အသုံးပြုခဲ့သည့် အသုံးပြုမှုဒေတာများကို အပြီးအပိုင်ဖျက်လိုက်ပါမည်။</string>
     <string name="label_turn_off_suggestions">ပိတ်ပါ</string>

@@ -139,8 +139,6 @@
     <string name="title_google_app">Google-program</string>
     <string name="title_app_suggestions">Wys programvoorstelle</string>
     <string name="summary_app_suggestions">Boaan jou Alle Programme-lys</string>
-    <string name="about_app_version">Weergawe</string>
-    <string name="app_name_pixel_launcher">Pixel-lanseerder</string>
     <string name="title_disable_suggestions_prompt">Skakel programvoorstelle af?</string>
     <string name="msg_disable_suggestions_prompt">Voorstelle sal nie boaan jou programlys verskyn nie en die gebruikdata wat gebruik word om hulle te skep, sal permanent uitgevee word.</string>
     <string name="label_turn_off_suggestions">SKAKEL AF</string>

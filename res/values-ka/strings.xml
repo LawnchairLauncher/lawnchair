@@ -139,8 +139,6 @@
     <string name="title_google_app">Google აპი</string>
     <string name="title_app_suggestions">აპების შემოთავაზებების ჩვენება</string>
     <string name="summary_app_suggestions">თქვენი სიის „ყველა აპი“ სათავეში</string>
-    <string name="about_app_version">ვერსია</string>
-    <string name="app_name_pixel_launcher">Pixel გამშვები</string>
     <string name="title_disable_suggestions_prompt">გსურთ აპების შეთავაზებების გამორთვა?</string>
     <string name="msg_disable_suggestions_prompt">შეთავაზებები არ გამოჩნდება თქვენი აპების სიის თავში, ხოლო გამოყენების მონაცემები, რომელთა მეშვეობითაც ისინი შეიქმნა, სამუდამოდ წაიშლება.</string>
     <string name="label_turn_off_suggestions">გამორთვა</string>
