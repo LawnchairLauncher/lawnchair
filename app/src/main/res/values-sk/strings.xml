@@ -329,7 +329,6 @@
   <string name="default_text">Predvolená</string>
   <string name="edit_icon_reset">Resetovať</string>
   <string name="show_top_shadow_title">Zobraziť horný tieň</string>
-  <string name="pref_cat_homescreen">Domovská obrazovka</string>
   <string name="theme_pref_title">Téma</string>
   <string name="theme_light">Svetlá</string>
   <string name="theme_dark">Tmavá</string>
@@ -398,6 +397,7 @@
   <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
   <string name="pref_num_rows_drawer">Počet riadkov v zobrazení ponuky</string>
   <string name="center_wallpaper_pref_title">Tapeta na stred, ak je iba jedna strana</string>
+  <string name="center_wallpaper_pref_summary">Funguje len vtedy, ak domovská obrazovka používa iba jednu stranu</string>
   <string name="vertical_drawer_layout_pref_title">Zobraziť ako zvislý zoznam</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -409,8 +409,8 @@
   <string name="lawnfeed_incompatible">Nainštalovaná nekompatibilná verzia Lawnfeed</string>
   <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
   <string name="enable_spring_pref_title">Povoliť efekt pružiny</string>
-  <string name="hide_app">Skryť aplikáciu</string>
-  <string name="hide_app_sum">Skryť aplikáciu zo zoznamu aplikácií</string>
+  <string name="hide_app">Skryté aplikácie</string>
+  <string name="hide_app_sum">Skryť aplikácie zo zoznamu aplikácií</string>
   <string name="hide_app_selected">&#160;vybraných</string>
   <string name="hidden_app">Skrytá aplikácia</string>
   <string name="hide_app_apply">Použiť</string>
@@ -420,14 +420,11 @@
   <string name="reset_alternative_icons_title">Obnoviť alternatívne ikony aplikácií?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikácií s alternatívnymi ikonami, chcete ich obnoviť?</string>
   <string name="error_no_browser">Nepodarilo sa zistiť žiadnu aktivitu na spracovanie URL adries</string>
-  <string name="snowfall_title">Sneženie</string>
-  <string name="enable_snowfall_title">Povoliť sneženie na domácej obrazovke</string>
-  <string name="enable_snowfall_summary">Môže spôsobiť problémy s výkonom.</string>
-  <string name="snowfall_enabled">\"Nech sneží, nech sneží, nech sneží!\"</string>
-  <string name="snowflake_size_scale">Veľkosť snehovej vločky</string>
-  <string name="snowflakes_num">Maximálny počet snehových vločiek</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Vyžaduje sa aktualizácia Lawnfeed</string>
   <string name="lawnfeed_outdated">Pre prácu s touto verziou Lawnchair je potrebná novšia verzia programu Lawnfeed.\n\nPred nainštalovaním tejto aktualizácie pravdepodobne budete musieť odinštalovať aktuálnu verziu programu Lawnfeed.\n\nChcete ju teraz stiahnuť?</string>
   <string name="title_storage_permission_required">Požadované povolenie na úložisko</string>
   <string name="content_storage_permission_required">Na Androide 8.1 a vyššom sa pre aplikáciu pri prístupe k tapete vyžaduje povolenie k úložisku. Bez udelenia povolenia Lawnchair môže spadnúť alebo vykazovať neočakávané správanie.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
