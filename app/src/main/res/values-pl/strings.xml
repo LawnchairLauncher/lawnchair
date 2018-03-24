@@ -329,7 +329,6 @@
   <string name="default_text">Domyślny</string>
   <string name="edit_icon_reset">Resetuj</string>
   <string name="show_top_shadow_title">Pokaż górny cień</string>
-  <string name="pref_cat_homescreen">Ekran główny</string>
   <string name="theme_pref_title">Motyw</string>
   <string name="theme_light">Jasny</string>
   <string name="theme_dark">Ciemny</string>
@@ -398,6 +397,7 @@
   <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
   <string name="pref_num_rows_drawer">Liczba wierszy w szufladzie</string>
   <string name="center_wallpaper_pref_title">Wyśrodkowana tapeta gdy jest tylko jedna strona</string>
+  <string name="center_wallpaper_pref_summary">Działa tylko wtedy, gdy ekran wykorzystuje jedną stronę</string>
   <string name="vertical_drawer_layout_pref_title">Wyświetl jako pionową listę</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -420,12 +420,11 @@
   <string name="reset_alternative_icons_title">Zresetować ikony alternatywnych aplikacji?</string>
   <string name="reset_alternative_icons">Masz %1$d aplikacji z alternatywnymi ikonami, czy chcesz je zresetować?</string>
   <string name="error_no_browser">Nie znaleziono żadnej aktywności obsługującej adresy URL</string>
-  <string name="snowfall_title">Śnieg</string>
-  <string name="enable_snowfall_title">Włącz śnieg na ekranie głównym</string>
-  <string name="enable_snowfall_summary">Może powodować problemy z wydajnością.</string>
-  <string name="snowfall_enabled">\"Pada śnieg, pada śnieg!\"</string>
-  <string name="snowflake_size_scale">Rozmiar płatka śniegu</string>
-  <string name="snowflakes_num">Maks. ilość płatków śniegu</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
   <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
+  <string name="title_storage_permission_required">Wymagany dostęp do plików</string>
+  <string name="content_storage_permission_required">W Androidzie 8.1 i wyższym uprawnienia do \"pamięci urządzenia\" są wymagane dla aplikacji z dostępem do tapet. Bez tego Lawnchair może ulec awarii lub zachowywać się niestabilnie.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
