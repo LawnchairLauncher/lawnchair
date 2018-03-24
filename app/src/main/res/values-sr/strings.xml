@@ -328,7 +328,6 @@
   <string name="default_text">Подразумевано</string>
   <string name="edit_icon_reset">Поништи</string>
   <string name="show_top_shadow_title">Прикажи сенку на врху</string>
-  <string name="pref_cat_homescreen">Почетни екран</string>
   <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светло</string>
   <string name="theme_dark">Тамно</string>
@@ -397,6 +396,7 @@
   <string name="pref_all_apps_label_color">Боја ознака икона</string>
   <string name="pref_num_rows_drawer">Број редова</string>
   <string name="center_wallpaper_pref_title">Центрирај позадину ако има само један екран</string>
+  <string name="center_wallpaper_pref_summary">Ради само ако почетни екран користи једну страницу</string>
   <string name="vertical_drawer_layout_pref_title">Вертикална листа</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -419,14 +419,11 @@
   <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
   <string name="error_no_browser">Није пронађена никаква активност која би се бавила URL адресама</string>
-  <string name="snowfall_title">Снег</string>
-  <string name="enable_snowfall_title">Омогући снег на основном екрану</string>
-  <string name="enable_snowfall_summary">Може изазвати проблеме са перформансама.</string>
-  <string name="snowfall_enabled">„Нека је снег, нека пусти да пада снег”</string>
-  <string name="snowflake_size_scale">Скала величине пахуљица</string>
-  <string name="snowflakes_num">Максималан број пахуљица</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Потребно је ажурирање Lawnfeed</string>
   <string name="lawnfeed_outdated">За рад са овом верзијом Lawnfeed-а неопходна је нова верзија Lawnfeed-а.\n\nПре него што инсталирате исправку, вероватно ћете морати да деинсталирате тренутну верзију Lawnfeed-а.\n\nЖелите ли да је преузмете сада?</string>
   <string name="title_storage_permission_required">Потребанa дозвола за складиштење</string>
   <string name="content_storage_permission_required">У Андроид 8.1 и изнад дозволе за складиштење је потребно да апликације приступе позадини. Без поменуте дозволе се може срушити или показати неочекивано понашање.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
