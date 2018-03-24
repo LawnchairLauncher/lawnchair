@@ -33,11 +33,16 @@
         android:icon="@drawable/ic_behavior"
         app:content="@xml/launcher_behavior_preferences" />
 
-    <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="@string/backup_pref_title"
+    <Preference
+        android:key="backups"
+        android:title="@string/backups"
         android:summary="@string/backup_pref_summary"
-        android:icon="@drawable/ic_import_export"
-        app:content="@xml/launcher_backup_preferences" />
+        android:icon="@drawable/ic_import_export">
+
+        <intent
+            android:targetPackage="@string/application_id"
+            android:targetClass="ch.deletescape.lawnchair.backup.BackupListActivity"/>
+    </Preference>
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/debug_pref_title"

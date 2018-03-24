@@ -199,6 +199,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+
+        <activity android:name=".backup.BackupListActivity"
+            android:label="@string/backups"
+            android:parentActivityName=".settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme" />
+
+        <activity android:name=".backup.NewBackupActivity"
+            android:label="@string/new_backup"
+            android:parentActivityName=".backup.BackupListActivity"
+            android:theme="@style/SettingsTheme" />
+
+        <activity android:name=".backup.RestoreBackupActivity"
+            android:label="@string/restore_backup"
+            android:parentActivityName=".backup.BackupListActivity"
+            android:theme="@style/SettingsTheme" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>

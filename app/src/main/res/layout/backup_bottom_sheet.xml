@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_history_menu_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:windowBackground"
+    android:orientation="vertical"
+    android:paddingTop="28dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center_horizontal"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="24sp"
+        tools:text="Backup item" />
+
+    <TextView
+        android:id="@+id/action_restore_backup"
+        android:background="?selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_restore"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/restore_backup" />
+
+    <View
+        android:id="@+id/divider"
+        android:background="?android:listDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <TextView
+        android:id="@+id/action_share_backup"
+        android:background="?selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/backup_share" />
+
+    <TextView
+        android:id="@+id/action_remove_backup_from_list"
+        android:background="?selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_list_remove"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/backup_remove_from_recents" />
+
+</LinearLayout>

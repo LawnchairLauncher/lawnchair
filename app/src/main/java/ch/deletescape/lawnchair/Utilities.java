@@ -94,6 +94,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
 import ch.deletescape.lawnchair.config.IThemer;
 import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
@@ -1253,5 +1254,38 @@ public final class Utilities {
         config.locale = locale;
         Resources baseResources = activity.getBaseContext().getResources();
         baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
+    }
+
+    public static void checkRestoreSuccess(Context context) {
+        IPreferenceProvider prefs = getPrefs(context);
+        if (prefs.getRestoreSuccess()) {
+            prefs.setRestoreSuccess(true);
+            context.startActivity(new Intent(context, RestoreBackupActivity.class)
+                .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+        }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    public static void killLauncher() {
+        System.exit(0);
     }
 }
