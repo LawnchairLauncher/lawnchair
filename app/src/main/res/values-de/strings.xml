@@ -294,7 +294,7 @@
   <string name="behavior_pref_summary">Ändere das Verhalten von Lawnchair</string>
   <string name="backup_pref_summary">Sichere deine Datenbank und die Einstellungen</string>
   <string name="debug_pref_summary">Starte oder bilde die Icon-Datenbank neu</string>
-  <string name="show_pixel_bar_pref_title">Pixel-Leiste (oben) anzeigen</string>
+  <string name="show_pixel_bar_pref_title">Pixel-Leiste anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
   <string name="show_mic_pref_title">Google Assistant-Button anzeigen</string>
   <string name="use_round_searhbar">Runde Suchleiste verwenden</string>
@@ -327,7 +327,6 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Zurücksetzen</string>
   <string name="show_top_shadow_title">Schatten oben anzeigen</string>
-  <string name="pref_cat_homescreen">Startbildschirm</string>
   <string name="theme_pref_title">Design</string>
   <string name="theme_light">Hell</string>
   <string name="theme_dark">Dunkel</string>
@@ -378,7 +377,7 @@
   <string name="icon_shape_squircle">Squircle</string>
   <string name="icon_shape_circle">Rund</string>
   <string name="icon_shape_teardrop">Tränenform</string>
-  <string name="animated_clock_icon_title">Animiertes Uhren-Icon</string>
+  <string name="animated_clock_icon_title">Uhren-Icon animieren</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Alternative Uhr-Apps animieren</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Aktiviere diese Option, wenn du nicht die Google-Uhr als Standard verwendest</string>
   <string name="about_summary_title">Übersicht</string>
@@ -396,6 +395,7 @@
   <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der App-Liste</string>
   <string name="pref_num_rows_drawer">Anzahl der Reihen in der App-Übersicht</string>
   <string name="center_wallpaper_pref_title">Hintergrund zentrieren, wenn nur eine Seite vorhanden ist</string>
+  <string name="center_wallpaper_pref_summary">Funktioniert nur wenn der Startbildschirm nur eine Seite hat</string>
   <string name="vertical_drawer_layout_pref_title">Als vertikale Liste darstellen</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -408,7 +408,7 @@
   <string name="set_default_launcher">Standard-Launcher einstellen</string>
   <string name="enable_spring_pref_title">Aktiviere den Spring-Effekt</string>
   <string name="hide_app">App ausblenden</string>
-  <string name="hide_app_sum">App in der App-Liste ausblenden</string>
+  <string name="hide_app_sum">Apps in der App-Liste ausblenden</string>
   <string name="hide_app_selected">&#160;ausgewählt</string>
   <string name="hidden_app">Ausgeblendete App</string>
   <string name="hide_app_apply">Anwenden</string>
@@ -418,14 +418,11 @@
   <string name="reset_alternative_icons_title">Alternative App-Icons zurücksetzen?</string>
   <string name="reset_alternative_icons">Du hast %1$d Apps mit alternativen Icons, möchtest du sie zurücksetzen?</string>
   <string name="error_no_browser">Keine Aktivität gefunden, um URLs zu behandeln</string>
-  <string name="snowfall_title">Schnefall</string>
-  <string name="enable_snowfall_title">Schneefall auf Startbildschirm aktivieren</string>
-  <string name="enable_snowfall_summary">Kann Leistungsprobleme verursachen.</string>
-  <string name="snowfall_enabled">\"Lass es schneien, lass es schneien, lass es schneien!\"</string>
-  <string name="snowflake_size_scale">Schneeflocken Größe</string>
-  <string name="snowflakes_num">Maximale Anzahl an Schneeflocken</string>
+  <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Lawnfeed-Update erforderlich</string>
   <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von Lawnchair zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
   <string name="title_storage_permission_required">Speicherzugriff erforderlich</string>
   <string name="content_storage_permission_required">Auf Android 8.1 und neuer ist Speicherzugriff benötigt für Apps um auf das Hintergrundbild zuzugreifen. Ohne diese Berechtigung kann es sein das Lawnchair abstürzt oder sich unerwartet verhaltet.</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Misc Title -->
 </resources>
