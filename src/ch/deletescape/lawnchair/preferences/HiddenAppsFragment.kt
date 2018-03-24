@@ -21,7 +21,6 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setHasOptionsMenu(true)
     }
 
@@ -65,11 +64,6 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_apply -> {
-                adapter.addSelectionsToHideList(activity)
-                activity!!.onBackPressed()
-                true
-            }
             R.id.action_reset -> {
                 activity!!.title = adapter.clearSelection()
                 true
