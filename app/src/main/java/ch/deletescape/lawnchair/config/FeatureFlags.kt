@@ -61,6 +61,7 @@ object FeatureFlags {
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
+    const val KEY_PREF_USE_SYSTEM_FONTS = "pref_useSystemFonts"
     private var darkThemeFlag: Int = 0
 
     const val DARK_QSB = 1

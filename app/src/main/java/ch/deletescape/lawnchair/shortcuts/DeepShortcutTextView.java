@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.shortcuts;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -46,6 +47,10 @@ public class DeepShortcutTextView extends BubbleTextView {
 
     public DeepShortcutTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        if (!Utilities.getPrefs(context).getUseSystemFonts()) {
+            setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+        }
 
         Resources resources = getResources();
         mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_padding_end)

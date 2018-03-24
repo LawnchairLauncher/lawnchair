@@ -29,6 +29,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -132,6 +133,10 @@ public class BubbleTextView extends TextView
         this.mTempIconBounds = new Rect();
         mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
+
+        if (!Utilities.getPrefs(context).getUseSystemFonts()) {
+            setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+        }
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
