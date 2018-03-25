@@ -15,6 +15,8 @@ import com.android.launcher3.Utilities;
 
 import java.util.Locale;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 public class IcuDateTextView extends DoubleShadowTextView {
     private DateFormat mDateFormat;
     private final BroadcastReceiver mTimeChangeReceiver;
@@ -42,6 +44,20 @@ public class IcuDateTextView extends DoubleShadowTextView {
                 (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
                         .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
                         .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+            }
+            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+            boolean showTime = prefs.getSmartspaceTime();
+            boolean showDate = prefs.getSmartspaceDate();
+            if (showTime) {
+                if (showDate) {
+                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
+                            .getString(R.string.icu_abbrev_time_date), Locale.getDefault()))
+                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+                } else {
+                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
+                            .getString(R.string.icu_abbrev_time), Locale.getDefault()))
+                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+                }
             }
             format = mDateFormat.format(System.currentTimeMillis());
         } else {

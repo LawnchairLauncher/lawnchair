@@ -9,6 +9,22 @@
         />
 
     <SwitchPreference
+        android:key="pref_smartspace_time"
+        android:disableDependentsState="false"
+        android:title="@string/smartspace_time"
+        android:summary="@string/in_smartspace"
+        android:defaultValue="false"
+        />
+
+    <SwitchPreference
+        android:key="pref_smartspace_date"
+        android:dependency="pref_smartspace_time"
+        android:title="@string/smartspace_date"
+        android:summary="@string/in_smartspace"
+        android:defaultValue="false"
+        />
+
+    <SwitchPreference
         android:key="pref_enable_minus_one"
         android:title="@string/title_show_google_app"
         android:summary="@string/pref_show_google_now_summary"

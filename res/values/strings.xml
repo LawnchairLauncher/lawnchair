@@ -316,6 +316,11 @@
     <string name="notification_dismissed">Notification dismissed</string>
 
     <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
+    <string name="icu_abbrev_time">HH:mm</string>
+    <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
+    <string name="in_smartspace">In \"At a Glance\" widget</string>
+    <string name="smartspace_time">Show time</string>
+    <string name="smartspace_date">Show time and date</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="label_search">Search</string>
     <string name="label_voice_search">Voice search</string>

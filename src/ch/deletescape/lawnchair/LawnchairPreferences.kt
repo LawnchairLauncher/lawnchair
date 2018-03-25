@@ -43,6 +43,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
+    private val refreshGrid = { refreshGrid() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
@@ -52,6 +53,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
 
     // Desktop
+    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
+    val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
 
