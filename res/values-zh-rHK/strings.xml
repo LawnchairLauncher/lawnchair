@@ -141,8 +141,6 @@
     <string name="title_google_app">Google 應用程式</string>
     <string name="title_app_suggestions">顯示應用程式建議</string>
     <string name="summary_app_suggestions">位於「全部應用程式」清單頂部</string>
-    <string name="about_app_version">版本</string>
-    <string name="app_name_pixel_launcher">Pixel 啟動器</string>
     <string name="title_disable_suggestions_prompt">要關閉應用程式建議嗎？</string>
     <string name="msg_disable_suggestions_prompt">建議將不會在應用程式清單上方顯示，而用作提供建議的使用資料將會永久清除。</string>
     <string name="label_turn_off_suggestions">關閉</string>

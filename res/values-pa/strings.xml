@@ -139,8 +139,6 @@
     <string name="title_google_app">Google ਐਪ</string>
     <string name="title_app_suggestions">ਐਪ ਸੁਝਾਅ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ</string>
     <string name="summary_app_suggestions">"ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਐਪਾਂ ਦੀ ਸੂਚੀ ਦੇ ਸਿਖਰ 'ਤੇ"</string>
-    <string name="about_app_version">ਰੂਪ</string>
-    <string name="app_name_pixel_launcher">Pixel ਲਾਂਚਰ</string>
     <string name="title_disable_suggestions_prompt">ਕੀ ਐਪ ਸੁਝਾਅ ਬੰਦ ਕਰਨੇ ਹਨ?</string>
     <string name="msg_disable_suggestions_prompt">"ਸੁਝਾਅ ਤੁਹਾਡੀ ਐਪ ਸੂਚੀ ਦੇ ਸਿਖਰ 'ਤੇ ਨਹੀਂ ਵਿਖਾਈ ਦੇਣਗੇ ਅਤੇ ਉਹਨਾਂ ਨੂੰ ਬਣਾਉਣ ਲਈ ਵਰਤੇ ਗਏ ਵਰਤੋਂ  ਡਾਟੇ  ਨੂੰ ਪੱਕੇ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ।"</string>
     <string name="label_turn_off_suggestions">ਬੰਦ ਕਰੋ</string>

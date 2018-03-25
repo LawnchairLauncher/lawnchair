@@ -139,8 +139,6 @@
     <string name="title_google_app">Google ઍપ્લિકેશન</string>
     <string name="title_app_suggestions">ઍપ સૂચનો બતાવો</string>
     <string name="summary_app_suggestions">તમારી બધી ઍપ્લિકેશનોની સૂચિમાં ટોચ પર</string>
-    <string name="about_app_version">સંસ્કરણ</string>
-    <string name="app_name_pixel_launcher">Pixel લૉન્ચર</string>
     <string name="title_disable_suggestions_prompt">ઍપ્લિકેશન સૂચનો બંધ કરીએ?</string>
     <string name="msg_disable_suggestions_prompt">તમારી ઍપ્લિકેશનોની સૂચિની ટોચ પર સૂચનો દેખાશે નહીં અને તેમને બનાવવા માટે ઉપયોગમાં લેવાયેલ વપરાશ ડેટા કાયમ માટે કાઢી નાખવામાં આવશે.</string>
     <string name="label_turn_off_suggestions">બંધ કરો</string>

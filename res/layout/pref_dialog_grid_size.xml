@@ -40,7 +40,6 @@
         app:layout_constraintTop_toTopOf="@+id/rowsPicker" />
 
     <TextView
-        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -53,7 +52,6 @@
         app:layout_constraintStart_toStartOf="@+id/rowsPicker" />
 
     <TextView
-        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

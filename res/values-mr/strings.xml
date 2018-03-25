@@ -139,8 +139,6 @@
     <string name="title_google_app">Google अॅप</string>
     <string name="title_app_suggestions">अ‍ॅपचे प्रस्ताव दाखवा</string>
     <string name="summary_app_suggestions">तुमच्‍या सर्व अॅप्‍स सूचीच्‍या शीर्षस्‍थानी</string>
-    <string name="about_app_version">आवृत्ती</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">अॅप सूचना बंद करायच्या?</string>
     <string name="msg_disable_suggestions_prompt">आपल्या अॅप्स सूचीच्या शीर्षस्थानी सूचना दिसणार नाहीत आणि त्या तयार करण्यासाठी वापरलेला वापर डेटा कायमचा मिटविला जाईल.</string>
     <string name="label_turn_off_suggestions">बंद करा</string>

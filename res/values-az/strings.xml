@@ -139,8 +139,6 @@
     <string name="title_google_app">Google tətbiqi</string>
     <string name="title_app_suggestions">Tətbiq təkliflərini göstərin</string>
     <string name="summary_app_suggestions">Bütün Tətbiqlər siyahısının üstündə</string>
-    <string name="about_app_version">Versiya</string>
-    <string name="app_name_pixel_launcher">Piksel Başladıcısı</string>
     <string name="title_disable_suggestions_prompt">Tətbiq təklifləri söndürülsün?</string>
     <string name="msg_disable_suggestions_prompt">Təkliflər tətbiq siyahınızın yuxarı hissəsində görünməyəcək və onları istifadə etmək üçün yaradılan istifadə datası həmişəlik silinəcək.</string>
     <string name="label_turn_off_suggestions">DEAKTİV EDİN</string>

@@ -139,8 +139,6 @@
     <string name="title_google_app">„Google“ programa</string>
     <string name="title_app_suggestions">Rodyti programų pasiūlymus</string>
     <string name="summary_app_suggestions">Visų programų sąrašo viršuje</string>
-    <string name="about_app_version">Versija</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Išjungti programų pasiūlymus?</string>
     <string name="msg_disable_suggestions_prompt">Pasiūlymai nebus rodomi programų sąrašo viršuje, o naudojimo duomenys, naudoti jiems sukurti, bus visam laikui ištrinti.</string>
     <string name="label_turn_off_suggestions">IŠJUNGTI</string>

@@ -141,8 +141,6 @@
     <string name="title_google_app">Google-appen</string>
     <string name="title_app_suggestions">Vis appforslag</string>
     <string name="summary_app_suggestions">Øverst på Alle apper-listen</string>
-    <string name="about_app_version">Versjon</string>
-    <string name="app_name_pixel_launcher">Pixel-appoversikt</string>
     <string name="title_disable_suggestions_prompt">Vil du slå av appanbefalinger?</string>
     <string name="msg_disable_suggestions_prompt">Du finner ikke lenger anbefalinger øverst på applisten din, og brukerdataene som ble brukt til oppretting, slettes permanent.</string>
     <string name="label_turn_off_suggestions">SLÅ AV</string>

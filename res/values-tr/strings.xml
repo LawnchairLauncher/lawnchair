@@ -141,8 +141,6 @@
     <string name="title_google_app">Google uygulaması</string>
     <string name="title_app_suggestions">Uygulama önerileri görüntüle</string>
     <string name="summary_app_suggestions">Tüm Uygulamalar listenizin en üstünde</string>
-    <string name="about_app_version">Sürüm</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Uygulama önerileri kapatılsın mı?</string>
     <string name="msg_disable_suggestions_prompt">Öneriler, uygulama listenizin üst kısmında görünmeyecek ve bunları oluşturmak için kullanılan kullanım verileri kalıcı olarak silinecek.</string>
     <string name="label_turn_off_suggestions">KAPAT</string>

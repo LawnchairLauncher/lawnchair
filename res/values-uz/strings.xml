@@ -139,8 +139,6 @@
     <string name="title_google_app">Google ilovasi</string>
     <string name="title_app_suggestions">Ilova takliflarini ko‘rsatish</string>
     <string name="summary_app_suggestions">Barcha ilovalar ro‘yxatining boshida</string>
-    <string name="about_app_version">Versiyasi</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Ilova takliflari o‘chirib qo‘yilsinmi?</string>
     <string name="msg_disable_suggestions_prompt">Ilovalaringiz ro‘yxati tepasida endi takliflar ko‘rsatilmaydi hamda ularni yaratish uchun ishlatilgan foydalanish statistikasi butunlay o‘chirib tashlanadi.</string>
     <string name="label_turn_off_suggestions">HA</string>

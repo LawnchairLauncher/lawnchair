@@ -141,8 +141,6 @@
     <string name="title_google_app">Google-appen</string>
     <string name="title_app_suggestions">Visa appförslag</string>
     <string name="summary_app_suggestions">Högst upp i listan Alla appar</string>
-    <string name="about_app_version">Version</string>
-    <string name="app_name_pixel_launcher">Översikt för Pixel</string>
     <string name="title_disable_suggestions_prompt">Vill du stänga av appförslag?</string>
     <string name="msg_disable_suggestions_prompt">Förslag visas inte längst upp i applistan och användaruppgifterna som används för att skapa dem raderas permanent.</string>
     <string name="label_turn_off_suggestions">INAKTIVERA</string>

@@ -139,8 +139,6 @@
     <string name="title_google_app">приложението Google</string>
     <string name="title_app_suggestions">Показване на предложения за приложения</string>
     <string name="summary_app_suggestions">В горната част на списъка с всички приложения</string>
-    <string name="about_app_version">Версия</string>
-    <string name="app_name_pixel_launcher">Стартов панел Pixel</string>
     <string name="title_disable_suggestions_prompt">Да се изключат ли предложенията за приложения?</string>
     <string name="msg_disable_suggestions_prompt">Предложенията няма да се показват в горната част на списъка ви с приложения и използваните за създаването им данни за употребата ще бъдат изтрити завинаги.</string>
     <string name="label_turn_off_suggestions">ИЗКЛЮЧВАНЕ</string>

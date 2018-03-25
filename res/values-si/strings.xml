@@ -139,8 +139,6 @@
     <string name="title_google_app">Google යෙදුම</string>
     <string name="title_app_suggestions">සංදර්ශක යෙදුම් යෝජනා</string>
     <string name="summary_app_suggestions">ඔබගේ සියලු යෙදුම් ලැයිස්තුවේ ඉහළින්ම</string>
-    <string name="about_app_version">අනුවාදය</string>
-    <string name="app_name_pixel_launcher">පික්සල දියත්කරණය</string>
     <string name="title_disable_suggestions_prompt">යෙදුම් යෝජනා ක්‍රියාවිරහිත කරන්නද?</string>
     <string name="msg_disable_suggestions_prompt">යෝජනා ඔබේ යෙදුම් ලැයිස්තුවෙහි ඉහළින්ම දිස් නොවනු ඇති අතර, ඒවා සෑදීමට භාවිත කළ භාවිතා දත්ත ස්ථිරවම මකනු ඇත.</string>
     <string name="label_turn_off_suggestions">ක්‍රියා විරහිත කරන්න</string>

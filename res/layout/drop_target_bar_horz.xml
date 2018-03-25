@@ -55,7 +55,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/info_target_text"
             style="@style/DropTargetButton"
             android:text="@string/app_info_drop_target_label" />
     </FrameLayout>
@@ -73,7 +72,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/uninstall_target_text"
             style="@style/DropTargetButton"
             android:text="@string/uninstall_drop_target_label" />
     </FrameLayout>

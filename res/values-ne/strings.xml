@@ -139,8 +139,6 @@
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">अनुप्रयोगबारे सुझाावहरू देखाउनुहोस्</string>
     <string name="summary_app_suggestions">तपाईंका सबै अनुप्रयोगहरूको सूचीको शीर्षमा देखाइन्छ</string>
-    <string name="about_app_version">संस्करण</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">अनुप्रयोग बारे सुझावहरूलाई निष्क्रिय पार्ने हो?</string>
     <string name="msg_disable_suggestions_prompt">तपाईँका अनुप्रयोगहरूको सूचीको शीर्षमा सुझावहरू देखिने छैनन् र तिनीहरूलाई सिर्जना गर्न प्रयोग गरिने प्रयोग सम्बन्धी डेटालाई स्थायी रूपमा मेटाइनेछ।</string>
     <string name="label_turn_off_suggestions">निष्क्रिय पार्नुहोस्</string>

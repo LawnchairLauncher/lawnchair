@@ -139,8 +139,6 @@
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Tampilkan saran aplikasi</string>
     <string name="summary_app_suggestions">Di bagian atas daftar Semua Aplikasi</string>
-    <string name="about_app_version">Versi</string>
-    <string name="app_name_pixel_launcher">Peluncur Pixel</string>
     <string name="title_disable_suggestions_prompt">Nonaktifkan saran aplikasi?</string>
     <string name="msg_disable_suggestions_prompt">Saran tidak akan muncul di bagian atas daftar aplikasi Anda, dan data penggunaan yang digunakan untuk membuatnya akan dihapus secara permanen.</string>
     <string name="label_turn_off_suggestions">NONAKTIFKAN</string>

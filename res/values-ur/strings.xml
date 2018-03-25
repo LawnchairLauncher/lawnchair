@@ -139,8 +139,6 @@
     <string name="title_google_app">‏Google ایپ</string>
     <string name="title_app_suggestions">ایپ کی تجاویز دکھائیں</string>
     <string name="summary_app_suggestions">آپ کی تمام ایپس کی فہرست میں سب سے اوپر</string>
-    <string name="about_app_version">ورژن</string>
-    <string name="app_name_pixel_launcher">‏Pixel لانچر</string>
     <string name="title_disable_suggestions_prompt">ایپ تجاویز آف کریں؟</string>
     <string name="msg_disable_suggestions_prompt">تجاویز آپ کی ایپس کی فہرست کے بالائی حصے میں ظاہر نہیں ہوں گی اور ان کی تشکیل کیلئے مستعمل استعمال کا ڈیٹا دائمی طور پر مٹا دیا جائے گا۔</string>
     <string name="label_turn_off_suggestions">آف کریں</string>

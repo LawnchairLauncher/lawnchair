@@ -141,8 +141,6 @@
     <string name="title_google_app">Google ആപ്പ്</string>
     <string name="title_app_suggestions">ആപ്പ് നിർദ്ദേശങ്ങൾ പ്രദർശിപ്പിക്കുക</string>
     <string name="summary_app_suggestions">"നിങ്ങളുടെ 'എല്ലാ ആപ്പുകളും' ലിസ്റ്റിന്റെ മുകളിൽ"</string>
-    <string name="about_app_version">പതിപ്പ്</string>
-    <string name="app_name_pixel_launcher">Pixel ലോഞ്ചർ</string>
     <string name="title_disable_suggestions_prompt">ആപ്പ് നിർദ്ദേശങ്ങൾ ഓഫാക്കണോ?</string>
     <string name="msg_disable_suggestions_prompt">നിങ്ങളുടെ ആപ്സ് ലിസ്റ്റിന്റെ മുകളിൽ നിർദ്ദേശങ്ങൾ ദൃശ്യമാകില്ല, അവ സൃഷ്ടിക്കാൻ ഉപയോഗിച്ച ഉപയോഗ ഡാറ്റ ശാശ്വതമായി മായ്ക്കപ്പെടും.</string>
     <string name="label_turn_off_suggestions">ഓഫാക്കുക</string>

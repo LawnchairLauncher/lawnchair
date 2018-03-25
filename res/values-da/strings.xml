@@ -141,8 +141,6 @@
     <string name="title_google_app">Google-appen</string>
     <string name="title_app_suggestions">Vis forslag til apps</string>
     <string name="summary_app_suggestions">Øverst på listen Alle apps</string>
-    <string name="about_app_version">Version</string>
-    <string name="app_name_pixel_launcher">Pixel Starter</string>
     <string name="title_disable_suggestions_prompt">Vil du slå appforslag fra?</string>
     <string name="msg_disable_suggestions_prompt">Der vises ikke forslag øverst på din liste over apps, og de brugsdata, der anvendes til at oprette dem, slettes permanent.</string>
     <string name="label_turn_off_suggestions">SLÅ FRA</string>

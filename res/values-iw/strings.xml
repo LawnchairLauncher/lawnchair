@@ -141,8 +141,6 @@
     <string name="title_google_app">Google App</string>
     <string name="title_app_suggestions">הצגת הצעות לאפליקציות</string>
     <string name="summary_app_suggestions">בראש רשימת האפליקציות</string>
-    <string name="about_app_version">גרסה</string>
-    <string name="app_name_pixel_launcher">‏מפעיל האפליקציות של Pixel</string>
     <string name="title_disable_suggestions_prompt">האם לכבות הצעות לאפליקציות?</string>
     <string name="msg_disable_suggestions_prompt">הצעות לא יופיעו בחלק העליון של רשימת האפליקציות, ונתוני השימוש שבעזרתם יוצרים אותן יימחקו לתמיד.</string>
     <string name="label_turn_off_suggestions">כבה</string>

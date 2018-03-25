@@ -141,8 +141,6 @@
     <string name="title_google_app">Google alkalmazás</string>
     <string name="title_app_suggestions">Alkalmazásjavaslatok megjelenítése</string>
     <string name="summary_app_suggestions">Az összes alkalmazás lista tetején</string>
-    <string name="about_app_version">Verzió</string>
-    <string name="app_name_pixel_launcher">Pixel-indító</string>
     <string name="title_disable_suggestions_prompt">Kikapcsolja az alkalmazásjavaslatokat?</string>
     <string name="msg_disable_suggestions_prompt">Nem fognak megjelenni javaslatok az alkalmazáslista tetején, a létrehozásukra felhasznált használati adatok pedig véglegesen törlődnek.</string>
     <string name="label_turn_off_suggestions">KIKAPCSOLÁS</string>

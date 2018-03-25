@@ -16,7 +16,6 @@
 
 <com.android.launcher3.notification.NotificationItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/notification_view"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
     android:theme="@style/PopupItem"

@@ -139,8 +139,6 @@
     <string name="title_google_app">የGoogle መተግበሪያ</string>
     <string name="title_app_suggestions">የመተግበሪያ አስተያየት ጥቆማዎችን አሳይ</string>
     <string name="summary_app_suggestions">ከእርስዎ ሁሉም መተግበሪያች ዝርዝር አናት ላይ</string>
-    <string name="about_app_version">ሥሪት</string>
-    <string name="app_name_pixel_launcher">ፒክሴል ማስጀመሪያ</string>
     <string name="title_disable_suggestions_prompt">የመተግበሪያ አስተያየት ጥቆማዎች ይጥፉ?</string>
     <string name="msg_disable_suggestions_prompt">የአስተያየት ጥቆማዎች በእርስዎ የመተግበሪያዎች ዝርዝር አናት ላይ አይታዩም፣ እና እነሱን ለመፍጠር ጥቅም ላይ የዋለው የአጠቃቀም ውሂብ በቋሚነት ይደመሰሳል።</string>
     <string name="label_turn_off_suggestions">አጥፋ</string>

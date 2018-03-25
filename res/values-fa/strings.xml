@@ -141,8 +141,6 @@
     <string name="title_google_app">‏برنامه Google</string>
     <string name="title_app_suggestions">نمایش پیشنهادهای برنامه</string>
     <string name="summary_app_suggestions">در بالای فهرست «همه برنامه‌های» شما</string>
-    <string name="about_app_version">نسخه</string>
-    <string name="app_name_pixel_launcher">‏راه‌انداز Pixel</string>
     <string name="title_disable_suggestions_prompt">پیشنهادات برنامه خاموش شود؟</string>
     <string name="msg_disable_suggestions_prompt">پیشنهادات در رأس فهرست برنامه‌های شما قرار نمی‌گیرند و داده‌های مصرف استفاده شده برای ایجاد آنها برای همیشه پاک می‌شوند.</string>
     <string name="label_turn_off_suggestions">خاموش کردن</string>

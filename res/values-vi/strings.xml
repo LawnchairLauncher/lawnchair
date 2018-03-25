@@ -141,8 +141,6 @@
     <string name="title_google_app">Ứng dụng Google</string>
     <string name="title_app_suggestions">Hiển thị đề xuất ứng dụng</string>
     <string name="summary_app_suggestions">Ở đầu danh sách Tất cả ứng dụng của bạn</string>
-    <string name="about_app_version">Phiên bản</string>
-    <string name="app_name_pixel_launcher">Trình khởi chạy Pixel</string>
     <string name="title_disable_suggestions_prompt">Tắt đề xuất ứng dụng?</string>
     <string name="msg_disable_suggestions_prompt">Các đề xuất sẽ không hiển thị ở đầu danh sách ứng dụng của bạn và dữ liệu sử dụng đã được dùng để tạo các đề xuất này sẽ bị xóa vĩnh viễn.</string>
     <string name="label_turn_off_suggestions">TẮT</string>

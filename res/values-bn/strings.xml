@@ -139,8 +139,6 @@
     <string name="title_google_app">Google অ্যাপ</string>
     <string name="title_app_suggestions">অ্যাপের প্রস্তাবনা দেখুন</string>
     <string name="summary_app_suggestions">"আপনার 'সমস্ত অ্যাপ' তালিকার উপরে"</string>
-    <string name="about_app_version">ভার্সন</string>
-    <string name="app_name_pixel_launcher">পিক্সেল লঞ্চার</string>
     <string name="title_disable_suggestions_prompt">অ্যাপ্লিকেশান প্রস্তাবনাগুলি বন্ধ করবেন?</string>
     <string name="msg_disable_suggestions_prompt">আপনার অ্যাপ্লিকেশান তালিকার শীর্ষে প্রস্তাবনাগুলি প্রদর্শিত হবে না, এবং সেগুলি তৈরিতে ব্যবহার করা ব্যবহারের তথ্য স্থায়ীভাবে মুছে ফেলা হবে।</string>
     <string name="label_turn_off_suggestions">বন্ধ করুন</string>

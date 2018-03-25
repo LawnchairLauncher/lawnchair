@@ -139,8 +139,6 @@
     <string name="title_google_app">Google பயன்பாடு</string>
     <string name="title_app_suggestions">பயன்பாட்டிற்கான பரிந்துரைகளைக் காட்டு</string>
     <string name="summary_app_suggestions">எல்லாப் பயன்பாடுகளும் பட்டியலின் மேற்புறம்</string>
-    <string name="about_app_version">பதிப்பு</string>
-    <string name="app_name_pixel_launcher">Pixel துவக்கி</string>
     <string name="title_disable_suggestions_prompt">பயன்பாட்டுப் பரிந்துரைகளை முடக்கவா?</string>
     <string name="msg_disable_suggestions_prompt">பயன்பாட்டுப் பட்டியலின் மேலே பரிந்துரைகள் தோன்றாது, மேலும் அவற்றை உருவாக்குவதற்குப் பயன்படுத்தப்படும் உபயோகத் தரவு நிரந்தரமாக அழிக்கப்படும்.</string>
     <string name="label_turn_off_suggestions">முடக்கு</string>

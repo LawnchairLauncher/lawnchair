@@ -141,8 +141,6 @@
     <string name="title_google_app">Aplicația Google</string>
     <string name="title_app_suggestions">Afișează sugestiile aplicației</string>
     <string name="summary_app_suggestions">În partea de sus a listei Toate aplicațiile</string>
-    <string name="about_app_version">Versiune</string>
-    <string name="app_name_pixel_launcher">Lansator Pixel</string>
     <string name="title_disable_suggestions_prompt">Dezactivați sugestiile de aplicații?</string>
     <string name="msg_disable_suggestions_prompt">Sugestiile nu vor apărea la începutul listei de aplicații, iar datele despre utilizare folosite pentru a le crea vor fi șterse definitiv.</string>
     <string name="label_turn_off_suggestions">DEZACTIVAȚI</string>

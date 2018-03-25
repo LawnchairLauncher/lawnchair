@@ -141,8 +141,6 @@
     <string name="title_google_app">Εφαρμογή Google</string>
     <string name="title_app_suggestions">Εμφάνιση προτάσεων εφαρμογών</string>
     <string name="summary_app_suggestions">Στο επάνω μέρος της λίστας \"Όλες οι εφαρμογές\".</string>
-    <string name="about_app_version">Έκδοση</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Απενεργοποίηση των προτάσεων εφαρμογών;</string>
     <string name="msg_disable_suggestions_prompt">Οι προτάσεις που δεν θα εμφανίζονται στο επάνω μέρος της λίστας των εφαρμογών σας και τα δεδομένα χρήσης που χρησιμοποιούνται για τη δημιουργία τους θα διαγραφούν οριστικά.</string>
     <string name="label_turn_off_suggestions">ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</string>

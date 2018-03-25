@@ -139,8 +139,6 @@
     <string name="title_google_app">Апликација на Google</string>
     <string name="title_app_suggestions">Прикажувај предлози за апликации</string>
     <string name="summary_app_suggestions">На врвот од списокот „Сите апликации“</string>
-    <string name="about_app_version">Верзија</string>
-    <string name="app_name_pixel_launcher">Стартер на Pixel</string>
     <string name="title_disable_suggestions_prompt">Да се исклучат предлозите за апликации?</string>
     <string name="msg_disable_suggestions_prompt">Предлозите нема да се појавуваат најгоре на списокот со апликации и трајно ќе се избришат податоците за користењето што се употребуваа за нивно создавање.</string>
     <string name="label_turn_off_suggestions">ИСКЛУЧИ</string>

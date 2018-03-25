@@ -141,8 +141,6 @@
     <string name="title_google_app">Aplicació Google</string>
     <string name="title_app_suggestions">"Mostra suggeriments d'aplicacions"</string>
     <string name="summary_app_suggestions">A la part superior de la llista Totes les aplicacions</string>
-    <string name="about_app_version">Versió</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">"Vols desactivar els suggeriments d'aplicacions?"</string>
     <string name="msg_disable_suggestions_prompt">"Els suggeriments no es mostraran a la part superior de la llista d'aplicacions, i les dades d'ús utilitzades per crear-los s'esborraran permanentment."</string>
     <string name="label_turn_off_suggestions">DESACTIVA</string>

@@ -141,8 +141,6 @@
     <string name="title_google_app">Aplikácia Google</string>
     <string name="title_app_suggestions">Zobraziť návrhy aplikácií</string>
     <string name="summary_app_suggestions">V hornej časti zoznamu Všetky aplikácie</string>
-    <string name="about_app_version">Verzia</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Chcete vypnúť odporúčania aplikácií?</string>
     <string name="msg_disable_suggestions_prompt">Na začiatku zoznamu aplikácií sa nebudú zobrazovať odporúčania a údaje o využití, na základe ktorých boli vytvorené, budú trvalo vymazané.</string>
     <string name="label_turn_off_suggestions">VYPNÚŤ</string>

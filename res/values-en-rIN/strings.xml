@@ -139,8 +139,6 @@
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Display app suggestions</string>
     <string name="summary_app_suggestions">At the top of your All Apps list</string>
-    <string name="about_app_version">Version</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
     <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list and the usage data used to create them will be permanently erased."</string>
     <string name="label_turn_off_suggestions">TURN OFF</string>

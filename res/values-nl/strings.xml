@@ -141,8 +141,6 @@
     <string name="title_google_app">Google-app</string>
     <string name="title_app_suggestions">App-suggesties weergeven</string>
     <string name="summary_app_suggestions">"Bovenaan je lijst 'Alle apps'"</string>
-    <string name="about_app_version">Versie</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">App-suggesties uitschakelen?</string>
     <string name="msg_disable_suggestions_prompt">Er worden geen suggesties weergegeven boven aan je lijst met apps en de gebruiksgegevens op basis waarvan ze worden gemaakt, worden definitief verwijderd.</string>
     <string name="label_turn_off_suggestions">UITSCHAKELEN</string>

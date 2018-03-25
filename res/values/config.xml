@@ -69,7 +69,6 @@
     <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
     <!-- The duration of the animation from search hint to text entry -->
-    <integer name="config_searchHintAnimationDuration">50</integer>
 
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />

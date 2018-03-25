@@ -139,8 +139,6 @@
     <string name="title_google_app">Aplicação Google</string>
     <string name="title_app_suggestions">Apresentar sugestões de aplicações</string>
     <string name="summary_app_suggestions">No topo da lista Todas as aplicações</string>
-    <string name="about_app_version">Versão</string>
-    <string name="app_name_pixel_launcher">Iniciador do Pixel</string>
     <string name="title_disable_suggestions_prompt">Pretende desativar as sugestões de aplicações?</string>
     <string name="msg_disable_suggestions_prompt">Não são apresentadas sugestões na parte superior da lista de aplicações e os dados de utilização utilizados para as criar são apagados de forma permanente.</string>
     <string name="label_turn_off_suggestions">DESATIVAR</string>

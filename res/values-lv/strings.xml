@@ -139,8 +139,6 @@
     <string name="title_google_app">Google lietotne</string>
     <string name="title_app_suggestions">Lietotnes ieteikumu rādīšana</string>
     <string name="summary_app_suggestions">Visu lietotņu saraksta augšdaļā</string>
-    <string name="about_app_version">Versija</string>
-    <string name="app_name_pixel_launcher">Pixel palaišanas programma</string>
     <string name="title_disable_suggestions_prompt">Vai izslēgt lietotņu ieteikumus?</string>
     <string name="msg_disable_suggestions_prompt">Ieteikumi netiks rādīti jūsu lietotņu saraksta augšdaļā, un lietojuma dati, kas tika izmantoti to izveidē, tiks neatgriezeniski dzēsti.</string>
     <string name="label_turn_off_suggestions">IZSLĒGT</string>
