@@ -39,6 +39,8 @@ public class CaretDrawable extends Drawable {
     private Path mPath = new Path();
     private final int mCaretSizePx;
     private final boolean mUseShadow;
+    private final int mWorkspaceTextColor;
+    private boolean mForceDark;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -46,7 +48,8 @@ public class CaretDrawable extends Drawable {
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
         final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
 
-        mCaretPaint.setColor(Themes.getAttrColor(context, R.attr.workspaceTextColor));
+        mWorkspaceTextColor = Themes.getAttrColor(context, R.attr.workspaceTextColor);
+        mCaretPaint.setColor(mWorkspaceTextColor);
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
         mCaretPaint.setStyle(Paint.Style.STROKE);
@@ -96,7 +99,7 @@ public class CaretDrawable extends Drawable {
         mPath.moveTo(left, top + caretHeight * (1 - getNormalizedCaretProgress()));
         mPath.lineTo(left + (width / 2), top + caretHeight * getNormalizedCaretProgress());
         mPath.lineTo(left + width, top + caretHeight * (1 - getNormalizedCaretProgress()));
-        if (mUseShadow) {
+        if (mUseShadow && !mForceDark) {
             canvas.drawPath(mPath, mShadowPaint);
         }
         canvas.drawPath(mPath, mCaretPaint);
@@ -148,5 +151,13 @@ public class CaretDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter cf) {
         // no-op
+    }
+
+    public void setForceDark(boolean forceDark) {
+        if (mForceDark != forceDark) {
+            mForceDark = forceDark;
+            mCaretPaint.setColor(mForceDark ? 0xFF212121 : mWorkspaceTextColor);
+            invalidateSelf();
+        }
     }
 }

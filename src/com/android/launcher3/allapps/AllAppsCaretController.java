@@ -120,4 +120,8 @@ public class AllAppsCaretController {
     public void onDragStart() {
         mThresholdCrossed = false;
     }
+
+    public void setForceDark(boolean forceDark) {
+        mCaretDrawable.setForceDark(forceDark);
+    }
 }
