@@ -416,4 +416,5 @@
     <string name="backup_location_documents_storage">Documents storage</string>
     <string name="grid_size_height">Height</string>
     <string name="grid_size_width">Width</string>
+    <string name="launcher_theme_override_label">Force dark theme</string>
 </resources>

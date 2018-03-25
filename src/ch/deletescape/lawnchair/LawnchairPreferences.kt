@@ -49,6 +49,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
+    var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)

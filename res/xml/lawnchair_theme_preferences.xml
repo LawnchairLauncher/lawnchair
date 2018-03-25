@@ -16,4 +16,10 @@
         android:summary="%s"
         android:defaultValue=""
         android:persistent="true" />
+
+    <android.support.v14.preference.SwitchPreference
+        android:key="pref_override_launcher_theme"
+        android:title="@string/launcher_theme_override_label"
+        android:defaultValue="false"
+        android:persistent="true" />
 </PreferenceScreen>
