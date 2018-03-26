@@ -46,7 +46,7 @@ android {
         }
 
         l3go {
-            applicationId 'com.android.launcher3'
+            applicationId 'com.google.android.apps.nexuslauncher'
             testApplicationId 'com.android.launcher3.tests'
             flavorDimensions 'default'
         }

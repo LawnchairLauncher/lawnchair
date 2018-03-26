@@ -83,7 +83,8 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_config) \
     $(call all-java-files-under, go/src_flags) \
     $(call all-proto-files-under, protos) \
-    $(call all-proto-files-under, proto_overrides)
+    $(call all-proto-files-under, proto_overrides) \
+    $(call all-proto-files-under, proto_pixel)
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/go/res \
@@ -93,10 +94,11 @@ LOCAL_RESOURCE_DIR := \
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
-LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
+LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/ --proto_path=$(LOCAL_PATH)/proto_pixel/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
 LOCAL_AAPT_FLAGS := \
+    --rename-manifest-package com.google.android.apps.nexuslauncher \
     --auto-add-overlay \
     --extra-packages android.support.v7.recyclerview \
 
