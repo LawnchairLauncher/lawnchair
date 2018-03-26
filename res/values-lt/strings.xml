@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Pasiūlymai nebus rodomi programų sąrašo viršuje, o naudojimo duomenys, naudoti jiems sukurti, bus visam laikui ištrinti.</string>
     <string name="label_turn_off_suggestions">IŠJUNGTI</string>
     <string name="icon_shape_rounded_square">Suapvalintas kvadratas</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

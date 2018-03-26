@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Απόκρυψη εφαρμογών από το συρτάρι εφαρμογών</string>
   <string name="hide_app">Κρυφές εφαρμογές</string>
     <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

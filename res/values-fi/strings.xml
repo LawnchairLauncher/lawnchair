@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Piilota sovellus sovellusvalikosta</string>
   <string name="hide_app">Piilota sovellus</string>
     <string name="icon_shape_rounded_square">Pyöreäkulmainen neliö</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

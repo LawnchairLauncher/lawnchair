@@ -19,7 +19,7 @@ public class CustomEditShortcut extends SystemShortcut {
     @Override
     public View.OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
         boolean enabled = false;
-        if (CustomIconUtils.isPackProvider(launcher, CustomIconUtils.getCurrentPack(launcher))) {
+        if (CustomIconUtils.usingValidPack(launcher)) {
             CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(launcher);
             factory.ensureInitialLoadComplete();
             enabled = true;

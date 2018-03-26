@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -23,14 +22,18 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.clock.CustomClock;
+import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class CustomIconProvider extends DynamicIconProvider {
@@ -89,7 +92,7 @@ public class CustomIconProvider extends DynamicIconProvider {
         String packageName = launcherActivityInfo.getApplicationInfo().packageName;
         ComponentName component = launcherActivityInfo.getComponentName();
         Drawable drawable = null;
-        if (isEnabledForApp(mContext, component.toString())) {
+        if (CustomIconUtils.usingValidPack(mContext) && isEnabledForApp(mContext, new ComponentKey(component, launcherActivityInfo.getUser()))) {
             PackageManager pm = mContext.getPackageManager();
             if (mFactory.packCalendars.containsKey(component)) {
                 try {
@@ -110,23 +113,46 @@ public class CustomIconProvider extends DynamicIconProvider {
             }
         }
 
-        if (drawable == null && !"com.google.android.calendar".equals(packageName)) {
-            drawable = getRoundIcon(packageName, iconDpi);
+        if (drawable == null && !DynamicIconProvider.GOOGLE_CALENDAR.equals(packageName) && !DynamicClock.DESK_CLOCK.equals(component)) {
+            drawable = getRoundIcon(component, iconDpi);
         }
-        return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable;
+        return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable.mutate();
     }
 
-    private Drawable getRoundIcon(String packageName, int iconDpi) {
+    private Drawable getRoundIcon(ComponentName component, int iconDpi) {
+        String appIcon = null;
+        Map<String, String> elementTags = new HashMap<>();
+
         try {
-            Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication(packageName);
+            Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication(component.getPackageName());
             AssetManager assets = resourcesForApplication.getAssets();
+
             XmlResourceParser parseXml = assets.openXmlResourceParser("AndroidManifest.xml");
-            while (parseXml.next() != XmlPullParser.END_DOCUMENT)
-                if (parseXml.getEventType() == XmlPullParser.START_TAG && parseXml.getName().equals("application"))
-                    for (int i = 0; i < parseXml.getAttributeCount(); i++)
-                        if (parseXml.getAttributeName(i).equals("roundIcon"))
-                            return resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
+            while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
+                if (parseXml.getEventType() == XmlPullParser.START_TAG) {
+                    String name = parseXml.getName();
+                    for (int i = 0; i < parseXml.getAttributeCount(); i++) {
+                        elementTags.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
+                    }
+                    if (elementTags.containsKey("roundIcon")) {
+                        if (name.equals("application")) {
+                            appIcon = elementTags.get("roundIcon");
+                        } else if ((name.equals("activity") || name.equals("activity-alias")) &&
+                                elementTags.containsKey("name") &&
+                                elementTags.get("name").equals(component.getClassName())) {
+                            appIcon = elementTags.get("roundIcon");
+                            break;
+                        }
+                    }
+                    elementTags.clear();
+                }
+            }
             parseXml.close();
+
+            if (appIcon != null) {
+                int resId = Integer.parseInt(appIcon.substring(1));
+                return resourcesForApplication.getDrawableForDensity(resId, iconDpi);
+            }
         } catch (PackageManager.NameNotFoundException | Resources.NotFoundException | IOException | XmlPullParserException ex) {
             ex.printStackTrace();
         }
@@ -137,11 +163,12 @@ public class CustomIconProvider extends DynamicIconProvider {
         setDisabledApps(context, new HashSet<String>());
     }
 
-    static boolean isEnabledForApp(Context context, String comp) {
-        return !getDisabledApps(context).contains(comp);
+    static boolean isEnabledForApp(Context context, ComponentKey key) {
+        return !getDisabledApps(context).contains(key.toString());
     }
 
-    static void setAppState(Context context, String comp, boolean enabled) {
+    static void setAppState(Context context, ComponentKey key, boolean enabled) {
+        String comp = key.toString();
         Set<String> disabledApps = getDisabledApps(context);
         while (disabledApps.contains(comp)) {
             disabledApps.remove(comp);

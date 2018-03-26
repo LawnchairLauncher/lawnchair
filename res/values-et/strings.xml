@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Soovitusi ei kuvata teie rakenduste loendi ülaosas ja kasutusandmed, mida kasutati nende loomiseks, kustutatakse jäädavalt.</string>
     <string name="label_turn_off_suggestions">LÜLITA VÄLJA</string>
     <string name="icon_shape_rounded_square">Ümardatud nurkadega ruut</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Ez dira agertuko iradokizunak aplikazio-zerrendaren goialdean, eta horiek sortzeko erabilitako erabilera-datuak betiko ezabatuko dira.</string>
     <string name="label_turn_off_suggestions">DESAKTIBATU</string>
     <string name="icon_shape_rounded_square">Ertz biribilduko karratua</string>
+    <string name="smartspace_hours_mins">%1$s eta %2$s</string>
 </resources>

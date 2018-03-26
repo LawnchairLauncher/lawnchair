@@ -2,6 +2,7 @@ package com.google.android.apps.nexuslauncher;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.AppFilter;
 
@@ -18,11 +19,11 @@ public class NexusAppFilter extends AppFilter {
         mHideList.add(ComponentName.unflattenFromString("com.google.android.apps.wallpaper/.picker.CategoryPickerActivity"));
 
         //Google Now Launcher
-        mHideList.add(ComponentName.unflattenFromString("com.google.android.launcher/com.google.android.launcher.StubApp"));
+        mHideList.add(ComponentName.unflattenFromString("com.google.android.launcher/.StubApp"));
     }
 
     @Override
-    public boolean shouldShowApp(ComponentName componentName) {
+    public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
         return !mHideList.contains(componentName);
     }
 }

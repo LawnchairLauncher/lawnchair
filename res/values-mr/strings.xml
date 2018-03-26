@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">आपल्या अॅप्स सूचीच्या शीर्षस्थानी सूचना दिसणार नाहीत आणि त्या तयार करण्यासाठी वापरलेला वापर डेटा कायमचा मिटविला जाईल.</string>
     <string name="label_turn_off_suggestions">बंद करा</string>
     <string name="icon_shape_rounded_square">गोलाकार चौरस</string>
+    <string name="smartspace_hours_mins">%1$s:%2$s</string>
 </resources>

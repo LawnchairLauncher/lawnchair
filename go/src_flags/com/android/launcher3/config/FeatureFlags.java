@@ -26,4 +26,7 @@ public final class FeatureFlags extends BaseFlags {
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = true;
     public static final boolean LAUNCHER3_SPRING_ICONS = false;
+
+    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
+    public static boolean QSB_ON_FIRST_SCREEN = true;
 }

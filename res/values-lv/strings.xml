@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Ieteikumi netiks rādīti jūsu lietotņu saraksta augšdaļā, un lietojuma dati, kas tika izmantoti to izveidē, tiks neatgriezeniski dzēsti.</string>
     <string name="label_turn_off_suggestions">IZSLĒGT</string>
     <string name="icon_shape_rounded_square">Noapaļots kvadrāts</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

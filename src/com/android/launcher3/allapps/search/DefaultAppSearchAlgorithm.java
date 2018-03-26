@@ -26,11 +26,14 @@ import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The default search implementation.
@@ -38,6 +41,7 @@ import java.util.List;
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     public final static String SEARCH_HIDDEN_APPS = "pref_search_hidden_apps";
+    private final static Pattern complementaryGlyphs = Pattern.compile("\\p{M}");
     private final Context mContext;
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
@@ -87,15 +91,16 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             return defaultApps;
         }
         final List<AppInfo> apps = new ArrayList<>();
-        final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
-        final UserHandle user = android.os.Process.myUserHandle();
         final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
-        for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
-            if (!duplicatePreventionCache.contains(info.getComponentName())) {
-                duplicatePreventionCache.add(info.getComponentName());
-                final AppInfo appInfo = new AppInfo(context, info, user);
-                iconCache.getTitleAndIcon(appInfo, false);
-                apps.add(appInfo);
+        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+            final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
+            for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+                if (!duplicatePreventionCache.contains(info.getComponentName())) {
+                    duplicatePreventionCache.add(info.getComponentName());
+                    final AppInfo appInfo = new AppInfo(context, info, user);
+                    iconCache.getTitleAndIcon(appInfo, false);
+                    apps.add(appInfo);
+                }
             }
         }
         return apps;
@@ -110,6 +115,9 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         if (titleLength < queryLength || queryLength <= 0) {
             return false;
         }
+
+        title = normalize(title);
+        query = normalize(query);
 
         int lastType;
         int thisType = Character.UNASSIGNED;
@@ -127,6 +135,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             }
         }
         return false;
+    }
+
+    private static String normalize(String in) {
+        return complementaryGlyphs.matcher(Normalizer.normalize(in, Normalizer.Form.NFKD)).replaceAll("");
     }
 
     /**

@@ -2,9 +2,10 @@ package com.google.android.apps.nexuslauncher;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.UserHandle;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,28 +21,31 @@ public class CustomAppFilter extends LawnchairAppFilter {
     }
 
     @Override
-    public boolean shouldShowApp(ComponentName componentName) {
-        return super.shouldShowApp(componentName) &&
-                !isHiddenApp(mContext, componentName.toString(), componentName.getPackageName());
+    public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
+        if (CustomIconUtils.usingValidPack(mContext)) {
+            return !isHiddenApp(mContext, new ComponentKey(componentName, user));
+        }
+        return super.shouldShowApp(componentName, user);
     }
 
     static void resetAppFilter(Context context) {
         Utilities.getLawnchairPrefs(context).setHiddenAppSet(new HashSet<String>());
     }
 
-    static void setComponentNameState(Context context, String comp, String pkg, boolean hidden) {
+    static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
+        String comp = key.toString();
         Set<String> hiddenApps = getHiddenApps(context);
         while (hiddenApps.contains(comp)) {
             hiddenApps.remove(comp);
         }
-        if (hidden != CustomIconUtils.isPackProvider(context, pkg)) {
+        if (hidden != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName())) {
             hiddenApps.add(comp);
         }
         setHiddenApps(context, hiddenApps);
     }
 
-    static boolean isHiddenApp(Context context, String comp, String pkg) {
-        return getHiddenApps(context).contains(comp) != CustomIconUtils.isPackProvider(context, pkg);
+    static boolean isHiddenApp(Context context, ComponentKey key) {
+        return getHiddenApps(context).contains(key.toString()) != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName());
     }
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway

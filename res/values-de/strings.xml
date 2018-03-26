@@ -150,4 +150,5 @@
   <string name="hide_app_sum">App in der App-Liste ausblenden</string>
   <string name="hide_app">App ausblenden</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">ปิด</string>
     <string name="action_edit">แก้ไข</string>
     <string name="icon_shape_rounded_square">สี่เหลี่ยมจัตุรัสขอบมน</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

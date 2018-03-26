@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -148,7 +149,7 @@ public class UserEventDispatcher {
         return true;
     }
 
-    public void logAppLaunch(View v, Intent intent) {
+    public void logAppLaunch(View v, Intent intent, UserHandle user) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v), newTarget(Target.Type.CONTAINER));
 

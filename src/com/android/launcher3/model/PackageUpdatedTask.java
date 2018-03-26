@@ -165,7 +165,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         appsList.removed.clear();
 
         final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
-        if (!addedOrModified.isEmpty()) {
+        if (!addedOrModified.isEmpty() || mOp == OP_UPDATE) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {

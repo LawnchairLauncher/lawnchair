@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">तपाईँका अनुप्रयोगहरूको सूचीको शीर्षमा सुझावहरू देखिने छैनन् र तिनीहरूलाई सिर्जना गर्न प्रयोग गरिने प्रयोग सम्बन्धी डेटालाई स्थायी रूपमा मेटाइनेछ।</string>
     <string name="label_turn_off_suggestions">निष्क्रिय पार्नुहोस्</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

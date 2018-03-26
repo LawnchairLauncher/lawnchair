@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Amaga l\'aplicació del calaix</string>
   <string name="hide_app">Amaga l\'aplicació</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

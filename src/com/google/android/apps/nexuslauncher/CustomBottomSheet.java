@@ -43,6 +43,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import ch.deletescape.lawnchair.EditableItemInfo;
@@ -121,8 +122,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private SwitchPreference mPrefPack;
         private SwitchPreference mPrefHide;
 
-        private ComponentName mComponentName;
-        private String mPackageName;
+        private ComponentKey mKey;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -137,8 +137,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         public void loadForApp(ItemInfo itemInfo) {
-            mComponentName = itemInfo.getTargetComponent();
-            mPackageName = itemInfo.getTargetComponent().getPackageName();
+            mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
             mPrefPack = (SwitchPreference) findPreference(PREF_PACK);
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
@@ -146,9 +145,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             Context context = getActivity();
             CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(context);
 
-            boolean enable = factory.packCalendars.containsKey(mComponentName) || factory.packComponents.containsKey(mComponentName);
+            ComponentName componentName = itemInfo.getTargetComponent();
+            boolean enable = factory.packCalendars.containsKey(componentName) || factory.packComponents.containsKey(componentName);
             mPrefPack.setEnabled(enable);
-            mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mComponentName.toString()));
+            mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mKey));
             if (enable) {
                 PackageManager pm = context.getPackageManager();
                 try {
@@ -158,13 +158,13 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 }
             }
 
-            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mComponentName.toString(), mPackageName));
+            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
 
             mPrefPack.setOnPreferenceChangeListener(this);
             mPrefHide.setOnPreferenceChangeListener(this);
 
             if (Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
-                getPreferenceScreen().findPreference("componentName").setSummary(mComponentName.flattenToString());
+                getPreferenceScreen().findPreference("componentName").setSummary(mKey.toString());
             }
         }
 
@@ -174,11 +174,11 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             Launcher launcher = Launcher.getLauncher(getActivity());
             switch (preference.getKey()) {
                 case PREF_PACK:
-                    CustomIconProvider.setAppState(launcher, mComponentName.toString(), enabled);
-                    CustomIconUtils.reloadIcons(launcher, mPackageName);
+                    CustomIconProvider.setAppState(launcher, mKey, enabled);
+                    CustomIconUtils.reloadIconByKey(launcher, mKey);
                     break;
                 case PREF_HIDE:
-                    CustomAppFilter.setComponentNameState(launcher, mComponentName.toString(), mPackageName, enabled);
+                    CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
                     break;
             }
             return true;
@@ -187,7 +187,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), mComponentName.flattenToString());
+            ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), mKey.componentName.flattenToString());
             clipboard.setPrimaryClip(clip);
             Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
             return true;

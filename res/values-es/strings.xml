@@ -150,4 +150,5 @@
   <string name="hide_app_sum">Ocultar aplicación del cajón de aplicaciones</string>
   <string name="hide_app">Ocultar aplicación</string>
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
+    <string name="smartspace_hours_mins">%1$s y %2$s</string>
 </resources>

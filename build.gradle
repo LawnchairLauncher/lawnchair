@@ -70,7 +70,7 @@ android {
 
         l3go {
             dimension "tier"
-            applicationId 'com.android.launcher3'
+            applicationId 'com.google.android.apps.nexuslauncher'
             testApplicationId 'com.android.launcher3.tests'
         }
 

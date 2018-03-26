@@ -150,4 +150,5 @@
   <string name="hide_app_sum">從應用程式清單中隱藏應用程式</string>
   <string name="hide_app">隱藏應用程式</string>
     <string name="icon_shape_rounded_square">圓角正方形</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

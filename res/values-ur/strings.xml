@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">تجاویز آپ کی ایپس کی فہرست کے بالائی حصے میں ظاہر نہیں ہوں گی اور ان کی تشکیل کیلئے مستعمل استعمال کا ڈیٹا دائمی طور پر مٹا دیا جائے گا۔</string>
     <string name="label_turn_off_suggestions">آف کریں</string>
     <string name="icon_shape_rounded_square">گول مربع</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

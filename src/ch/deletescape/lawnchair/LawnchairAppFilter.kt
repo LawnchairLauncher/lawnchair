@@ -2,9 +2,9 @@ package ch.deletescape.lawnchair
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.UserHandle
 import com.google.android.apps.nexuslauncher.NexusAppFilter
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
-import java.util.HashSet
 
 open class LawnchairAppFilter(context: Context) : NexusAppFilter(context) {
 
@@ -14,7 +14,7 @@ open class LawnchairAppFilter(context: Context) : NexusAppFilter(context) {
         hideList.add(ComponentName(context, NexusLauncherActivity::class.java.name))
     }
 
-    override fun shouldShowApp(componentName: ComponentName): Boolean {
-        return !hideList.contains(componentName) && super.shouldShowApp(componentName)
+    override fun shouldShowApp(componentName: ComponentName?, user: UserHandle?): Boolean {
+        return !hideList.contains(componentName) && super.shouldShowApp(componentName, user)
     }
 }

@@ -422,4 +422,5 @@
     <string name="grid_size_height">Height</string>
     <string name="grid_size_width">Width</string>
     <string name="launcher_theme_override_label">Force dark theme</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

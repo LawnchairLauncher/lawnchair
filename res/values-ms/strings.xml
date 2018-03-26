@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Cadangan tidak akan dipaparkan di sebelah atas senarai apl anda dan data penggunaan yang digunakan untuk membuat cadangan itu akan dipadamkan secara kekal.</string>
     <string name="label_turn_off_suggestions">MATIKAN</string>
     <string name="icon_shape_rounded_square">Segi empat sama berbucu bulat</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

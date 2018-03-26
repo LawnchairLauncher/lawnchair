@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">ಆಫ್</string>
     <string name="action_edit">ಸಂಪಾದಿಸಿ</string>
     <string name="icon_shape_rounded_square">ಚೌಕವನ್ನು ದುಂಡಾಗಿಸಲಾಗಿದೆ</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

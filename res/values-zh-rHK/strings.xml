@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">關閉</string>
     <string name="action_edit">編輯</string>
     <string name="icon_shape_rounded_square">圓角正方形</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

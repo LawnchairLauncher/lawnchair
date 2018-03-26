@@ -145,4 +145,5 @@
     <string name="msg_disable_suggestions_prompt">Prijedlozi se neće pojaviti na vrhu liste vaših aplikacija, a podaci o korištenju koji su se koristili za kreiranje prijedloga bit će trajno izbrisani.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

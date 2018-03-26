@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">خاموش کردن</string>
     <string name="action_edit">ویرایش</string>
     <string name="icon_shape_rounded_square">مربع با گوشه‌های گرد</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
 </resources>

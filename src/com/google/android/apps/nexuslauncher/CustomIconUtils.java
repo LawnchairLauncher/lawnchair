@@ -20,6 +20,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 import com.google.android.apps.nexuslauncher.clock.CustomClock;
 
@@ -54,7 +55,7 @@ public class CustomIconUtils {
     }
 
     static boolean isPackProvider(Context context, String packageName) {
-        if (packageName != null && !packageName.equals("")) {
+        if (packageName != null && !packageName.isEmpty()) {
             PackageManager pm = context.getPackageManager();
             for (String intent : ICON_INTENTS) {
                 if (pm.queryIntentActivities(new Intent(intent).setPackage(packageName),
@@ -72,6 +73,10 @@ public class CustomIconUtils {
 
     static void setCurrentPack(Context context, String pack) {
         Utilities.getLawnchairPrefs(context).setIconPack(pack);
+    }
+
+    static boolean usingValidPack(Context context) {
+        return isPackProvider(context, getCurrentPack(context));
     }
 
     static void applyIconPackAsync(final Context context) {
@@ -108,16 +113,10 @@ public class CustomIconUtils {
         });
     }
 
-    static void reloadIcons(final Context context, String pkg) {
+    static void reloadIconByKey(Context context, ComponentKey key) {
         LauncherModel model = LauncherAppState.getInstance(context).getModel();
         DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
-        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-
-        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
-            if (!launcherApps.getActivityList(pkg, user).isEmpty()) {
-                reloadIcon(shortcutManager, model, user, pkg);
-            }
-        }
+        reloadIcon(shortcutManager, model, key.user, key.componentName.getPackageName());
     }
 
     static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
