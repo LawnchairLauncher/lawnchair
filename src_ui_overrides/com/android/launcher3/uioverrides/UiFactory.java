@@ -22,6 +22,7 @@ import android.view.View.AccessibilityDelegate;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 
 public class UiFactory {
@@ -49,6 +50,8 @@ public class UiFactory {
     public static void onTrimMemory(Launcher launcher, int level) { }
 
     public static View[] getHotseatExtraContent(Hotseat hotseat) {
-        return new View[0];
+        return new View[] {
+            hotseat.findViewById(R.id.drag_indicator),
+        };
     }
 }
