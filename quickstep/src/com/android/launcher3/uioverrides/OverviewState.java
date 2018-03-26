@@ -110,8 +110,7 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            // TODO: Remove hotseat from overview
-            return HOTSEAT_ICONS;
+            return NONE;
         } else {
             return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
                     ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
