@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,7 +35,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
@@ -62,7 +59,6 @@ import java.util.function.Consumer;
 public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut {
 
     private static final String TAG = "TaskSystemShortcut";
-    private static final int DISMISS_TASK_DURATION = 300;
 
     protected T mSystemShortcut;
 
@@ -206,14 +202,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             mRecentsView.removeIgnoreResetTask(mTaskView);
 
             // Start animating in the side pages once launcher has been resized
-            PendingAnimation pendingAnim = mRecentsView.createTaskDismissAnimation(mTaskView,
-                    false, false, DISMISS_TASK_DURATION);
-            AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
-                    pendingAnim.anim, DISMISS_TASK_DURATION);
-            controller.dispatchOnStart();
-            controller.setEndAction(() -> pendingAnim.finish(true));
-            controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
-            controller.start();
+            mRecentsView.dismissTask(mTaskView, false, false);
         }
     }
 

@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.AnimatorSet;
@@ -42,6 +43,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.PendingAnimation;
 import com.android.quickstep.QuickScrubController;
@@ -65,6 +67,7 @@ public abstract class RecentsView<T extends BaseActivity>
         extends PagedView implements OnSharedPreferenceChangeListener {
 
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
+    private static final int DISMISS_TASK_DURATION = 300;
 
     private static final Rect sTempStableInsets = new Rect();
 
@@ -623,6 +626,17 @@ public abstract class RecentsView<T extends BaseActivity>
         }
     }
 
+    public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
+        PendingAnimation pendingAnim = createTaskDismissAnimation(taskView, animateTaskView,
+                removeTask, DISMISS_TASK_DURATION);
+        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
+                pendingAnim.anim, DISMISS_TASK_DURATION);
+        controller.dispatchOnStart();
+        controller.setEndAction(() -> pendingAnim.finish(true));
+        controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
+        controller.start();
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -636,6 +650,18 @@ public abstract class RecentsView<T extends BaseActivity>
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     snapToPageRelative(mIsRtl ? 1 : -1);
                     return true;
+                case KeyEvent.KEYCODE_DEL:
+                case KeyEvent.KEYCODE_FORWARD_DEL:
+                    dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
+                            true /*removeTask*/);
+                    return true;
+                case KeyEvent.KEYCODE_NUMPAD_DOT:
+                    if (event.isAltPressed()) {
+                        // Numpad DEL pressed while holding Alt.
+                        dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
+                                true /*removeTask*/);
+                        return true;
+                    }
             }
         }
         return super.dispatchKeyEvent(event);
