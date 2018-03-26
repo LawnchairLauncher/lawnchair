@@ -47,10 +47,11 @@ public class LauncherState {
      */
     public static final int NONE = 0;
     public static final int HOTSEAT_ICONS = 1 << 0;
-    public static final int HOTSEAT_EXTRA = 1 << 1; // e.g. a search box
+    public static final int HOTSEAT_SEARCH_BOX = 1 << 1;
     public static final int ALL_APPS_HEADER = 1 << 2;
     public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
     public static final int ALL_APPS_CONTENT = 1 << 4;
+    public static final int DRAG_HANDLE_INDICATOR = 1 << 5;
 
     protected static final int FLAG_SHOW_SCRIM = 1 << 0;
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
@@ -201,9 +202,9 @@ public class LauncherState {
 
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return HOTSEAT_ICONS;
+            return HOTSEAT_ICONS | DRAG_HANDLE_INDICATOR;
         }
-        return HOTSEAT_ICONS | HOTSEAT_EXTRA;
+        return HOTSEAT_ICONS | DRAG_HANDLE_INDICATOR | HOTSEAT_SEARCH_BOX;
     }
 
     /**

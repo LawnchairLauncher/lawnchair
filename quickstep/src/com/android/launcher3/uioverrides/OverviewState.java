@@ -112,8 +112,9 @@ public class OverviewState extends LauncherState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return NONE;
         } else {
-            return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
-                    ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
+            return HOTSEAT_SEARCH_BOX | DRAG_HANDLE_INDICATOR |
+                    (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                            ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
     }
 

@@ -122,6 +122,7 @@ public class AllAppsTransitionController
         if (!mIsVerticalLayout) {
             mLauncher.getHotseat().setTranslationY(hotseatTranslation);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(hotseatTranslation);
+            mLauncher.getDragHandleIndicator().setTranslationY(hotseatTranslation);
         }
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the

@@ -18,8 +18,9 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.HOTSEAT_EXTRA;
+import static com.android.launcher3.LauncherState.DRAG_HANDLE_INDICATOR;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.view.View;
@@ -81,15 +82,18 @@ public class WorkspaceStateTransitionAnimation {
 
         int elements = state.getVisibleElements(mLauncher);
         float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-        float hotseatExtraAlpha = (elements & HOTSEAT_EXTRA) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
                 pageAlphaProvider.interpolator);
-        for (View hotseatExtraContent : UiFactory.getHotseatExtraContent(mLauncher.getHotseat())) {
-            propertySetter.setViewAlpha(hotseatExtraContent, hotseatExtraAlpha,
-                    pageAlphaProvider.interpolator);
-        }
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                 hotseatIconsAlpha, pageAlphaProvider.interpolator);
+
+        propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
+                (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0,
+                pageAlphaProvider.interpolator);
+
+        propertySetter.setViewAlpha(mLauncher.getDragHandleIndicator(),
+                (elements & DRAG_HANDLE_INDICATOR) != 0 ? 1 : 0,
+                pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,

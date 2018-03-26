@@ -117,6 +117,7 @@ public class DeviceProfile {
     // Insets
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
+    private final Rect mHotseatPadding = new Rect();
 
     // Icon badges
     public BadgeRenderer mBadgeRenderer;
@@ -454,6 +455,33 @@ public class DeviceProfile {
                         paddingBottom);
             }
         }
+    }
+
+    public Rect getHotseatLayoutPadding() {
+        if (isVerticalBarLayout()) {
+            if (isSeascape()) {
+                mHotseatPadding.set(
+                        mInsets.left, mInsets.top, hotseatBarSidePaddingPx, mInsets.bottom);
+            } else {
+                mHotseatPadding.set(
+                        hotseatBarSidePaddingPx, mInsets.top, mInsets.right, mInsets.bottom);
+            }
+        } else {
+
+            // We want the edges of the hotseat to line up with the edges of the workspace, but the
+            // icons in the hotseat are a different size, and so don't line up perfectly. To account
+            // for this, we pad the left and right of the hotseat with half of the difference of a
+            // workspace cell vs a hotseat cell.
+            float workspaceCellWidth = (float) widthPx / inv.numColumns;
+            float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
+            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            mHotseatPadding.set(
+                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx,
+                    hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
+                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
+        }
+        return mHotseatPadding;
     }
 
     /**
