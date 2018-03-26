@@ -14,6 +14,7 @@ import android.support.v4.graphics.ColorUtils
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import ch.deletescape.lawnchair.LauncherAppState
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
@@ -100,8 +101,13 @@ class BlurWallpaperProvider(context: Context) {
         if (Utilities.getPrefs(context).enableVibrancy) {
             wallpaper = applyVibrancy(wallpaper, tintColor)
         }
-        this.wallpaper = blur(wallpaper)
-        launcher.runOnUiThread(mNotifyRunnable)
+        try {
+            this.wallpaper = blur(wallpaper)
+            launcher.runOnUiThread(mNotifyRunnable)
+        } catch(oom: OutOfMemoryError){
+            Utilities.getPrefs(context).enableBlur(false)
+            Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun upscaleToScreenSize(bitmap: Bitmap): Bitmap {
