@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_X_FACTOR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
+import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -49,7 +50,7 @@ public class RecentsViewStateController implements StateHandler {
 
     @Override
     public void setState(LauncherState state) {
-        mRecentsView.setAlpha(state.overviewUi ? 1 : 0);
+        mRecentsView.setContentAlpha(state.overviewUi ? 1 : 0);
         updateVisibility(mRecentsView, isAccessibilityEnabled(mLauncher));
         float[] translationFactor = state.getOverviewTranslationFactor(mLauncher);
         mRecentsView.setTranslationXFactor(translationFactor[0]);
@@ -83,7 +84,7 @@ public class RecentsViewStateController implements StateHandler {
         setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR,
                 translationFactor[1],
                 builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
-        setter.setViewAlpha(mRecentsView, toState.overviewUi ? 1 : 0, LINEAR);
+        setter.setFloat(mRecentsView, CONTENT_ALPHA, toState.overviewUi ? 1 : 0, LINEAR);
 
         if (toState.overviewUi) {
             ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);

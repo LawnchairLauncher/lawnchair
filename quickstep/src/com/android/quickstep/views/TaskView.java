@@ -176,6 +176,12 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         setScaleY(scale);
     }
 
+    @Override
+    public boolean hasOverlappingRendering() {
+        // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
+        return false;
+    }
+
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
         private final int mMarginTop;

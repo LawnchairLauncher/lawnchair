@@ -22,7 +22,6 @@
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="task_fade_length">20dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
-    <dimen name="recents_page_fade_length">100dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
              loading full resolution screenshots. -->

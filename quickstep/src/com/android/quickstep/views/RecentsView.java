@@ -32,6 +32,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -63,6 +64,21 @@ import java.util.ArrayList;
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity>
         extends PagedView implements OnSharedPreferenceChangeListener {
+
+    public static final FloatProperty<RecentsView> CONTENT_ALPHA =
+            new FloatProperty<RecentsView>("contentAlpha") {
+
+
+        @Override
+        public void setValue(RecentsView recentsView, float v) {
+            recentsView.setContentAlpha(v);
+        }
+
+        @Override
+        public Float get(RecentsView recentsView) {
+            return recentsView.mContentAlpha;
+        }
+    };
 
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
 
@@ -105,6 +121,8 @@ public abstract class RecentsView<T extends BaseActivity>
     private Runnable mNextPageSwitchRunnable;
 
     private PendingAnimation mPendingAnimation;
+
+    private float mContentAlpha = 1;
 
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
@@ -302,12 +320,10 @@ public abstract class RecentsView<T extends BaseActivity>
 
         float overviewHeight, overviewWidth;
         if (profile.isVerticalBarLayout()) {
-            float scrimLength = context.getResources()
-                    .getDimension(R.dimen.recents_page_fade_length);
             float maxPadding = Math.max(padding.left, padding.right);
 
             // Use the same padding on both sides for symmetry.
-            float availableWidth = taskWidth - 2 * Math.max(maxPadding, scrimLength);
+            float availableWidth = taskWidth - 2 * maxPadding;
             float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
                     - sTempStableInsets.top;
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
@@ -648,5 +664,22 @@ public abstract class RecentsView<T extends BaseActivity>
     public void launchNextTask() {
         final TaskView nextTask = (TaskView) getChildAt(getNextPage());
         nextTask.launchTask(true);
+    }
+
+    public void setContentAlpha(float alpha) {
+        if (mContentAlpha == alpha) {
+            return;
+        }
+        mContentAlpha = alpha;
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            getChildAt(i).setAlpha(alpha);
+        }
+        setVisibility(alpha > 0 ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        child.setAlpha(mContentAlpha);
     }
 }
