@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,16 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.Hotseat
-    android:theme="@style/HomeScreenElementTheme"
+<com.android.quickstep.views.QuickstepDragIndicator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto">
-
-    <com.android.launcher3.CellLayout
-        android:id="@+id/layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        launcher:containerType="hotseat"
-        android:importantForAccessibility="no" />
-</com.android.launcher3.Hotseat>
+    android:id="@+id/drag_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/accessibility_desc_recent_apps"
+    android:scaleType="centerInside"
+    android:tint="?attr/workspaceTextColor" />

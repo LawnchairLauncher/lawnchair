@@ -152,19 +152,13 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
         if (mHasVerticalHotseat) {
             mContent.setGridSize(1, grid.inv.numHotseatIcons);
-
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
                 lp.width = grid.hotseatBarSizePx + insets.left + grid.hotseatBarSidePaddingPx;
-                getLayout().setPadding(
-                        insets.left, insets.top, grid.hotseatBarSidePaddingPx, insets.bottom);
-
             } else {
                 lp.gravity = Gravity.RIGHT;
                 lp.width = grid.hotseatBarSizePx + insets.right + grid.hotseatBarSidePaddingPx;
-                getLayout().setPadding(
-                        grid.hotseatBarSidePaddingPx, insets.top, insets.right, insets.bottom);
             }
         } else {
             mContent.setGridSize(grid.inv.numHotseatIcons, 1);
@@ -172,22 +166,10 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx + insets.bottom;
-
-            // We want the edges of the hotseat to line up with the edges of the workspace, but the
-            // icons in the hotseat are a different size, and so don't line up perfectly. To account for
-            // this, we pad the left and right of the hotseat with half of the difference of a workspace
-            // cell vs a hotseat cell.
-            float workspaceCellWidth = (float) grid.widthPx / grid.inv.numColumns;
-            float hotseatCellWidth = (float) grid.widthPx / grid.inv.numHotseatIcons;
-            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
-            Rect workspacePadding = grid.workspacePadding;
-
-            getLayout().setPadding(
-                    hotseatAdjustment + workspacePadding.left + grid.cellLayoutPaddingLeftRightPx,
-                    grid.hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + grid.cellLayoutPaddingLeftRightPx,
-                    grid.hotseatBarBottomPaddingPx + insets.bottom + grid.cellLayoutBottomPaddingPx);
         }
+        Rect padding = grid.getHotseatLayoutPadding();
+        getLayout().setPadding(padding.left, padding.top, padding.right, padding.bottom);
+
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
     }

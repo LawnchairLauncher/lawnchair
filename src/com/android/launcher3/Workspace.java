@@ -443,12 +443,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         setWallpaperDimension();
     }
 
-    @Override
-    public void initParentViews(View parent) {
-        super.initParentViews(parent);
-        mPageIndicator.setAccessibilityDelegate(UiFactory.newPageIndicatorAccessibilityDelegate());
-    }
-
     private void setupLayoutTransition() {
         // We want to show layout transitions when pages are deleted, to close the gap.
         mLayoutTransition = new LayoutTransition();
@@ -3348,11 +3342,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public int getExpectedWidth() {
         return getMeasuredWidth() <= 0 || !mIsLayoutValid
                 ? mLauncher.getDeviceProfile().widthPx : getMeasuredWidth();
-    }
-
-    @Override
-    protected String getPageIndicatorDescription() {
-        return getResources().getString(R.string.all_apps_button_label);
     }
 
     @Override
