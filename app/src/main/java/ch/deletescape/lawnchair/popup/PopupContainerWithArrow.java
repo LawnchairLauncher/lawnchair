@@ -271,7 +271,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
-        final LayoutInflater inflater = mLauncher.getLayoutInflater();
+        final LayoutInflater inflater = LayoutInflater.from(getContext());
 
         int shortcutsItemRoundedCorners = ROUNDED_TOP_CORNERS | ROUNDED_BOTTOM_CORNERS;
         int numItems = itemTypesToPopulate.length;
