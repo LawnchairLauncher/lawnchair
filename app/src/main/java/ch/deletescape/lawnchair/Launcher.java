@@ -646,9 +646,12 @@ public class Launcher extends Activity
 
         if (requestCode == REQUEST_EDIT_ICON) {
             if (data != null && data.hasExtra("alternateIcon")) {
-                mEditingItem.setIcon(this, data.getStringExtra("alternateIcon"));
-            } else {
-                mEditingItem.setIcon(this, null);
+                String alternateIcon = data.getStringExtra("alternateIcon");
+                if("-1".equals(alternateIcon)) {
+                    mEditingItem.setIcon(this, null);
+                } else {
+                    mEditingItem.setIcon(this, alternateIcon);
+                }
             }
             if (mEditingItem.getComponentName() != null)
                 Utilities.updatePackage(this, mEditingItem.getUser(), mEditingItem.getComponentName().getPackageName());
