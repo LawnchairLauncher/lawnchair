@@ -134,9 +134,6 @@ public class BubbleTextView extends TextView
         mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        if (!Utilities.getPrefs(context).getUseSystemFonts()) {
-            setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
-        }
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
@@ -163,8 +160,13 @@ public class BubbleTextView extends TextView
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
-        mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
+        // Check if the user has system fonts disabled and the style is not applied to bubble view
+        if (!Utilities.getPrefs(context).getUseSystemFonts() && display >= 0 && display <= 2) {
+            setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+        }
+
+        mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();

@@ -48,10 +48,6 @@ public class DeepShortcutTextView extends BubbleTextView {
     public DeepShortcutTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        if (!Utilities.getPrefs(context).getUseSystemFonts()) {
-            setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
-        }
-
         Resources resources = getResources();
         mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_padding_end)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
