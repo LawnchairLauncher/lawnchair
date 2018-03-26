@@ -56,6 +56,7 @@ public class RecentsViewStateController implements StateHandler {
         mRecentsView.setTranslationXFactor(translationFactor[0]);
         mRecentsView.setTranslationYFactor(translationFactor[1]);
         if (state.overviewUi) {
+            mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
         }
     }
@@ -94,6 +95,7 @@ public class RecentsViewStateController implements StateHandler {
             });
             updateAnim.setDuration(config.duration);
             builder.play(updateAnim);
+            mRecentsView.updateEmptyMessage();
         }
     }
 }

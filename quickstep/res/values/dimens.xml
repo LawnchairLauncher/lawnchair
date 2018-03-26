@@ -36,4 +36,8 @@
     <dimen name="recents_adjacent_trans_x">140dp</dimen>
     <dimen name="recents_adjacent_trans_y">80dp</dimen>
     <fraction name="recents_adjacent_scale">150%</fraction>
+
+    <dimen name="recents_empty_message_text_size">16sp</dimen>
+    <dimen name="recents_empty_message_text_padding">16dp</dimen>
+
 </resources>

@@ -187,7 +187,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * density);
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
-        setWillNotDraw(false);
 
         if (Utilities.ATLEAST_OREO) {
             setDefaultFocusHighlightEnabled(false);

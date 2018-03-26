@@ -19,10 +19,12 @@ import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -103,19 +105,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
-        int width = right - left;
-        setTranslationX(mTranslationXFactor * (mIsRtl ? -width : width));
         setTranslationYFactor(mTranslationYFactor);
     }
 
     public void setTranslationXFactor(float translationFactor) {
         mTranslationXFactor = translationFactor;
-        setTranslationX(translationFactor * (mIsRtl ? -getWidth() : getWidth()));
-    }
-
-    public float getTranslationXFactor() {
-        return mTranslationXFactor;
+        invalidate();
     }
 
     public void setTranslationYFactor(float translationFactor) {
@@ -123,7 +118,24 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         setTranslationY(mTranslationYFactor * (mPagePadding.bottom - mPagePadding.top));
     }
 
-    public float getTranslationYFactor() {
-        return mTranslationYFactor;
+    @Override
+    public void draw(Canvas canvas) {
+        maybeDrawEmptyMessage(canvas);
+        int count = canvas.save();
+        canvas.translate(mTranslationXFactor * (mIsRtl ? -getWidth() : getWidth()), 0);
+        super.draw(canvas);
+        canvas.restoreToCount(count);
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        updateEmptyMessage();
+    }
+
+    @Override
+    protected void onTaskStackUpdated() {
+        // Lazily update the empty message only when the task stack is reapplied
+        updateEmptyMessage();
     }
 }

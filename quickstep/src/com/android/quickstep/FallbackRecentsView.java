@@ -16,8 +16,10 @@
 package com.android.quickstep;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -32,11 +34,24 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> implements
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOverviewStateEnabled(true);
+        updateEmptyMessage();
     }
 
     @Override
     protected void onAllTasksRemoved() {
         mActivity.finish();
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        updateEmptyMessage();
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        updateEmptyMessage();
     }
 
     @Override
@@ -64,5 +79,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> implements
                 targetPadding.top + insets.top,
                 grid.widthPx - targetPadding.right - insets.right,
                 grid.heightPx - targetPadding.bottom - insets.bottom);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        maybeDrawEmptyMessage(canvas);
+        super.draw(canvas);
     }
 }
