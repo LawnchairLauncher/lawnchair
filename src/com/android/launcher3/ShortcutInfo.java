@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
 import org.jetbrains.annotations.NotNull;
@@ -268,7 +269,8 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         if (getOriginalTitle() == null)
             setOriginalTitle(title);
         if (titleAlias == null) {
-            titleAlias = Utilities.getLawnchairPrefs(context).getCustomAppName().get(getTargetComponent());
+            titleAlias = Utilities.getLawnchairPrefs(context).getCustomAppName()
+                    .get(new ComponentKey(getTargetComponent(), user));
             if (titleAlias == null) {
                 titleAlias = (String) originalTitle;
             }

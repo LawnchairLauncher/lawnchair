@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
@@ -11,6 +10,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -71,9 +71,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
-    val customAppName = object : MutableMapPref<ComponentName, String>("pref_appNameMap", reloadAll) {
-        override fun flattenKey(key: ComponentName) = key.flattenToString()
-        override fun unflattenKey(key: String) = ComponentName.unflattenFromString(key)
+    val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
+        override fun flattenKey(key: ComponentKey) = key.toString()
+        override fun unflattenKey(key: String) = ComponentKey(context, key)
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }

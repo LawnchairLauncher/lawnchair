@@ -142,12 +142,12 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @Nullable
     @Override
     public String getTitle(@NotNull Context context) {
-        return Utilities.getLawnchairPrefs(context).getCustomAppName().get(getTargetComponent());
+        return Utilities.getLawnchairPrefs(context).getCustomAppName().get(toComponentKey());
     }
 
     @Override
     public void setTitle(@NotNull Context context, @Nullable String title) {
-        Utilities.getLawnchairPrefs(context).getCustomAppName().set(getTargetComponent(), title);
+        Utilities.getLawnchairPrefs(context).getCustomAppName().set(toComponentKey(), title);
     }
 
     public void setOriginalTitle(CharSequence originalTitle) {
