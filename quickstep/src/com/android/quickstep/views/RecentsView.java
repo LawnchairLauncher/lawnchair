@@ -44,6 +44,7 @@ import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -132,6 +133,7 @@ public abstract class RecentsView<T extends BaseActivity>
 
     private PendingAnimation mPendingAnimation;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
 
     // Keeps track of task views whose visual state should not be reset
@@ -750,6 +752,7 @@ public abstract class RecentsView<T extends BaseActivity>
         if (mContentAlpha == alpha) {
             return;
         }
+
         mContentAlpha = alpha;
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getChildAt(i).setAlpha(alpha);

@@ -25,6 +25,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
+import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -66,8 +67,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
                 }
             };
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationXFactor;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationYFactor;
+
     private Rect mPagePadding = new Rect();
 
     public LauncherRecentsView(Context context) {

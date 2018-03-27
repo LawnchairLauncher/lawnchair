@@ -16,10 +16,8 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATION;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_X_FACTOR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
@@ -51,7 +49,6 @@ public class RecentsViewStateController implements StateHandler {
     @Override
     public void setState(LauncherState state) {
         mRecentsView.setContentAlpha(state.overviewUi ? 1 : 0);
-        updateVisibility(mRecentsView, isAccessibilityEnabled(mLauncher));
         float[] translationFactor = state.getOverviewTranslationFactor(mLauncher);
         mRecentsView.setTranslationXFactor(translationFactor[0]);
         mRecentsView.setTranslationYFactor(translationFactor[1]);
