@@ -61,6 +61,9 @@ public class IconNormalizer {
     private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.005f;
     private static final float SCALE_NOT_INITIALIZED = 0;
 
+    // Ratio of the diameter of an normalized circular icon to the actual icon size.
+    public static final float ICON_VISIBLE_AREA_FACTOR = 0.92f;
+
     private final int mMaxSize;
     private final Bitmap mBitmap;
     private final Bitmap mBitmapARGB;

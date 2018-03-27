@@ -16,147 +16,84 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATION;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_X_FACTOR;
+import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
+import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.view.View;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.Interpolators;
-import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.RecentsView;
-import com.android.quickstep.TaskView;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.quickstep.views.LauncherRecentsView;
 
+@TargetApi(Build.VERSION_CODES.O)
 public class RecentsViewStateController implements StateHandler {
 
     private final Launcher mLauncher;
-    private final RecentsView mRecentsView;
-    private final WorkspaceCard mWorkspaceCard;
-
-    private final AnimatedFloat mTransitionProgress = new AnimatedFloat(this::onTransitionProgress);
-    // The fraction representing the visibility of the RecentsView. This allows delaying the
-    // overall transition while the RecentsView is being shown or hidden.
-    private final AnimatedFloat mVisibilityMultiplier = new AnimatedFloat(this::onVisibilityProgress);
-
-    private boolean mIsRecentsScrollingToFirstTask;
+    private final LauncherRecentsView mRecentsView;
 
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
-        mRecentsView.setStateController(this);
-
-        mWorkspaceCard = (WorkspaceCard) mRecentsView.getChildAt(0);
-        mWorkspaceCard.setup(launcher);
     }
 
     @Override
     public void setState(LauncherState state) {
-        mWorkspaceCard.setWorkspaceScrollingEnabled(state == OVERVIEW);
-        setVisibility(state == OVERVIEW);
-        setTransitionProgress(state == OVERVIEW ? 1 : 0);
-        if (state == OVERVIEW) {
-            for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
-                ((TaskView) mRecentsView.getPageAt(i)).resetVisualProperties();
-            }
-            mRecentsView.updateCurveProperties();
+        mRecentsView.setContentAlpha(state.overviewUi ? 1 : 0);
+        updateVisibility(mRecentsView, isAccessibilityEnabled(mLauncher));
+        float[] translationFactor = state.getOverviewTranslationFactor(mLauncher);
+        mRecentsView.setTranslationXFactor(translationFactor[0]);
+        mRecentsView.setTranslationYFactor(translationFactor[1]);
+        if (state.overviewUi) {
+            mRecentsView.resetTaskVisuals();
         }
     }
 
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        boolean settingEnabled = Utilities.getPrefs(mLauncher)
-            .getBoolean("pref_scroll_to_first_task", false);
-        mIsRecentsScrollingToFirstTask = mLauncher.isInState(NORMAL) && toState == OVERVIEW
-                && settingEnabled;
-        // TODO: Instead of animating the workspace translationX, move the contents
-        mWorkspaceCard.setWorkspaceScrollingEnabled(mIsRecentsScrollingToFirstTask);
 
         // Scroll to the workspace card before changing to the NORMAL state.
+        LauncherState fromState = mLauncher.getStateManager().getState();
         int currPage = mRecentsView.getCurrentPage();
-        if (toState == NORMAL && currPage != 0 && !config.userControlled) {
+        if (fromState.overviewUi && toState == NORMAL && currPage != 0 && !config.userControlled) {
             int maxSnapDuration = PagedView.SLOW_PAGE_SNAP_ANIMATION_DURATION;
             int durationPerPage = maxSnapDuration / 10;
             int snapDuration = Math.min(maxSnapDuration, durationPerPage * currPage);
             mRecentsView.snapToPage(0, snapDuration);
-            builder.setStartDelay(snapDuration);
+            // Let the snapping animation play for a bit before we translate off screen.
+            builder.setStartDelay(snapDuration / 4);
         }
 
-        ObjectAnimator progressAnim =
-                mTransitionProgress.animateToValue(toState == OVERVIEW ? 1 : 0);
-        progressAnim.setDuration(config.duration);
-        progressAnim.setInterpolator(Interpolators.LINEAR);
-        progressAnim.addListener(new AnimationSuccessListener() {
+        PropertySetter setter = config.getProperSetter(builder);
+        float[] translationFactor = toState.getOverviewTranslationFactor(mLauncher);
+        setter.setFloat(mRecentsView, TRANSLATION_X_FACTOR,
+                translationFactor[0],
+                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
+        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR,
+                translationFactor[1],
+                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
+        setter.setFloat(mRecentsView, CONTENT_ALPHA, toState.overviewUi ? 1 : 0, LINEAR);
 
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                mWorkspaceCard.setWorkspaceScrollingEnabled(toState == OVERVIEW);
-                mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
-            }
-        });
-        builder.play(progressAnim);
-
-        ObjectAnimator visibilityAnim = animateVisibility(toState == OVERVIEW);
-        visibilityAnim.setDuration(config.duration);
-        visibilityAnim.setInterpolator(Interpolators.LINEAR);
-        builder.play(visibilityAnim);
-    }
-
-    public void setVisibility(boolean isVisible) {
-        mVisibilityMultiplier.cancelAnimation();
-        mRecentsView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        mVisibilityMultiplier.updateValue(isVisible ? 1 : 0);
-    }
-
-    public ObjectAnimator animateVisibility(boolean isVisible) {
-        ObjectAnimator anim = mVisibilityMultiplier.animateToValue(isVisible ? 1 : 0);
-        if (isVisible) {
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mRecentsView.setVisibility(View.VISIBLE);
-                }
+        if (toState.overviewUi) {
+            ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);
+            updateAnim.addUpdateListener(valueAnimator -> {
+                // While animating into recents, update the visible task data as needed
+                mRecentsView.loadVisibleTaskData();
             });
-        } else {
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    mRecentsView.setVisibility(View.GONE);
-                }
-            });
+            updateAnim.setDuration(config.duration);
+            builder.play(updateAnim);
         }
-        return anim;
-    }
-
-    public void setTransitionProgress(float progress) {
-        mTransitionProgress.cancelAnimation();
-        mTransitionProgress.updateValue(progress);
-    }
-
-    private void onTransitionProgress() {
-        applyProgress();
-        if (mIsRecentsScrollingToFirstTask) {
-            int scrollForFirstTask = mRecentsView.getScrollForPage(mRecentsView.getFirstTaskIndex());
-            int scrollForPage0 = mRecentsView.getScrollForPage(0);
-            mRecentsView.setScrollX((int) (mTransitionProgress.value * scrollForFirstTask
-                    + (1 - mTransitionProgress.value) * scrollForPage0));
-        }
-    }
-
-    private void onVisibilityProgress() {
-        applyProgress();
-    }
-
-    private void applyProgress() {
-        mRecentsView.setAlpha(mTransitionProgress.value * mVisibilityMultiplier.value);
     }
 }

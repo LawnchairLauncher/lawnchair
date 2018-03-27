@@ -44,7 +44,8 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
         mPaint = new TextPaint();
         mPaint.setColor(Color.WHITE);
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
-                mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
+                mLauncher.getDeviceProfile().getFullScreenProfile().iconTextSizePx,
+                getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.bg_deferred_app_widget);
     }
 

@@ -62,13 +62,4 @@ public class LauncherAppTransitionManager {
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         return getDefaultActivityLaunchOptions(launcher, v);
     }
-
-    /** Cancels the current Launcher transition animation */
-    public void finishLauncherAnimation() {
-    }
-
-    public boolean isAnimating() {
-        // We don't know when the activity options are being used.
-        return false;
-    }
 }

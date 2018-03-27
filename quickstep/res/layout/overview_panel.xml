@@ -14,18 +14,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.RecentsView
+<com.android.quickstep.views.LauncherRecentsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:alpha="0.0"
-    android:visibility="invisible" >
+    android:visibility="invisible"
+    android:focusableInTouchMode="true" >
 
-    <com.android.launcher3.uioverrides.WorkspaceCard
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</com.android.quickstep.RecentsView>
+</com.android.quickstep.views.LauncherRecentsView>

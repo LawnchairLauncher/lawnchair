@@ -21,27 +21,20 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
-import static com.android.quickstep.RemoteRunnable.executeSafely;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.metrics.LogMaker;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -51,9 +44,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.TraceHelper;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -63,87 +54,60 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-class EventLogTags {
-    private EventLogTags() {
-    }  // don't instantiate
-
-    /** 524292 sysui_multi_action (content|4) */
-    public static final int SYSUI_MULTI_ACTION = 524292;
-
-    public static void writeSysuiMultiAction(Object[] content) {
-        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
-    }
-}
-
-class MetricsLogger {
-    private static MetricsLogger sMetricsLogger;
-
-    private static MetricsLogger getLogger() {
-        if (sMetricsLogger == null) {
-            sMetricsLogger = new MetricsLogger();
-        }
-        return sMetricsLogger;
-    }
-
-    protected void saveLog(Object[] rep) {
-        EventLogTags.writeSysuiMultiAction(rep);
-    }
-
-    public void write(LogMaker content) {
-        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
-            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
-        }
-        saveLog(content.serialize());
-    }
-}
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
-    private static final String TAG = "ActivityTouchConsumer";
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
+    private static final int[] DEFERRED_HIT_TARGETS = false
+            ? new int[] {HIT_TARGET_BACK, HIT_TARGET_OVERVIEW} : new int[] {HIT_TARGET_BACK};
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
     private final Intent mHomeIntent;
-    private final ISystemUiProxy mISystemUiProxy;
+    private final ActivityControlHelper mActivityControlHelper;
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
 
+    private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
     private boolean mTouchThresholdCrossed;
     private int mTouchSlop;
     private float mStartDisplacement;
-    private BaseSwipeInteractionHandler mInteractionHandler;
+    private WindowTransformSwipeHandler mInteractionHandler;
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
-    private @HitTarget int mDownHitTarget = HIT_TARGET_NONE;
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
-
-    private final MetricsLogger mMetricsLogger = new MetricsLogger();
+    private boolean mIsGoingToHome;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
-            RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
+            RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
-            @HitTarget int downHitTarget) {
+            @HitTarget int downHitTarget, VelocityTracker velocityTracker) {
         super(base);
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
-        mVelocityTracker = VelocityTracker.obtain();
-        mISystemUiProxy = systemUiProxy;
+        mVelocityTracker = velocityTracker;
+        mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-        mDownHitTarget = downHitTarget;
+        mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
+    }
+
+    @Override
+    public void onShowOverviewFromAltTab() {
+        startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
     }
 
     @Override
@@ -162,7 +126,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
-                if (!isUsingScreenShot() && mDownHitTarget != HIT_TARGET_BACK) {
+                if (!mIsDeferredDownTarget) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
@@ -202,14 +166,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     if (mTouchThresholdCrossed) {
                         mStartDisplacement = Math.signum(displacement) * mTouchSlop;
 
-                        if (isUsingScreenShot()) {
-                            startTouchTrackingForScreenshotAnimation();
-                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
+                        if (mIsDeferredDownTarget) {
                             // If we deferred starting the window animation on touch down, then
                             // start tracking now
                             startTouchTrackingForWindowAnimation(ev.getEventTime());
                         }
-
                         notifyGestureStarted();
                     }
                 } else if (mInteractionHandler != null) {
@@ -235,11 +196,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted();
-
-        // Notify the system that we have started tracking the event
-        if (mISystemUiProxy != null) {
-            executeSafely(mISystemUiProxy::onRecentsAnimationStarted);
-        }
     }
 
     private boolean isNavBarOnRight() {
@@ -250,69 +206,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
-    private boolean isUsingScreenShot() {
-        return Utilities.getPrefs(this).getBoolean("pref_use_screenshot_for_swipe_up", false);
-    }
-
-    /**
-     * Called when the gesture has started.
-     */
-    private void startTouchTrackingForScreenshotAnimation() {
-        // Create the shared handler
-        final NavBarSwipeInteractionHandler handler =
-                new NavBarSwipeInteractionHandler(mRunningTask, this, INTERACTION_NORMAL);
-
-        TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
-
-        // Start the recents activity on a background thread
-        BackgroundExecutor.get().submit(() -> {
-            // Get the snap shot before
-            handler.setTaskSnapshot(getCurrentTaskSnapshot());
-
-            // Start the launcher activity with our custom handler
-            Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
-            startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
-            TraceHelper.partitionSection("TouchInt", "Home started");
-        });
-
-        // Preload the plan
-        mRecentsModel.loadTasks(mRunningTask.id, null);
-        mInteractionHandler = handler;
-        mInteractionHandler.setGestureEndCallback(mEventQueue::reset);
-    }
-
-    private Bitmap getCurrentTaskSnapshot() {
-        TraceHelper.beginSection("TaskSnapshot");
-        // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
-        Point displaySize = new Point();
-        Display display = getSystemService(WindowManager.class).getDefaultDisplay();
-        display.getRealSize(displaySize);
-        int rotation = display.getRotation();
-        // The rotation is backwards in landscape, so flip it.
-        if (rotation == Surface.ROTATION_270) {
-            rotation = Surface.ROTATION_90;
-        } else if (rotation == Surface.ROTATION_90) {
-            rotation = Surface.ROTATION_270;
-        }
-        try {
-            return mISystemUiProxy.screenshot(new Rect(), displaySize.x, displaySize.y, 0, 100000,
-                    false, rotation).toBitmap();
-        } catch (Exception e) {
-            Log.e(TAG, "Error capturing snapshot", e);
-
-            // Return a dummy bitmap
-            Bitmap bitmap = Bitmap.createBitmap(displaySize.x, displaySize.y, Config.RGB_565);
-            bitmap.eraseColor(Color.WHITE);
-            return bitmap;
-        } finally {
-            TraceHelper.endSection("TaskSnapshot");
-        }
-    }
-
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         // Create the shared handler
-        final WindowTransformSwipeHandler handler =
-                new WindowTransformSwipeHandler(mRunningTask, this);
+        final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
+                mRunningTask, this, touchTimeMs, mActivityControlHelper);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
@@ -329,8 +226,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
-        Runnable startActivity = () -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(mHomeIntent,
+        Runnable startActivity = () -> mActivityControlHelper.startRecents(this, mHomeIntent,
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {
@@ -350,16 +246,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);
                         }
-
-                        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
-                        // "Recents" activity for app transition tests.
-                        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
-                        builder.setPackageName("com.android.systemui");
-                        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
-                                "com.android.systemui.recents.RecentsActivity");
-                        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                                SystemClock.uptimeMillis() - touchTimeMs);
-                        mMetricsLogger.write(builder);
                     }
 
                     public void onAnimationCanceled() {
@@ -369,7 +255,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             handler.onRecentsAnimationCanceled();
                         }
                     }
-                }, null, null);
+                });
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
@@ -398,7 +284,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     : isNavBarOnLeft() ? -mVelocityTracker.getXVelocity(mActivePointerId)
                             : mVelocityTracker.getYVelocity(mActivePointerId);
             mInteractionHandler.onGestureEnded(velocity);
-        } else if (!isUsingScreenShot()) {
+        } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
             reset();
@@ -415,8 +301,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public void reset() {
         // Clean up the old interaction handler
         if (mInteractionHandler != null) {
-            final BaseSwipeInteractionHandler handler = mInteractionHandler;
+            final WindowTransformSwipeHandler handler = mInteractionHandler;
             mInteractionHandler = null;
+            mIsGoingToHome = handler.mIsGoingToHome;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -424,24 +311,15 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     @Override
     public void updateTouchTracking(int interactionType) {
         notifyGestureStarted();
-
-        if (isUsingScreenShot()) {
-            mMainThreadExecutor.execute(() -> {
-                if (mInteractionHandler != null) {
-                    mInteractionHandler.updateInteractionType(interactionType);
-                }
-            });
-        } else {
-            if (mInteractionHandler != null) {
-                mInteractionHandler.updateInteractionType(interactionType);
-            }
+        if (mInteractionHandler != null) {
+            mInteractionHandler.updateInteractionType(interactionType);
         }
     }
 
     @Override
     public Choreographer getIntrimChoreographer(MotionEventQueue queue) {
         mEventQueue = queue;
-        return isUsingScreenShot() ? null : mBackgroundThreadChoreographer;
+        return mBackgroundThreadChoreographer;
     }
 
     @Override
@@ -470,5 +348,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                mVelocityTracker.clear();
            }
         }
+    }
+
+    @Override
+    public boolean forceToLauncherConsumer() {
+        return mIsGoingToHome;
+    }
+
+    @Override
+    public boolean deferNextEventToMainThread() {
+        // TODO: Consider also check if the eventQueue is using mainThread of not.
+        return mInteractionHandler != null;
     }
 }

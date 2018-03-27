@@ -77,6 +77,12 @@ public class AnimatedFloat {
         }
     }
 
+    public void finishAnimation() {
+        if (mValueAnimator != null && mValueAnimator.isRunning()) {
+            mValueAnimator.end();
+        }
+    }
+
     public ObjectAnimator getCurrentAnimation() {
         return mValueAnimator;
     }

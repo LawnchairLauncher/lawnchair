@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
@@ -27,9 +29,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertySetter;
 
 public class FloatingHeaderView extends LinearLayout implements
         ValueAnimator.AnimatorUpdateListener {
@@ -58,7 +60,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     };
 
-    private ViewGroup mTabLayout;
+    protected ViewGroup mTabLayout;
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
     private AllAppsRecyclerView mCurrentRV;
@@ -66,8 +68,11 @@ public class FloatingHeaderView extends LinearLayout implements
     private boolean mHeaderCollapsed;
     private int mSnappedScrolledY;
     private int mTranslationY;
+
+    private boolean mAllowTouchForwarding;
     private boolean mForwardToRecyclerView;
 
+    protected boolean mTabsHidden;
     protected int mMaxTranslation;
 
     public FloatingHeaderView(@NonNull Context context) {
@@ -85,12 +90,13 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+        mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(true);
-        reset();
+        reset(false);
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
@@ -105,7 +111,13 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public int getMaxTranslation() {
-        return mMaxTranslation;
+        if (mMaxTranslation == 0 && mTabsHidden) {
+            return getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_bottom_padding);
+        } else if (mMaxTranslation > 0 && mTabsHidden) {
+            return mMaxTranslation + getPaddingTop();
+        } else {
+            return mMaxTranslation;
+        }
     }
 
     private boolean canSnapAt(int currentScrollY) {
@@ -131,7 +143,7 @@ public class FloatingHeaderView extends LinearLayout implements
                 mSnappedScrolledY = currentScrollY - mMaxTranslation;
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
-                mSnappedScrolledY = currentScrollY;
+                mSnappedScrolledY = -mMaxTranslation;
             }
         }
     }
@@ -151,12 +163,19 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    public void reset() {
-        int translateTo = 0;
-        mAnimator.setIntValues(mTranslationY, translateTo);
-        mAnimator.addUpdateListener(this);
-        mAnimator.setDuration(150);
-        mAnimator.start();
+    public void reset(boolean animate) {
+        if (mAnimator.isStarted()) {
+            mAnimator.cancel();
+        }
+        if (animate) {
+            mAnimator.setIntValues(mTranslationY, 0);
+            mAnimator.addUpdateListener(this);
+            mAnimator.setDuration(150);
+            mAnimator.start();
+        } else {
+            mTranslationY = 0;
+            apply();
+        }
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
         mCurrentRV.scrollToTop();
@@ -174,6 +193,10 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!mAllowTouchForwarding) {
+            mForwardToRecyclerView = false;
+            return super.onInterceptTouchEvent(ev);
+        }
         calcOffset(mTempOffset);
         ev.offsetLocation(mTempOffset.x, mTempOffset.y);
         mForwardToRecyclerView = mCurrentRV.onInterceptTouchEvent(ev);
@@ -200,6 +223,19 @@ public class FloatingHeaderView extends LinearLayout implements
     private void calcOffset(Point p) {
         p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
+    }
+
+    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter setter) {
+        setter.setViewAlpha(this, hasContent ? 1 : 0, LINEAR);
+        allowTouchForwarding(hasContent);
+    }
+
+    protected void allowTouchForwarding(boolean allow) {
+        mAllowTouchForwarding = allow;
+    }
+
+    public boolean hasVisibleContent() {
+        return false;
     }
 }
 

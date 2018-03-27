@@ -18,8 +18,6 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.animation.DynamicAnimation;
-import android.support.animation.SpringAnimation;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
@@ -38,11 +36,10 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.List;
@@ -71,7 +68,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
-    public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON;
 
 
     public interface BindViewCallback {
@@ -182,8 +178,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final AlphabeticalAppsList mApps;
     private final GridLayoutManager mGridLayoutMgr;
     private final GridSpanSizer mGridSizer;
-    private final View.OnClickListener mIconClickListener;
-    private final View.OnLongClickListener mIconLongClickListener;
 
     private final int mAppsPerRow;
 
@@ -195,10 +189,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    private final SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
-
-    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
-            iconClickListener, View.OnLongClickListener iconLongClickListener, boolean springAnim) {
+    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -207,21 +198,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mLayoutInflater = LayoutInflater.from(launcher);
-        mIconClickListener = iconClickListener;
-        mIconLongClickListener = iconLongClickListener;
-        if (FeatureFlags.LAUNCHER3_PHYSICS && springAnim) {
-            mSpringAnimationHandler = new SpringAnimationHandler<>(
-                    SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
-        } else {
-            mSpringAnimationHandler = null;
-        }
 
         mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
-    }
-
-    public SpringAnimationHandler getSpringAnimationHandler() {
-        return mSpringAnimationHandler;
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -270,8 +249,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(mIconClickListener);
-                icon.setOnLongClickListener(mIconLongClickListener);
+                icon.setOnClickListener(ItemClickHandler.INSTANCE);
+                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
@@ -344,22 +323,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     }
 
     @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        int type = holder.getItemViewType();
-        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
-            mSpringAnimationHandler.add(holder.itemView, holder);
-        }
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(ViewHolder holder) {
-        int type = holder.getItemViewType();
-        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
-            mSpringAnimationHandler.remove(holder.itemView);
-        }
-    }
-
-    @Override
     public boolean onFailedToRecycleView(ViewHolder holder) {
         // Always recycle and we will reset the view when it is bound
         return true;
@@ -376,104 +339,4 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
-    /**
-     * Helper class to set the SpringAnimation values for an item in the adapter.
-     */
-    private class AllAppsSpringAnimationFactory
-            implements SpringAnimationHandler.AnimationFactory<ViewHolder> {
-        private static final float DEFAULT_MAX_VALUE_PX = 100;
-        private static final float DEFAULT_MIN_VALUE_PX = -DEFAULT_MAX_VALUE_PX;
-
-        // Damping ratio range is [0, 1]
-        private static final float SPRING_DAMPING_RATIO = 0.55f;
-
-        // Stiffness is a non-negative number.
-        private static final float MIN_SPRING_STIFFNESS = 580f;
-        private static final float MAX_SPRING_STIFFNESS = 900f;
-
-        // The amount by which each adjacent rows' stiffness will differ.
-        private static final float ROW_STIFFNESS_COEFFICIENT = 50f;
-
-        // The percentage by which we multiply each row to create the row factor.
-        private static final float ROW_PERCENTAGE = 0.3f;
-
-        @Override
-        public SpringAnimation initialize(ViewHolder vh) {
-            return SpringAnimationHandler.forView(vh.itemView, DynamicAnimation.TRANSLATION_Y, 0);
-        }
-
-        /**
-         * @param spring A new or recycled SpringAnimation.
-         * @param vh The ViewHolder that {@param spring} is related to.
-         */
-        @Override
-        public void update(SpringAnimation spring, ViewHolder vh) {
-            int appPosition = vh.getAdapterPosition();
-            int col = appPosition % mAppsPerRow;
-            int row = appPosition / mAppsPerRow;
-
-            int numTotalRows = mApps.getNumAppRows() - 1; // zero-based count
-            if (row > (numTotalRows / 2)) {
-                // Mirror the rows so that the top row acts the same as the bottom row.
-                row = Math.abs(numTotalRows - row);
-            }
-
-            calculateSpringValues(spring, row, col);
-        }
-
-        @Override
-        public void setDefaultValues(SpringAnimation spring) {
-            calculateSpringValues(spring, 0, mAppsPerRow / 2);
-        }
-
-        /**
-         * We manipulate the stiffness, min, and max values based on the items distance to the
-         * first row and the items distance to the center column to create the ^-shaped motion
-         * effect.
-         */
-        private void calculateSpringValues(SpringAnimation spring, int row, int col) {
-            float rowFactor = (1 + row) * ROW_PERCENTAGE;
-            float colFactor = getColumnFactor(col, mAppsPerRow);
-
-            float minValue = DEFAULT_MIN_VALUE_PX * (rowFactor + colFactor);
-            float maxValue = DEFAULT_MAX_VALUE_PX * (rowFactor + colFactor);
-
-            float stiffness = Utilities.boundToRange(
-                    MAX_SPRING_STIFFNESS - (row * ROW_STIFFNESS_COEFFICIENT),
-                    MIN_SPRING_STIFFNESS,
-                    MAX_SPRING_STIFFNESS);
-
-            spring.setMinValue(minValue)
-                    .setMaxValue(maxValue)
-                    .getSpring()
-                    .setStiffness(stiffness)
-                    .setDampingRatio(SPRING_DAMPING_RATIO);
-        }
-
-        /**
-         * Increase the column factor as the distance increases between the column and the center
-         * column(s).
-         */
-        private float getColumnFactor(int col, int numCols) {
-            float centerColumn = numCols / 2;
-            int distanceToCenter = (int) Math.abs(col - centerColumn);
-
-            boolean evenNumberOfColumns = numCols % 2 == 0;
-            if (evenNumberOfColumns && col < centerColumn) {
-                distanceToCenter -= 1;
-            }
-
-            float factor = 0;
-            while (distanceToCenter > 0) {
-                if (distanceToCenter == 1) {
-                    factor += 0.2f;
-                } else {
-                    factor += 0.1f;
-                }
-                --distanceToCenter;
-            }
-
-            return factor;
-        }
-    }
 }

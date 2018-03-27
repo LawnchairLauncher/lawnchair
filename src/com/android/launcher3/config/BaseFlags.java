@@ -35,8 +35,6 @@ abstract class BaseFlags {
     public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
-    // When enabled allows use of physics based motions in the Launcher.
-    public static final boolean LAUNCHER3_PHYSICS = true;
     // When enabled allows use of spring motions on the icons.
     public static final boolean LAUNCHER3_SPRING_ICONS = true;
 
@@ -53,6 +51,4 @@ abstract class BaseFlags {
 
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
-
-    public static final boolean ENABLE_TWO_SWIPE_TARGETS = true;
 }

@@ -24,7 +24,7 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -32,7 +32,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
+    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY | FLAG_ALL_APPS_SCRIM;
 
     private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
         @Override
@@ -57,7 +57,8 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public String getDescription(Launcher launcher) {
-        return launcher.getString(R.string.all_apps_button_label);
+        AllAppsContainerView appsView = launcher.getAppsView();
+        return appsView.getDescription();
     }
 
     @Override
@@ -82,8 +83,15 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
-        return 0;
+    public int getVisibleElements(Launcher launcher) {
+        return ALL_APPS_HEADER | ALL_APPS_HEADER_EXTRA | ALL_APPS_CONTENT;
+    }
+
+    @Override
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        // Keep the same translation as in overview, so that we don't slide around when
+        // transitioning to All Apps.
+        return LauncherState.OVERVIEW.getOverviewTranslationFactor(launcher);
     }
 
     @Override
