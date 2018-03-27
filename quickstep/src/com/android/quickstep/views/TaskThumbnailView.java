@@ -36,6 +36,7 @@ import android.view.View;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -146,6 +147,9 @@ public class TaskThumbnailView extends View {
                     (mThumbnailData.insets.top + mThumbnailData.insets.bottom) * scale;
             final float thumbnailScale;
 
+            boolean rotate = false;
+            final DeviceProfile profile = BaseActivity.fromContext(getContext())
+                    .getDeviceProfile();
             if (getMeasuredWidth() == 0) {
                 // If we haven't measured , skip the thumbnail drawing and only draw the background
                 // color
@@ -153,43 +157,71 @@ public class TaskThumbnailView extends View {
             } else {
                 final Configuration configuration =
                         getContext().getApplicationContext().getResources().getConfiguration();
-                final DeviceProfile profile = BaseActivity.fromContext(getContext())
-                        .getDeviceProfile();
                 if (configuration.orientation == mThumbnailData.orientation) {
                     // If we are in the same orientation as the screenshot, just scale it to the
                     // width of the task view
                     thumbnailScale = getMeasuredWidth() / thumbnailWidth;
-                } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    // Scale the landscape thumbnail up to app size, then scale that to the task
-                    // view size to match other portrait screenshots
-                    thumbnailScale = ((float) getMeasuredWidth() / profile.widthPx);
                 } else {
-                    // Otherwise, scale the screenshot to fit 1:1 in the current orientation
-                    thumbnailScale = 1;
+                    if (FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION) {
+                        rotate = true;
+                        // Scale the height (will be width after rotation) to the width of this view
+                        thumbnailScale = getMeasuredWidth() / thumbnailHeight;
+                    } else {
+                        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            // Scale the landscape thumbnail up to app size, then scale that to the
+                            // task view size to match other portrait screenshots
+                            thumbnailScale = ((float) getMeasuredWidth() / profile.widthPx);
+                        } else {
+                            // Otherwise, scale the screenshot to fit 1:1 in the current orientation
+                            thumbnailScale = 1;
+                        }
+                    }
                 }
             }
-            mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
-                    -mThumbnailData.insets.top * scale);
+            if (rotate) {
+                int rotationDir = profile.isVerticalBarLayout() && !profile.isSeascape() ? -1 : 1;
+                mMatrix.setRotate(90 * rotationDir);
+                Rect thumbnailInsets  = mThumbnailData.insets;
+                int newLeftInset = rotationDir == 1 ? thumbnailInsets.bottom : thumbnailInsets.top;
+                int newTopInset = rotationDir == 1 ? thumbnailInsets.left : thumbnailInsets.right;
+                mMatrix.postTranslate(-newLeftInset * scale, -newTopInset * scale);
+                if (rotationDir == -1) {
+                    // Crop the right/bottom side of the screenshot rather than left/top
+                    float excessHeight = thumbnailWidth * thumbnailScale - getMeasuredHeight();
+                    mMatrix.postTranslate(0, -excessHeight);
+                }
+                // Move the screenshot to the thumbnail window (rotation moved it out).
+                if (rotationDir == 1) {
+                    mMatrix.postTranslate(mThumbnailData.thumbnail.getHeight(), 0);
+                } else {
+                    mMatrix.postTranslate(0, mThumbnailData.thumbnail.getWidth());
+                }
+            } else {
+                mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
+                        -mThumbnailData.insets.top * scale);
+            }
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
 
-            float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
             Shader shader = mBitmapShader;
-            if (Math.round(bitmapHeight) < getMeasuredHeight()) {
-                int color = mPaint.getColor();
-                LinearGradient fade = new LinearGradient(
-                        0, bitmapHeight - mFadeLength, 0, bitmapHeight,
-                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
-                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
-            }
+            if (!FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION) {
+                float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
+                if (Math.round(bitmapHeight) < getMeasuredHeight()) {
+                    int color = mPaint.getColor();
+                    LinearGradient fade = new LinearGradient(
+                            0, bitmapHeight - mFadeLength, 0, bitmapHeight,
+                            color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
+                    shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+                }
 
-            float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
-            if (Math.round(bitmapWidth) < getMeasuredWidth()) {
-                int color = mPaint.getColor();
-                LinearGradient fade = new LinearGradient(
-                        bitmapWidth - mFadeLength, 0, bitmapWidth, 0,
-                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
-                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+                float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
+                if (Math.round(bitmapWidth) < getMeasuredWidth()) {
+                    int color = mPaint.getColor();
+                    LinearGradient fade = new LinearGradient(
+                            bitmapWidth - mFadeLength, 0, bitmapWidth, 0,
+                            color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
+                    shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+                }
             }
             mPaint.setShader(shader);
         }
