@@ -680,6 +680,9 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     private void snapToPageRelative(int delta) {
+        if (getPageCount() == 0) {
+            return;
+        }
         snapToPage((getNextPage() + getPageCount() + delta) % getPageCount());
     }
 
