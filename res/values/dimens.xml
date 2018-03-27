@@ -95,12 +95,7 @@
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-    <!-- Derived dimens -->
-    <dimen name="all_apps_search_bar_field_height_and_margin">56dp</dimen>
-    <!-- all_apps_search_bar_field_height_and_margin + all_apps_header_tab_height -->
-    <dimen name="all_apps_tabs_top_margin">106dp</dimen>
-
- <!-- Widget tray -->
+<!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
 
