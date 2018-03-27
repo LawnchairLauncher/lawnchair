@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.support.annotation.VisibleForTesting;
 import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.Display;
@@ -88,17 +89,18 @@ public class InvariantDeviceProfile {
 
     public Point defaultWallpaperSize;
 
+    @VisibleForTesting
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(InvariantDeviceProfile p) {
+    private InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
                 p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
                 p.defaultLayoutId, p.demoModeLayoutId);
     }
 
-    InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
+    private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
             float is, float lis, float its, int hs, int dlId, int dmlId) {
         name = n;
         minWidthDps = w;
@@ -116,7 +118,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    InvariantDeviceProfile(Context context) {
+    public InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();

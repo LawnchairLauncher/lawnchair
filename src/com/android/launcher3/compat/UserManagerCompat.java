@@ -58,7 +58,6 @@ public abstract class UserManagerCompat {
     public abstract long getSerialNumberForUser(UserHandle user);
     public abstract UserHandle getUserForSerialNumber(long serialNumber);
     public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user);
-    public abstract long getUserCreationTime(UserHandle user);
     public abstract boolean isQuietModeEnabled(UserHandle user);
     public abstract boolean isUserUnlocked(UserHandle user);
 

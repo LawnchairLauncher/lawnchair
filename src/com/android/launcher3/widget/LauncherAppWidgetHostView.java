@@ -47,7 +47,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
+import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
 import java.util.ArrayList;
 
@@ -488,13 +488,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         // Only reinflate when the final configuration is same as the required configuration
         if (mReinflateOnConfigChange && isSameOrientation()) {
             mReinflateOnConfigChange = false;
-            if (isAttachedToWindow()) {
-                reInflate();
-            }
+            reInflate();
         }
     }
 
     public void reInflate() {
+        if (!isAttachedToWindow()) {
+            return;
+        }
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database

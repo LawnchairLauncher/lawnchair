@@ -16,8 +16,6 @@
 
 <resources>
 
-    <dimen name="options_menu_icon_size">24dp</dimen>
-
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <dimen name="task_menu_background_radius">12dp</dimen>
@@ -25,19 +23,17 @@
     <dimen name="task_fade_length">20dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
 
+    <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
+             loading full resolution screenshots. -->
+    <dimen name="recents_fast_fling_velocity">600dp</dimen>
 
     <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>
     <dimen name="quickstep_fling_min_velocity">250dp</dimen>
 
-    <dimen name="workspace_overview_offset_x">-24dp</dimen>
-
-    <!-- TODO: This can be calculated using other resource values -->
-    <dimen name="all_apps_search_box_full_height">90dp</dimen>
-
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">25dp</dimen>
     <dimen name="workspace_trans_y">80dp</dimen>
-    <dimen name="recents_adjacent_trans_x">120dp</dimen>
+    <dimen name="recents_adjacent_trans_x">140dp</dimen>
     <dimen name="recents_adjacent_trans_y">80dp</dimen>
     <fraction name="recents_adjacent_scale">150%</fraction>
 </resources>

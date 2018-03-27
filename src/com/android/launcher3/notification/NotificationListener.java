@@ -74,6 +74,9 @@ public class NotificationListener extends NotificationListenerService {
     /** Maps keys to their corresponding current group key */
     private final Map<String, String> mNotificationGroupKeyMap = new HashMap<>();
 
+    /** The last notification key that was dismissed from launcher UI */
+    private String mLastKeyDismissedByLauncher;
+
     private SettingsObserver mNotificationBadgingObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
@@ -251,13 +254,25 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
+        String key = sbn.getKey();
         if (notificationGroup != null) {
-            notificationGroup.removeChildKey(sbn.getKey());
+            notificationGroup.removeChildKey(key);
             if (notificationGroup.isEmpty()) {
-                cancelNotification(notificationGroup.getGroupSummaryKey());
+                if (key.equals(mLastKeyDismissedByLauncher)) {
+                    // Only cancel the group notification if launcher dismissed the last child.
+                    cancelNotification(notificationGroup.getGroupSummaryKey());
+                }
                 mNotificationGroupMap.remove(sbn.getGroupKey());
             }
         }
+        if (key.equals(mLastKeyDismissedByLauncher)) {
+            mLastKeyDismissedByLauncher = null;
+        }
+    }
+
+    public void cancelNotificationFromLauncher(String key) {
+        mLastKeyDismissedByLauncher = key;
+        cancelNotification(key);
     }
 
     @Override

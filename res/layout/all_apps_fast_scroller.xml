@@ -21,8 +21,8 @@
         android:id="@+id/fast_scroller_popup"
         style="@style/FastScrollerPopup"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/search_container_all_apps"
-        android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
+        android:layout_marginEnd="@dimen/fastscroll_popup_margin"
+        android:layout_marginTop="@dimen/all_apps_search_bar_field_height_and_margin" />
 
     <com.android.launcher3.views.RecyclerViewFastScroller
         android:id="@+id/fast_scroller"
@@ -30,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/search_container_all_apps"
         android:layout_marginEnd="@dimen/fastscroll_end_margin"
+        android:layout_marginTop="@dimen/all_apps_search_bar_field_height_and_margin"
         launcher:canThumbDetach="true" />
 
 </merge>

@@ -39,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
+-keep class com.android.launcher3.views.BaseDragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -99,6 +99,11 @@
 
 # LauncherAppTransitionManager
 -keep class com.android.launcher3.LauncherAppTransitionManagerImpl {
+    public <init>(...);
+}
+
+# InstantAppResolver
+-keep class com.android.quickstep.InstantAppResolverImpl {
     public <init>(...);
 }
 
