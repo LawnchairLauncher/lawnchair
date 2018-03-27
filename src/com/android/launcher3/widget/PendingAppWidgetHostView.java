@@ -43,6 +43,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
@@ -83,7 +84,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
         setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
         updateAppWidget(null);
-        setOnClickListener(mLauncher);
+        setOnClickListener(ItemClickHandler.INSTANCE);
 
         if (info.pendingItemInfo == null) {
             info.pendingItemInfo = new PackageItemInfo(info.providerName.getPackageName());

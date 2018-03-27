@@ -583,6 +583,12 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         mDragObject.dragComplete = true;
+        if (mIsInPreDrag) {
+            if (dropTarget != null) {
+                dropTarget.onDragExit(mDragObject);
+            }
+            return;
+        }
 
         // Drop onto the target.
         boolean accepted = false;
@@ -591,17 +597,15 @@ public class DragController implements DragDriver.EventListener, TouchController
             if (dropTarget.acceptDrop(mDragObject)) {
                 if (flingAnimation != null) {
                     flingAnimation.run();
-                } else if (!mIsInPreDrag) {
+                } else {
                     dropTarget.onDrop(mDragObject, mOptions);
                 }
                 accepted = true;
             }
         }
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
-        if (!mIsInPreDrag) {
-            mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
-            dispatchDropComplete(dropTargetAsView, accepted);
-        }
+        mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
+        dispatchDropComplete(dropTargetAsView, accepted);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {

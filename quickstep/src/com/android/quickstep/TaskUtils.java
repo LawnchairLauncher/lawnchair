@@ -16,12 +16,12 @@
 
 package com.android.quickstep;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.systemui.shared.recents.model.Task;
@@ -34,10 +34,10 @@ public class TaskUtils {
 
     private static final String TAG = "TaskUtils";
 
-    public static CharSequence getTitle(Launcher launcher, Task task) {
-        LauncherAppsCompat launcherAppsCompat = LauncherAppsCompat.getInstance(launcher);
-        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(launcher);
-        PackageManager packageManager = launcher.getPackageManager();
+    public static CharSequence getTitle(Context context, Task task) {
+        LauncherAppsCompat launcherAppsCompat = LauncherAppsCompat.getInstance(context);
+        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
+        PackageManager packageManager = context.getPackageManager();
         UserHandle user = UserHandle.of(task.key.userId);
         ApplicationInfo applicationInfo = launcherAppsCompat.getApplicationInfo(
             task.getTopComponent().getPackageName(), 0, user);

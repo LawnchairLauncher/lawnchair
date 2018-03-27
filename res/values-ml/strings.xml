@@ -40,9 +40,15 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"ഈ ഹോം സ്‌ക്രീനിൽ ഒഴിവൊന്നുമില്ല."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഒഴിവൊന്നുമില്ല"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"അപ്ലിക്കേഷനുകളുടെ ലിസ്‌റ്റ്"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"വ്യക്തിഗത ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"ഔദ്യോഗിക ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ഹോം"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"നീക്കംചെയ്യുക"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"അൺഇൻസ്റ്റാളുചെയ്യുക"</string>
@@ -77,19 +83,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ഹോം ക്രമീകരണം"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"അവലോകനം"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ഹോം സ്ക്രീൻ തിരിക്കൽ അനുവദിക്കുക"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"ഫോൺ തിരിച്ച നിലയിലായിരിക്കുമ്പോൾ"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"നിലവിലെ ഡിസ്പ്ലേ ക്രമീകരണം തിരിക്കൽ അനുവദിക്കുന്നില്ല"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"അറിയിപ്പ് ഡോട്ടുകൾ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ഓൺ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ഓഫ്"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"അറിയിപ്പിനായുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"ഹോം സ്‌ക്രീനിൽ"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"സിസ്‌റ്റം ഡിഫോൾട്ട് ഉപയോഗിക്കുക"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ചതുരം"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ചതുരവൃത്തം"</string>
@@ -119,9 +123,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"ഇതുപയോഗിച്ച് ഫോൾഡർ സൃഷ്‌ടിക്കുക: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ഫോൾഡർ സൃഷ്‌ടിച്ചു"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"സ്‌ക്രീൻ ഇടത്തേക്ക് നീക്കുക"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"സ്‌ക്രീൻ വലത്തേക്ക് നീക്കുക"</string>
-    <string name="screen_moved" msgid="266230079505650577">"സ്‌ക്രീൻ നീക്കി"</string>
     <string name="action_resize" msgid="1802976324781771067">"വലുപ്പംമാറ്റുക"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"വീതി കൂട്ടുക"</string>
     <string name="action_increase_height" msgid="459390020612501122">"ഉയരം കൂട്ടുക"</string>
@@ -137,7 +138,11 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ഔദ്യോഗിക ആപ്പുകൾ ഇവിടെ കണ്ടെത്തുക"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഓറഞ്ച് നിറത്തിലുള്ള ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"നിങ്ങളുടെ സ്ഥാപനം നിയന്ത്രിക്കുന്നത്"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
+    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
+    <skip />
+    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
+    <skip />
 </resources>

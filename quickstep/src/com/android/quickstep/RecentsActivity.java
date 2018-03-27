@@ -15,34 +15,88 @@
  */
 package com.android.quickstep;
 
-import android.app.ListActivity;
+import android.app.ActivityOptions;
 import android.os.Bundle;
-import android.os.UserHandle;
-import android.support.annotation.Nullable;
-import android.widget.ArrayAdapter;
+import android.view.View;
 
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
-import com.android.systemui.shared.recents.model.RecentsTaskLoader;
-import com.android.systemui.shared.recents.model.Task;
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
+import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.views.BaseDragLayer;
 
 /**
  * A simple activity to show the recently launched tasks
  */
-public class RecentsActivity extends ListActivity {
+public class RecentsActivity extends BaseDraggingActivity {
 
-    private ArrayAdapter<Task> mAdapter;
+    private RecentsRootView mRecentsRootView;
+    private FallbackRecentsView mFallbackRecentsView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RecentsTaskLoadPlan plan = new RecentsTaskLoadPlan(this);
-        plan.preloadPlan(new PreloadOptions(), new RecentsTaskLoader(this, 1, 1, 0), -1,
-                UserHandle.myUserId());
+        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
+        // activity.
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        setDeviceProfile(appState != null
+                ? appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this)
+                : new InvariantDeviceProfile(this).getDeviceProfile(this));
 
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        mAdapter.addAll(plan.getTaskStack().getTasks());
-        setListAdapter(mAdapter);
+        setContentView(R.layout.fallback_recents_activity);
+        mRecentsRootView = findViewById(R.id.drag_layer);
+        mFallbackRecentsView = findViewById(R.id.overview_panel);
+
+        RecentsActivityTracker.onRecentsActivityCreate(this);
+    }
+
+    @Override
+    public BaseDragLayer getDragLayer() {
+        return mRecentsRootView;
+    }
+
+    @Override
+    public View getRootView() {
+        return mRecentsRootView;
+    }
+
+    @Override
+    public <T extends View> T getOverviewPanel() {
+        return (T) mFallbackRecentsView;
+    }
+
+    @Override
+    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+        return null;
+    }
+
+    @Override
+    public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
+        return null;
+    }
+
+    @Override
+    public void invalidateParent(ItemInfo info) { }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        UiFactory.onStart(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        UiFactory.onTrimMemory(this, level);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RecentsActivityTracker.onRecentsActivityDestroy(this);
     }
 }

@@ -56,11 +56,11 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.ManagedProfileHeuristic;
-import com.android.launcher3.util.NoLocaleSqliteContext;
+import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
@@ -320,6 +320,11 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        if (ModelWriter.DEBUG_DELETE) {
+            String args = selectionArgs == null ? null : TextUtils.join(",", selectionArgs);
+            FileLog.d(TAG, "Delete uri=" + uri + ", selection=" + selection
+                    + ", selectionArgs=" + args, new Exception());
+        }
         createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
@@ -541,7 +546,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    public static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private long mMaxItemId = -1;
@@ -567,7 +572,7 @@ public class LauncherProvider extends ContentProvider {
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, SCHEMA_VERSION);
+            super(context, tableName, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
         }
@@ -623,10 +628,6 @@ public class LauncherProvider extends ContentProvider {
 
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
-
-            // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
-                    mContext);
         }
 
         public long getDefaultUserSerial() {
@@ -790,7 +791,7 @@ public class LauncherProvider extends ContentProvider {
                 case 23:
                     // No-op
                 case 24:
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
+                    // No-op
                 case 25:
                     convertShortcutsToLauncherActivities(db);
                 case 26:

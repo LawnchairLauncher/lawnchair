@@ -16,20 +16,18 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
-import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Definition for overview state
@@ -37,27 +35,31 @@ import com.android.quickstep.RecentsView;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE;
+            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI;
 
     public OverviewState(int id) {
-        super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        this(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+    }
+
+    protected OverviewState(int id, int transitionDuration, int stateFlags) {
+        super(id, ContainerType.TASKSWITCHER, transitionDuration, stateFlags);
     }
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         Rect pageRect = new Rect();
-        RecentsView.getScaledDownPageRect(launcher.getDeviceProfile(), launcher, pageRect);
-        RecentsView rv = launcher.getOverviewPanel();
+        RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, pageRect);
 
         if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        float overlap = 0;
-        if (rv.getCurrentPage() >= rv.getFirstTaskIndex()) {
-            overlap = launcher.getResources().getDimension(R.dimen.workspace_overview_offset_x);
-        }
-        return getScaleAndTranslationForPageRect(launcher, overlap, pageRect);
+        return getScaleAndTranslationForPageRect(launcher, pageRect);
+    }
+
+    @Override
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {0f, 0f};
     }
 
     @Override
@@ -73,8 +75,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float getVerticalProgress(Launcher launcher) {
-        return getVerticalProgress(launcher.getDeviceProfile(), launcher);
+    public void onStateTransitionEnd(Launcher launcher) {
+        launcher.getRotationHelper().setCurrentStateRequest(REQUEST_ROTATE);
     }
 
     @Override
@@ -83,51 +85,50 @@ public class OverviewState extends LauncherState {
     }
 
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        final int centerPage = launcher.getWorkspace().getNextPage();
-        return new PageAlphaProvider(ACCEL_2) {
+        return new PageAlphaProvider(DEACCEL_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return  pageIndex != centerPage ? 0 : 1f;
+                return 0;
             }
         };
     }
 
-    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, float offsetX,
-            Rect pageRect) {
+    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
         Workspace ws = launcher.getWorkspace();
         float childWidth = ws.getNormalChildWidth();
-        float childHeight = ws.getNormalChildHeight();
 
-        float scale = pageRect.height() / childHeight;
+        float scale = pageRect.width() / childWidth;
         Rect insets = launcher.getDragLayer().getInsets();
 
         float halfHeight = ws.getExpectedHeight() / 2;
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
         float translationY = pageRect.top - childTop;
 
-        // Align the workspace horizontally centered with the task rect
-        float halfWidth = ws.getExpectedWidth() / 2;
-        float childCenter = halfWidth -
-                scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
-        float translationX = pageRect.centerX() - childCenter;
-
-        if (Utilities.isRtl(launcher.getResources())) {
-            translationX -= offsetX / scale;
-        } else {
-            translationX += offsetX / scale;
-        }
-
-        return new float[] {scale, translationX, translationY};
+        return new float[] {scale, 0, translationY};
     }
 
-    public static float getVerticalProgress(DeviceProfile grid, Context context) {
-        if (!grid.isVerticalBarLayout()) {
-            return 1f;
+    @Override
+    public int getVisibleElements(Launcher launcher) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            return NONE;
+        } else {
+            return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                    ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
         }
+    }
 
-        float total = grid.heightPx;
-        float searchHeight = total - grid.availableHeightPx +
-                context.getResources().getDimension(R.dimen.all_apps_search_box_full_height);
-        return 1 - (searchHeight / total);
+    @Override
+    public float getVerticalProgress(Launcher launcher) {
+        if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
+            // We have no all apps content, so we're still at the fully down progress.
+            return super.getVerticalProgress(launcher);
+        }
+        return 1 - (getDefaultSwipeHeight(launcher)
+                / launcher.getAllAppsController().getShiftRange());
+    }
+
+    public static float getDefaultSwipeHeight(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 }

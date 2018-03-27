@@ -16,6 +16,11 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -25,7 +30,6 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -36,7 +40,6 @@ import android.util.MutableInt;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -62,7 +65,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Provider;
@@ -75,11 +77,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
-
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -147,9 +144,7 @@ public class LoaderTask implements Runnable {
 
         TraceHelper.beginSection(TAG);
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            TraceHelper.partitionSection(TAG, "step 1.1: loading UI resources");
-            loadUiResources();
-            TraceHelper.partitionSection(TAG, "step 1.2: loading workspace");
+            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
             loadWorkspace();
 
             verifyNotStopped();
@@ -210,15 +205,6 @@ public class LoaderTask implements Runnable {
     public synchronized void stopLocked() {
         mStopped = true;
         this.notify();
-    }
-
-    public void loadUiResources() {
-        if (Utilities.ATLEAST_OREO) {
-            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            ClickShadowView.setAdaptiveIconScaleFactor(li.getNormalizer()
-                    .getScale(new AdaptiveIconDrawable(null, null), null, null, null));
-            li.recycle();
-        }
     }
 
     private void loadWorkspace() {
@@ -812,8 +798,6 @@ public class LoaderTask implements Runnable {
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
             }
-
-            ManagedProfileHeuristic.onAllAppsLoaded(mApp.getContext(), apps, user);
         }
 
         if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {

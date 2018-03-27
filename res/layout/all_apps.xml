@@ -29,20 +29,13 @@
 
     <include layout="@layout/all_apps_rv_layout" />
 
-    <include layout="@layout/all_apps_fast_scroller" />
-
     <include layout="@layout/all_apps_floating_header" />
 
     <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
      platform bug, which prevents using custom attributes in <include> tag -->
     <include
         android:id="@id/search_container_all_apps"
-        layout="?android:attr/keyboardLayout"/>
+        layout="@layout/search_container_all_apps"/>
 
-    <View
-        android:id="@+id/nav_bar_bg"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/allAppsNavBarScrimColor" />
+    <include layout="@layout/all_apps_fast_scroller" />
 </com.android.launcher3.allapps.AllAppsContainerView>
