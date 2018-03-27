@@ -24,6 +24,8 @@ import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 
@@ -178,6 +180,16 @@ public class ShadowGenerator {
             p.setShadowLayer(shadowBlur, 0, 0,
                     ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
             c.drawRoundRect(bounds, radius, radius, p);
+
+            if (Color.alpha(color) < 255) {
+                p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+                p.clearShadowLayer();
+                p.setColor(Color.BLACK);
+                c.drawRoundRect(bounds, radius, radius, p);
+                p.setXfermode(null);
+                p.setColor(color);
+                c.drawRoundRect(bounds, radius, radius, p);
+            }
         }
     }
 }

@@ -333,7 +333,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
      */
     public void preparePull(boolean start) {
         if (start) {
-            if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS)
+            if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND)
                 ((InputMethodManager) mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE))
                         .hideSoftInputFromWindow(mGradientView.getWindowToken(), 0);
             // Initialize values that should not change until #onDragEnd
@@ -344,7 +344,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
                 mAppsView.setVisibility(View.VISIBLE);
-                if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+                if (FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
                     mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
                 }
             }
@@ -370,6 +370,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, 0);
         }
+        mCaretController.setHidden(FeatureFlags.LAUNCHER3_P_ALL_APPS && !verticalBarLayout);
         mCaretController.setForceDark(verticalBarLayout && forceChange && !mIsDarkTheme);
     }
 
@@ -379,7 +380,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
             mGradientView.setVisibility(View.VISIBLE);
         }
-        mGradientView.setProgress(progress);
+        mGradientView.setProgress(progress, mShiftRange);
     }
 
     /**
@@ -400,7 +401,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         int bgAlpha = Color.alpha((int) mEvaluator.evaluate(alpha,
                 mHotseatBackgroundColor, mAllAppsBackgroundColor));
 
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+        if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
             updateAllAppsBg(alpha);
         } else {
             mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));

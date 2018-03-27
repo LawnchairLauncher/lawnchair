@@ -121,6 +121,10 @@ public class AllAppsCaretController {
         mThresholdCrossed = false;
     }
 
+    public void setHidden(boolean hidden) {
+        mCaretDrawable.setHidden(hidden);
+    }
+
     public void setForceDark(boolean forceDark) {
         mCaretDrawable.setForceDark(forceDark);
     }

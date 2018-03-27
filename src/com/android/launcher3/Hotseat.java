@@ -71,7 +71,7 @@ public class Hotseat extends FrameLayout
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+        if (FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
             setBackground(mBackground);
         }
     }
@@ -183,7 +183,7 @@ public class Hotseat extends FrameLayout
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+        if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
             // not hotseat visible
             return;
         }

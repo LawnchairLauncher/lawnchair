@@ -1510,6 +1510,9 @@ public class Workspace extends PagedView
         }
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
+        if (direction != Direction.Y && mLauncher.getAllAppsBg() != null) {
+            property.set(mLauncher.getAllAppsBg(), translation);
+        }
     }
 
     private void setHotseatAlphaAtIndex(float alpha, int index) {
@@ -1519,6 +1522,9 @@ public class Workspace extends PagedView
 
         mLauncher.getHotseat().setAlpha(hotseatAlpha);
         mPageIndicator.setAlpha(pageIndicatorAlpha);
+        if (mLauncher.getAllAppsBg() != null) {
+            mLauncher.getAllAppsBg().setAlpha(pageIndicatorAlpha);
+        }
     }
 
     public ValueAnimator createHotseatAlphaAnimator(float finalValue) {

@@ -253,4 +253,7 @@
     <dimen name="all_apps_extra_search_padding">8dp</dimen>
     <dimen name="app_bar_elevation">4dp</dimen>
     <dimen name="nav_bar_divider_size">1dp</dimen>
+    <dimen name="all_apps_scrim_radius">8dp</dimen>
+    <dimen name="all_apps_scrim_blur">4dp</dimen>
+    <dimen name="all_apps_scrim_margin">8dp</dimen>
 </resources>

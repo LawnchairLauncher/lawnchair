@@ -38,8 +38,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
-
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
  * final state with progress 1.0;
@@ -69,7 +67,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final float mAlphaStart;
     private final WallpaperColorInfo mWallpaperColorInfo;
-    private final int mScrimColor;
+    protected final int mScrimColor;
 
     public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -104,7 +102,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         invalidate();
     }
 
-    private void updateColors() {
+    protected void updateColors() {
         this.mColor1 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getMainColor(),
                 mAlphaColors);
         this.mColor2 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getSecondaryColor(),
@@ -125,7 +123,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     }
 
     // only being called when colors change
-    private void createRadialShader() {
+    protected void createRadialShader() {
         final float gradientCenterY = 1.05f;
         float radius = Math.max(mHeight, mWidth) * gradientCenterY;
         float posScreenBottom = (radius - mHeight) / radius; // center lives below screen
@@ -151,7 +149,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         mPaintWithScrim.setShader(shaderWithScrim);
     }
 
-    public void setProgress(float progress) {
+    public void setProgress(float progress, float shiftRange) {
         setProgress(progress, true);
     }
 

@@ -42,7 +42,7 @@
             android:layout_gravity="center"
             launcher:pageIndicator="@id/page_indicator" />
 
-        <include layout="@layout/gradient_bg" />
+        <include layout="@layout/all_apps_bg" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"

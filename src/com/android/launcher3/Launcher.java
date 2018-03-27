@@ -102,6 +102,7 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
@@ -241,6 +242,7 @@ public class Launcher extends BaseActivity
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
+    @Thunk GradientView mAllAppsBg;
     private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
@@ -1303,6 +1305,8 @@ public class Launcher extends BaseActivity
             mHotseat.setOnLongClickListener(this);
         }
 
+        mAllAppsBg = findViewById(R.id.gradient_bg);
+
         // Setup the overview panel
         setupOverviewPanel();
 
@@ -1665,6 +1669,10 @@ public class Launcher extends BaseActivity
 
     public Hotseat getHotseat() {
         return mHotseat;
+    }
+
+    public GradientView getAllAppsBg() {
+        return mAllAppsBg;
     }
 
     public ViewGroup getOverviewPanel() {

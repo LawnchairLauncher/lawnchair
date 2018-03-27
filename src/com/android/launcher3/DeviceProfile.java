@@ -232,7 +232,7 @@ public class DeviceProfile {
                 R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
         hotseatBarSizePx = getHotseatSize(inv, res, dm);
 
-        mBottomMarginHw = res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw);
+        mBottomMarginHw = 0; // res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw); (For now)
         if (!isVerticalBarLayout()) {
             hotseatBarSizePx += mBottomMarginHw;
             hotseatBarBottomPaddingPx += mBottomMarginHw;

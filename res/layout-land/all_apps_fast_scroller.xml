@@ -22,18 +22,16 @@
         style="@style/FastScrollerPopup"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/apps_list_view"
-        android:layout_marginTop="-5dp"
-        android:layout_marginEnd="-45dp" />
+        android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
-    <com.android.launcher3.allapps.LandscapeFastScroller
+    <com.android.launcher3.views.RecyclerViewFastScroller
         android:id="@+id/fast_scroller"
-        android:layout_width="48dp"
+        android:layout_width="@dimen/fastscroll_width"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="@+id/apps_list_view"
-        android:layout_marginEnd="-88dp"
-        android:layout_marginTop="14dp"
+        android:layout_alignTop="@+id/apps_list_view"
+        android:layout_marginEnd="@dimen/fastscroll_end_margin"
         launcher:canThumbDetach="true" />
 
 </merge>

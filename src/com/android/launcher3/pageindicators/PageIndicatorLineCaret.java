@@ -224,7 +224,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
      * - mostly opaque black if the hotseat is black (ignoring alpha)
      */
     public void updateColor(ExtractedColors extractedColors) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+        if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
             return;
         }
         int originalLineAlpha = mLinePaint.getAlpha();

@@ -40,6 +40,7 @@ public class CaretDrawable extends Drawable {
     private final int mCaretSizePx;
     private final boolean mUseShadow;
     private final int mWorkspaceTextColor;
+    private boolean mHidden;
     private boolean mForceDark;
 
     public CaretDrawable(Context context) {
@@ -80,6 +81,10 @@ public class CaretDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        if (mHidden) {
+            return;
+        }
+
         // Assumes caret paint is more important than shadow paint
         if (Float.compare(mCaretPaint.getAlpha(), 0f) == 0) {
             return;
@@ -151,6 +156,10 @@ public class CaretDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter cf) {
         // no-op
+    }
+
+    public void setHidden(boolean hidden) {
+        mHidden = hidden;
     }
 
     public void setForceDark(boolean forceDark) {
