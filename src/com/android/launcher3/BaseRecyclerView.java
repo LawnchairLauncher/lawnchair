@@ -33,7 +33,8 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
  *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class BaseRecyclerView extends RecyclerView  {
+public abstract class BaseRecyclerView extends RecyclerView
+        implements RecyclerView.OnItemTouchListener {
 
     protected RecyclerViewFastScroller mScrollbar;
 
@@ -50,6 +51,12 @@ public abstract class BaseRecyclerView extends RecyclerView  {
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        addOnItemTouchListener(this);
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         bindFastScrollbar();
@@ -62,8 +69,40 @@ public abstract class BaseRecyclerView extends RecyclerView  {
         onUpdateScrollbar(0);
     }
 
-    public RecyclerViewFastScroller getScrollbar() {
-        return mScrollbar;
+    /**
+     * We intercept the touch handling only to support fast scrolling when initiated from the
+     * scroll bar.  Otherwise, we fall back to the default RecyclerView touch handling.
+     */
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent ev) {
+        return handleTouchEvent(ev);
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent ev) {
+        handleTouchEvent(ev);
+    }
+
+    /**
+     * Handles the touch event and determines whether to show the fast scroller (or updates it if
+     * it is already showing).
+     */
+    private boolean handleTouchEvent(MotionEvent ev) {
+        // Move to mScrollbar's coordinate system.
+        // We need to take parent into account (view pager's location)
+        ViewGroup parent = (ViewGroup) getParent();
+        int left = parent.getLeft() - mScrollbar.getLeft();
+        int top = parent.getTop() + getTop() - mScrollbar.getTop() - getScrollBarTop();
+        ev.offsetLocation(left, top);
+        try {
+            return mScrollbar.handleTouchEvent(ev);
+        } finally {
+            ev.offsetLocation(-left, -top);
+        }
+    }
+
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
     }
 
     public int getScrollBarTop() {

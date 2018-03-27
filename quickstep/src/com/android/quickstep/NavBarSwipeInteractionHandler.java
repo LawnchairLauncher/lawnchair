@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 import static com.android.quickstep.TouchConsumer.isInteractionQuick;
 
@@ -50,8 +51,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchConsumer.InteractionType;
-import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -320,14 +319,13 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
     private void animateToProgress(float progress, long duration) {
-        mIsGoingToHome = Float.compare(progress, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
         anim.setInterpolator(Interpolators.SCROLL);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mStateCallback.setState(mIsGoingToHome
-                        ? STATE_SCALED_SNAPSHOT_RECENTS : STATE_SCALED_SNAPSHOT_APP);
+                mStateCallback.setState((Float.compare(mCurrentShift.value, 0) == 0)
+                        ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
             }
         });
         anim.start();

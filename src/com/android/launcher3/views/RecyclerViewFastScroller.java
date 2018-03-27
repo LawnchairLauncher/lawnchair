@@ -22,8 +22,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -45,7 +43,6 @@ import com.android.launcher3.util.Themes;
 public class RecyclerViewFastScroller extends View {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
-    private static final Rect sTempRect = new Rect();
 
     private static final Property<RecyclerViewFastScroller, Integer> TRACK_WIDTH =
             new Property<RecyclerViewFastScroller, Integer>(Integer.class, "width") {
@@ -207,9 +204,9 @@ public class RecyclerViewFastScroller extends View {
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
      * it is already showing).
      */
-    public boolean handleTouchEvent(MotionEvent ev, Point offset) {
-        int x = (int) ev.getX() - offset.x;
-        int y = (int) ev.getY() - offset.y;
+    public boolean handleTouchEvent(MotionEvent ev) {
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // Keep track of the down positions
@@ -263,6 +260,7 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
+        mRv.getParent().requestDisallowInterceptTouchEvent(true);
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
@@ -291,7 +289,7 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY < 0) {
             return;
         }
-        int saveCount = canvas.save();
+        int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.translate(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
@@ -359,17 +357,5 @@ public class RecyclerViewFastScroller extends View {
         top = Utilities.boundToRange(top,
                 mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);
-    }
-
-    public boolean isHitInParent(float x, float y, Point outOffset) {
-        if (mThumbOffsetY < 0) {
-            return false;
-        }
-        getHitRect(sTempRect);
-        sTempRect.top += mRv.getScrollBarTop();
-        if (outOffset != null) {
-            outOffset.set(sTempRect.left, sTempRect.top);
-        }
-        return sTempRect.contains((int) x, (int) y);
     }
 }

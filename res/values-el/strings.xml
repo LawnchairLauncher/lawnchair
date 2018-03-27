@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Εργασίας"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Προφίλ εργασίας"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Βρείτε όλες τις εφαρμογές εργασίας εδώ"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Κάθε εφαρμογή εργασίας φέρει ένα πορτοκαλί σήμα και διατηρείται ασφαλής από τον οργανισμό σας. Μετακινήστε τις εφαρμογές εργασίας στην Αρχική οθόνη, για να έχετε πιο εύκολη πρόσβαση."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Διαχειριζόμενο από τον οργανισμό σας"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Οι ειδοποιήσεις και οι εφαρμογές είναι απενεργοποιημένες"</string>
 </resources>

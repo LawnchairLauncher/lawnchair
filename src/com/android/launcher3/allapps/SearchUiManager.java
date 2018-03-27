@@ -37,7 +37,7 @@ public interface SearchUiManager {
     /**
      * Notifies the search manager to close any active search session.
      */
-    void resetSearch();
+    void reset();
 
     /**
      * Called before dispatching a key event, in case the search manager wants to initialize

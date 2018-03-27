@@ -157,26 +157,18 @@ public class LauncherStateManager {
     }
 
     private void goToState(LauncherState state, boolean animated, long delay,
-            final Runnable onCompleteRunnable) {
-        if (mLauncher.isInState(state)) {
-            if (mConfig.mCurrentAnimation == null) {
-                // Run any queued runnable
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-                return;
-            } else if (!mConfig.userControlled && animated) {
-                // We are running the same animation as requested
-                if (onCompleteRunnable != null) {
-                    mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
-                        @Override
-                        public void onAnimationSuccess(Animator animator) {
-                            onCompleteRunnable.run();
-                        }
-                    });
-                }
-                return;
+            Runnable onCompleteRunnable) {
+        goToState(state, animated, delay, -1, onCompleteRunnable);
+    }
+
+    public void goToState(LauncherState state, boolean animated, long delay, long overrideDuration,
+            Runnable onCompleteRunnable) {
+        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {
+            // Run any queued runnable
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
             }
+            return;
         }
 
         // Cancel the current animation
@@ -203,6 +195,9 @@ public class LauncherStateManager {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
+        if (overrideDuration > -1) {
+            mConfig.duration = overrideDuration;
+        }
 
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
                 state, new AnimatorSetBuilder(), onCompleteRunnable);
@@ -325,10 +320,6 @@ public class LauncherStateManager {
     }
 
     public void moveToRestState() {
-        if (mConfig.mCurrentAnimation != null && mConfig.userControlled) {
-            // The user is doing something. Lets not mess it up
-            return;
-        }
         if (mState.disableRestore) {
             goToState(getRestState());
             // Reset history

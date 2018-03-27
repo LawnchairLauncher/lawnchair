@@ -17,8 +17,6 @@
 package com.android.launcher3.util;
 
 import android.app.AppOpsManager;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -26,23 +24,13 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.PendingAddItemInfo;
-import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
@@ -53,8 +41,6 @@ import java.util.List;
  * Utility methods using package manager
  */
 public class PackageManagerHelper {
-
-    private static final String TAG = "PackageManagerHelper";
 
     private final Context mContext;
     private final PackageManager mPm;
@@ -181,37 +167,6 @@ public class PackageManagerHelper {
             return intent;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-
-    /**
-     * Starts the details activity for {@code info}
-     */
-    public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
-        if (info instanceof PromiseAppInfo) {
-            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            mContext.startActivity(promiseAppInfo.getMarketIntent(mContext));
-            return;
-        }
-        ComponentName componentName = null;
-        if (info instanceof AppInfo) {
-            componentName = ((AppInfo) info).componentName;
-        } else if (info instanceof ShortcutInfo) {
-            componentName = info.getTargetComponent();
-        } else if (info instanceof PendingAddItemInfo) {
-            componentName = ((PendingAddItemInfo) info).componentName;
-        } else if (info instanceof LauncherAppWidgetInfo) {
-            componentName = ((LauncherAppWidgetInfo) info).providerName;
-        }
-        if (componentName != null) {
-            try {
-                mLauncherApps.showAppDetailsForProfile(
-                        componentName, info.user, sourceBounds, opts);
-            } catch (SecurityException | ActivityNotFoundException e) {
-                Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Unable to launch settings", e);
-            }
         }
     }
 }

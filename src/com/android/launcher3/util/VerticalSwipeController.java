@@ -18,10 +18,12 @@ package com.android.launcher3.util;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.anim.SpringAnimationHandler.Y_DIRECTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.support.animation.SpringAnimation;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -29,10 +31,13 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.touch.SwipeDetector.Direction;
 
+import java.util.ArrayList;
 
 /**
  * Handles vertical touch gesture on the DragLayer allowing transitioning from
@@ -62,6 +67,8 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
+
+    protected SpringAnimationHandler[] mSpringHandlers;
 
     public VerticalSwipeController(Launcher l, LauncherState baseState) {
         this(l, baseState, ALL_APPS, SwipeDetector.VERTICAL);
@@ -97,6 +104,29 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         }
     }
 
+    protected void initSprings() {
+        AllAppsContainerView appsView = mLauncher.getAppsView();
+
+        SpringAnimationHandler handler = appsView.getSpringAnimationHandler();
+        if (handler == null) {
+            mSpringHandlers = new SpringAnimationHandler[0];
+            return;
+        }
+
+        ArrayList<SpringAnimationHandler> handlers = new ArrayList<>();
+        handlers.add(handler);
+
+        SpringAnimation searchSpring = appsView.getSearchUiManager().getSpringForFling();
+        if (searchSpring != null) {
+            SpringAnimationHandler searchHandler =
+                    new SpringAnimationHandler(Y_DIRECTION, handler.getFactory());
+            searchHandler.add(searchSpring, true /* setDefaultValues */);
+            handlers.add(searchHandler);
+        }
+
+        mSpringHandlers = handlers.toArray(new SpringAnimationHandler[handlers.size()]);
+    }
+
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -125,6 +155,10 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
 
             mDetector.setDetectableScrollConditions(
                     directionsToDetectScroll, ignoreSlopWhenSettling);
+
+            if (mSpringHandlers == null) {
+                initSprings();
+            }
         }
 
         if (mNoIntercept) {
@@ -139,6 +173,9 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
 
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
+        for (SpringAnimationHandler h : mSpringHandlers) {
+            h.addMovement(ev);
+        }
         return mDetector.onTouchEvent(ev);
     }
 
@@ -160,6 +197,10 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         } else {
             mCurrentAnimation.pause();
             mStartProgress = mCurrentAnimation.getProgressFraction();
+        }
+
+        for (SpringAnimationHandler h : mSpringHandlers) {
+            h.skipToEnd();
         }
     }
 
@@ -200,6 +241,13 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
             } else {
                 targetState = mToState == mTargetState ? mBaseState : mTargetState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, progress);
+            }
+        }
+
+        if (fling && targetState == mTargetState) {
+            for (SpringAnimationHandler h : mSpringHandlers) {
+                // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
+                h.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
             }
         }
 

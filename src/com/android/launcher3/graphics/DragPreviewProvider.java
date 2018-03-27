@@ -24,17 +24,19 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.UiThreadHelper;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.nio.ByteBuffer;
 
@@ -101,7 +103,7 @@ public class DragPreviewProvider {
             }
             destCanvas.translate(-mView.getScrollX() + blurSizeOutline / 2,
                     -mView.getScrollY() + blurSizeOutline / 2);
-            destCanvas.clipRect(clipRect);
+            destCanvas.clipRect(clipRect, Op.REPLACE);
             mView.draw(destCanvas);
 
             // Restore text visibility of FolderIcon if necessary
@@ -117,26 +119,28 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap() {
+        float scale = 1f;
         int width = mView.getWidth();
         int height = mView.getHeight();
 
+        boolean forceSoftwareRenderer = false;
         if (mView instanceof BubbleTextView) {
             Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
             width = bounds.width();
             height = bounds.height();
         } else if (mView instanceof LauncherAppWidgetHostView) {
-            float scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
+            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
             width = (int) (mView.getWidth() * scale);
             height = (int) (mView.getHeight() * scale);
 
             // Use software renderer for widgets as we know that they already work
-            return BitmapRenderer.createSoftwareBitmap(width + blurSizeOutline,
-                    height + blurSizeOutline, (c) -> drawDragView(c, scale));
+            forceSoftwareRenderer = true;
         }
 
-        return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
-                height + blurSizeOutline, (c) -> drawDragView(c, 1));
+        final float scaleFinal = scale;
+        return UiFactory.createFromRenderer(width + blurSizeOutline, height + blurSizeOutline,
+                forceSoftwareRenderer, (c) -> drawDragView(c, scaleFinal));
     }
 
     public final void generateDragOutline(Bitmap preview) {

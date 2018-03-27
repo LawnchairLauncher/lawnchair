@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -49,7 +50,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.ViewScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
@@ -88,6 +88,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
+    private final PageCutOutScrimDrawable mPageCutOutScrim;
 
     protected TouchController[] mControllers;
     private TouchController mActiveController;
@@ -105,6 +106,8 @@ public class DragLayer extends InsettableFrameLayout {
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+        mPageCutOutScrim = new PageCutOutScrimDrawable(this);
+        mPageCutOutScrim.setCallback(this);
     }
 
     public void setup(Launcher launcher, DragController dragController) {
@@ -122,6 +125,11 @@ public class DragLayer extends InsettableFrameLayout {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return super.verifyDrawable(who) || who == mPageCutOutScrim;
+    }
+
     public boolean isEventOverHotseat(MotionEvent ev) {
         return isEventOverView(mLauncher.getHotseat(), ev);
     }
@@ -137,15 +145,6 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean isEventOverView(View view, MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
-    }
-
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        ViewScrim scrim = ViewScrim.get(child);
-        if (scrim != null) {
-            scrim.draw(canvas, getWidth(), getHeight());
-        }
-        return super.drawChild(canvas, child, drawingTime);
     }
 
     @Override
@@ -169,11 +168,6 @@ public class DragLayer extends InsettableFrameLayout {
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
             mActiveController = topView;
-            return true;
-        }
-
-        if (mLauncher.getStateManager().getState().disableInteraction) {
-            // You Shall Not Pass!!!
             return true;
         }
 
@@ -542,7 +536,11 @@ public class DragLayer extends InsettableFrameLayout {
         final int fromX = r.left;
         final int fromY = r.top;
         child.setVisibility(INVISIBLE);
-        Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
+        Runnable onCompleteRunnable = new Runnable() {
+            public void run() {
+                child.setVisibility(VISIBLE);
+            }
+        };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
                 onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
     }
@@ -709,14 +707,12 @@ public class DragLayer extends InsettableFrameLayout {
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     @Override
@@ -762,9 +758,20 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    public void invalidateScrim() {
+        if (mPageCutOutScrim.getAlpha() > 0) {
+            invalidate();
+        }
+    }
+
+    public Drawable getScrim() {
+        return mPageCutOutScrim;
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
+        mPageCutOutScrim.draw(canvas);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }

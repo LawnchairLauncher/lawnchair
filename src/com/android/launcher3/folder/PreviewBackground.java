@@ -227,10 +227,11 @@ public class PreviewBackground {
         final int saveCount;
         if (canvas.isHardwareAccelerated()) {
             saveCount = canvas.saveLayer(offsetX - mStrokeWidth, offsetY,
-                    offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius, null);
+                    offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius,
+                    null, Canvas.CLIP_TO_LAYER_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
 
         } else {
-            saveCount = canvas.save();
+            saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
             canvas.clipPath(getClipPath(), Region.Op.DIFFERENCE);
         }
 

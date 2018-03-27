@@ -236,7 +236,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     @Override
-    public void clearViews() {
+    protected void clearViews() {
         super.clearViews();
         mViews.clear();
     }

@@ -45,7 +45,6 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -238,7 +237,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 R.layout.folder_application, null, false);
         textView.applyFromShortcutInfo(item);
         textView.setHapticFeedbackEnabled(false);
-        textView.setOnClickListener(ItemClickHandler.INSTANCE);
+        textView.setOnClickListener(mFolder);
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
         textView.setOnKeyListener(mKeyListener);

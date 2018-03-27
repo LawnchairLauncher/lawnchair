@@ -59,6 +59,7 @@ import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
+import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -75,13 +76,9 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.graphics.ViewScrim;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -242,12 +239,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private Runnable mOnOverlayHiddenCallback;
 
     private boolean mForceDrawAdjacentPages = false;
+    private boolean mPageRearrangeEnabled = false;
 
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
 
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
+
+    private AccessibilityDelegate mPagesAccessibilityDelegate;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -280,10 +280,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
-
-        // Attach a scrim
-        new WorkspaceAndHotseatScrim(this).attach();
-        setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
     }
 
     @Override
@@ -473,6 +469,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         CellLayout cl = ((CellLayout) child);
         cl.setOnInterceptTouchListener(this);
+        cl.setClickable(true);
         cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onViewAdded(child);
     }
@@ -552,6 +549,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
+        newScreen.setOnLongClickListener(mLongClickListener);
+        newScreen.setOnClickListener(mLauncher);
+        newScreen.setSoundEffectsEnabled(false);
+
         int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
         int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
@@ -929,8 +930,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
         }
 
-        child.setHapticFeedbackEnabled(false);
-        child.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
+        if (!(child instanceof Folder)) {
+            child.setHapticFeedbackEnabled(false);
+            child.setOnLongClickListener(mLongClickListener);
+        }
         if (child instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) child);
         }
@@ -1370,7 +1373,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void updateChildrenLayersEnabled() {
-        boolean enableChildrenLayers = mIsSwitchingState || isPageInTransition();
+        boolean enableChildrenLayers =
+                isPageRearrangeEnabled() || mIsSwitchingState || isPageInTransition();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
@@ -1454,6 +1458,40 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mOutlineProvider = outlineProvider;
     }
 
+    public void onStartReordering() {
+        super.onStartReordering();
+        // Reordering handles its own animations, disable the automatic ones.
+        disableLayoutTransitions();
+    }
+
+    public void onEndReordering() {
+        super.onEndReordering();
+
+        if (mLauncher.isWorkspaceLoading()) {
+            // Invalid and dangerous operation if workspace is loading
+            return;
+        }
+
+        ArrayList<Long> prevScreenOrder = (ArrayList<Long>) mScreenOrder.clone();
+        mScreenOrder.clear();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = ((CellLayout) getChildAt(i));
+            mScreenOrder.add(getIdForScreen(cl));
+        }
+
+        for (int i = 0; i < prevScreenOrder.size(); i++) {
+            if (mScreenOrder.get(i) != prevScreenOrder.get(i)) {
+                mLauncher.getUserEventDispatcher().logOverviewReorder();
+                break;
+            }
+        }
+        LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+
+        // Re-enable auto layout transitions for page deletion.
+        enableLayoutTransitions();
+    }
+
     public void snapToPageFromOverView(int whichPage) {
         snapToPage(whichPage, OVERVIEW_TRANSITION_MS, Interpolators.ZOOM_IN);
     }
@@ -1513,17 +1551,47 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (!mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             int total = getPageCount();
             for (int i = 0; i < total; i++) {
-                updateAccessibilityFlags(accessibilityFlag, (CellLayout) getPageAt(i));
+                updateAccessibilityFlags(accessibilityFlag, (CellLayout) getPageAt(i), i);
             }
             setImportantForAccessibility(accessibilityFlag);
         }
     }
 
-    private void updateAccessibilityFlags(int accessibilityFlag, CellLayout page) {
-        page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-        page.getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
-        page.setContentDescription(null);
-        page.setAccessibilityDelegate(null);
+    private void updateAccessibilityFlags(int accessibilityFlag, CellLayout page, int pageNo) {
+        if (isPageRearrangeEnabled()) {
+            page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            page.getShortcutsAndWidgets().setImportantForAccessibility(
+                    IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            page.setContentDescription(getPageDescription(pageNo));
+
+            // No custom action for the first page.
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || pageNo > 0) {
+                if (mPagesAccessibilityDelegate == null) {
+                    mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
+                }
+                page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
+            }
+        } else {
+            page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+            page.getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
+            page.setContentDescription(null);
+            page.setAccessibilityDelegate(null);
+        }
+    }
+
+    public void setPageRearrangeEnabled(boolean isEnabled) {
+        if (mPageRearrangeEnabled != isEnabled) {
+            mPageRearrangeEnabled = isEnabled;
+            if (isEnabled) {
+                enableFreeScroll();
+            } else {
+                disableFreeScroll();
+            }
+        }
+    }
+
+    public boolean isPageRearrangeEnabled() {
+        return mPageRearrangeEnabled;
     }
 
     public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
@@ -1539,6 +1607,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 protected void enableAccessibleDrag(boolean enable) {
                     super.enableAccessibleDrag(enable);
                     setEnableForLayout(mLauncher.getHotseat().getLayout(),enable);
+
+                    // We need to allow our individual children to become click handlers in this
+                    // case, so temporarily unset the click handlers.
+                    setOnClickListener(enable ? null : mLauncher);
                 }
             });
         }
@@ -1557,6 +1629,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         beginDragShared(child, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
+
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
@@ -2156,7 +2229,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         // Invalidating the scrim will also force this CellLayout
         // to be invalidated so that it is highlighted if necessary.
-        ViewScrim.get(this).invalidate();
+        mLauncher.getDragLayer().invalidateScrim();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {
@@ -2892,9 +2965,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
         }
-        View cell = getHomescreenIconByItemId(d.originalDragInfo.id);
-        if (d.cancelled && cell != null) {
-            cell.setVisibility(VISIBLE);
+        if (d.cancelled && mDragInfo != null && mDragInfo.cell != null) {
+            mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
     }

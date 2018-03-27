@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"এখানে কাজের অ্যাপ্সগুলি খুঁজুন"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"প্রতিটি কাজের অ্যাপে একটি করে কমলা ব্যাজ রয়েছে এবং অ্যাপগুলি আপনার প্রতিষ্ঠানের দ্বারা সুরক্ষিত। সহজে অ্যাক্সেস করার জন্য অ্যাপগুলি হোম স্ক্রিনে রাখুন।"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"আপনার প্রতিষ্ঠানের দ্বারা পরিচালিত"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"বিজ্ঞপ্তি এবং অ্যাপ বন্ধ আছে"</string>
 </resources>

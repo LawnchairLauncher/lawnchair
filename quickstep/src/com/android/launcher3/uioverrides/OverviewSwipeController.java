@@ -15,14 +15,10 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,13 +32,19 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.PendingAnimation;
-import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
+import com.android.quickstep.RecentsView;
+import com.android.quickstep.TaskView;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 /**
  * Touch controller for swipe interaction in Overview state
@@ -63,7 +65,6 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
     private final RecentsView mRecentsView;
     private final int[] mTempCords = new int[2];
 
-    private PendingAnimation mPendingAnimation;
     private AnimatorPlaybackController mCurrentAnimation;
     private boolean mCurrentAnimationIsGoingUp;
 
@@ -131,21 +132,28 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                 mTaskBeingDragged = null;
                 mSwipeDownEnabled = true;
 
-                View view = mRecentsView.getChildAt(mRecentsView.getCurrentPage());
-                if (view instanceof TaskView && mLauncher.getDragLayer().isEventOverView(view, ev)) {
-                    // The tile can be dragged down to open the task.
-                    mTaskBeingDragged = (TaskView) view;
+                int currentPage = mRecentsView.getCurrentPage();
+                if (currentPage == 0) {
+                    // User is on home tile
                     directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
-                    mStartingTarget = LauncherLogProto.ItemType.TASK;
-                } else if (isEventOverHotseat(ev)) {
-                    // The hotseat is being dragged
-                    directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
-                    mSwipeDownEnabled = false;
-                    mStartingTarget = ContainerType.HOTSEAT;
                 } else {
-                    mNoIntercept = true;
-                    mStartingTarget = ContainerType.WORKSPACE;
-                    return false;
+                    View view = mRecentsView.getChildAt(currentPage);
+                    if (mLauncher.getDragLayer().isEventOverView(view, ev) &&
+                            view instanceof TaskView) {
+                        // The tile can be dragged down to open the task.
+                        mTaskBeingDragged = (TaskView) view;
+                        directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
+                        mStartingTarget = LauncherLogProto.ItemType.TASK;
+                    } else if (isEventOverHotseat(ev)) {
+                        // The hotseat is being dragged
+                        directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+                        mSwipeDownEnabled = false;
+                        mStartingTarget = ContainerType.HOTSEAT;
+                    } else {
+                        mNoIntercept = true;
+                        mStartingTarget = ContainerType.WORKSPACE;
+                        return false;
+                    }
                 }
             }
 
@@ -177,11 +185,6 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setPlayFraction(0);
         }
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
-            mPendingAnimation = null;
-        }
-
         mCurrentAnimationIsGoingUp = goingUp;
         float range = mLauncher.getAllAppsController().getShiftRange();
         long maxDuration = (long) (2 * range);
@@ -198,11 +201,19 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
             }
         } else {
             if (goingUp) {
-                mPendingAnimation = mRecentsView
-                        .createTaskDismissAnimation(mTaskBeingDragged, maxDuration);
-                mCurrentAnimation = AnimatorPlaybackController
-                        .wrap(mPendingAnimation.anim, maxDuration);
-                mEndDisplacement = -mTaskBeingDragged.getHeight();
+                AnimatorSet anim = new AnimatorSet();
+                ObjectAnimator translate = ObjectAnimator.ofFloat(
+                        mTaskBeingDragged, View.TRANSLATION_Y, -mTaskBeingDragged.getBottom());
+                translate.setInterpolator(LINEAR);
+                translate.setDuration(maxDuration);
+                anim.play(translate);
+
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(mTaskBeingDragged, View.ALPHA, 0);
+                alpha.setInterpolator(DEACCEL_1_5);
+                alpha.setDuration(maxDuration);
+                anim.play(alpha);
+                mCurrentAnimation = AnimatorPlaybackController.wrap(anim, maxDuration);
+                mEndDisplacement = -mTaskBeingDragged.getBottom();
             } else {
                 AnimatorSet anim = new AnimatorSet();
                 // TODO: Setup a zoom animation
@@ -288,17 +299,15 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
     }
 
     private void onCurrentAnimationEnd(boolean wasSuccess, int logAction) {
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(wasSuccess);
-            mPendingAnimation = null;
-        }
         if (mTaskBeingDragged == null) {
             LauncherState state = wasSuccess ?
                     (mCurrentAnimationIsGoingUp ? ALL_APPS : NORMAL) : OVERVIEW;
             mLauncher.getStateManager().goToState(state, false);
 
         } else if (wasSuccess) {
-            if (!mCurrentAnimationIsGoingUp) {
+            if (mCurrentAnimationIsGoingUp) {
+                mRecentsView.onTaskDismissed(mTaskBeingDragged);
+            } else {
                 mTaskBeingDragged.launchTask(false);
                 mLauncher.getUserEventDispatcher().logTaskLaunch(logAction,
                         Direction.DOWN, mTaskBeingDragged.getTask().getTopComponent());

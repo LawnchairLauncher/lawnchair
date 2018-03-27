@@ -23,7 +23,6 @@ import com.android.quickstep.TouchConsumer.InteractionType;
 public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
     protected Runnable mGestureEndCallback;
-    protected boolean mIsGoingToHome;
 
     public void setGestureEndCallback(Runnable gestureEndCallback) {
         mGestureEndCallback = gestureEndCallback;

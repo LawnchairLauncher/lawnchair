@@ -16,9 +16,10 @@
 package com.android.launcher3.states;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
@@ -35,7 +36,11 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
             FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
-            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS;
+            FLAG_DISABLE_PAGE_CLIPPING;
+
+    // Determines how long to wait after a rotation before restoring the screen orientation to
+    // match the sensor state.
+    private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     public SpringLoadedState(int id) {
         super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
@@ -79,15 +84,29 @@ public class SpringLoadedState extends LauncherState {
         ws.showPageIndicatorAtCurrentScroll();
         ws.getPageIndicator().setShouldAutoHide(false);
 
+        // Lock the orientation:
+        if (launcher.isRotationEnabled()) {
+            launcher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        }
+
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are
         // in spring loaded mode
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
-        launcher.getRotationHelper().setCurrentStateRequest(REQUEST_LOCK);
     }
 
     @Override
     public void onStateDisabled(final Launcher launcher) {
         launcher.getWorkspace().getPageIndicator().setShouldAutoHide(true);
+
+        // Unlock rotation lock
+        if (launcher.isRotationEnabled()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    launcher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                }
+            }, RESTORE_SCREEN_ORIENTATION_DELAY);
+        }
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(

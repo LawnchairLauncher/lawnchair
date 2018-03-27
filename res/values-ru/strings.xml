@@ -67,7 +67,7 @@
       <item quantity="other">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомления</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Стр. %1$d из %2$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"Главный экран %1$d из %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Главные экран %1$d из %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Новый экран"</string>
     <string name="folder_opened" msgid="94695026776264709">"Папка открыта, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Нажмите, чтобы закрыть папку"</string>
@@ -139,8 +139,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Приложения для работы"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Рабочие приложения отмечены оранжевым значком, который подтверждает, что ваша организация гарантирует их безопасность. Для удобства перенесите эти приложения на главный экран."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Управляется вашей организацией"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Уведомления и приложения отключены."</string>
 </resources>
