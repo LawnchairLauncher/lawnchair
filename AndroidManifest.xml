@@ -71,7 +71,7 @@
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.quickstep.views;
+package com.android.quickstep;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -40,8 +40,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.quickstep.TaskSystemShortcut;
-import com.android.quickstep.TaskUtils;
 
 /**
  * Contains options for a recent task when long-pressing its icon.

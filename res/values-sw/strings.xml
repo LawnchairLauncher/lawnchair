@@ -139,8 +139,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kazini"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Wasifu wa kazini"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pata programu za kazi hapa"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Kila programu ya kazi ina beji ya rangi ya machungwa na hulindwa na shirika lako. Hamishia programu kwenye skrini yako ya kwanza ili uzifikie kwa urahisi."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Inasimamiwa na shirika lako"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Vipenge vya arifa na programu vimezimwa"</string>
 </resources>

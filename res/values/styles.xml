@@ -25,6 +25,7 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">

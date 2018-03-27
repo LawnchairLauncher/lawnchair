@@ -1,8 +1,6 @@
 
 package com.android.launcher3.model;
 
-import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
-
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -155,11 +153,6 @@ public class WidgetsModel {
         // add and update.
         for (WidgetItem item : rawWidgetsShortcuts) {
             if (item.widgetInfo != null) {
-                if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
-                    // Widget is hidden from picker
-                    continue;
-                }
-
                 // Ensure that all widgets we show can be added on a workspace of this size
                 int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
                 int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);

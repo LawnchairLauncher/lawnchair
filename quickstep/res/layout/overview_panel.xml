@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.LauncherRecentsView
+<com.android.quickstep.RecentsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
@@ -24,4 +24,8 @@
     android:alpha="0.0"
     android:visibility="invisible" >
 
-</com.android.quickstep.views.LauncherRecentsView>
+    <com.android.launcher3.uioverrides.WorkspaceCard
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.android.quickstep.RecentsView>

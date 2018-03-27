@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package com.android.quickstep.views;
+package com.android.quickstep;
+
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_TASK;
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
@@ -30,8 +33,8 @@ import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
+import com.android.quickstep.RecentsView.PageCallbacks;
+import com.android.quickstep.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -44,15 +47,17 @@ import java.util.function.Consumer;
  */
 public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
 
-    /** A curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
-    private static final TimeInterpolator CURVE_INTERPOLATOR
-            = x -> (float) -Math.cos(x * Math.PI) / 2f + .5f;
+    /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
+    public static final float CURVE_FACTOR = 0.25f;
+    /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
+    public static final TimeInterpolator CURVE_INTERPOLATOR
+            = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
 
     /**
      * The alpha of a black scrim on a page in the carousel as it leaves the screen.
      * In the resting position of the carousel, the adjacent pages have about half this scrim.
      */
-    private static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
+    private static final float MAX_PAGE_SCRIM_ALPHA = 0.8f;
 
     private static final long SCALE_ICON_DURATION = 120;
 
@@ -154,16 +159,38 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         setScaleY(1f);
         setTranslationX(0f);
         setTranslationY(0f);
-        setTranslationZ(0);
         setAlpha(1f);
     }
 
     @Override
-    public void onPageScroll(ScrollState scrollState) {
+    public int onPageScroll(ScrollState scrollState) {
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
+        float scale = 1 - curveInterpolation * CURVE_FACTOR;
+        setScaleX(scale);
+        setScaleY(scale);
+
+        // Make sure the biggest card (i.e. the one in front) shows on top of the adjacent ones.
+        setTranslationZ(scale);
 
         mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+
+        float translation =
+                scrollState.distanceFromScreenCenter * curveInterpolation * CURVE_FACTOR;
+
+        if (scrollState.lastScrollType == SCROLL_TYPE_WORKSPACE) {
+            // Make sure that the task cards do not overlap with the workspace card
+            float min = scrollState.halfPageWidth * (1 - scale);
+            if (scrollState.isRtl) {
+                setTranslationX(Math.min(translation, min) - scrollState.prevPageExtraWidth);
+            } else {
+                setTranslationX(Math.max(translation, -min) + scrollState.prevPageExtraWidth);
+            }
+        } else {
+            setTranslationX(translation);
+        }
+        scrollState.prevPageExtraWidth = 0;
+        return SCROLL_TYPE_TASK;
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {

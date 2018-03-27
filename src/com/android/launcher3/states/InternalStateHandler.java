@@ -56,8 +56,8 @@ public abstract class InternalStateHandler extends Binder {
         sScheduler.schedule(this);
     }
 
-    public boolean clearReference() {
-        return sScheduler.clearReference(this);
+    public void clearReference() {
+        sScheduler.clearReference(this);
     }
 
     public static boolean handleCreate(Launcher launcher, Intent intent) {
@@ -125,12 +125,10 @@ public abstract class InternalStateHandler extends Binder {
             return false;
         }
 
-        public synchronized boolean clearReference(InternalStateHandler handler) {
+        public synchronized void clearReference(InternalStateHandler handler) {
             if (mPendingHandler.get() == handler) {
                 mPendingHandler.clear();
-                return true;
             }
-            return false;
         }
     }
 }

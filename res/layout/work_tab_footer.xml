@@ -17,7 +17,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:focusable="true"
     android:paddingBottom="@dimen/all_apps_work_profile_tab_footer_bottom_padding"
     android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
     android:paddingRight="@dimen/dynamic_grid_cell_padding_x"

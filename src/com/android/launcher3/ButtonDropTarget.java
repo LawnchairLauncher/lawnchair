@@ -108,12 +108,6 @@ public abstract class ButtonDropTarget extends TextView
         setContentDescription(mText);
     }
 
-    protected void updateText(int resId) {
-        setText(resId);
-        mText = getText();
-        setContentDescription(mText);
-    }
-
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
@@ -242,7 +236,9 @@ public abstract class ButtonDropTarget extends TextView
 
     protected abstract boolean supportsDrop(ItemInfo info);
 
-    public abstract boolean supportsAccessibilityDrop(ItemInfo info, View view);
+    public boolean supportsAccessibilityDrop(ItemInfo info) {
+        return supportsDrop(info);
+    }
 
     @Override
     public boolean isDropEnabled() {
@@ -372,6 +368,4 @@ public abstract class ButtonDropTarget extends TextView
                 TextUtils.TruncateAt.END);
         return !mText.equals(displayedText);
     }
-
-    public abstract int getControlTypeForLogging();
 }

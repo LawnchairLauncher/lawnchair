@@ -17,8 +17,6 @@
 package com.android.launcher3.dragndrop;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
-import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -81,7 +79,6 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
         launcher.getDragLayer().setOnDragListener(this);
-        launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
 
         mLauncher = launcher;
         mDragController = launcher.getDragController();
@@ -160,7 +157,6 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     private void postCleanup() {
-        clearReference();
         if (mLauncher != null) {
             // Remove any drag params from the launcher intent since the drag operation is complete.
             Intent newIntent = new Intent(mLauncher.getIntent());
@@ -168,12 +164,16 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
             mLauncher.setIntent(newIntent);
         }
 
-        new Handler(Looper.getMainLooper()).post(this::removeListener);
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                removeListener();
+            }
+        });
     }
 
     public void removeListener() {
         if (mLauncher != null) {
-            mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
             mLauncher.getDragLayer().setOnDragListener(null);
         }
     }

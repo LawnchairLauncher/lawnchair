@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ਕਾਰਜ-ਸਥਾਨ ਐਪਾਂ ਇੱਥੇ ਲੱਭੋ"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"ਹਰੇਕ ਕਾਰਜ-ਸਥਾਨ ਐਪ ਦਾ ਇੱਕ ਸੰਤਰੀ ਬੈਜ ਹੁੰਦਾ ਹੈ ਅਤੇ ਉਸਨੂੰ ਤੁਹਾਡੀ ਸੰਸਥਾ ਰਾਹੀਂ ਸੁਰੱਖਿਅਤ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ। ਵਧੇਰੇ ਆਸਾਨ ਪਹੁੰਚ ਲਈ ਐਪਾਂ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਜਾਓ।"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਪ੍ਰਬੰਧਿਤ ਕੀਤਾ ਜਾਂਦਾ ਹੈ"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"ਸੂਚਨਾਵਾਂ ਅਤੇ ਐਪਾਂ ਬੰਦ ਹਨ"</string>
 </resources>

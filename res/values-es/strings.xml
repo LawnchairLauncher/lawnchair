@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Aplicaciones de trabajo"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Cada aplicación de trabajo tiene una insignia naranja y está protegida por tu organización. Mueve las aplicaciones a la pantalla de inicio para acceder a ellas más fácilmente."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Administrada por tu organización"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Las notificaciones y las aplicaciones están desactivadas"</string>
 </resources>

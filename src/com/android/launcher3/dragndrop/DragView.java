@@ -448,7 +448,7 @@ public class DragView extends View {
             canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
             if (crossFade) {
                 mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-                final int saveCount = canvas.save();
+                final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
                 float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
                 float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
                 canvas.scale(sX, sY);

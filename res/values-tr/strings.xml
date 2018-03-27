@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"İş"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"İş profili"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"İş uygulamalarını burada bulabilirsiniz"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Her iş uygulamasında, uygulama güvenliğinin kuruluşunuz tarafından sağlandığını gösteren turuncu bir rozet bulunur. Uygulamaları daha kolay erişim için Ana ekranınıza taşıyın."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Kuruluşunuz tarafından yönetiliyor"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Bildirimler ve uygulamalar kapalı"</string>
 </resources>

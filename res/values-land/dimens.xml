@@ -25,6 +25,7 @@
     <dimen name="fastscroll_popup_text_size">24dp</dimen>
 
     <!-- Dynamic grid -->
+    <dimen name="dynamic_grid_overview_bar_item_width">120dp</dimen>
     <dimen name="dynamic_grid_min_page_indicator_size">48dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
 

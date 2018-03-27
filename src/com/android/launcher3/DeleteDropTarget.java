@@ -24,7 +24,6 @@ import android.view.View;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
@@ -55,7 +54,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * @return true for items that should have a "Remove" action in accessibility.
      */
     @Override
-    public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
+    public boolean supportsAccessibilityDrop(ItemInfo info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
@@ -103,10 +102,5 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mLauncher.getWorkspace().stripEmptyScreens();
         mLauncher.getDragLayer()
                 .announceForAccessibility(getContext().getString(R.string.item_removed));
-    }
-
-    @Override
-    public int getControlTypeForLogging() {
-        return ControlType.REMOVE_TARGET;
     }
 }

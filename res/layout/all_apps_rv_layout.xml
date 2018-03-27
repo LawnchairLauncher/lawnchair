@@ -22,4 +22,5 @@
     android:layout_below="@id/search_container_all_apps"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"
-    android:focusable="true" />
+    android:focusable="true"
+    android:overScrollMode="never" />

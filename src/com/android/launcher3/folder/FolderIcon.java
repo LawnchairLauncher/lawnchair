@@ -63,7 +63,6 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -160,14 +159,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 .inflate(resId, group, false);
 
         icon.setClipToPadding(false);
-        icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
+        icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
         lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
 
         icon.setTag(folderInfo);
-        icon.setOnClickListener(ItemClickHandler.INSTANCE);
+        icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
         icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
@@ -468,10 +467,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         final int saveCount;
 
         if (canvas.isHardwareAccelerated()) {
-            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
+            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
+                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
         } else {
-            saveCount = canvas.save();
-            canvas.clipPath(mBackground.getClipPath());
+            saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            canvas.clipPath(mBackground.getClipPath(), Region.Op.INTERSECT);
         }
 
         mPreviewItemManager.draw(canvas);

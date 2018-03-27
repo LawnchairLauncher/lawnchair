@@ -44,6 +44,7 @@
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
         </attr>
+        <attr name="deferShadowGeneration" format="boolean" />
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
 

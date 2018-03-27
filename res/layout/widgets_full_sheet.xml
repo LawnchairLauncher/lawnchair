@@ -20,6 +20,11 @@
     android:orientation="vertical"
     android:theme="?attr/widgetsTheme" >
 
+    <com.android.launcher3.graphics.GradientView
+        android:id="@+id/gradient_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.android.launcher3.views.TopRoundedCornerView
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -31,22 +36,29 @@
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false" />
+            android:clipToPadding="false"
+            />
 
         <!-- Fast scroller popup -->
         <TextView
             android:id="@+id/fast_scroller_popup"
             style="@style/FastScrollerPopup"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_gravity="top|end"
             android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <com.android.launcher3.views.RecyclerViewFastScroller
             android:id="@+id/fast_scroller"
             android:layout_width="@dimen/fastscroll_width"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_gravity="end"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+
+        <View
+            android:id="@+id/nav_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:background="?attr/allAppsNavBarScrimColor"
+            android:focusable="false"  />
     </com.android.launcher3.views.TopRoundedCornerView>
 </com.android.launcher3.widget.WidgetsFullSheet>

@@ -15,12 +15,9 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
-import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
@@ -35,17 +32,16 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.metrics.LogMaker;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -71,52 +67,15 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.TouchConsumer.InteractionType;
-import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.StringJoiner;
-
-class EventLogTags {
-    private EventLogTags() {
-    }  // don't instantiate
-
-    /** 524292 sysui_multi_action (content|4) */
-    public static final int SYSUI_MULTI_ACTION = 524292;
-
-    public static void writeSysuiMultiAction(Object[] content) {
-        android.util.EventLog.writeEvent(SYSUI_MULTI_ACTION, content);
-    }
-}
-
-class MetricsLogger {
-    private static MetricsLogger sMetricsLogger;
-
-    private static MetricsLogger getLogger() {
-        if (sMetricsLogger == null) {
-            sMetricsLogger = new MetricsLogger();
-        }
-        return sMetricsLogger;
-    }
-
-    protected void saveLog(Object[] rep) {
-        EventLogTags.writeSysuiMultiAction(rep);
-    }
-
-    public void write(LogMaker content) {
-        if (content.getType() == 0/*MetricsEvent.TYPE_UNKNOWN*/) {
-            content.setType(4/*MetricsEvent.TYPE_ACTION*/);
-        }
-        saveLog(content.serialize());
-    }
-}
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
@@ -230,17 +189,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
-    private final long mTouchTimeMs;
-    private long mLauncherFrameDrawnTime;
-    private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
-    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs) {
+    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
-        mTouchTimeMs = touchTimeMs;
-        // Register the input consumer on the UI thread, to ensure that it runs after any pending
-        // unregister calls
-        mMainExecutor.execute(mInputConsumer::registerInputConsumer);
+        mInputConsumer.registerInputConsumer();
         initStateCallbacks();
     }
 
@@ -370,8 +323,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         // For the duration of the gesture, lock the screen orientation to ensure that we do not
         // rotate mid-quickscrub
-        mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
-
+        mLauncher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mRecentsView = mLauncher.getOverviewPanel();
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mLauncherLayoutListener = new LauncherLayoutListener(mLauncher);
@@ -464,26 +416,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         if (mLauncherDrawnCallback != null) {
             mLauncherDrawnCallback.run();
         }
-        mLauncherFrameDrawnTime = SystemClock.uptimeMillis();
     }
 
     private void initializeLauncherAnimationController() {
         mLauncherLayoutListener.setHandler(this);
         onLauncherLayoutChanged();
-
-        final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
-        // Mimic ActivityMetricsLogger.logAppTransitionMultiEvents() logging for
-        // "Recents" activity for app transition tests for the app-to-recents case.
-        final LogMaker builder = new LogMaker(761/*APP_TRANSITION*/);
-        builder.setPackageName("com.android.systemui");
-        builder.addTaggedData(871/*FIELD_CLASS_NAME*/,
-                "com.android.systemui.recents.RecentsActivity");
-        builder.addTaggedData(319/*APP_TRANSITION_DELAY_MS*/,
-                transitionDelay);
-        mMetricsLogger.write(builder);
-        if (LatencyTrackerCompat.isEnabled(mContext)) {
-            LatencyTrackerCompat.logToggleRecents((int) transitionDelay);
-        }
     }
 
     public void updateInteractionType(@InteractionType int interactionType) {
@@ -505,8 +442,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void onQuickInteractionStart() {
-        mLauncher.getStateManager().goToState(FAST_OVERVIEW,
-                mWasLauncherAlreadyVisible || mGestureStarted);
         mQuickScrubController.onQuickScrubStart(false);
     }
 
@@ -574,13 +509,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
                         transaction.setMatrix(app.leash, mTmpMatrix)
-                                .setWindowCrop(app.leash, mClipRect);
-
-                        if (app.isNotInRecents) {
-                            transaction.setAlpha(app.leash, 1 - shift);
-                        }
-
-                        transaction.show(app.leash);
+                                .setWindowCrop(app.leash, mClipRect)
+                                .show(app.leash);
                     }
                 }
                 transaction.apply();
@@ -595,8 +525,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 mLauncherTransitionController.setPlayFraction(shift);
 
                 // Make sure the window follows the first task if it moves, e.g. during quick scrub.
-                View firstTask = mRecentsView.getPageAt(0);
-                int scrollForFirstTask = mRecentsView.getScrollForPage(0);
+                int firstTaskIndex = mRecentsView.getFirstTaskIndex();
+                View firstTask = mRecentsView.getPageAt(firstTaskIndex);
+                int scrollForFirstTask = mRecentsView.getScrollForPage(firstTaskIndex);
                 int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
                 if (offsetFromFirstTask != 0) {
                     synchronized (mTargetRect) {
@@ -727,14 +658,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
     private void animateToProgress(float progress, long duration) {
-        mIsGoingToHome = Float.compare(progress, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
         anim.setInterpolator(Interpolators.SCROLL);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                setStateOnUiThread(mIsGoingToHome ?
-                        STATE_SCALED_CONTROLLER_RECENTS : STATE_SCALED_CONTROLLER_APP);
+                setStateOnUiThread((Float.compare(mCurrentShift.value, 0) == 0)
+                        ? STATE_SCALED_CONTROLLER_APP : STATE_SCALED_CONTROLLER_RECENTS);
             }
         });
         anim.start();
@@ -755,7 +685,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void invalidateHandler() {
-        mCurrentShift.finishAnimation();
+        mCurrentShift.cancelAnimation();
 
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
@@ -771,8 +701,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mLauncherLayoutListener.close(false);
 
         // Restore the requested orientation to the user preference after the gesture has ended
-        mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
-
+        mLauncher.updateRequestedOrientation();
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
     }
 

@@ -29,6 +29,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetsListAdapter;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -79,18 +80,19 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
      */
     public final void scheduleCallbackTask(final CallbackTask task) {
         final Callbacks callbacks = mModel.getCallback();
-        mUiExecutor.execute(() -> {
-            Callbacks cb = mModel.getCallback();
-            if (callbacks == cb && cb != null) {
-                task.execute(callbacks);
+        mUiExecutor.execute(new Runnable() {
+            public void run() {
+                Callbacks cb = mModel.getCallback();
+                if (callbacks == cb && cb != null) {
+                    task.execute(callbacks);
+                }
             }
         });
     }
 
     public ModelWriter getModelWriter() {
-        // Updates from model task, do not deal with icon position in hotseat. Also no need to
-        // verify changes as the ModelTasks always push the changes to callbacks
-        return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */);
+        // Updates from model task, do not deal with icon position in hotseat.
+        return mModel.getWriter(false /* hasVerticalHotseat */);
     }
 
 

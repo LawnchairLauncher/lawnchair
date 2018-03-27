@@ -26,6 +26,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
     <!-- Workspace -->

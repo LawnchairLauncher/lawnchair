@@ -27,20 +27,11 @@ import android.animation.AnimatorSet;
  */
 public class LauncherTransitionAnimator {
 
-    private final MutableBoolean mLauncherAnimCancelState;
-
     private AnimatorSet mAnimatorSet;
     private Animator mLauncherAnimator;
     private Animator mWindowAnimator;
 
     LauncherTransitionAnimator(Animator launcherAnimator, Animator windowAnimator) {
-        this(launcherAnimator, windowAnimator, new MutableBoolean(false));
-    }
-
-
-    LauncherTransitionAnimator(Animator launcherAnimator, Animator windowAnimator,
-            MutableBoolean launcherAnimCancelState) {
-        mLauncherAnimCancelState = launcherAnimCancelState;
         if (launcherAnimator != null) {
             mLauncherAnimator = launcherAnimator;
         }
@@ -59,7 +50,6 @@ public class LauncherTransitionAnimator {
 
     public void cancel() {
         mAnimatorSet.cancel();
-        mLauncherAnimCancelState.value = true;
     }
 
     public boolean isRunning() {
@@ -68,7 +58,6 @@ public class LauncherTransitionAnimator {
 
     public void finishLauncherAnimation() {
         if (mLauncherAnimator != null) {
-            mLauncherAnimCancelState.value = true;
             mLauncherAnimator.end();
         }
     }

@@ -139,8 +139,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Darbo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Darbo profilis"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Darbo programas rasite čia"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Kiekvienai darbo programai priskirtas oranžinis ženklelis, o tokių programų sauga rūpinasi jūsų organizacija. Perkelkite darbo programas į pagrindinį ekraną, kad galėtumėte lengviau jas pasiekti."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Tvarko jūsų organizacija"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Programos ir pranešimai išjungti"</string>
 </resources>

@@ -31,8 +31,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.graphics.ColorScrim;
-import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.SystemUiController;
@@ -49,11 +48,10 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
-    protected final ColorScrim mColorScrim;
+    protected GradientView mGradientView;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mColorScrim = ColorScrim.createExtractedColorScrim(this);
     }
 
     @Override
@@ -72,7 +70,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     @Override
     public final boolean onLongClick(View v) {
-        if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
+        if (!mLauncher.isDraggingEnabled()) return false;
 
         if (v instanceof WidgetCell) {
             return beginDraggingWidget((WidgetCell) v);
@@ -82,7 +80,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected void setTranslationShift(float translationShift) {
         super.setTranslationShift(translationShift);
-        mColorScrim.setProgress(1 - mTranslationShift);
+        mGradientView.setAlpha(1 - mTranslationShift);
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {

@@ -139,8 +139,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"עבודה"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ניתן למצוא כאן את אפליקציות העבודה"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"לכל אפליקציית עבודה יש תג כתום ואבטחתה מטופלת בידי הארגון. אפשר להעביר אפליקציות אל מסך דף הבית כדי להקל את הגישה אליהן."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"מנוהל בידי הארגון"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"הודעות ואפליקציות כבויות"</string>
 </resources>

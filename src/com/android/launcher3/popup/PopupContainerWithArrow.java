@@ -77,7 +77,6 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Themes;
 
@@ -908,9 +907,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     @Override
     public boolean onLongClick(View v) {
-        if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
         // Return early if not the correct view
         if (!(v.getParent() instanceof DeepShortcutView)) return false;
+        // Return early if global dragging is not enabled
+        if (!mLauncher.isDraggingEnabled()) return false;
+        // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
+        if (mLauncher.getDragController().isDragging()) return false;
 
         // Long clicked on a shortcut.
         DeepShortcutView sv = (DeepShortcutView) v.getParent();
