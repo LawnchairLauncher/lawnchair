@@ -41,7 +41,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pretraži više aplikacija"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Obavještenja"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na ovom početnom ekranu nema više prostora."</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora u ladici Omiljeno"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora u ladici Favoriti"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Spisak aplikacija"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Početna"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ukloni"</string>
@@ -112,7 +112,7 @@
     <string name="action_move" msgid="4339390619886385032">"Premjesti stavku"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Pomjeri stavku u red <xliff:g id="NUMBER_0">%1$s</xliff:g> kolonu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Pomjeri stavku na poziciju <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
-    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Pomjeri stavku na poziciju <xliff:g id="NUMBER">%1$s</xliff:g> među omiljenim"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Pomjeri stavku na poziciju <xliff:g id="NUMBER">%1$s</xliff:g> među favoritima"</string>
     <string name="item_moved" msgid="4606538322571412879">"Stavka je premještena"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"Dodaj u folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"Dodaj u folder sa aplikacijom <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -138,8 +138,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Poslovne"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Radni profil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pronađite poslovne aplikacije ovdje"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Svaka poslovna aplikacija ima narandžastu značku i osigurava je vaša organizacija. Premjestite aplikacije na Početni ekran, radi lakšeg pristupa."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Upravlja vaša organizacija"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikacije i aplikacije su isključene"</string>
 </resources>

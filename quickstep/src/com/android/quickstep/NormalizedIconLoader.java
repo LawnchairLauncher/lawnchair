@@ -16,20 +16,19 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager.TaskDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.UserHandle;
 import android.util.LruCache;
 import android.util.SparseArray;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
@@ -41,13 +40,11 @@ import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 public class NormalizedIconLoader extends IconLoader {
 
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
-    private final DrawableFactory mDrawableFactory;
     private LauncherIcons mLauncherIcons;
 
     public NormalizedIconLoader(Context context, TaskKeyLruCache<Drawable> iconCache,
             LruCache<ComponentName, ActivityInfo> activityInfoCache) {
         super(context, iconCache, activityInfoCache);
-        mDrawableFactory = DrawableFactory.get(context);
     }
 
     @Override
@@ -56,7 +53,7 @@ public class NormalizedIconLoader extends IconLoader {
             BitmapInfo info = mDefaultIcons.get(userId);
             if (info == null) {
                 info = getBitmapInfo(Resources.getSystem()
-                        .getDrawable(android.R.drawable.sym_def_app_icon), userId, 0, false);
+                        .getDrawable(android.R.drawable.sym_def_app_icon), userId);
                 mDefaultIcons.put(userId, info);
             }
 
@@ -65,31 +62,23 @@ public class NormalizedIconLoader extends IconLoader {
     }
 
     @Override
-    protected Drawable createBadgedDrawable(Drawable drawable, int userId, TaskDescription desc) {
-        return new FastBitmapDrawable(getBitmapInfo(drawable, userId, desc.getPrimaryColor(),
-                false));
+    protected Drawable createBadgedDrawable(Drawable drawable, int userId) {
+        return new FastBitmapDrawable(getBitmapInfo(drawable, userId));
     }
 
-    private synchronized BitmapInfo getBitmapInfo(Drawable drawable, int userId,
-            int primaryColor, boolean isInstantApp) {
+    private synchronized BitmapInfo getBitmapInfo(Drawable drawable, int userId) {
         if (mLauncherIcons == null) {
             mLauncherIcons = LauncherIcons.obtain(mContext);
         }
 
-        mLauncherIcons.setWrapperBackgroundColor(primaryColor);
         // User version code O, so that the icon is always wrapped in an adaptive icon container.
         return mLauncherIcons.createBadgedIconBitmap(drawable, UserHandle.of(userId),
-                Build.VERSION_CODES.O, isInstantApp);
+                Build.VERSION_CODES.O);
     }
 
     @Override
-    protected Drawable getBadgedActivityIcon(ActivityInfo activityInfo, int userId,
-            TaskDescription desc) {
-        BitmapInfo bitmapInfo = getBitmapInfo(
-                activityInfo.loadUnbadgedIcon(mContext.getPackageManager()),
-                userId,
-                desc.getPrimaryColor(),
-                activityInfo.applicationInfo.isInstantApp());
-        return mDrawableFactory.newIcon(bitmapInfo, activityInfo);
+    protected Drawable getBadgedActivityIcon(ActivityInfo activityInfo, int userId) {
+        return createBadgedDrawable(
+                activityInfo.loadUnbadgedIcon(mContext.getPackageManager()), userId);
     }
 }

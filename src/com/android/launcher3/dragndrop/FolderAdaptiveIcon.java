@@ -36,7 +36,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
-import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Preconditions;
 
 /**
@@ -113,7 +113,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         final float previewShiftX = shiftFactor * previewWidth;
         final float previewShiftY = shiftFactor * previewHeight;
 
-        Bitmap previewBitmap = BitmapRenderer.createHardwareBitmap(previewWidth, previewHeight,
+        Bitmap previewBitmap = UiFactory.createFromRenderer(previewWidth, previewHeight, false,
                 (canvas) -> {
                     int count = canvas.save();
                     canvas.translate(previewShiftX, previewShiftY);

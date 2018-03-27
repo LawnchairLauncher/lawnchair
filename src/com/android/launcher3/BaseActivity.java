@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Point;
-import android.view.Display;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -102,19 +100,6 @@ public abstract class BaseActivity extends Activity {
         int count = mDPChangeListeners.size();
         for (int i = 0; i < count; i++) {
             mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
-        }
-    }
-
-    /**
-     * Sets the device profile, adjusting it accordingly in case of multi-window
-     */
-    protected void setDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
-        if (isInMultiWindowModeCompat()) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
     }
 }

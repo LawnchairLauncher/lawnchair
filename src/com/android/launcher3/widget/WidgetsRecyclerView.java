@@ -17,12 +17,8 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnItemTouchListener;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -31,14 +27,12 @@ import com.android.launcher3.R;
 /**
  * The widgets recycler view.
  */
-public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouchListener {
+public class WidgetsRecyclerView extends BaseRecyclerView {
 
+    private static final String TAG = "WidgetsRecyclerView";
     private WidgetsListAdapter mAdapter;
 
     private final int mScrollbarTop;
-
-    private final Point mFastScrollerOffset = new Point();
-    private boolean mTouchDownOnScroller;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -52,7 +46,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         // API 21 and below only support 3 parameter ctor.
         super(context, attrs, defStyleAttr);
         mScrollbarTop = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-        addOnItemTouchListener(this);
     }
 
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
@@ -63,6 +56,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        addOnItemTouchListener(this);
         // create a layout manager with Launcher's context so that scroll position
         // can be preserved during screen rotation.
         setLayoutManager(new LinearLayoutManager(getContext()));
@@ -151,26 +145,4 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public int getScrollBarTop() {
         return mScrollbarTop;
     }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            mTouchDownOnScroller =
-                    mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
-        }
-        if (mTouchDownOnScroller) {
-            return mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
-        }
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-        if (mTouchDownOnScroller) {
-            mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
-        }
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
 }

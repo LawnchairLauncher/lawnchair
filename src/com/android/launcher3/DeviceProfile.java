@@ -250,14 +250,6 @@ public class DeviceProfile {
     }
 
     /**
-     * Inverse of {@link #getMultiWindowProfile(Context, Point)}
-     * @return device profile corresponding to the current orientation in non multi-window mode.
-     */
-    public DeviceProfile getFullScreenProfile() {
-        return isLandscape ? inv.landscapeProfile : inv.portraitProfile;
-    }
-
-    /**
      * Adjusts the profile so that the labels on the Workspace are hidden.
      * It is important to call this method after the All Apps variables have been set.
      */
@@ -513,6 +505,12 @@ public class DeviceProfile {
                 // ??
                 return 0;
         }
+    }
+
+    public boolean shouldIgnoreLongPressToOverview(float touchX) {
+        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
+        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
+        return !isMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
     }
 
     private static Context getContext(Context c, int orientation) {

@@ -1,11 +1,5 @@
 package com.android.launcher3.model;
 
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -30,8 +24,8 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
+import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -48,6 +42,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
+
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Base class for writing tests for Model update tasks.
@@ -82,7 +82,7 @@ public class BaseModelUpdateTaskTestCase {
         modelWriter = mock(ModelWriter.class);
 
         when(appState.getModel()).thenReturn(model);
-        when(model.getWriter(anyBoolean(), anyBoolean())).thenReturn(modelWriter);
+        when(model.getWriter(anyBoolean())).thenReturn(modelWriter);
         when(model.getCallback()).thenReturn(callbacks);
 
         myUser = Process.myUserHandle();

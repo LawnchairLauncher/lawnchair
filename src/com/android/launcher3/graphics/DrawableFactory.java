@@ -17,7 +17,6 @@
 package com.android.launcher3.graphics;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -66,12 +65,6 @@ public class DrawableFactory {
      * Returns a FastBitmapDrawable with the icon.
      */
     public FastBitmapDrawable newIcon(ItemInfoWithIcon info) {
-        FastBitmapDrawable drawable = new FastBitmapDrawable(info);
-        drawable.setIsDisabled(info.isDisabled());
-        return drawable;
-    }
-
-    public FastBitmapDrawable newIcon(BitmapInfo info, ActivityInfo target) {
         return new FastBitmapDrawable(info);
     }
 
@@ -84,6 +77,7 @@ public class DrawableFactory {
         }
         return new PreloadIconDrawable(info, mPreloadProgressPath, context);
     }
+
 
     protected Path getPreloadProgressPath(Context context) {
         if (Utilities.ATLEAST_OREO) {

@@ -15,17 +15,12 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -35,42 +30,46 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
+import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.ColorScrim;
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
-import com.android.launcher3.views.RecyclerViewFastScroller;
-import com.android.launcher3.views.SpringRelativeLayout;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener {
+public class AllAppsContainerView extends RelativeLayout implements DragSource,
+        OnLongClickListener, Insettable, BubbleTextShadowHandler, OnDeviceProfileChangeListener {
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
+    private final ClickShadowView mTouchFeedbackView;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
-
-    private final Paint mNavBarScrimPaint;
-    private int mNavBarScrimHeight = 0;
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
@@ -81,9 +80,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
-
-    private RecyclerViewFastScroller mTouchHandler;
-    private final Point mFastScrollerOffset = new Point();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -100,28 +96,40 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mLauncher.addOnDeviceProfileChangeListener(this);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
+
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        mTouchFeedbackView = new ClickShadowView(context);
+        // Make the feedback view large enough to hold the blur bitmap.
+        int size = mLauncher.getDeviceProfile().allAppsIconSizePx
+                + mTouchFeedbackView.getExtraSize();
+        addView(mTouchFeedbackView, size, size);
 
         mAH = new AdapterHolder[2];
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
         mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
 
-        mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
-
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
+    }
 
-        // Attach a scrim to be drawn behind all-apps and hotseat
-        new ColorScrim(this, Themes.getAttrColor(context, R.attr.allAppsScrimColor), DEACCEL_2)
-                .attach();
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        applyTouchDelegate();
+    }
 
-        addSpringView(R.id.all_apps_header);
-        addSpringView(R.id.apps_list_view);
-        addSpringView(R.id.all_apps_tabs_view_pager);
+    private void applyTouchDelegate() {
+        // TODO: Reimplement once fast scroller is fixed.
     }
 
     public AllAppsStore getAppsStore() {
         return mAllAppsStore;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        applyTouchDelegate();
     }
 
     @Override
@@ -149,6 +157,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    @Override
+    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
+        mTouchFeedbackView.setPressedIcon(icon, background);
+    }
+
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
@@ -159,51 +172,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return true;
         }
         AllAppsRecyclerView rv = getActiveRecyclerView();
-        if (rv == null) {
-            return true;
-        }
-        if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
-                mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
-            return false;
-        }
-        return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            AllAppsRecyclerView rv = getActiveRecyclerView();
-            if (rv != null &&
-                    rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(), mFastScrollerOffset)) {
-                mTouchHandler = rv.getScrollbar();
-            }
-        }
-        if (mTouchHandler != null) {
-            return mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mTouchHandler != null) {
-            mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
-            return true;
-        }
-        return false;
-    }
-
-    public String getDescription() {
-        @StringRes int descriptionRes;
-        if (mUsingTabs) {
-            descriptionRes =
-                    mViewPager.getNextPage() == 0
-                            ? R.string.all_apps_button_personal_label
-                            : R.string.all_apps_button_work_label;
-        } else {
-            descriptionRes = R.string.all_apps_button_label;
-        }
-        return getContext().getString(descriptionRes);
+        return rv == null || rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {
@@ -227,7 +196,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mHeader.reset();
         }
         // Reset the search bar and base recycler view after transitioning home
-        mSearchUiManager.resetSearch();
+        mSearchUiManager.reset();
     }
 
     @Override
@@ -261,6 +230,37 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
+    public boolean onLongClick(final View v) {
+        // When we have exited all apps or are in transition, disregard long clicks
+        if (!mLauncher.isInState(LauncherState.ALL_APPS) ||
+                mLauncher.getWorkspace().isSwitchingState()) return false;
+        // Return if global dragging is not enabled or we are already dragging
+        if (!mLauncher.isDraggingEnabled()) return false;
+        if (mLauncher.getDragController().isDragging()) return false;
+
+        // Start the drag
+        final DragController dragController = mLauncher.getDragController();
+        dragController.addDragListener(new DragController.DragListener() {
+            @Override
+            public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+                v.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onDragEnd() {
+                v.setVisibility(VISIBLE);
+                dragController.removeDragListener(this);
+            }
+        });
+
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DragOptions options = new DragOptions();
+        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        mLauncher.getWorkspace().beginDragShared(v, this, options);
+        return false;
+    }
+
+    @Override
     public void onDropCompleted(View target, DragObject d, boolean success) { }
 
     @Override
@@ -283,26 +283,25 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         if (grid.isVerticalBarLayout()) {
             mlp.leftMargin = insets.left;
+            mlp.topMargin = insets.top;
             mlp.rightMargin = insets.right;
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            mlp.leftMargin = mlp.rightMargin = 0;
+            mlp.leftMargin = mlp.rightMargin = mlp.topMargin = 0;
             setPadding(0, 0, 0, 0);
         }
         setLayoutParams(mlp);
 
-        mNavBarScrimHeight = insets.bottom;
+        View navBarBg = findViewById(R.id.nav_bar_bg);
+        ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+        navBarBgLp.height = insets.bottom;
+        navBarBg.setLayoutParams(navBarBgLp);
+
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-
-        if (mNavBarScrimHeight > 0) {
-            canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
-                    mNavBarScrimPaint);
-        }
+    public SpringAnimationHandler getSpringAnimationHandler() {
+        return mUsingTabs ? null : mAH[AdapterHolder.MAIN].animationHandler;
     }
 
     private void rebindAdapters(boolean showTabs) {
@@ -331,6 +330,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.MAIN].recyclerView);
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
+
+        applyTouchDelegate();
     }
 
     private void replaceRVContainer(boolean showTabs) {
@@ -361,6 +362,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void onTabChanged(int pos) {
         mHeader.setMainActive(pos == 0);
         reset();
+        applyTouchDelegate();
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
 
@@ -447,6 +449,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
+        final SpringAnimationHandler animationHandler;
         final AlphabeticalAppsList appsList;
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
@@ -454,21 +457,25 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         AdapterHolder(boolean isWork) {
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
-            adapter = new AllAppsGridAdapter(mLauncher, appsList);
+            adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
+                    AllAppsContainerView.this, true);
             appsList.setAdapter(adapter);
+            animationHandler = adapter.getSpringAnimationHandler();
             layoutManager = adapter.getLayoutManager();
         }
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
-            recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
             recyclerView.setApps(appsList, mUsingTabs);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
             recyclerView.setHasFixedSize(true);
             // No animations will occur when changes occur to the items in this RecyclerView.
             recyclerView.setItemAnimator(null);
+            if (FeatureFlags.LAUNCHER3_PHYSICS && animationHandler != null) {
+                recyclerView.setSpringAnimationHandler(animationHandler);
+            }
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
             recyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());

@@ -15,9 +15,7 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TouchInteractionService.DEBUG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 
 import android.content.Context;
 import android.os.Handler;
@@ -62,7 +60,7 @@ public class OverviewInteractionState {
         }
     };
 
-    private static int sFlags = DEBUG_SHOW_OVERVIEW_BUTTON ? FLAG_SHOW_OVERVIEW_BUTTON : 0;
+    private static int sFlags;
 
     public static void setBackButtonVisible(Context context, boolean visible) {
         updateFlagOnUi(context, FLAG_HIDE_BACK_BUTTON, !visible);

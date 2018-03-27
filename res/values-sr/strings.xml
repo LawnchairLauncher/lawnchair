@@ -138,8 +138,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Пословне"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Профил за Work"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Пронађите пословне апликације овде"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Свака пословна апликација има наранџасту значку и штити је ваша организација. Преместите апликације на почетни екран да бисте им лакше приступали."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Овим управља организација"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Обавештења и апликације су искључени"</string>
 </resources>

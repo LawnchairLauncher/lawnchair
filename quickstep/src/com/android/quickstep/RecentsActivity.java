@@ -15,29 +15,34 @@
  */
 package com.android.quickstep;
 
+import android.app.ListActivity;
 import android.os.Bundle;
+import android.os.UserHandle;
+import android.support.annotation.Nullable;
+import android.widget.ArrayAdapter;
 
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
+import com.android.systemui.shared.recents.model.RecentsTaskLoader;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * A simple activity to show the recently launched tasks
  */
-public class RecentsActivity extends BaseActivity {
+public class RecentsActivity extends ListActivity {
+
+    private ArrayAdapter<Task> mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
-        // activity.
-        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        setDeviceProfile(appState != null
-                ? appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this)
-                : new InvariantDeviceProfile(this).getDeviceProfile(this));
+        RecentsTaskLoadPlan plan = new RecentsTaskLoadPlan(this);
+        plan.preloadPlan(new PreloadOptions(), new RecentsTaskLoader(this, 1, 1, 0), -1,
+                UserHandle.myUserId());
 
-        setContentView(R.layout.fallback_recents_activity);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        mAdapter.addAll(plan.getTaskStack().getTasks());
+        setListAdapter(mAdapter);
     }
 }

@@ -488,14 +488,13 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         // Only reinflate when the final configuration is same as the required configuration
         if (mReinflateOnConfigChange && isSameOrientation()) {
             mReinflateOnConfigChange = false;
-            reInflate();
+            if (isAttachedToWindow()) {
+                reInflate();
+            }
         }
     }
 
     public void reInflate() {
-        if (!isAttachedToWindow()) {
-            return;
-        }
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database

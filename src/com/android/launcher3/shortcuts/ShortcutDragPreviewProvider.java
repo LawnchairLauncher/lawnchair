@@ -50,10 +50,12 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
                 Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(b);
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
         canvas.scale(((float) size) / bounds.width(), ((float) size) / bounds.height(), 0, 0);
         canvas.translate(bounds.left, bounds.top);
         d.draw(canvas);
+        canvas.restore();
         return b;
     }
 

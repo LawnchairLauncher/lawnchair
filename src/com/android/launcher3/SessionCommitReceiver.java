@@ -67,9 +67,11 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
 
-        if (TextUtils.isEmpty(info.getAppPackageName()) ||
-                info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
-            return;
+        if (Process.myUserHandle().equals(user)) {
+            if (TextUtils.isEmpty(info.getAppPackageName()) ||
+                    info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
+                return;
+            }
         }
 
         queueAppIconAddition(context, info.getAppPackageName(), user);

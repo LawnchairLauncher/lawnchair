@@ -137,8 +137,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Work"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work profile"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Find work apps here"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Each work app has an orange badge and is kept secure by your organisation. Move apps to your Home screen for easier access."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Managed by your organisation"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notifications and apps are off"</string>
 </resources>

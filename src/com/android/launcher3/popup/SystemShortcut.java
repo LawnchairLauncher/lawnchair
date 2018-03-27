@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -82,8 +83,7 @@ public abstract class SystemShortcut extends ItemInfo {
                 public void onClick(View view) {
                     Rect sourceBounds = launcher.getViewBounds(view);
                     Bundle opts = launcher.getActivityLaunchOptionsAsBundle(view, false);
-                    new PackageManagerHelper(launcher).startDetailsActivityForInfo(
-                            itemInfo, sourceBounds, opts);
+                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, sourceBounds, opts);
                     launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                             ControlType.APPINFO_TARGET, view);
                 }

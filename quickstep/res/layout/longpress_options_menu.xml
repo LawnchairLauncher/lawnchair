@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.OptionsPopupView
+<com.android.launcher3.uioverrides.OptionsPopupView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -94,4 +94,4 @@
 
     </FrameLayout>
 
-</com.android.launcher3.views.OptionsPopupView>
+</com.android.launcher3.uioverrides.OptionsPopupView>

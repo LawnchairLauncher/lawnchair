@@ -177,10 +177,7 @@ public class FocusLogic {
             }
             int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
-            int x = invert ? (m - cx - 1) : cx;
-            if (x < m && cy < n) { // check if view fits into matrix, else skip
-                matrix[x][cy] = i;
-            }
+            matrix[invert ? (m - cx - 1) : cx][cy] = i;
         }
         if (DEBUG) {
             printMatrix(matrix);

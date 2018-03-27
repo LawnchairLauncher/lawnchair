@@ -135,8 +135,6 @@ public class LauncherModel extends BroadcastReceiver
     };
 
     public interface Callbacks {
-        public void rebindModel();
-
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
         public void startBinding();
@@ -198,9 +196,8 @@ public class LauncherModel extends BroadcastReceiver
         enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 
-    public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
-        return new ModelWriter(mApp.getContext(), this, sBgDataModel,
-                hasVerticalHotseat, verifyChanges);
+    public ModelWriter getWriter(boolean hasVerticalHotseat) {
+        return new ModelWriter(mApp.getContext(), sBgDataModel, hasVerticalHotseat);
     }
 
     static void checkItemInfoLocked(

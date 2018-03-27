@@ -34,6 +34,7 @@
         android:fontFamily="sans-serif"
         launcher:iconDisplay="shortcut_popup"
         launcher:layoutHorizontal="true"
+        launcher:deferShadowGeneration="true"
         android:focusable="false" />
 
     <View

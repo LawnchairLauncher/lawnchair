@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.uioverrides;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.Toast;
@@ -43,22 +42,19 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.ColorScrim;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 /**
  * Popup shown on long pressing an empty space in launcher
  */
-public class OptionsPopupView extends AbstractFloatingView
-        implements OnClickListener, OnLongClickListener {
+public class OptionsPopupView extends AbstractFloatingView implements OnClickListener {
 
     private final float mOutlineRadius;
     private final Launcher mLauncher;
     private final PointF mTouchPoint = new PointF();
 
-    private final ColorScrim mScrim;
+    private final GradientView mGradientView;
 
     protected Animator mOpenCloseAnimator;
 
@@ -79,55 +75,39 @@ public class OptionsPopupView extends AbstractFloatingView
         });
 
         mLauncher = Launcher.getLauncher(context);
-        mScrim = ColorScrim.createExtractedColorScrim(this);
+
+        mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
+                R.layout.widgets_bottom_sheet_scrim, mLauncher.getDragLayer(), false);
+        mGradientView.setProgress(1, false);
+        mGradientView.setAlpha(0);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        attachListeners(findViewById(R.id.wallpaper_button));
-        attachListeners(findViewById(R.id.widget_button));
-        attachListeners(findViewById(R.id.settings_button));
-    }
-
-    private void attachListeners(View view) {
-        view.setOnClickListener(this);
-        view.setOnLongClickListener(this);
+        findViewById(R.id.wallpaper_button).setOnClickListener(this);
+        findViewById(R.id.widget_button).setOnClickListener(this);
+        findViewById(R.id.settings_button).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        handleViewClick(view, Action.Touch.TAP);
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        return handleViewClick(view, Action.Touch.LONGPRESS);
-    }
-
-    private boolean handleViewClick(View view, int action) {
         if (view.getId() == R.id.wallpaper_button) {
             mLauncher.onClickWallpaperPicker(null);
-            logTap(action, ControlType.WALLPAPER_BUTTON);
             close(true);
-            return true;
         } else if (view.getId() == R.id.widget_button) {
-            logTap(action, ControlType.WIDGETS_BUTTON);
-            if (onWidgetsClicked(mLauncher)) {
+            if (mLauncher.getPackageManager().isSafeMode()) {
+                Toast.makeText(mLauncher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
+            } else {
+                WidgetsFullSheet.show(mLauncher, true /* animated */);
                 close(true);
-                return true;
             }
         } else if (view.getId() == R.id.settings_button) {
-            startSettings(mLauncher);
-            logTap(action, ControlType.SETTINGS_BUTTON);
+            mLauncher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                .setPackage(mLauncher.getPackageName())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             close(true);
-            return true;
         }
-        return false;
-    }
-
-    private void logTap(int action, int controlType) {
-        mLauncher.getUserEventDispatcher().logActionOnControl(action, controlType);
     }
 
     @Override
@@ -169,7 +149,7 @@ public class OptionsPopupView extends AbstractFloatingView
         fadeOut.setInterpolator(Interpolators.DEACCEL);
         closeAnim.play(fadeOut);
 
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 0);
+        Animator gradientAlpha = ObjectAnimator.ofFloat(mGradientView, ALPHA, 0);
         gradientAlpha.setInterpolator(Interpolators.DEACCEL);
         closeAnim.play(gradientAlpha);
 
@@ -197,6 +177,7 @@ public class OptionsPopupView extends AbstractFloatingView
         }
         mIsOpen = false;
         mLauncher.getDragLayer().removeView(this);
+        mLauncher.getDragLayer().removeView(mGradientView);
     }
 
     @Override
@@ -232,7 +213,7 @@ public class OptionsPopupView extends AbstractFloatingView
                 .createRevealAnimator(this, false);
         openAnim.play(revealAnim);
 
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 1);
+        Animator gradientAlpha = ObjectAnimator.ofFloat(mGradientView, ALPHA, 1);
         gradientAlpha.setInterpolator(Interpolators.ACCEL);
         openAnim.play(gradientAlpha);
 
@@ -288,23 +269,8 @@ public class OptionsPopupView extends AbstractFloatingView
         lp.y = Utilities.boundToRange((int) (y - height / 2), insets.top + margin,
                 maxHeight - insets.bottom - height - margin);
 
+        launcher.getDragLayer().addView(view.mGradientView);
         launcher.getDragLayer().addView(view);
         view.animateOpen();
-    }
-
-    public static boolean onWidgetsClicked(Launcher launcher) {
-        if (launcher.getPackageManager().isSafeMode()) {
-            Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            WidgetsFullSheet.show(launcher, true /* animated */);
-            return true;
-        }
-    }
-
-    public static void startSettings(Launcher launcher) {
-        launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 }
