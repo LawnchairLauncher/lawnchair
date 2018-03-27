@@ -1840,7 +1840,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         mAppWidgetHost.clearViews();
 
         if (mHotseat != null) {
-            mHotseat.resetLayout();
+            mHotseat.resetLayout(mDeviceProfile.isVerticalBarLayout());
         }
         TraceHelper.endSection("startBinding");
     }
