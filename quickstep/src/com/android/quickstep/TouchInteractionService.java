@@ -153,6 +153,8 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onQuickStep(MotionEvent motionEvent) {
+            mEventQueue.onQuickStep(motionEvent);
+            TraceHelper.endSection("SysUiBinder", "onQuickStep");
 
         }
     };

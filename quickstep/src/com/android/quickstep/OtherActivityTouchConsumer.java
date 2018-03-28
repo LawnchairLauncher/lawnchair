@@ -79,7 +79,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
-    private boolean mTouchThresholdCrossed;
+    private boolean mGestureStarted;
     private int mTouchSlop;
     private float mStartDisplacement;
     private WindowTransformSwipeHandler mInteractionHandler;
@@ -122,7 +122,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mTouchSlop = ViewConfiguration.get(this).getScaledPagingTouchSlop();
-                mTouchThresholdCrossed = false;
+                mGestureStarted = false;
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -155,26 +155,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
 
-                float displacement = ev.getY(pointerIndex) - mDownPos.y;
-                if (isNavBarOnRight()) {
-                    displacement = ev.getX(pointerIndex) - mDownPos.x;
-                } else if (isNavBarOnLeft()) {
-                    displacement = mDownPos.x - ev.getX(pointerIndex);
-                }
-                if (!mTouchThresholdCrossed) {
-                    mTouchThresholdCrossed = Math.abs(displacement) >= mTouchSlop;
-                    if (mTouchThresholdCrossed) {
-                        mStartDisplacement = Math.signum(displacement) * mTouchSlop;
-
-                        if (mIsDeferredDownTarget) {
-                            // If we deferred starting the window animation on touch down, then
-                            // start tracking now
-                            startTouchTrackingForWindowAnimation(ev.getEventTime());
-                        }
-                        notifyGestureStarted();
-                    }
-                } else if (mInteractionHandler != null) {
+                if (mGestureStarted && mInteractionHandler != null) {
                     // Move
+                    float displacement = getDisplacement(ev.getX(pointerIndex),
+                            ev.getY(pointerIndex));
                     mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                 }
                 break;
@@ -195,6 +179,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             return;
         }
         // Notify the handler that the gesture has actually started
+        mGestureStarted = true;
         mInteractionHandler.onGestureStarted();
     }
 
@@ -276,7 +261,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * the animation can still be running.
      */
     private void finishTouchTracking() {
-        if (mTouchThresholdCrossed && mInteractionHandler != null) {
+        if (mGestureStarted && mInteractionHandler != null) {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
@@ -334,6 +319,28 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             mInteractionHandler.onQuickScrubProgress(progress);
         }
+    }
+
+    @Override
+    public void onQuickStep(float eventX, float eventY, long eventTime) {
+        float displacement = getDisplacement(eventX, eventY);
+        mStartDisplacement = Math.signum(displacement) * mTouchSlop;
+        if (mIsDeferredDownTarget) {
+            // If we deferred starting the window animation on touch down, then
+            // start tracking now
+            startTouchTrackingForWindowAnimation(eventTime);
+        }
+        notifyGestureStarted();
+    }
+
+    private float getDisplacement(float eventX, float eventY) {
+        float displacement = eventY - mDownPos.y;
+        if (isNavBarOnRight()) {
+            displacement = eventX - mDownPos.x;
+        } else if (isNavBarOnLeft()) {
+            displacement = mDownPos.x - eventX;
+        }
+        return displacement;
     }
 
     public void switchToMainChoreographer() {
