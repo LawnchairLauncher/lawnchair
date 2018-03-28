@@ -405,7 +405,7 @@ public abstract class RecentsView<T extends BaseActivity>
         getPageRect(grid, context, outRect, targetPadding);
     }
 
-    private static void getPageRect(DeviceProfile grid, Context context, Rect outRect,
+    protected static void getPageRect(DeviceProfile grid, Context context, Rect outRect,
             Rect targetPadding) {
         Rect insets = grid.getInsets();
         outRect.set(

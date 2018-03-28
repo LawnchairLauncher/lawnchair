@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.fallback;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -23,6 +23,7 @@ import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.RecentsView;
 
 public class FallbackRecentsView extends RecentsView<RecentsActivity> implements Insettable {
@@ -73,12 +74,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> implements
     public static void getCenterPageRect(DeviceProfile grid, Context context, Rect outRect) {
         Rect targetPadding = getPadding(grid, context);
         verticalCenter(targetPadding, grid);
-        Rect insets = grid.getInsets();
-        outRect.set(
-                targetPadding.left + insets.left,
-                targetPadding.top + insets.top,
-                grid.widthPx - targetPadding.right - insets.right,
-                grid.heightPx - targetPadding.bottom - insets.bottom);
+        getPageRect(grid, context, outRect, targetPadding);
     }
 
     @Override

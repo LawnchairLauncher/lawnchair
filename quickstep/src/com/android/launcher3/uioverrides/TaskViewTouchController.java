@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -26,15 +25,15 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -42,8 +41,8 @@ import com.android.quickstep.views.TaskView;
 /**
  * Touch controller for handling task view card swipes
  */
-public class TaskViewTouchController extends AnimatorListenerAdapter
-        implements TouchController, SwipeDetector.Listener {
+public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
+        extends AnimatorListenerAdapter implements TouchController, SwipeDetector.Listener {
 
     private static final String TAG = "OverviewSwipeController";
 
@@ -53,7 +52,7 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
     // Progress after which the transition is assumed to be a success in case user does not fling
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
-    private final Launcher mLauncher;
+    protected final T mActivity;
     private final SwipeDetector mDetector;
     private final RecentsView mRecentsView;
     private final int[] mTempCords = new int[2];
@@ -70,10 +69,10 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
 
     private TaskView mTaskBeingDragged;
 
-    public TaskViewTouchController(Launcher launcher) {
-        mLauncher = launcher;
-        mRecentsView = launcher.getOverviewPanel();
-        mDetector = new SwipeDetector(launcher, this, SwipeDetector.VERTICAL);
+    public TaskViewTouchController(T activity) {
+        mActivity = activity;
+        mRecentsView = activity.getOverviewPanel();
+        mDetector = new SwipeDetector(activity, this, SwipeDetector.VERTICAL);
     }
 
     private boolean canInterceptTouch() {
@@ -81,11 +80,13 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
-        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+        if (AbstractFloatingView.getTopOpenView(mActivity) != null) {
             return false;
         }
-        return mLauncher.isInState(OVERVIEW);
+        return isRecentsInteractive();
     }
+
+    protected abstract boolean isRecentsInteractive();
 
     @Override
     public void onAnimationCancel(Animator animation) {
@@ -115,7 +116,7 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
                 mTaskBeingDragged = null;
 
                 View view = mRecentsView.getChildAt(mRecentsView.getCurrentPage());
-                if (view instanceof TaskView && mLauncher.getDragLayer().isEventOverView(view, ev)) {
+                if (view instanceof TaskView && mActivity.getDragLayer().isEventOverView(view, ev)) {
                     // The tile can be dragged down to open the task.
                     mTaskBeingDragged = (TaskView) view;
                     directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
@@ -156,9 +157,8 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
         }
 
         mCurrentAnimationIsGoingUp = goingUp;
-        float range = mLauncher.getAllAppsController().getShiftRange();
-        long maxDuration = (long) (2 * range);
-        DragLayer dl = mLauncher.getDragLayer();
+        BaseDragLayer dl = mActivity.getDragLayer();
+        long maxDuration = (long) (2 * dl.getHeight());
 
         if (goingUp) {
             mPendingAnimation = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
@@ -254,7 +254,7 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
         }
         if (wasSuccess) {
             if (!mCurrentAnimationIsGoingUp) {
-                mLauncher.getUserEventDispatcher().logTaskLaunch(logAction,
+                mActivity.getUserEventDispatcher().logTaskLaunch(logAction,
                         Direction.DOWN, mTaskBeingDragged.getTask().getTopComponent());
             }
         }

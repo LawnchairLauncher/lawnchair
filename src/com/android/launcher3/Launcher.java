@@ -135,8 +135,8 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseDraggingActivity implements LauncherExterns, LauncherModel.Callbacks,
-        LauncherProviderChangeListener, WallpaperColorInfo.OnThemeChangeListener {
+public class Launcher extends BaseDraggingActivity
+        implements LauncherExterns, LauncherModel.Callbacks, LauncherProviderChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -265,10 +265,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                     .build());
         }
         TraceHelper.beginSection("Launcher-onCreate");
-
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
 
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
@@ -402,21 +398,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         return mRotationHelper;
     }
 
-    @Override
-    public void onThemeChanged() {
-        recreate();
-    }
-
     public LauncherStateManager getStateManager() {
         return mStateManager;
-    }
-
-    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
-        if (isDark) {
-            setTheme(R.style.LauncherThemeDark);
-        } else if (supportsDarkText) {
-            setTheme(R.style.LauncherThemeDarkText);
-        }
     }
 
     @Override
@@ -1367,7 +1350,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
 
         TextKeyListener.getInstance().release();
-        WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
 
         LauncherAnimUtils.onDestroyActivity();
 
