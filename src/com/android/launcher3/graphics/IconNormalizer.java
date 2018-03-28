@@ -376,4 +376,12 @@ public class IconNormalizer {
             last = i;
         }
     }
+
+    /**
+     * @return The diameter of the normalized circle that fits inside of the square (size x size).
+     */
+    public static int getNormalizedCircleSize(int size) {
+        float area = size * size * MAX_CIRCLE_AREA_FACTOR;
+        return (int) Math.round(Math.sqrt((4 * area) / Math.PI));
+    }
 }

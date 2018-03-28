@@ -137,8 +137,6 @@
     <dimen name="spring_loaded_panel_border">1dp</dimen>
 
 <!-- Folders -->
-    <!-- The size of the padding on the preview background drawable -->
-    <dimen name="folder_preview_padding">10dp</dimen>
     <dimen name="page_indicator_dot_size">8dp</dimen>
 
     <dimen name="folder_cell_x_padding">9dp</dimen>

@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.graphics.IconNormalizer;
 
 public class DeviceProfile {
 
@@ -81,9 +82,8 @@ public class DeviceProfile {
     public int workspaceCellPaddingXPx;
 
     // Folder
-    public int folderBackgroundOffset;
     public int folderIconSizePx;
-    public int folderIconPreviewPadding;
+    public int folderIconOffsetYPx;
 
     // Folder cell
     public int folderCellWidthPx;
@@ -340,9 +340,8 @@ public class DeviceProfile {
         }
 
         // Folder icon
-        folderBackgroundOffset = -iconDrawablePaddingPx;
-        folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
-        folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
+        folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
+        folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
