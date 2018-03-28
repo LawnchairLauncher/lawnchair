@@ -23,7 +23,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.SearchUiManager.OnScrollRangeChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
@@ -39,8 +38,7 @@ import com.android.launcher3.util.Themes;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController
-        implements OnScrollRangeChangeListener, StateHandler, OnDeviceProfileChangeListener {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
@@ -71,11 +69,11 @@ public class AllAppsTransitionController
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
-    private static final float DEFAULT_SHIFT_RANGE = 10;
+    private float mScrollRangeDelta = 0;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
-        mShiftRange = DEFAULT_SHIFT_RANGE;
+        mShiftRange = mLauncher.getDeviceProfile().heightPx;
         mProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
@@ -95,6 +93,7 @@ public class AllAppsTransitionController
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mIsVerticalLayout = dp.isVerticalBarLayout();
+        setScrollRangeDelta(mScrollRangeDelta);
 
         if (mIsVerticalLayout) {
             mAppsView.setAlpha(1);
@@ -205,13 +204,14 @@ public class AllAppsTransitionController
 
     public void setupViews(AllAppsContainerView appsView) {
         mAppsView = appsView;
-        mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
     }
 
-    @Override
-    public void onScrollRangeChanged(int scrollRange) {
-        mShiftRange = scrollRange;
-        setProgress(mProgress);
+    /**
+     * Updates the total scroll range but does not update the UI.
+     */
+    public void setScrollRangeDelta(float delta) {
+        mScrollRangeDelta = delta;
+        mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
     }
 
     /**
