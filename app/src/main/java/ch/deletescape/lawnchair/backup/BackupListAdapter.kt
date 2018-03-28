@@ -37,10 +37,6 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         notifyItemRemoved(position + 1)
     }
 
-    fun toUriList(): List<Uri> {
-        return backupList.map { it -> it.uri }
-    }
-
     operator fun get(position: Int) = backupList[position]
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {

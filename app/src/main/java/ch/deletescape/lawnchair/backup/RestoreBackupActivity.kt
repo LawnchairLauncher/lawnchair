@@ -29,9 +29,9 @@ class RestoreBackupActivity : BackupBaseActivity(), LawnchairBackup.MetaLoader.C
 
     private val backup by lazy {
         if (intent.hasExtra(EXTRA_URI))
-            LawnchairBackup(this, Uri.parse(intent.getStringExtra(EXTRA_URI)))
+            LawnchairBackup.fromUriString(this, intent.getStringExtra(EXTRA_URI))
         else
-            LawnchairBackup(this, intent.data)
+            LawnchairBackup.fromUri(this, intent.data)
     }
     private val backupMetaLoader by lazy { LawnchairBackup.MetaLoader(backup) }
 

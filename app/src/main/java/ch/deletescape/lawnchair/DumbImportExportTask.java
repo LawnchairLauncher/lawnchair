@@ -18,28 +18,38 @@ public class DumbImportExportTask {
     public static void exportDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
         File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
-        File backup = new File(getFolder(), LauncherFiles.LAUNCHER_DB);
+        File backup = getDbBackupFile();
         exportFile(db, backup, activity);
     }
 
     public static void importDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
         File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
-        File backup = new File(getFolder(), LauncherFiles.LAUNCHER_DB);
+        File backup = getDbBackupFile();
         importFile(db, backup, activity);
     }
 
     public static void exportPrefs(Activity activity) {
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
         File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
-        File backup = new File(getFolder(), LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml");
-        importFile(prefs, backup, activity);
+        File backup = getSettingsBackupFile();
+        exportFile(prefs, backup, activity);
+    }
+
+    @NonNull
+    public static File getDbBackupFile() {
+        return new File(getFolder(), LauncherFiles.LAUNCHER_DB);
+    }
+
+    @NonNull
+    public static File getSettingsBackupFile() {
+        return new File(getFolder(), LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml");
     }
 
     public static void importPrefs(Activity activity) {
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
         File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
-        File backup = new File(getFolder(), LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml");
+        File backup = getSettingsBackupFile();
         importFile(prefs, backup, activity);
     }
 
@@ -104,7 +114,7 @@ public class DumbImportExportTask {
         return ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private static boolean copy(File inFile, File outFile) {
+    public static boolean copy(File inFile, File outFile) {
         FileInputStream in;
         FileOutputStream out;
         try {
