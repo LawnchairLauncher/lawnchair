@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,6 +34,7 @@ import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.WindowManagerWrapper;
 
 public class UiFactory {
 
@@ -91,6 +93,14 @@ public class UiFactory {
         if (model != null) {
             model.onStart();
         }
+    }
+
+    public static void onLauncherStateOrResumeChanged(Launcher launcher) {
+        WindowManagerWrapper.getInstance().setShelfHeight(
+                launcher.getStateManager().getState() != ALL_APPS &&
+                        launcher.isUserActive() &&
+                        !launcher.getDeviceProfile().isVerticalBarLayout(),
+                launcher.getDeviceProfile().hotseatBarSizePx);
     }
 
     public static void onTrimMemory(Context context, int level) {

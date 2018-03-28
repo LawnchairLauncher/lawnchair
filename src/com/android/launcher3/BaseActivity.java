@@ -39,6 +39,7 @@ public abstract class BaseActivity extends Activity {
     protected SystemUiController mSystemUiController;
 
     private boolean mStarted;
+    private boolean mUserActive;
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
@@ -85,6 +86,18 @@ public abstract class BaseActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        mUserActive = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        mUserActive = false;
+        super.onUserLeaveHint();
+    }
+
+    @Override
     protected void onStop() {
         mStarted = false;
         super.onStop();
@@ -92,6 +105,10 @@ public abstract class BaseActivity extends Activity {
 
     public boolean isStarted() {
         return mStarted;
+    }
+
+    public boolean isUserActive() {
+        return mUserActive;
     }
 
     public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {

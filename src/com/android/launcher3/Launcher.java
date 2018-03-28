@@ -379,6 +379,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
 
         mOldConfig.setTo(newConfig);
+        UiFactory.onLauncherStateOrResumeChanged(this);
         super.onConfigurationChanged(newConfig);
     }
 
@@ -820,6 +821,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+        UiFactory.onLauncherStateOrResumeChanged(this);
 
         TraceHelper.endSection("ON_RESUME");
     }
@@ -836,6 +838,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        UiFactory.onLauncherStateOrResumeChanged(this);
     }
 
     @Override
