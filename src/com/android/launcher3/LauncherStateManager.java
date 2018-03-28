@@ -294,6 +294,7 @@ public class LauncherStateManager {
             // Only disable clipping if needed, otherwise leave it as previous value.
             mLauncher.getWorkspace().setClipChildren(false);
         }
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
     }
 
     private void onStateTransitionEnd(LauncherState state) {
@@ -312,6 +313,7 @@ public class LauncherStateManager {
         }
 
         UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
     }
 
     public void onWindowFocusChanged() {
