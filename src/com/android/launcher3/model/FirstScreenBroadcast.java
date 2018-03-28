@@ -135,10 +135,10 @@ public class FirstScreenBroadcast {
 
         context.sendBroadcast(new Intent(ACTION_FIRST_SCREEN_ACTIVE_INSTALLS)
                 .setPackage(installerPackageName)
-                .putExtra(FOLDER_ITEM_EXTRA, folderItems.toArray())
-                .putExtra(WORKSPACE_ITEM_EXTRA, workspaceItems.toArray())
-                .putExtra(HOTSEAT_ITEM_EXTRA, hotseatItems.toArray())
-                .putExtra(WIDGET_ITEM_EXTRA, widgetItems.toArray())
+                .putStringArrayListExtra(FOLDER_ITEM_EXTRA, new ArrayList<>(folderItems))
+                .putStringArrayListExtra(WORKSPACE_ITEM_EXTRA, new ArrayList<>(workspaceItems))
+                .putStringArrayListExtra(HOTSEAT_ITEM_EXTRA, new ArrayList<>(hotseatItems))
+                .putStringArrayListExtra(WIDGET_ITEM_EXTRA, new ArrayList<>(widgetItems))
                 .putExtra(VERIFICATION_TOKEN_EXTRA, PendingIntent.getActivity(context, 0,
                         new Intent(), PendingIntent.FLAG_ONE_SHOT)));
     }
