@@ -22,10 +22,8 @@ public class CustomAppFilter extends LawnchairAppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
-        if (CustomIconUtils.usingValidPack(mContext)) {
-            return !isHiddenApp(mContext, new ComponentKey(componentName, user));
-        }
-        return super.shouldShowApp(componentName, user);
+        return super.shouldShowApp(componentName, user)
+                && !isHiddenApp(mContext, new ComponentKey(componentName, user));
     }
 
     static void resetAppFilter(Context context) {
