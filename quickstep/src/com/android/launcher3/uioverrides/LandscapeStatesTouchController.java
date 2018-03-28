@@ -58,8 +58,9 @@ public class LandscapeStatesTouchController extends PortraitStatesTouchControlle
         }
     }
 
-    protected LauncherState getTargetState() {
-        if (mLauncher.isInState(ALL_APPS)) {
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        if (fromState == ALL_APPS) {
             // Should swipe down go to OVERVIEW instead?
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;

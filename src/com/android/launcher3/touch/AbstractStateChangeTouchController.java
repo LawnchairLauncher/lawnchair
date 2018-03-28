@@ -19,7 +19,6 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -58,6 +57,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
+    private float mDisplacementShift;
 
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
@@ -68,7 +68,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     /**
      * Initializes the {@code mFromState} and {@code mToState} and swipe direction to use for
-     * the detector. In can of disabling swipe, return 0.
+     * the detector. In case of disabling swipe, return 0.
      */
     protected abstract int getSwipeDirection(MotionEvent ev);
 
@@ -122,16 +122,36 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         return mLauncher.getAllAppsController().getShiftRange();
     }
 
+    protected abstract LauncherState getTargetState(LauncherState fromState,
+            boolean isDragTowardPositive);
+
     protected abstract float initCurrentAnimation();
+
+    private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
+        LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
+                : reachedToState ? mToState : mFromState;
+        LauncherState newToState = getTargetState(newFromState, isDragTowardPositive);
+
+        if (newFromState == mFromState && newToState == mToState || (newFromState == newToState)) {
+            return false;
+        }
+
+        mFromState = newFromState;
+        mToState = newToState;
+
+        mStartProgress = 0;
+        mProgressMultiplier = initCurrentAnimation();
+        mCurrentAnimation.getTarget().addListener(this);
+        mCurrentAnimation.dispatchOnStart();
+        return true;
+    }
 
     @Override
     public void onDragStart(boolean start) {
         if (mCurrentAnimation == null) {
-            mStartProgress = 0;
-            mProgressMultiplier = initCurrentAnimation();
-
-            mCurrentAnimation.getTarget().addListener(this);
-            mCurrentAnimation.dispatchOnStart();
+            mFromState = mToState = null;
+            reinitCurrentAnimation(false, mDetector.wasInitialTouchPositive());
+            mDisplacementShift = 0;
         } else {
             mCurrentAnimation.pause();
             mStartProgress = mCurrentAnimation.getProgressFraction();
@@ -140,8 +160,19 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     @Override
     public boolean onDrag(float displacement, float velocity) {
-        float deltaProgress = mProgressMultiplier * displacement;
-        updateProgress(deltaProgress + mStartProgress);
+        float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
+        float progress = deltaProgress + mStartProgress;
+        updateProgress(progress);
+        boolean isDragTowardPositive = (displacement - mDisplacementShift) < 0;
+        if (progress <= 0) {
+            if (reinitCurrentAnimation(false, isDragTowardPositive)) {
+                mDisplacementShift = displacement;
+            }
+        } else if (progress >= 1) {
+            if (reinitCurrentAnimation(true, isDragTowardPositive)) {
+                mDisplacementShift = displacement;
+            }
+        }
         return true;
     }
 

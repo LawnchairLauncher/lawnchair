@@ -44,10 +44,10 @@ import com.android.quickstep.util.SysuiEventLogger;
  */
 public class PortraitStatesTouchController extends AbstractStateChangeTouchController {
 
-    private static final float TOTAL_DISTANCE_MULTIPLIER = 2f;
+    private static final float TOTAL_DISTANCE_MULTIPLIER = 3f;
     private static final float LINEAR_SCALE_LIMIT = 1 / TOTAL_DISTANCE_MULTIPLIER;
 
-    // Much be greater than LINEAR_SCALE_LIMIT;
+    // Must be greater than LINEAR_SCALE_LIMIT;
     private static final float MAXIMUM_DISTANCE_FACTOR = 0.9f;
 
     // Maximum amount to overshoot.
@@ -129,29 +129,26 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
             mStartContainerType = ContainerType.HOTSEAT;
         } else if (mLauncher.isInState(OVERVIEW)) {
-            directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+            directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
             mStartContainerType = ContainerType.TASKSWITCHER;
         } else {
-            return 0;
-        }
-        mFromState = mLauncher.getStateManager().getState();
-        mToState = getTargetState();
-        if (mFromState == mToState) {
             return 0;
         }
         return directionsToDetectScroll;
     }
 
-    protected LauncherState getTargetState() {
-        if (mLauncher.isInState(ALL_APPS)) {
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        if (fromState == ALL_APPS) {
             // Should swipe down go to OVERVIEW instead?
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;
-        } else if (mLauncher.isInState(OVERVIEW)) {
-            return ALL_APPS;
-        } else {
+        } else if (fromState == OVERVIEW) {
+            return isDragTowardPositive ? ALL_APPS : NORMAL;
+        } else if (isDragTowardPositive) {
             return TouchInteractionService.isConnected() ? OVERVIEW : ALL_APPS;
         }
+        return fromState;
     }
 
     private AnimatorSetBuilder getNormalToOverviewAnimation() {

@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -43,16 +44,17 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     protected int getSwipeDirection(MotionEvent ev) {
         if (mLauncher.isInState(ALL_APPS)) {
             mStartContainerType = ContainerType.ALLAPPS;
-            mFromState = ALL_APPS;
-            mToState = NORMAL;
             return SwipeDetector.DIRECTION_NEGATIVE;
         } else {
-            mFromState = NORMAL;
-            mToState = ALL_APPS;
             mStartContainerType = mLauncher.getDragLayer().isEventOverHotseat(ev) ?
                     ContainerType.HOTSEAT : ContainerType.WORKSPACE;
             return SwipeDetector.DIRECTION_POSITIVE;
         }
+    }
+
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        return fromState == ALL_APPS ? NORMAL : ALL_APPS;
     }
 
     @Override
