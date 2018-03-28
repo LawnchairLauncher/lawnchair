@@ -26,7 +26,10 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Canvas;
@@ -124,6 +127,7 @@ public abstract class RecentsView<T extends BaseActivity>
 
     // Only valid until the launcher state changes to NORMAL
     private int mRunningTaskId = -1;
+    private Task mTmpRunningTask;
 
     private boolean mFirstTaskIconScaledDown = false;
 
@@ -472,6 +476,10 @@ public abstract class RecentsView<T extends BaseActivity>
             Task task = taskView.getTask();
             boolean visible = lower <= i && i <= upper;
             if (visible) {
+                if (task == mTmpRunningTask) {
+                    // Skip loading if this is the task that we are animating into
+                    continue;
+                }
                 if (!mHasVisibleTaskData.get(task.key.id)) {
                     loader.loadTaskData(task);
                     loader.getHighResThumbnailLoader().onTaskVisible(task);
@@ -530,24 +538,27 @@ public abstract class RecentsView<T extends BaseActivity>
      * Also scrolls the view to this task
      */
     public void showTask(int runningTaskId) {
-        boolean needsReload = false;
         if (getChildCount() == 0) {
-            needsReload = true;
-            // Add an empty view for now
+            // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = (TaskView) LayoutInflater.from(getContext())
                     .inflate(R.layout.task, this, false);
-            addView(taskView, 0);
+            addView(taskView);
+
+            // The temporary running task is only used for the duration between the start of the
+            // gesture and the task list is loaded and applied
+            mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(), 0, 0), null,
+                    null, "", "", 0, 0, false, true, false, false,
+                    new ActivityManager.TaskDescription(), 0, new ComponentName("", ""), false);
+            taskView.bind(mTmpRunningTask);
         }
+
         mRunningTaskId = runningTaskId;
         setCurrentPage(0);
-        if (!needsReload) {
-            needsReload = !mModel.isLoadPlanValid(mLoadPlanId);
-        }
-        if (needsReload) {
-            mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
-        } else {
-            loadVisibleTaskData();
-        }
+
+        // Load the tasks (if the loading is already
+        mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
+
+        // Hide the task that we are animating into
         getPageAt(mCurrentPage).setAlpha(0);
     }
 
