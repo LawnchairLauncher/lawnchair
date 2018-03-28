@@ -40,9 +40,15 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tidak ditemukan aplikasi yang cocok dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Telusuri aplikasi lainnya"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifikasi"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Tidak ada ruang lagi pada layar Utama ini."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tidak ada ruang tersisa di baki Favorit"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Daftar aplikasi"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Daftar aplikasi pribadi"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Daftar aplikasi kantor"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Layar Utama"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Hapus"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Uninstal"</string>
@@ -77,19 +83,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Wallpaper"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Setelan layar Utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dinonaktifkan oleh admin"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Ringkasan"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan layar Utama diputar"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Saat ponsel diputar"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Setelan Tampilan Saat Ini tidak memungkinkan putaran"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Titik notifikasi"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktif"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Nonaktif"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Perlu akses notifikasi"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Guna menampilkan Titik Notifikasi, aktifkan notifikasi aplikasi untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ubah setelan"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Tampilkan titik notifikasi"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke Layar utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk aplikasi baru"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Ubah bentuk ikon"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"di layar Utama"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Gunakan default sistem"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Persegi"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Persegi bundar"</string>
@@ -119,9 +123,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Buat folder dengan: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Folder dibuat"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Pindahkan ke layar Utama"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Pindahkan layar ke kiri"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Pindahkan layar ke kanan"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Layar dipindahkan"</string>
     <string name="action_resize" msgid="1802976324781771067">"Ubah ukuran"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Tambahi lebar"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Tambahi tinggi"</string>
@@ -137,8 +138,9 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kantor"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil kerja"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Temukan aplikasi kerja di sini"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Setiap aplikasi kerja memiliki badge dan dibuat tetap aman oleh organisasi. Pindahkan aplikasi ke Layar utama untuk memudahkan akses."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Dikelola oleh organisasi"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikasi dan aplikasi nonaktif"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tutup"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Ditutup"</string>
 </resources>

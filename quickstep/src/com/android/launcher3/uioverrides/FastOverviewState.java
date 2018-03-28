@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.views.RecentsView;
@@ -25,12 +26,10 @@ import com.android.quickstep.views.RecentsView;
 public class FastOverviewState extends OverviewState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_DISABLE_RESTORE
-            | FLAG_DISABLE_INTERACTION | FLAG_OVERVIEW_UI;
-
-    private static final boolean DEBUG_DIFFERENT_UI = false;
+            | FLAG_DISABLE_INTERACTION | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON;
 
     public FastOverviewState(int id) {
-        super(id, QuickScrubController.QUICK_SWITCH_START_DURATION, STATE_FLAGS);
+        super(id, QuickScrubController.QUICK_SCRUB_START_DURATION, STATE_FLAGS);
     }
 
     @Override
@@ -40,11 +39,18 @@ public class FastOverviewState extends OverviewState {
         recentsView.getQuickScrubController().onFinishedTransitionToQuickScrub();
     }
 
+    public void onStateEnabled(Launcher launcher) {
+        super.onStateEnabled(launcher);
+        AbstractFloatingView.closeAllOpenViews(launcher);
+    }
+
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
-        if (DEBUG_DIFFERENT_UI) {
-            return 0;
-        }
-        return super.getHoseatAlpha(launcher);
+    public int getVisibleElements(Launcher launcher) {
+        return NONE;
+    }
+
+    @Override
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {0f, 0.5f};
     }
 }

@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.AnimatorSet;
@@ -30,8 +31,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -40,6 +44,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.PendingAnimation;
 import com.android.quickstep.QuickScrubController;
@@ -62,7 +67,23 @@ import java.util.ArrayList;
 public abstract class RecentsView<T extends BaseActivity>
         extends PagedView implements OnSharedPreferenceChangeListener {
 
+    public static final FloatProperty<RecentsView> CONTENT_ALPHA =
+            new FloatProperty<RecentsView>("contentAlpha") {
+
+
+        @Override
+        public void setValue(RecentsView recentsView, float v) {
+            recentsView.setContentAlpha(v);
+        }
+
+        @Override
+        public Float get(RecentsView recentsView) {
+            return recentsView.mContentAlpha;
+        }
+    };
+
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
+    private static final int DISMISS_TASK_DURATION = 300;
 
     private static final Rect sTempStableInsets = new Rect();
 
@@ -103,6 +124,11 @@ public abstract class RecentsView<T extends BaseActivity>
     private Runnable mNextPageSwitchRunnable;
 
     private PendingAnimation mPendingAnimation;
+
+    private float mContentAlpha = 1;
+
+    // Keeps track of task views whose visual state should not be reset
+    private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -261,7 +287,10 @@ public abstract class RecentsView<T extends BaseActivity>
 
     public void resetTaskVisuals() {
         for (int i = getChildCount() - 1; i >= 0; i--) {
-            ((TaskView) getChildAt(i)).resetVisualProperties();
+            TaskView taskView = (TaskView) getChildAt(i);
+            if (!mIgnoreResetTaskViews.contains(taskView)) {
+                taskView.resetVisualProperties();
+            }
         }
 
         updateCurveProperties();
@@ -294,12 +323,10 @@ public abstract class RecentsView<T extends BaseActivity>
 
         float overviewHeight, overviewWidth;
         if (profile.isVerticalBarLayout()) {
-            float scrimLength = context.getResources()
-                    .getDimension(R.dimen.recents_page_fade_length);
             float maxPadding = Math.max(padding.left, padding.right);
 
             // Use the same padding on both sides for symmetry.
-            float availableWidth = taskWidth - 2 * Math.max(maxPadding, scrimLength);
+            float availableWidth = taskWidth - 2 * maxPadding;
             float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
                     - sTempStableInsets.top;
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
@@ -512,7 +539,16 @@ public abstract class RecentsView<T extends BaseActivity>
         public float linearInterpolation;
     }
 
-    public PendingAnimation createTaskDismissAnimation(TaskView taskView, long duration) {
+    public void addIgnoreResetTask(TaskView taskView) {
+        mIgnoreResetTaskViews.add(taskView);
+    }
+
+    public void removeIgnoreResetTask(TaskView taskView) {
+        mIgnoreResetTaskViews.remove(taskView);
+    }
+
+    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
+            boolean removeTask, long duration) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
@@ -543,9 +579,11 @@ public abstract class RecentsView<T extends BaseActivity>
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             if (child == taskView) {
-                addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-                addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
-                        duration, LINEAR, anim);
+                if (animateTaskView) {
+                    addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
+                    addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                            duration, LINEAR, anim);
+                }
             } else {
                 int scrollDiff = newScroll[i] - oldScroll[i] + maxScrollDiff;
                 if (scrollDiff != 0) {
@@ -563,12 +601,16 @@ public abstract class RecentsView<T extends BaseActivity>
         }
 
         // Add a tiny bit of translation Z, so that it draws on top of other views
-        taskView.setTranslationZ(0.1f);
+        if (animateTaskView) {
+            taskView.setTranslationZ(0.1f);
+        }
 
         mPendingAnimation = pendingAnimation;
         mPendingAnimation.addEndListener((isSuccess) -> {
            if (isSuccess) {
-               ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+               if (removeTask) {
+                   ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+               }
                removeView(taskView);
                if (getChildCount() == 0) {
                    onAllTasksRemoved();
@@ -584,5 +626,86 @@ public abstract class RecentsView<T extends BaseActivity>
             TimeInterpolator interpolator, AnimatorSet set) {
         anim.setDuration(duration).setInterpolator(interpolator);
         set.play(anim);
+    }
+
+    private void snapToPageRelative(int delta) {
+        snapToPage((getNextPage() + getPageCount() + delta) % getPageCount());
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+        if (isVisible && !isFocused()) {
+            // Having focus, even in touch mode, keeps us from losing [Alt+]Tab by preventing
+            // switching to keyboard mode.
+            requestFocus();
+        }
+    }
+
+    public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
+        PendingAnimation pendingAnim = createTaskDismissAnimation(taskView, animateTaskView,
+                removeTask, DISMISS_TASK_DURATION);
+        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
+                pendingAnim.anim, DISMISS_TASK_DURATION);
+        controller.dispatchOnStart();
+        controller.setEndAction(() -> pendingAnim.finish(true));
+        controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
+        controller.start();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_TAB:
+                    snapToPageRelative(event.isShiftPressed() ? -1 : 1);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    snapToPageRelative(mIsRtl ? -1 : 1);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    snapToPageRelative(mIsRtl ? 1 : -1);
+                    return true;
+                case KeyEvent.KEYCODE_DEL:
+                case KeyEvent.KEYCODE_FORWARD_DEL:
+                    dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
+                            true /*removeTask*/);
+                    return true;
+                case KeyEvent.KEYCODE_NUMPAD_DOT:
+                    if (event.isAltPressed()) {
+                        // Numpad DEL pressed while holding Alt.
+                        dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
+                                true /*removeTask*/);
+                        return true;
+                    }
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    public void snapToTaskAfterNext() {
+        snapToPageRelative(1);
+    }
+
+    public void launchNextTask() {
+        final TaskView nextTask = (TaskView) getChildAt(getNextPage());
+        nextTask.launchTask(true);
+    }
+
+    public void setContentAlpha(float alpha) {
+        if (mContentAlpha == alpha) {
+            return;
+        }
+        mContentAlpha = alpha;
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            getChildAt(i).setAlpha(alpha);
+        }
+        setVisibility(alpha > 0 ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        child.setAlpha(mContentAlpha);
     }
 }

@@ -25,7 +25,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -33,8 +32,9 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY
-            | FLAG_SHOW_SCRIM | FLAG_ALL_APPS_SCRIM;
+    private static final float PARALLAX_COEFFICIENT = .125f;
+
+    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY | FLAG_ALL_APPS_SCRIM;
 
     private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
         @Override
@@ -63,8 +63,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
-        return 0;
+    public int getVisibleElements(Launcher launcher) {
+        return ALL_APPS_HEADER | ALL_APPS_CONTENT;
     }
 
     @Override
@@ -75,8 +75,7 @@ public class AllAppsState extends LauncherState {
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new float[] { 1f, 0,
-                -launcher.getAllAppsController().getShiftRange()
-                        * AllAppsTransitionController.PARALLAX_COEFFICIENT};
+                -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT};
     }
 
     @Override

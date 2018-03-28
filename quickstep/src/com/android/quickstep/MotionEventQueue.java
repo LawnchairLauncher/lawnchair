@@ -19,9 +19,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_MASK;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -43,17 +41,17 @@ public class MotionEventQueue {
 
     private static final int ACTION_VIRTUAL = ACTION_MASK - 1;
 
-    private static final int ACTION_QUICK_SWITCH =
-            ACTION_VIRTUAL | (1 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_QUICK_SCRUB_START =
-            ACTION_VIRTUAL | (2 << ACTION_POINTER_INDEX_SHIFT);
+            ACTION_VIRTUAL | (1 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_QUICK_SCRUB_PROGRESS =
-            ACTION_VIRTUAL | (3 << ACTION_POINTER_INDEX_SHIFT);
+            ACTION_VIRTUAL | (2 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_QUICK_SCRUB_END =
-            ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
+            ACTION_VIRTUAL | (3 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_RESET =
-            ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
+            ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_DEFER_INIT =
+            ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_SHOW_OVERVIEW_FROM_ALT_TAB =
             ACTION_VIRTUAL | (6 << ACTION_POINTER_INDEX_SHIFT);
 
     private final EventArray mEmptyArray = new EventArray();
@@ -143,9 +141,6 @@ public class MotionEventQueue {
                 MotionEvent event = array.get(i);
                 if (event.getActionMasked() == ACTION_VIRTUAL) {
                     switch (event.getAction()) {
-                        case ACTION_QUICK_SWITCH:
-                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SWITCH);
-                            break;
                         case ACTION_QUICK_SCRUB_START:
                             mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
                             break;
@@ -160,6 +155,10 @@ public class MotionEventQueue {
                             break;
                         case ACTION_DEFER_INIT:
                             mConsumer.deferInit();
+                            break;
+                        case ACTION_SHOW_OVERVIEW_FROM_ALT_TAB:
+                            mConsumer.onShowOverviewFromAltTab();
+                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
                             break;
                         default:
                             Log.e(TAG, "Invalid virtual event: " + event.getAction());
@@ -189,12 +188,12 @@ public class MotionEventQueue {
         queueNoPreProcess(MotionEvent.obtain(0, 0, action, progress, 0, 0));
     }
 
-    public void onQuickSwitch() {
-        queueVirtualAction(ACTION_QUICK_SWITCH, 0);
-    }
-
     public void onQuickScrubStart() {
         queueVirtualAction(ACTION_QUICK_SCRUB_START, 0);
+    }
+
+    public void onOverviewShownFromAltTab() {
+        queueVirtualAction(ACTION_SHOW_OVERVIEW_FROM_ALT_TAB, 0);
     }
 
     public void onQuickScrubProgress(float progress) {

@@ -745,7 +745,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     private void updateNotificationHeader() {
         ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
-        BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
+        BadgeInfo badgeInfo = mLauncher.getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
             mNotificationItemView.updateHeader(
                     badgeInfo.getNotificationCount(), itemInfo.iconColor);

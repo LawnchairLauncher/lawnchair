@@ -28,7 +28,7 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
@@ -53,6 +53,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
      * In the resting position of the carousel, the adjacent pages have about half this scrim.
      */
     private static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
+
+    /**
+     * How much to scale down pages near the edge of the screen.
+     */
+    private static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
 
     private static final long SCALE_ICON_DURATION = 120;
 
@@ -91,6 +96,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         mTask = task;
         mSnapshotView.bind();
         task.addCallback(this);
+        setContentDescription(task.titleDescription);
     }
 
     public Task getTask() {
@@ -110,7 +116,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                opts = Launcher.getLauncher(getContext()).getActivityLaunchOptions(this, false);
+                opts = BaseDraggingActivity.fromContext(getContext())
+                        .getActivityLaunchOptions(this, false);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }
@@ -164,6 +171,16 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
 
         mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+
+        float scale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
+        setScaleX(scale);
+        setScaleY(scale);
+    }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
+        return false;
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {

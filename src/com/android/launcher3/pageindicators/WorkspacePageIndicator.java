@@ -155,8 +155,8 @@ public class WorkspacePageIndicator extends View
         int lineWidth = (int) (availableWidth / mNumPagesFloat);
         int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
-        canvas.drawRect(lineLeft, canvas.getHeight() - mLineHeight, lineRight, canvas.getHeight(),
-                mLinePaint);
+        canvas.drawRoundRect(lineLeft, canvas.getHeight() / 2 - mLineHeight / 2, lineRight,
+                canvas.getHeight() / 2 + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
     }
 
     @Override

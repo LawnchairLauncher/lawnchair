@@ -16,16 +16,20 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new AllAppsSwipeController(launcher)};
+        return new TouchController[] {
+                launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
@@ -44,4 +48,10 @@ public class UiFactory {
     public static void onStart(Launcher launcher) { }
 
     public static void onTrimMemory(Launcher launcher, int level) { }
+
+    public static View[] getHotseatExtraContent(Hotseat hotseat) {
+        return new View[] {
+            hotseat.findViewById(R.id.drag_indicator),
+        };
+    }
 }

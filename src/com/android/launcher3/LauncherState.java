@@ -40,6 +40,18 @@ import java.util.Arrays;
  */
 public class LauncherState {
 
+
+    /**
+     * Set of elements indicating various workspace elements which change visibility across states
+     * Note that workspace is not included here as in that case, we animate individual pages
+     */
+    public static final int NONE = 0;
+    public static final int HOTSEAT_ICONS = 1 << 0;
+    public static final int HOTSEAT_EXTRA = 1 << 1; // e.g. a search box
+    public static final int ALL_APPS_HEADER = 1 << 2;
+    public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
+    public static final int ALL_APPS_CONTENT = 1 << 4;
+
     protected static final int FLAG_SHOW_SCRIM = 1 << 0;
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 2;
@@ -50,7 +62,7 @@ public class LauncherState {
     protected static final int FLAG_ALL_APPS_SCRIM = 1 << 7;
     protected static final int FLAG_DISABLE_INTERACTION = 1 << 8;
     protected static final int FLAG_OVERVIEW_UI = 1 << 9;
-
+    protected static final int FLAG_HIDE_BACK_BUTTON = 1 << 10;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
             new PageAlphaProvider(ACCEL_2) {
@@ -66,15 +78,15 @@ public class LauncherState {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
+            0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON);
 
-    public static final LauncherState ALL_APPS = new AllAppsState(1);
-
-    public static final LauncherState SPRING_LOADED = new SpringLoadedState(2);
-
-    public static final LauncherState OVERVIEW = new OverviewState(3);
-
-    public static final LauncherState FAST_OVERVIEW = new FastOverviewState(4);
+    /**
+     * Various Launcher states arranged in the increasing order of UI layers
+     */
+    public static final LauncherState SPRING_LOADED = new SpringLoadedState(1);
+    public static final LauncherState OVERVIEW = new OverviewState(2);
+    public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
+    public static final LauncherState ALL_APPS = new AllAppsState(4);
 
     public final int ordinal;
 
@@ -131,6 +143,12 @@ public class LauncherState {
      */
     public final boolean overviewUi;
 
+    /**
+     * True if the back button should be hidden when in this state (assuming no floating views are
+     * open, launcher has window focus, etc).
+     */
+    public final boolean hideBackButton;
+
     public LauncherState(int id, int containerType, int transitionDuration, int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
@@ -148,6 +166,7 @@ public class LauncherState {
         this.disablePageClipping = (flags & FLAG_DISABLE_PAGE_CLIPPING) != 0;
         this.disableInteraction = (flags & FLAG_DISABLE_INTERACTION) != 0;
         this.overviewUi = (flags & FLAG_OVERVIEW_UI) != 0;
+        this.hideBackButton = (flags & FLAG_HIDE_BACK_BUTTON) != 0;
 
         this.ordinal = id;
         sAllStates[id] = this;
@@ -161,8 +180,13 @@ public class LauncherState {
         return new float[] {1, 0, 0};
     }
 
-    public float getHoseatAlpha(Launcher launcher) {
-        return 1f;
+    /**
+     * Returns 2 floats designating how much to translate overview:
+     *   X factor is based on width, e.g. 0 is fully onscreen and 1 is fully offscreen
+     *   Y factor is based on padding, e.g. 0 is top aligned and 0.5 is centered vertically
+     */
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {1f, 0f};
     }
 
     public void onStateEnabled(Launcher launcher) {
@@ -173,6 +197,13 @@ public class LauncherState {
 
     public View getFinalFocus(Launcher launcher) {
         return launcher.getWorkspace();
+    }
+
+    public int getVisibleElements(Launcher launcher) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            return HOTSEAT_ICONS;
+        }
+        return HOTSEAT_ICONS | HOTSEAT_EXTRA;
     }
 
     /**

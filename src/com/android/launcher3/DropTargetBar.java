@@ -16,10 +16,10 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.AlphaUpdateListener.updateVisibility;
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_LEFT;
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_RIGHT;
+import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.TimeInterpolator;

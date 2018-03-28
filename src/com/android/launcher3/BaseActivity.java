@@ -98,9 +98,12 @@ public abstract class BaseActivity extends Activity {
         mDPChangeListeners.add(listener);
     }
 
+    public void removeOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+        mDPChangeListeners.remove(listener);
+    }
+
     protected void dispatchDeviceProfileChanged() {
-        int count = mDPChangeListeners.size();
-        for (int i = 0; i < count; i++) {
+        for (int i = mDPChangeListeners.size() - 1; i >= 0; i--) {
             mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
         }
     }

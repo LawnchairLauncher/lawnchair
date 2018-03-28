@@ -31,21 +31,17 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
-import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -53,23 +49,19 @@ import com.android.launcher3.graphics.ViewScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
-public class DragLayer extends InsettableFrameLayout {
+public class DragLayer extends BaseDragLayer<Launcher> {
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
-    private final int[] mTmpXY = new int[2];
-
     @Thunk DragController mDragController;
-
-    private Launcher mLauncher;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
@@ -79,9 +71,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
-    private final Rect mHitRect = new Rect();
-
-    private TouchCompleteListener mTouchCompleteListener;
 
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
@@ -89,8 +78,6 @@ public class DragLayer extends InsettableFrameLayout {
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
-    protected TouchController[] mControllers;
-    private TouchController mActiveController;
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -107,10 +94,9 @@ public class DragLayer extends InsettableFrameLayout {
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
-    public void setup(Launcher launcher, DragController dragController) {
-        mLauncher = launcher;
+    public void setup(DragController dragController) {
         mDragController = dragController;
-        mControllers = UiFactory.createTouchControllers(mLauncher);
+        mControllers = UiFactory.createTouchControllers(mActivity);
     }
 
     public ViewGroupFocusHelper getFocusIndicatorHelper() {
@@ -123,7 +109,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public boolean isEventOverHotseat(MotionEvent ev) {
-        return isEventOverView(mLauncher.getHotseat(), ev);
+        return isEventOverView(mActivity.getHotseat(), ev);
     }
 
     private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
@@ -131,12 +117,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        return isEventOverView(mLauncher.getDropTargetBar(), ev);
-    }
-
-    public boolean isEventOverView(View view, MotionEvent ev) {
-        getDescendantRectRelativeToSelf(view, mHitRect);
-        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+        return isEventOverView(mActivity.getDropTargetBar(), ev);
     }
 
     @Override
@@ -149,66 +130,33 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            if (mTouchCompleteListener != null) {
-                mTouchCompleteListener.onTouchComplete();
-            }
-            mTouchCompleteListener = null;
-        } else if (action == MotionEvent.ACTION_DOWN) {
-            mLauncher.finishAutoCancelActionMode();
-        }
-        return findActiveController(ev);
-    }
-
-    private boolean findActiveController(MotionEvent ev) {
-        mActiveController = null;
-
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
-        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = topView;
-            return true;
-        }
-
-        if (mLauncher.getStateManager().getState().disableInteraction) {
+    protected boolean findActiveController(MotionEvent ev) {
+        if (mActivity.getStateManager().getState().disableInteraction) {
             // You Shall Not Pass!!!
+            mActiveController = null;
             return true;
         }
-
-        if (mDragController.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mDragController;
-            return true;
-        }
-
-        for (TouchController controller : mControllers) {
-            if (controller.onControllerInterceptTouchEvent(ev)) {
-                mActiveController = controller;
-                return true;
-            }
-        }
-        return false;
+        return super.findActiveController(ev);
     }
 
     @Override
     public boolean onInterceptHoverEvent(MotionEvent ev) {
-        if (mLauncher == null || mLauncher.getWorkspace() == null) {
+        if (mActivity == null || mActivity.getWorkspace() == null) {
             return false;
         }
-        Folder currentFolder = Folder.getOpen(mLauncher);
+        Folder currentFolder = Folder.getOpen(mActivity);
         if (currentFolder == null) {
             return false;
         } else {
-                AccessibilityManager accessibilityManager = (AccessibilityManager)
-                        getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            AccessibilityManager accessibilityManager = (AccessibilityManager)
+                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             if (accessibilityManager.isTouchExplorationEnabled()) {
                 final int action = ev.getAction();
                 boolean isOverFolderOrSearchBar;
                 switch (action) {
                     case MotionEvent.ACTION_HOVER_ENTER:
                         isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
                         if (!isOverFolderOrSearchBar) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -218,7 +166,7 @@ public class DragLayer extends InsettableFrameLayout {
                         break;
                     case MotionEvent.ACTION_HOVER_MOVE:
                         isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
                         if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -239,14 +187,22 @@ public class DragLayer extends InsettableFrameLayout {
                 this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 
+    @Override
+    public boolean onHoverEvent(MotionEvent ev) {
+        // If we've received this, we've already done the necessary handling
+        // in onInterceptHoverEvent. Return true to consume the event.
+        return false;
+    }
+
+
     private boolean isInAccessibleDrag() {
-        return mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+        return mActivity.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
+        View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
             if (child == topView) {
                 return super.onRequestSendAccessibilityEvent(child, event);
@@ -263,13 +219,13 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
+        View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
             childrenForAccessibility.add(topView);
 
             if (isInAccessibleDrag()) {
-                childrenForAccessibility.add(mLauncher.getDropTargetBar());
+                childrenForAccessibility.add(mActivity.getDropTargetBar());
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
@@ -277,103 +233,9 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public boolean onHoverEvent(MotionEvent ev) {
-        // If we've received this, we've already done the necessary handling
-        // in onInterceptHoverEvent. Return true to consume the event.
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            if (mTouchCompleteListener != null) {
-                mTouchCompleteListener.onTouchComplete();
-            }
-            mTouchCompleteListener = null;
-        }
-
-        if (mActiveController != null) {
-            return mActiveController.onControllerTouchEvent(ev);
-        } else {
-            // In case no child view handled the touch event, we may not get onIntercept anymore
-            return findActiveController(ev);
-        }
-    }
-
-    /**
-     * Determine the rect of the descendant in this DragLayer's coordinates
-     *
-     * @param descendant The descendant whose coordinates we want to find.
-     * @param r The rect into which to place the results.
-     * @return The factor by which this descendant is scaled relative to this DragLayer.
-     */
-    public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
-        mTmpXY[0] = 0;
-        mTmpXY[1] = 0;
-        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
-
-        r.set(mTmpXY[0], mTmpXY[1],
-                (int) (mTmpXY[0] + scale * descendant.getMeasuredWidth()),
-                (int) (mTmpXY[1] + scale * descendant.getMeasuredHeight()));
-        return scale;
-    }
-
-    public float getLocationInDragLayer(View child, int[] loc) {
-        loc[0] = 0;
-        loc[1] = 0;
-        return getDescendantCoordRelativeToSelf(child, loc);
-    }
-
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
-        return getDescendantCoordRelativeToSelf(descendant, coord, false);
-    }
-
-    /**
-     * Given a coordinate relative to the descendant, find the coordinate in this DragLayer's
-     * coordinates.
-     *
-     * @param descendant The descendant to which the passed coordinate is relative.
-     * @param coord The coordinate that we want mapped.
-     * @param includeRootScroll Whether or not to account for the scroll of the root descendant:
-     *          sometimes this is relevant as in a child's coordinates within the root descendant.
-     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
-     */
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
-            boolean includeRootScroll) {
-        return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
-                coord, includeRootScroll);
-    }
-
-    /**
-     * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
-     */
-    public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
-        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
-    }
-
-    public void getViewRectRelativeToSelf(View v, Rect r) {
-        int[] loc = new int[2];
-        getLocationInWindow(loc);
-        int x = loc[0];
-        int y = loc[1];
-
-        v.getLocationInWindow(loc);
-        int vX = loc[0];
-        int vY = loc[1];
-
-        int left = vX - x;
-        int top = vY - y;
-        r.set(left, top, left + v.getMeasuredWidth(), top + v.getMeasuredHeight());
-    }
-
-    @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        // Consume the unhandled move if a container is open, to avoid switching pages underneath.
-        boolean isContainerOpen = AbstractFloatingView.getTopOpenView(mLauncher) != null;
-        return isContainerOpen || mDragController.dispatchUnhandledMove(focused, direction);
+        return super.dispatchUnhandledMove(focused, direction)
+                || mDragController.dispatchUnhandledMove(focused, direction);
     }
 
     @Override
@@ -383,91 +245,6 @@ public class DragLayer extends InsettableFrameLayout {
             return super.dispatchTouchEvent(ev);
         } finally {
             ev.offsetLocation(-getTranslationX(), 0);
-        }
-    }
-
-    @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new LayoutParams(getContext(), attrs);
-    }
-
-    @Override
-    protected LayoutParams generateDefaultLayoutParams() {
-        return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-    }
-
-    // Override to allow type-checking of LayoutParams.
-    @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof LayoutParams;
-    }
-
-    @Override
-    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new LayoutParams(p);
-    }
-
-    public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
-        public int x, y;
-        public boolean customPosition = false;
-
-        public LayoutParams(Context c, AttributeSet attrs) {
-            super(c, attrs);
-        }
-
-        public LayoutParams(int width, int height) {
-            super(width, height);
-        }
-
-        public LayoutParams(ViewGroup.LayoutParams lp) {
-            super(lp);
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getY() {
-            return y;
-        }
-    }
-
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
-            if (flp instanceof LayoutParams) {
-                final LayoutParams lp = (LayoutParams) flp;
-                if (lp.customPosition) {
-                    child.layout(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height);
-                }
-            }
         }
     }
 
@@ -709,14 +486,14 @@ public class DragLayer extends InsettableFrameLayout {
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+        UiFactory.onLauncherStateOrFocusChanged(mActivity);
     }
 
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+        UiFactory.onLauncherStateOrFocusChanged(mActivity);
     }
 
     @Override
@@ -767,33 +544,5 @@ public class DragLayer extends InsettableFrameLayout {
         // Draw the background below children.
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
-    }
-
-    @Override
-    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
-        if (topView != null) {
-            return topView.requestFocus(direction, previouslyFocusedRect);
-        } else {
-            return super.onRequestFocusInDescendants(direction, previouslyFocusedRect);
-        }
-    }
-
-    @Override
-    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
-        if (topView != null) {
-            topView.addFocusables(views, direction);
-        } else {
-            super.addFocusables(views, direction, focusableMode);
-        }
-    }
-
-    public void setTouchCompleteListener(TouchCompleteListener listener) {
-        mTouchCompleteListener = listener;
-    }
-
-    public interface TouchCompleteListener {
-        void onTouchComplete();
     }
 }

@@ -40,9 +40,15 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશનો"</string>
+    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
+    <skip />
+    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"વ્યક્તિગત ઍપની સૂચિ"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"કાર્યસ્થળની ઍપની સૂચિ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"હોમ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"દૂર કરો"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"અનઇન્સ્ટોલ કરો"</string>
@@ -77,19 +83,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ્સ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"ઝલક"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"વર્તમાન પ્રદર્શન સેટિંગ ફેરવવાની પરવાનગી આપતી નથી"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"બંધ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"નોટિફિકેશનનો ઍક્સેસની જરૂરી છે"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"નોટિફિકેશન માટેનું ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"હોમ સ્ક્રીન પર"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"સિસ્ટમ ડિફૉલ્ટનો ઉપયોગ કરો"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ચોરસ"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ચોરસ જેવું ગોળ"</string>
@@ -119,9 +123,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"આની સાથે ફોલ્ડર બનાવો: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ફોલ્ડર બનાવ્યું"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"હોમ સ્ક્રીન પર ખસેડો"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"સ્ક્રીનને ડાબી બાજુ ખસેડો"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"સ્ક્રીનને જમણી બાજુ ખસેડો"</string>
-    <string name="screen_moved" msgid="266230079505650577">"સ્ક્રીન ખસેડી"</string>
     <string name="action_resize" msgid="1802976324781771067">"આકાર બદલો"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"પહોળાઈ વધારો"</string>
     <string name="action_increase_height" msgid="459390020612501122">"ઊંચાઈ વધારો"</string>
@@ -137,8 +138,11 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"કાર્યાલયની ઍપ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"કાર્યાલયની પ્રોફાઇલ"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"કાર્ય ઍપને અહીંથી મેળવો"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"દરેક કાર્ય ઍપ પાસે એક બૅજ હોય છે અને તમારી સંસ્થા દ્વારા તેને સુરક્ષિત રાખવામાં આવે છે. વધુ સરળ ઍક્સેસ માટે ઍપને તમારી હોમ સ્ક્રીન પર ખસેડો."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"તમારી સંસ્થા દ્વારા મેનેજ કરેલ"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"નોટિફિકેશન અને ઍપ બંધ છે"</string>
+    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
+    <skip />
+    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
+    <skip />
 </resources>

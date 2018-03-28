@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:alpha="0.0"
-    android:visibility="invisible" >
+    android:visibility="invisible"
+    android:focusableInTouchMode="true" >
 
 </com.android.quickstep.views.LauncherRecentsView>

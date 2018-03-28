@@ -39,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
+-keep class com.android.launcher3.views.BaseDragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);

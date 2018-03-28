@@ -29,21 +29,14 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface TouchConsumer extends Consumer<MotionEvent> {
 
-    static boolean isInteractionQuick(@InteractionType int interactionType) {
-        return interactionType == INTERACTION_QUICK_SCRUB ||
-                interactionType == INTERACTION_QUICK_SWITCH;
-    }
-
     @IntDef(flag = true, value = {
             INTERACTION_NORMAL,
-            INTERACTION_QUICK_SWITCH,
             INTERACTION_QUICK_SCRUB
     })
     @Retention(RetentionPolicy.SOURCE)
     @interface InteractionType {}
     int INTERACTION_NORMAL = 0;
-    int INTERACTION_QUICK_SWITCH = 1;
-    int INTERACTION_QUICK_SCRUB = 2;
+    int INTERACTION_QUICK_SCRUB = 1;
 
     default void reset() { }
 
@@ -72,4 +65,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     default boolean forceToLauncherConsumer() {
         return false;
     }
+
+    default void onShowOverviewFromAltTab() {}
 }

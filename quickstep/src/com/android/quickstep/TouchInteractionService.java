@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -47,7 +48,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -61,7 +61,7 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
-    public static final boolean DEBUG_SHOW_OVERVIEW_BUTTON = false;
+    public static final boolean DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB = false;
 
     private static final SparseArray<String> sMotionEventNames;
 
@@ -86,7 +86,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onPreMotionEvent(@HitTarget int downHitTarget) throws RemoteException {
             TraceHelper.beginSection("SysUiBinder");
-            onBinderPreMotionEvent(downHitTarget);
+            setupTouchConsumer(downHitTarget);
             TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
         }
 
@@ -106,15 +106,7 @@ public class TouchInteractionService extends Service {
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
             RemoteRunnable.executeSafely(() -> mISystemUiProxy.setRecentsOnboardingText(
                     getResources().getString(R.string.recents_swipe_up_onboarding)));
-            Launcher launcher = (Launcher) LauncherAppState.getInstance(
-                    TouchInteractionService.this).getModel().getCallback();
-            UiFactory.onLauncherStateOrFocusChanged(launcher);
-        }
-
-        @Override
-        public void onQuickSwitch() {
-            mEventQueue.onQuickSwitch();
-            TraceHelper.endSection("SysUiBinder", "onQuickSwitch");
+            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
         }
 
         @Override
@@ -140,10 +132,29 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onOverviewShown(boolean triggeredFromAltTab) { }
+        public void onOverviewShown(boolean triggeredFromAltTab) {
+            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
+                if (triggeredFromAltTab) {
+                    setupTouchConsumer(HIT_TARGET_NONE);
+                    mEventQueue.onOverviewShownFromAltTab();
+                }
+            }
+        }
 
         @Override
-        public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) { }
+        public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
+            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
+                if (triggeredFromAltTab && !triggeredFromHomeKey) {
+                    // onOverviewShownFromAltTab initiates quick scrub. Ending it here.
+                    mEventQueue.onQuickScrubEnd();
+                }
+            }
+        }
+
+        @Override
+        public void onQuickStep(MotionEvent motionEvent) {
+
+        }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
@@ -160,6 +171,7 @@ public class TouchInteractionService extends Service {
     private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
+    private OverviewInteractionState mOverviewInteractionState;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -173,6 +185,7 @@ public class TouchInteractionService extends Service {
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
+        mOverviewInteractionState = OverviewInteractionState.getInstance(this);
 
         sConnected = true;
 
@@ -193,7 +206,7 @@ public class TouchInteractionService extends Service {
         return mMyBinder;
     }
 
-    private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
+    private void setupTouchConsumer(@HitTarget int downHitTarget) {
         mEventQueue.reset();
         TouchConsumer oldConsumer = mEventQueue.getConsumer();
         if (oldConsumer.deferNextEventToMainThread()) {
@@ -221,7 +234,8 @@ public class TouchInteractionService extends Service {
                 tracker = VelocityTracker.obtain();
             }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                            mOverviewCommandHelper.homeIntent, mISystemUiProxy, mMainThreadExecutor,
+                            mOverviewCommandHelper.homeIntent,
+                            mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, tracker);
         }
     }
@@ -314,14 +328,10 @@ public class TouchInteractionService extends Service {
             if (mInvalidated) {
                 return;
             }
-            if (TouchConsumer.isInteractionQuick(interactionType)) {
+            if (interactionType == INTERACTION_QUICK_SCRUB) {
                 Runnable action = () -> {
-                    Runnable onComplete = null;
-                    if (interactionType == INTERACTION_QUICK_SWITCH) {
-                        onComplete = mQuickScrubController::onQuickSwitch;
-                    }
                     LauncherState fromState = mLauncher.getStateManager().getState();
-                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true, onComplete);
+                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true);
                     mQuickScrubController.onQuickScrubStart(fromState == NORMAL);
                 };
 
