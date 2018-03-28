@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import ch.deletescape.lawnchair.DumbImportExportTask
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 
@@ -107,7 +108,10 @@ class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
 
     override fun openRestore(position: Int) {
         startActivity(Intent(this, RestoreBackupActivity::class.java).apply {
-            putExtra(RestoreBackupActivity.EXTRA_URI, adapter[position].uri.toString())
+            if (adapter[position].uri != null)
+                putExtra(RestoreBackupActivity.EXTRA_URI, adapter[position].uri.toString())
+            else
+                putExtra(RestoreBackupActivity.EXTRA_URI, null as String?)
         })
     }
 
@@ -145,7 +149,7 @@ class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                adapter.addItem(LawnchairBackup(this, resultData.data))
+                adapter.addItem(LawnchairBackup.fromUri(this, resultData.data))
                 saveChanges()
             }
         } else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {

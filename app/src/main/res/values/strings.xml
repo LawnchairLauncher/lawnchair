@@ -541,4 +541,5 @@
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Miscellaneous</string>
     <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resoultion could possibly fix this.</string>
+    <string name="legacy_backup">Legacy backup file</string>
 </resources>

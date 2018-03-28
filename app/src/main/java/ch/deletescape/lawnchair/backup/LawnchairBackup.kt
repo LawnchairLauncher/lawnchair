@@ -11,9 +11,7 @@ import android.os.AsyncTask
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
-import ch.deletescape.lawnchair.BuildConfig
-import ch.deletescape.lawnchair.LauncherFiles
-import ch.deletescape.lawnchair.Utilities
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.preferences.blockingEdit
 import org.json.JSONArray
 import java.io.*
@@ -24,11 +22,11 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import java.nio.charset.StandardCharsets
 
-class LawnchairBackup(val context: Context, val uri: Uri) {
+open class LawnchairBackup(val context: Context, val uri: Uri?) {
 
     val meta by lazy { readMeta() }
 
-    private fun readMeta(): Meta? {
+    protected open fun readMeta(): Meta? {
         try {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
             val inStream = FileInputStream(pfd.fileDescriptor)
@@ -57,7 +55,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         }
     }
 
-    fun restore(contents: Int): Boolean {
+    open fun restore(contents: Int): Boolean {
         try {
             val contextWrapper = ContextWrapper(context)
             val dbFile = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB)
@@ -111,6 +109,45 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         } catch (t: Throwable) {
             Log.e(TAG, "Failed to restore $uri", t)
             return false
+        }
+    }
+
+    class LegacyBackup(context: Context) : LawnchairBackup(context, null) {
+
+        override fun readMeta(): Meta? {
+            var contents = 0
+            if (DumbImportExportTask.getDbBackupFile().exists()) {
+                contents = contents or LawnchairBackup.INCLUDE_HOMESCREEN
+            }
+            if (DumbImportExportTask.getSettingsBackupFile().exists()) {
+                contents = contents or LawnchairBackup.INCLUDE_SETTINGS
+            }
+            return Meta(context.getString(R.string.legacy_backup), contents, getTimestamp())
+        }
+
+        override fun restore(contents: Int): Boolean {
+            if (contents or LawnchairBackup.INCLUDE_HOMESCREEN != 0) {
+                val file = context.getDatabasePath(LauncherFiles.LAUNCHER_DB)
+                val backup = DumbImportExportTask.getDbBackupFile()
+                if (!restoreFile(backup, file)) return false
+            }
+            if (contents or LawnchairBackup.INCLUDE_SETTINGS != 0) {
+                val dir = context.cacheDir.parent
+                val file = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+                val backup = DumbImportExportTask.getSettingsBackupFile()
+                if (!restoreFile(backup, file)) return false
+            }
+            return true
+        }
+
+        private fun restoreFile(backup: File, file: File): Boolean {
+            if (backup.exists()) {
+                if (file.exists()) {
+                    file.delete()
+                }
+                return DumbImportExportTask.copy(backup, file)
+            }
+            return true
         }
     }
 
@@ -199,11 +236,17 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         }
 
         fun listLocalBackups(context: Context): List<LawnchairBackup> {
-            return getFolder().listFiles { file -> file.extension == EXTENSION }
+            val backupList = getFolder().listFiles { file -> file.extension == EXTENSION }
                     ?.sortedByDescending { it.lastModified() }
                     ?.map { FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", it) }
-                    ?.map { LawnchairBackup(context, it) }
+                    ?.map { LawnchairBackup.fromUri(context, it) }
                     ?: Collections.emptyList()
+            val legacyBackup = LawnchairBackup.fromUri(context, null)
+            return if (legacyBackup.meta!!.contents != 0) {
+                listOf(legacyBackup) + backupList
+            } else {
+                backupList
+            }
         }
 
         private fun prepareConfig(context: Context) {
@@ -282,6 +325,22 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         private fun getTimestamp(): String {
             val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US)
             return simpleDateFormat.format(Date())
+        }
+
+        fun fromUriString(context: Context, uri: String?): LawnchairBackup {
+            return if (uri == null) {
+                LegacyBackup(context)
+            } else {
+                LawnchairBackup(context, Uri.parse(uri))
+            }
+        }
+
+        fun fromUri(context: Context, uri: Uri?): LawnchairBackup {
+            return if (uri == null) {
+                LegacyBackup(context)
+            } else {
+                LawnchairBackup(context, uri)
+            }
         }
     }
 }
