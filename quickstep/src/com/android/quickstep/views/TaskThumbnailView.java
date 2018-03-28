@@ -139,6 +139,7 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
+        boolean rotate = false;
         if (mBitmapShader != null && mThumbnailData != null) {
             float scale = mThumbnailData.scale;
             float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
@@ -146,8 +147,6 @@ public class TaskThumbnailView extends View {
             float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
                     (mThumbnailData.insets.top + mThumbnailData.insets.bottom) * scale;
             final float thumbnailScale;
-
-            boolean rotate = false;
             final DeviceProfile profile = BaseActivity.fromContext(getContext())
                     .getDeviceProfile();
             if (getMeasuredWidth() == 0) {
@@ -226,7 +225,12 @@ public class TaskThumbnailView extends View {
             mPaint.setShader(shader);
         }
 
-        mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
+        if (rotate) {
+            // The overlay doesn't really work when the screenshot is rotated, so don't add it.
+            mOverlay.reset();
+        } else {
+            mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
+        }
         invalidate();
     }
 
