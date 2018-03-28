@@ -22,7 +22,6 @@ import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
@@ -147,7 +146,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
     private static final int REQUEST_PICK_APPWIDGET = 9;
-    private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     public static final int REQUEST_BIND_PENDING_APPWIDGET = 12;
@@ -571,14 +569,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                         appWidgetId, requestArgs, null,
                         requestArgs.getWidgetHandler(),
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY);
-            }
-            return;
-        } else if (requestCode == REQUEST_PICK_WALLPAPER) {
-            if (resultCode == RESULT_OK && isInState(OVERVIEW)) {
-                // User could have free-scrolled between pages before picking a wallpaper; make sure
-                // we move to the closest one now.
-                mWorkspace.setCurrentPage(mWorkspace.getPageNearestToCenterOfScreen());
-                mStateManager.goToState(NORMAL, false);
             }
             return;
         }
@@ -1663,35 +1653,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
             Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
             return;
         }
-
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
 
         String pickerPackage = getString(R.string.wallpaper_picker_package);
-        boolean hasTargetPackage = !TextUtils.isEmpty(pickerPackage);
-        if (hasTargetPackage) {
+        if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
-        }
-
-        final Bundle launchOptions;
-        if (v != null) {
-            intent.setSourceBounds(getViewBounds(v));
-            // If there is no target package, use the default intent chooser animation
-            launchOptions = hasTargetPackage
-                    ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
-                    : null;
         } else {
-            launchOptions = null;
+            // If there is no target package, use the default intent chooser animation
+            intent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
         }
-        try {
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, launchOptions);
-        } catch (ActivityNotFoundException e) {
-            setWaitingForResult(null);
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        }
+        startActivitySafely(v, intent, null);
     }
 
     @TargetApi(Build.VERSION_CODES.M)

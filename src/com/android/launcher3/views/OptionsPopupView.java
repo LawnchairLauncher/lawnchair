@@ -107,7 +107,7 @@ public class OptionsPopupView extends AbstractFloatingView
 
     private boolean handleViewClick(View view, int action) {
         if (view.getId() == R.id.wallpaper_button) {
-            mLauncher.onClickWallpaperPicker(null);
+            mLauncher.onClickWallpaperPicker(view);
             logTap(action, ControlType.WALLPAPER_BUTTON);
             close(true);
             return true;
