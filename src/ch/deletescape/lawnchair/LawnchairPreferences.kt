@@ -220,46 +220,46 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
             PrefDelegate<String>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): String = sharedPrefs.getString(getKey(property), defaultValue)
+        override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
-            edit { putString(getKey(property), value) }
+        override fun onSetValue(value: String) {
+            edit { putString(getKey(), value) }
         }
     }
 
-    open inner class StringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Set<String>?>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Set<String>? = sharedPrefs.getStringSet(getKey(property), defaultValue)
+    open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Set<String>>(key, defaultValue, onChange) {
+        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Set<String>?) {
-            edit { putStringSet(getKey(property), value) }
+        override fun onSetValue(value: Set<String>) {
+            edit { putStringSet(getKey(), value) }
         }
     }
 
     open inner class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
             PrefDelegate<Int>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Int = sharedPrefs.getInt(getKey(property), defaultValue)
+        override fun onGetValue(): Int = sharedPrefs.getInt(getKey(), defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-            edit { putInt(getKey(property), value) }
+        override fun onSetValue(value: Int) {
+            edit { putInt(getKey(), value) }
         }
     }
 
     open inner class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
             PrefDelegate<Float>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Float = sharedPrefs.getFloat(getKey(property), defaultValue)
+        override fun onGetValue(): Float = sharedPrefs.getFloat(getKey(), defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
-            edit { putFloat(getKey(property), value) }
+        override fun onSetValue(value: Float) {
+            edit { putFloat(getKey(), value) }
         }
     }
 
     open inner class BooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
             PrefDelegate<Boolean>(key, defaultValue, onChange) {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean = sharedPrefs.getBoolean(getKey(property), defaultValue)
+        override fun onGetValue(): Boolean = sharedPrefs.getBoolean(getKey(), defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
-            edit { putBoolean(getKey(property), value) }
+        override fun onSetValue(value: Boolean) {
+            edit { putBoolean(getKey(), value) }
         }
     }
 
@@ -268,50 +268,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // ----------------
 
     fun getPrefKey(key: String) = "pref_$key"
-
-    private fun setBoolean(pref: String, value: Boolean, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putBoolean(pref, value), commit)
-    }
-
-    private fun getBoolean(pref: String, default: Boolean): Boolean {
-        return sharedPrefs.getBoolean(pref, default)
-    }
-
-    private fun setString(pref: String, value: String, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putString(pref, value), commit)
-    }
-
-    private fun getString(pref: String, default: String): String {
-        return sharedPrefs.getString(pref, default)
-    }
-
-    private fun setInt(pref: String, value: Int, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putInt(pref, value), commit)
-    }
-
-    private fun getInt(pref: String, default: Int): Int {
-        return sharedPrefs.getInt(pref, default)
-    }
-
-    private fun setFloat(pref: String, value: Float, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putFloat(pref, value), commit)
-    }
-
-    private fun getFloat(pref: String, default: Float): Float {
-        return sharedPrefs.getFloat(pref, default)
-    }
-
-    private fun setLong(pref: String, value: Long, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putLong(pref, value), commit)
-    }
-
-    private fun getLong(pref: String, default: Long): Long {
-        return sharedPrefs.getLong(pref, default)
-    }
-
-    private fun remove(pref: String, commit: Boolean) {
-        return commitOrApply(sharedPrefs.edit().remove(pref), commit)
-    }
 
     fun commitOrApply(editor: SharedPreferences.Editor, commit: Boolean) {
         if (commit) {
@@ -357,17 +313,31 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         endBulkEdit()
     }
 
-    abstract inner class PrefDelegate<T>(val key: String, val defaultValue: T, onChange: () -> Unit) {
+    abstract inner class PrefDelegate<T : Any>(val key: String, val defaultValue: T, private val onChange: () -> Unit) {
+
+        private var cached = false
+        private lateinit var value: T
 
         init {
-            if (onChange !== doNothing) {
-                onChangeMap[key] = onChange
-            }
+            onChangeMap[key] = { onValueChanged() }
         }
 
-        abstract operator fun getValue(thisRef: Any?, property: KProperty<*>): T
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            if (!cached) {
+                value = onGetValue()
+                cached = true
+            }
+            return value
+        }
 
-        abstract operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            cached = false
+            onSetValue(value)
+        }
+
+        abstract fun onGetValue(): T
+
+        abstract fun onSetValue(value: T)
 
         protected inline fun edit(body: SharedPreferences.Editor.() -> Unit) {
             @SuppressLint("CommitPrefEdits")
@@ -377,8 +347,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 commitOrApply(editor, blockingEditing)
         }
 
-        @Suppress("USELESS_ELVIS")
-        internal fun getKey(property: KProperty<*>) = key ?: getPrefKey(property.name)
+        internal fun getKey() = key
+
+        private fun onValueChanged() {
+            cached = false
+            onChange.invoke()
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
