@@ -296,6 +296,8 @@
   <string name="debug_pref_summary">Käynnistä tai rakenna uudelleen kuvaketietokanta</string>
   <string name="show_pixel_bar_pref_title">Näytä Pixel yläpalkki</string>
   <string name="use_wide_searchbar_pref_title">Käytä leveää hakupalkkia</string>
+  <string name="show_search_pill_title">Näytä Google Haku pallukka</string>
+  <string name="show_date_or_weather_title">Näytä päivämäärä/sää oikealla puolella</string>
   <string name="show_mic_pref_title">Näytä Google Assistant-painike</string>
   <string name="use_round_searhbar">Käytä pyöristettyä sovellushakupalkkia</string>
   <string name="pixel_style_icons_pref_title">Käytä Pixel-kuvakkeita</string>
@@ -327,6 +329,7 @@
   <string name="default_text">Oletus</string>
   <string name="edit_icon_reset">Nollaa</string>
   <string name="show_top_shadow_title">Näytä ylävarjo</string>
+  <string name="pref_category_homescreen">Aloitusnäyttö</string>
   <string name="theme_pref_title">Teema</string>
   <string name="theme_light">Vaalea</string>
   <string name="theme_dark">Tumma</string>
@@ -339,6 +342,7 @@
   <string name="pull_down_search">Avaa haku</string>
   <string name="pull_down_apps_search">Sovellushaku</string>
   <string name="enable_screen_rotation">Salli näytön kiertäminen</string>
+  <string name="use_system_fonts_title">Käytä järjestelmän fontteja nimikkeille</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Tuo</string>
   <string name="backup_export_title">Vie</string>
@@ -418,9 +422,45 @@
   <string name="reset_alternative_icons">Sinulla on %1$d sovellusta, joilla on vaihtoehtoiset kuvakkeet. Haluatko nollata ne?</string>
   <string name="error_no_browser">Ei löydetty toimintaa URL:ien käsittelemiseen</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed ei ole käytössä</string>
   <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
   <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
   <string name="title_storage_permission_required">Tallennustilan käyttöoikeus vaaditaan</string>
+  <string name="disable_popup">Älä Näytä uudelleen</string>
+  <string name="backups">Varmuuskopiot</string>
+  <string name="new_backup">Luo</string>
+  <string name="restore_backup">Palauta</string>
+  <string name="backup_name">Nimi</string>
+  <string name="backup_location">Sijainti</string>
+  <string name="choose_backup_path">Selaa</string>
+  <string name="backup_homescreen">Kotinäyttö</string>
+  <string name="backup_contents">Varmuuskopion sisältö</string>
+  <string name="backup_settings">Asetukset</string>
+  <string name="backup_wallpaper">Taustakuva</string>
+  <string name="backup_error_blank_name">Nimi ei saa olla tyhjä</string>
+  <string name="backup_error_blank_location">Sijainti ei saa olla tyhjä</string>
+  <string name="backup_error_blank_contents">Sisältö ei saa olla tyhjä</string>
+  <string name="backup_creating">Luodaan varmuuskopio</string>
+  <string name="no_recent_backups">Ei viimeaikaisia varmuuskopioita</string>
+  <string name="backup_loading">Ladataan...</string>
+  <string name="backup_invalid">Ei saatavilla</string>
+  <string name="backup_remove_from_recents">Poista luettelosta</string>
+  <string name="backup_share">Jaa</string>
+  <string name="backup_timestamp">Luontiaika</string>
+  <string name="backup_restoring">Palautetaan varmuuskopiota</string>
+  <string name="backup_restarting">Käynnistetään uudelleen</string>
+  <string name="restore_contents">Palauta sisältö</string>
+  <string name="restore_success">Palautus onnistui</string>
+  <string name="backup_failed">Varmuuskopiointi epäonnistui</string>
+  <string name="restore_failed">Palautus epäonnistui</string>
+  <string name="restore_read_meta_fail">Virheellinen varmuuskopiotiedosto</string>
+  <string name="backup_share_title">Jaa varmuuskopio</string>
+  <string name="backup_share_text">Lawnchair varmuuskopiotiedosto</string>
+  <string name="read_external_storage_required">Oikeudet tallennustilan käyttöön tarvitaan varmuuskopion luomiseksi</string>
+  <string name="local_backups">Paikalliset varmuuskopiot</string>
+  <string name="backup_location_device_storage">Laitteen tallennustila</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel hakupalkki</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Sekalaiset</string>
 </resources>
