@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
@@ -55,13 +56,12 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.shortcuts.DeepShortcutTextView;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -104,9 +104,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private final float mContentTransY;
     private final float mWorkspaceTransY;
-    private final float mRecentsTransX;
-    private final float mRecentsTransY;
-    private final float mRecentsScale;
 
     private DeviceProfile mDeviceProfile;
     private View mFloatingView;
@@ -129,9 +126,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
-        mRecentsTransX = res.getDimensionPixelSize(R.dimen.recents_adjacent_trans_x);
-        mRecentsTransY = res.getDimensionPixelSize(R.dimen.recents_adjacent_trans_y);
-        mRecentsScale = res.getFraction(R.fraction.recents_adjacent_scale, 1, 1);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
         registerRemoteAnimations();
@@ -296,15 +290,22 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         int centerTaskIndex = recentsView.getCurrentPage();
         boolean launchingCenterTask = launchedTaskIndex == centerTaskIndex;
         boolean isRtl = recentsView.isRtl();
+
+        RecentsAnimationInterpolator recentsInterpolator = getRecentsInterpolator(v);
+        TaskWindowBounds endInterpolation = recentsInterpolator.interpolate(1);
+        float toScale = endInterpolation.taskScale;
+        float toTranslationY = endInterpolation.taskY;
+        float displacementX = v.getWidth() * (toScale - v.getScaleX());
         if (launchingCenterTask) {
+
             if (launchedTaskIndex - 1 >= 0) {
                 TaskView adjacentPage1 = (TaskView) recentsView.getPageAt(launchedTaskIndex - 1);
                 ObjectAnimator adjacentTask1ScaleAndTranslate =
                         LauncherAnimUtils.ofPropertyValuesHolder(adjacentPage1,
                                 new PropertyListBuilder()
-                                        .scale(adjacentPage1.getScaleX() * mRecentsScale)
-                                        .translationY(mRecentsTransY)
-                                        .translationX(isRtl ? mRecentsTransX : -mRecentsTransX)
+                                        .scale(adjacentPage1.getScaleX() * toScale)
+                                        .translationY(toTranslationY)
+                                        .translationX(isRtl ? displacementX : -displacementX)
                                         .build());
                 launcherAnimator.play(adjacentTask1ScaleAndTranslate);
             }
@@ -313,20 +314,19 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 ObjectAnimator adjacentTask2ScaleAndTranslate =
                         LauncherAnimUtils.ofPropertyValuesHolder(adjacentTask2,
                                 new PropertyListBuilder()
-                                        .scale(adjacentTask2.getScaleX() * mRecentsScale)
-                                        .translationY(mRecentsTransY)
-                                        .translationX(isRtl ? -mRecentsTransX : mRecentsTransX)
+                                        .scale(adjacentTask2.getScaleX() * toScale)
+                                        .translationY(toTranslationY)
+                                        .translationX(isRtl ? -displacementX : displacementX)
                                         .build());
                 launcherAnimator.play(adjacentTask2ScaleAndTranslate);
             }
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
             TaskView centerTask = (TaskView) recentsView.getPageAt(centerTaskIndex);
-            float translationX = mRecentsTransX / 2;
             ObjectAnimator centerTaskParallaxOffscreen =
                     LauncherAnimUtils.ofPropertyValuesHolder(centerTask,
                             new PropertyListBuilder()
-                                    .translationX(isRtl ? -translationX : translationX)
+                                    .translationX(isRtl ? -displacementX : displacementX)
                                     .build());
             launcherAnimator.play(centerTaskParallaxOffscreen);
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - launchedTaskIndex);
@@ -337,14 +337,22 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 ObjectAnimator otherAdjacentTaskParallaxOffscreen =
                         LauncherAnimUtils.ofPropertyValuesHolder(otherAdjacentTask,
                                 new PropertyListBuilder()
-                                        .translationX(isRtl ? -translationX : translationX)
+                                        .translationX(isRtl ? -displacementX : displacementX)
+                                        .scale(1)
                                         .build());
                 launcherAnimator.play(otherAdjacentTaskParallaxOffscreen);
             }
         }
 
+        float allAppsProgressOffscreen = ALL_APPS_PROGRESS_OFF_SCREEN;
+        LauncherState state = mLauncher.getStateManager().getState();
+        if ((state.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) != 0) {
+            float maxShiftRange = mDeviceProfile.heightPx;
+            float currShiftRange = mLauncher.getAllAppsController().getShiftRange();
+            allAppsProgressOffscreen = 1f + (maxShiftRange - currShiftRange) / maxShiftRange;
+        }
         Animator allAppsSlideOut = ObjectAnimator.ofFloat(mLauncher.getAllAppsController(),
-                ALL_APPS_PROGRESS, ALL_APPS_PROGRESS_OFF_SCREEN);
+                ALL_APPS_PROGRESS, allAppsProgressOffscreen);
         launcherAnimator.play(allAppsSlideOut);
 
         Workspace workspace = mLauncher.getWorkspace();
@@ -364,24 +372,28 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         return launcherAnimator;
     }
 
-    /**
-     * @return Animator that controls the window of the opening targets for the recents launch
-     * animation.
-     */
-    private ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipLauncherChanges,
-            RemoteAnimationTargetCompat[] targets) {
+    private RecentsAnimationInterpolator getRecentsInterpolator(TaskView v) {
         Rect taskViewBounds = new Rect();
         mDragLayer.getDescendantRectRelativeToSelf(v, taskViewBounds);
 
         // TODO: Use the actual target insets instead of the current thumbnail insets in case the
         // device state has changed
-        RecentsAnimationInterpolator recentsInterpolator = new RecentsAnimationInterpolator(
+        return new RecentsAnimationInterpolator(
                 new Rect(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx),
                 v.getThumbnail().getInsets(),
                 taskViewBounds,
                 new Rect(0, v.getThumbnail().getTop(), 0, 0),
                 v.getScaleX(),
                 v.getTranslationX());
+    }
+
+    /**
+     * @return Animator that controls the window of the opening targets for the recents launch
+     * animation.
+     */
+    private ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipLauncherChanges,
+            RemoteAnimationTargetCompat[] targets) {
+        final RecentsAnimationInterpolator recentsInterpolator = getRecentsInterpolator(v);
 
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
