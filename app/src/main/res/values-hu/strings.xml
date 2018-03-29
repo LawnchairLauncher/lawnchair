@@ -418,8 +418,10 @@
   <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
   <string name="error_no_browser">Nem található URL-eket kezelni képes alkalmazás</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled">Úgy tűnik, a Google Now oldalat próbálja megnyitni, de még nem engedélyezte az opciót a viselkedési beállításokban.\n\nEngedélyezi most?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed-frissítés szükséges</string>
   <string name="lawnfeed_outdated">A Lawnfeed egy újabb verziója szükséges a Lawnchair ezen verziójával való működéshez.\n\nA frissítés telepítése előtt valószínűleg el kell távolítania a Lawnfeed jelenlegi verzióját.\n\nLetölti most?</string>
+  <string name="disable_popup">Ne jelenjen meg többször</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
 </resources>
