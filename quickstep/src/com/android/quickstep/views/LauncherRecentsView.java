@@ -26,7 +26,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -92,11 +91,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         mInsets.set(insets);
         DeviceProfile dp = mActivity.getDeviceProfile();
         Rect padding = getPadding(dp, getContext());
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.bottomMargin = padding.bottom;
-        setLayoutParams(lp);
-
-        setPadding(padding.left, padding.top, padding.right, 0);
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mPagePadding.set(padding);
         mPagePadding.top += getResources().getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
     }

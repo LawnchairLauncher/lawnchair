@@ -1684,6 +1684,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                 : mAppTransitionManager.getActivityLaunchOptions(this, v);
     }
 
+    public LauncherAppTransitionManager getAppTransitionManager() {
+        return mAppTransitionManager;
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {

@@ -206,7 +206,6 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
                 anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
             }
         }
-
     }
 
     private class OnAnimationEndDispatcher extends AnimationSuccessListener {
