@@ -300,6 +300,8 @@
   <string name="debug_pref_summary">Mulai ulang atau membangun kembali database ikon</string>
   <string name="show_pixel_bar_pref_title">Tampilkan bilah atas Pixel</string>
   <string name="use_wide_searchbar_pref_title">Gunakan bilah pencarian lebar</string>
+  <string name="show_search_pill_title">Tampilkan Google Search pil</string>
+  <string name="show_date_or_weather_title">Menampilkan tanggal/cuaca pada sisi kanan</string>
   <string name="show_mic_pref_title">Tampilkan tombol Google Assistant</string>
   <string name="use_round_searhbar">Gunakan bilah penelusuran bulat</string>
   <string name="pixel_style_icons_pref_title">Gunakan ikon Pixel</string>
@@ -331,6 +333,7 @@
   <string name="default_text">Standar</string>
   <string name="edit_icon_reset">Setel ulang</string>
   <string name="show_top_shadow_title">Tampilkan bayangan atas</string>
+  <string name="pref_category_homescreen">Beranda</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>
   <string name="theme_dark">Gelap</string>
@@ -343,6 +346,7 @@
   <string name="pull_down_search">Buka penelusuran</string>
   <string name="pull_down_apps_search">Buka penelusuran aplikasi</string>
   <string name="enable_screen_rotation">Hidupkan rotasi layar</string>
+  <string name="use_system_fonts_title">Menggunakan sistem font untuk label</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Memulihkan</string>
   <string name="backup_export_title">Mencadangkan</string>
@@ -423,10 +427,48 @@
   <string name="reset_alternative_icons">Anda memiliki %1$d aplikasi dengan ikon alternatif, apakah anda ingin mengulangi setelan?</string>
   <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed tidak diaktifkan</string>
+  <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
   <string name="lawnfeed_outdated_title">Dibutuhkan pembaharuan Lawfeed</string>
   <string name="lawnfeed_outdated">Dibutuhkan versi baru dari Lawnfeed agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
   <string name="title_storage_permission_required">Izin akses penyimpanan diperlukan</string>
   <string name="content_storage_permission_required">Di Android 8.1 keatas izin penyimpanan diperlukan aplikasi untuk mengakses wallpaper. Tanpa izin Lawnchair mungkin crash atau menunjukkan perilaku tak terduga.</string>
+  <string name="disable_popup">Jangan tampilkan lagi</string>
+  <string name="backups">Cadangan</string>
+  <string name="new_backup">Membuat</string>
+  <string name="restore_backup">Mengembalikan</string>
+  <string name="backup_name">Nama</string>
+  <string name="backup_location">Lokasi</string>
+  <string name="choose_backup_path">Jelajahi</string>
+  <string name="backup_homescreen">Layar utama</string>
+  <string name="backup_contents">Konten cadangan</string>
+  <string name="backup_settings">Setelan</string>
+  <string name="backup_wallpaper">Wallpaper</string>
+  <string name="backup_error_blank_name">Nama tidak boleh kosong</string>
+  <string name="backup_error_blank_location">Lokasi tidak boleh kosong</string>
+  <string name="backup_error_blank_contents">Isi tidak boleh kosong</string>
+  <string name="backup_creating">Membuat cadangan</string>
+  <string name="no_recent_backups">Tak ada cadangan terbaru</string>
+  <string name="backup_loading">Memuat...</string>
+  <string name="backup_invalid">Tidak tersedia</string>
+  <string name="backup_remove_from_recents">Hapus dari daftar</string>
+  <string name="backup_share">Bagikan</string>
+  <string name="backup_timestamp">Buat Pada</string>
+  <string name="backup_restoring">Memulihkan cadangan</string>
+  <string name="backup_restarting">Mengulang kembali</string>
+  <string name="restore_contents">Mengembalikan isi</string>
+  <string name="restore_success">Sukses memulihkan</string>
+  <string name="backup_failed">Pencadangan gagal</string>
+  <string name="restore_failed">Gagal memulihkan</string>
+  <string name="restore_read_meta_fail">File cadangan tidak valid</string>
+  <string name="backup_share_title">Berbagi cadangan</string>
+  <string name="backup_share_text">Lawnchair file cadangan</string>
+  <string name="read_external_storage_required">Izin penyimpanan yang diperlukan untuk membuat cadangan</string>
+  <string name="local_backups">Cadangan lokal</string>
+  <string name="backup_location_device_storage">Perangkat penyimpanan</string>
+  <string name="backup_location_documents_storage">Dokumen penyimpanan</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Lain-lain</string>
 </resources>

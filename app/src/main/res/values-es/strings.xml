@@ -296,6 +296,8 @@
   <string name="debug_pref_summary">Reiniciar o reconstruir la base de datos de iconos</string>
   <string name="show_pixel_bar_pref_title">Mostrar la barra superior al estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de búsqueda ancha</string>
+  <string name="show_search_pill_title">Mostrar píldora de Google Search</string>
+  <string name="show_date_or_weather_title">Mostrar fecha/tiempo en el lado derecho</string>
   <string name="show_mic_pref_title">Mostrar botón de Google Assistant</string>
   <string name="use_round_searhbar">Usar barra de búsqueda redondeada en el cajón de aplicaciones</string>
   <string name="pixel_style_icons_pref_title">Usar iconos al estilo Pixel</string>
@@ -327,6 +329,7 @@
   <string name="default_text">Por defecto</string>
   <string name="edit_icon_reset">Reiniciar</string>
   <string name="show_top_shadow_title">Mostrar una sombra en la barra superior</string>
+  <string name="pref_category_homescreen">Pantalla de inicio</string>
   <string name="theme_pref_title">Temas</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Oscuro</string>
@@ -339,6 +342,7 @@
   <string name="pull_down_search">Abrir búsqueda</string>
   <string name="pull_down_apps_search">Buscar aplicaciones</string>
   <string name="enable_screen_rotation">Habilitar la rotación de la pantalla</string>
+  <string name="use_system_fonts_title">Usar las fuentes del sistema para las etiquetas</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaurar</string>
   <string name="backup_export_title">Exportar</string>
@@ -419,10 +423,48 @@
   <string name="reset_alternative_icons">Tienes %1$d aplicaciones con iconos alternativos, ¿quieres restablecerlos?</string>
   <string name="error_no_browser">No se encontró ninguna actividad para manejar las URLs</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed no está habilitado</string>
+  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en ajustes.\n\n ¿Quieres activarla ahora?</string>
   <string name="lawnfeed_outdated_title">Actualización de Lawnfeed requerida</string>
   <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de Lawnchair.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
   <string name="title_storage_permission_required">Permiso de almacenamiento requerido</string>
   <string name="content_storage_permission_required">En Android 8.1 y versiones superiores, se requiere permiso de almacenamiento para que las aplicaciones accedan al fondo de pantalla. Sin dicho permiso Lawnchair podría bloquearse o mostrar comportamientos inesperados.</string>
+  <string name="disable_popup">No volver a mostrar</string>
+  <string name="backups">Copias de seguridad</string>
+  <string name="new_backup">Crear</string>
+  <string name="restore_backup">Restaurar</string>
+  <string name="backup_name">Nombre</string>
+  <string name="backup_location">Ubicación</string>
+  <string name="choose_backup_path">Explorar</string>
+  <string name="backup_homescreen">Pantalla de inicio</string>
+  <string name="backup_contents">Contenido de la copia de seguridad</string>
+  <string name="backup_settings">Configuración</string>
+  <string name="backup_wallpaper">Fondo de Pantalla</string>
+  <string name="backup_error_blank_name">El nombre no debe estar en blanco</string>
+  <string name="backup_error_blank_location">La ubicación no debe estar en blanco</string>
+  <string name="backup_error_blank_contents">El contenido no debe estar en blanco</string>
+  <string name="backup_creating">Creando copia de seguridad</string>
+  <string name="no_recent_backups">No hay copias de seguridad recientes</string>
+  <string name="backup_loading">Cargando...</string>
+  <string name="backup_invalid">No disponible</string>
+  <string name="backup_remove_from_recents">Eliminar de la lista</string>
+  <string name="backup_share">Compartir</string>
+  <string name="backup_timestamp">Creado el</string>
+  <string name="backup_restoring">Restaurando copia de seguridad</string>
+  <string name="backup_restarting">Reiniciando</string>
+  <string name="restore_contents">Restaurar el contenido</string>
+  <string name="restore_success">Restauración exitosa</string>
+  <string name="backup_failed">Copia de seguridad ha fallado</string>
+  <string name="restore_failed">Error en la restauración</string>
+  <string name="restore_read_meta_fail">Copia de seguridad no válida</string>
+  <string name="backup_share_title">Compartir copia de seguridad</string>
+  <string name="backup_share_text">Archivo de copia de seguridad de Lawnchair</string>
+  <string name="read_external_storage_required">Permiso de almacenamiento requerido para crear la copia de seguridad</string>
+  <string name="local_backups">Copias de seguridad locales</string>
+  <string name="backup_location_device_storage">Almacenamiento del dispositivo</string>
+  <string name="backup_location_documents_storage">Almacenamiento de documentos</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Barra De Búsqueda Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Varios</string>
 </resources>

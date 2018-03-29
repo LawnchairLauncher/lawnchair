@@ -273,6 +273,8 @@
   <string name="num_hotseat_icons_pref_title">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
   <string name="icon_scale_pref_title">Κλίμακα εικονιδίου</string>
   <string name="hotseat_height_scale">Κλίμακα ύψους</string>
+  <string name="hotseat_custom_opacity">Αδιαφάνεια μπάρας εφαρμογών</string>
+  <string name="hotseat_uses_custom_opacity">Ενεργοποίηση προσαρμοζόμενης αδιαφάνειας μπάρας εφαρμογών</string>
   <string name="icon_text_scale_pref_title">Κλίμακα κειμένου εικονιδίου</string>
   <string name="icon_text_padding_scale_pref_title">Κλίμακα διάκενου εικονιδίου και ετικέτας</string>
   <string name="full_width_width_widgets_pref_title">Γραφικά στοιχεία σε πλήρες πλάτος</string>
@@ -295,6 +297,8 @@
   <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
+  <string name="show_search_pill_title">Εμφάνιση γραφικού Google Search Pill</string>
+  <string name="show_date_or_weather_title">Εμφάνιση γραφικού ημερομηνίας/καιρού στη δεξιά πλευρά</string>
   <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
   <string name="use_round_searhbar">Χρήση στρογγυλής μπάρας αναζήτησης στο συρτάρι εφαρμογών</string>
   <string name="pixel_style_icons_pref_title">Χρήση κυκλικών εικονιδίων Pixel</string>
@@ -326,6 +330,7 @@
   <string name="default_text">Προεπιλογή</string>
   <string name="edit_icon_reset">Επαναφορά</string>
   <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
+  <string name="pref_category_homescreen">Αρχική οθόνη</string>
   <string name="theme_pref_title">Θέμα</string>
   <string name="theme_light">Φωτεινό</string>
   <string name="theme_dark">Σκοτεινό</string>
@@ -338,6 +343,7 @@
   <string name="pull_down_search">Άνοιγμα αναζήτησης Google</string>
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
   <string name="enable_screen_rotation">Ενεργοποίηση περιστροφής οθόνης</string>
+  <string name="use_system_fonts_title">Χρησιμοποιήστε γραμματοσειρές του συστήματος για τις ετικέτες εφαρμογών</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Εισαγωγή</string>
   <string name="backup_export_title">Εξαγωγή</string>
@@ -394,6 +400,7 @@
   <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
   <string name="pref_num_rows_drawer">Αριθμός γραμμών στο συρτάρι εφαρμογών</string>
   <string name="center_wallpaper_pref_title">Κεντράρισμα ταπετσαρίας όταν υπάρχει μόνο μία αρχική οθόνη</string>
+  <string name="center_wallpaper_pref_summary">Λειτουργεί μόνο εάν η αρχική οθόνη χρησιμοποιεί μία σελίδα</string>
   <string name="vertical_drawer_layout_pref_title">Εμφάνιση ως κάθετη λίστα εφαρμογών</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -417,8 +424,48 @@
   <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
   <string name="error_no_browser">Δεν βρέθηκε καμία δραστηριότητα για να διαχειριστεί τις διευθύνσεις URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Το Lawnfeed δεν είναι ενεργοποιημένο</string>
+  <string name="lawnfeed_not_enabled">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε ενεργοποιήσει την επιλογή στις ρυθμίσεις.\n\nΘέλετε να την ενεργοποιήσετε τώρα;</string>
   <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
   <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
+  <string name="title_storage_permission_required">Απαιτείται άδεια πρόσβασης στον αποθηκευτικό χώρο</string>
+  <string name="content_storage_permission_required">Στο Android 8.1 και άνω απαιτείται άδεια αποθήκευσης για τις εφαρμογές για να αποκτήσετε πρόσβαση στην ταπετσαρία. Χωρίς την άδεια ο Lawnchair μπορεί να διακοπεί ή να δείξει απροσδόκητες συμπεριφορές.</string>
+  <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
+  <string name="backups">Αντίγραφα Ασφαλείας</string>
+  <string name="new_backup">Δημιουργία</string>
+  <string name="restore_backup">Επαναφορά</string>
+  <string name="backup_name">Όνομα</string>
+  <string name="backup_location">Τοποθεσία</string>
+  <string name="choose_backup_path">Περιήγηση</string>
+  <string name="backup_homescreen">Αρχική οθόνη</string>
+  <string name="backup_contents">Περιεχόμενο αντιγράφου ασφαλείας</string>
+  <string name="backup_settings">Ρυθμίσεις Αρχικής Σελίδας</string>
+  <string name="backup_wallpaper">Ταπετσαρία</string>
+  <string name="backup_error_blank_name">Το όνομα δεν πρέπει να είναι άδειο</string>
+  <string name="backup_error_blank_location">Η τοποθεσία δεν πρέπει να είναι κενή</string>
+  <string name="backup_error_blank_contents">Το περιεχόμενο δεν πρέπει να είναι κενό</string>
+  <string name="backup_creating">Δημιουργία αντιγράφου ασφαλείας</string>
+  <string name="no_recent_backups">Δεν υπάρχουν πρόσφατα αντίγραφα ασφαλείας</string>
+  <string name="backup_loading">Φόρτωση...</string>
+  <string name="backup_invalid">Μη διαθέσιμο</string>
+  <string name="backup_remove_from_recents">Κατάργηση από τη λίστα</string>
+  <string name="backup_share">Κοινοποίηση</string>
+  <string name="backup_timestamp">Δημιουργήθηκε στο</string>
+  <string name="backup_restoring">Επαναφορά αντιγράφου ασφαλείας</string>
+  <string name="backup_restarting">Επανεκκίνηση…</string>
+  <string name="restore_contents">Επαναφορά περιεχομένου</string>
+  <string name="restore_success">Επαναφορά επιτυχής</string>
+  <string name="backup_failed">Αποτυχία δημιουργίας αντιγράφου ασφαλείας</string>
+  <string name="restore_failed">Επαναφορά απέτυχε</string>
+  <string name="restore_read_meta_fail">Μη έγκυρο αρχείο αντιγράφου ασφαλείας</string>
+  <string name="backup_share_title">Κοινή χρήση αντιγράφου ασφαλείας</string>
+  <string name="backup_share_text">Αρχείο αντιγράφου ασφαλείας Lawnchair</string>
+  <string name="read_external_storage_required">Άδεια αποθήκευσης απαιτείται για να δημιουργήσετε αντίγραφο ασφαλείας</string>
+  <string name="local_backups">Τοπικά αντίγραφα ασφαλείας</string>
+  <string name="backup_location_device_storage">Αποθηκευτικός χώρος συσκευής</string>
+  <string name="backup_location_documents_storage">Αποθηκευτικός χώρος εγγράφων</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Μπάρα αναζήτησης Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Διάφορα</string>
 </resources>

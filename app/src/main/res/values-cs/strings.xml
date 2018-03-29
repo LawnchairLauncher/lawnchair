@@ -298,6 +298,8 @@
   <string name="debug_pref_summary">Restartovat nebo znovu vytvořit ikonu databáze</string>
   <string name="show_pixel_bar_pref_title">Zobrazit Pixel horní panel</string>
   <string name="use_wide_searchbar_pref_title">Použít široký vyhledávací panel</string>
+  <string name="show_search_pill_title">Zobrazit kapsli Google Search</string>
+  <string name="show_date_or_weather_title">Zobrazit datum/počasí na pravé straně</string>
   <string name="show_mic_pref_title">Zobrazit tlačítko Google Assistent</string>
   <string name="use_round_searhbar">Použít zaoblenou vyhledávací lištu aplikací</string>
   <string name="pixel_style_icons_pref_title">Použít ikony Pixel</string>
@@ -329,6 +331,7 @@
   <string name="default_text">Výchozí</string>
   <string name="edit_icon_reset">Resetovat</string>
   <string name="show_top_shadow_title">Zobrazit horní stíny</string>
+  <string name="pref_category_homescreen">Domovská obrazovka</string>
   <string name="theme_pref_title">Motiv</string>
   <string name="theme_light">Světlý</string>
   <string name="theme_dark">Tmavý</string>
@@ -341,6 +344,7 @@
   <string name="pull_down_search">Otevřít vyhledávání</string>
   <string name="pull_down_apps_search">Vyhledávání v aplikacích</string>
   <string name="enable_screen_rotation">Povolit otáčení obrazovky</string>
+  <string name="use_system_fonts_title">Použít systémová písma pro popisky</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importovat</string>
   <string name="backup_export_title">Exportovat</string>
@@ -421,10 +425,48 @@
   <string name="reset_alternative_icons">Máte %1$d aplikací s alternativními ikonami, chcete je obnovit?</string>
   <string name="error_no_browser">Nebyla nalezena žádná aktivita pro práci s adresami URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed není povolen</string>
+  <string name="lawnfeed_not_enabled">Zdá se, že se pokoušíte otevřít stránku Google Now, avšak v nastavení chování jste tuto možnost nepovolili.\n\nChcete tuto možnost povolit?</string>
   <string name="lawnfeed_outdated_title">Vyžadována aktualizace Lawnfeed</string>
   <string name="lawnfeed_outdated">V této verzi Lawnchair je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
   <string name="title_storage_permission_required">Vyžadováno oprávnění k úložišti</string>
   <string name="content_storage_permission_required">V zařízeních s Android 8.1 a vyšším je pro přístup k tapetám vyžadováno oprávnění k úložišti. Bez zmíněného oprávnění se může stát, že aplikace Lawnchair selže nebo bude mít neočekávané chování.</string>
+  <string name="disable_popup">Znovu nezobrazovat</string>
+  <string name="backups">Zálohy</string>
+  <string name="new_backup">Vytvořit</string>
+  <string name="restore_backup">Obnovit</string>
+  <string name="backup_name">Název</string>
+  <string name="backup_location">Umístění</string>
+  <string name="choose_backup_path">Procházet</string>
+  <string name="backup_homescreen">Domovská obrazovka</string>
+  <string name="backup_contents">Zálohování obsahu</string>
+  <string name="backup_settings">Nastavení</string>
+  <string name="backup_wallpaper">Tapeta</string>
+  <string name="backup_error_blank_name">Název nesmí být prázdný</string>
+  <string name="backup_error_blank_location">Umístění nesmí být prázdné</string>
+  <string name="backup_error_blank_contents">Obsah nesmí být prázdný</string>
+  <string name="backup_creating">Vytváření zálohy</string>
+  <string name="no_recent_backups">Žádné poslední zálohy</string>
+  <string name="backup_loading">Načítání...</string>
+  <string name="backup_invalid">Není k dispozici</string>
+  <string name="backup_remove_from_recents">Odstranit ze seznamu</string>
+  <string name="backup_share">Sdílet</string>
+  <string name="backup_timestamp">Vytvořeno</string>
+  <string name="backup_restoring">Obnovení zálohy</string>
+  <string name="backup_restarting">Restartování</string>
+  <string name="restore_contents">Obnovit obsah</string>
+  <string name="restore_success">Obnovení úspěšné</string>
+  <string name="backup_failed">Zálohování selhalo</string>
+  <string name="restore_failed">Obnovení selhalo</string>
+  <string name="restore_read_meta_fail">Neplatný zálož. soubor</string>
+  <string name="backup_share_title">Sdílet zálohu</string>
+  <string name="backup_share_text">Záložní soubor Lawnchair</string>
+  <string name="read_external_storage_required">Oprávnění úložiště je potřeba k vytvoření zálohy</string>
+  <string name="local_backups">Místní zálohy</string>
+  <string name="backup_location_device_storage">Úložiště zařízení</string>
+  <string name="backup_location_documents_storage">Ukládání dokumentů</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Různé</string>
 </resources>

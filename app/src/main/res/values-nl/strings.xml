@@ -296,6 +296,8 @@
   <string name="debug_pref_summary">Herstart of herbouw icoon database</string>
   <string name="show_pixel_bar_pref_title">Bovenste Pixel balk tonen</string>
   <string name="use_wide_searchbar_pref_title">Gebruik brede zoekbalk</string>
+  <string name="show_search_pill_title">Google Zoeken pil weergeven</string>
+  <string name="show_date_or_weather_title">Datum/weer aan rechterzijde weergeven</string>
   <string name="show_mic_pref_title">Google Assistant-knop weergeven</string>
   <string name="use_round_searhbar">Gebruik ronde app zoekbalk</string>
   <string name="pixel_style_icons_pref_title">Gebruik Pixel iconen</string>
@@ -327,6 +329,7 @@
   <string name="default_text">Standaard</string>
   <string name="edit_icon_reset">Reset</string>
   <string name="show_top_shadow_title">Bovenste schaduw weergeven</string>
+  <string name="pref_category_homescreen">Thuisscherm</string>
   <string name="theme_pref_title">Thema</string>
   <string name="theme_light">Licht</string>
   <string name="theme_dark">Donker</string>
@@ -339,6 +342,7 @@
   <string name="pull_down_search">Zoeken openen</string>
   <string name="pull_down_apps_search">Apps zoeken</string>
   <string name="enable_screen_rotation">Scherm rotatie activeren</string>
+  <string name="use_system_fonts_title">Systeemlettertypes gebruiken voor labels</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Herstel</string>
   <string name="backup_export_title">Back-up</string>
@@ -395,6 +399,7 @@
   <string name="pref_all_apps_label_color">Kleur van icoon labels in app-overzicht</string>
   <string name="pref_num_rows_drawer">Aantal rijen in app-overzicht</string>
   <string name="center_wallpaper_pref_title">Centreer achtergrond bij één pagina</string>
+  <string name="center_wallpaper_pref_summary">Werkt alleen als thuisscherm één scherm gebruikt</string>
   <string name="vertical_drawer_layout_pref_title">Weergeven als verticale lijst</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -406,7 +411,7 @@
   <string name="lawnfeed_incompatible">Incompatibele versie van Lawnfeed geïnstalleerd</string>
   <string name="set_default_launcher">Standaard startscherm instellen</string>
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
-  <string name="hide_app">App verbergen</string>
+  <string name="hide_app">Verborgen apps</string>
   <string name="hide_app_sum">App verbergen in het app-overzicht</string>
   <string name="hide_app_selected">&#160;geselecteerd</string>
   <string name="hidden_app">Verborgen app</string>
@@ -418,10 +423,48 @@
   <string name="reset_alternative_icons">Je hebt %1$d apps met alternatieve iconen, wil je deze resetten?</string>
   <string name="error_no_browser">Geen activiteit gevonden om URLs te verwerken</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed uitgeschakeld</string>
+  <string name="lawnfeed_not_enabled">Het lijkt erop dat je de Google Now pagina wilt openen, maar deze niet hebt ingeschakeld in de gedragsinstellingen.\n\nWil je het nu inschakelen?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed vereist een update</string>
   <string name="lawnfeed_outdated">Een nieuwe versie van Lawnfeed is vereist om te werken met deze versie van Lawnchair.\n\nVoordat de update van Lawnfeed geïnstalleerd wordt, dien je de huidige versie van Lawnfeed te verwijderen.\n\nWil je de nieuwe versie van Lawnfeed nu downloaden?</string>
   <string name="title_storage_permission_required">Opslag Toestemming Vereist</string>
   <string name="content_storage_permission_required">Op Android 8.1 en hoger is de opslag toestemming vereist voor apps om toegang te krijgen tot de achtergrond. Zonder de genoemde toestemming zou Lawnchair vast kunnen lopen of onverwachte gedragingen vertonen.</string>
+  <string name="disable_popup">Niet meer weergeven</string>
+  <string name="backups">Back-ups</string>
+  <string name="new_backup">Maken</string>
+  <string name="restore_backup">Herstellen</string>
+  <string name="backup_name">Naam</string>
+  <string name="backup_location">Locatie</string>
+  <string name="choose_backup_path">Bladeren</string>
+  <string name="backup_homescreen">Thuisscherm</string>
+  <string name="backup_contents">Back-up inhoud</string>
+  <string name="backup_settings">Instellingen</string>
+  <string name="backup_wallpaper">Achtergrond</string>
+  <string name="backup_error_blank_name">Naam mag niet leeg zijn</string>
+  <string name="backup_error_blank_location">Locatie mag niet leeg zijn</string>
+  <string name="backup_error_blank_contents">Inhoud mag niet leeg zijn</string>
+  <string name="backup_creating">Back-up maken</string>
+  <string name="no_recent_backups">Geen recente back-ups</string>
+  <string name="backup_loading">Laden...</string>
+  <string name="backup_invalid">Onbeschikbaar</string>
+  <string name="backup_remove_from_recents">Uit lijst verwijderen</string>
+  <string name="backup_share">Delen</string>
+  <string name="backup_timestamp">Gemaakt op</string>
+  <string name="backup_restoring">Back-up herstellen</string>
+  <string name="backup_restarting">Herstarten</string>
+  <string name="restore_contents">Inhoud herstellen</string>
+  <string name="restore_success">Herstellen succesvol</string>
+  <string name="backup_failed">Back-up mislukt</string>
+  <string name="restore_failed">Herstel mislukt</string>
+  <string name="restore_read_meta_fail">Ongeldig back-up bestand</string>
+  <string name="backup_share_title">Back-up delen</string>
+  <string name="backup_share_text">Lawnchair back-up bestand</string>
+  <string name="read_external_storage_required">Opslagmachtiging is vereist om back-up te maken</string>
+  <string name="local_backups">Lokale back-ups</string>
+  <string name="backup_location_device_storage">Apparaat opslag</string>
+  <string name="backup_location_documents_storage">Documenten opslag</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel Zoekbalk</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Diverse</string>
 </resources>

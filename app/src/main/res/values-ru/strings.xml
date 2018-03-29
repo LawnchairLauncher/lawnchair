@@ -298,6 +298,8 @@
   <string name="debug_pref_summary">Перезапустить или создать заново базу данных иконок</string>
   <string name="show_pixel_bar_pref_title">Показать строку поиска Pixel</string>
   <string name="use_wide_searchbar_pref_title">Использовать широкую строку поиска</string>
+  <string name="show_search_pill_title">Показать кнопку поиска Google</string>
+  <string name="show_date_or_weather_title">Показывать дату/погоду на правой стороне</string>
   <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
   <string name="use_round_searhbar">Использовать круглую строку поиска</string>
   <string name="pixel_style_icons_pref_title">Использовать значки Pixel</string>
@@ -329,6 +331,7 @@
   <string name="default_text">По умолчанию</string>
   <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Показать тень сверху</string>
+  <string name="pref_category_homescreen">Главный экран</string>
   <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светлая</string>
   <string name="theme_dark">Тёмная</string>
@@ -341,6 +344,7 @@
   <string name="pull_down_search">Открыть поиск</string>
   <string name="pull_down_apps_search">Поиск приложений</string>
   <string name="enable_screen_rotation">Включить авто-поворот экрана</string>
+  <string name="use_system_fonts_title">Использовать системные шрифты для ярлыков</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Импорт</string>
   <string name="backup_export_title">Экспорт</string>
@@ -421,10 +425,48 @@
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
   <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed не включен</string>
+  <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
   <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
   <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
   <string name="title_storage_permission_required">Нужно разрешение на доступ к памяти устройства</string>
   <string name="content_storage_permission_required">На Android 8.1 и выше для доступа к обоям требуется разрешение на доступ к памяти устройства. Без указанного разрешения Lawnchair может неожиданно завершить работу или показать неожиданное поведение.</string>
+  <string name="disable_popup">Не показывать снова</string>
+  <string name="backups">Резервные копии</string>
+  <string name="new_backup">Создать</string>
+  <string name="restore_backup">Восстановить</string>
+  <string name="backup_name">Название</string>
+  <string name="backup_location">Расположение</string>
+  <string name="choose_backup_path">Открыть</string>
+  <string name="backup_homescreen">Главный экран</string>
+  <string name="backup_contents">Содержимое резервной копии</string>
+  <string name="backup_settings">Настройки</string>
+  <string name="backup_wallpaper">Обои</string>
+  <string name="backup_error_blank_name">Название на должно быть пустым</string>
+  <string name="backup_error_blank_location">Местоположение не должно быть пустым</string>
+  <string name="backup_error_blank_contents">Содержание не должно быть пустым</string>
+  <string name="backup_creating">Создание резервной записи</string>
+  <string name="no_recent_backups">Нет недавних резервных копий</string>
+  <string name="backup_loading">Загрузка...</string>
+  <string name="backup_invalid">Операция невозможна</string>
+  <string name="backup_remove_from_recents">Удалить из списка</string>
+  <string name="backup_share">Поделиться</string>
+  <string name="backup_timestamp">Создано</string>
+  <string name="backup_restoring">Восстановление из резервной копии</string>
+  <string name="backup_restarting">Перезапуск</string>
+  <string name="restore_contents">Восстановить содержание</string>
+  <string name="restore_success">Успешное восстановление</string>
+  <string name="backup_failed">Не удалось выполнить резервное копирование</string>
+  <string name="restore_failed">Не удалось восстановить</string>
+  <string name="restore_read_meta_fail">Недопустимый файл резервной копии</string>
+  <string name="backup_share_title">Поделиться резервной копией</string>
+  <string name="backup_share_text">Файл резервной копии Lawnchair</string>
+  <string name="read_external_storage_required">Для резервного копирования трамбуется разрешение на хранение</string>
+  <string name="local_backups">Локальные резервные копии</string>
+  <string name="backup_location_device_storage">Память устройства</string>
+  <string name="backup_location_documents_storage">Документы</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Строка поиска Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Разное</string>
 </resources>

@@ -298,6 +298,7 @@
   <string name="debug_pref_summary">Zrestartuj lub przebuduj bazę ikon</string>
   <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
+  <string name="show_date_or_weather_title">Pokaż datę/pogodę po prawej stronie</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
   <string name="use_round_searhbar">Użyj zaokrąglonego paska wyszukiwania aplikacji</string>
   <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Pixel</string>
@@ -329,6 +330,7 @@
   <string name="default_text">Domyślny</string>
   <string name="edit_icon_reset">Resetuj</string>
   <string name="show_top_shadow_title">Pokaż górny cień</string>
+  <string name="pref_category_homescreen">Ekran główny</string>
   <string name="theme_pref_title">Motyw</string>
   <string name="theme_light">Jasny</string>
   <string name="theme_dark">Ciemny</string>
@@ -341,6 +343,7 @@
   <string name="pull_down_search">Otwórz wyszukiwarkę</string>
   <string name="pull_down_apps_search">Wyszukiwanie aplikacji</string>
   <string name="enable_screen_rotation">Włącz obracanie ekranu</string>
+  <string name="use_system_fonts_title">Użyj czcionki systemowej dla etykiet</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Przywróć</string>
   <string name="backup_export_title">Wsparcie</string>
@@ -421,10 +424,46 @@
   <string name="reset_alternative_icons">Masz %1$d aplikacji z alternatywnymi ikonami, czy chcesz je zresetować?</string>
   <string name="error_no_browser">Nie znaleziono żadnej aktywności obsługującej adresy URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed nie jest aktywny</string>
+  <string name="lawnfeed_not_enabled">Wygląda, że próbujesz otworzyć stronę Google Now, ale nie włączono opcji w ustawieniach zachowania.\n\nCzy włączyć teraz?</string>
   <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
   <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
   <string name="title_storage_permission_required">Wymagany dostęp do plików</string>
   <string name="content_storage_permission_required">W Androidzie 8.1 i wyższym uprawnienia do \"pamięci urządzenia\" są wymagane dla aplikacji z dostępem do tapet. Bez tego Lawnchair może ulec awarii lub zachowywać się niestabilnie.</string>
+  <string name="disable_popup">Nie pokazuj ponownie</string>
+  <string name="backups">Kopie zapasowe</string>
+  <string name="new_backup">Utwórz</string>
+  <string name="restore_backup">Przywróć</string>
+  <string name="backup_name">Nazwa</string>
+  <string name="backup_location">Ścieżka</string>
+  <string name="choose_backup_path">Przeglądaj</string>
+  <string name="backup_homescreen">Ekran główny</string>
+  <string name="backup_contents">Zawartość kopii zapasowej</string>
+  <string name="backup_settings">Ustawienia</string>
+  <string name="backup_wallpaper">Tapeta</string>
+  <string name="backup_error_blank_name">Nazwa nie może być pusta</string>
+  <string name="backup_error_blank_location">Ścieżka nie może być pusta</string>
+  <string name="backup_error_blank_contents">Zawartość nie może być pusta</string>
+  <string name="backup_creating">Tworzenie kopii zapasowej</string>
+  <string name="no_recent_backups">Brak niedawnych kopii zapasowych</string>
+  <string name="backup_loading">Ładowanie...</string>
+  <string name="backup_invalid">Niedostępny</string>
+  <string name="backup_remove_from_recents">Usuń z listy</string>
+  <string name="backup_share">Udostępnij</string>
+  <string name="backup_timestamp">Stworzono</string>
+  <string name="backup_restoring">Przywracanie kopii zapasowej</string>
+  <string name="backup_restarting">Ponowne uruchamianie</string>
+  <string name="restore_contents">Przywróć zawartość</string>
+  <string name="restore_success">Przywracanie kopii zapasowej udane</string>
+  <string name="backup_failed">Tworzenie kopii zapasowej nie powiodło się</string>
+  <string name="restore_failed">Przywracanie nie powiodło się</string>
+  <string name="restore_read_meta_fail">Nieprawidłowy plik kopii zapasowej</string>
+  <string name="backup_share_title">Udostępnij kopię zapasową</string>
+  <string name="backup_share_text">Plik kopii zapasowej Lawnchair</string>
+  <string name="read_external_storage_required">Aby utworzyć kopię zapasową wymagany jest dostęp do plików</string>
+  <string name="local_backups">Lokalne kopie zapasowe</string>
+  <string name="backup_location_device_storage">Pamięć urządzenia</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Pozostałe</string>
 </resources>

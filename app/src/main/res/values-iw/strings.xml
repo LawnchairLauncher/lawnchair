@@ -298,6 +298,8 @@
   <string name="debug_pref_summary">הפעל מחדש או בנה מחדש מסד נתונים של סמלים</string>
   <string name="show_pixel_bar_pref_title">הצג שורה עליונה בסגנון Pixel</string>
   <string name="use_wide_searchbar_pref_title">שורת חיפוש רחבה</string>
+  <string name="show_search_pill_title">הצג את גלולת החיפוש של Google</string>
+  <string name="show_date_or_weather_title">הצג תאריך/מזג אוויר בצד ימין</string>
   <string name="show_mic_pref_title">הצגת לחצן Google Assistant</string>
   <string name="use_round_searhbar">שורת חיפוש ישומים מעוגלת</string>
   <string name="pixel_style_icons_pref_title">שימוש בסמלי Pixel</string>
@@ -329,6 +331,7 @@
   <string name="default_text">ברירת מחדל</string>
   <string name="edit_icon_reset">איפוס</string>
   <string name="show_top_shadow_title">הצג צל עליון</string>
+  <string name="pref_category_homescreen">מסך הבית</string>
   <string name="theme_pref_title">ערכת נושא</string>
   <string name="theme_light">בהיר</string>
   <string name="theme_dark">כהה</string>
@@ -341,6 +344,7 @@
   <string name="pull_down_search">פתח חיפוש</string>
   <string name="pull_down_apps_search">חיפוש יישומים</string>
   <string name="enable_screen_rotation">אפשר סיבוב מסך</string>
+  <string name="use_system_fonts_title">השתמש בגופנים של המערכת עבור תוויות</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">ייבוא</string>
   <string name="backup_export_title">ייצוא</string>
@@ -421,10 +425,48 @@
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
   <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed אינו מופעל</string>
+  <string name="lawnfeed_not_enabled">נראה שאתה מנסה לפתוח את הדף של Google Now, אך לא הפעלת את האפשרות בהגדרות.\n\nהאם ברצונך להפעיל אותה עכשיו?</string>
   <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
   <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
   <string name="title_storage_permission_required">דרושה הרשאה לאחסון</string>
   <string name="content_storage_permission_required">ב- 8.1 אנדרואיד ומעלה הרשאת האחסון נדרשת על ידי יישומים לגישה לטפט. ללא הרשאה זו Lawnchair עלול לקרוס או להתנהג באופן בלתי צפוי.</string>
+  <string name="disable_popup">אל תציג שוב</string>
+  <string name="backups">גיבויים</string>
+  <string name="new_backup">יצירה</string>
+  <string name="restore_backup">שחזור</string>
+  <string name="backup_name">שֵׁם</string>
+  <string name="backup_location">מיקום</string>
+  <string name="choose_backup_path">עיון</string>
+  <string name="backup_homescreen">מסך הבית</string>
+  <string name="backup_contents">תוכן הגיבוי</string>
+  <string name="backup_settings">הגדרות</string>
+  <string name="backup_wallpaper">טפט</string>
+  <string name="backup_error_blank_name">השם אינו יכול להיות ריק</string>
+  <string name="backup_error_blank_location">המיקום אינו יכול להיות ריק</string>
+  <string name="backup_error_blank_contents">התוכן אינו יכול להיות ריק</string>
+  <string name="backup_creating">יוצר גיבוי</string>
+  <string name="no_recent_backups">אין גיבויים אחרונים</string>
+  <string name="backup_loading">טוען...</string>
+  <string name="backup_invalid">לא זמין</string>
+  <string name="backup_remove_from_recents">הסר מהרשימה</string>
+  <string name="backup_share">שתף</string>
+  <string name="backup_timestamp">נוצר ב</string>
+  <string name="backup_restoring">משחזר גיבוי</string>
+  <string name="backup_restarting">מפעיל מחדש</string>
+  <string name="restore_contents">שחזר תוכן</string>
+  <string name="restore_success">שחזור הצליח</string>
+  <string name="backup_failed">הגיבוי נכשל</string>
+  <string name="restore_failed">שחזור נכשל</string>
+  <string name="restore_read_meta_fail">קובץ גיבוי לא חוקי</string>
+  <string name="backup_share_title">שתף גיבוי</string>
+  <string name="backup_share_text">קובץ גיבוי של Lawnchair</string>
+  <string name="read_external_storage_required">הרשאת אחסון נדרשת ליצור גיבוי</string>
+  <string name="local_backups">גיבויים מקומיים</string>
+  <string name="backup_location_device_storage">אחסון המכשיר</string>
+  <string name="backup_location_documents_storage">אחסון מסמכים</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">סרגל חיפוש בסגנון Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">שונות</string>
 </resources>

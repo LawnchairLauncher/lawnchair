@@ -417,10 +417,12 @@
   <string name="reset_alternative_icons">Bạn có %1$d ứng dụng với các biểu tượng khác, bạn có muốn đặt lại chúng?</string>
   <string name="error_no_browser">Không có hành động nào phù hợp để xử lý URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled">Dường như bạn đang cố mở Google Now, nhưng bạn chưa bật tùy chọn này trong cài đặt hành vi.\n\nBạn có muốn bật nó bây giờ không?</string>
   <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
   <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
   <string name="title_storage_permission_required">Yêu cầu cấp quyền bộ nhớ</string>
   <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép Lawnchair có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
+  <string name="disable_popup">Không hiển thị lại</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
 </resources>
