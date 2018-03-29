@@ -1976,6 +1976,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                     mWorkspace.postDelayed(new Runnable() {
                         public void run() {
                             if (mWorkspace != null) {
+                                AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+
                                 mWorkspace.snapToPage(newScreenIndex);
                                 mWorkspace.postDelayed(startBounceAnimRunnable,
                                         NEW_APPS_ANIMATION_DELAY);
