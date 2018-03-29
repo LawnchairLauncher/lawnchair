@@ -22,4 +22,8 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"分屏"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"从屏幕底部向上滑动即可切换应用"</string>
+    <!-- no translation found for accessibility_desc_recent_apps (1444379410873162882) -->
+    <skip />
+    <!-- no translation found for recents_empty_message (7040467240571714191) -->
+    <skip />
 </resources>

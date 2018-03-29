@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"තව යෙදුම් සඳහා සොයන්න"</string>
     <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"කෙටි මගක් තෝරා ගැනීමට ස්පර්ශ කර අල්ලාගෙන සිටින්න."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"විජට් එකක් තෝරා ගැනීමට හෝ අභිරුචි භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
     <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"යෙදුම් ලැයිස්තුව"</string>

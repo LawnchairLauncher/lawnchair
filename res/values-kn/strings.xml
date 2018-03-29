@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ಮತ್ತಷ್ಟು ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ಅಧಿಸೂಚನೆಗಳು"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್ ಆರಿಸಲು ಹೋಲ್ಡ್ ಮಾಡಿ."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್ ಆರಿಸಿಕೊಳ್ಳಲು ಹೋಲ್ಡ್ ಮಾಡಿ ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಿ."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಹೆಚ್ಚು ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇನಲ್ಲಿ ಹೆಚ್ಚಿನ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿ"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ಕೆಲಸದ ಪ್ರತಿ ಅಪ್ಲಿಕೇಶನ್ ಬ್ಯಾಡ್ಜ್ ಹೊಂದಿದೆ ಮತ್ತು ನಿಮ್ಮ ಸಂಸ್ಥೆಯಿಂದ ಸುರಕ್ಷಿತವಾಗಿ ಇರಿಸಲಾಗುತ್ತದೆ. ಸುಲಭ ಪ್ರವೇಶಕ್ಕಾಗಿ ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸರಿಸಿ."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"ನಿಮ್ಮ ಸಂಸ್ಥೆಯ ಮೂಲಕ ನಿರ್ವಹಿಸಲಾಗಿದೆ"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"ಅಧಿಸೂಚನೆಗಳು ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಆಫ್ ಆಗಿವೆ"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ಮುಚ್ಚಿ"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ಮುಚ್ಚಲಾಗಿದೆ"</string>
 </resources>
