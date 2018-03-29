@@ -14,7 +14,7 @@
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_workspaceScrimAlpha">30</integer>
     <integer name="config_allAppsTransitionTime">100</integer>
-    <integer name="config_overviewTransitionTime">150</integer>
+    <integer name="config_overviewTransitionTime">250</integer>
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
