@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ไม่พบแอปที่ตรงกับ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ค้นหาแอปเพิ่มเติม"</string>
     <string name="notifications_header" msgid="1404149926117359025">"การแจ้งเตือน"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"แตะค้างไว้เพื่อเลือกทางลัด"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"แตะสองครั้งค้างไว้เพื่อเลือกทางลัดหรือใช้การกระทำที่กำหนดเอง"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ไม่มีที่ว่างในหน้าจอหลักนี้"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ไม่มีพื้นที่เหลือในถาดรายการโปรด"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"รายชื่อแอป"</string>

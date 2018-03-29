@@ -22,4 +22,8 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Ekranni ikkiga ajratish"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Mahkamlash"</string>
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Ilovalarni almashtirish uchun pastdan yuqoriga suring"</string>
+    <!-- no translation found for accessibility_desc_recent_apps (1444379410873162882) -->
+    <skip />
+    <!-- no translation found for recents_empty_message (7040467240571714191) -->
+    <skip />
 </resources>

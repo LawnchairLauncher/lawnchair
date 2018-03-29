@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"找不到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"搜尋更多應用程式"</string>
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"按住捷徑即可選取。"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"輕觸兩下並按住捷徑即可選取，你也可以使用自訂動作。"</string>
     <string name="out_of_space" msgid="4691004494942118364">"這個主螢幕已無空間。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"「我的最愛」匣已無可用空間"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"應用程式清單"</string>
