@@ -297,6 +297,8 @@
   <string name="debug_pref_summary">Рестартујте или обновите базу икона</string>
   <string name="show_pixel_bar_pref_title">Прикажи горње траке за Pixel</string>
   <string name="use_wide_searchbar_pref_title">Користи широку траку за претраживање</string>
+  <string name="show_search_pill_title">Прикажи Гоогле претрага пилулу</string>
+  <string name="show_date_or_weather_title">Прикажи датум/време на десној страни</string>
   <string name="show_mic_pref_title">Прикажи Google Assistant дугме</string>
   <string name="use_round_searhbar">Користи заокружену траку претраживања</string>
   <string name="pixel_style_icons_pref_title">Користи Pixel иконе</string>
@@ -328,6 +330,7 @@
   <string name="default_text">Подразумевано</string>
   <string name="edit_icon_reset">Поништи</string>
   <string name="show_top_shadow_title">Прикажи сенку на врху</string>
+  <string name="pref_category_homescreen">Почетни екран</string>
   <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светло</string>
   <string name="theme_dark">Тамно</string>
@@ -340,6 +343,7 @@
   <string name="pull_down_search">Отвори претрагу</string>
   <string name="pull_down_apps_search">Претрага апликација</string>
   <string name="enable_screen_rotation">Омогући ротацију екрана</string>
+  <string name="use_system_fonts_title">Користити системски фонтовe за етикете</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Увези</string>
   <string name="backup_export_title">Извези</string>
@@ -420,10 +424,48 @@
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
   <string name="error_no_browser">Није пронађена никаква активност која би се бавила URL адресама</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed није омогућен</string>
+  <string name="lawnfeed_not_enabled">Изгледа да покушавате да отворите страницу Google Now, али нисте омогућили опцију у понашање подешавање.\n\nДа ли желите да омогућите то сада?</string>
   <string name="lawnfeed_outdated_title">Потребно је ажурирање Lawnfeed</string>
   <string name="lawnfeed_outdated">За рад са овом верзијом Lawnfeed-а неопходна је нова верзија Lawnfeed-а.\n\nПре него што инсталирате исправку, вероватно ћете морати да деинсталирате тренутну верзију Lawnfeed-а.\n\nЖелите ли да је преузмете сада?</string>
   <string name="title_storage_permission_required">Потребанa дозвола за складиштење</string>
   <string name="content_storage_permission_required">У Андроид 8.1 и изнад дозволе за складиштење је потребно да апликације приступе позадини. Без поменуте дозволе се може срушити или показати неочекивано понашање.</string>
+  <string name="disable_popup">Не приказуј поново</string>
+  <string name="backups">Резервна копија</string>
+  <string name="new_backup">Направи</string>
+  <string name="restore_backup">Oпорави</string>
+  <string name="backup_name">Име</string>
+  <string name="backup_location">Локација</string>
+  <string name="choose_backup_path">Прегледај</string>
+  <string name="backup_homescreen">Почетни екран</string>
+  <string name="backup_contents">Садржај резервне копије</string>
+  <string name="backup_settings">Подешавања</string>
+  <string name="backup_wallpaper">Позадина</string>
+  <string name="backup_error_blank_name">Име не сме бити празно</string>
+  <string name="backup_error_blank_location">Локација не сме да буде празнa</string>
+  <string name="backup_error_blank_contents">Садржај не сме бити празaн</string>
+  <string name="backup_creating">Креирање резервне копије</string>
+  <string name="no_recent_backups">Нема недавних резервних копија</string>
+  <string name="backup_loading">Учитавање...</string>
+  <string name="backup_invalid">Недоступно</string>
+  <string name="backup_remove_from_recents">Уклони са листе</string>
+  <string name="backup_share">Подели</string>
+  <string name="backup_timestamp">Направљено у</string>
+  <string name="backup_restoring">Враћање резервне копије</string>
+  <string name="backup_restarting">Поновно покретање</string>
+  <string name="restore_contents">Враћање садржаја</string>
+  <string name="restore_success">Опоравак успешан</string>
+  <string name="backup_failed">Прављење резервне копије није успело</string>
+  <string name="restore_failed">Враћање у претходно стање није успело</string>
+  <string name="restore_read_meta_fail">Неважећа датотека резервне копије</string>
+  <string name="backup_share_title">Подели резервну копију</string>
+  <string name="backup_share_text">Резервна копија датотеке Lawnchair</string>
+  <string name="read_external_storage_required">Дозвола за складиштење је потребна за креирање резервне копије</string>
+  <string name="local_backups">Локалне резервне копије</string>
+  <string name="backup_location_device_storage">Меморија уређаја</string>
+  <string name="backup_location_documents_storage">За складиштење докумената</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel трака за претрагу</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Разно</string>
 </resources>
