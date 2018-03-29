@@ -327,6 +327,7 @@
   <string name="default_text">Par défaut</string>
   <string name="edit_icon_reset">Réinitialiser</string>
   <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
+  <string name="pref_category_homescreen">Écran d\'accueil</string>
   <string name="theme_pref_title">Thème</string>
   <string name="theme_light">Clair</string>
   <string name="theme_dark">Sombre</string>
@@ -419,10 +420,21 @@
   <string name="reset_alternative_icons">Vous avez %1$d applications avec des icônes alternatives, souhaitez-vous les réinitialiser ?</string>
   <string name="error_no_browser">Aucune application trouvée pour gérer les URLs</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled">On dirait que vous essayez d’ouvrir la page Google Now, mais vous n’avez pas activé l’option dans les paramètres de comportement.\n\nSouhaitez-vous l’activer maintenant ?</string>
   <string name="lawnfeed_outdated_title">Mise à jour de Lawnfeed requise</string>
   <string name="lawnfeed_outdated">Une nouvelle version de Lawnfeed est nécessaire pour fonctionner avec cette version de Lawnchair.\n\nAvant l\'installation de la mise à jour, vous aurez probablement besoin de désinstaller la version actuelle de Lawnfeed.\n\nVoulez-vous la télécharger maintenant ?</string>
   <string name="title_storage_permission_required">Autorisation de stockage requise</string>
   <string name="content_storage_permission_required">À partir d\'Android 8.1, l\'autorisation d’accéder au stockage est requise pour les applis voulant accéder aux fonds d\'écran. Sans cette autorisation Lawnchair pourrait planter ou montrer des comportements inattendus.</string>
+  <string name="disable_popup">Ne plus afficher</string>
+  <string name="new_backup">Créer</string>
+  <string name="backup_name">Nom</string>
+  <string name="backup_location">Localisation</string>
+  <string name="backup_homescreen">Écran d\'accueil</string>
+  <string name="backup_wallpaper">Fond d\'écran</string>
+  <string name="backup_loading">Chargement...</string>
+  <string name="backup_invalid">Indisponible</string>
+  <string name="backup_share">Partager</string>
+  <string name="backup_timestamp">Créé le</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
 </resources>
