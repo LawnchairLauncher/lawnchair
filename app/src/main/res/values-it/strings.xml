@@ -419,10 +419,19 @@
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
   <string name="error_no_browser">Nessuna attività trovata per gestire gli URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai attivato l\'opzione dalle impostazioni.\n\nVuoi attivarla ora?</string>
   <string name="lawnfeed_outdated_title">Richiesto aggiornamento Lawnfeed</string>
   <string name="lawnfeed_outdated">Una nuova versione di Lawnfeed è richiesta in modo da funzionare con questa versione di Lawnchair.\n\nPrima di installare l\'aggiornamento dovrai probabilmente disinstallare l\'attuale versione di Lawnfeed.\n\nVuoi scaricarla ora?</string>
   <string name="title_storage_permission_required">Richiesta autorizzazione di archiviazione</string>
   <string name="content_storage_permission_required">Su Android 8.1 e versioni successive viene richiesta l\'autorizzazione di archiviazione per consentire alle app di accedere allo sfondo. Senza il permesso, Lawnchair potrebbe bloccarsi o mostrare comportamenti imprevisti.</string>
+  <string name="disable_popup">Non visualizzare di nuovo</string>
+  <string name="backup_settings">Impostazioni</string>
+  <string name="backup_loading">Caricamento...</string>
+  <string name="restore_success">Ripristino eseguito</string>
+  <string name="backup_failed">Backup fallito</string>
+  <string name="restore_failed">Ripristino fallito</string>
+  <string name="backup_share_title">Coondividi backup</string>
+  <string name="local_backups">Backup locali</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
 </resources>
