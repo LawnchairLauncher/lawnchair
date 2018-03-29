@@ -7,5 +7,6 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="blurTintColor">#45ffffff</item>
         <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
+        <item name="android:colorEdgeEffect">@color/accent_material_light</item>
     </style>
 </resources>
