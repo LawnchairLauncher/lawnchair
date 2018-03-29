@@ -296,6 +296,8 @@
   <string name="debug_pref_summary">Simge veritabanını yeniden başlat veya yeniden oluştur</string>
   <string name="show_pixel_bar_pref_title">Pixel arama çubuğunu göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
+  <string name="show_search_pill_title">Google Arama simgesini göster</string>
+  <string name="show_date_or_weather_title">Sağdaki tarih/hava durumunu göster</string>
   <string name="show_mic_pref_title">Google Asistan simgesini göster</string>
   <string name="use_round_searhbar">Yuvarlak uygulama arama çubuğunu kullan</string>
   <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
@@ -327,6 +329,7 @@
   <string name="default_text">Varsayılan</string>
   <string name="edit_icon_reset">Sıfırla</string>
   <string name="show_top_shadow_title">Üst gölgeyi göster</string>
+  <string name="pref_category_homescreen">Ana ekran</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Açık</string>
   <string name="theme_dark">Koyu</string>
@@ -339,6 +342,7 @@
   <string name="pull_down_search">Aramayı aç</string>
   <string name="pull_down_apps_search">Uygulama ara</string>
   <string name="enable_screen_rotation">Ekran döndürmeyi etkinleştir</string>
+  <string name="use_system_fonts_title">Etiketler için sistem yazı tiplerini kullan</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Geri yükle</string>
   <string name="backup_export_title">Yedekle</string>
@@ -419,10 +423,48 @@
   <string name="reset_alternative_icons">Alternatif simgelere sahip 5 uygulamanız var, bunları sıfırlamak istiyor musunuz?</string>
   <string name="error_no_browser">URL\'leri işleyecek etkinlik bulunamadı</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed etkin değil</string>
+  <string name="lawnfeed_not_enabled">Google Now sayfasını açmaya çalışıyorsunuz gibi gözüküyor, fakat davranış ayarlarındaki seçeneği etkinleştirmemişsiniz.\n\nEtkinleştirmek ister misiniz?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
   <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
   <string name="title_storage_permission_required">Depolama İzni Gerekiyor</string>
   <string name="content_storage_permission_required">Android 8.1 ve üzeri sürümlerde, uygulamalar duvar kağıdına erişmek için depolama iznine ihtiyaç duyar. Söz konusu izin olmadan Lawnchair bozulmasına veya beklenmeyen davranışlar gösterebilir.</string>
+  <string name="disable_popup">Tekrar gösterme</string>
+  <string name="backups">Yedeklemeler</string>
+  <string name="new_backup">Oluştur</string>
+  <string name="restore_backup">Geri yükle</string>
+  <string name="backup_name">İsim</string>
+  <string name="backup_location">Konum</string>
+  <string name="choose_backup_path">Gözat</string>
+  <string name="backup_homescreen">Ana ekran</string>
+  <string name="backup_contents">Yedekleme içeriği</string>
+  <string name="backup_settings">Ayarlar</string>
+  <string name="backup_wallpaper">Duvar kağıdı</string>
+  <string name="backup_error_blank_name">İsim alanı boş olmamalıdır</string>
+  <string name="backup_error_blank_location">Konum alanı boş olmamalıdır</string>
+  <string name="backup_error_blank_contents">İçerikler boş olmamalıdır</string>
+  <string name="backup_creating">Yedek oluşturuluyor</string>
+  <string name="no_recent_backups">Son yedekleme yok</string>
+  <string name="backup_loading">Yükleniyor...</string>
+  <string name="backup_invalid">Mevcut değil</string>
+  <string name="backup_remove_from_recents">Listeden kaldır</string>
+  <string name="backup_share">Paylaş</string>
+  <string name="backup_timestamp">Oluşturulma tarihi</string>
+  <string name="backup_restoring">Yedek geri yükleniyor</string>
+  <string name="backup_restarting">Yeniden başlatılıyor</string>
+  <string name="restore_contents">İçeriği geri yükle</string>
+  <string name="restore_success">Geri yükleme başarılı</string>
+  <string name="backup_failed">Yedekleme başarısız oldu</string>
+  <string name="restore_failed">Geri yükleme başarısız oldu</string>
+  <string name="restore_read_meta_fail">Geçersiz yedek dosyası</string>
+  <string name="backup_share_title">Yedeklemeyi paylaş</string>
+  <string name="backup_share_text">Lawnchair yedekleme dosyası</string>
+  <string name="read_external_storage_required">Yedekleme oluşturmak için depolama izni gerekiyor</string>
+  <string name="local_backups">Yerel yedekleme</string>
+  <string name="backup_location_device_storage">Cihaz depolaması</string>
+  <string name="backup_location_documents_storage">Belgeler depolaması</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel arama çubuğu</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Çeşitli</string>
 </resources>
