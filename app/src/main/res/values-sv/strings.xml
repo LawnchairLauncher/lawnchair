@@ -416,8 +416,10 @@
   <string name="reset_alternative_icons">Du har %1$d appar med alternativa ikoner, vill du återställa dem?</string>
   <string name="error_no_browser">Ingen aktivitet hittades för att hantera webbedresser</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled">Det ser ut som du försöker öppna sidan Google Nu, men du inte har aktiverat alternativet i beteende inställningar.\n\nVill aktivera det nu?</string>
   <string name="lawnfeed_outdated_title">Uppdatering av Lawnfeed krävs</string>
   <string name="lawnfeed_outdated">En nyare version av Lawnfeed krävs för att fungera med denna versionen av Lawnchair.\n\nInnan uppdateringen installeras behöver du förmodligen avinstallera nuvarande version av Lawnfeed.\n\nVill du ladda ner den nu?</string>
+  <string name="disable_popup">Visa inte igen</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Misc Title -->
 </resources>
