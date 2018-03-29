@@ -296,6 +296,8 @@
   <string name="debug_pref_summary">Refazer imagem dos ícones</string>
   <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de pesquisa circular</string>
+  <string name="show_search_pill_title">Mostrar pílula da Pesquisa do Google</string>
+  <string name="show_date_or_weather_title">Mostrar data/tempo no lado direito</string>
   <string name="show_mic_pref_title">Mostrar botão do Google Assistente</string>
   <string name="use_round_searhbar">Usar barra de pesquisa arredondada</string>
   <string name="pixel_style_icons_pref_title">Usar ícones redondos</string>
@@ -327,6 +329,7 @@
   <string name="default_text">Padrão</string>
   <string name="edit_icon_reset">Redefinir</string>
   <string name="show_top_shadow_title">Escurecer barra de notificação</string>
+  <string name="pref_category_homescreen">Tela inicial</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Escuro</string>
@@ -339,6 +342,7 @@
   <string name="pull_down_search">Abrir pesquisa</string>
   <string name="pull_down_apps_search">Abrir pesquisa de aplicativos</string>
   <string name="enable_screen_rotation">Ativar a rotação de tela</string>
+  <string name="use_system_fonts_title">Use fontes do sistema para rótulos</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaurar backup</string>
   <string name="backup_export_title">Fazer backup</string>
@@ -395,6 +399,7 @@
   <string name="pref_all_apps_label_color">Cor do texto dos ícones na gaveta de apps</string>
   <string name="pref_num_rows_drawer">Número de linhas na gaveta de apps</string>
   <string name="center_wallpaper_pref_title">Centralizar papel de parede quando houver apenas uma página</string>
+  <string name="center_wallpaper_pref_summary">Só funciona se a tela inicial usar uma página</string>
   <string name="vertical_drawer_layout_pref_title">Exibir como lista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -418,8 +423,48 @@
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, deseja restaurá-los?</string>
   <string name="error_no_browser">Nenhum navegador encontrado para abrir URLs</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed não habilitado</string>
+  <string name="lawnfeed_not_enabled">Parece que você está tentando abrir a página do Google Now, mas você não ativou a opção nas configurações de comportamento.\n\nVocê quer habilitá-lo agora?</string>
   <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
   <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
+  <string name="title_storage_permission_required">Permissão de armazenamento recusada</string>
+  <string name="content_storage_permission_required">No Android 8.1 e acima, a permissão de armazenamento é necessária para que os aplicativos acessem o papel de parede. Sem a permissão indicada, a Lawchair pode falhar ou mostrar comportamentos inesperados.</string>
+  <string name="disable_popup">Lembrar minha escolha</string>
+  <string name="backups">Backups</string>
+  <string name="new_backup">Criar</string>
+  <string name="restore_backup">Restaurar</string>
+  <string name="backup_name">Nome</string>
+  <string name="backup_location">Localização</string>
+  <string name="choose_backup_path">Navegar</string>
+  <string name="backup_homescreen">Tela Inicial</string>
+  <string name="backup_contents">Conteúdo de backup</string>
+  <string name="backup_settings">Importar configurações</string>
+  <string name="backup_wallpaper">Papel de parede</string>
+  <string name="backup_error_blank_name">O nome não pode ficar em branco</string>
+  <string name="backup_error_blank_location">O local não deve ficar em branco</string>
+  <string name="backup_error_blank_contents">O conteúdo não pode ficar em branco</string>
+  <string name="backup_creating">Criando backup</string>
+  <string name="no_recent_backups">Nenhum backup recente</string>
+  <string name="backup_loading">Carregando...</string>
+  <string name="backup_invalid">Indisponível</string>
+  <string name="backup_remove_from_recents">Remover da lista</string>
+  <string name="backup_share">Compartilhar</string>
+  <string name="backup_timestamp">Data de criação</string>
+  <string name="backup_restoring">Restaurando backup</string>
+  <string name="backup_restarting">Reiniciando</string>
+  <string name="restore_contents">Restaurar conteúdo</string>
+  <string name="restore_success">Restauração com sucesso</string>
+  <string name="backup_failed">Erro ao fazer backup</string>
+  <string name="restore_failed">Falha na restauração</string>
+  <string name="restore_read_meta_fail">Arquivo de backup inválido</string>
+  <string name="backup_share_title">Compartilhar backup</string>
+  <string name="backup_share_text">Arquivo de backup do Lawnchair</string>
+  <string name="read_external_storage_required">Permissão de armazenamento é necessária para criar backup</string>
+  <string name="local_backups">Backups locais</string>
+  <string name="backup_location_device_storage">Armazenamento do dispositivo</string>
+  <string name="backup_location_documents_storage">Armazenamento de documentos</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Barra de pesquisa de Pixel</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Diversos</string>
 </resources>
