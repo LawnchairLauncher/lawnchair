@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.fallback;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -25,15 +25,22 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.RecentsActivity;
 
 public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
-    private final BaseActivity mActivity;
+    private final RecentsActivity mActivity;
 
     public RecentsRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mActivity = BaseActivity.fromContext(context);
-        mControllers = new TouchController[0];
+        mActivity = (RecentsActivity) BaseActivity.fromContext(context);
+        setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+
+    public void setup() {
+        mControllers = new TouchController[] { new RecentsTaskController(mActivity) };
     }
 
     @TargetApi(23)

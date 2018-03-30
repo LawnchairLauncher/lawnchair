@@ -34,13 +34,15 @@ import android.widget.Toast;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.views.BaseDragLayer;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
  */
-public abstract class BaseDraggingActivity extends BaseActivity {
+public abstract class BaseDraggingActivity extends BaseActivity
+        implements WallpaperColorInfo.OnChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -57,10 +59,38 @@ public abstract class BaseDraggingActivity extends BaseActivity {
 
     private OnStartCallback mOnStartCallback;
 
+    private int mThemeRes = R.style.LauncherTheme;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
+
+        // Update theme
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+        wallpaperColorInfo.addOnChangeListener(this);
+        int themeRes = getThemeRes(wallpaperColorInfo);
+        if (themeRes != mThemeRes) {
+            mThemeRes = themeRes;
+            setTheme(themeRes);
+        }
+    }
+
+    @Override
+    public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+        if (mThemeRes != getThemeRes(wallpaperColorInfo)) {
+            recreate();
+        }
+    }
+
+    protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
+        if (wallpaperColorInfo.isDark()) {
+            return R.style.LauncherThemeDark;
+        } else if (wallpaperColorInfo.supportsDarkText()) {
+            return R.style.LauncherThemeDarkText;
+        } else {
+            return R.style.LauncherTheme;
+        }
     }
 
     @Override
@@ -201,6 +231,12 @@ public abstract class BaseDraggingActivity extends BaseActivity {
             mOnStartCallback.onActivityStart(this);
             mOnStartCallback = null;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WallpaperColorInfo.getInstance(this).removeOnChangeListener(this);
     }
 
     public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {

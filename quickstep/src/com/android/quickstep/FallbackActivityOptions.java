@@ -16,13 +16,13 @@
 package com.android.quickstep;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 /**
@@ -39,6 +39,7 @@ public class FallbackActivityOptions implements RemoteAnimationRunnerCompat {
     @Override
     public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats,
             Runnable runnable) {
+        showOpeningTarget(targetCompats);
         DummyRecentsAnimationControllerCompat dummyRecentsAnim =
                 new DummyRecentsAnimationControllerCompat(runnable);
 
@@ -50,6 +51,18 @@ public class FallbackActivityOptions implements RemoteAnimationRunnerCompat {
     @Override
     public void onAnimationCancelled() {
         mListener.onAnimationCanceled();
+    }
+
+    private void showOpeningTarget(RemoteAnimationTargetCompat[] targetCompats) {
+        for (RemoteAnimationTargetCompat target : targetCompats) {
+            TransactionCompat t = new TransactionCompat();
+            int layer = target.mode == RemoteAnimationTargetCompat.MODE_CLOSING
+                    ? Integer.MAX_VALUE
+                    : target.prefixOrderIndex;
+            t.setLayer(target.leash, layer);
+            t.show(target.leash);
+            t.apply();
+        }
     }
 
     private static class DummyRecentsAnimationControllerCompat

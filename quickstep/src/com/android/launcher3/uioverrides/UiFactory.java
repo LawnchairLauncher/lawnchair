@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -41,19 +42,19 @@ public class UiFactory {
             return new TouchController[] {
                     launcher.getDragController(),
                     new LandscapeStatesTouchController(launcher),
-                    new TaskViewTouchController(launcher)};
+                    new LauncherTaskViewcontroller(launcher)};
         }
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
                     new LandscapeStatesTouchController(launcher),
                     new LandscapeEdgeSwipeController(launcher),
-                    new TaskViewTouchController(launcher)};
+                    new LauncherTaskViewcontroller(launcher)};
         } else {
             return new TouchController[] {
                     launcher.getDragController(),
                     new PortraitStatesTouchController(launcher),
-                    new TaskViewTouchController(launcher)};
+                    new LauncherTaskViewcontroller(launcher)};
         }
     }
 
@@ -99,6 +100,18 @@ public class UiFactory {
         RecentsModel model = RecentsModel.getInstance(context);
         if (model != null) {
             model.onTrimMemory(level);
+        }
+    }
+
+    private static class LauncherTaskViewcontroller extends TaskViewTouchController<Launcher> {
+
+        public LauncherTaskViewcontroller(Launcher activity) {
+            super(activity);
+        }
+
+        @Override
+        protected boolean isRecentsInteractive() {
+            return mActivity.isInState(OVERVIEW);
         }
     }
 }

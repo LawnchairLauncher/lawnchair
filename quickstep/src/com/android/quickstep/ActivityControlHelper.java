@@ -41,6 +41,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
