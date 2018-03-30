@@ -749,6 +749,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+            mLauncherTransitionController = null;
+        }
         mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.

@@ -207,6 +207,14 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     @Override
     protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
             LauncherState targetState, float velocity, boolean isFling) {
+        handleFirstSwipeToOverview(animator, expectedDuration, targetState, velocity, isFling);
+        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
+                velocity, isFling);
+    }
+
+    private void handleFirstSwipeToOverview(final ValueAnimator animator,
+            final long expectedDuration, final LauncherState targetState, final float velocity,
+            final boolean isFling) {
         if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
             mFinishFastOnSecondTouch = true;
 
@@ -220,7 +228,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 // TODO: Clean up these magic calculations
                 // Linearly interpolate the max value based on the velocity.
                 float maxValue = Math.max(absVelocity > 4 ? 1 + MAX_OVERSHOOT :
-                        1 + (absVelocity - 1) * MAX_OVERSHOOT / 3,
+                                1 + (absVelocity - 1) * MAX_OVERSHOOT / 3,
                         currentValue);
                 double angleToPeak = PI_BY_2 - Math.asin(currentValue / maxValue);
 
@@ -248,8 +256,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
             if (currentFraction < LINEAR_SCALE_LIMIT) {
                 mAllAppsInterpolatorWrapper.baseInterpolator = LINEAR;
-                super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
-                        velocity, isFling);
                 return;
             }
             float extraValue = mAllAppsDampedInterpolator.getInterpolation(currentFraction) - 1;
@@ -267,8 +273,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             return;
         }
         mFinishFastOnSecondTouch = false;
-        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
-                velocity, isFling);
     }
 
     @Override
