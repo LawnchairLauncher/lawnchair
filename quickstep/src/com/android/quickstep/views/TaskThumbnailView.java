@@ -54,6 +54,7 @@ public class TaskThumbnailView extends View {
 
     private final TaskOverlay mOverlay;
     private final Paint mPaint = new Paint();
+    private final Paint mLockedPaint = new Paint();
 
     private final Matrix mMatrix = new Matrix();
 
@@ -77,6 +78,7 @@ public class TaskThumbnailView extends View {
         mFadeLength = getResources().getDimension(R.dimen.task_fade_length);
         mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
+        mLockedPaint.setColor(Color.WHITE);
     }
 
     public void bind() {
@@ -123,14 +125,19 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
-                mCornerRadius, mCornerRadius, mPaint);
+        if (mTask == null) {
+            return;
+        }
+        canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius,
+                mCornerRadius, mTask.isLocked ? mLockedPaint : mPaint);
     }
 
     private void updateThumbnailPaintFilter() {
         int mul = (int) (mDimAlpha * 255);
         if (mBitmapShader != null) {
-            mPaint.setColorFilter(getLightingColorFilter(mul));
+            LightingColorFilter filter = getLightingColorFilter(mul);
+            mPaint.setColorFilter(filter);
+            mLockedPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
             mPaint.setColor(Color.argb(255, mul, mul, mul));
