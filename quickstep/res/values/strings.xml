@@ -35,4 +35,7 @@
 
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
+
+    <!-- Content description for the recent apps's accessibility option that closes it. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_close_task">Close</string>
 </resources>

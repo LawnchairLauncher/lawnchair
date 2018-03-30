@@ -49,6 +49,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -942,5 +943,11 @@ public abstract class RecentsView<T extends BaseActivity>
             mPendingAnimation = null;
         });
         return mPendingAnimation;
+    }
+
+    @Override
+    protected void notifyPageSwitchListener(int prevPage) {
+        super.notifyPageSwitchListener(prevPage);
+        getChildAt(mCurrentPage).sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
     }
 }

@@ -22,10 +22,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -33,6 +35,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsAnimationInterpolator;
+import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
@@ -218,5 +221,46 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             outline.setRoundRect(0, mMarginTop, view.getWidth(),
                     view.getHeight(), mRadius);
         }
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+
+        info.addAction(
+                new AccessibilityNodeInfo.AccessibilityAction(R.string.accessibility_close_task,
+                        getContext().getText(R.string.accessibility_close_task)));
+
+        final Context context = getContext();
+        final BaseDraggingActivity activity = BaseDraggingActivity.fromContext(context);
+        for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
+            OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
+            if (onClickListener != null) {
+                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(menuOption.labelResId,
+                        context.getText(menuOption.labelResId)));
+            }
+        }
+    }
+
+    @Override
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (action == R.string.accessibility_close_task) {
+            ((RecentsView) getParent()).dismissTask(this, true /*animateTaskView*/,
+                    true /*removeTask*/);
+            return true;
+        }
+
+        for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
+            if (action == menuOption.labelResId) {
+                OnClickListener onClickListener = menuOption.getOnClickListener(
+                        BaseDraggingActivity.fromContext(getContext()), this);
+                if (onClickListener != null) {
+                    onClickListener.onClick(this);
+                }
+                return true;
+            }
+        }
+
+        return super.performAccessibilityAction(action, arguments);
     }
 }
