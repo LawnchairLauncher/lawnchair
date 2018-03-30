@@ -46,6 +46,7 @@ import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 
@@ -273,6 +274,13 @@ public abstract class RecentsView<T extends BaseActivity>
             mNextPageSwitchRunnable.run();
             mNextPageSwitchRunnable = null;
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        super.onTouchEvent(ev);
+        // Do not let touch escape to siblings below this view.
+        return true;
     }
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
