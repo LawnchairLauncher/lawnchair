@@ -28,8 +28,11 @@ import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppTransitionManagerImpl;
+import com.android.launcher3.LauncherAppTransitionManagerImpl.AnimConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -167,8 +170,10 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
                     .wrap(mPendingAnimation.anim, maxDuration);
             mEndDisplacement = -mTaskBeingDragged.getHeight();
         } else {
-            AnimatorSet anim = new AnimatorSet();
-            // TODO: Setup a zoom animation
+            LauncherAppTransitionManagerImpl appTransitionManager =
+                    (LauncherAppTransitionManagerImpl) mLauncher.getAppTransitionManager();
+            AnimatorSet anim = appTransitionManager.composeUserControlledRecentsLaunchAnimator(
+                    mTaskBeingDragged, new AnimConfig(maxDuration, Interpolators.ZOOM_IN));
             mCurrentAnimation = AnimatorPlaybackController.wrap(anim, maxDuration);
 
             mTempCords[1] = mTaskBeingDragged.getHeight();
