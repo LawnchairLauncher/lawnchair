@@ -55,10 +55,13 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.PendingAnimation;
 import com.android.quickstep.QuickScrubController;
+import com.android.quickstep.RecentsAnimationInterpolator;
+import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.RecentsModel;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -838,5 +841,95 @@ public abstract class RecentsView<T extends BaseActivity>
             mEmptyTextLayout.draw(canvas);
             canvas.restore();
         }
+    }
+
+    /**
+     * Animate adjacent tasks off screen while scaling up.
+     *
+     * If launching one of the adjacent tasks, parallax the center task and other adjacent task
+     * to the right.
+     */
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
+        AnimatorSet anim = new AnimatorSet();
+
+        int taskIndex = indexOfChild(tv);
+        int centerTaskIndex = getCurrentPage();
+        boolean launchingCenterTask = taskIndex == centerTaskIndex;
+
+        TaskWindowBounds endInterpolation = tv.getRecentsInterpolator().interpolate(1);
+        float toScale = endInterpolation.taskScale;
+        float toTranslationY = endInterpolation.taskY;
+
+        float displacementX = tv.getWidth() * (toScale - tv.getScaleX());
+        if (launchingCenterTask) {
+            if (taskIndex - 1 >= 0) {
+                anim.play(createAnimForChild(
+                        taskIndex - 1, toScale, displacementX, toTranslationY));
+            }
+            if (taskIndex + 1 < getPageCount()) {
+                anim.play(createAnimForChild(
+                        taskIndex + 1, toScale, -displacementX, toTranslationY));
+            }
+        } else {
+            // We are launching an adjacent task, so parallax the center and other adjacent task.
+            anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex), TRANSLATION_X,
+                    mIsRtl ? -displacementX : displacementX));
+
+            int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - taskIndex);
+            if (otherAdjacentTaskIndex >= 0 && otherAdjacentTaskIndex < getPageCount()) {
+                anim.play(ObjectAnimator.ofPropertyValuesHolder(getPageAt(otherAdjacentTaskIndex),
+                        new PropertyListBuilder()
+                                .translationX(mIsRtl ? -displacementX : displacementX)
+                                .scale(1)
+                                .build()));
+            }
+        }
+        return anim;
+    }
+
+    private ObjectAnimator createAnimForChild(int childIndex, float toScale, float tx, float ty) {
+        View child = getChildAt(childIndex);
+        return ObjectAnimator.ofPropertyValuesHolder(child,
+                        new PropertyListBuilder()
+                                .scale(child.getScaleX() * toScale)
+                                .translationY(ty)
+                                .translationX(mIsRtl ? tx : -tx)
+                                .build());
+    }
+
+    public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+            throw new IllegalStateException("Another pending animation is still running");
+        }
+        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv);
+
+        int count = getChildCount();
+        if (count == 0) {
+            return new PendingAnimation(anim);
+        }
+
+        final RecentsAnimationInterpolator recentsInterpolator = tv.getRecentsInterpolator();
+        ValueAnimator targetViewAnim = ValueAnimator.ofFloat(0, 1);
+        targetViewAnim.addUpdateListener((animation) -> {
+            float percent = animation.getAnimatedFraction();
+            TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
+            tv.setScaleX(tw.taskScale);
+            tv.setScaleY(tw.taskScale);
+            tv.setTranslationX(tw.taskX);
+            tv.setTranslationY(tw.taskY);
+        });
+        anim.play(targetViewAnim);
+        anim.setDuration(duration);
+
+        mPendingAnimation = new PendingAnimation(anim);
+        mPendingAnimation.addEndListener((isSuccess) -> {
+            if (isSuccess) {
+                tv.launchTask(false);
+            } else {
+                resetTaskVisuals();
+            }
+            mPendingAnimation = null;
+        });
+        return mPendingAnimation;
     }
 }

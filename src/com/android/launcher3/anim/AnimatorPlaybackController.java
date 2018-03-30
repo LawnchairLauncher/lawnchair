@@ -18,6 +18,7 @@ package com.android.launcher3.anim;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 
 import java.util.ArrayList;
@@ -184,9 +185,13 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         private void getAnimationsRecur(AnimatorSet anim, ArrayList<ValueAnimator> out) {
             long forceDuration = anim.getDuration();
+            TimeInterpolator forceInterpolator = anim.getInterpolator();
             for (Animator child : anim.getChildAnimations()) {
                 if (forceDuration > 0) {
                     child.setDuration(forceDuration);
+                }
+                if (forceInterpolator != null) {
+                    child.setInterpolator(forceInterpolator);
                 }
                 if (child instanceof ValueAnimator) {
                     out.add((ValueAnimator) child);

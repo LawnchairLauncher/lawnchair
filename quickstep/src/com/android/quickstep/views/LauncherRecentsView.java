@@ -15,8 +15,14 @@
  */
 package com.android.quickstep.views;
 
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,6 +36,7 @@ import android.view.ViewDebug;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 
 /**
@@ -136,5 +143,24 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     protected void onTaskStackUpdated() {
         // Lazily update the empty message only when the task stack is reapplied
         updateEmptyMessage();
+    }
+
+    /**
+     * Animates adjacent tasks and translate hotseat off screen as well.
+     */
+    @Override
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
+        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv);
+
+        float allAppsProgressOffscreen = ALL_APPS_PROGRESS_OFF_SCREEN;
+        LauncherState state = mActivity.getStateManager().getState();
+        if ((state.getVisibleElements(mActivity) & ALL_APPS_HEADER_EXTRA) != 0) {
+            float maxShiftRange = mActivity.getDeviceProfile().heightPx;
+            float currShiftRange = mActivity.getAllAppsController().getShiftRange();
+            allAppsProgressOffscreen = 1f + (maxShiftRange - currShiftRange) / maxShiftRange;
+        }
+        anim.play(ObjectAnimator.ofFloat(
+                mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
+        return anim;
     }
 }

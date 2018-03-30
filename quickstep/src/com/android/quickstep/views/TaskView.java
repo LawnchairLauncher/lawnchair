@@ -21,6 +21,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
@@ -29,7 +30,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
@@ -181,6 +184,23 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public boolean hasOverlappingRendering() {
         // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
         return false;
+    }
+
+    public RecentsAnimationInterpolator getRecentsInterpolator() {
+        Rect taskViewBounds = new Rect();
+        BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
+        DeviceProfile dp = activity.getDeviceProfile();
+        activity.getDragLayer().getDescendantRectRelativeToSelf(this, taskViewBounds);
+
+        // TODO: Use the actual target insets instead of the current thumbnail insets in case the
+        // device state has changed
+        return new RecentsAnimationInterpolator(
+                new Rect(0, 0, dp.widthPx, dp.heightPx),
+                getThumbnail().getInsets(),
+                taskViewBounds,
+                new Rect(0, getThumbnail().getTop(), 0, 0),
+                getScaleX(),
+                getTranslationX());
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {

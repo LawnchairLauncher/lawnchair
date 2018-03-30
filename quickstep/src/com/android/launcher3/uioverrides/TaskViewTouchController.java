@@ -20,7 +20,6 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -28,8 +27,6 @@ import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
-import com.android.launcher3.LauncherAppTransitionManagerImpl.AnimConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
@@ -166,21 +163,20 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
         if (goingUp) {
             mPendingAnimation = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
                     true /* animateTaskView */, true /* removeTask */, maxDuration);
-            mCurrentAnimation = AnimatorPlaybackController
-                    .wrap(mPendingAnimation.anim, maxDuration);
+
             mEndDisplacement = -mTaskBeingDragged.getHeight();
         } else {
-            LauncherAppTransitionManagerImpl appTransitionManager =
-                    (LauncherAppTransitionManagerImpl) mLauncher.getAppTransitionManager();
-            AnimatorSet anim = appTransitionManager.composeUserControlledRecentsLaunchAnimator(
-                    mTaskBeingDragged, new AnimConfig(maxDuration, Interpolators.ZOOM_IN));
-            mCurrentAnimation = AnimatorPlaybackController.wrap(anim, maxDuration);
+            mPendingAnimation = mRecentsView.createTaskLauncherAnimation(
+                    mTaskBeingDragged, maxDuration);
+            mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
 
             mTempCords[1] = mTaskBeingDragged.getHeight();
             dl.getDescendantCoordRelativeToSelf(mTaskBeingDragged, mTempCords);
             mEndDisplacement = dl.getHeight() - mTempCords[1];
         }
 
+        mCurrentAnimation = AnimatorPlaybackController
+                .wrap(mPendingAnimation.anim, maxDuration);
         mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();
         mProgressMultiplier = 1 / mEndDisplacement;
@@ -258,7 +254,6 @@ public class TaskViewTouchController extends AnimatorListenerAdapter
         }
         if (wasSuccess) {
             if (!mCurrentAnimationIsGoingUp) {
-                mTaskBeingDragged.launchTask(false);
                 mLauncher.getUserEventDispatcher().logTaskLaunch(logAction,
                         Direction.DOWN, mTaskBeingDragged.getTask().getTopComponent());
             }
