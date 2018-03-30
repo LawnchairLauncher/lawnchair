@@ -50,6 +50,7 @@ import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
+import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
@@ -271,6 +272,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
                 return;
             }
             if (helper.switchToRecentsIfVisible()) {
+                SysuiEventLogger.writeDummyRecentsTransition(0);
                 return;
             }
 
