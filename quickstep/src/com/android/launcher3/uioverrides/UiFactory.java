@@ -16,16 +16,19 @@
 
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -34,15 +37,25 @@ import com.android.quickstep.views.RecentsView;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
+        SharedPreferences prefs = getPrefs(launcher);
+        boolean swipeUpEnabled = prefs.getBoolean(KEY_SWIPE_UP_ENABLED, true);
+        if (!swipeUpEnabled) {
             return new TouchController[] {
-                    new EdgeSwipeController(launcher),
-                    new TwoStepSwipeController(launcher),
-                    new OverviewSwipeController(launcher)};
+                    launcher.getDragController(),
+                    new LandscapeStatesTouchController(launcher),
+                    new TaskViewTouchController(launcher)};
+        }
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            return new TouchController[] {
+                    launcher.getDragController(),
+                    new LandscapeStatesTouchController(launcher),
+                    new LandscapeEdgeSwipeController(launcher),
+                    new TaskViewTouchController(launcher)};
         } else {
             return new TouchController[] {
-                    new TwoStepSwipeController(launcher),
-                    new OverviewSwipeController(launcher)};
+                    launcher.getDragController(),
+                    new PortraitStatesTouchController(launcher),
+                    new TaskViewTouchController(launcher)};
         }
     }
 
@@ -57,21 +70,15 @@ public class UiFactory {
     }
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
-        boolean shouldBackButtonBeVisible = launcher == null
-                || !launcher.isInState(NORMAL)
-                || !launcher.hasWindowFocus();
-        if (!shouldBackButtonBeVisible) {
+        boolean shouldBackButtonBeHidden = launcher != null
+                && launcher.getStateManager().getState().hideBackButton
+                && launcher.hasWindowFocus();
+        if (shouldBackButtonBeHidden) {
             // Show the back button if there is a floating view visible.
-            DragLayer dragLayer = launcher.getDragLayer();
-            for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
-                View child = dragLayer.getChildAt(i);
-                if (child instanceof AbstractFloatingView) {
-                    shouldBackButtonBeVisible = true;
-                    break;
-                }
-            }
+            shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenView(launcher) == null;
         }
-        OverviewInteractionState.setBackButtonVisible(launcher, shouldBackButtonBeVisible);
+        OverviewInteractionState.getInstance(launcher)
+                .setBackButtonVisible(!shouldBackButtonBeHidden);
     }
 
     public static void resetOverview(Launcher launcher) {
@@ -79,17 +86,24 @@ public class UiFactory {
         recents.reset();
     }
 
-    public static void onStart(Launcher launcher) {
-        RecentsModel model = RecentsModel.getInstance(launcher);
+    public static void onStart(Context context) {
+        RecentsModel model = RecentsModel.getInstance(context);
         if (model != null) {
             model.onStart();
         }
     }
 
-    public static void onTrimMemory(Launcher launcher, int level) {
-        RecentsModel model = RecentsModel.getInstance(launcher);
+    public static void onTrimMemory(Context context, int level) {
+        RecentsModel model = RecentsModel.getInstance(context);
         if (model != null) {
             model.onTrimMemory(level);
         }
+    }
+
+    public static View[] getHotseatExtraContent(Hotseat hotseat) {
+        return new View[] {
+                hotseat.findViewById(R.id.drag_indicator),
+                hotseat.findViewById(R.id.search_container_hotseat),
+        };
     }
 }

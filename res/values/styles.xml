@@ -112,9 +112,9 @@
         <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">marquee</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
 
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>

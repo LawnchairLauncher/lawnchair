@@ -102,23 +102,30 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
             // Inform the workspace to cancel touch handling
             ev.setAction(ACTION_CANCEL);
             mWorkspace.onTouchEvent(ev);
+
             ev.setAction(action);
             mLongPressState = STATE_COMPLETED;
         }
 
+        final boolean result;
         if (mLongPressState == STATE_COMPLETED) {
             // We have handled the touch, so workspace does not need to know anything anymore.
-            return true;
+            result = true;
         } else if (mLongPressState == STATE_REQUESTED) {
             mWorkspace.onTouchEvent(ev);
-            if (action == ACTION_UP || action == ACTION_CANCEL || mWorkspace.isHandlingTouch()) {
+            if (mWorkspace.isHandlingTouch()) {
                 cancelLongPress();
             }
-            return true;
+
+            result = true;
         } else {
             // We don't want to handle touch, let workspace handle it as usual.
-            return false;
+            result = false;
         }
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            cancelLongPress();
+        }
+        return result;
     }
 
     private void cancelLongPress() {

@@ -47,7 +47,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
+import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
 import java.util.ArrayList;
 

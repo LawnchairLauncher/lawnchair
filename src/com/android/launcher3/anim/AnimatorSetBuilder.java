@@ -17,6 +17,8 @@ package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.util.SparseArray;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.LauncherAnimUtils;
 
@@ -27,7 +29,12 @@ import java.util.ArrayList;
  */
 public class AnimatorSetBuilder {
 
+    public static final int ANIM_VERTICAL_PROGRESS = 0;
+    public static final int ANIM_OVERVIEW_TRANSLATION = 1;
+
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
+
+    private final SparseArray<Interpolator> mInterpolators = new SparseArray<>();
     private long mStartDelay = 0;
 
     /**
@@ -48,5 +55,13 @@ public class AnimatorSetBuilder {
         anim.playTogether(mAnims);
         anim.setStartDelay(mStartDelay);
         return anim;
+    }
+
+    public Interpolator getInterpolator(int animId, Interpolator fallback) {
+        return mInterpolators.get(animId, fallback);
+    }
+
+    public void setInterpolator(int animId, Interpolator interpolator) {
+        mInterpolators.put(animId, interpolator);
     }
 }

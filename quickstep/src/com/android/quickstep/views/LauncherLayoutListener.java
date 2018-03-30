@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.views;
+
+import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -21,11 +23,14 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
+import com.android.quickstep.ActivityControlHelper.LayoutListener;
+import com.android.quickstep.WindowTransformSwipeHandler;
 
 /**
  * Floating view which shows the task snapshot allowing it to be dragged and placed.
  */
-public class LauncherLayoutListener extends AbstractFloatingView implements Insettable {
+public class LauncherLayoutListener extends AbstractFloatingView
+        implements Insettable, LayoutListener {
 
     private final Launcher mLauncher;
     private WindowTransformSwipeHandler mHandler;
@@ -36,6 +41,7 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
         setVisibility(INVISIBLE);
     }
 
+    @Override
     public void setHandler(WindowTransformSwipeHandler handler) {
         mHandler = handler;
     }
@@ -65,6 +71,7 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
         }
     }
 
+    @Override
     public void open() {
         if (!mIsOpen) {
             mLauncher.getDragLayer().addView(this);
@@ -85,5 +92,12 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
     @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_QUICKSTEP_PREVIEW) != 0;
+    }
+
+    @Override
+    public void finish() {
+        setHandler(null);
+        close(false);
+        mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
     }
 }

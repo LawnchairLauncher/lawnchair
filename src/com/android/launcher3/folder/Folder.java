@@ -481,6 +481,8 @@ public class Folder extends AbstractFloatingView implements DragSource,
             openFolder.close(true);
         }
 
+        mIsOpen = true;
+
         DragLayer dragLayer = mLauncher.getDragLayer();
         // Just verify that the folder hasn't already been added to the DragLayer.
         // There was a one-off crash where the folder had a parent already.
@@ -493,8 +495,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
                         + getParent());
             }
         }
-
-        mIsOpen = true;
 
         mContent.completePendingPageChanges();
         if (!mDragInProgress) {

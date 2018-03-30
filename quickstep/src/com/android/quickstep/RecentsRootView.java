@@ -21,17 +21,19 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.BaseDragLayer;
 
-public class RecentsRootView extends InsettableFrameLayout {
+public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
     private final BaseActivity mActivity;
 
     public RecentsRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivity = BaseActivity.fromContext(context);
+        mControllers = new TouchController[0];
     }
 
     @TargetApi(23)

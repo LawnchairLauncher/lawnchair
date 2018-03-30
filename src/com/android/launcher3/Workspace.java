@@ -3254,8 +3254,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         && v instanceof FolderIcon) {
                     FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
                     for (ShortcutInfo si : ((FolderInfo) info).contents) {
-                        folderBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider()
-                                .getBadgeInfoForItem(si));
+                        folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
                     }
                     ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
                 }

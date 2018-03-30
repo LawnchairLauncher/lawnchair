@@ -22,6 +22,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 import android.graphics.Rect;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
@@ -54,6 +55,11 @@ public class OverviewState extends LauncherState {
         }
 
         return getScaleAndTranslationForPageRect(launcher, pageRect);
+    }
+
+    @Override
+    public float[] getOverviewTranslationFactor(Launcher launcher) {
+        return new float[] {0f, 0f};
     }
 
     @Override
@@ -99,5 +105,30 @@ public class OverviewState extends LauncherState {
         float translationY = pageRect.top - childTop;
 
         return new float[] {scale, 0, translationY};
+    }
+
+    @Override
+    public int getVisibleElements(Launcher launcher) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            return NONE;
+        } else {
+            return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                    ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
+        }
+    }
+
+    @Override
+    public float getVerticalProgress(Launcher launcher) {
+        if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
+            // We have no all apps content, so we're still at the fully down progress.
+            return super.getVerticalProgress(launcher);
+        }
+        return 1 - (getDefaultSwipeHeight(launcher)
+                / launcher.getAllAppsController().getShiftRange());
+    }
+
+    public static float getDefaultSwipeHeight(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 }

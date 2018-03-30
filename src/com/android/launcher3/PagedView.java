@@ -188,6 +188,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
         setWillNotDraw(false);
+
+        if (Utilities.ATLEAST_OREO) {
+            setDefaultFocusHighlightEnabled(false);
+        }
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
@@ -305,9 +309,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private void updatePageIndicator() {
-        // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
             mPageIndicator.setPageDescription(getPageIndicatorDescription());
+            mPageIndicator.setActiveMarker(getNextPage());
         }
     }
     protected void pageBeginTransition() {

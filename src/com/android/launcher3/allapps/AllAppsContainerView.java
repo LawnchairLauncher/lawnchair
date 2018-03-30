@@ -217,14 +217,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Resets the state of AllApps.
      */
-    public void reset() {
+    public void reset(boolean animate) {
         for (int i = 0; i < mAH.length; i++) {
             if (mAH[i].recyclerView != null) {
                 mAH[i].recyclerView.scrollToTop();
             }
         }
         if (isHeaderVisible()) {
-            mHeader.reset();
+            mHeader.reset(animate);
         }
         // Reset the search bar and base recycler view after transitioning home
         mSearchUiManager.resetSearch();
@@ -360,7 +360,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void onTabChanged(int pos) {
         mHeader.setMainActive(pos == 0);
-        reset();
+        reset(true /* animate */);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
 
@@ -381,6 +381,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public FloatingHeaderView getFloatingHeaderView() {
         return mHeader;
+    }
+
+    public View getSearchView() {
+        return mSearchContainer;
+    }
+
+    public View getContentView() {
+        return mViewPager == null ? getActiveRecyclerView() : mViewPager;
+    }
+
+    public RecyclerViewFastScroller getScrollBar() {
+        AllAppsRecyclerView rv = getActiveRecyclerView();
+        return rv == null ? null : rv.getScrollbar();
     }
 
     public void setupHeader() {

@@ -22,7 +22,6 @@
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="task_fade_length">20dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
-    <dimen name="recents_page_fade_length">100dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
              loading full resolution screenshots. -->
@@ -34,7 +33,7 @@
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">25dp</dimen>
     <dimen name="workspace_trans_y">80dp</dimen>
-    <dimen name="recents_adjacent_trans_x">120dp</dimen>
+    <dimen name="recents_adjacent_trans_x">140dp</dimen>
     <dimen name="recents_adjacent_trans_y">80dp</dimen>
     <fraction name="recents_adjacent_scale">150%</fraction>
 </resources>

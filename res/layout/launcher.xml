@@ -44,13 +44,6 @@
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
@@ -69,6 +62,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <!-- DO NOT CHANGE THE ID -->
+        <include
+            android:id="@+id/hotseat"
+            layout="@layout/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </com.android.launcher3.dragndrop.DragLayer>
 
 </com.android.launcher3.LauncherRootView>

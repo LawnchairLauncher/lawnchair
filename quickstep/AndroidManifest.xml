@@ -47,7 +47,21 @@
         <!-- STOPSHIP: Change exported to false once all the integration is complete.
         It is set to true so that the activity can be started from command line -->
         <activity android:name="com.android.quickstep.RecentsActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:excludeFromRecents="true" />
+
+        <!-- Content provider to settings search -->
+        <provider
+            android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
+            android:authorities="com.android.launcher3"
+            android:grantUriPermissions="true"
+            android:multiprocess="true"
+            android:permission="android.permission.READ_SEARCH_INDEXABLES"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
+            </intent-filter>
+        </provider>
     </application>
 
 </manifest>

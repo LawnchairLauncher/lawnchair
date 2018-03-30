@@ -35,7 +35,7 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
             FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
-            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS;
+            FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS | FLAG_HIDE_BACK_BUTTON;
 
     public SpringLoadedState(int id) {
         super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);

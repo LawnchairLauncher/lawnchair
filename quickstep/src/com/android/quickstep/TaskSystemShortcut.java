@@ -30,13 +30,15 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -70,11 +72,12 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
     }
 
     @Override
-    public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+    public View.OnClickListener getOnClickListener(
+            BaseDraggingActivity activity, ItemInfo itemInfo) {
         return null;
     }
 
-    public View.OnClickListener getOnClickListener(final Launcher launcher, final TaskView view) {
+    public View.OnClickListener getOnClickListener(BaseDraggingActivity activity, TaskView view) {
         Task task = view.getTask();
 
         ShortcutInfo dummyInfo = new ShortcutInfo();
@@ -82,14 +85,14 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         ComponentName component = task.getTopComponent();
         dummyInfo.intent.setComponent(component);
         dummyInfo.user = UserHandle.of(task.key.userId);
-        dummyInfo.title = TaskUtils.getTitle(launcher, task);
+        dummyInfo.title = TaskUtils.getTitle(activity, task);
 
-        return getOnClickListenerForTask(launcher, task, dummyInfo);
+        return getOnClickListenerForTask(activity, task, dummyInfo);
     }
 
-    protected View.OnClickListener getOnClickListenerForTask(final Launcher launcher,
-            final Task task, final ItemInfo dummyInfo) {
-        return mSystemShortcut.getOnClickListener(launcher, dummyInfo);
+    protected View.OnClickListener getOnClickListenerForTask(
+            BaseDraggingActivity activity, Task task, ItemInfo dummyInfo) {
+        return mSystemShortcut.getOnClickListener(activity, dummyInfo);
     }
 
     public static class AppInfo extends TaskSystemShortcut<SystemShortcut.AppInfo> {
@@ -98,10 +101,13 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
     }
 
-    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener {
+    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener,
+            DeviceProfile.OnDeviceProfileChangeListener, View.OnLayoutChangeListener {
 
         private Handler mHandler;
+        private RecentsView mRecentsView;
         private TaskView mTaskView;
+        private BaseDraggingActivity mActivity;
 
         public SplitScreen() {
             super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
@@ -109,22 +115,27 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
-            if (launcher.getDeviceProfile().isMultiWindowMode) {
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, TaskView taskView) {
+            if (activity.getDeviceProfile().isMultiWindowMode) {
                 return null;
             }
             final Task task  = taskView.getTask();
+            final int taskId = task.key.id;
             if (!task.isDockable) {
                 return null;
             }
+            mActivity = activity;
+            mRecentsView = activity.getOverviewPanel();
             mTaskView = taskView;
+            final TaskThumbnailView thumbnailView = taskView.getThumbnail();
             return (v -> {
-                AbstractFloatingView.closeOpenViews(launcher, true,
+                AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
-                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key.id,
+                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                         ActivityOptionsCompat.makeSplitScreenOptions(true))) {
-                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
                     try {
                         sysUiProxy.onSplitScreenInvoked();
                     } catch (RemoteException e) {
@@ -132,26 +143,35 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         return;
                     }
 
+                    // Add a device profile change listener to kick off animating the side tasks
+                    // once we enter multiwindow mode and relayout
+                    activity.addOnDeviceProfileChangeListener(this);
+
                     final Runnable animStartedListener = () -> {
+                        // Hide the task view and wait for the window to be resized
+                        // TODO: Consider animating in launcher and do an in-place start activity
+                        //       afterwards
+                        mRecentsView.addIgnoreResetTask(mTaskView);
+                        mTaskView.setAlpha(0f);
                         mTaskView.getViewTreeObserver().addOnPreDrawListener(SplitScreen.this);
-                        launcher.<RecentsView>getOverviewPanel().removeView(taskView);
                     };
 
                     final int[] position = new int[2];
-                    taskView.getLocationOnScreen(position);
-                    final int width = (int) (taskView.getWidth() * taskView.getScaleX());
-                    final int height = (int) (taskView.getHeight() * taskView.getScaleY());
+                    thumbnailView.getLocationOnScreen(position);
+                    final int width = (int) (thumbnailView.getWidth() * taskView.getScaleX());
+                    final int height = (int) (thumbnailView.getHeight() * taskView.getScaleY());
                     final Rect taskBounds = new Rect(position[0], position[1],
                             position[0] + width, position[1] + height);
 
                     Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
-                            taskBounds.width(), taskBounds.height(), taskView, 1f, Color.BLACK);
+                            taskBounds.width(), taskBounds.height(), thumbnailView, 1f,
+                            Color.BLACK);
                     AppTransitionAnimationSpecsFuture future =
                             new AppTransitionAnimationSpecsFuture(mHandler) {
                         @Override
                         public List<AppTransitionAnimationSpecCompat> composeSpecs() {
                             return Collections.singletonList(new AppTransitionAnimationSpecCompat(
-                                    task.key.id, thumbnail, taskBounds));
+                                    taskId, thumbnail, taskBounds));
                         }
                     };
                     WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
@@ -166,6 +186,24 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             WindowManagerWrapper.getInstance().endProlongedAnimations();
             return true;
         }
+
+        @Override
+        public void onDeviceProfileChanged(DeviceProfile dp) {
+            mActivity.removeOnDeviceProfileChangeListener(this);
+            if (dp.isMultiWindowMode) {
+                mTaskView.getRootView().addOnLayoutChangeListener(this);
+            }
+        }
+
+        @Override
+        public void onLayoutChange(View v, int l, int t, int r, int b,
+                int oldL, int oldT, int oldR, int oldB) {
+            mTaskView.getRootView().removeOnLayoutChangeListener(this);
+            mRecentsView.removeIgnoreResetTask(mTaskView);
+
+            // Start animating in the side pages once launcher has been resized
+            mRecentsView.dismissTask(mTaskView, false, false);
+        }
     }
 
     public static class Pin extends TaskSystemShortcut {
@@ -178,8 +216,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
-            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, TaskView taskView) {
+            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
             if (sysUiProxy == null) {
                 return null;
             }
@@ -211,11 +250,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected View.OnClickListener getOnClickListenerForTask(Launcher launcher, Task task,
-                ItemInfo itemInfo) {
-            if (InstantAppResolver.newInstance(launcher).isInstantApp(launcher,
+        protected View.OnClickListener getOnClickListenerForTask(
+                BaseDraggingActivity activity, Task task, ItemInfo itemInfo) {
+            if (InstantAppResolver.newInstance(activity).isInstantApp(activity,
                         task.getTopComponent().getPackageName())) {
-                return mSystemShortcut.createOnClickListener(launcher, itemInfo);
+                return mSystemShortcut.createOnClickListener(activity, itemInfo);
             }
             return null;
         }
