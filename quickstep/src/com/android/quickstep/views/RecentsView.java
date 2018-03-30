@@ -126,6 +126,26 @@ public abstract class RecentsView<T extends BaseActivity>
                 }
             }
         }
+
+        @Override
+        public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+            // Check this is for the right user
+            if (!checkCurrentUserId(userId, false /* debug */)) {
+                return;
+            }
+
+            // Remove the task immediately from the task list
+            TaskView taskView = getTaskView(taskId);
+            if (taskView != null) {
+                removeView(taskView);
+            }
+        }
+
+        @Override
+        public void onActivityUnpinned() {
+            // TODO: Re-enable layout transitions for addition of the unpinned task
+            reloadIfNeeded();
+        }
     };
 
     private int mLoadPlanId = -1;
@@ -578,6 +598,23 @@ public abstract class RecentsView<T extends BaseActivity>
         // assistant)
         if (getPageAt(mCurrentPage) != null) {
             getPageAt(mCurrentPage).setAlpha(0);
+        }
+    }
+
+    public void showNextTask() {
+        TaskView runningTaskView = getTaskView(mRunningTaskId);
+        if (runningTaskView == null) {
+            // Launch the first task
+            if (getChildCount() > 0) {
+                ((TaskView) getChildAt(0)).launchTask(true /* animate */);
+            }
+        } else {
+            // Get the next launch task
+            int runningTaskIndex = indexOfChild(runningTaskView);
+            int nextTaskIndex = Math.max(0, Math.min(getChildCount() - 1, runningTaskIndex + 1));
+            if (nextTaskIndex < getChildCount()) {
+                ((TaskView) getChildAt(nextTaskIndex)).launchTask(true /* animate */);
+            }
         }
     }
 

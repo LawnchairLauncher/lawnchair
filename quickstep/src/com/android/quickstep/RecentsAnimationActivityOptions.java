@@ -24,24 +24,33 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+import java.util.function.Consumer;
 
 /**
- * Temporary class to create activity options to emulate recents transition for fallback activtiy.
+ * Class to create activity options to emulate recents transition.
  */
-public class FallbackActivityOptions implements RemoteAnimationRunnerCompat {
+public class RecentsAnimationActivityOptions implements RemoteAnimationRunnerCompat {
 
     private final RecentsAnimationListener mListener;
+    private final Runnable mFinishCallback;
 
-    public FallbackActivityOptions(RecentsAnimationListener listener) {
+    public RecentsAnimationActivityOptions(RecentsAnimationListener listener,
+            Runnable finishCallback) {
         mListener = listener;
+        mFinishCallback = finishCallback;
     }
 
     @Override
     public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats,
             Runnable runnable) {
         showOpeningTarget(targetCompats);
-        DummyRecentsAnimationControllerCompat dummyRecentsAnim =
-                new DummyRecentsAnimationControllerCompat(runnable);
+        RemoteRecentsAnimationControllerCompat dummyRecentsAnim =
+                new RemoteRecentsAnimationControllerCompat(() -> {
+                    runnable.run();
+                    if (mFinishCallback != null) {
+                        mFinishCallback.run();
+                    }
+                });
 
         Rect insets = new Rect();
         WindowManagerWrapper.getInstance().getStableInsets(insets);
@@ -54,23 +63,22 @@ public class FallbackActivityOptions implements RemoteAnimationRunnerCompat {
     }
 
     private void showOpeningTarget(RemoteAnimationTargetCompat[] targetCompats) {
+        TransactionCompat t = new TransactionCompat();
         for (RemoteAnimationTargetCompat target : targetCompats) {
-            TransactionCompat t = new TransactionCompat();
             int layer = target.mode == RemoteAnimationTargetCompat.MODE_CLOSING
                     ? Integer.MAX_VALUE
                     : target.prefixOrderIndex;
             t.setLayer(target.leash, layer);
             t.show(target.leash);
-            t.apply();
         }
+        t.apply();
     }
 
-    private static class DummyRecentsAnimationControllerCompat
-            extends RecentsAnimationControllerCompat {
+    private class RemoteRecentsAnimationControllerCompat extends RecentsAnimationControllerCompat {
 
         final Runnable mFinishCallback;
 
-        public DummyRecentsAnimationControllerCompat(Runnable finishCallback) {
+        public RemoteRecentsAnimationControllerCompat(Runnable finishCallback) {
             mFinishCallback = finishCallback;
         }
 
@@ -87,7 +95,8 @@ public class FallbackActivityOptions implements RemoteAnimationRunnerCompat {
 
         @Override
         public void finish(boolean toHome) {
-            if (toHome) {
+            // This should never be called with toHome == false
+            if (mFinishCallback != null) {
                 mFinishCallback.run();
             }
         }

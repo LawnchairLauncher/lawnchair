@@ -36,8 +36,10 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -80,7 +82,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
-    void startRecents(Context context, Intent intent, AssistDataReceiver assistDataReceiver,
+    void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
+            final RecentsAnimationListener remoteAnimationListener);
+
+    void startRecentsFromButton(Context context, Intent intent,
             RecentsAnimationListener remoteAnimationListener);
 
     @UiThread
@@ -203,21 +208,44 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void startRecents(Context context, Intent intent,
-                AssistDataReceiver assistDataReceiver,
-                RecentsAnimationListener remoteAnimationListener) {
+        public void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
+                final RecentsAnimationListener remoteAnimationListener) {
             ActivityManagerWrapper.getInstance().startRecentsActivity(
                     intent, assistDataReceiver, remoteAnimationListener, null, null);
+        }
+
+        @Override
+        public void startRecentsFromButton(Context context, Intent intent,
+                RecentsAnimationListener remoteAnimationListener) {
+            // We should use the remove animation for the fallback activity recents button case,
+            // it works better with PiP.  In Launcher, we have already registered the remote
+            // animation definition, which takes priority over explicitly defined remote
+            // animations in the provided activity options when starting the activity, so we
+            // just register a remote animation factory to get a callback to handle this.
+            LauncherAppTransitionManagerImpl appTransitionManager =
+                    (LauncherAppTransitionManagerImpl) getLauncher().getAppTransitionManager();
+            appTransitionManager.setRemoteAnimationOverride(new RecentsAnimationActivityOptions(
+                    remoteAnimationListener, () -> {
+                        // Once the controller is finished, also reset the remote animation override
+                        appTransitionManager.setRemoteAnimationOverride(null);
+                    }));
+            context.startActivity(intent);
+        }
+
+        @Nullable
+        @UiThread
+        private Launcher getLauncher() {
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app == null) {
+                return null;
+            }
+            return (Launcher) app.getModel().getCallback();
         }
 
         @Nullable
         @UiThread
         private Launcher getVisibleLaucher() {
-            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-            if (app == null) {
-                return null;
-            }
-            Launcher launcher = (Launcher) app.getModel().getCallback();
+            Launcher launcher = getLauncher();
             return (launcher != null) && launcher.isStarted() && launcher.hasWindowFocus() ?
                     launcher : null;
         }
@@ -325,12 +353,23 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void startRecents(Context context, Intent intent,
-                AssistDataReceiver assistDataReceiver,
+        public void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
                 final RecentsAnimationListener remoteAnimationListener) {
-            ActivityOptions options =
-                    ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
-                            new FallbackActivityOptions(remoteAnimationListener), 10000, 10000));
+            // We can use the normal recents animation for swipe up
+            ActivityManagerWrapper.getInstance().startRecentsActivity(
+                    intent, assistDataReceiver, remoteAnimationListener, null, null);
+        }
+
+        @Override
+        public void startRecentsFromButton(Context context, Intent intent,
+                RecentsAnimationListener remoteAnimationListener) {
+            // We should use the remove animation for the fallback activity recents button case,
+            // it works better with PiP. For the fallback activity, we should not have registered
+            // the launcher app transition manager, so we should just start the remote animation here.
+            ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
+                    new RemoteAnimationAdapterCompat(
+                            new RecentsAnimationActivityOptions(remoteAnimationListener, null),
+                            10000, 10000));
             context.startActivity(intent, options.toBundle());
         }
 

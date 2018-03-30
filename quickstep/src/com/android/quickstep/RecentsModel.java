@@ -159,6 +159,16 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     @Override
+    public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+        mTaskChangeId++;
+    }
+
+    @Override
+    public void onActivityUnpinned() {
+        mTaskChangeId++;
+    }
+
+    @Override
     public void onTaskStackChanged() {
         mTaskChangeId++;
 
