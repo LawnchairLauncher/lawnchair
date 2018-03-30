@@ -569,8 +569,11 @@ public abstract class RecentsView<T extends BaseActivity>
         // Load the tasks (if the loading is already
         mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
 
-        // Hide the task that we are animating into
-        getPageAt(mCurrentPage).setAlpha(0);
+        // Hide the task that we are animating into, ignore if there is no associated task (ie. the
+        // assistant)
+        if (getPageAt(mCurrentPage) != null) {
+            getPageAt(mCurrentPage).setAlpha(0);
+        }
     }
 
     public QuickScrubController getQuickScrubController() {

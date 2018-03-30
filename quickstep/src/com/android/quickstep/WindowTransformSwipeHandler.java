@@ -520,14 +520,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                 // Make sure the window follows the first task if it moves, e.g. during quick scrub.
                 View firstTask = mRecentsView.getPageAt(0);
-                int scrollForFirstTask = mRecentsView.getScrollForPage(0);
-                int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
-                synchronized (mTargetRect) {
-                    mTargetRect.set(mInitialTargetRect);
-                    Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
-                    float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
-                    float offsetY = mRecentsView.getTranslationY();
-                    mTargetRect.offset(offsetX, offsetY);
+                // The first task may be null if we are swiping up from a task that does not
+                // appear in the list (ie. the assistant)
+                if (firstTask != null) {
+                    int scrollForFirstTask = mRecentsView.getScrollForPage(0);
+                    int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
+                    synchronized (mTargetRect) {
+                        mTargetRect.set(mInitialTargetRect);
+                        Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
+                        float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
+                        float offsetY = mRecentsView.getTranslationY();
+                        mTargetRect.offset(offsetX, offsetY);
+                    }
                 }
                 if (mRecentsAnimationWrapper.controller != null) {
 
