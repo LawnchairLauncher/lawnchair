@@ -61,8 +61,6 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
-    public static final boolean DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB = false;
-
     private static final SparseArray<String> sMotionEventNames;
 
     static {
@@ -133,21 +131,17 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
-                if (triggeredFromAltTab) {
-                    setupTouchConsumer(HIT_TARGET_NONE);
-                    mEventQueue.onOverviewShownFromAltTab();
-                }
+            if (triggeredFromAltTab) {
+                setupTouchConsumer(HIT_TARGET_NONE);
+                mEventQueue.onOverviewShownFromAltTab();
             }
         }
 
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-            if (DEBUG_OPEN_OVERVIEW_VIA_ALT_TAB) {
-                if (triggeredFromAltTab && !triggeredFromHomeKey) {
-                    // onOverviewShownFromAltTab initiates quick scrub. Ending it here.
-                    mEventQueue.onQuickScrubEnd();
-                }
+            if (triggeredFromAltTab && !triggeredFromHomeKey) {
+                // onOverviewShownFromAltTab initiates quick scrub. Ending it here.
+                mEventQueue.onQuickScrubEnd();
             }
         }
 
