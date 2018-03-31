@@ -222,4 +222,5 @@
 
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_thumb_size">32dp</dimen>
 </resources>

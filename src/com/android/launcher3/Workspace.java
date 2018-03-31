@@ -349,6 +349,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public float getWallpaperOffsetForCenterPage() {
+        int pageScroll = getScrollForPage(getPageNearestToCenterOfScreen());
+        return mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
+    }
+
     public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
         cl.cellToRect(hCell, vCell, hSpan, vSpan, r);

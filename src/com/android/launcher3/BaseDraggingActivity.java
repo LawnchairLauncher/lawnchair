@@ -47,7 +47,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     private static final String TAG = "BaseDraggingActivity";
 
     // The Intent extra that defines whether to ignore the launch animation
-    protected static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
+    public static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
             "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
 
     // When starting an action mode, setting this tag will cause the action mode to be cancelled

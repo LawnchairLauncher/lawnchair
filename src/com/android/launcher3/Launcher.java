@@ -1634,30 +1634,6 @@ public class Launcher extends BaseDraggingActivity
         }
     }
 
-    /**
-     * Event handler for the wallpaper picker button that appears after a long press
-     * on the home screen.
-     */
-    public void onClickWallpaperPicker(View v) {
-        if (!Utilities.isWallpaperAllowed(this)) {
-            Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
-        float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
-                .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
-
-        String pickerPackage = getString(R.string.wallpaper_picker_package);
-        if (!TextUtils.isEmpty(pickerPackage)) {
-            intent.setPackage(pickerPackage);
-        } else {
-            // If there is no target package, use the default intent chooser animation
-            intent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
-        }
-        startActivitySafely(v, intent, null);
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
@@ -2415,7 +2391,7 @@ public class Launcher extends BaseDraggingActivity
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
-                OptionsPopupView.show(this, -1, -1);
+                OptionsPopupView.showDefaultOptions(this, -1, -1);
             }
             return true;
         }

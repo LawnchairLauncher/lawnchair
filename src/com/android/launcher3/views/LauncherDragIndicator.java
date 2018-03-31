@@ -108,15 +108,12 @@ public class LauncherDragIndicator extends ImageView implements Insettable, OnCl
 
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
-        Launcher launcher = Launcher.getLauncher(getContext());
         if (action == WALLPAPERS) {
-            launcher.onClickWallpaperPicker(this);
-            return true;
+            return OptionsPopupView.startWallpaperPicker(this);
         } else if (action == WIDGETS) {
-            return OptionsPopupView.onWidgetsClicked(launcher);
+            return OptionsPopupView.onWidgetsClicked(this);
         } else if (action == SETTINGS) {
-            OptionsPopupView.startSettings(launcher);
-            return true;
+            return OptionsPopupView.startSettings(this);
         }
         return super.performAccessibilityAction(action, arguments);
     }
