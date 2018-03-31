@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
+import static com.android.systemui.shared.system.NavigationBarCompat.QUICK_STEP_DRAG_SLOP_PX;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -79,8 +80,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
-    private boolean mGestureStarted;
-    private int mTouchSlop;
+    private boolean mPassedInitialSlop;
     private float mStartDisplacement;
     private WindowTransformSwipeHandler mInteractionHandler;
     private int mDisplayRotation;
@@ -121,8 +121,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
-                mTouchSlop = ViewConfiguration.get(this).getScaledPagingTouchSlop();
-                mGestureStarted = false;
+                mPassedInitialSlop = false;
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -154,11 +153,20 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     break;
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
+                float displacement = getDisplacement(ev);
+                if (!mPassedInitialSlop && Math.abs(displacement) > QUICK_STEP_DRAG_SLOP_PX) {
+                    mPassedInitialSlop = true;
+                    mStartDisplacement = displacement;
 
-                if (mGestureStarted && mInteractionHandler != null) {
+                    // If we deferred starting the window animation on touch down, then
+                    // start tracking now
+                    if (mIsDeferredDownTarget) {
+                        startTouchTrackingForWindowAnimation(ev.getEventTime());
+                    }
+                }
+
+                if (mPassedInitialSlop && mInteractionHandler != null) {
                     // Move
-                    float displacement = getDisplacement(ev.getX(pointerIndex),
-                            ev.getY(pointerIndex));
                     mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                 }
                 break;
@@ -179,7 +187,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             return;
         }
         // Notify the handler that the gesture has actually started
-        mGestureStarted = true;
         mInteractionHandler.onGestureStarted();
     }
 
@@ -244,10 +251,12 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
-            try {
-                drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                // We have waited long enough for launcher to draw
+            if (!mIsDeferredDownTarget) {
+                try {
+                    drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+                } catch (Exception e) {
+                    // We have waited long enough for launcher to draw
+                }
             }
         } else {
             // We should almost always get touch-town on background thread. This is an edge case
@@ -261,7 +270,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * the animation can still be running.
      */
     private void finishTouchTracking() {
-        if (mGestureStarted && mInteractionHandler != null) {
+        if (mPassedInitialSlop && mInteractionHandler != null) {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
@@ -323,17 +332,12 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onQuickStep(float eventX, float eventY, long eventTime) {
-        float displacement = getDisplacement(eventX, eventY);
-        mStartDisplacement = Math.signum(displacement) * mTouchSlop;
-        if (mIsDeferredDownTarget) {
-            // If we deferred starting the window animation on touch down, then
-            // start tracking now
-            startTouchTrackingForWindowAnimation(eventTime);
-        }
         notifyGestureStarted();
     }
 
-    private float getDisplacement(float eventX, float eventY) {
+    private float getDisplacement(MotionEvent ev) {
+        float eventX = ev.getX();
+        float eventY = ev.getY();
         float displacement = eventY - mDownPos.y;
         if (isNavBarOnRight()) {
             displacement = eventX - mDownPos.x;
