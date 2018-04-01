@@ -22,8 +22,6 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Разделить экран"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Блокировать"</string>
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Чтобы переключить приложение, проведите по экрану снизу вверх"</string>
-    <!-- no translation found for accessibility_desc_recent_apps (1444379410873162882) -->
-    <skip />
-    <!-- no translation found for recents_empty_message (7040467240571714191) -->
-    <skip />
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Обзор"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"Недавних приложений нет."</string>
 </resources>
