@@ -356,7 +356,11 @@ public class LauncherStateManager {
      * starting another animation and may block some launcher interactions while running.
      */
     public void setCurrentAnimation(AnimatorSet anim) {
+        boolean reapplyNeeded = mConfig.mCurrentAnimation != null;
         cancelAnimation();
+        if (reapplyNeeded) {
+            reapplyState();
+        }
         mConfig.setAnimation(anim);
     }
 
