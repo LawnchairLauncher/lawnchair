@@ -30,6 +30,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.PendingAnimation;
 
 /**
  * TouchController for handling state changes
@@ -53,6 +54,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     protected LauncherState mFromState;
     protected LauncherState mToState;
     protected AnimatorPlaybackController mCurrentAnimation;
+    protected PendingAnimation mPendingAnimation;
 
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
@@ -254,7 +256,16 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
                     mLauncher.getWorkspace().getCurrentPage());
         }
         clearState();
-        mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        boolean shouldGoToTargetState = true;
+        if (mPendingAnimation != null) {
+            boolean reachedTarget = mToState == targetState;
+            mPendingAnimation.finish(reachedTarget);
+            mPendingAnimation = null;
+            shouldGoToTargetState = !reachedTarget;
+        }
+        if (shouldGoToTargetState) {
+            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        }
     }
 
     protected void clearState() {

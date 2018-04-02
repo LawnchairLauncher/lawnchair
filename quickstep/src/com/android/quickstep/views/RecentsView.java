@@ -60,7 +60,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.PendingAnimation;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
@@ -139,6 +139,7 @@ public abstract class RecentsView<T extends BaseActivity>
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
     private Runnable mNextPageSwitchRunnable;
+    private boolean mSwipeDownShouldLaunchApp;
 
     private PendingAnimation mPendingAnimation;
 
@@ -274,6 +275,9 @@ public abstract class RecentsView<T extends BaseActivity>
         if (mNextPageSwitchRunnable != null) {
             mNextPageSwitchRunnable.run();
             mNextPageSwitchRunnable = null;
+        }
+        if (getNextPage() > 0) {
+            setSwipeDownShouldLaunchApp(true);
         }
     }
 
@@ -599,6 +603,14 @@ public abstract class RecentsView<T extends BaseActivity>
                 firstTask.setIconScale(scale);
             }
         }
+    }
+
+    public void setSwipeDownShouldLaunchApp(boolean swipeDownShouldLaunchApp) {
+        mSwipeDownShouldLaunchApp = swipeDownShouldLaunchApp;
+    }
+
+    public boolean shouldSwipeDownLaunchApp() {
+        return mSwipeDownShouldLaunchApp;
     }
 
     public interface PageCallbacks {

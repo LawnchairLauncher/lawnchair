@@ -34,7 +34,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.PendingAnimation;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 

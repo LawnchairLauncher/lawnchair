@@ -32,12 +32,16 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.SysuiEventLogger;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -191,8 +195,23 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             mClampProgressUpdate = -1;
         }
 
-        mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, builder, maxAccuracy);
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false);
+            mPendingAnimation = null;
+        }
+
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        TaskView taskView = (TaskView) recentsView.getChildAt(recentsView.getNextPage());
+        if (recentsView.shouldSwipeDownLaunchApp() && mFromState == OVERVIEW && mToState == NORMAL
+                && taskView != null) {
+            mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
+            mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
+
+            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy);
+        } else {
+            mCurrentAnimation = mLauncher.getStateManager()
+                    .createAnimationToNewWorkspace(mToState, builder, maxAccuracy);
+        }
 
         if (totalShift == 0) {
             totalShift = Math.signum(mFromState.ordinal - mToState.ordinal)

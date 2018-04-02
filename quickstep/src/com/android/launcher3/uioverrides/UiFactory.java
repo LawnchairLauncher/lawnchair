@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
@@ -25,7 +26,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
@@ -89,11 +92,15 @@ public class UiFactory {
     }
 
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
+        LauncherState state = launcher.getStateManager().getState();
+        DeviceProfile profile = launcher.getDeviceProfile();
         WindowManagerWrapper.getInstance().setShelfHeight(
-                launcher.getStateManager().getState() != ALL_APPS &&
-                        launcher.isUserActive() &&
-                        !launcher.getDeviceProfile().isVerticalBarLayout(),
-                launcher.getDeviceProfile().hotseatBarSizePx);
+                state != ALL_APPS && launcher.isUserActive() && !profile.isVerticalBarLayout(),
+                profile.hotseatBarSizePx);
+
+        if (state == NORMAL) {
+            launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
+        }
     }
 
     public static void onTrimMemory(Context context, int level) {

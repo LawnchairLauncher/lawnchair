@@ -762,6 +762,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         // Animate the first icon.
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
 
+        mRecentsView.setSwipeDownShouldLaunchApp(true);
+
         reset();
     }
 
