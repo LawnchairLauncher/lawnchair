@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,22 +27,25 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.ListView;
 
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.ListViewHighlighter;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
-import com.android.launcher3.views.HighlightableListView;
+
+import java.util.Objects;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -83,12 +87,6 @@ public class SettingsActivity extends Activity {
 
         private String mPreferenceKey;
         private boolean mPreferenceHighlighted = false;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.launcher_preference, container, false);
-        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -145,12 +143,25 @@ public class SettingsActivity extends Activity {
         }
 
         private void highlightPreference() {
-            HighlightableListView list = getView().findViewById(android.R.id.list);
             Preference pref = findPreference(mPreferenceKey);
-            Adapter adapter = list.getAdapter();
-            if (adapter == null) {
+            if (pref == null || getPreferenceScreen() == null) {
                 return;
             }
+            PreferenceScreen screen = getPreferenceScreen();
+            if (Utilities.ATLEAST_OREO) {
+                screen = selectPreferenceRecursive(pref, screen);
+            }
+            if (screen == null) {
+                return;
+            }
+
+            View root = screen.getDialog() != null
+                    ? screen.getDialog().getWindow().getDecorView() : getView();
+            ListView list = root.findViewById(android.R.id.list);
+            if (list == null || list.getAdapter() == null) {
+                return;
+            }
+            Adapter adapter = list.getAdapter();
 
             // Find the position
             int position = -1;
@@ -160,7 +171,7 @@ public class SettingsActivity extends Activity {
                     break;
                 }
             }
-            list.highlightPosition(position);
+            new ListViewHighlighter(list, position);
             mPreferenceHighlighted = true;
         }
 
@@ -171,6 +182,25 @@ public class SettingsActivity extends Activity {
                 mIconBadgingObserver = null;
             }
             super.onDestroy();
+        }
+
+        @TargetApi(Build.VERSION_CODES.O)
+        private PreferenceScreen selectPreferenceRecursive(
+                Preference pref, PreferenceScreen topParent) {
+            if (!(pref.getParent() instanceof PreferenceScreen)) {
+                return null;
+            }
+
+            PreferenceScreen parent = (PreferenceScreen) pref.getParent();
+            if (Objects.equals(parent.getKey(), topParent.getKey())) {
+                return parent;
+            } else if (selectPreferenceRecursive(parent, topParent) != null) {
+                ((PreferenceScreen) parent.getParent())
+                        .onItemClick(null, null, parent.getOrder(), 0);
+                return parent;
+            } else {
+                return null;
+            }
         }
     }
 
