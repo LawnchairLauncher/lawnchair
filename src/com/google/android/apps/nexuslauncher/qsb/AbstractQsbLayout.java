@@ -1,12 +1,10 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -16,8 +14,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.net.Uri;
-import android.os.Process;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +25,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
@@ -189,13 +184,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setPackage(GOOGLE_QSB));
         } catch (ActivityNotFoundException e) {
-            try {
-                getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
-                LauncherAppsCompat.getInstance(getContext())
-                        .showAppDetailsForProfile(new ComponentName(GOOGLE_QSB, ".SearchActivity"), Process.myUserHandle());
-            } catch (PackageManager.NameNotFoundException ignored) {
-                noGoogleAppSearch();
-            }
+            noGoogleAppSearch();
         }
     }
 
