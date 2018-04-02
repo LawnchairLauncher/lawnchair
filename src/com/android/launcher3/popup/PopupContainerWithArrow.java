@@ -871,6 +871,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     @Override
     protected void handleClose(boolean animate) {
+        mShouldAnimate = false;
         if (animate) {
             animateClose();
         } else {
