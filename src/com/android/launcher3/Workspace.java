@@ -1281,6 +1281,7 @@ public class Workspace extends PagedView
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
         updateChildrenLayersEnabled(false);
+        AbstractFloatingView.closeAllOpenViews(mLauncher);
     }
 
     protected void onPageEndTransition() {
