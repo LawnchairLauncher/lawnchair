@@ -285,7 +285,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
             // Also clean up in case the system has handled the UP and canceled the animation before
             // we had a chance to start the recents animation. In such a case, we will not receive
-            ActivityManagerWrapper.getInstance().cancelRecentsAnimation();
+            ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
+                    true /* restoreHomeStackPosition */);
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
