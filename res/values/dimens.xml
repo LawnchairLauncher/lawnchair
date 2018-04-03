@@ -238,6 +238,10 @@
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
 
+<!-- Backports -->
+    <item name="disabled_alpha_material_dark" format="float" type="dimen">0.30</item>
+    <item name="disabled_alpha_material_light" format="float" type="dimen">0.26</item>
+
 <!-- Pixel -->
     <dimen name="smartspace_title_size">24dp</dimen>
     <dimen name="smartspace_horizontal_padding">56dp</dimen>

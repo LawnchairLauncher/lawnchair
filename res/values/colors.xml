@@ -42,6 +42,8 @@
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 
     <!-- Backports -->
+    <color name="textColorPrimary">#ffffffff</color>
+    <color name="textColorSecondary">#ffffffff</color>
     <color name="textColorPrimaryInverse">#de000000</color>
     <color name="textColorSecondaryInverse">#8a000000</color>
 
