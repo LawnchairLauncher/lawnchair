@@ -134,6 +134,8 @@ public class TouchInteractionService extends Service {
             if (triggeredFromAltTab) {
                 setupTouchConsumer(HIT_TARGET_NONE);
                 mEventQueue.onOverviewShownFromAltTab();
+            } else {
+                mOverviewCommandHelper.onOverviewShown();
             }
         }
 
