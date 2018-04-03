@@ -41,6 +41,7 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
+import android.widget.ScrollView;
 
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.pageindicators.PageIndicator;
@@ -1467,6 +1468,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (getNextPage() < getChildCount() -1) snapToPage(getNextPage() + 1);
     }
 
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        // Some accessibility services have special logic for ScrollView. Since we provide same
+        // accessibility info as ScrollView, inform the service to handle use the same way.
+        return ScrollView.class.getName();
+    }
+
     /* Accessibility */
     @SuppressWarnings("deprecation")
     @Override
@@ -1479,7 +1487,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (getCurrentPage() > 0) {
             info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
         }
-        info.setClassName(getClass().getName());
 
         // Accessibility-wise, PagedView doesn't support long click, so disabling it.
         // Besides disabling the accessibility long-click, this also prevents this view from getting
