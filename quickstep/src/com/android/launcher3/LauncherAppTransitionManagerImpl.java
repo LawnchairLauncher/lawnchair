@@ -146,15 +146,18 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                     @Override
                     public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                        Animator[] anims = composeRecentsLaunchAnimator(v, targetCompats);
                         AnimatorSet anim = new AnimatorSet();
-                        if (anims != null) {
-                            anim.playTogether(anims);
-                        } else {
-                            anim.play(getLauncherAnimators(v, targetCompats));
+                        // Set the state animation first so that any state listeners are called
+                        // before our internal listeners.
+                        mLauncher.getStateManager().setCurrentAnimation(anim);
+
+                        if (!composeRecentsLaunchAnimator(v, targetCompats, anim)) {
+                            if (launcherIsATargetWithMode(targetCompats, MODE_CLOSING)) {
+                                anim.play(getIconAnimator(v));
+                                anim.play(getLauncherContentAnimator(false /* show */));
+                            }
                             anim.play(getWindowAnimators(v, targetCompats));
                         }
-                        mLauncher.getStateManager().setCurrentAnimation(anim);
                         return anim;
                     }
                 };
@@ -233,11 +236,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Composes the animations for a launch from the recents list if possible.
      */
-    private Animator[] composeRecentsLaunchAnimator(View v,
-            RemoteAnimationTargetCompat[] targets) {
+    private boolean composeRecentsLaunchAnimator(View v,
+            RemoteAnimationTargetCompat[] targets, AnimatorSet target) {
         // Ensure recents is actually visible
         if (!mLauncher.getStateManager().getState().overviewUi) {
-            return null;
+            return false;
         }
 
         RecentsView recentsView = mLauncher.getOverviewPanel();
@@ -246,7 +249,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, targets);
         if (taskView == null) {
-            return null;
+            return false;
         }
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -273,9 +276,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             };
         }
 
-        Animator windowAnim = getRecentsWindowAnimator(taskView, skipLauncherChanges, targets);
-        windowAnim.addListener(windowAnimEndListener);
-        return new Animator[] {launcherAnim, windowAnim};
+        target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets));
+        target.play(launcherAnim);
+        target.addListener(windowAnimEndListener);
+        return true;
     }
 
     /**
@@ -352,18 +356,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             }
         });
         return appAnimator;
-    }
-
-    /**
-     * @return Animators that control the movements of the Launcher and icon of the opening target.
-     */
-    private AnimatorSet getLauncherAnimators(View v, RemoteAnimationTargetCompat[] targets) {
-        AnimatorSet launcherAnimators = new AnimatorSet();
-        launcherAnimators.play(getIconAnimator(v));
-        if (launcherIsATargetWithMode(targets, MODE_CLOSING)) {
-            launcherAnimators.play(getLauncherContentAnimator(false /* show */));
-        }
-        return launcherAnimators;
     }
 
     /**
@@ -687,11 +679,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 anim.play(getClosingWindowAnimators(targetCompats));
 
                 if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)) {
-                    AnimatorSet contentAnimation = getLauncherResumeAnimation();
-                    anim.play(contentAnimation);
-
                     // Only register the content animation for cancellation when state changes
-                    mLauncher.getStateManager().setCurrentAnimation(contentAnimation);
+                    mLauncher.getStateManager().setCurrentAnimation(anim);
+                    createLauncherResumeAnimation(anim);
                 }
                 return anim;
             }
@@ -754,14 +744,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     /**
-     * @return Animator that modifies Launcher as a result from {@link #getWallpaperOpenRunner}.
+     * Creates an animator that modifies Launcher as a result from {@link #getWallpaperOpenRunner}.
      */
-    private AnimatorSet getLauncherResumeAnimation() {
+    private void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)
                 || mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             AnimatorSet contentAnimator = getLauncherContentAnimator(true /* show */);
             contentAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            return contentAnimator;
+            anim.play(contentAnimator);
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
 
@@ -799,12 +789,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             allAppsOvershoot.setDuration(153);
             allAppsOvershoot.setInterpolator(Interpolators.OVERSHOOT_0);
 
-            AnimatorSet resumeLauncherAnimation = new AnimatorSet();
-            resumeLauncherAnimation.play(workspaceAnimator);
-            resumeLauncherAnimation.playSequentially(allAppsSlideIn, allAppsOvershoot);
 
-            resumeLauncherAnimation.addListener(mReapplyStateListener);
-            return resumeLauncherAnimation;
+            anim.play(workspaceAnimator);
+            anim.playSequentially(allAppsSlideIn, allAppsOvershoot);
+            anim.addListener(mReapplyStateListener);
         }
     }
 
