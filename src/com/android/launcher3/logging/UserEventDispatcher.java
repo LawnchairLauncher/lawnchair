@@ -38,6 +38,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
 
 import java.util.Locale;
@@ -78,6 +79,7 @@ public class UserEventDispatcher {
         ued.mIsInLandscapeMode = dp.isVerticalBarLayout();
         ued.mIsInMultiWindowMode = dp.isMultiWindowMode;
         ued.mUuidStr = uuidStr;
+        ued.mInstantAppResolver = InstantAppResolver.newInstance(context);
         return ued;
     }
 
@@ -126,6 +128,7 @@ public class UserEventDispatcher {
     private boolean mIsInMultiWindowMode;
     private boolean mIsInLandscapeMode;
     private String mUuidStr;
+    protected InstantAppResolver mInstantAppResolver;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -151,7 +154,7 @@ public class UserEventDispatcher {
 
     public void logAppLaunch(View v, Intent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, v)) {
             fillIntentInfo(event.srcTarget[0], intent);
@@ -184,7 +187,7 @@ public class UserEventDispatcher {
 
     public void logNotificationLaunch(View v, PendingIntent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
         if (fillInLogContainerData(event, v)) {
             event.srcTarget[0].packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
         }
@@ -215,7 +218,7 @@ public class UserEventDispatcher {
      */
     public void logActionCommand(int command, View itemView, int srcContainerType) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command),
-                newItemTarget(itemView), newTarget(Target.Type.CONTAINER));
+                newItemTarget(itemView, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, itemView)) {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
@@ -320,7 +323,7 @@ public class UserEventDispatcher {
         }
         ItemInfo info = (ItemInfo) icon.getTag();
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.LONGPRESS),
-                newItemTarget(info), newTarget(Target.Type.CONTAINER));
+                newItemTarget(info, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
         provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         dispatchUserEvent(event, null);
 
@@ -338,9 +341,11 @@ public class UserEventDispatcher {
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
-                newItemTarget(dragObj.originalDragInfo), newTarget(Target.Type.CONTAINER));
+                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
+                newTarget(Target.Type.CONTAINER));
         event.destTarget = new Target[] {
-                newItemTarget(dragObj.originalDragInfo), newDropTarget(dropTargetAsView)
+                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
+                newDropTarget(dropTargetAsView)
         };
 
         dragObj.dragSource.fillInLogContainerData(null, dragObj.originalDragInfo,
