@@ -25,7 +25,7 @@ public class LongClickReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         final NexusLauncherActivity launcher = LongClickReceiver.bR.get();
         if (launcher != null) {
-            final ComponentKey dl = AppSearchProvider.dl(intent.getData(), context);
+            final ComponentKey dl = AppSearchProvider.uriToComponent(intent.getData(), context);
             final LauncherActivityInfo resolveActivity = LauncherAppsCompat.getInstance(context).resolveActivity(new Intent(Intent.ACTION_MAIN).setComponent(dl.componentName), dl.user);
             if (resolveActivity == null) {
                 return;
