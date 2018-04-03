@@ -236,6 +236,11 @@ public class OverviewCommandHelper extends InternalStateHandler {
     }
 
     public void onOverviewToggle() {
+        // If currently screen pinning, do not enter overview
+        if (ActivityManagerWrapper.getInstance().isScreenPinningActive()) {
+            return;
+        }
+
         long time = SystemClock.elapsedRealtime();
         mMainThreadExecutor.execute(() -> {
             long elapsedTime = time - mLastToggleTime;
