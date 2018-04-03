@@ -99,6 +99,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             mAppsView.setAlpha(1);
             mLauncher.getHotseat().setTranslationY(0);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
+            mLauncher.getDragHandleIndicator().setTranslationY(0);
         }
     }
 
