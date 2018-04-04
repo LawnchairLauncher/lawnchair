@@ -357,11 +357,6 @@ public class Launcher extends BaseDraggingActivity
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
-            FileLog.d(TAG, "Config changed, my orientation=" +
-                    getResources().getConfiguration().orientation +
-                    ", new orientation=" + newConfig.orientation +
-                    ", old orientation=" + mOldConfig.orientation +
-                    ", isTransposed=" + mDeviceProfile.isVerticalBarLayout());
             dispatchDeviceProfileChanged();
 
             getRootView().dispatchInsets();
