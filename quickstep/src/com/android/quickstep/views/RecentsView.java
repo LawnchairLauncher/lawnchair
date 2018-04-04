@@ -962,4 +962,9 @@ public abstract class RecentsView<T extends BaseActivity>
         super.notifyPageSwitchListener(prevPage);
         getChildAt(mCurrentPage).sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
     }
+
+    @Override
+    protected String getCurrentPageDescription() {
+        return "";
+    }
 }
