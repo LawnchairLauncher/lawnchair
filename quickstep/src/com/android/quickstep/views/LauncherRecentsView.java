@@ -20,7 +20,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
@@ -45,20 +44,6 @@ import com.android.launcher3.R;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> implements Insettable {
 
-    public static final FloatProperty<LauncherRecentsView> TRANSLATION_X_FACTOR =
-            new FloatProperty<LauncherRecentsView>("translationXFactor") {
-
-                @Override
-                public void setValue(LauncherRecentsView view, float v) {
-                    view.setTranslationXFactor(v);
-                }
-
-                @Override
-                public Float get(LauncherRecentsView view) {
-                    return view.mTranslationXFactor;
-                }
-            };
-
     public static final FloatProperty<LauncherRecentsView> TRANSLATION_Y_FACTOR =
             new FloatProperty<LauncherRecentsView>("translationYFactor") {
 
@@ -73,8 +58,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
                 }
             };
 
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mTranslationXFactor;
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationYFactor;
 
@@ -114,11 +97,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         setTranslationYFactor(mTranslationYFactor);
     }
 
-    public void setTranslationXFactor(float translationFactor) {
-        mTranslationXFactor = translationFactor;
-        invalidate();
-    }
-
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
         setTranslationY(mTranslationYFactor * (mPagePadding.bottom - mPagePadding.top));
@@ -127,10 +105,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     @Override
     public void draw(Canvas canvas) {
         maybeDrawEmptyMessage(canvas);
-        int count = canvas.save();
-        canvas.translate(mTranslationXFactor * (mIsRtl ? -getWidth() : getWidth()), 0);
         super.draw(canvas);
-        canvas.restoreToCount(count);
     }
 
     @Override

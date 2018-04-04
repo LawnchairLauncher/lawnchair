@@ -61,9 +61,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
 
-    // If > 0, the animation progress is clamped at that value as long as user is dragging.
-    private float mClampProgressUpdate = -1;
-
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
 
@@ -166,15 +163,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected void updateProgress(float fraction) {
-        if (mClampProgressUpdate > 0) {
-            mCurrentAnimation.setPlayFraction(Math.min(fraction, mClampProgressUpdate));
-        } else {
-            super.updateProgress(fraction);
-        }
-    }
-
-    @Override
     protected float initCurrentAnimation() {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
@@ -189,10 +177,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mFromState == NORMAL && mToState == OVERVIEW && totalShift != 0) {
             builder = getNormalToOverviewAnimation();
             totalShift = totalShift * TOTAL_DISTANCE_MULTIPLIER;
-            mClampProgressUpdate = MAXIMUM_DISTANCE_FACTOR;
         } else {
             builder = new AnimatorSetBuilder();
-            mClampProgressUpdate = -1;
         }
 
         if (mPendingAnimation != null) {

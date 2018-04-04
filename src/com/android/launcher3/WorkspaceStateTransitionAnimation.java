@@ -31,7 +31,6 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.ViewScrim;
-import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -74,11 +73,11 @@ public class WorkspaceStateTransitionAnimation {
                     propertySetter);
         }
 
-        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
+        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
-                scaleAndTranslation[1], Interpolators.ZOOM_IN);
+                scaleAndTranslation[1], Interpolators.ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                scaleAndTranslation[2], Interpolators.ZOOM_IN);
+                scaleAndTranslation[2], Interpolators.ZOOM_OUT);
 
         int elements = state.getVisibleElements(mLauncher);
         float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
@@ -113,7 +112,7 @@ public class WorkspaceStateTransitionAnimation {
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
         propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_IN);
+                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_OUT);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
                 pageAlpha, pageAlphaProvider.interpolator);
     }
