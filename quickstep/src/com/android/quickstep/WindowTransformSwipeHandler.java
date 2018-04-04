@@ -340,6 +340,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mActivity = activity;
+        // Override the visibility of the activity until the gesture actually starts and we swipe
+        // up, or until we transition home and the home animation is composed
+        mActivity.setForceInvisible(true);
 
         mRecentsView = activity.getOverviewPanel();
         mQuickScrubController = mRecentsView.getQuickScrubController();
@@ -613,6 +616,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void notifyGestureStarted() {
         final T curActivity = mActivity;
         if (curActivity != null) {
+            // Once the gesture starts, we can no longer transition home through the button, so
+            // reset the force override of the activity visibility
+            mActivity.setForceInvisible(false);
             mActivityControlHelper.onQuickstepGestureStarted(
                     curActivity, mWasLauncherAlreadyVisible);
         }

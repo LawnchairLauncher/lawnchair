@@ -709,11 +709,20 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 AnimatorSet anim = new AnimatorSet();
                 anim.play(getClosingWindowAnimators(targetCompats));
 
-                if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)) {
+                // Normally, we run the launcher content animation when we are transitioning home,
+                // but if home is already visible, then we don't want to animate the contents of
+                // launcher unless we know that we are animating home as a result of the home button
+                // press with quickstep, which will result in launcher being started on touch down,
+                // prior to the animation home (and won't be in the targets list because it is
+                // already visible). In that case, we force invisibility on touch down, and only
+                // reset it after the animation to home is initialized.
+                if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
+                        || mLauncher.isForceInvisible()) {
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
                     createLauncherResumeAnimation(anim);
                 }
+                mLauncher.setForceInvisible(false);
                 return anim;
             }
         };
