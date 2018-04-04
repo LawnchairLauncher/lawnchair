@@ -24,4 +24,6 @@
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Perbraukite aukštyn iš apačios, kad perjungtumėte programas"</string>
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Apžvalga"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nėra jokių naujausių elementų"</string>
+    <!-- no translation found for accessibility_close_task (5354563209433803643) -->
+    <skip />
 </resources>
