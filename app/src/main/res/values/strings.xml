@@ -314,23 +314,23 @@
     <string name="about_pref_summary">Get to know about the Lawnchair team</string>
     <string name="changelog_title">Changelog for build #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
-    <string name="icon_pack_preference_title">Icon Pack</string>
+    <string name="icon_pack_preference_title">Icon pack</string>
     <string name="icon_pack_preference_summary">Select an icon pack</string>
     <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
     <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-    <string name="transparent_hotseat_pref_title">Transparent Dock</string>
+    <string name="transparent_hotseat_pref_title">Transparent dock</string>
     <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-    <string name="blur_pref_title">Enable blur</string>
+    <string name="blur_pref_title">Blur</string>
     <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
     <string name="blur_radius_pref_title">Blur amount</string>
     <string name="pref_iconLabelsInTwoLines">Icon labels use two lines</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
-    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on desktop</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
-    <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
+    <string name="workspace_label_color_hue_pref_title">Color of icon labels on desktop</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
     <string name="num_cols_pref_title">Number of columns</string>
     <string name="num_rows_pref_title">Number of rows</string>
@@ -338,7 +338,7 @@
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="hotseat_height_scale">Height scale</string>
     <string name="hotseat_custom_opacity">Dock opacity</string>
-    <string name="hotseat_uses_custom_opacity">Enable custom dock opacity</string>
+    <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
     <string name="icon_text_scale_pref_title">Icon text scale</string>
     <string name="icon_text_padding_scale_pref_title">Icon padding scale</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
@@ -370,16 +370,16 @@
     <string name="show_google_now_tab_pref_title">Show Google Now page</string>
     <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
     <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-    <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
+    <string name="rebuild_icondb_pref_title">Rebuild icon database</string>
     <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-    <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+    <string name="pinch_to_overview_pref_summary">Pinch on the desktop to open the overview</string>
     <string name="light_statusbar_pref_title">Light statusbar</string>
     <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
     <string name="light_statusbar_pref_off">The status bar will show light icons</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-    <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+    <string name="home_opens_drawer_pref_summary">Pressing the home button while on the desktop will open the app drawer</string>
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
@@ -395,19 +395,19 @@
     <string name="default_text">Default</string>
     <string name="edit_icon_reset">Reset</string>
     <string name="show_top_shadow_title">Show top shadow</string>
-    <string name="pref_category_homescreen">Home screen</string>
+    <string name="pref_category_homescreen">Desktop</string>
     <string name="theme_pref_title">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_black">Black</string>
-    <string name="hide_hotseat_pref_title">Hide Dock</string>
-    <string name="all_icons">All Icons</string>
+    <string name="hide_hotseat_pref_title">Hide dock</string>
+    <string name="all_icons">All icons</string>
     <string name="pull_down_action_pref_title">Pull down action</string>
     <string name="pull_down_do_nothing">Do nothing</string>
     <string name="pull_down_notis">Show notifications</string>
     <string name="pull_down_search">Open search</string>
     <string name="pull_down_apps_search">Apps search</string>
-    <string name="enable_screen_rotation">Enable screen rotation</string>
+    <string name="enable_screen_rotation">Screen rotation</string>
     <string name="use_system_fonts_title">Use system fonts for labels</string>
 
     <!-- Import/Export Strings -->
@@ -428,7 +428,7 @@
 
     <!-- Default units to use, either 'metric' or 'imperial' -->
     <string name="pref_cat_weather">Weather</string>
-    <string name="pref_weather_title">Enable weather</string>
+    <string name="pref_weather_title">Weather</string>
     <string name="pref_weather_units">Weather Units</string>
     <string name="pref_weather_city_summary">For best results include country code</string>
     <string name="pref_weather_city_title">City</string>
@@ -455,7 +455,7 @@
     <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
     <string name="about_summary_title">Summary</string>
     <string name="about_version">Version</string>
-    <string name="about_icon_designer">App Icon Designer</string>
+    <string name="about_icon_designer">App icon designer</string>
     <string name="about_contributors_title">Contributors</string>
     <string name="location_permission_warn">Location permission is required to switch to another provider!</string>
     <string name="num_cols_drawer_pref_title">Number of columns in drawer</string>
@@ -480,7 +480,7 @@
     <string name="google_app_not_found">Google app not installed</string>
     <string name="lawnfeed_incompatible">Incompatible Lawnfeed version installed</string>
     <string name="set_default_launcher">Set default launcher</string>
-    <string name="enable_spring_pref_title">Enable spring effect</string>
+    <string name="enable_spring_pref_title">Spring effect</string>
     <string name="hide_app">Hidden apps</string>
     <string name="hide_app_sum">Hide apps from the app drawer</string>
     <string name="hide_app_selected">&#160;selected</string>
@@ -538,6 +538,10 @@
 
     <!-- Preference Category Pixel Searchbar Title -->
     <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
+    <!-- Preference Category Icons Title -->
+    <string name="pref_category_icons">Icons</string>
+    <!-- Preference Category Drawer Title -->
+    <string name="pref_category_drawer">Drawer</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Miscellaneous</string>
     <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resoultion could possibly fix this.</string>
