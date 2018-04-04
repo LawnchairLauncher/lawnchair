@@ -50,9 +50,7 @@ public class QuickstepDragIndicator extends LauncherDragIndicator {
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if (isInOverview()) {
-            info.setContentDescription(getContext().getString(R.string.all_apps_button_label));
-        }
+        info.setContentDescription(getContext().getString(R.string.all_apps_button_label));
     }
 
     @Override
@@ -64,15 +62,9 @@ public class QuickstepDragIndicator extends LauncherDragIndicator {
 
     @Override
     public void onClick(View view) {
-        if (isInOverview()) {
-            mLauncher.getUserEventDispatcher().logActionOnControl(
-                    Action.Touch.TAP, ControlType.ALL_APPS_BUTTON, ContainerType.TASKSWITCHER);
-            mLauncher.getStateManager().goToState(ALL_APPS);
-            super.onClick(view);
-        } else {
-            mLauncher.getUserEventDispatcher().logActionOnControl(
-                    Action.Touch.TAP, ControlType.ALL_APPS_BUTTON, ContainerType.WORKSPACE);
-            mLauncher.getStateManager().goToState(OVERVIEW);
-        }
+        mLauncher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                ControlType.ALL_APPS_BUTTON,
+                isInOverview() ? ContainerType.TASKSWITCHER : ContainerType.WORKSPACE);
+        mLauncher.getStateManager().goToState(ALL_APPS);
     }
 }
