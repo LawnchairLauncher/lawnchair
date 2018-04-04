@@ -70,6 +70,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private ImageView mIconView;
+    private float mCurveScale;
 
     public TaskView(Context context) {
         this(context, null);
@@ -178,9 +179,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
 
-        float scale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
-        setScaleX(scale);
-        setScaleY(scale);
+        mCurveScale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
+        setScaleX(mCurveScale);
+        setScaleY(mCurveScale);
+    }
+
+    public float getCurveScale() {
+        return mCurveScale;
     }
 
     @Override

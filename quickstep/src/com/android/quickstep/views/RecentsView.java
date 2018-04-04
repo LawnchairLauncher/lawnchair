@@ -59,8 +59,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
@@ -85,8 +85,6 @@ public abstract class RecentsView<T extends BaseActivity>
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
-
-
         @Override
         public void setValue(RecentsView recentsView, float v) {
             recentsView.setContentAlpha(v);
@@ -98,6 +96,20 @@ public abstract class RecentsView<T extends BaseActivity>
         }
     };
 
+
+
+    public static final FloatProperty<RecentsView> ADJACENT_SCALE =
+            new FloatProperty<RecentsView>("adjacentScale") {
+        @Override
+        public void setValue(RecentsView recentsView, float v) {
+            recentsView.setAdjacentScale(v);
+        }
+
+        @Override
+        public Float get(RecentsView recentsView) {
+            return recentsView.mAdjacentScale;
+        }
+    };
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
     private static final int DISMISS_TASK_DURATION = 300;
 
@@ -145,6 +157,8 @@ public abstract class RecentsView<T extends BaseActivity>
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private float mAdjacentScale = 1;
 
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
@@ -803,10 +817,58 @@ public abstract class RecentsView<T extends BaseActivity>
         setVisibility(alpha > 0 ? VISIBLE : GONE);
     }
 
+    public void setAdjacentScale(float adjacentScale) {
+        if (mAdjacentScale == adjacentScale) {
+            return;
+        }
+        mAdjacentScale = adjacentScale;
+        TaskView currTask = getPageAt(mCurrentPage);
+        if (currTask == null) {
+            return;
+        }
+        currTask.setScaleX(mAdjacentScale);
+        currTask.setScaleY(mAdjacentScale);
+
+        if (mCurrentPage - 1 >= 0) {
+            TaskView adjacentTask = getPageAt(mCurrentPage - 1);
+            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
+                    mAdjacentScale, 0);
+            adjacentTask.setScaleX(scaleAndTranslation[0]);
+            adjacentTask.setScaleY(scaleAndTranslation[0]);
+            adjacentTask.setTranslationX(-scaleAndTranslation[1]);
+            adjacentTask.setTranslationY(scaleAndTranslation[2]);
+        }
+        if (mCurrentPage + 1 < getChildCount()) {
+            TaskView adjacentTask = getPageAt(mCurrentPage + 1);
+            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
+                    mAdjacentScale, 0);
+            adjacentTask.setScaleX(scaleAndTranslation[0]);
+            adjacentTask.setScaleY(scaleAndTranslation[0]);
+            adjacentTask.setTranslationX(scaleAndTranslation[1]);
+            adjacentTask.setTranslationY(scaleAndTranslation[2]);
+        }
+    }
+
+    private float[] getAdjacentScaleAndTranslation(TaskView currTask, TaskView adjacentTask,
+            float currTaskToScale, float currTaskToTranslationY) {
+        float displacement = currTask.getWidth() * (currTaskToScale - currTask.getCurveScale());
+        return new float[] {
+                currTaskToScale * adjacentTask.getCurveScale(),
+                mIsRtl ? -displacement : displacement,
+                currTaskToTranslationY
+        };
+    }
+
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         child.setAlpha(mContentAlpha);
+        setAdjacentScale(mAdjacentScale);
+    }
+
+    @Override
+    public TaskView getPageAt(int index) {
+        return (TaskView) getChildAt(index);
     }
 
     public void updateEmptyMessage() {
@@ -884,18 +946,24 @@ public abstract class RecentsView<T extends BaseActivity>
         float toScale = endInterpolation.taskScale;
         float toTranslationY = endInterpolation.taskY;
 
-        float displacementX = tv.getWidth() * (toScale - tv.getScaleX());
         if (launchingCenterTask) {
+            TaskView centerTask = getPageAt(centerTaskIndex);
             if (taskIndex - 1 >= 0) {
-                anim.play(createAnimForChild(
-                        taskIndex - 1, toScale, displacementX, toTranslationY));
+                TaskView adjacentTask = getPageAt(taskIndex - 1);
+                float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
+                        adjacentTask, toScale, toTranslationY);
+                scaleAndTranslation[1] = -scaleAndTranslation[1];
+                anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
             if (taskIndex + 1 < getPageCount()) {
-                anim.play(createAnimForChild(
-                        taskIndex + 1, toScale, -displacementX, toTranslationY));
+                TaskView adjacentTask = getPageAt(taskIndex + 1);
+                float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
+                        adjacentTask, toScale, toTranslationY);
+                anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
+            float displacementX = tv.getWidth() * (toScale - tv.getCurveScale());
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex), TRANSLATION_X,
                     mIsRtl ? -displacementX : displacementX));
 
@@ -911,13 +979,12 @@ public abstract class RecentsView<T extends BaseActivity>
         return anim;
     }
 
-    private ObjectAnimator createAnimForChild(int childIndex, float toScale, float tx, float ty) {
-        View child = getChildAt(childIndex);
+    private ObjectAnimator createAnimForChild(View child, float[] toScaleAndTranslation) {
         return ObjectAnimator.ofPropertyValuesHolder(child,
                         new PropertyListBuilder()
-                                .scale(child.getScaleX() * toScale)
-                                .translationY(ty)
-                                .translationX(mIsRtl ? tx : -tx)
+                                .scale(child.getScaleX() * toScaleAndTranslation[0])
+                                .translationX(toScaleAndTranslation[1])
+                                .translationY(toScaleAndTranslation[2])
                                 .build());
     }
 
