@@ -363,6 +363,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.show(target.leash);
                     }
                 }
+                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
@@ -636,6 +637,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.show(target.leash);
                     }
                 }
+                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
@@ -763,6 +765,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.show(app.leash);
                     }
                 }
+                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();

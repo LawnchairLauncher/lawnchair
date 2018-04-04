@@ -121,6 +121,7 @@ public class ClipAnimationHelper {
                 transaction.show(app.leash);
             }
         }
+        transaction.setEarlyWakeup();
         transaction.apply();
     }
 
