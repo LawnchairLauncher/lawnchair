@@ -18,8 +18,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.Utilities.getPrefs;
-import static com.android.quickstep.OverviewInteractionState.KEY_SWIPE_UP_ENABLED;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
@@ -39,8 +37,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        SharedPreferences prefs = getPrefs(launcher);
-        boolean swipeUpEnabled = prefs.getBoolean(KEY_SWIPE_UP_ENABLED, true);
+        boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
+                .isSwipeUpGestureEnabled();
         if (!swipeUpEnabled) {
             return new TouchController[] {
                     launcher.getDragController(),

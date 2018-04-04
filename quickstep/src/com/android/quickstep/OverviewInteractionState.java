@@ -21,13 +21,14 @@ import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABL
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
@@ -47,7 +48,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
  */
-public class OverviewInteractionState implements OnSharedPreferenceChangeListener {
+public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
 
@@ -70,11 +71,12 @@ public class OverviewInteractionState implements OnSharedPreferenceChangeListene
         return INSTANCE;
     }
 
-    public static final String KEY_SWIPE_UP_ENABLED = "pref_enable_quickstep";
-
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_VISIBLE = 201;
     private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
+
+    private static final String SWIPE_UP_SETTING_NAME = "swipe_up_to_switch_apps_enabled";
+    private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
 
     private final Handler mUiHandler;
     private final Handler mBgHandler;
@@ -88,19 +90,13 @@ public class OverviewInteractionState implements OnSharedPreferenceChangeListene
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        SharedPreferences prefs = getPrefs(context);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        onSharedPreferenceChanged(prefs, KEY_SWIPE_UP_ENABLED);
+        mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
+                context.getContentResolver());
+        mSwipeUpSettingObserver.register();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String s) {
-        if (KEY_SWIPE_UP_ENABLED.equals(s)) {
-            mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-            boolean swipeUpEnabled = prefs.getBoolean(s, true);
-            mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED,
-                    swipeUpEnabled ? 1 : 0, 0).sendToTarget();
-        }
+    public boolean isSwipeUpGestureEnabled() {
+        return mSwipeUpEnabled;
     }
 
     public void setBackButtonVisible(boolean visible) {
@@ -150,6 +146,34 @@ public class OverviewInteractionState implements OnSharedPreferenceChangeListene
             mISystemUiProxy.setInteractionState(flags);
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview interaction flags", e);
+        }
+    }
+
+    private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
+        private Handler mHandler;
+        private ContentResolver mResolver;
+
+        SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
+            super(handler);
+            mHandler = handler;
+            mResolver = resolver;
+        }
+
+        public void register() {
+            mResolver.registerContentObserver(Settings.Secure.getUriFor(SWIPE_UP_SETTING_NAME),
+                    false, this);
+            mSwipeUpEnabled = getValue();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            mHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+            mHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, getValue() ? 1 : 0, 0).sendToTarget();
+        }
+
+        private boolean getValue() {
+            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, 0) == 1;
         }
     }
 }
