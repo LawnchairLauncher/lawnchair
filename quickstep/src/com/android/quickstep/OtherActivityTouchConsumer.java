@@ -218,7 +218,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
-        Runnable startActivity = () -> mActivityControlHelper.startRecents(this, mHomeIntent,
+        Runnable startActivity = () -> mActivityControlHelper.startRecentsFromSwipe(mHomeIntent,
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {

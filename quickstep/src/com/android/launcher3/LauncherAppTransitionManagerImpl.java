@@ -106,6 +106,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private DeviceProfile mDeviceProfile;
     private View mFloatingView;
 
+    private RemoteAnimationRunnerCompat mRemoteAnimationOverride;
+
     private final AnimatorListenerAdapter mReapplyStateListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
@@ -173,6 +175,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             }
         }
         return getDefaultActivityLaunchOptions(launcher, v);
+    }
+
+    public void setRemoteAnimationOverride(RemoteAnimationRunnerCompat remoteAnimationOverride) {
+        mRemoteAnimationOverride = remoteAnimationOverride;
     }
 
     /**
@@ -635,6 +641,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * Registers remote animations used when closing apps to home screen.
      */
     private void registerRemoteAnimations() {
+        // Unregister this
         if (hasControlRemoteAppTransitionPermission()) {
             try {
                 RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
@@ -669,12 +676,36 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private RemoteAnimationRunnerCompat getWallpaperOpenRunner() {
         return new LauncherAnimationRunner(mHandler) {
             @Override
-            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                if (mLauncher.getStateManager().getState().overviewUi) {
-                    // We use a separate transition for Overview mode.
-                    return null;
+            public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats,
+                    Runnable runnable) {
+                if (mLauncher.getStateManager().getState().overviewUi
+                        && mRemoteAnimationOverride != null) {
+                    // This transition is only used for the fallback activity and should not be
+                    // managed here (but necessary to implement here since the defined remote
+                    // animation currently takes precendence over the one defined in the activity
+                    // options).
+                    mRemoteAnimationOverride.onAnimationStart(targetCompats, runnable);
+                    return;
                 }
+                super.onAnimationStart(targetCompats, runnable);
+            }
 
+            @Override
+            public void onAnimationCancelled() {
+                if (mLauncher.getStateManager().getState().overviewUi
+                        && mRemoteAnimationOverride != null) {
+                    // This transition is only used for the fallback activity and should not be
+                    // managed here (but necessary to implement here since the defined remote
+                    // animation currently takes precendence over the one defined in the activity
+                    // options).
+                    mRemoteAnimationOverride.onAnimationCancelled();
+                    return;
+                }
+                super.onAnimationCancelled();
+            }
+
+            @Override
+            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
                 AnimatorSet anim = new AnimatorSet();
                 anim.play(getClosingWindowAnimators(targetCompats));
 

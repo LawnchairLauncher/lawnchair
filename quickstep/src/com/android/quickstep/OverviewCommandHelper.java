@@ -53,6 +53,7 @@ import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHel
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
@@ -77,7 +78,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
     private static final int RID_CANCEL_CONTROLLER = 1;
     private static final int RID_CANCEL_ZOOM_OUT_ANIMATION = 2;
 
-    private static final long RECENTS_LAUNCH_DURATION = 150;
+    private static final long RECENTS_LAUNCH_DURATION = 200;
 
     private static final String TAG = "OverviewCommandHelper";
     private static final boolean DEBUG_START_FALLBACK_ACTIVITY = false;
@@ -151,12 +152,13 @@ public class OverviewCommandHelper extends InternalStateHandler {
     private void initSwipeHandler(ActivityControlHelper helper, long time,
             Consumer<WindowTransformSwipeHandler> onAnimationInitCallback) {
         final int commandId = mCurrentCommandId;
-        RunningTaskInfo taskInfo = ActivityManagerWrapper.getInstance().getRunningTask();
+        final RunningTaskInfo runningTask = ActivityManagerWrapper.getInstance().getRunningTask();
+        final int runningTaskId = runningTask.id;
         final WindowTransformSwipeHandler handler =
-                new WindowTransformSwipeHandler(taskInfo, mContext, time, helper);
+                new WindowTransformSwipeHandler(runningTask, mContext, time, helper);
 
         // Preload the plan
-        mRecentsModel.loadTasks(taskInfo.id, null);
+        mRecentsModel.loadTasks(runningTaskId, null);
         mWindowTransformSwipeHandler = handler;
 
         mTempTaskTargetRect.setEmpty();
@@ -172,13 +174,8 @@ public class OverviewCommandHelper extends InternalStateHandler {
         addFinishCommand(commandId, RID_RESET_SWIPE_HANDLER, handler::reset);
 
         TraceHelper.beginSection(TAG);
-        Runnable startActivity = () -> helper.startRecents(mContext, homeIntent,
-                new AssistDataReceiver() {
-                    @Override
-                    public void onHandleAssistData(Bundle bundle) {
-                        mRecentsModel.preloadAssistData(taskInfo.id, bundle);
-                    }
-                },
+        Runnable startActivity = () -> helper.startRecentsFromButton(mContext,
+                addToIntent(homeIntent),
                 new RecentsAnimationListener() {
                     public void onAnimationStart(
                             RecentsAnimationControllerCompat controller,
@@ -190,11 +187,17 @@ public class OverviewCommandHelper extends InternalStateHandler {
                                     minimizedHomeBounds);
                             mTempTaskTargetRect.set(handler.getTargetRect(mWindowSize));
 
+                            ThumbnailData thumbnail = mAM.getTaskThumbnail(runningTaskId,
+                                    true /* reducedResolution */);
                             mMainThreadExecutor.execute(() -> {
                                 addFinishCommand(commandId,
                                         RID_CANCEL_CONTROLLER, () -> controller.finish(true));
                                 if (commandId == mCurrentCommandId) {
                                     onAnimationInitCallback.accept(handler);
+
+                                    // The animation has started, which means the other activity
+                                    // should be paused, lets update the thumbnail
+                                    handler.switchToScreenshotImmediate(thumbnail);
                                 }
                             });
                         } else {
@@ -230,7 +233,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
         });
         handler.onGestureStarted();
         anim.setDuration(RECENTS_LAUNCH_DURATION);
-        anim.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+        anim.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
         anim.start();
         addFinishCommand(commandId, RID_CANCEL_ZOOM_OUT_ANIMATION, anim::cancel);
     }
@@ -241,6 +244,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
             return;
         }
 
+        ActivityManagerWrapper.getInstance().closeSystemWindows("recentapps");
         long time = SystemClock.elapsedRealtime();
         mMainThreadExecutor.execute(() -> {
             long elapsedTime = time - mLastToggleTime;
@@ -248,40 +252,37 @@ public class OverviewCommandHelper extends InternalStateHandler {
 
             mCurrentCommandId++;
             mTempTaskTargetRect.round(mTaskTargetRect);
-            boolean isQuickTap = elapsedTime < ViewConfiguration.getDoubleTapTimeout();
             int runnableCount = mCurrentCommandFinishRunnables.size();
             if (runnableCount > 0) {
                 for (int i = 0; i < runnableCount; i++) {
                     mCurrentCommandFinishRunnables.valueAt(i).run();
                 }
                 mCurrentCommandFinishRunnables.clear();
-                isQuickTap = true;
             }
 
+            // TODO: We need to fix this case with PIP, when an activity first enters PIP, it shows
+            //       the menu activity which takes window focus, prevening the right condition from
+            //       being run below
             ActivityControlHelper helper = getActivityControlHelper();
             RecentsView recents = helper.getVisibleRecentsView();
             if (recents != null) {
-                int childCount = recents.getChildCount();
-                if (childCount != 0) {
-                    ((TaskView) recents.getChildAt(childCount >= 2 ? 1 : 0)).launchTask(true);
+                // Launch the next task
+                recents.showNextTask();
+            } else {
+                if (elapsedTime < ViewConfiguration.getDoubleTapTimeout()) {
+                    // The user tried to launch back into overview too quickly, either after
+                    // launching an app, or before overview has actually shown, just ignore for now
+                    return;
                 }
 
-                // There are not enough tasks. Skip
-                return;
+                // Start overview
+                if (helper.switchToRecentsIfVisible()) {
+                    SysuiEventLogger.writeDummyRecentsTransition(0);
+                    // Do nothing
+                } else {
+                    initSwipeHandler(helper, time, this::startZoomOutAnim);
+                }
             }
-
-            if (isQuickTap) {
-                // Focus last task. Start is on background thread so that all ActivityManager calls
-                // are serialized
-                BackgroundExecutor.get().submit(this::startLastTask);
-                return;
-            }
-            if (helper.switchToRecentsIfVisible()) {
-                SysuiEventLogger.writeDummyRecentsTransition(0);
-                return;
-            }
-
-            initSwipeHandler(helper, time, this::startZoomOutAnim);
         });
     }
 
@@ -360,10 +361,6 @@ public class OverviewCommandHelper extends InternalStateHandler {
         launcher.getStateManager().goToState(OVERVIEW, alreadyOnHome);
         clearReference();
         return false;
-    }
-
-    public boolean isUsingFallbackActivity() {
-        return DEBUG_START_FALLBACK_ACTIVITY;
     }
 
     public ActivityControlHelper getActivityControlHelper() {

@@ -196,6 +196,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
+    // Only used with the recents activity, when the screenshot should be fetched at the beginning
+    // of the animation and not at the end when the activity is already paused
+    private boolean mSkipScreenshotAtEndOfTransition;
+
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
             ActivityControlHelper<T> controller) {
         mContext = context;
@@ -582,7 +586,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     mSourceStackBounds.set(target.sourceContainerBounds);
 
                     initTransitionEndpoints(dp);
-                    break;
                 }
             }
         }
@@ -725,8 +728,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         () -> setStateOnUiThread(STATE_SWITCH_TO_SCREENSHOT_COMPLETE));
             }
         };
+
         synchronized (mRecentsAnimationWrapper) {
-            if (mRecentsAnimationWrapper.controller != null) {
+            if (mRecentsAnimationWrapper.controller != null && !mSkipScreenshotAtEndOfTransition) {
                 TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
@@ -751,6 +755,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             finishTransitionRunnable.run();
         }
         doLogGesture(true /* toLauncher */);
+    }
+
+    @UiThread
+    public void switchToScreenshotImmediate(ThumbnailData thumbnail) {
+        mRecentsView.updateThumbnail(mRunningTaskId, thumbnail);
+        mSkipScreenshotAtEndOfTransition = true;
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
