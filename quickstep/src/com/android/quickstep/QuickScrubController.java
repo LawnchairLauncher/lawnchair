@@ -138,9 +138,8 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void snapToNextTaskIfAvailable() {
-        if (mInQuickScrub && mRecentsView.getChildCount() > 0) {
-            int toPage = mStartedFromHome ? 0 : mRecentsView.getNextPage() + 1;
-            mRecentsView.snapToPage(toPage, QUICK_SCRUB_START_DURATION);
+        if (!mStartedFromHome && mInQuickScrub && mRecentsView.getChildCount() > 0) {
+            mRecentsView.snapToPage(mRecentsView.getNextPage() + 1, QUICK_SCRUB_START_DURATION);
         }
     }
 
