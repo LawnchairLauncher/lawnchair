@@ -55,6 +55,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -364,6 +365,8 @@ public class Launcher extends Activity
     private LauncherDialog mCurrentDialog;
     private EditableItemInfo mEditingItem;
 
+    private static final int REQUEST = 112; //for permission
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.loadThemePreference(this);
@@ -374,6 +377,17 @@ public class Launcher extends Activity
         }
 
         super.onCreate(savedInstanceState);
+
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] pe = {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            if (!hasPermissions(this, pe)) {
+                ActivityCompat.requestPermissions(this, pe, REQUEST );
+            } else {
+            }
+        } else {
+            //Do here
+        }
 
         setScreenOrientation();
 
@@ -452,6 +466,31 @@ public class Launcher extends Activity
         Settings.init(this);
 
         Utilities.showChangelog(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "The app has access to write to your storage or phone status.", Toast.LENGTH_LONG).show();
+                } else {
+
+                }
+            }
+        }
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -766,46 +805,6 @@ public class Launcher extends Activity
         handleActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        PendingRequestArgs pendingArgs = mPendingRequestArgs;
-        if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
-                && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
-            setWaitingForResult(null);
-
-            View v = null;
-            CellLayout layout = getCellLayout(pendingArgs.container, pendingArgs.screenId);
-            if (layout != null) {
-                v = layout.getChildAt(pendingArgs.cellX, pendingArgs.cellY);
-            }
-            Intent intent = pendingArgs.getPendingIntent();
-
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null);
-            } else {
-                // TODO: Show a snack bar with link to settings
-                Toast.makeText(this, getString(R.string.msg_no_phone_permission,
-                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
-                final Launcher _this = this;
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface di, int i) {
-                        Utilities.requestStoragePermission(_this);
-                    }
-                };
-                new AlertDialog.Builder(this).setTitle(R.string.title_storage_permission_required)
-                        .setMessage(R.string.content_storage_permission_required).setPositiveButton(android.R.string.ok, listener)
-                        .setCancelable(false).show();
-            }
-        }
-    }
-
     /**
      * Check to see if a given screen id exists. If not, create it at the end, return the new id.
      *
@@ -1011,6 +1010,15 @@ public class Launcher extends Activity
         return !inputManager.isFullscreenMode();
     }
 
+    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packagename, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         final int uniChar = event.getUnicodeChar();
@@ -1026,7 +1034,15 @@ public class Launcher extends Activity
                 // If there are multiple keystrokes before the search dialog takes focus,
                 // onSearchRequested() will be called for every keystroke,
                 // but it is idempotent, so it's fine.
-                return onSearchRequested();
+                PackageManager pm = this.getPackageManager();
+                boolean isInstalled = isPackageInstalled("com.google.android.googlequicksearchbox", pm);
+                if(isInstalled){
+                    return onSearchRequested();
+                }else{
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                    startActivity(browserIntent);
+                    return false;
+                }
             }
         }
 
