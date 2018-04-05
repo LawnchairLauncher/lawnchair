@@ -30,7 +30,6 @@ import com.android.launcher3.util.LooperExecutor;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -43,12 +42,12 @@ import java.util.concurrent.TimeoutException;
 public class AppSearchProvider extends ContentProvider
 {
     private static final String[] eK = new String[] { "_id", "suggest_text_1", "suggest_icon_1", "suggest_intent_action", "suggest_intent_data" };
-    private final PipeDataWriter<Future> eL;
-    private LooperExecutor eM;
+    private final PipeDataWriter<Future> mPipeDataWriter;
+    private LooperExecutor mLooper;
     private LauncherAppState mApp;
 
     public AppSearchProvider() {
-        this.eL = new PipeDataWriter<Future>() {
+        mPipeDataWriter = new PipeDataWriter<Future>() {
             @Override
             public void writeDataToPipe(@NonNull ParcelFileDescriptor output, @NonNull Uri uri, @NonNull String mimeType, @Nullable Bundle opts, @Nullable Future args) {
                 ParcelFileDescriptor.AutoCloseOutputStream outStream = null;
@@ -68,27 +67,31 @@ public class AppSearchProvider extends ContentProvider
         };
     }
 
-    public static ComponentKey dl(final Uri uri, final Context context) {
-        return new ComponentKey(ComponentName.unflattenFromString(uri.getQueryParameter("component")), UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
+    public static ComponentKey uriToComponent(final Uri uri, final Context context) {
+        return new ComponentKey(ComponentName.unflattenFromString(uri.getQueryParameter("component")),
+                UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
     }
 
-    public static Uri dm(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
-        return new Uri.Builder().scheme("content").authority("com.google.android.apps.nexuslauncher.appssearch").appendQueryParameter("component", appInfo.componentName.flattenToShortString()).appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user))).build();
+    public static Uri buildUri(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
+        return new Uri.Builder()
+                .scheme("content")
+                .authority("com.google.android.apps.nexuslauncher.appssearch")
+                .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
+                .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
+                .build();
     }
 
-    private Cursor dn(final List list) {
+    private Cursor listToCursor(final List<AppInfo> list) {
         final MatrixCursor matrixCursor = new MatrixCursor(AppSearchProvider.eK, list.size());
         final UserManagerCompat instance = UserManagerCompat.getInstance(this.getContext());
-        final Iterator<AppInfo> iterator = (Iterator<AppInfo>)list.iterator();
+
         int n = 0;
-        while (iterator.hasNext()) {
-            final AppInfo appInfo = iterator.next();
-            final String string = dm(appInfo, instance).toString();
+        for (AppInfo appInfo : list) {
+            final String uri = buildUri(appInfo, instance).toString();
             final MatrixCursor.RowBuilder row = matrixCursor.newRow();
-            final int n2 = n + 1;
-            row.add(n).add(appInfo.title.toString()).add(string).add("com.google.android.apps.nexuslauncher.search.APP_LAUNCH").add(string);
-            n = n2;
+            row.add(n++).add(appInfo.title.toString()).add(uri).add("com.google.android.apps.nexuslauncher.search.APP_LAUNCH").add(uri);
         }
+
         return matrixCursor;
     }
 
@@ -97,24 +100,22 @@ public class AppSearchProvider extends ContentProvider
             Log.d("AppSearchProvider", "Content provider accessed on main thread");
             return null;
         }
-        if ("loadIcon".equals(s)) {
-            try {
-                final Uri parse = Uri.parse(s2);
-                final ComponentKey dl = dl(parse, this.getContext());
-                final LooperExecutor em = this.eM;
-                final g g = new g(this, dl);
-                final LooperExecutor looperExecutor = em;
-                final Future<Bitmap> submit = looperExecutor.submit((Callable<Bitmap>)g);
-                final Bitmap value = submit.get();
-                final Bitmap bitmap = value;
-                final Bundle bundle2 = new Bundle();
-                bundle2.putParcelable("suggest_icon_1", bitmap);
-                return bundle2;
-            }
-            catch (Exception ex) {
-                Log.e("AppSearchProvider", "Unable to load icon " + ex);
-                return null;
-            }
+        if ("loadIcon".equals(s)) try {
+            final Uri parse = Uri.parse(s2);
+            final ComponentKey dl = uriToComponent(parse, this.getContext());
+            final Callable<Bitmap> g = new Callable<Bitmap>() {
+                public Bitmap call() {
+                    final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
+                    mApp.getIconCache().getTitleAndIcon(d, false);
+                    return d.iconBitmap;
+                }
+            };
+            final Bundle bundle2 = new Bundle();
+            bundle2.putParcelable("suggest_icon_1", mLooper.submit(g).get());
+            return bundle2;
+        } catch (Exception ex) {
+            Log.e("AppSearchProvider", "Unable to load icon " + ex);
+            return null;
         }
         return super.call(s, s2, bundle);
     }
@@ -132,7 +133,7 @@ public class AppSearchProvider extends ContentProvider
     }
 
     public boolean onCreate() {
-        this.eM = new LooperExecutor(LauncherModel.getWorkerLooper());
+        this.mLooper = new LooperExecutor(LauncherModel.getWorkerLooper());
         this.mApp = LauncherAppState.getInstance(this.getContext());
         return true;
     }
@@ -143,36 +144,38 @@ public class AppSearchProvider extends ContentProvider
             return null;
         }
         try {
-            final ComponentKey dl = dl(uri, this.getContext());
+            final ComponentKey dl = uriToComponent(uri, this.getContext());
             final String s2 = "image/png";
-            final LooperExecutor em = this.eM;
-            final g g = new g(this, dl);
-            final LooperExecutor looperExecutor = em;
-            final Future<Object> submit = looperExecutor.submit((Callable<Object>)g);
-            return this.openPipeHelper(uri, s2, null, submit, this.eL);
+            final Callable<Bitmap> g = new Callable<Bitmap>() {
+                public Bitmap call() {
+                    final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
+                    mApp.getIconCache().getTitleAndIcon(d, false);
+                    return d.iconBitmap;
+                }
+            };
+            return openPipeHelper(uri, s2, null, mLooper.submit(g), this.mPipeDataWriter);
         }
         catch (Exception ex) {
             throw new FileNotFoundException(ex.getMessage());
         }
     }
 
-    public Cursor query(final Uri uri, final String[] array, final String s, final String[] array2, final String s2) {
+    public Cursor query(@NonNull Uri uri, final String[] array, final String s, final String[] array2, final String s2) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             Log.e("AppSearchProvider", "Content provider accessed on main thread");
             return new MatrixCursor(AppSearchProvider.eK, 0);
         }
-        List<?> list;
+        List<AppInfo> list;
         try {
             final f f = new f(uri.getLastPathSegment());
             this.mApp.getModel().enqueueModelUpdateTask(f);
-            final Object value = f.eN.get(5, TimeUnit.SECONDS);
-            list = (List<?>)value;
+            list = f.eN.get(5, TimeUnit.SECONDS);
         }
         catch (InterruptedException | ExecutionException | TimeoutException ex) {
             Log.d("AppSearchProvider", "Error searching apps", ex);
-            list = new ArrayList<Object>();
+            list = new ArrayList<>();
         }
-        return this.dn(list);
+        return this.listToCursor(list);
     }
 
     public int update(final Uri uri, final ContentValues contentValues, final String s, final String[] array) {
@@ -216,6 +219,7 @@ public class AppSearchProvider extends ContentProvider
                     this.mApp.getIconCache().getTitleAndIcon(appInfo, false);
                 }
             }
+
             Collections.sort(list, new AppInfoComparator(this.mApp.getContext()));
             return list;
         }
@@ -229,23 +233,6 @@ public class AppSearchProvider extends ContentProvider
 
         public void run() {
             this.eN.run();
-        }
-    }
-
-    class g implements Callable
-    {
-        final ComponentKey eO;
-        final /* synthetic */ AppSearchProvider eP;
-
-        public g(final AppSearchProvider ep, final ComponentKey eo) {
-            this.eP = ep;
-            this.eO = eo;
-        }
-
-        public Bitmap call() {
-            final AppItemInfoWithIcon d = new AppItemInfoWithIcon(this.eO);
-            this.eP.mApp.getIconCache().getTitleAndIcon(d, false);
-            return d.iconBitmap;
         }
     }
 }

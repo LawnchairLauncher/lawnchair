@@ -39,7 +39,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             cursor = mContext.getContentResolver().query(uri, null, null, null, null);
             int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
             while (cursor.moveToNext()) {
-                componentList.mApps.add(AppSearchProvider.dl(Uri.parse(cursor.getString(suggestIntentData)), mContext));
+                componentList.mApps.add(AppSearchProvider.uriToComponent(Uri.parse(cursor.getString(suggestIntentData)), mContext));
             }
         } finally {
             if (cursor != null) {
