@@ -154,8 +154,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         mLauncher.getStateManager().setCurrentAnimation(anim);
 
                         if (!composeRecentsLaunchAnimator(v, targetCompats, anim)) {
+                            anim.play(getIconAnimator(v));
                             if (launcherIsATargetWithMode(targetCompats, MODE_CLOSING)) {
-                                anim.play(getIconAnimator(v));
                                 anim.play(getLauncherContentAnimator(false /* show */));
                             }
                             anim.play(getWindowAnimators(v, targetCompats));
