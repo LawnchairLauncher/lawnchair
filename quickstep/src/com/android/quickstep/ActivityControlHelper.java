@@ -22,7 +22,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -39,19 +38,17 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.RecentsAnimationListener;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 
 import java.util.function.BiPredicate;
 
@@ -84,9 +81,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
             final RecentsAnimationListener remoteAnimationListener);
-
-    void startRecentsFromButton(Context context, Intent intent,
-            RecentsAnimationListener remoteAnimationListener);
 
     @UiThread
     @Nullable
@@ -212,24 +206,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 final RecentsAnimationListener remoteAnimationListener) {
             ActivityManagerWrapper.getInstance().startRecentsActivity(
                     intent, assistDataReceiver, remoteAnimationListener, null, null);
-        }
-
-        @Override
-        public void startRecentsFromButton(Context context, Intent intent,
-                RecentsAnimationListener remoteAnimationListener) {
-            // We should use the remove animation for the fallback activity recents button case,
-            // it works better with PiP.  In Launcher, we have already registered the remote
-            // animation definition, which takes priority over explicitly defined remote
-            // animations in the provided activity options when starting the activity, so we
-            // just register a remote animation factory to get a callback to handle this.
-            LauncherAppTransitionManagerImpl appTransitionManager =
-                    (LauncherAppTransitionManagerImpl) getLauncher().getAppTransitionManager();
-            appTransitionManager.setRemoteAnimationOverride(new RecentsAnimationActivityOptions(
-                    remoteAnimationListener, () -> {
-                        // Once the controller is finished, also reset the remote animation override
-                        appTransitionManager.setRemoteAnimationOverride(null);
-                    }));
-            context.startActivity(intent);
         }
 
         @Nullable
@@ -360,19 +336,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                     intent, assistDataReceiver, remoteAnimationListener, null, null);
         }
 
-        @Override
-        public void startRecentsFromButton(Context context, Intent intent,
-                RecentsAnimationListener remoteAnimationListener) {
-            // We should use the remove animation for the fallback activity recents button case,
-            // it works better with PiP. For the fallback activity, we should not have registered
-            // the launcher app transition manager, so we should just start the remote animation here.
-            ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
-                    new RemoteAnimationAdapterCompat(
-                            new RecentsAnimationActivityOptions(remoteAnimationListener, null),
-                            10000, 10000));
-            context.startActivity(intent, options.toBundle());
-        }
-
         @Nullable
         @Override
         public RecentsView getVisibleRecentsView() {
@@ -403,5 +366,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         void register();
 
         void unregister();
+
+        void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
+                Context context, Handler handler, long duration);
     }
 }
