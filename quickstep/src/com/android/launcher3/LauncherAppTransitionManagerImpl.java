@@ -149,11 +149,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     @Override
                     public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
                         AnimatorSet anim = new AnimatorSet();
-                        // Set the state animation first so that any state listeners are called
-                        // before our internal listeners.
-                        mLauncher.getStateManager().setCurrentAnimation(anim);
+
 
                         if (!composeRecentsLaunchAnimator(v, targetCompats, anim)) {
+                            // Set the state animation first so that any state listeners are called
+                            // before our internal listeners.
+                            mLauncher.getStateManager().setCurrentAnimation(anim);
+
                             anim.play(getIconAnimator(v));
                             if (launcherIsATargetWithMode(targetCompats, MODE_CLOSING)) {
                                 anim.play(getLauncherContentAnimator(false /* show */));
@@ -284,6 +286,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets));
         target.play(launcherAnim);
+
+        // Set the current animation first, before adding windowAnimEndListener. Setting current
+        // animation adds some listeners which need to be called before windowAnimEndListener
+        // (the ordering of listeners matter in this case).
+        mLauncher.getStateManager().setCurrentAnimation(target);
         target.addListener(windowAnimEndListener);
         return true;
     }
