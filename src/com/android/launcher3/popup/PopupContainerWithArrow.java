@@ -129,7 +129,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mNotificationItemView != null) {
-            return mNotificationItemView.onTouchEvent(ev);
+            return mNotificationItemView.onTouchEvent(ev) || super.onTouchEvent(ev);
         }
         return super.onTouchEvent(ev);
     }
