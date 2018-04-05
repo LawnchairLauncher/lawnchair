@@ -424,6 +424,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return computeScrollHelper(true);
     }
 
+    protected void announcePageForAccessibility() {
+        if (isAccessibilityEnabled(getContext())) {
+            // Notify the user when the page changes
+            announceForAccessibility(getCurrentPageDescription());
+        }
+    }
+
     protected boolean computeScrollHelper(boolean shouldInvalidate) {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
@@ -452,9 +459,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 pageEndTransition();
             }
 
-            if (isAccessibilityEnabled(getContext())) {
-                // Notify the user when the page changes
-                announceForAccessibility(getCurrentPageDescription());
+            if (canAnnouncePageDescription()) {
+                announcePageForAccessibility();
             }
         }
         return false;
@@ -1533,6 +1539,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected String getPageIndicatorDescription() {
         return getCurrentPageDescription();
+    }
+
+    protected boolean canAnnouncePageDescription() {
+        return true;
     }
 
     protected String getCurrentPageDescription() {
