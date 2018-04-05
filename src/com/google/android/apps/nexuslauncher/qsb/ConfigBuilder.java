@@ -187,7 +187,6 @@ public class ConfigBuilder {
 
     private void ce() {
         View view = null;
-        int i2 = 0;
         AllAppsRecyclerView appsView = getAppsView();
         GridLayoutManager.SpanSizeLookup spanSizeLookup = ((GridLayoutManager) appsView.getLayoutManager())
                 .getSpanSizeLookup();
@@ -218,30 +217,46 @@ public class ConfigBuilder {
         }
         mBubbleTextView = bubbleTextViewArr[0];
         mNano.es = allAppsCols;
-        co = appsView.getChildViewHolder(bubbleTextViewArr[0]).getItemViewType() == 4;
-        a_search viewBounds = getViewBounds(bubbleTextViewArr[allAppsCols - 1]);
-        a_search viewBounds2 = getViewBounds(bubbleTextViewArr[0]);
-        if (Utilities.isRtl(this.mActivity.getResources())) {
-            a_search aVar = viewBounds;
-            viewBounds = viewBounds2;
-            viewBounds2 = aVar;
+        int iconCountOffset = 0;
+        for (int i = 0; i < bubbleTextViewArr.length; i++) {
+            if (bubbleTextViewArr[i] == null) {
+                iconCountOffset = allAppsCols - i;
+                allAppsCols = i;
+                break;
+            }
         }
-        viewBounds2.eh = (viewBounds.eh + viewBounds.ef) - viewBounds2.ef;
-        mNano.en = viewBounds2;
+        co = appsView.getChildViewHolder(bubbleTextViewArr[0]).getItemViewType() == 4;
+        a_search lastColumn = getViewBounds(bubbleTextViewArr[allAppsCols - 1]);
+        a_search firstColumn = getViewBounds(bubbleTextViewArr[0]);
+        if (Utilities.isRtl(mActivity.getResources())) {
+            a_search temp = lastColumn;
+            lastColumn = firstColumn;
+            firstColumn = temp;
+        }
+        int iconWidth = lastColumn.eh;
+        int totalIconDistance = lastColumn.ef - firstColumn.ef;
+        int iconDistance = totalIconDistance / allAppsCols;
+        firstColumn.eh = iconWidth + totalIconDistance;
+        if (Utilities.isRtl(mActivity.getResources())) {
+            firstColumn.ef -= iconCountOffset * iconWidth;
+            firstColumn.eh += iconCountOffset * iconWidth;
+        } else {
+            firstColumn.eh += iconCountOffset * (iconDistance + iconWidth);
+        }
+        mNano.en = firstColumn;
         if (!this.co) {
-            viewBounds2.eg -= viewBounds2.ee;
+            firstColumn.eg -= firstColumn.ee;
         } else if (view != null) {
             a_search viewBounds3 = getViewBounds(view);
-            viewBounds3.eh = viewBounds2.eh;
+            viewBounds3.eh = firstColumn.eh;
             mNano.ez = viewBounds3;
         }
         bW();
         List predictedApps = appsView.getApps().getPredictedApps();
         int i = Math.min(predictedApps.size(), allAppsCols);
         mNano.eo = new b_search[i];
-        while (i2 < i) {
+        for (int i2 = 0; i2 < i; i2++) {
             mNano.eo[i2] = bZ((AppInfo) predictedApps.get(i2), i2);
-            i2++;
         }
     }
 
