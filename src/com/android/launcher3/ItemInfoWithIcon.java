@@ -91,6 +91,11 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_ADAPTIVE_ICON = 1 << 8;
 
     /**
+     * Flag indicating that the icon is badged.
+     */
+    public static final int FLAG_ICON_BADGED = 1 << 9;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
