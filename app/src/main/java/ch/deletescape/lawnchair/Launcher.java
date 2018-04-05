@@ -365,7 +365,8 @@ public class Launcher extends Activity
     private LauncherDialog mCurrentDialog;
     private EditableItemInfo mEditingItem;
 
-    private static final int REQUEST = 112; //for permission
+    private static final int REQUEST = 112; //for permissions
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -379,15 +380,16 @@ public class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            String[] pe = {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
-            if (!hasPermissions(this, pe)) {
-                ActivityCompat.requestPermissions(this, pe, REQUEST );
-            } else {
-            }
-        } else {
-            //Do here
+        String[] pe = { android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
+        if (!hasPermissions(this, pe)){
+            AlertDialog.Builder ad = new AlertDialog.Builder(this);
+            ad.setView(R.layout.app_intro);
+            dialog = ad.create();
+            dialog.show();
+
         }
+
+
 
         setScreenOrientation();
 
@@ -468,18 +470,15 @@ public class Launcher extends Activity
         Utilities.showChangelog(this);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getApplicationContext(), "The app has access to write to your storage or phone status.", Toast.LENGTH_LONG).show();
-                } else {
-
-                }
-            }
+    public void onPermissionsAsking(View v){
+        try{
+            String[] pe = { android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            ActivityCompat.requestPermissions(this, pe, REQUEST );
+        } catch (Exception e){
+            Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        dialog.dismiss();
+
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
