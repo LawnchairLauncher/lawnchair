@@ -22,26 +22,51 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:text="Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices."
+                android:text="Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices.\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"/>
-
             <TextView
                 android:id="@+id/textView2"
-                android:text="To work properly we need the permission for your Storage and for your phone status.\nPlease enable."
+                android:text="To let Lawnchair work we need the permission for:\n\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
-                />
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textView3"
+                android:text="Your storage:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textView4"
+                android:text="to be able to make proper backups.\n"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView3" />
+            <TextView
+                android:id="@+id/textView5"
+                android:text="Your phone status:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView4"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textView6"
+                android:text="(Reason missing).\n\n\n"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView5" />
             <Button
                 android:id="@+id/button_permissions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enable permissions"
-                android:layout_below="@+id/textView2"
-                android:onClick="onPermissionsAsking"
-                />
+                android:layout_below="@+id/textView6"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:onClick="onPermissionsAsking" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
