@@ -27,22 +27,22 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.AnyThread;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
+import com.android.quickstep.util.LayoutUtils;
 
 /**
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<Launcher> implements Insettable {
+public class LauncherRecentsView extends RecentsView<Launcher> {
 
     public static final FloatProperty<LauncherRecentsView> TRANSLATION_Y_FACTOR =
             new FloatProperty<LauncherRecentsView>("translationYFactor") {
@@ -61,8 +61,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationYFactor;
 
-    private Rect mPagePadding = new Rect();
-
     public LauncherRecentsView(Context context) {
         this(context, null);
     }
@@ -74,16 +72,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
-    }
-
-    @Override
-    public void setInsets(Rect insets) {
-        mInsets.set(insets);
-        DeviceProfile dp = mActivity.getDeviceProfile();
-        Rect padding = getPadding(dp, getContext());
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
-        mPagePadding.set(padding);
-        mPagePadding.top += getResources().getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
     }
 
     @Override
@@ -99,7 +87,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
 
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
-        setTranslationY(mTranslationYFactor * (mPagePadding.bottom - mPagePadding.top));
+        setTranslationY(mTranslationYFactor * (getPaddingBottom() - getPaddingTop()));
     }
 
     @Override
@@ -137,5 +125,15 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements Insett
         anim.play(ObjectAnimator.ofFloat(
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
         return anim;
+    }
+
+    @Override
+    protected void getTaskSize(DeviceProfile dp, Rect outRect) {
+        LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
+    }
+
+    @AnyThread
+    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
+        LayoutUtils.calculateLauncherTaskSize(context, grid, outRect);
     }
 }

@@ -19,13 +19,11 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
-import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
 
@@ -47,14 +45,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        Rect pageRect = new Rect();
-        RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, pageRect);
-
-        if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
-            return super.getWorkspaceScaleAndTranslation(launcher);
-        }
-
-        return getScaleAndTranslationForPageRect(launcher, pageRect);
+        // TODO: provide a valid value
+        return new float[]{1, 0, -launcher.getDeviceProfile().hotseatBarSizePx / 2};
     }
 
     @Override
@@ -91,20 +83,6 @@ public class OverviewState extends LauncherState {
                 return 0;
             }
         };
-    }
-
-    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
-        Workspace ws = launcher.getWorkspace();
-        float childWidth = ws.getNormalChildWidth();
-
-        float scale = pageRect.width() / childWidth;
-        Rect insets = launcher.getDragLayer().getInsets();
-
-        float halfHeight = ws.getExpectedHeight() / 2;
-        float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
-        float translationY = pageRect.top - childTop;
-
-        return new float[] {scale, 0, translationY};
     }
 
     @Override

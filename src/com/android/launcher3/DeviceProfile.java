@@ -41,7 +41,7 @@ public class DeviceProfile {
     public final boolean transposeLayoutWithOrientation;
 
     // Device properties in current orientation
-    private final boolean isLandscape;
+    public final boolean isLandscape;
     public final boolean isMultiWindowMode;
 
     public final int widthPx;

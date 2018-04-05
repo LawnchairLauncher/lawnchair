@@ -44,6 +44,7 @@ import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.LauncherLayoutListener;
+import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -122,7 +123,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            RecentsView.getPageRect(dp, context, outRect);
+            LauncherRecentsView.getPageRect(dp, context, outRect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
@@ -271,7 +272,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            FallbackRecentsView.getCenterPageRect(dp, context, outRect);
+            FallbackRecentsView.getPageRect(dp, context, outRect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
