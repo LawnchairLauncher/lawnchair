@@ -110,7 +110,7 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return NONE;
+            return DRAG_HANDLE_INDICATOR;
         } else {
             return HOTSEAT_SEARCH_BOX | DRAG_HANDLE_INDICATOR |
                     (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
