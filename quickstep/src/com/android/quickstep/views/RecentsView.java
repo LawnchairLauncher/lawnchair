@@ -130,13 +130,7 @@ public abstract class RecentsView<T extends BaseActivity>
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
-            for (int i = 0; i < getChildCount(); i++) {
-                final TaskView taskView = (TaskView) getChildAt(i);
-                if (taskView.getTask().key.id == taskId) {
-                    taskView.getThumbnail().setThumbnail(taskView.getTask(), snapshot);
-                    return;
-                }
-            }
+            updateThumbnail(taskId, snapshot);
         }
 
         @Override
@@ -601,18 +595,24 @@ public abstract class RecentsView<T extends BaseActivity>
                     new ActivityManager.TaskDescription(), 0, new ComponentName("", ""), false);
             taskView.bind(mTmpRunningTask);
         }
-
-        mRunningTaskId = runningTaskId;
-        setCurrentPage(0);
-
-        // Load the tasks (if the loading is already
-        mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
+        setCurrentTask(mRunningTaskId);
 
         // Hide the task that we are animating into, ignore if there is no associated task (ie. the
         // assistant)
         if (getPageAt(mCurrentPage) != null) {
             getPageAt(mCurrentPage).setAlpha(0);
         }
+    }
+
+    /**
+     * Similar to {@link #showTask(int)} but does not put any restrictions on the first tile.
+     */
+    public void setCurrentTask(int runningTaskId) {
+        mRunningTaskId = runningTaskId;
+        setCurrentPage(0);
+
+        // Load the tasks (if the loading is already
+        mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
     }
 
     public void showNextTask() {

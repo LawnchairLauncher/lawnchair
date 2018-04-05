@@ -16,9 +16,14 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.lang.ref.WeakReference;
 import java.util.function.BiPredicate;
@@ -77,5 +82,14 @@ public class RecentsActivityTracker implements ActivityInitListener {
         synchronized (LOCK) {
             return sCurrentActivity.get();
         }
+    }
+
+    @Override
+    public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
+            Context context, Handler handler, long duration) {
+        register();
+
+        Bundle options = animProvider.toActivityOptions(handler, duration).toBundle();
+        context.startActivity(intent, options);
     }
 }

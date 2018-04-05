@@ -57,6 +57,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
+import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -106,7 +107,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private DeviceProfile mDeviceProfile;
     private View mFloatingView;
 
-    private RemoteAnimationRunnerCompat mRemoteAnimationOverride;
+    private RemoteAnimationProvider mRemoteAnimationProvider;
 
     private final AnimatorListenerAdapter mReapplyStateListener = new AnimatorListenerAdapter() {
         @Override
@@ -179,8 +180,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         return getDefaultActivityLaunchOptions(launcher, v);
     }
 
-    public void setRemoteAnimationOverride(RemoteAnimationRunnerCompat remoteAnimationOverride) {
-        mRemoteAnimationOverride = remoteAnimationOverride;
+    public void setRemoteAnimationProvider(RemoteAnimationProvider animationProvider) {
+        mRemoteAnimationProvider = animationProvider;
     }
 
     /**
@@ -683,52 +684,33 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private RemoteAnimationRunnerCompat getWallpaperOpenRunner() {
         return new LauncherAnimationRunner(mHandler) {
             @Override
-            public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats,
-                    Runnable runnable) {
-                if (mLauncher.getStateManager().getState().overviewUi
-                        && mRemoteAnimationOverride != null) {
-                    // This transition is only used for the fallback activity and should not be
-                    // managed here (but necessary to implement here since the defined remote
-                    // animation currently takes precendence over the one defined in the activity
-                    // options).
-                    mRemoteAnimationOverride.onAnimationStart(targetCompats, runnable);
-                    return;
-                }
-                super.onAnimationStart(targetCompats, runnable);
-            }
-
-            @Override
-            public void onAnimationCancelled() {
-                if (mLauncher.getStateManager().getState().overviewUi
-                        && mRemoteAnimationOverride != null) {
-                    // This transition is only used for the fallback activity and should not be
-                    // managed here (but necessary to implement here since the defined remote
-                    // animation currently takes precendence over the one defined in the activity
-                    // options).
-                    mRemoteAnimationOverride.onAnimationCancelled();
-                    return;
-                }
-                super.onAnimationCancelled();
-            }
-
-            @Override
             public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                AnimatorSet anim = new AnimatorSet();
-                anim.play(getClosingWindowAnimators(targetCompats));
-
-                // Normally, we run the launcher content animation when we are transitioning home,
-                // but if home is already visible, then we don't want to animate the contents of
-                // launcher unless we know that we are animating home as a result of the home button
-                // press with quickstep, which will result in launcher being started on touch down,
-                // prior to the animation home (and won't be in the targets list because it is
-                // already visible). In that case, we force invisibility on touch down, and only
-                // reset it after the animation to home is initialized.
-                if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
-                        || mLauncher.isForceInvisible()) {
-                    // Only register the content animation for cancellation when state changes
-                    mLauncher.getStateManager().setCurrentAnimation(anim);
-                    createLauncherResumeAnimation(anim);
+                AnimatorSet anim = null;
+                RemoteAnimationProvider provider = mRemoteAnimationProvider;
+                if (provider != null) {
+                    anim = provider.createWindowAnimation(targetCompats);
                 }
+
+                if (anim == null) {
+                    anim = new AnimatorSet();
+                    anim.play(getClosingWindowAnimators(targetCompats));
+
+                    // Normally, we run the launcher content animation when we are transitioning
+                    // home, but if home is already visible, then we don't want to animate the
+                    // contents of launcher unless we know that we are animating home as a result
+                    // of the home button press with quickstep, which will result in launcher being
+                    // started on touch down, prior to the animation home (and won't be in the
+                    // targets list because it is already visible). In that case, we force
+                    // invisibility on touch down, and only reset it after the animation to home
+                    // is initialized.
+                    if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
+                            || mLauncher.isForceInvisible()) {
+                        // Only register the content animation for cancellation when state changes
+                        mLauncher.getStateManager().setCurrentAnimation(anim);
+                        createLauncherResumeAnimation(anim);
+                    }
+                }
+
                 mLauncher.setForceInvisible(false);
                 return anim;
             }

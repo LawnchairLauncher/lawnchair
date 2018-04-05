@@ -294,6 +294,7 @@ public class Launcher extends BaseDraggingActivity
         mPopupDataProvider = new PopupDataProvider(this);
 
         mRotationHelper = new RotationHelper(this);
+        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
         if (internalStateHandled) {
@@ -340,8 +341,6 @@ public class Launcher extends BaseDraggingActivity
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
-
-        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
