@@ -1064,7 +1064,10 @@ public abstract class RecentsView<T extends BaseActivity>
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
-        getChildAt(mCurrentPage).sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        View currChild = getChildAt(mCurrentPage);
+        if (currChild != null) {
+            currChild.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        }
     }
 
     @Override
