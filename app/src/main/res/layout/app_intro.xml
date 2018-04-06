@@ -28,7 +28,7 @@
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/textView2"
-                android:text="To let Lawnchair work we need the permission for:\n\n"
+                android:text="To let Lawnchair work we need the permission for:\n\n\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
@@ -55,16 +55,30 @@
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/textView6"
-                android:text="(Reason missing).\n\n\n"
+                android:text="(Reason missing).\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView5" />
+            <TextView
+                android:id="@+id/textView7"
+                android:text="Your location:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView6"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView7"
+                android:text="to get proper weather information.\n\n\n" />
             <Button
                 android:id="@+id/button_permissions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enable permissions"
-                android:layout_below="@+id/textView6"
+                android:layout_below="@+id/textView8"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:onClick="onPermissionsAsking" />
         </RelativeLayout>

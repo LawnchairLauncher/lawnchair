@@ -84,6 +84,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -380,22 +382,13 @@ public class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
 
-        String[] pe = { android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
+        String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
         if (!hasPermissions(this, pe)){
-            AlertDialog.Builder ad = new AlertDialog.Builder(this);
-            ad.setView(R.layout.app_intro);
-            dialog = ad.create();
-            dialog.show();
-
+            onIntroShow();
         }
-
-
-
         setScreenOrientation();
-
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
-
         // Load configuration-specific DeviceProfile
         mDeviceProfile = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE ?
@@ -470,15 +463,27 @@ public class Launcher extends Activity
         Utilities.showChangelog(this);
     }
 
+    public void onIntroShow(){
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setView(R.layout.app_intro);
+        dialog = ad.create();
+        dialog.show();
+    }
+
     public void onPermissionsAsking(View v){
         try{
-            String[] pe = { android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
             ActivityCompat.requestPermissions(this, pe, REQUEST );
+            dialog.setContentView(R.layout.app_intro2);
         } catch (Exception e){
-            Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        dialog.dismiss();
 
+
+    }
+
+    public void onFinishIntro(View v){
+        dialog.dismiss();
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
