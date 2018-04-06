@@ -517,6 +517,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     @Override
+    protected void closeComplete() {
+        super.closeComplete();
+        mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent ev) {
         // Touched a shortcut, update where it was touched so we can drag from there on long click.
         switch (ev.getAction()) {
