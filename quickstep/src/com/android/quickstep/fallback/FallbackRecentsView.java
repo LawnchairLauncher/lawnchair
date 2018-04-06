@@ -41,7 +41,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     @Override
     protected void onAllTasksRemoved() {
-        mActivity.finish();
+        mActivity.startHome();
     }
 
     @Override

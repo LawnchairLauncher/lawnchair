@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -46,9 +47,6 @@ import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.AssistDataReceiver;
-import com.android.systemui.shared.system.RecentsAnimationListener;
 
 import java.util.function.BiPredicate;
 
@@ -85,9 +83,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
-    void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
-            final RecentsAnimationListener remoteAnimationListener);
-
     @Nullable
     T getCreatedActivity();
 
@@ -97,6 +92,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     @UiThread
     boolean switchToRecentsIfVisible();
+
+    /**
+     * @return {@code true} if recents activity should be started immediately on touchDown,
+     *         {@code false} if it should deferred until some threshold is crossed.
+     */
+    boolean deferStartingActivity(int downHitTarget);
 
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
@@ -220,13 +221,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return new LauncherInitListener(onInitListener);
         }
 
-        @Override
-        public void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
-                final RecentsAnimationListener remoteAnimationListener) {
-            ActivityManagerWrapper.getInstance().startRecentsActivity(
-                    intent, assistDataReceiver, remoteAnimationListener, null, null);
-        }
-
         @Nullable
         @Override
         public Launcher getCreatedActivity() {
@@ -261,6 +255,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public boolean deferStartingActivity(int downHitTarget) {
+            return downHitTarget == HIT_TARGET_BACK;
         }
     }
 
@@ -353,14 +352,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return new RecentsActivityTracker(onInitListener);
         }
 
-        @Override
-        public void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
-                final RecentsAnimationListener remoteAnimationListener) {
-            // We can use the normal recents animation for swipe up
-            ActivityManagerWrapper.getInstance().startRecentsActivity(
-                    intent, assistDataReceiver, remoteAnimationListener, null, null);
-        }
-
         @Nullable
         @Override
         public RecentsActivity getCreatedActivity() {
@@ -380,6 +371,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public boolean switchToRecentsIfVisible() {
             return false;
+        }
+
+        @Override
+        public boolean deferStartingActivity(int downHitTarget) {
+            // Always defer starting the activity when using fallback
+            return true;
         }
     }
 

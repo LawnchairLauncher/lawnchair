@@ -164,6 +164,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private float mCurrentDisplacement;
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
+    private float mCurrentQuickScrubProgress;
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
 
@@ -228,11 +229,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_QUICK_SCRUB_START,
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START,
                 this::onQuickScrubStart);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_QUICK_SCRUB_START
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START
                 | STATE_SCALED_CONTROLLER_RECENTS, this::onFinishedTransitionToQuickScrub);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SWITCH_TO_SCREENSHOT_COMPLETE
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_SWITCH_TO_SCREENSHOT_COMPLETE
                 | STATE_QUICK_SCRUB_END, this::switchToFinalAppAfterQuickScrub);
     }
 
@@ -308,7 +309,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             return;
         }
 
-        mStateCallback.setState(STATE_LAUNCHER_STARTED);
         mActivityControlHelper.prepareRecentsUI(mActivity, mWasLauncherAlreadyVisible);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
@@ -343,6 +343,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
         mLayoutListener.open();
+        mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
 
     public void setLauncherOnDrawCallback(Runnable callback) {
@@ -684,6 +685,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void onQuickScrubStart() {
         mActivityControlHelper.onQuickInteractionStart(mActivity, mWasLauncherAlreadyVisible);
         mQuickScrubController.onQuickScrubStart(false);
+
+        // Inform the last progress in case we skipped before.
+        mQuickScrubController.onQuickScrubProgress(mCurrentQuickScrubProgress);
     }
 
     private void onFinishedTransitionToQuickScrub() {
@@ -691,10 +695,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void onQuickScrubProgress(float progress) {
+        mCurrentQuickScrubProgress = progress;
         if (Looper.myLooper() != Looper.getMainLooper() || mQuickScrubController == null) {
-            // TODO: We can still get progress events while launcher is not ready on the worker
-            // thread. Keep track of last received progress and apply that progress when launcher
-            // is ready
             return;
         }
         mQuickScrubController.onQuickScrubProgress(progress);

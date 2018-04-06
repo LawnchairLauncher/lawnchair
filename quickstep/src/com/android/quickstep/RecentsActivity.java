@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -103,8 +104,26 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        RecentsActivityTracker.onRecentsActivityNewIntent(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         RecentsActivityTracker.onRecentsActivityDestroy(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO: Launch the task we came from
+        startHome();
+    }
+
+    public void startHome() {
+        startActivity(new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 }

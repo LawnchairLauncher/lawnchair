@@ -21,8 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
+
 import static com.android.systemui.shared.system.NavigationBarCompat.QUICK_STEP_DRAG_SLOP_PX;
 
 import android.annotation.TargetApi;
@@ -55,7 +54,6 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -66,8 +64,6 @@ import java.util.concurrent.TimeUnit;
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
-    private static final int[] DEFERRED_HIT_TARGETS = false
-            ? new int[] {HIT_TARGET_BACK, HIT_TARGET_OVERVIEW} : new int[] {HIT_TARGET_BACK};
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
@@ -102,7 +98,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-        mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
+        mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
     }
 
     @Override
@@ -218,7 +214,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
-        Runnable startActivity = () -> mActivityControlHelper.startRecentsFromSwipe(mHomeIntent,
+        Runnable startActivity = () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                mHomeIntent,
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {
@@ -247,7 +244,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             handler.onRecentsAnimationCanceled();
                         }
                     }
-                });
+                }, null, null);
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
@@ -305,6 +302,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void updateTouchTracking(int interactionType) {
+        if (!mPassedInitialSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
+            // If we deferred starting the window animation on touch down, then
+            // start tracking now
+            startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
+            mPassedInitialSlop = true;
+        }
+
         notifyGestureStarted();
         if (mInteractionHandler != null) {
             mInteractionHandler.updateInteractionType(interactionType);
