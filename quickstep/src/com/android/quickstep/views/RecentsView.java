@@ -831,11 +831,6 @@ public abstract class RecentsView<T extends BaseActivity>
         snapToPageRelative(1);
     }
 
-    public void launchNextTask() {
-        final TaskView nextTask = (TaskView) getChildAt(getNextPage());
-        nextTask.launchTask(true);
-    }
-
     public void setContentAlpha(float alpha) {
         if (mContentAlpha == alpha) {
             return;
