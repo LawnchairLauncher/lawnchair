@@ -232,7 +232,6 @@ public abstract class RecentsView<T extends BaseActivity>
             final TaskView taskView = (TaskView) getChildAt(i);
             if (taskView.getTask().key.id == taskId) {
                 taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
-                taskView.setAlpha(1);
                 return taskView;
             }
         }
