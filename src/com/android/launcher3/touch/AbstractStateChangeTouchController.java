@@ -124,6 +124,10 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         return mLauncher.getAllAppsController().getShiftRange();
     }
 
+    /**
+     * Returns the state to go to from fromState given the drag direction. If there is no state in
+     * that direction, returns fromState.
+     */
     protected abstract LauncherState getTargetState(LauncherState fromState,
             boolean isDragTowardPositive);
 
