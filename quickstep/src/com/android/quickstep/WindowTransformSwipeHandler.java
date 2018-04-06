@@ -647,6 +647,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                                 mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
                         TaskView taskView = mRecentsView.updateThumbnail(app.taskId, thumbnail);
                         if (taskView != null) {
+                            taskView.setAlpha(1);
                             // Defer finishing the animation until the next launcher frame with the
                             // new thumbnail
                             mActivityControlHelper.executeOnNextDraw(mActivity, taskView,
