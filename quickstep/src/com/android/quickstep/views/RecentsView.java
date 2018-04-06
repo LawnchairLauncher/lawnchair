@@ -708,14 +708,14 @@ public abstract class RecentsView<T extends BaseActivity>
         int[] newScroll = new int[count];
         getPageScrolls(newScroll, false, (v) -> v.getVisibility() != GONE && v != taskView);
 
-        int maxScrollDiff = 0;
-        int lastPage = mIsRtl ? 0 : count - 1;
-        if (getChildAt(lastPage) == taskView) {
-            if (count > 1) {
-                int secondLastPage = mIsRtl ? 1 : count - 2;
-                maxScrollDiff = oldScroll[lastPage] - newScroll[secondLastPage];
-            }
+        int scrollDiffPerPage = 0;
+        int leftmostPage = mIsRtl ? count -1 : 0;
+        int rightmostPage = mIsRtl ? 0 : count - 1;
+        if (count > 1) {
+            int secondRightmostPage = mIsRtl ? 1 : count - 2;
+            scrollDiffPerPage = oldScroll[rightmostPage] - oldScroll[secondRightmostPage];
         }
+        int draggedIndex = indexOfChild(taskView);
 
         boolean needsCurveUpdates = false;
         for (int i = 0; i < count; i++) {
@@ -727,7 +727,26 @@ public abstract class RecentsView<T extends BaseActivity>
                             duration, LINEAR, anim);
                 }
             } else {
-                int scrollDiff = newScroll[i] - oldScroll[i] + maxScrollDiff;
+                // If we just take newScroll - oldScroll, everything to the right of dragged task
+                // translates to the left. We need to offset this in some cases:
+                // - In RTL, add page offset to all pages, since we want pages to move to the right
+                // Additionally, add a page offset if:
+                // - Current page is rightmost page (leftmost for RTL)
+                // - Dragging an adjacent page on the left side (right side for RTL)
+                int offset = mIsRtl ? scrollDiffPerPage : 0;
+                if (mCurrentPage == draggedIndex) {
+                    int lastPage = mIsRtl ? leftmostPage : rightmostPage;
+                    if (mCurrentPage == lastPage) {
+                        offset += mIsRtl ? -scrollDiffPerPage : scrollDiffPerPage;
+                    }
+                } else {
+                    // Dragging an adjacent page.
+                    int negativeAdjacent = mCurrentPage - 1; // (Right in RTL, left in LTR)
+                    if (draggedIndex == negativeAdjacent) {
+                        offset += mIsRtl ? -scrollDiffPerPage : scrollDiffPerPage;
+                    }
+                }
+                int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
                     addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff),
                             duration, ACCEL, anim);
@@ -753,9 +772,15 @@ public abstract class RecentsView<T extends BaseActivity>
                if (removeTask) {
                    ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
                }
+               int pageToSnapTo = mCurrentPage;
+               if (draggedIndex < pageToSnapTo) {
+                   pageToSnapTo -= 1;
+               }
                removeView(taskView);
                if (getChildCount() == 0) {
                    onAllTasksRemoved();
+               } else {
+                   snapToPageImmediately(pageToSnapTo);
                }
            }
            resetTaskVisuals();
