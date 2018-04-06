@@ -54,7 +54,12 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
-        return fromState == ALL_APPS ? NORMAL : ALL_APPS;
+        if (fromState == NORMAL && isDragTowardPositive) {
+            return ALL_APPS;
+        } else if (fromState == ALL_APPS && !isDragTowardPositive) {
+            return NORMAL;
+        }
+        return fromState;
     }
 
     @Override
