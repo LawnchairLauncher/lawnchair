@@ -250,24 +250,24 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        if (targetState != mFromState) {
-            // Transition complete. log the action
-            mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
-                    getDirectionForLog(),
-                    mStartContainerType,
-                    mFromState.containerType,
-                    mToState.containerType,
-                    mLauncher.getWorkspace().getCurrentPage());
-        }
         clearState();
         boolean shouldGoToTargetState = true;
         if (mPendingAnimation != null) {
             boolean reachedTarget = mToState == targetState;
-            mPendingAnimation.finish(reachedTarget);
+            mPendingAnimation.finish(reachedTarget, logAction);
             mPendingAnimation = null;
             shouldGoToTargetState = !reachedTarget;
         }
         if (shouldGoToTargetState) {
+            if (targetState != mFromState) {
+                // Transition complete. log the action
+                mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                        getDirectionForLog(),
+                        mStartContainerType,
+                        mFromState.containerType,
+                        mToState.containerType,
+                        mLauncher.getWorkspace().getCurrentPage());
+            }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
         }
     }

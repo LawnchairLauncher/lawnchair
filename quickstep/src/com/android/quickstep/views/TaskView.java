@@ -31,11 +31,15 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.TaskSystemShortcut;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
@@ -82,7 +86,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOnClickListener((view) -> launchTask(true /* animate */));
+        setOnClickListener((view) -> {
+            if (mTask != null) {
+                launchTask(true /* animate */);
+                BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+                        Touch.TAP, Direction.NONE, TaskUtils.getComponentKeyForTask(mTask.key));
+            }
+        });
         setOutlineProvider(new TaskOutlineProvider(getResources()));
     }
 

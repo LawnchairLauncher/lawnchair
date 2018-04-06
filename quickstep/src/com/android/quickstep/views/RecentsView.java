@@ -59,12 +59,15 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.TaskUtils;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
@@ -317,7 +320,7 @@ public abstract class RecentsView<T extends BaseActivity>
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.addEndListener((b) -> applyLoadPlan(loadPlan));
+            mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(loadPlan));
             return;
         }
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
@@ -747,10 +750,16 @@ public abstract class RecentsView<T extends BaseActivity>
         }
 
         mPendingAnimation = pendingAnimation;
-        mPendingAnimation.addEndListener((isSuccess) -> {
-           if (isSuccess) {
+        mPendingAnimation.addEndListener((onEndListener) -> {
+           if (onEndListener.isSuccess) {
                if (removeTask) {
-                   ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+                   Task task = taskView.getTask();
+                   if (task != null) {
+                       ActivityManagerWrapper.getInstance().removeTask(task.key.id);
+                       mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
+                               onEndListener.logAction, Direction.UP,
+                               TaskUtils.getComponentKeyForTask(task.key));
+                   }
                }
                removeView(taskView);
                if (getChildCount() == 0) {
@@ -792,7 +801,7 @@ public abstract class RecentsView<T extends BaseActivity>
         AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
                 pendingAnim.anim, DISMISS_TASK_DURATION);
         controller.dispatchOnStart();
-        controller.setEndAction(() -> pendingAnim.finish(true));
+        controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
     }
@@ -1049,9 +1058,15 @@ public abstract class RecentsView<T extends BaseActivity>
         anim.setDuration(duration);
 
         mPendingAnimation = new PendingAnimation(anim);
-        mPendingAnimation.addEndListener((isSuccess) -> {
-            if (isSuccess) {
+        mPendingAnimation.addEndListener((onEndListener) -> {
+            if (onEndListener.isSuccess) {
                 tv.launchTask(false);
+                Task task = tv.getTask();
+                if (task != null) {
+                    mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
+                            onEndListener.logAction, Direction.DOWN,
+                            TaskUtils.getComponentKeyForTask(task.key));
+                }
             } else {
                 resetTaskVisuals();
             }
