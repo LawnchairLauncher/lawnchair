@@ -138,7 +138,10 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setImageDrawable(task.icon);
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
-        mIconView.setOnLongClickListener(icon -> TaskMenuView.showForTask(this));
+        mIconView.setOnLongClickListener(icon -> {
+            requestDisallowInterceptTouchEvent(true);
+            return TaskMenuView.showForTask(this);
+        });
     }
 
     @Override
