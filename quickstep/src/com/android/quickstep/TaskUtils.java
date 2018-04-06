@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.shared.recents.model.Task;
 
 /**
@@ -47,5 +48,9 @@ public class TaskUtils {
         }
         return userManagerCompat.getBadgedLabelForUser(
             applicationInfo.loadLabel(packageManager), user);
+    }
+
+    public static ComponentKey getComponentKeyForTask(Task.TaskKey taskKey) {
+        return new ComponentKey(taskKey.getComponent(), UserHandle.of(taskKey.userId));
     }
 }

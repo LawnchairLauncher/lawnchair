@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class PendingAnimation {
 
-    private final ArrayList<Consumer<Boolean>> mEndListeners = new ArrayList<>();
+    private final ArrayList<Consumer<OnEndListener>> mEndListeners = new ArrayList<>();
 
     public final AnimatorSet anim;
 
@@ -40,14 +40,24 @@ public class PendingAnimation {
         this.anim = anim;
     }
 
-    public void finish(boolean isSuccess) {
-        for (Consumer<Boolean> listeners : mEndListeners) {
-            listeners.accept(isSuccess);
+    public void finish(boolean isSuccess, int logAction) {
+        for (Consumer<OnEndListener> listeners : mEndListeners) {
+            listeners.accept(new OnEndListener(isSuccess, logAction));
         }
         mEndListeners.clear();
     }
 
-    public void addEndListener(Consumer<Boolean> listener) {
+    public void addEndListener(Consumer<OnEndListener> listener) {
         mEndListeners.add(listener);
+    }
+
+    public static class OnEndListener {
+        public boolean isSuccess;
+        public int logAction;
+
+        public OnEndListener(boolean isSuccess, int logAction) {
+            this.isSuccess = isSuccess;
+            this.logAction = logAction;
+        }
     }
 }

@@ -30,11 +30,10 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.SwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.util.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -152,7 +151,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mCurrentAnimation.setPlayFraction(0);
         }
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
+            mPendingAnimation.finish(false, Touch.SWIPE);
             mPendingAnimation = null;
         }
 
@@ -249,14 +248,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     private void onCurrentAnimationEnd(boolean wasSuccess, int logAction) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(wasSuccess);
+            mPendingAnimation.finish(wasSuccess, logAction);
             mPendingAnimation = null;
-        }
-        if (wasSuccess) {
-            if (!mCurrentAnimationIsGoingUp) {
-                mActivity.getUserEventDispatcher().logTaskLaunch(logAction,
-                        Direction.DOWN, mTaskBeingDragged.getTask().getTopComponent());
-            }
         }
         mDetector.finishedScrolling();
         mTaskBeingDragged = null;

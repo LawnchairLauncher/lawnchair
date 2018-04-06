@@ -37,6 +37,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.SysuiEventLogger;
@@ -182,7 +183,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         }
 
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
+            mPendingAnimation.finish(false, Touch.SWIPE);
             mPendingAnimation = null;
         }
 
