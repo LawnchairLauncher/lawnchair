@@ -24,6 +24,7 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.PackageManagerWrapper
         .ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.AnimatorSet;
@@ -66,7 +67,7 @@ import java.util.ArrayList;
 @TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper {
 
-    private static final long RECENTS_LAUNCH_DURATION = 200;
+    private static final long RECENTS_LAUNCH_DURATION = 250;
 
     private static final String TAG = "OverviewCommandHelper";
 
@@ -316,7 +317,8 @@ public class OverviewCommandHelper {
 
 
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-            valueAnimator.setDuration(RECENTS_LAUNCH_DURATION).setInterpolator(FAST_OUT_SLOW_IN);
+            valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
+            valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             valueAnimator.addUpdateListener((v) -> {
                 clipHelper.applyTransform(targetCompats, (float) v.getAnimatedValue());
             });
