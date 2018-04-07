@@ -6,7 +6,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -70,8 +69,6 @@ public class AppWidgetResizeFrame extends FrameLayout
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
 
-    private int mResizeMode;
-
     private int mRunningHInc;
     private int mRunningVInc;
     private int mMinHSpan;
@@ -120,7 +117,6 @@ public class AppWidgetResizeFrame extends FrameLayout
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
-        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
         mMinHSpan = info.minSpanX;
@@ -133,23 +129,8 @@ public class AppWidgetResizeFrame extends FrameLayout
             Resources r = getContext().getResources();
             int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
             mWidgetPadding = new Rect(padding, padding, padding, padding);
+            
         }
-
-        if (info.minSpanX > 1) {
-            mResizeMode |= AppWidgetProviderInfo.RESIZE_HORIZONTAL;
-        }
-        if (info.minSpanY > 1) {
-            mResizeMode |= AppWidgetProviderInfo.RESIZE_VERTICAL;
-        }
-
-        if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
-            mDragHandles[INDEX_TOP].setVisibility(GONE);
-            mDragHandles[INDEX_BOTTOM].setVisibility(GONE);
-        } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
-            mDragHandles[INDEX_LEFT].setVisibility(GONE);
-            mDragHandles[INDEX_RIGHT].setVisibility(GONE);
-        }
-
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
@@ -159,14 +140,10 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
-        boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
-        boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
-
-        mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
-        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
-        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
-        mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
-                && verticalActive;
+        mLeftBorderActive = x < mTouchTargetWidth;
+        mRightBorderActive = x > getWidth() - mTouchTargetWidth;
+        mTopBorderActive = y < mTouchTargetWidth + mTopTouchRegionAdjustment;
+        mBottomBorderActive = y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;

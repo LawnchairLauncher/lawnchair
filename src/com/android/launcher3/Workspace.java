@@ -2581,9 +2581,8 @@ public class Workspace extends PagedView
                         // in its final location
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
-                        LauncherAppWidgetProviderInfo pInfo = (LauncherAppWidgetProviderInfo) hostView.getAppWidgetInfo();
-                        if (pInfo != null && (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE || pInfo.minSpanX > 1 || pInfo.minSpanY > 1)
-                                && !d.accessibleDrag) {
+                        AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
+                        if (pInfo != null && !d.accessibleDrag) {
                             mDelayedResizeRunnable = new Runnable() {
                                 public void run() {
                                     if (!isPageInTransition()) {
