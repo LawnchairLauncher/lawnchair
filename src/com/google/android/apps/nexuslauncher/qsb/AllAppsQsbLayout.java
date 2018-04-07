@@ -148,6 +148,16 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mRecyclerView = recyclerView;
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        int statusBarHeightId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin += getResources().getDimensionPixelSize(statusBarHeightId > 0 ?
+                statusBarHeightId :
+                R.dimen.status_bar_height);
+    }
+
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
