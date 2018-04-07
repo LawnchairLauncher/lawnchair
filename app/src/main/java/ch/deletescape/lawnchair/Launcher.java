@@ -1038,15 +1038,7 @@ public class Launcher extends Activity
                 // If there are multiple keystrokes before the search dialog takes focus,
                 // onSearchRequested() will be called for every keystroke,
                 // but it is idempotent, so it's fine.
-                PackageManager pm = this.getPackageManager();
-                boolean isInstalled = isPackageInstalled("com.google.android.googlequicksearchbox", pm);
-                if(isInstalled){
                     return onSearchRequested();
-                }else{
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-                    startActivity(browserIntent);
-                    return false;
-                }
             }
         }
 
@@ -2355,12 +2347,9 @@ public class Launcher extends Activity
                 .setMessage(R.string.abandoned_promise_explanation)
                 .setPositiveButton(R.string.abandoned_search, onSearchClickListener)
                 .setNeutralButton(R.string.abandoned_clean_this,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                final UserHandle user = Utilities.myUserHandle();
-                                mWorkspace.removeAbandonedPromise(packageName, user);
-                            }
+                        (dialog, id) -> {
+                            final UserHandle user = Utilities.myUserHandle();
+                            mWorkspace.removeAbandonedPromise(packageName, user);
                         })
                 .create().show();
     }
@@ -2410,12 +2399,7 @@ public class Launcher extends Activity
                 && !shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)) {
             showBrokenAppInstallDialog(
                     shortcut.getTargetComponent().getPackageName(),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            startAppShortcutOrInfoActivity(v);
-                        }
-                    });
+                    (dialog, id) -> startAppShortcutOrInfoActivity(v));
             return;
         }
 
