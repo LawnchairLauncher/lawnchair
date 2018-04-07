@@ -7,64 +7,82 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".Launcher">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        card_view:cardCornerRadius="5dp"
-        card_view:contentPadding="24dp">
-
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
             <TextView
                 android:id="@+id/textView"
-                android:text="Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices.\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"/>
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp"
+                android:text="Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices.\n"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textView2"
-                android:text="To let Lawnchair work we need the permission for:\n\n\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="To let Lawnchair work we need the permission for:\n\n\n"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textView3"
-                android:text="Your storage:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView2"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your storage:"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textView4"
-                android:text="to be able to make proper backups.\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView3" />
+                android:layout_below="@+id/textView3"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="to be able to make proper backups.\n" />
+
             <TextView
                 android:id="@+id/textView5"
-                android:text="Your phone status:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView4"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your phone status:"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textView6"
-                android:text="(Reason missing).\n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView5" />
+                android:layout_below="@+id/textView5"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="(Reason missing).\n" />
+
             <TextView
                 android:id="@+id/textView7"
-                android:text="Your location:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView6"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your location:"
                 android:textStyle="bold" />
 
             <TextView
@@ -72,6 +90,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView7"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
                 android:text="to get proper weather information.\n\n\n" />
             <Button
                 android:id="@+id/button_permissions"
@@ -82,5 +103,4 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:onClick="onPermissionsAsking" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
 </LinearLayout>

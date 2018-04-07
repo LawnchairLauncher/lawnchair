@@ -49,13 +49,13 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.net.Uri;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,8 +83,6 @@ import android.widget.Advanceable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -473,18 +471,33 @@ public class Launcher extends Activity
     public void onPermissionsAsking(View v){
         try{
             String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
-            ActivityCompat.requestPermissions(this, pe, REQUEST );
-            dialog.setContentView(R.layout.app_intro2);
+            try{
+                ActivityCompat.requestPermissions(this, pe, REQUEST );
+            }catch(Exception e){
+                Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+            dialog.setContentView(R.layout.app_intro_1_5);
+
         } catch (Exception e){
             Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-
     }
 
-    public void onFinishIntro(View v){
-        dialog.dismiss();
+    public void onOpenComGroup(View v){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/lccommunity"));
+        startActivity(intent);
     }
+
+    public void onContinueIntro(View v) {
+        String[] pe = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!hasPermissions(this, pe)) {
+            dialog.setContentView(R.layout.app_intro_2_false);
+        }else{
+            dialog.setContentView(R.layout.app_intro_2_true);
+        }
+    }
+
+    public void onFinishIntro(View v) { dialog.dismiss(); }
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
