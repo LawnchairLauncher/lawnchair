@@ -42,7 +42,7 @@
         android:fontFamily="sans-serif"
         android:textColor="?android:attr/textColorTertiary"
         android:textSize="14sp"
-        android:text="@string/action_edit" />
+        android:text="@string/action_preferences" />
 
     <fragment
         android:id="@+id/sheet_prefs"

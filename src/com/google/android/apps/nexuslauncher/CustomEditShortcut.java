@@ -11,7 +11,7 @@ import com.android.launcher3.popup.SystemShortcut;
 
 public class CustomEditShortcut extends SystemShortcut {
     public CustomEditShortcut() {
-        super(R.drawable.ic_edit_no_shadow, R.string.action_edit);
+        super(R.drawable.ic_edit_no_shadow, R.string.action_preferences);
     }
 
     @Override

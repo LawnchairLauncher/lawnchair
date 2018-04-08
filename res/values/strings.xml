@@ -343,4 +343,5 @@
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="action_preferences">@string/smartspace_preferences</string>
 </resources>
