@@ -44,9 +44,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
+    private val updateBlur = { updateBlur() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
+
+    // Blur
+    var enableBlur by BooleanPref("pref_enableBlur", false, updateBlur)
+    val enableVibrancy = true
+    val blurRadius by FloatPref("pref_blurRadius", 75f, updateBlur)
 
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
@@ -94,12 +100,16 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.reloadAll()
     }
 
-    private fun restart() {
+    fun restart() {
         onChangeCallback?.restart()
     }
 
     fun refreshGrid() {
         onChangeCallback?.refreshGrid()
+    }
+
+    private fun updateBlur() {
+        onChangeCallback?.updateBlur()
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,

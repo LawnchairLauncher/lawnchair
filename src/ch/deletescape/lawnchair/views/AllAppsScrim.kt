@@ -5,8 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Insettable
@@ -64,6 +67,28 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private var mDrawHeight = 0f
     private val mAccelerator by lazy { AccelerateInterpolator() }
 
+    private val blurDrawableCallback by lazy {
+        object : Drawable.Callback {
+            override fun unscheduleDrawable(who: Drawable?, what: Runnable?) {
+
+            }
+
+            override fun invalidateDrawable(who: Drawable?) {
+                invalidateDrawRect()
+            }
+
+            override fun scheduleDrawable(who: Drawable?, what: Runnable?, `when`: Long) {
+
+            }
+        }
+    }
+
+    private val blurDrawable = if (pStyle && BlurWallpaperProvider.isEnabled) {
+        context.blurWallpaperProvider.createDrawable(mRadius, false).apply { callback = blurDrawableCallback }
+    } else {
+        null
+    }
+
     init {
         updateColors()
     }
@@ -84,6 +109,10 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         if (pStyle) {
             val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat()
             val width = (width - mPadding.right).toFloat()
+            blurDrawable?.run {
+                setBounds(mPadding.left, height.toInt(), width.toInt(), (getHeight().toFloat() + mRadius).toInt())
+                draw(canvas)
+            }
             if (mPadding.left <= 0 && mPadding.right <= 0) {
                 mShadowHelper.draw(mShadowBitmap, canvas, mPadding.left.toFloat() - mShadowBlur, height - mShadowBlur, width + mShadowBlur)
                 canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
@@ -149,5 +178,29 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         } else {
             super.setProgress(progress, shiftRange)
         }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        blurDrawable?.setBounds(left, top, right, bottom)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        blurDrawable?.startListening()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        blurDrawable?.stopListening()
+    }
+
+    override fun setTranslationX(translationX: Float) {
+        super.setTranslationX(translationX)
+
+        blurDrawable?.setPotitionX(translationX)
     }
 }

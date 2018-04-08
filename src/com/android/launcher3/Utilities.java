@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -663,6 +664,7 @@ public final class Utilities {
         return hashSet;
     }
 
+    @NonNull
     public static LawnchairPreferences getLawnchairPrefs(Context context) {
         return LawnchairPreferences.Companion.getInstance(context);
     }

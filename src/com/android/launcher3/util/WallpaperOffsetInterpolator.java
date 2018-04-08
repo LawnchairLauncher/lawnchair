@@ -7,6 +7,7 @@ import android.view.Choreographer;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 
@@ -60,6 +61,8 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
             mWaitingForUpdate = false;
             if (computeScrollOffset() && mWindowToken != null) {
                 try {
+                    LauncherAppState.getInstance(mWorkspace.getContext()).getLauncher()
+                            .getBlurWallpaperProvider().setWallpaperOffset(getCurrX());
                     mWallpaperManager.setWallpaperOffsets(mWindowToken, getCurrX(), 0.5f);
                     setWallpaperOffsetSteps();
                 } catch (IllegalArgumentException e) {

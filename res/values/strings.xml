@@ -423,4 +423,8 @@
     <string name="grid_size_width">Width</string>
     <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="blur_pref_title">Enable blur</string>
+    <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+    <string name="blur_radius_pref_title">Blur amount</string>
+    <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resolution could possibly fix this.</string>
 </resources>

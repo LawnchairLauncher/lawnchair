@@ -24,4 +24,8 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
     fun refreshGrid() {
         launcher.refreshGrid()
     }
+
+    fun updateBlur() {
+        launcher.blurWallpaperProvider.updateAsync()
+    }
 }

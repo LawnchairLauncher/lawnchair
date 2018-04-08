@@ -151,6 +151,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
@@ -354,6 +355,9 @@ public class Launcher extends BaseActivity
     private LawnchairPreferencesChangeCallback mLawnchairPrefChangeCallback;
     private boolean mRestart = false;
 
+    private BlurWallpaperProvider mBlurWallpaperProvider;
+    private boolean mUpdateWallpaper = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
@@ -405,6 +409,7 @@ public class Launcher extends BaseActivity
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
         mDragController = new DragController(this);
+        mBlurWallpaperProvider = new BlurWallpaperProvider(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
@@ -1071,6 +1076,12 @@ public class Launcher extends BaseActivity
         if (mRestart) {
             Utilities.restartLauncher(this);
         }
+
+        Log.d("BWP", "mUpdateWallpaper: " + Boolean.toString(mUpdateWallpaper));
+        if (mUpdateWallpaper) {
+            mUpdateWallpaper = false;
+            mBlurWallpaperProvider.updateAsync();
+        }
     }
 
     @Override
@@ -1092,6 +1103,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
+    }
+
+    public BlurWallpaperProvider getBlurWallpaperProvider() {
+        return mBlurWallpaperProvider;
     }
 
     public interface CustomContentCallbacks {
