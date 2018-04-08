@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.os.Bundle
-import android.os.Process
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,6 +11,7 @@ import android.view.*
 import ch.deletescape.lawnchair.HiddenAppsAdapter
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
 import com.google.android.apps.nexuslauncher.CustomAppFilter
 
 class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
@@ -55,8 +55,15 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
         activity!!.title = newTitle
     }
 
-    private fun getAppsList(context: Context?) =
-            LauncherAppsCompat.getInstance(context).getActivityList(null, Process.myUserHandle())
+    private fun getAppsList(context: Context): ArrayList<LauncherActivityInfo> {
+        val apps = ArrayList<LauncherActivityInfo>()
+        val profiles = UserManagerCompat.getInstance(context).userProfiles
+        val launcherAppsCompat = LauncherAppsCompat.getInstance(context)
+        profiles.forEach {
+            apps += launcherAppsCompat.getActivityList(null, it)
+        }
+        return apps
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         return inflater.inflate(R.menu.menu_hide_apps, menu)

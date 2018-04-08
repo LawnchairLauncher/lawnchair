@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.CustomAppFilter;
 
 import java.util.HashSet;
@@ -27,7 +27,7 @@ import java.util.Set;
 public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.ViewHolder> {
 
     private List<LauncherActivityInfo> mResolveInfos;
-    private Set<String> mSelections;
+    private Set<ComponentKey> mSelections;
     private Context mContext;
     private Callback mCallback;
 
@@ -40,7 +40,9 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
         Set<String> hiddenApps = CustomAppFilter.getHiddenApps(mContext);
         mSelections = new HashSet<>();
         //add already hidden apps to selections
-        mSelections.addAll(hiddenApps);
+        for (String hiddenApp : hiddenApps) {
+            mSelections.add(new ComponentKey(context, hiddenApp));
+        }
     }
 
     // Create new views
@@ -55,11 +57,11 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         LauncherActivityInfo info = mResolveInfos.get(position);
-        AppInfo appInfo = new AppInfo(mContext, info, Process.myUserHandle());
+        AppInfo appInfo = new AppInfo(mContext, info, info.getUser());
         LauncherAppState.getInstance(mContext).getIconCache().getTitleAndIcon(appInfo, false);
         Bitmap icon = appInfo.iconBitmap;
 
-        String component = info.getComponentName().toString();
+        ComponentKey component = new ComponentKey(info.getComponentName(), info.getUser());
         viewHolder.label.setText(info.getLabel());
         viewHolder.icon.setImageDrawable(new BitmapDrawable(mContext.getResources(), icon));
 
@@ -67,13 +69,18 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
     }
 
     private String toggleSelection(int position) {
-        String componentName = mResolveInfos.get(position).getComponentName().toString();
-        if (mSelections.contains(componentName)) {
-            mSelections.remove(componentName);
+        LauncherActivityInfo info = mResolveInfos.get(position);
+        ComponentKey componentKey = new ComponentKey(info.getComponentName(), info.getUser());
+        if (mSelections.contains(componentKey)) {
+            mSelections.remove(componentKey);
         } else {
-            mSelections.add(componentName);
+            mSelections.add(componentKey);
         }
-        CustomAppFilter.setHiddenApps(mContext, mSelections);
+        Set<String> selections = new HashSet<>();
+        for (ComponentKey component : mSelections) {
+            selections.add(component.toString());
+        }
+        CustomAppFilter.setHiddenApps(mContext, selections);
         if (!mSelections.isEmpty()) {
             return mSelections.size() + mContext.getString(R.string.hide_app_selected);
         } else {
@@ -82,11 +89,12 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
     }
 
     private boolean isSelected(int position) {
-        return isSelected(mResolveInfos.get(position).getComponentName().toString());
+        LauncherActivityInfo info = mResolveInfos.get(position);
+        return isSelected(new ComponentKey(info.getComponentName(), info.getUser()));
     }
 
-    private boolean isSelected(String packageName) {
-        return mSelections.contains(packageName);
+    private boolean isSelected(ComponentKey component) {
+        return mSelections.contains(component);
     }
 
     public String clearSelection() {
