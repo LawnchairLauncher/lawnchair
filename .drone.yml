@@ -17,7 +17,7 @@ pipeline:
     commands:
       - bash ./gradlew assembleAospCiOptimized;
   deploy:
-    image: LawnchairLauncher/drone-telegram:dev
+    image: lawnchairlauncher/drone-telegram:dev
     secrets: [ bot_token, channel_id ]
     apk_path: build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
