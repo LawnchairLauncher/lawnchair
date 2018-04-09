@@ -33,11 +33,11 @@ pipeline:
       to: "-1001092684628"
       format: markdown
       message: >
-        **{{repo.owner}}/{{repo.name}}**
+        <b>{{repo.owner}}/{{repo.name}}</b>
         {{#success build.status}}
-          Build {{build.number}} succeeded. Good job mate!
+        Build {{build.number}} succeeded. Good job mate!
         {{else}}
-          Build {{build.number}} failed. Fix me please sir!
+        Build {{build.number}} failed. Fix me please sir!
         {{/success}}
 
 branches:
