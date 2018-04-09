@@ -53,6 +53,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -75,7 +76,6 @@ import com.android.systemui.shared.recents.model.TaskStack;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
 
@@ -84,7 +84,9 @@ import java.util.ArrayList;
  */
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity>
-        extends PagedView implements OnSharedPreferenceChangeListener {
+        extends PagedView implements OnSharedPreferenceChangeListener, Insettable {
+
+    private final Rect mTempRect = new Rect();
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
@@ -98,8 +100,6 @@ public abstract class RecentsView<T extends BaseActivity>
             return recentsView.mContentAlpha;
         }
     };
-
-
 
     public static final FloatProperty<RecentsView> ADJACENT_SCALE =
             new FloatProperty<RecentsView>("adjacentScale") {
@@ -115,8 +115,6 @@ public abstract class RecentsView<T extends BaseActivity>
     };
     private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
     private static final int DISMISS_TASK_DURATION = 300;
-
-    private static final Rect sTempStableInsets = new Rect();
 
     protected final T mActivity;
     private final QuickScrubController mQuickScrubController;
@@ -397,68 +395,19 @@ public abstract class RecentsView<T extends BaseActivity>
         }
     }
 
-    protected static Rect getPadding(DeviceProfile profile, Context context) {
-        WindowManagerWrapper.getInstance().getStableInsets(sTempStableInsets);
-        Rect padding = new Rect(profile.workspacePadding);
-
-        float taskWidth = profile.widthPx - sTempStableInsets.left - sTempStableInsets.right;
-        float taskHeight = profile.heightPx - sTempStableInsets.top - sTempStableInsets.bottom;
-
-        float overviewHeight, overviewWidth;
-        if (profile.isVerticalBarLayout()) {
-            float maxPadding = Math.max(padding.left, padding.right);
-
-            // Use the same padding on both sides for symmetry.
-            float availableWidth = taskWidth - 2 * maxPadding;
-            float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
-                    - sTempStableInsets.top;
-            float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
-            overviewHeight = taskHeight * scaledRatio;
-            overviewWidth = taskWidth * scaledRatio;
-
-        } else {
-            overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
-                    - sTempStableInsets.top;
-            overviewWidth = taskWidth * overviewHeight / taskHeight;
-        }
-
-        padding.bottom = profile.availableHeightPx - padding.top - sTempStableInsets.top
-                - Math.round(overviewHeight);
-        padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
-
-        // If the height ratio is larger than the width ratio, the screenshot will get cropped
-        // at the bottom when swiping up. In this case, increase the top/bottom padding to make it
-        // the same aspect ratio.
-        Rect pageRect = new Rect();
-        getPageRect(profile, context, pageRect, padding);
-        float widthRatio = (float) pageRect.width() / taskWidth;
-        float heightRatio = (float) pageRect.height() / taskHeight;
-        if (heightRatio > widthRatio) {
-            float additionalVerticalPadding = pageRect.height() - widthRatio * taskHeight;
-            additionalVerticalPadding = Math.round(additionalVerticalPadding);
-            padding.top += additionalVerticalPadding / 2;
-            padding.bottom += additionalVerticalPadding / 2;
-        }
-
-        return padding;
-    }
-
-    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
-        Rect targetPadding = getPadding(grid, context);
-        getPageRect(grid, context, outRect, targetPadding);
-    }
-
-    protected static void getPageRect(DeviceProfile grid, Context context, Rect outRect,
-            Rect targetPadding) {
-        Rect insets = grid.getInsets();
-        outRect.set(
-                targetPadding.left + insets.left,
-                targetPadding.top + insets.top,
-                grid.widthPx - targetPadding.right - insets.right,
-                grid.heightPx - targetPadding.bottom - insets.bottom);
-        outRect.top += context.getResources()
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        getTaskSize(dp, mTempRect);
+        mTempRect.top -= getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
+                dp.widthPx - mTempRect.right - mInsets.right,
+                dp.heightPx - mTempRect.bottom - mInsets.bottom);
     }
+
+    protected abstract void getTaskSize(DeviceProfile dp, Rect outRect);
 
     @Override
     protected boolean computeScrollHelper() {

@@ -18,15 +18,16 @@ package com.android.quickstep.fallback;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.AnyThread;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
 import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 
-public class FallbackRecentsView extends RecentsView<RecentsActivity> implements Insettable {
+public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     public FallbackRecentsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -56,30 +57,18 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> implements
     }
 
     @Override
-    public void setInsets(Rect insets) {
-        mInsets.set(insets);
-        DeviceProfile dp = mActivity.getDeviceProfile();
-        Rect padding = getPadding(dp, getContext());
-        verticalCenter(padding, dp);
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
-    }
-
-    private static void verticalCenter(Rect padding, DeviceProfile dp) {
-        Rect insets = dp.getInsets();
-        int totalSpace = (padding.top + padding.bottom - insets.top - insets.bottom) / 2;
-        padding.top = insets.top + totalSpace;
-        padding.bottom = insets.bottom + totalSpace;
-    }
-
-    public static void getCenterPageRect(DeviceProfile grid, Context context, Rect outRect) {
-        Rect targetPadding = getPadding(grid, context);
-        verticalCenter(targetPadding, grid);
-        getPageRect(grid, context, outRect, targetPadding);
-    }
-
-    @Override
     public void draw(Canvas canvas) {
         maybeDrawEmptyMessage(canvas);
         super.draw(canvas);
+    }
+
+    @Override
+    protected void getTaskSize(DeviceProfile dp, Rect outRect) {
+        LayoutUtils.calculateTaskSize(getContext(), dp, 0, outRect);
+    }
+
+    @AnyThread
+    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
+        LayoutUtils.calculateTaskSize(context, grid, 0, outRect);
     }
 }
