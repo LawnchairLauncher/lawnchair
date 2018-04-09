@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -39,6 +40,7 @@ public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
     private int mHintTextColor;
+    private SpannableString mHintText;
 
     /**
      * Implemented by listeners of the back key.
@@ -151,9 +153,12 @@ public class ExtendedEditText extends EditText {
         if (focused) {
             if (getCurrentHintTextColor() != Color.TRANSPARENT) {
                 mHintTextColor = getCurrentHintTextColor();
+                mHintText = SpannableString.valueOf(getHint());
+                setHint("");
                 setHintTextColor(Color.TRANSPARENT);
             }
         } else {
+            setHint(mHintText);
             setHintTextColor(mHintTextColor);
         }
     }
