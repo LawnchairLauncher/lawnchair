@@ -107,6 +107,11 @@
     public <init>(...);
 }
 
+# MainProcessInitializer
+-keep class com.android.quickstep.QuickstepProcessInitializer {
+    public <init>(...);
+}
+
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }
