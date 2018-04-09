@@ -39,7 +39,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
-    private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
+    public static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
 
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;
