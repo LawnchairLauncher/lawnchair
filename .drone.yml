@@ -31,7 +31,7 @@ pipeline:
       image: appleboy/drone-telegram:latest
       secrets: [ telegram_token ]
       to: "-1001092684628"
-      format: markdown
+      format: html
       message: >
         <b>{{repo.owner}}/{{repo.name}}</b>
         {{#success build.status}}
