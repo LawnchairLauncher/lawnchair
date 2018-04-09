@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
@@ -35,11 +34,8 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
@@ -54,7 +50,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * Helper class to handle various atomic commands for switching between Overview.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class OverviewCommandHelper extends InternalStateHandler {
+public class OverviewCommandHelper {
 
     private static final long RECENTS_LAUNCH_DURATION = 200;
 
@@ -95,55 +91,18 @@ public class OverviewCommandHelper extends InternalStateHandler {
         homeIntent.setComponent(launcher).setPackage(null);
     }
 
-    private void openRecents() {
-        Intent intent = addToIntent(new Intent(homeIntent));
-        mContext.startActivity(intent);
-        initWhenReady();
-    }
-
     public void onOverviewToggle() {
         // If currently screen pinning, do not enter overview
-        if (ActivityManagerWrapper.getInstance().isScreenPinningActive()) {
+        if (mAM.isScreenPinningActive()) {
             return;
         }
 
-        ActivityManagerWrapper.getInstance().closeSystemWindows("recentapps");
+        mAM.closeSystemWindows("recentapps");
         mMainThreadExecutor.execute(new RecentsActivityCommand<>());
     }
 
     public void onOverviewShown() {
-        getLauncher().runOnUiThread(() -> {
-                    if (isOverviewAlmostVisible()) {
-                        final RecentsView rv = getLauncher().getOverviewPanel();
-                        rv.snapToTaskAfterNext();
-                    } else {
-                        openRecents();
-                    }
-                }
-        );
-    }
-
-    private boolean isOverviewAlmostVisible() {
-        if (clearReference()) {
-            return true;
-        }
-        if (!mAM.getRunningTask().topActivity.equals(launcher)) {
-            return false;
-        }
-        Launcher launcher = getLauncher();
-        return launcher != null && launcher.isStarted() && launcher.isInState(OVERVIEW);
-    }
-
-    private Launcher getLauncher() {
-        return (Launcher) LauncherAppState.getInstance(mContext).getModel().getCallback();
-    }
-
-    @Override
-    protected boolean init(Launcher launcher, boolean alreadyOnHome) {
-        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
-        launcher.getStateManager().goToState(OVERVIEW, alreadyOnHome);
-        clearReference();
-        return false;
+        mMainThreadExecutor.execute(new ShowRecentsCommand());
     }
 
     public ActivityControlHelper getActivityControlHelper() {
@@ -154,9 +113,23 @@ public class OverviewCommandHelper extends InternalStateHandler {
         }
     }
 
+    private class ShowRecentsCommand extends RecentsActivityCommand {
+
+        @Override
+        protected boolean handleCommand(long elapsedTime) {
+            RecentsView recents = mHelper.getVisibleRecentsView();
+            if (recents != null) {
+                recents.snapToTaskAfterNext();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     private class RecentsActivityCommand<T extends BaseDraggingActivity> implements Runnable {
 
-        private final ActivityControlHelper<T> mHelper;
+        protected final ActivityControlHelper<T> mHelper;
         private final long mCreateTime;
         private final int mRunningTaskId;
 
@@ -166,7 +139,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
         public RecentsActivityCommand() {
             mHelper = getActivityControlHelper();
             mCreateTime = SystemClock.elapsedRealtime();
-            mRunningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().id;
+            mRunningTaskId = mAM.getRunningTask().id;
 
             // Preload the plan
             mRecentsModel.loadTasks(mRunningTaskId, null);
@@ -177,20 +150,7 @@ public class OverviewCommandHelper extends InternalStateHandler {
             long elapsedTime = mCreateTime - mLastToggleTime;
             mLastToggleTime = mCreateTime;
 
-            // TODO: We need to fix this case with PIP, when an activity first enters PIP, it shows
-            //       the menu activity which takes window focus, preventing the right condition from
-            //       being run below
-            RecentsView recents = mHelper.getVisibleRecentsView();
-            if (recents != null) {
-                // Launch the next task
-                recents.showNextTask();
-            } else {
-                if (elapsedTime < ViewConfiguration.getDoubleTapTimeout()) {
-                    // The user tried to launch back into overview too quickly, either after
-                    // launching an app, or before overview has actually shown, just ignore for now
-                    return;
-                }
-
+            if (!handleCommand(elapsedTime)) {
                 // Start overview
                 if (mHelper.switchToRecentsIfVisible()) {
                     SysuiEventLogger.writeDummyRecentsTransition(0);
@@ -201,6 +161,23 @@ public class OverviewCommandHelper extends InternalStateHandler {
                             mContext, mMainThreadExecutor.getHandler(), RECENTS_LAUNCH_DURATION);
                 }
             }
+        }
+
+        protected boolean handleCommand(long elapsedTime) {
+            // TODO: We need to fix this case with PIP, when an activity first enters PIP, it shows
+            //       the menu activity which takes window focus, preventing the right condition from
+            //       being run below
+            RecentsView recents = mHelper.getVisibleRecentsView();
+            if (recents != null) {
+                // Launch the next task
+                recents.showNextTask();
+                return true;
+            } else if (elapsedTime < ViewConfiguration.getDoubleTapTimeout()) {
+                // The user tried to launch back into overview too quickly, either after
+                // launching an app, or before overview has actually shown, just ignore for now
+                return true;
+            }
+            return false;
         }
 
         private boolean onActivityReady(T activity, Boolean wasVisible) {
