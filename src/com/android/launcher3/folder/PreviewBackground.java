@@ -129,18 +129,15 @@ public class PreviewBackground {
             };
 
     public void setup(Launcher launcher, View invalidateDelegate,
-                      int availableSpace, int topPadding) {
+                      int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
         mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
 
         DeviceProfile grid = launcher.getDeviceProfile();
-        final int previewSize = grid.folderIconSizePx;
-        final int previewPadding = grid.folderIconPreviewPadding;
+        previewSize = grid.folderIconSizePx;
 
-        this.previewSize = (previewSize - 2 * previewPadding);
-
-        basePreviewOffsetX = (availableSpace - this.previewSize) / 2;
-        basePreviewOffsetY = previewPadding + grid.folderBackgroundOffset + topPadding;
+        basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
+        basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
 
         // Stroke width is 1dp
         mStrokeWidth = launcher.getResources().getDisplayMetrics().density;

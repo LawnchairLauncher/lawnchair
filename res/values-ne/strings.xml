@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै अनुप्रयोग भेटिएन"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप अनुप्रयोगहरू खोज्नुहोस्"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"कुनै सर्टकट छनौट गर्न छोइराख्नुहोस्।"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"कुनै सर्टकट छनौट गर्न वा रोजेका कारबाहीहरू प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मनपर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अनुप्रयोगको सूची"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"कार्यसम्बन्धी प्रत्येक अनुप्रयोगमा एउटा ब्याज छ र तपाईंको संगठनले यसलाई सुरक्षित राखेको छ । अझ सजिलो गरी पहुँच राख्नका लागि अनुप्रयोगहरूलाई आफ्नो गृहस्क्रिनमा सार्नुहोस्‌।"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"तपाईंको सङ्गठनले व्यवस्थापन गरेको"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना र अनुप्रयोगहरू निष्क्रिय छन्‌"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बन्द गर्नुहोस्"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बन्द गरियो"</string>
 </resources>

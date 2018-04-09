@@ -18,5 +18,7 @@
   <string name="app_transition_manager_class" translatable="false">com.android.launcher3.LauncherAppTransitionManagerImpl</string>
 
   <string name="instant_app_resolver_class" translatable="false">com.android.quickstep.InstantAppResolverImpl</string>
+
+  <string name="main_process_initializer_class" translatable="false">com.android.quickstep.QuickstepProcessInitializer</string>
 </resources>
 

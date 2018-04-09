@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"រកមិនឃើញកម្មវិធី​ដែលត្រូវគ្នាជាមួយ \"<xliff:g id="QUERY">%1$s</xliff:g>\" ទេ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ស្វែងរកកម្មវិធីច្រើនទៀត"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ចុច​ឱ្យ​ជាប់​ដើម្បី​ជ្រើស​រើស​ផ្លូវកាត់​មួយ។"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ចុច​ពីរ​ដង ហើយ​ចុច​ឱ្យ​ជាប់​ដើម្បី​ជ្រើសរើស​ផ្លូវកាត់​មួយ ឬ​ប្រើ​សកម្មភាព​ផ្ទាល់ខ្លួន។"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>

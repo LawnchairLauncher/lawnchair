@@ -51,7 +51,7 @@ public class TaskMenuView extends AbstractFloatingView {
     private static final Rect sTempRect = new Rect();
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
-    private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[] {
+    public static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[] {
             new TaskSystemShortcut.AppInfo(),
             new TaskSystemShortcut.SplitScreen(),
             new TaskSystemShortcut.Pin(),

@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Process;
@@ -92,6 +94,8 @@ public class LoaderTask implements Runnable {
     private final AllAppsList mBgAllAppsList;
     private final BgDataModel mBgDataModel;
 
+    private FirstScreenBroadcast mFirstScreenBroadcast;
+
     private final LoaderResults mResults;
 
     private final LauncherAppsCompat mLauncherApps;
@@ -134,6 +138,22 @@ public class LoaderTask implements Runnable {
         }
     }
 
+    private void sendFirstScreenActiveInstallsBroadcast() {
+        ArrayList<ItemInfo> firstScreenItems = new ArrayList<>();
+
+        ArrayList<ItemInfo> allItems = new ArrayList<>();
+        synchronized (mBgDataModel) {
+            allItems.addAll(mBgDataModel.workspaceItems);
+            allItems.addAll(mBgDataModel.appWidgets);
+        }
+        long firstScreen = mBgDataModel.workspaceScreens.isEmpty()
+                ? -1 // In this case, we can still look at the items in the hotseat.
+                : mBgDataModel.workspaceScreens.get(0);
+        filterCurrentWorkspaceItems(firstScreen, allItems, firstScreenItems,
+                new ArrayList<>() /* otherScreenItems are ignored */);
+        mFirstScreenBroadcast.sendBroadcasts(mApp.getContext(), firstScreenItems);
+    }
+
     public void run() {
         synchronized (this) {
             // Skip fast if we are already stopped.
@@ -150,6 +170,10 @@ public class LoaderTask implements Runnable {
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
             mResults.bindWorkspace();
+
+            // Notify the installer packages of packages with active installs on the first screen.
+            TraceHelper.partitionSection(TAG, "step 1.3: send first screen broadcast");
+            sendFirstScreenActiveInstallsBroadcast();
 
             // Take a break
             TraceHelper.partitionSection(TAG, "step 1 completed, wait for idle");
@@ -242,8 +266,9 @@ public class LoaderTask implements Runnable {
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
 
-            final HashMap<String, Integer> installingPkgs =
+            final HashMap<String, SessionInfo> installingPkgs =
                     mPackageInstaller.updateAndGetActiveSessionCache();
+            mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
             mBgDataModel.workspaceScreens.addAll(LauncherModel.loadWorkspaceScreensDb(context));
 
             Map<ShortcutKey, ShortcutInfoCompat> shortcutKeyToPinnedShortcuts = new HashMap<>();
@@ -511,11 +536,11 @@ public class LoaderTask implements Runnable {
                                 }
 
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {
-                                    Integer progress = installingPkgs.get(targetPkg);
-                                    if (progress != null) {
-                                        info.setInstallProgress(progress);
-                                    } else {
+                                    SessionInfo si = installingPkgs.get(targetPkg);
+                                    if (si == null) {
                                         info.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                    } else {
+                                        info.setInstallProgress((int) (si.getProgress() * 100));
                                     }
                                 }
 
@@ -605,7 +630,11 @@ public class LoaderTask implements Runnable {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                             component);
                                     appWidgetInfo.restoreStatus = c.restoreFlag;
-                                    Integer installProgress = installingPkgs.get(component.getPackageName());
+                                    SessionInfo si =
+                                            installingPkgs.get(component.getPackageName());
+                                    Integer installProgress = si == null
+                                            ? null
+                                            : (int) (si.getProgress() * 100);
 
                                     if (c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED)) {
                                         // Restore has started once.

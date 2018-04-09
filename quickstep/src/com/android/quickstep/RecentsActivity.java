@@ -26,7 +26,11 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.fallback.RecentsRootView;
 
 /**
  * A simple activity to show the recently launched tasks
@@ -51,6 +55,10 @@ public class RecentsActivity extends BaseDraggingActivity {
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
 
+        mRecentsRootView.setup();
+
+        getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
+                Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         RecentsActivityTracker.onRecentsActivityCreate(this);
     }
 

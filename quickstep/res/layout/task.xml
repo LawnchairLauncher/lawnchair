@@ -28,5 +28,6 @@
         android:id="@+id/icon"
         android:layout_width="@dimen/task_thumbnail_icon_size"
         android:layout_height="@dimen/task_thumbnail_icon_size"
+        android:importantForAccessibility="no"
         android:layout_gravity="top|center_horizontal" />
 </com.android.quickstep.views.TaskView>

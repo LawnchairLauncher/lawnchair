@@ -209,7 +209,7 @@ public class LoaderResults {
 
     /** Filters the set of items who are directly or indirectly (via another container) on the
      * specified screen. */
-    private <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
+    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
             ArrayList<T> allWorkspaceItems,
             ArrayList<T> currentScreenItems,
             ArrayList<T> otherScreenItems) {

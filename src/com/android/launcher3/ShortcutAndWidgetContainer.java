@@ -16,9 +16,12 @@
 
 package com.android.launcher3;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -171,6 +174,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == ACTION_DOWN && getAlpha() == 0) {
+            // Dont let children handle touch, if we are not visible.
+            return true;
+        }
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override

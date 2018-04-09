@@ -50,7 +50,6 @@ import java.util.concurrent.Executor;
 public class ModelWriter {
 
     private static final String TAG = "ModelWriter";
-    public static final boolean DEBUG_DELETE = true;
 
     private final Context mContext;
     private final LauncherModel mModel;
@@ -257,14 +256,6 @@ public class ModelWriter {
      * Removes the specified items from the database
      */
     public void deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
-        if (DEBUG_DELETE) {
-            // Log it on the colling thread to get the proper stack trace
-            FileLog.d(TAG, "Starting item deletion", new Exception());
-            for (ItemInfo item : items) {
-                FileLog.d(TAG, "deleting item " + item);
-            }
-            FileLog.d(TAG, "Finished deleting items");
-        }
         ModelVerifier verifier = new ModelVerifier();
 
         mWorkerExecutor.execute(() -> {
@@ -282,11 +273,6 @@ public class ModelWriter {
      * Remove the specified folder and all its contents from the database.
      */
     public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
-        if (DEBUG_DELETE) {
-            // Log it on the colling thread to get the proper stack trace
-            FileLog.d(TAG, "Deleting folder " + info, new Exception());
-        }
-
         ModelVerifier verifier = new ModelVerifier();
 
         mWorkerExecutor.execute(() -> {
