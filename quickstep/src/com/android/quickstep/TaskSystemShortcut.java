@@ -153,8 +153,13 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
+                final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
+                if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
+                    return;
+                }
+                boolean dockTopOrLeft = navBarPosition != WindowManagerWrapper.NAV_BAR_POS_LEFT;
                 if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
-                        ActivityOptionsCompat.makeSplitScreenOptions(true))) {
+                        ActivityOptionsCompat.makeSplitScreenOptions(dockTopOrLeft))) {
                     ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
                     try {
                         sysUiProxy.onSplitScreenInvoked();
