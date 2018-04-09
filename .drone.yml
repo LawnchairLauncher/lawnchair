@@ -1,6 +1,6 @@
 pipeline:
   changelog:
-    image: lawnchairlauncher/drone-changelog:dev
+    image: lawnchairlauncher/drone-changelog:latest
     output: changelog.txt
     volumes:
       - /opt/drone/cache:/cache
@@ -17,7 +17,7 @@ pipeline:
     commands:
       - bash ./gradlew assembleAospCiOptimized;
   deploy:
-    image: lawnchairlauncher/drone-telegram:dev
+    image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
     apk_path: build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
@@ -33,7 +33,7 @@ pipeline:
       to: "-1001092684628"
       format: html
       message: >
-        <b>{{repo.owner}}/{{repo.name}}</b>
+        <b>{{repo.owner}}/{{repo.name}}</b><br />
         {{#success build.status}}
         Build {{build.number}} succeeded. Good job mate!
         {{else}}
