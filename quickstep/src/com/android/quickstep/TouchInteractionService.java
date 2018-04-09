@@ -21,8 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.launcher3.LauncherState.NORMAL;
+
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
@@ -43,9 +42,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherState;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.util.TraceHelper;
@@ -220,13 +217,13 @@ public class TouchInteractionService extends Service {
 
     private TouchConsumer getCurrentTouchConsumer(
             @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
-        RunningTaskInfo runningTaskInfo = mAM.getRunningTask();
+        RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
 
         if (runningTaskInfo == null && !forceToLauncher) {
             return mNoOpTouchConsumer;
         } else if (forceToLauncher ||
                 runningTaskInfo.topActivity.equals(mOverviewCommandHelper.launcher)) {
-            return getLauncherConsumer();
+            return getOverviewConsumer();
         } else {
             if (tracker == null) {
                 tracker = VelocityTracker.obtain();
@@ -238,18 +235,20 @@ public class TouchInteractionService extends Service {
         }
     }
 
-    private TouchConsumer getLauncherConsumer() {
-        Launcher launcher = (Launcher) LauncherAppState.getInstance(this).getModel().getCallback();
-        if (launcher == null) {
+    private TouchConsumer getOverviewConsumer() {
+        ActivityControlHelper activityHelper = mOverviewCommandHelper.getActivityControlHelper();
+        BaseDraggingActivity activity = activityHelper.getCreatedActivity();
+        if (activity == null) {
             return mNoOpTouchConsumer;
         }
-        View target = launcher.getDragLayer();
-        return new LauncherTouchConsumer(launcher, target);
+        return new OverviewTouchConsumer(activityHelper, activity);
     }
 
-    private static class LauncherTouchConsumer implements TouchConsumer {
+    private static class OverviewTouchConsumer<T extends BaseDraggingActivity>
+            implements TouchConsumer {
 
-        private final Launcher mLauncher;
+        private final ActivityControlHelper<T> mActivityHelper;
+        private final T mActivity;
         private final View mTarget;
         private final int[] mLocationOnScreen = new int[2];
         private final PointF mDownPos = new PointF();
@@ -260,12 +259,17 @@ public class TouchInteractionService extends Service {
         private boolean mInvalidated = false;
         private boolean mHadWindowFocusOnDown;
 
-        LauncherTouchConsumer(Launcher launcher, View target) {
-            mLauncher = launcher;
-            mTarget = target;
+        private float mLastProgress = 0;
+        private boolean mStartPending = false;
+        private boolean mEndPending = false;
+
+        OverviewTouchConsumer(ActivityControlHelper<T> activityHelper, T activity) {
+            mActivityHelper = activityHelper;
+            mActivity = activity;
+            mTarget = activity.getDragLayer();
             mTouchSlop = ViewConfiguration.get(mTarget.getContext()).getScaledTouchSlop();
 
-            mQuickScrubController = mLauncher.<RecentsView>getOverviewPanel()
+            mQuickScrubController = mActivity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
         }
 
@@ -327,16 +331,22 @@ public class TouchInteractionService extends Service {
                 return;
             }
             if (interactionType == INTERACTION_QUICK_SCRUB) {
+                mStartPending = true;
+
                 Runnable action = () -> {
-                    LauncherState fromState = mLauncher.getStateManager().getState();
-                    mLauncher.getStateManager().goToState(FAST_OVERVIEW, true);
-                    mQuickScrubController.onQuickScrubStart(fromState == NORMAL);
+                    mQuickScrubController.onQuickScrubStart(
+                            mActivityHelper.onQuickInteractionStart(mActivity, true));
+                    mQuickScrubController.onQuickScrubProgress(mLastProgress);
+                    mStartPending = false;
+
+                    if (mEndPending) {
+                        mQuickScrubController.onQuickScrubEnd();
+                        mEndPending = false;
+                    }
+
                 };
 
-                if (mLauncher.getWorkspace().runOnOverlayHidden(action)) {
-                    // Hide the minus one overlay so launcher can get window focus.
-                    mLauncher.onQuickstepGestureStarted(true);
-                }
+                mActivityHelper.executeOnWindowAvailable(mActivity, action);
             }
         }
 
@@ -345,12 +355,17 @@ public class TouchInteractionService extends Service {
             if (mInvalidated) {
                 return;
             }
-            mQuickScrubController.onQuickScrubEnd();
+            if (mStartPending) {
+                mEndPending = true;
+            } else {
+                mQuickScrubController.onQuickScrubEnd();
+            }
         }
 
         @Override
         public void onQuickScrubProgress(float progress) {
-            if (mInvalidated) {
+            mLastProgress = progress;
+            if (mInvalidated || mEndPending) {
                 return;
             }
             mQuickScrubController.onQuickScrubProgress(progress);

@@ -35,7 +35,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -62,7 +61,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onQuickstepGestureStarted(T activity, boolean activityVisible);
 
-    void onQuickInteractionStart(T activity, boolean activityVisible);
+    /**
+     * Updates the UI to indicate quick interaction.
+     * @return true if there any any UI change as a result of this
+     */
+    boolean onQuickInteractionStart(T activity, boolean activityVisible);
+
+    void executeOnWindowAvailable(T activity, Runnable action);
 
     void executeOnNextDraw(T activity, TaskView targetView, Runnable action);
 
@@ -82,6 +87,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void startRecentsFromSwipe(Intent intent, AssistDataReceiver assistDataReceiver,
             final RecentsAnimationListener remoteAnimationListener);
+
+    @Nullable
+    T getCreatedActivity();
 
     @UiThread
     @Nullable
@@ -103,8 +111,18 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void onQuickInteractionStart(Launcher activity, boolean activityVisible) {
+        public boolean onQuickInteractionStart(Launcher activity, boolean activityVisible) {
+            LauncherState fromState = activity.getStateManager().getState();
             activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
+            return !fromState.overviewUi;
+        }
+
+        @Override
+        public void executeOnWindowAvailable(Launcher activity, Runnable action) {
+            if (activity.getWorkspace().runOnOverlayHidden(action)) {
+                // Notify the activity that qiuckscrub has started
+                onQuickstepGestureStarted(activity, true);
+            }
         }
 
         @Override
@@ -210,8 +228,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Nullable
-        @UiThread
-        private Launcher getLauncher() {
+        @Override
+        public Launcher getCreatedActivity() {
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app == null) {
                 return null;
@@ -222,7 +240,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Nullable
         @UiThread
         private Launcher getVisibleLaucher() {
-            Launcher launcher = getLauncher();
+            Launcher launcher = getCreatedActivity();
             return (launcher != null) && launcher.isStarted() && launcher.hasWindowFocus() ?
                     launcher : null;
         }
@@ -254,8 +272,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void onQuickInteractionStart(RecentsActivity activity, boolean activityVisible) {
-            // TODO:
+        public boolean onQuickInteractionStart(RecentsActivity activity, boolean activityVisible) {
+            // Activity does not need any UI change for quickscrub.
+            return false;
+        }
+
+        @Override
+        public void executeOnWindowAvailable(RecentsActivity activity, Runnable action) {
+            action.run();
         }
 
         @Override
@@ -339,8 +363,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Nullable
         @Override
+        public RecentsActivity getCreatedActivity() {
+            return RecentsActivityTracker.getCurrentActivity();
+        }
+
+        @Nullable
+        @Override
         public RecentsView getVisibleRecentsView() {
-            RecentsActivity activity = RecentsActivityTracker.getCurrentActivity();
+            RecentsActivity activity = getCreatedActivity();
             if (activity != null && activity.hasWindowFocus()) {
                 return activity.getOverviewPanel();
             }
