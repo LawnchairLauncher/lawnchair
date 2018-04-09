@@ -191,6 +191,7 @@ public class TouchInteractionService extends Service {
 
     @Override
     public void onDestroy() {
+        mOverviewCommandHelper.onDestroy();
         sConnected = false;
         super.onDestroy();
     }
@@ -222,14 +223,14 @@ public class TouchInteractionService extends Service {
         if (runningTaskInfo == null && !forceToLauncher) {
             return mNoOpTouchConsumer;
         } else if (forceToLauncher ||
-                runningTaskInfo.topActivity.equals(mOverviewCommandHelper.launcher)) {
+                runningTaskInfo.topActivity.equals(mOverviewCommandHelper.overviewComponent)) {
             return getOverviewConsumer();
         } else {
             if (tracker == null) {
                 tracker = VelocityTracker.obtain();
             }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                            mOverviewCommandHelper.homeIntent,
+                            mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, tracker);
         }

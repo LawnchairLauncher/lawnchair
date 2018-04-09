@@ -15,18 +15,29 @@
  */
 package com.android.quickstep;
 
+import static android.content.Intent.ACTION_PACKAGE_ADDED;
+import static android.content.Intent.ACTION_PACKAGE_CHANGED;
+import static android.content.Intent.ACTION_PACKAGE_REMOVED;
+
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.PackageManagerWrapper
+        .ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.PatternMatcher;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +55,10 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+
+import java.util.ArrayList;
 
 /**
  * Helper class to handle various atomic commands for switching between Overview.
@@ -55,15 +69,30 @@ public class OverviewCommandHelper {
     private static final long RECENTS_LAUNCH_DURATION = 200;
 
     private static final String TAG = "OverviewCommandHelper";
-    private static final boolean DEBUG_START_FALLBACK_ACTIVITY = false;
 
     private final Context mContext;
     private final ActivityManagerWrapper mAM;
     private final RecentsModel mRecentsModel;
     private final MainThreadExecutor mMainThreadExecutor;
+    private final ComponentName mMyHomeComponent;
 
-    public final Intent homeIntent;
-    public final ComponentName launcher;
+    private final BroadcastReceiver mUserPreferenceChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initOverviewTargets();
+        }
+    };
+    private final BroadcastReceiver mOtherHomeAppUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initOverviewTargets();
+        }
+    };
+    private String mUpdateRegisteredPackage;
+
+    public Intent overviewIntent;
+    public ComponentName overviewComponent;
+    private ActivityControlHelper mActivityControlHelper;
 
     private long mLastToggleTime;
 
@@ -73,22 +102,72 @@ public class OverviewCommandHelper {
         mMainThreadExecutor = new MainThreadExecutor();
         mRecentsModel = RecentsModel.getInstance(mContext);
 
-        homeIntent = new Intent(Intent.ACTION_MAIN)
+        Intent myHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(context.getPackageName())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ResolveInfo info = context.getPackageManager().resolveActivity(homeIntent, 0);
+                .setPackage(mContext.getPackageName());
+        ResolveInfo info = context.getPackageManager().resolveActivity(myHomeIntent, 0);
+        mMyHomeComponent = new ComponentName(context.getPackageName(), info.activityInfo.name);
 
-        if (DEBUG_START_FALLBACK_ACTIVITY) {
-            launcher = new ComponentName(context, RecentsActivity.class);
-            homeIntent.addCategory(Intent.CATEGORY_DEFAULT)
-                    .removeCategory(Intent.CATEGORY_HOME);
+        mContext.registerReceiver(mUserPreferenceChangeReceiver,
+                new IntentFilter(ACTION_PREFERRED_ACTIVITY_CHANGED));
+        initOverviewTargets();
+    }
+
+    private void initOverviewTargets() {
+        ComponentName defaultHome = PackageManagerWrapper.getInstance()
+                .getHomeActivities(new ArrayList<>());
+
+        final String overviewIntentCategory;
+        if (defaultHome == null || mMyHomeComponent.equals(defaultHome)) {
+            // User default home is same as out home app. Use Overview integrated in Launcher.
+            overviewComponent = mMyHomeComponent;
+            mActivityControlHelper = new LauncherActivityControllerHelper();
+            overviewIntentCategory = Intent.CATEGORY_HOME;
+
+            if (mUpdateRegisteredPackage != null) {
+                // Remove any update listener as we don't care about other packages.
+                mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
+                mUpdateRegisteredPackage = null;
+            }
         } else {
-            launcher = new ComponentName(context.getPackageName(), info.activityInfo.name);
+            // The default home app is a different launcher. Use the fallback Overview instead.
+            overviewComponent = new ComponentName(mContext, RecentsActivity.class);
+            mActivityControlHelper = new FallbackActivityControllerHelper();
+            overviewIntentCategory = Intent.CATEGORY_DEFAULT;
+
+            // User's default home app can change as a result of package updates of this app (such
+            // as uninstalling the app or removing the "Launcher" feature in an update).
+            // Listen for package updates of this app (and remove any previously attached
+            // package listener).
+            if (!defaultHome.getPackageName().equals(mUpdateRegisteredPackage)) {
+                if (mUpdateRegisteredPackage != null) {
+                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
+                }
+
+                mUpdateRegisteredPackage = defaultHome.getPackageName();
+                IntentFilter updateReceiver = new IntentFilter(ACTION_PACKAGE_ADDED);
+                updateReceiver.addAction(ACTION_PACKAGE_CHANGED);
+                updateReceiver.addAction(ACTION_PACKAGE_REMOVED);
+                updateReceiver.addDataScheme("package");
+                updateReceiver.addDataSchemeSpecificPart(mUpdateRegisteredPackage,
+                        PatternMatcher.PATTERN_LITERAL);
+                mContext.registerReceiver(mOtherHomeAppUpdateReceiver, updateReceiver);
+            }
         }
 
-        // Clear the packageName as system can fail to dedupe it b/64108432
-        homeIntent.setComponent(launcher).setPackage(null);
+        overviewIntent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(overviewIntentCategory)
+                .setComponent(overviewComponent)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    public void onDestroy() {
+        mContext.unregisterReceiver(mUserPreferenceChangeReceiver);
+
+        if (mUpdateRegisteredPackage != null) {
+            mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
+            mUpdateRegisteredPackage = null;
+        }
     }
 
     public void onOverviewToggle() {
@@ -97,7 +176,7 @@ public class OverviewCommandHelper {
             return;
         }
 
-        mAM.closeSystemWindows("recentapps");
+        mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         mMainThreadExecutor.execute(new RecentsActivityCommand<>());
     }
 
@@ -106,11 +185,7 @@ public class OverviewCommandHelper {
     }
 
     public ActivityControlHelper getActivityControlHelper() {
-        if (DEBUG_START_FALLBACK_ACTIVITY) {
-            return new FallbackActivityControllerHelper();
-        } else {
-            return new LauncherActivityControllerHelper();
-        }
+        return mActivityControlHelper;
     }
 
     private class ShowRecentsCommand extends RecentsActivityCommand {
@@ -157,7 +232,7 @@ public class OverviewCommandHelper {
                     // Do nothing
                 } else {
                     mListener = mHelper.createActivityInitListener(this::onActivityReady);
-                    mListener.registerAndStartActivity(homeIntent, this::createWindowAnimation,
+                    mListener.registerAndStartActivity(overviewIntent, this::createWindowAnimation,
                             mContext, mMainThreadExecutor.getHandler(), RECENTS_LAUNCH_DURATION);
                 }
             }
