@@ -354,8 +354,17 @@ public class LauncherStateManager {
     /**
      * Sets the animation as the current state animation, i.e., canceled when
      * starting another animation and may block some launcher interactions while running.
+     *
+     * @param childAnimations Set of animations with the new target is controlling.
      */
-    public void setCurrentAnimation(AnimatorSet anim) {
+    public void setCurrentAnimation(AnimatorSet anim, Animator... childAnimations) {
+        for (Animator childAnim : childAnimations) {
+            if (childAnim != null && mConfig.mCurrentAnimation == childAnim) {
+                mConfig.mCurrentAnimation.removeListener(mConfig);
+                mConfig.mCurrentAnimation = null;
+                break;
+            }
+        }
         boolean reapplyNeeded = mConfig.mCurrentAnimation != null;
         cancelAnimation();
         if (reapplyNeeded) {
