@@ -19,6 +19,13 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.launcher3.anim.Interpolators.APP_CLOSE_ALPHA;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.TaskUtils.findTaskViewToLaunch;
+import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -31,7 +38,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -45,7 +51,6 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
@@ -55,12 +60,10 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.quickstep.RecentsAnimationInterpolator;
-import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -79,7 +82,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         implements OnDeviceProfileChangeListener {
 
     private static final String TAG = "LauncherTransition";
-    private static final int STATUS_BAR_TRANSITION_DURATION = 120;
+    public static final int STATUS_BAR_TRANSITION_DURATION = 120;
 
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
@@ -87,7 +90,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private static final int APP_LAUNCH_DURATION = 500;
     // Use a shorter duration for x or y translation to create a curve effect
     private static final int APP_LAUNCH_CURVED_DURATION = 233;
-    private static final int RECENTS_LAUNCH_DURATION = 336;
+    public static final int RECENTS_LAUNCH_DURATION = 336;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
 
@@ -185,64 +188,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     /**
-     * Try to find a TaskView that corresponds with the component of the launched view.
-     *
-     * If this method returns a non-null TaskView, it will be used in composeRecentsLaunchAnimation.
-     * Otherwise, we will assume we are using a normal app transition, but it's possible that the
-     * opening remote target (which we don't get until onAnimationStart) will resolve to a TaskView.
-     */
-    private TaskView findTaskViewToLaunch(
-            BaseDraggingActivity activity, View v, RemoteAnimationTargetCompat[] targets) {
-        if (v instanceof TaskView) {
-            return (TaskView) v;
-        }
-        RecentsView recentsView = activity.getOverviewPanel();
-
-        // It's possible that the launched view can still be resolved to a visible task view, check
-        // the task id of the opening task and see if we can find a match.
-        if (v.getTag() instanceof ItemInfo) {
-            ItemInfo itemInfo = (ItemInfo) v.getTag();
-            ComponentName componentName = itemInfo.getTargetComponent();
-            if (componentName != null) {
-                for (int i = 0; i < recentsView.getChildCount(); i++) {
-                    TaskView taskView = (TaskView) recentsView.getPageAt(i);
-                    if (recentsView.isTaskViewVisible(taskView)) {
-                        Task task = taskView.getTask();
-                        if (componentName.equals(task.key.getComponent())) {
-                            return taskView;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (targets == null) {
-            return null;
-        }
-        // Resolve the opening task id
-        int openingTaskId = -1;
-        for (RemoteAnimationTargetCompat target : targets) {
-            if (target.mode == MODE_OPENING) {
-                openingTaskId = target.taskId;
-                break;
-            }
-        }
-
-        // If there is no opening task id, fall back to the normal app icon launch animation
-        if (openingTaskId == -1) {
-            return null;
-        }
-
-        // If the opening task id is not currently visible in overview, then fall back to normal app
-        // icon launch animation
-        TaskView taskView = recentsView.getTaskView(openingTaskId);
-        if (taskView == null || !recentsView.isTaskViewVisible(taskView)) {
-            return null;
-        }
-        return taskView;
-    }
-
-    /**
      * Composes the animations for a launch from the recents list if possible.
      */
     private boolean composeRecentsLaunchAnimator(View v,
@@ -285,7 +230,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             };
         }
 
-        target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets));
+        target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets)
+                .setDuration(RECENTS_LAUNCH_DURATION));
         target.play(launcherAnim);
 
         // Set the current animation first, before adding windowAnimEndListener. Setting current
@@ -294,83 +240,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mLauncher.getStateManager().setCurrentAnimation(target);
         target.addListener(windowAnimEndListener);
         return true;
-    }
-
-    /**
-     * @return Animator that controls the window of the opening targets for the recents launch
-     * animation.
-     */
-    private ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipLauncherChanges,
-            RemoteAnimationTargetCompat[] targets) {
-        final RecentsAnimationInterpolator recentsInterpolator = v.getRecentsInterpolator();
-
-        Rect crop = new Rect();
-        Matrix matrix = new Matrix();
-
-        ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
-        appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
-        appAnimator.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
-        appAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            boolean isFirstFrame = true;
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final Surface surface = getSurface(v);
-                final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
-                if (frameNumber == -1) {
-                    // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
-                    Log.w(TAG, "Failed to animate, surface got destroyed.");
-                    return;
-                }
-                final float percent = animation.getAnimatedFraction();
-                TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
-
-                float alphaDuration = 75;
-                if (!skipLauncherChanges) {
-                    v.setScaleX(tw.taskScale);
-                    v.setScaleY(tw.taskScale);
-                    v.setTranslationX(tw.taskX);
-                    v.setTranslationY(tw.taskY);
-                    // Defer fading out the view until after the app window gets faded in
-                    v.setAlpha(getValue(1f, 0f, alphaDuration, alphaDuration,
-                            appAnimator.getDuration() * percent, Interpolators.LINEAR));
-                }
-
-                matrix.setScale(tw.winScale, tw.winScale);
-                matrix.postTranslate(tw.winX, tw.winY);
-                crop.set(tw.winCrop);
-
-                // Fade in the app window.
-                float alpha = getValue(0f, 1f, 0, alphaDuration,
-                        appAnimator.getDuration() * percent, Interpolators.LINEAR);
-
-                TransactionCompat t = new TransactionCompat();
-                for (RemoteAnimationTargetCompat target : targets) {
-                    if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
-                        t.setAlpha(target.leash, alpha);
-
-                        // TODO: This isn't correct at the beginning of the animation, but better
-                        // than nothing.
-                        matrix.postTranslate(target.position.x, target.position.y);
-                        t.setMatrix(target.leash, matrix);
-                        t.setWindowCrop(target.leash, crop);
-
-                        if (!skipLauncherChanges) {
-                            t.deferTransactionUntil(target.leash, surface, frameNumber);
-                        }
-                    }
-                    if (isFirstFrame) {
-                        t.show(target.leash);
-                    }
-                }
-                t.setEarlyWakeup();
-                t.apply();
-
-                matrix.reset();
-                isFirstFrame = false;
-            }
-        });
-        return appAnimator;
     }
 
     /**
@@ -399,9 +268,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(217);
-            alpha.setInterpolator(Interpolators.LINEAR);
+            alpha.setInterpolator(LINEAR);
             ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+            transY.setInterpolator(AGGRESSIVE_EASE);
             transY.setDuration(350);
 
             launcherAnimator.play(alpha);
@@ -420,10 +289,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             ObjectAnimator dragLayerAlpha = ObjectAnimator.ofFloat(mDragLayer, View.ALPHA, alphas);
             dragLayerAlpha.setDuration(217);
-            dragLayerAlpha.setInterpolator(Interpolators.LINEAR);
+            dragLayerAlpha.setInterpolator(LINEAR);
             ObjectAnimator dragLayerTransY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
                     trans);
-            dragLayerTransY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+            dragLayerTransY.setInterpolator(AGGRESSIVE_EASE);
             dragLayerTransY.setDuration(350);
 
             launcherAnimator.play(dragLayerAlpha);
@@ -515,8 +384,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         boolean isBelowCenterY = lp.topMargin < centerY;
         x.setDuration(isBelowCenterY ? APP_LAUNCH_DURATION : APP_LAUNCH_CURVED_DURATION);
         y.setDuration(isBelowCenterY ? APP_LAUNCH_CURVED_DURATION : APP_LAUNCH_DURATION);
-        x.setInterpolator(Interpolators.AGGRESSIVE_EASE);
-        y.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+        x.setInterpolator(AGGRESSIVE_EASE);
+        y.setInterpolator(AGGRESSIVE_EASE);
         appIconAnimatorSet.play(x);
         appIconAnimatorSet.play(y);
 
@@ -534,7 +403,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);
         alpha.setStartDelay(32);
         alpha.setDuration(50);
-        alpha.setInterpolator(Interpolators.LINEAR);
+        alpha.setInterpolator(LINEAR);
         appIconAnimatorSet.play(alpha);
 
         appIconAnimatorSet.addListener(new AnimatorListenerAdapter() {
@@ -569,11 +438,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
-        appAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        appAnimator.addUpdateListener(new MultiValueUpdateListener() {
+            // Fade alpha for the app window.
+            FloatProp mAlpha = new FloatProp(0f, 1f, 0, 60, LINEAR);
+
             boolean isFirstFrame = true;
 
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onUpdate(float percent) {
                 final Surface surface = getSurface(mFloatingView);
                 final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
                 if (frameNumber == -1) {
@@ -581,8 +453,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     Log.w(TAG, "Failed to animate, surface got destroyed.");
                     return;
                 }
-                final float percent = animation.getAnimatedFraction();
-                final float easePercent = Interpolators.AGGRESSIVE_EASE.getInterpolation(percent);
+                final float easePercent = AGGRESSIVE_EASE.getInterpolation(percent);
 
                 // Calculate app icon size.
                 float iconWidth = bounds.width() * mFloatingView.getScaleX();
@@ -607,11 +478,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 float transY0 = floatingViewBounds[1] - offsetY;
                 matrix.postTranslate(transX0, transY0);
 
-                // Fade in the app window.
-                float alphaDuration = 60;
-                float alpha = getValue(0f, 1f, 0, alphaDuration,
-                        appAnimator.getDuration() * percent, Interpolators.LINEAR);
-
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
                 float cropHeight = deviceHeight * easePercent + deviceWidth * (1 - easePercent);
@@ -624,7 +490,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 TransactionCompat t = new TransactionCompat();
                 for (RemoteAnimationTargetCompat target : targets) {
                     if (target.mode == MODE_OPENING) {
-                        t.setAlpha(target.leash, alpha);
+                        t.setAlpha(target.leash, mAlpha.value);
 
                         // TODO: This isn't correct at the beginning of the animation, but better
                         // than nothing.
@@ -670,13 +536,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     private boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
-        int launcherTaskId = mLauncher.getTaskId();
-        for (RemoteAnimationTargetCompat target : targets) {
-            if (target.mode == mode && target.taskId == launcherTaskId) {
-                return true;
-            }
-        }
-        return false;
+        return taskIsATargetWithMode(targets, mLauncher.getTaskId(), mode);
     }
 
     /**
@@ -730,30 +590,23 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         closingAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
+        closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
+            FloatProp mDx = new FloatProp(0, endX, 0, 350, AGGRESSIVE_EASE_IN_OUT);
+            FloatProp mScale = new FloatProp(1f, 0.8f, 0, 267, AGGRESSIVE_EASE);
+            FloatProp mAlpha = new FloatProp(1f, 0f, 0, 350, APP_CLOSE_ALPHA);
 
-        closingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             boolean isFirstFrame = true;
 
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = animation.getAnimatedFraction();
-                float currentPlayTime = percent * closingAnimator.getDuration();
-
-                float scale = getValue(1f, 0.8f, 0, 267, currentPlayTime,
-                        Interpolators.AGGRESSIVE_EASE);
-
-                float dX = getValue(0, endX, 0, 350, currentPlayTime,
-                        Interpolators.AGGRESSIVE_EASE_IN_OUT);
-
+            public void onUpdate(float percent) {
                 TransactionCompat t = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : targets) {
                     if (app.mode == RemoteAnimationTargetCompat.MODE_CLOSING) {
-                        t.setAlpha(app.leash, getValue(1f, 0f, 0, 350, currentPlayTime,
-                                Interpolators.APP_CLOSE_ALPHA));
-                        matrix.setScale(scale, scale,
+                        t.setAlpha(app.leash, mAlpha.value);
+                        matrix.setScale(mScale.value, mScale.value,
                                 app.sourceContainerBounds.centerX(),
                                 app.sourceContainerBounds.centerY());
-                        matrix.postTranslate(dX, 0);
+                        matrix.postTranslate(mDx.value, 0);
                         matrix.postTranslate(app.position.x, app.position.y);
                         t.setMatrix(app.leash, matrix);
                     }
@@ -772,6 +625,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 isFirstFrame = false;
             }
         });
+
         return closingAnimator;
     }
 
@@ -831,17 +685,5 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Helper method that allows us to get interpolated values for embedded
-     * animations with a delay and/or different duration.
-     */
-    private static float getValue(float start, float end, float delay, float duration,
-            float currentPlayTime, Interpolator i) {
-        float time = Math.max(0, currentPlayTime - delay);
-        float newPercent = Math.min(1f, time / duration);
-        newPercent = i.getInterpolation(newPercent);
-        return end * newPercent + start * (1 - newPercent);
     }
 }
