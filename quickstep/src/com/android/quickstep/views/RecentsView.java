@@ -64,6 +64,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
+import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
@@ -513,6 +514,8 @@ public abstract class RecentsView<T extends BaseActivity>
         unloadVisibleTaskData();
         mRunningTaskId = -1;
         setCurrentPage(0);
+
+        OverviewCallbacks.get(getContext()).onResetOverview();
     }
 
     /**
