@@ -15,10 +15,12 @@
  */
 package com.android.launcher3.logging;
 
+import android.content.Context;
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.ButtonDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
@@ -29,6 +31,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.InstantAppResolver;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -127,18 +130,21 @@ public class LoggerUtils {
         return t;
     }
 
-    public static Target newItemTarget(View v) {
+    public static Target newItemTarget(View v, InstantAppResolver instantAppResolver) {
         return (v.getTag() instanceof ItemInfo)
-                ? newItemTarget((ItemInfo) v.getTag())
+                ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)
                 : newTarget(Target.Type.ITEM);
     }
 
-    public static Target newItemTarget(ItemInfo info) {
+    public static Target newItemTarget(ItemInfo info, InstantAppResolver instantAppResolver) {
         Target t = newTarget(Target.Type.ITEM);
 
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                t.itemType = ItemType.APP_ICON;
+                t.itemType = (instantAppResolver != null && info instanceof AppInfo
+                        && instantAppResolver.isInstantApp(((AppInfo) info)) )
+                        ? ItemType.WEB_APP
+                        : ItemType.APP_ICON;
                 t.predictedRank = -100; // Never assigned
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:

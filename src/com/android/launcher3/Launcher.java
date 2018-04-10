@@ -22,7 +22,6 @@ import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
@@ -136,8 +135,8 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseDraggingActivity implements LauncherExterns, LauncherModel.Callbacks,
-        LauncherProviderChangeListener, WallpaperColorInfo.OnThemeChangeListener {
+public class Launcher extends BaseDraggingActivity
+        implements LauncherExterns, LauncherModel.Callbacks, LauncherProviderChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -147,7 +146,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
     private static final int REQUEST_PICK_APPWIDGET = 9;
-    private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     public static final int REQUEST_BIND_PENDING_APPWIDGET = 12;
@@ -197,6 +195,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
+    private View mDragHandleIndicator;
+    @Nullable private View mHotseatSearchBox;
 
     private DropTargetBar mDropTargetBar;
 
@@ -266,10 +266,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
         TraceHelper.beginSection("Launcher-onCreate");
 
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
-
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
 
@@ -298,6 +294,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         mPopupDataProvider = new PopupDataProvider(this);
 
         mRotationHelper = new RotationHelper(this);
+        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
         if (internalStateHandled) {
@@ -345,8 +342,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
-        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
@@ -361,11 +356,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
-            FileLog.d(TAG, "Config changed, my orientation=" +
-                    getResources().getConfiguration().orientation +
-                    ", new orientation=" + newConfig.orientation +
-                    ", old orientation=" + mOldConfig.orientation +
-                    ", isTransposed=" + mDeviceProfile.isVerticalBarLayout());
             dispatchDeviceProfileChanged();
 
             getRootView().dispatchInsets();
@@ -379,6 +369,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
 
         mOldConfig.setTo(newConfig);
+        UiFactory.onLauncherStateOrResumeChanged(this);
         super.onConfigurationChanged(newConfig);
     }
 
@@ -401,21 +392,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         return mRotationHelper;
     }
 
-    @Override
-    public void onThemeChanged() {
-        recreate();
-    }
-
     public LauncherStateManager getStateManager() {
         return mStateManager;
-    }
-
-    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
-        if (isDark) {
-            setTheme(R.style.LauncherThemeDark);
-        } else if (supportsDarkText) {
-            setTheme(R.style.LauncherThemeDarkText);
-        }
     }
 
     @Override
@@ -569,14 +547,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                         appWidgetId, requestArgs, null,
                         requestArgs.getWidgetHandler(),
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY);
-            }
-            return;
-        } else if (requestCode == REQUEST_PICK_WALLPAPER) {
-            if (resultCode == RESULT_OK && isInState(OVERVIEW)) {
-                // User could have free-scrolled between pages before picking a wallpaper; make sure
-                // we move to the closest one now.
-                mWorkspace.setCurrentPage(mWorkspace.getPageNearestToCenterOfScreen());
-                mStateManager.goToState(NORMAL, false);
             }
             return;
         }
@@ -820,6 +790,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+        UiFactory.onLauncherStateOrResumeChanged(this);
 
         TraceHelper.endSection("ON_RESUME");
     }
@@ -836,6 +807,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        UiFactory.onLauncherStateOrResumeChanged(this);
     }
 
     @Override
@@ -938,6 +915,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);
+        mDragHandleIndicator = findViewById(R.id.drag_indicator);
+        mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -1201,6 +1180,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         return mHotseat;
     }
 
+    public View getDragHandleIndicator() {
+        return mDragHandleIndicator;
+    }
+
+    public View getHotseatSearchBox() {
+        return mHotseatSearchBox;
+    }
+
     public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
     }
@@ -1357,7 +1344,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
 
         TextKeyListener.getInstance().release();
-        WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
 
         LauncherAnimUtils.onDestroyActivity();
 
@@ -1642,52 +1628,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         }
     }
 
-    /**
-     * Event handler for the wallpaper picker button that appears after a long press
-     * on the home screen.
-     */
-    public void onClickWallpaperPicker(View v) {
-        if (!Utilities.isWallpaperAllowed(this)) {
-            Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
-        float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
-        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
-                .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
-
-        String pickerPackage = getString(R.string.wallpaper_picker_package);
-        boolean hasTargetPackage = !TextUtils.isEmpty(pickerPackage);
-        if (hasTargetPackage) {
-            intent.setPackage(pickerPackage);
-        }
-
-        final Bundle launchOptions;
-        if (v != null) {
-            intent.setSourceBounds(getViewBounds(v));
-            // If there is no target package, use the default intent chooser animation
-            launchOptions = hasTargetPackage
-                    ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
-                    : null;
-        } else {
-            launchOptions = null;
-        }
-        try {
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, launchOptions);
-        } catch (ActivityNotFoundException e) {
-            setWaitingForResult(null);
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
         return useDefaultLaunchOptions
                 ? mAppTransitionManager.getDefaultActivityLaunchOptions(this, v)
                 : mAppTransitionManager.getActivityLaunchOptions(this, v);
+    }
+
+    public LauncherAppTransitionManager getAppTransitionManager() {
+        return mAppTransitionManager;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -1828,7 +1778,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
         mAppWidgetHost.clearViews();
 
         if (mHotseat != null) {
-            mHotseat.resetLayout();
+            mHotseat.resetLayout(mDeviceProfile.isVerticalBarLayout());
         }
         TraceHelper.endSection("startBinding");
     }
@@ -1982,6 +1932,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
                     mWorkspace.postDelayed(new Runnable() {
                         public void run() {
                             if (mWorkspace != null) {
+                                AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+
                                 mWorkspace.snapToPage(newScreenIndex);
                                 mWorkspace.postDelayed(startBounceAnimRunnable,
                                         NEW_APPS_ANIMATION_DELAY);
@@ -2433,7 +2385,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns, L
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
-                OptionsPopupView.show(this, -1, -1);
+                OptionsPopupView.showDefaultOptions(this, -1, -1);
             }
             return true;
         }

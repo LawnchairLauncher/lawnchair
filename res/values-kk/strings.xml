@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" сұрауына сәйкес келетін қолданбалар жоқ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Қосымша қолданбалар іздеу"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Хабарландырулар"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Таңбашаны таңдау үшін оны басып, ұстап тұрыңыз."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Екі рет басып, ұстап тұрып, таңбашаны таңдаңыз немесе арнаулы әрекеттерді пайдаланыңыз."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Бұл Негізгі экранда орын қалмады."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Қалаулылар науасында орын қалмады"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Қолданбалар тізімі"</string>

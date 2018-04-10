@@ -40,9 +40,13 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Azikho izinhlelo zokusebenza ezitholiwe ezifana ne-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sesha izinhlelo zokusebenza eziningi"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Izaziso"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Thinta futhi ubambe ukuze ukhethe isinqamuleli."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Thepha kabili uphinde ubambe ukuze uphakamise isinqamuleli noma usebenzise izenzo zangokwezifiso."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Asisekho isikhala kulesi sikrini Sasekhaya."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Asisekho isikhala kwitreyi lezintandokazi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Uhlu lwezinhlelo zokusebenza"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Uhlu lwezinhlelo zokusebenza zomuntu siqu"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Uhlu lwezinhlelo zokusebenza zomsebenzi"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Ikhaya"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Susa"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Khipha"</string>
@@ -77,19 +81,17 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Izithombe zangemuva"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Izilungiselelo zasekhaya"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Kukhutshazwe umlawuli wakho"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Ukubuka konke"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Vumela ukuphendukiswa kwesikrini sasekhaya"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Uma ifoni iphendukiswa"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Isilungiselelo sesiboniso samanje asivumeli ukuzungezisa"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Amachashazi esaziso"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Kuvuliwe"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Kuvaliwe"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Ukufinyelela izaziso kuyadingeka"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ukuze ubonisa amcashazi esaziso, vula izaziso zohlelo lokusebenza ze-<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Shintsha izilungiselelo"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Bonisa amacashazi esaziso"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Engeza isithonjana eskrinini sasekhaya"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwezinhlelo zokusebenza ezintsha"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Shintsha isimo sesithonjana"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"kusikrini sasekhaya"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Sebenzisa okuzenzakalelayo kwesistimu"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Isikwele"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"I-Squircle"</string>
@@ -119,9 +121,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Dala ifolda nge-: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Ifolda idaliwe"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Hambisa kusikrini sasekhaya"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Hambisa isikrini kwesokunxele"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Hambisa isikrini kwesokudla"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Isikrini sihanjisiwe"</string>
     <string name="action_resize" msgid="1802976324781771067">"Shintsha usayizi"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Khuphula ububanzi"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Khuphula ubude"</string>
@@ -137,8 +136,9 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Umsebenzi"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Iphrofayela yomsebenzi"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Thola izinhlelo zokusebenza lapha"</string>
-    <!-- no translation found for bottom_work_tab_user_education_body (2818107472360579152) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Uhlo lokusebenza ngalunye lomsebenzi linebheji futhi igcinwa iphephile inhlangano yakho. Hambisa izinhlelo zokusebenza esikrinini sakho sasekhaya ngokufinyelela okulula."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Kuphethwe inhlangano yakho"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Izaziso nezinhlelo zokusebenza kuvaliwe"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Vala"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Kuvaliwe"</string>
 </resources>

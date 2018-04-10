@@ -19,13 +19,11 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
-import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
 
@@ -47,19 +45,13 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        Rect pageRect = new Rect();
-        RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, pageRect);
-
-        if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
-            return super.getWorkspaceScaleAndTranslation(launcher);
-        }
-
-        return getScaleAndTranslationForPageRect(launcher, pageRect);
+        // TODO: provide a valid value
+        return new float[]{1, 0, -launcher.getDeviceProfile().hotseatBarSizePx / 2};
     }
 
     @Override
-    public float[] getOverviewTranslationFactor(Launcher launcher) {
-        return new float[] {0f, 0f};
+    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+        return new float[] {1f, 0f};
     }
 
     @Override
@@ -93,27 +85,14 @@ public class OverviewState extends LauncherState {
         };
     }
 
-    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
-        Workspace ws = launcher.getWorkspace();
-        float childWidth = ws.getNormalChildWidth();
-
-        float scale = pageRect.width() / childWidth;
-        Rect insets = launcher.getDragLayer().getInsets();
-
-        float halfHeight = ws.getExpectedHeight() / 2;
-        float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
-        float translationY = pageRect.top - childTop;
-
-        return new float[] {scale, 0, translationY};
-    }
-
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return NONE;
+            return DRAG_HANDLE_INDICATOR;
         } else {
-            return launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
-                    ? HOTSEAT_EXTRA | ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS | HOTSEAT_EXTRA;
+            return HOTSEAT_SEARCH_BOX | DRAG_HANDLE_INDICATOR |
+                    (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                            ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
     }
 

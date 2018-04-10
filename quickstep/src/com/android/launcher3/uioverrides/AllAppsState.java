@@ -88,10 +88,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewTranslationFactor(Launcher launcher) {
-        // Keep the same translation as in overview, so that we don't slide around when
-        // transitioning to All Apps.
-        return LauncherState.OVERVIEW.getOverviewTranslationFactor(launcher);
+    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+        return new float[] {1f, -0.2f};
     }
 
     @Override

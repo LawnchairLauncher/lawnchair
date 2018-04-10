@@ -15,83 +15,11 @@
 -->
 <com.android.launcher3.views.OptionsPopupView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="96dp"
+    android:id="@+id/deep_shortcuts_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="?attr/popupColorPrimary"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:orientation="horizontal"
-    launcher:layout_ignoreInsets="true">
-
-    <FrameLayout
-        android:id="@+id/wallpaper_button"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawablePadding="4dp"
-            android:drawableTint="?android:attr/textColorPrimary"
-            android:drawableTop="@drawable/ic_wallpaper"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/wallpaper_button_text"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp"/>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/widget_button"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawablePadding="4dp"
-            android:drawableTint="?android:attr/textColorPrimary"
-            android:drawableTop="@drawable/ic_widget"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/widget_button_text"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp"/>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/settings_button"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawablePadding="4dp"
-            android:drawableTint="?android:attr/textColorPrimary"
-            android:drawableTop="@drawable/ic_setting"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/settings_button_text"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp"/>
-
-    </FrameLayout>
-
-</com.android.launcher3.views.OptionsPopupView>
+    android:orientation="vertical" />

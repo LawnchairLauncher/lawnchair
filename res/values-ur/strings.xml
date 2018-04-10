@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"مزید ایپس تلاش کریں"</string>
     <string name="notifications_header" msgid="1404149926117359025">"اطلاعات"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ایک شارٹ کٹ منتخب کرنے کیلئے ٹچ کر کے دبائے رکھیں۔"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ایک شارٹ کٹ منتخب کرنے یا حسب ضرورت کارروائیاں استعمال کرنے کیلئے دو بار تھپتھپائیں اور دبائے رکھیں۔"</string>
     <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ایپس کی فہرست"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ہر دفتری ایپ میں ایک بَیج ہوتا ہے اور اسے آپ کی تنظیم محفوظ رکھتی ہے۔ زیادہ آسان رسائی کیلئے ایپس کو اپنی ہوم اسکرین پر منتقل کریں۔"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"آپ کی تنظیم کے زیر انتظام"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"اطلاعات اور ایپس آف ہیں"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"بند کریں"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"بند"</string>
 </resources>

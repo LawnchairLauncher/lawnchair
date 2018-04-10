@@ -141,8 +141,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ஒவ்வொரு பணிப் பயன்பாடும் ஒரு பேட்ஜைக் கொண்டிருக்கும். இவை, ஆப்ஸ் உங்கள் நிறுவனத்தால் பாதுகாப்பாக வைக்கப்பட்டுள்ளன என்பதைக் குறிக்கின்றன. இந்த ஆப்ஸை எளிதாக அணுக, முகப்புத் திரைக்கு நகர்த்திக்கொள்ளவும்."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"உங்கள் நிறுவனம் நிர்வகிக்கிறது"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"ஆப்ஸும் அறிவிப்புகளும் ஆஃப் செய்யப்பட்டுள்ளன"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"மூடுக"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"மூடப்பட்டது"</string>
 </resources>

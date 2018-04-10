@@ -32,22 +32,27 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.SysuiEventLogger;
+import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
  */
 public class PortraitStatesTouchController extends AbstractStateChangeTouchController {
 
-    private static final float TOTAL_DISTANCE_MULTIPLIER = 2f;
+    private static final float TOTAL_DISTANCE_MULTIPLIER = 3f;
     private static final float LINEAR_SCALE_LIMIT = 1 / TOTAL_DISTANCE_MULTIPLIER;
 
-    // Much be greater than LINEAR_SCALE_LIMIT;
+    // Must be greater than LINEAR_SCALE_LIMIT;
     private static final float MAXIMUM_DISTANCE_FACTOR = 0.9f;
 
     // Maximum amount to overshoot.
@@ -56,9 +61,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final double PI_BY_2 = Math.PI / 2;
 
     private InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
-
-    // If > 0, the animation progress is clamped at that value as long as user is dragging.
-    private float mClampProgressUpdate = -1;
 
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
@@ -129,29 +131,26 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
             mStartContainerType = ContainerType.HOTSEAT;
         } else if (mLauncher.isInState(OVERVIEW)) {
-            directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+            directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
             mStartContainerType = ContainerType.TASKSWITCHER;
         } else {
-            return 0;
-        }
-        mFromState = mLauncher.getStateManager().getState();
-        mToState = getTargetState();
-        if (mFromState == mToState) {
             return 0;
         }
         return directionsToDetectScroll;
     }
 
-    protected LauncherState getTargetState() {
-        if (mLauncher.isInState(ALL_APPS)) {
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        if (fromState == ALL_APPS && !isDragTowardPositive) {
             // Should swipe down go to OVERVIEW instead?
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;
-        } else if (mLauncher.isInState(OVERVIEW)) {
-            return ALL_APPS;
-        } else {
+        } else if (fromState == OVERVIEW) {
+            return isDragTowardPositive ? ALL_APPS : NORMAL;
+        } else if (isDragTowardPositive) {
             return TouchInteractionService.isConnected() ? OVERVIEW : ALL_APPS;
         }
+        return fromState;
     }
 
     private AnimatorSetBuilder getNormalToOverviewAnimation() {
@@ -162,15 +161,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         builder.setInterpolator(ANIM_OVERVIEW_TRANSLATION, mOverviewBoundInterpolator);
         return builder;
-    }
-
-    @Override
-    protected void updateProgress(float fraction) {
-        if (mClampProgressUpdate > 0) {
-            mCurrentAnimation.setPlayFraction(Math.min(fraction, mClampProgressUpdate));
-        } else {
-            super.updateProgress(fraction);
-        }
     }
 
     @Override
@@ -188,14 +178,27 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mFromState == NORMAL && mToState == OVERVIEW && totalShift != 0) {
             builder = getNormalToOverviewAnimation();
             totalShift = totalShift * TOTAL_DISTANCE_MULTIPLIER;
-            mClampProgressUpdate = MAXIMUM_DISTANCE_FACTOR;
         } else {
             builder = new AnimatorSetBuilder();
-            mClampProgressUpdate = -1;
         }
 
-        mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, builder, maxAccuracy);
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation = null;
+        }
+
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        TaskView taskView = (TaskView) recentsView.getChildAt(recentsView.getNextPage());
+        if (recentsView.shouldSwipeDownLaunchApp() && mFromState == OVERVIEW && mToState == NORMAL
+                && taskView != null) {
+            mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
+            mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
+
+            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy);
+        } else {
+            mCurrentAnimation = mLauncher.getStateManager()
+                    .createAnimationToNewWorkspace(mToState, builder, maxAccuracy);
+        }
 
         if (totalShift == 0) {
             totalShift = Math.signum(mFromState.ordinal - mToState.ordinal)
@@ -207,6 +210,14 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     @Override
     protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
             LauncherState targetState, float velocity, boolean isFling) {
+        handleFirstSwipeToOverview(animator, expectedDuration, targetState, velocity, isFling);
+        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
+                velocity, isFling);
+    }
+
+    private void handleFirstSwipeToOverview(final ValueAnimator animator,
+            final long expectedDuration, final LauncherState targetState, final float velocity,
+            final boolean isFling) {
         if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
             mFinishFastOnSecondTouch = true;
 
@@ -220,7 +231,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 // TODO: Clean up these magic calculations
                 // Linearly interpolate the max value based on the velocity.
                 float maxValue = Math.max(absVelocity > 4 ? 1 + MAX_OVERSHOOT :
-                        1 + (absVelocity - 1) * MAX_OVERSHOOT / 3,
+                                1 + (absVelocity - 1) * MAX_OVERSHOOT / 3,
                         currentValue);
                 double angleToPeak = PI_BY_2 - Math.asin(currentValue / maxValue);
 
@@ -248,8 +259,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
             if (currentFraction < LINEAR_SCALE_LIMIT) {
                 mAllAppsInterpolatorWrapper.baseInterpolator = LINEAR;
-                super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
-                        velocity, isFling);
                 return;
             }
             float extraValue = mAllAppsDampedInterpolator.getInterpolation(currentFraction) - 1;
@@ -267,8 +276,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             return;
         }
         mFinishFastOnSecondTouch = false;
-        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
-                velocity, isFling);
     }
 
     @Override
