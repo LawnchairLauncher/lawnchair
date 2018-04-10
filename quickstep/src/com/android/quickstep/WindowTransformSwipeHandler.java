@@ -487,6 +487,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         // not valid immediately after rotation, just use the stable insets for now
                         Rect insets = new Rect();
                         WindowManagerWrapper.getInstance().getStableInsets(insets);
+                        dp = dp.copy(mContext);
                         dp.updateInsets(insets);
                     }
 
