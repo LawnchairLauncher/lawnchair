@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরও অ্যাপ্লিকেশানের জন্য খুঁজুন"</string>
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"কোনও শর্টকাট বেছে নিতে টাচ করে ধরে থাকুন।"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"কোনও শর্টকাট বেছে নিতে ডবল ট্যাপ করে ধরে থাকুন অথবা কাস্টম অ্যাকশন ব্যবহার করুন।"</string>
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"অ্যাপ্লিকেশানগুলির তালিকা"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"প্রতিটি কাজের অ্যাপে একটি করে ব্যাজ রয়েছে এবং অ্যাপগুলি আপনার প্রতিষ্ঠানের দ্বারা সুরক্ষিত। সহজে অ্যাক্সেস করার জন্য অ্যাপগুলি হোম স্ক্রিনে রাখুন।"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"আপনার প্রতিষ্ঠানের দ্বারা পরিচালিত"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"বিজ্ঞপ্তি এবং অ্যাপ বন্ধ আছে"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"বন্ধ করুন"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"বন্ধ"</string>
 </resources>

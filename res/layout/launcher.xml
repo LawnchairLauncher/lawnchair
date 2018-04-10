@@ -49,7 +49,8 @@
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_height="4dp"
+            android:layout_gravity="bottom|center_horizontal"
             android:theme="@style/HomeScreenElementTheme" />
 
         <include
@@ -62,6 +63,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <include android:id="@+id/drag_indicator"
+            layout="@layout/drag_handle_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include

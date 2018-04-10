@@ -30,11 +30,8 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Matrix;
-import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -64,11 +61,11 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -132,26 +129,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
 
-    // The bounds of the source app in device coordinates
-    private final Rect mSourceStackBounds = new Rect();
-    // The insets of the source app
-    private final Rect mSourceInsets = new Rect();
-    // The source app bounds with the source insets applied, in the source app window coordinates
-    private final RectF mSourceRect = new RectF();
-    // The bounds of the task view in launcher window coordinates
-    private final RectF mTargetRect = new RectF();
-    // Doesn't change after initialized, used as an anchor when changing mTargetRect
-    private final RectF mInitialTargetRect = new RectF();
-    // The insets to be used for clipping the app window, which can be larger than mSourceInsets
-    // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
-    // app window coordinates.
-    private final RectF mSourceWindowClipInsets = new RectF();
+    private final ClipAnimationHelper mClipAnimationHelper = new ClipAnimationHelper();
 
-    // The bounds of launcher (not including insets) in device coordinates
-    private final Rect mHomeStackBounds = new Rect();
-    // The clip rect in source app window coordinates
-    private final Rect mClipRect = new Rect();
-    private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     protected Runnable mGestureEndCallback;
     protected boolean mIsGoingToHome;
     private DeviceProfile mDp;
@@ -192,7 +171,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             InputConsumerController.getRecentsAnimationInputConsumer();
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
-    private Matrix mTmpMatrix = new Matrix();
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
@@ -269,42 +247,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
-        mSourceRect.set(mSourceInsets.left, mSourceInsets.top,
-                mSourceStackBounds.width() - mSourceInsets.right,
-                mSourceStackBounds.height() - mSourceInsets.bottom);
 
         Rect tempRect = new Rect();
         mTransitionDragLength = mActivityControlHelper
                 .getSwipeUpDestinationAndLength(dp, mContext, tempRect);
-
-        mTargetRect.set(tempRect);
-        mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
-                mHomeStackBounds.top - mSourceStackBounds.top);
-        mInitialTargetRect.set(mTargetRect);
-
-        // Calculate the clip based on the target rect (since the content insets and the
-        // launcher insets may differ, so the aspect ratio of the target rect can differ
-        // from the source rect. The difference between the target rect (scaled to the
-        // source rect) is the amount to clip on each edge.
-        RectF scaledTargetRect = new RectF(mTargetRect);
-        Utilities.scaleRectFAboutCenter(scaledTargetRect,
-                mSourceRect.width() / mTargetRect.width());
-        scaledTargetRect.offsetTo(mSourceRect.left, mSourceRect.top);
-        mSourceWindowClipInsets.set(
-                Math.max(scaledTargetRect.left, 0),
-                Math.max(scaledTargetRect.top, 0),
-                Math.max(mSourceStackBounds.width() - scaledTargetRect.right, 0),
-                Math.max(mSourceStackBounds.height() - scaledTargetRect.bottom, 0));
-        mSourceRect.set(scaledTargetRect);
-    }
-
-    public int getTransitionLength() {
-        return mTransitionDragLength;
-    }
-
-    public RectF getTargetRect(Point outWindowSize) {
-        outWindowSize.set(mDp.widthPx, mDp.heightPx);
-        return mInitialTargetRect;
+        mClipAnimationHelper.updateTargetRect(tempRect);
     }
 
     private long getFadeInDuration() {
@@ -336,6 +283,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mActivity = activity;
+        // Override the visibility of the activity until the gesture actually starts and we swipe
+        // up, or until we transition home and the home animation is composed
+        mActivity.setForceInvisible(true);
 
         mRecentsView = activity.getOverviewPanel();
         mQuickScrubController = mRecentsView.getQuickScrubController();
@@ -475,39 +425,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
-                RectF currentRect;
-                synchronized (mTargetRect) {
-                    Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
-                            ? ACCEL_2 : LINEAR;
-                    float interpolated = interpolator.getInterpolation(shift);
-                    currentRect = mRectFEvaluator.evaluate(interpolated, mSourceRect, mTargetRect);
-                    // Stay lined up with the center of the target, since it moves for quick scrub.
-                    currentRect.offset(mTargetRect.centerX() - currentRect.centerX(), 0);
-                }
-
-                mClipRect.left = (int) (mSourceWindowClipInsets.left * shift);
-                mClipRect.top = (int) (mSourceWindowClipInsets.top * shift);
-                mClipRect.right = (int)
-                        (mSourceStackBounds.width() - (mSourceWindowClipInsets.right * shift));
-                mClipRect.bottom = (int)
-                        (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * shift));
-
-                mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
-
-                TransactionCompat transaction = new TransactionCompat();
-                for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
-                    if (app.mode == MODE_CLOSING) {
-                        transaction.setMatrix(app.leash, mTmpMatrix)
-                                .setWindowCrop(app.leash, mClipRect);
-
-                        if (app.isNotInRecents) {
-                            transaction.setAlpha(app.leash, 1 - shift);
-                        }
-
-                        transaction.show(app.leash);
-                    }
-                }
-                transaction.apply();
+                Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
+                        ? ACCEL_2 : LINEAR;
+                float interpolated = interpolator.getInterpolation(shift);
+                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targets, interpolated);
             }
         }
 
@@ -520,20 +441,20 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                 // Make sure the window follows the first task if it moves, e.g. during quick scrub.
                 View firstTask = mRecentsView.getPageAt(0);
-                int scrollForFirstTask = mRecentsView.getScrollForPage(0);
-                int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
-                synchronized (mTargetRect) {
-                    mTargetRect.set(mInitialTargetRect);
-                    Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
-                    float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
-                    float offsetY = mRecentsView.getTranslationY();
-                    mTargetRect.offset(offsetX, offsetY);
+                // The first task may be null if we are swiping up from a task that does not
+                // appear in the list (ie. the assistant)
+                if (firstTask != null) {
+                    int scrollForFirstTask = mRecentsView.getScrollForPage(0);
+                    int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
+                    mClipAnimationHelper.offsetTarget(firstTask.getScaleX(),
+                            offsetFromFirstTask + firstTask.getTranslationX(),
+                            mRecentsView.getTranslationY());
                 }
                 if (mRecentsAnimationWrapper.controller != null) {
-
                     // TODO: This logic is spartanic!
-                    mRecentsAnimationWrapper.controller.setAnimationTargetsBehindSystemBars(
-                            shift < 0.12f);
+                    boolean passedThreshold = shift > 0.12f;
+                    mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
+                    mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
                 }
             };
             if (Looper.getMainLooper() == Looper.myLooper()) {
@@ -552,13 +473,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             for (RemoteAnimationTargetCompat target : apps) {
                 if (target.mode == MODE_CLOSING) {
                     DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
+                    final Rect homeStackBounds;
+
                     if (minimizedHomeBounds != null) {
-                        mHomeStackBounds.set(minimizedHomeBounds);
+                        homeStackBounds = minimizedHomeBounds;
                         dp = dp.getMultiWindowProfile(mContext,
                                 new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
                         dp.updateInsets(homeContentInsets);
                     } else {
-                        mHomeStackBounds.set(new Rect(0, 0, dp.widthPx, dp.heightPx));
+                        homeStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
                         // TODO: Workaround for an existing issue where the home content insets are
                         // not valid immediately after rotation, just use the stable insets for now
                         Rect insets = new Rect();
@@ -566,18 +489,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         dp.updateInsets(insets);
                     }
 
-                    // Initialize the start and end animation bounds
-                    // TODO: Remove once platform is updated
-                    try {
-                        mSourceInsets.set(target.getContentInsets());
-                    } catch (Error e) {
-                        // TODO: Remove once platform is updated, use stable insets as fallback
-                        WindowManagerWrapper.getInstance().getStableInsets(mSourceInsets);
-                    }
-                    mSourceStackBounds.set(target.sourceContainerBounds);
-
+                    mClipAnimationHelper.updateSource(homeStackBounds, target);
                     initTransitionEndpoints(dp);
-                    break;
                 }
             }
         }
@@ -605,6 +518,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void notifyGestureStarted() {
         final T curActivity = mActivity;
         if (curActivity != null) {
+            // Once the gesture starts, we can no longer transition home through the button, so
+            // reset the force override of the activity visibility
+            mActivity.setForceInvisible(false);
             mActivityControlHelper.onQuickstepGestureStarted(
                     curActivity, mWasLauncherAlreadyVisible);
         }
@@ -720,6 +636,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         () -> setStateOnUiThread(STATE_SWITCH_TO_SCREENSHOT_COMPLETE));
             }
         };
+
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
                 TransactionCompat transaction = new TransactionCompat();
@@ -730,6 +647,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                                 mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
                         TaskView taskView = mRecentsView.updateThumbnail(app.taskId, thumbnail);
                         if (taskView != null) {
+                            taskView.setAlpha(1);
                             // Defer finishing the animation until the next launcher frame with the
                             // new thumbnail
                             mActivityControlHelper.executeOnNextDraw(mActivity, taskView,
@@ -749,10 +667,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+            mLauncherTransitionController = null;
+        }
         mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
+
+        mRecentsView.setSwipeDownShouldLaunchApp(true);
 
         reset();
     }

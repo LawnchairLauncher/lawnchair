@@ -18,10 +18,10 @@
     android:id="@+id/all_apps_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/all_apps_search_bar_field_height_and_margin"
+    android:layout_below="@id/search_container_all_apps"
     android:clipToPadding="false"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/all_apps_header_top_padding" >
+    android:paddingTop="@dimen/all_apps_header_top_padding"
+    android:orientation="vertical" >
 
     <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
         android:id="@+id/tabs"

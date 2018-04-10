@@ -65,15 +65,22 @@ public class Interpolators {
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
 
     /**
-     * Inversion of zInterpolate, compounded with an ease-out.
+     * Inversion of ZOOM_OUT, compounded with an ease-out.
      */
     public static final Interpolator ZOOM_IN = new Interpolator() {
+        @Override
+        public float getInterpolation(float v) {
+            return DEACCEL_3.getInterpolation(1 - ZOOM_OUT.getInterpolation(1 - v));
+        }
+    };
+
+    public static final Interpolator ZOOM_OUT = new Interpolator() {
 
         private static final float FOCAL_LENGTH = 0.35f;
 
         @Override
         public float getInterpolation(float v) {
-            return DEACCEL_3.getInterpolation(1 - zInterpolate(1 - v));
+            return zInterpolate(v);
         }
 
         /**

@@ -294,6 +294,7 @@ public class LauncherStateManager {
             // Only disable clipping if needed, otherwise leave it as previous value.
             mLauncher.getWorkspace().setClipChildren(false);
         }
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
     }
 
     private void onStateTransitionEnd(LauncherState state) {
@@ -312,6 +313,7 @@ public class LauncherStateManager {
         }
 
         UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
     }
 
     public void onWindowFocusChanged() {
@@ -354,7 +356,11 @@ public class LauncherStateManager {
      * starting another animation and may block some launcher interactions while running.
      */
     public void setCurrentAnimation(AnimatorSet anim) {
+        boolean reapplyNeeded = mConfig.mCurrentAnimation != null;
         cancelAnimation();
+        if (reapplyNeeded) {
+            reapplyState();
+        }
         mConfig.setAnimation(anim);
     }
 

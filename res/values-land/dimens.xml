@@ -31,9 +31,6 @@
     <dimen name="dynamic_grid_cell_layout_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_layout_bottom_padding">5.5dp</dimen>
 
-    <!-- Folders -->
-    <dimen name="folder_preview_padding">2dp</dimen>
-
     <!-- Hotseat -->
     <!-- Will be set to equal the hotseat icon size. -->
     <dimen name="dynamic_grid_hotseat_size">0dp</dimen>

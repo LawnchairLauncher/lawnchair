@@ -37,9 +37,13 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
 
     @Override
     protected int getSwipeDirection(MotionEvent ev) {
-        mFromState = NORMAL;
-        mToState = OVERVIEW;
         return SwipeDetector.DIRECTION_BOTH;
+    }
+
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() != isDragTowardPositive;
+        return draggingFromNav ? OVERVIEW : NORMAL;
     }
 
     @Override

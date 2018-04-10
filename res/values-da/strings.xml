@@ -40,13 +40,13 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Der blev ikke fundet nogen apps, som matcher \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Søg efter flere apps"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Underretninger"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Hold en genvej nede for at samle den op."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Tryk to gange, og hold en genvej nede for at samle den op eller bruge tilpassede handlinger."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Der er ikke mere plads på denne startskærm."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Der er ikke mere plads i bakken Foretrukne"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste med apps"</string>
-    <!-- no translation found for all_apps_button_personal_label (1315764287305224468) -->
-    <skip />
-    <!-- no translation found for all_apps_button_work_label (7270707118948892488) -->
-    <skip />
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste over personlige apps"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste over apps til arbejdet"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Startskærm"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Fjern"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Afinstaller"</string>
@@ -91,8 +91,7 @@
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Føj ikon til startskærmen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For nye apps"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Skift ikonform"</string>
-    <!-- no translation found for icon_shape_override_label_location (3841607380657692863) -->
-    <skip />
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"på startskærmen"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Brug systemstandarden"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kvadrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kvadrat med runde hjørner"</string>
@@ -140,4 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Alle arbejdsapps har et badge og beskyttes af din organisation. Flyt apps til din startskærm, så du nemmere kan få adgang til dem."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Administreret af din organisation"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Underretninger og apps er slået fra"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Luk"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Lukket"</string>
 </resources>

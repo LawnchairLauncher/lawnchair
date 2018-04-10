@@ -48,7 +48,16 @@
         It is set to true so that the activity can be started from command line -->
         <activity android:name="com.android.quickstep.RecentsActivity"
             android:exported="true"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:theme="@style/LauncherTheme"
+            android:screenOrientation="unspecified"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:resizeableActivity="true"
+            android:resumeWhilePausing="true"
+            android:taskAffinity="" />
 
         <!-- Content provider to settings search -->
         <provider

@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"തിരഞ്ഞെടുക്കുന്നതിന് കുറുക്കുവഴി സ്‌പർശിച്ച് പിടിക്കുക."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"കുറുക്കുവഴി തിരഞ്ഞെടുക്കാനോ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനോ 2 തവണ ടാപ്പ് ചെയ്‌ത് പിടിക്കുക."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ഈ ഹോം സ്‌ക്രീനിൽ ഒഴിവൊന്നുമില്ല."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഒഴിവൊന്നുമില്ല"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"അപ്ലിക്കേഷനുകളുടെ ലിസ്‌റ്റ്"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"നിങ്ങളുടെ സ്ഥാപനം നിയന്ത്രിക്കുന്നത്"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"അടയ്ക്കുക"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"അടച്ചു"</string>
 </resources>

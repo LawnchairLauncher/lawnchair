@@ -18,8 +18,9 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.HOTSEAT_EXTRA;
+import static com.android.launcher3.LauncherState.DRAG_HANDLE_INDICATOR;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.view.View;
@@ -30,7 +31,6 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.ViewScrim;
-import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -73,23 +73,26 @@ public class WorkspaceStateTransitionAnimation {
                     propertySetter);
         }
 
-        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
+        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
-                scaleAndTranslation[1], Interpolators.ZOOM_IN);
+                scaleAndTranslation[1], Interpolators.ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                scaleAndTranslation[2], Interpolators.ZOOM_IN);
+                scaleAndTranslation[2], Interpolators.ZOOM_OUT);
 
         int elements = state.getVisibleElements(mLauncher);
         float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-        float hotseatExtraAlpha = (elements & HOTSEAT_EXTRA) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
                 pageAlphaProvider.interpolator);
-        for (View hotseatExtraContent : UiFactory.getHotseatExtraContent(mLauncher.getHotseat())) {
-            propertySetter.setViewAlpha(hotseatExtraContent, hotseatExtraAlpha,
-                    pageAlphaProvider.interpolator);
-        }
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                 hotseatIconsAlpha, pageAlphaProvider.interpolator);
+
+        propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
+                (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0,
+                pageAlphaProvider.interpolator);
+
+        propertySetter.setViewAlpha(mLauncher.getDragHandleIndicator(),
+                (elements & DRAG_HANDLE_INDICATOR) != 0 ? 1 : 0,
+                pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,
@@ -109,7 +112,7 @@ public class WorkspaceStateTransitionAnimation {
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
         propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_IN);
+                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_OUT);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
                 pageAlpha, pageAlphaProvider.interpolator);
     }

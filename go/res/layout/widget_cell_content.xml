@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/widget_preview_label_vertical_padding"
+        android:paddingBottom="@dimen/widget_preview_label_vertical_padding"
+        android:paddingLeft="@dimen/widget_preview_label_horizontal_padding"
+        android:paddingRight="@dimen/widget_preview_label_horizontal_padding"
+        android:orientation="horizontal">
+
+        <!-- The name of the widget. -->
+        <TextView
+            android:id="@+id/widget_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp" />
+
+        <!-- The original dimensions of the widget (can't be the same text as above due to different
+             style. -->
+        <TextView
+            android:id="@+id/widget_dims"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:visibility="gone"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-condensed"
+            android:alpha="0.8" />
+    </LinearLayout>
+
+    <!-- The image of the widget. This view does not support padding. Any placement adjustment
+         should be done using margins. -->
+    <com.android.launcher3.widget.WidgetImageView
+        android:id="@+id/widget_preview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</merge>
