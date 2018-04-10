@@ -22,6 +22,7 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.systemui.shared.recents.utilities.Utilities
         .postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -66,6 +67,7 @@ import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -511,6 +513,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
         mRecentsAnimationWrapper.enableInputConsumer();
+        ActivityManagerWrapper.getInstance().closeSystemWindows(
+                CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     /**
