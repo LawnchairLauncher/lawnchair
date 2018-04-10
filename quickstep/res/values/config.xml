@@ -16,4 +16,5 @@
 <resources>
     <string name="task_overlay_factory_class" translatable="false"></string>
 
+    <string name="overview_callbacks_class" translatable="false"></string>
 </resources>
