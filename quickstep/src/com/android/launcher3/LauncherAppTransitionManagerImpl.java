@@ -206,6 +206,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             return false;
         }
 
+        Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
@@ -221,6 +222,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     mLauncher.getStateManager()
                             .createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
             controller.dispatchOnStart();
+            childStateAnimation = controller.getOriginalTarget();
             launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
@@ -237,7 +239,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         // Set the current animation first, before adding windowAnimEndListener. Setting current
         // animation adds some listeners which need to be called before windowAnimEndListener
         // (the ordering of listeners matter in this case).
-        mLauncher.getStateManager().setCurrentAnimation(target);
+        mLauncher.getStateManager().setCurrentAnimation(target, childStateAnimation);
         target.addListener(windowAnimEndListener);
         return true;
     }
