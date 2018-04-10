@@ -193,13 +193,7 @@ public class OverviewCommandHelper {
 
         @Override
         protected boolean handleCommand(long elapsedTime) {
-            RecentsView recents = mHelper.getVisibleRecentsView();
-            if (recents != null) {
-                recents.snapToTaskAfterNext();
-                return true;
-            } else {
-                return false;
-            }
+            return mHelper.getVisibleRecentsView() != null;
         }
     }
 
