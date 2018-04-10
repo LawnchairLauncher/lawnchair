@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'과(와) 일치하는 앱이 없습니다."</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"더 많은 앱 검색"</string>
     <string name="notifications_header" msgid="1404149926117359025">"알림"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"바로가기를 선택하려면 길게 터치하세요."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"바로가기를 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 동작을 사용하세요."</string>
     <string name="out_of_space" msgid="4691004494942118364">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"앱 목록"</string>

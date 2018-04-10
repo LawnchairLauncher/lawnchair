@@ -69,6 +69,7 @@ enum ItemType {
   EDITTEXT = 7;
   NOTIFICATION = 8;
   TASK = 9;         // Each page of Recents UI (QuickStep)
+  WEB_APP = 10;
 }
 
 // Used to define what type of container a Target would represent.

@@ -57,7 +57,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
         mArg1 = parcel.readInt();
         mObjectType = parcel.readInt();
-        mObject = parcel.readParcelable(null);
+        mObject = parcel.readParcelable(getClass().getClassLoader());
     }
 
     @Override

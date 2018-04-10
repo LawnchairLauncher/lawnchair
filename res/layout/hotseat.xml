@@ -18,15 +18,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/drag_indicator"
-        android:layout_width="@dimen/hotseat_drag_indicator_height"
-        android:layout_height="@dimen/hotseat_drag_indicator_height"
-        android:src="@drawable/ic_drag_indicator"
-        android:tint="?attr/workspaceTextColor"
-        android:scaleType="centerInside"
-        android:layout_gravity="top|center_horizontal"/>
-
     <com.android.launcher3.CellLayout
         android:id="@+id/layout"
         android:layout_width="wrap_content"

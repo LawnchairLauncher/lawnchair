@@ -38,9 +38,14 @@ public class QuickScrubController implements OnAlarmListener {
 
     public static final int QUICK_SCRUB_START_DURATION = 210;
 
+    /**
+     * Snap to a new page when crossing these thresholds. The first and last auto-advance.
+     */
+    private static final float[] QUICK_SCRUB_THRESHOLDS = new float[] {
+            0.05f, 0.35f, 0.65f, 0.95f
+    };
+
     private static final boolean ENABLE_AUTO_ADVANCE = true;
-    private static final int NUM_QUICK_SCRUB_SECTIONS = 3;
-    private static final long INITIAL_AUTO_ADVANCE_DELAY = 1000;
     private static final long AUTO_ADVANCE_DELAY = 500;
     private static final int QUICKSCRUB_SNAP_DURATION_PER_PAGE = 325;
     private static final int QUICKSCRUB_END_SNAP_DURATION_PER_PAGE = 60;
@@ -52,7 +57,6 @@ public class QuickScrubController implements OnAlarmListener {
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
     private boolean mStartedFromHome;
-    private boolean mHasAlarmRun;
     private boolean mFinishedTransitionToQuickScrub;
 
     public QuickScrubController(BaseActivity activity, RecentsView recentsView) {
@@ -68,7 +72,6 @@ public class QuickScrubController implements OnAlarmListener {
         mInQuickScrub = true;
         mStartedFromHome = startingFromHome;
         mQuickScrubSection = 0;
-        mHasAlarmRun = false;
         mFinishedTransitionToQuickScrub = false;
 
         snapToNextTaskIfAvailable();
@@ -105,16 +108,23 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void onQuickScrubProgress(float progress) {
-        int quickScrubSection = Math.round(progress * NUM_QUICK_SCRUB_SECTIONS);
+        int quickScrubSection = 0;
+        for (float threshold : QUICK_SCRUB_THRESHOLDS) {
+            if (progress < threshold) {
+                break;
+            }
+            quickScrubSection++;
+        }
         if (quickScrubSection != mQuickScrubSection) {
+            boolean cameFromAutoAdvance = mQuickScrubSection == QUICK_SCRUB_THRESHOLDS.length
+                    || mQuickScrubSection == 0;
             int pageToGoTo = mRecentsView.getNextPage() + quickScrubSection - mQuickScrubSection;
-            if (mFinishedTransitionToQuickScrub) {
+            if (mFinishedTransitionToQuickScrub && !cameFromAutoAdvance) {
                 goToPageWithHaptic(pageToGoTo);
             }
             if (ENABLE_AUTO_ADVANCE) {
-                if (quickScrubSection == NUM_QUICK_SCRUB_SECTIONS || quickScrubSection == 0) {
-                    mAutoAdvanceAlarm.setAlarm(mHasAlarmRun
-                            ? AUTO_ADVANCE_DELAY : INITIAL_AUTO_ADVANCE_DELAY);
+                if (quickScrubSection == QUICK_SCRUB_THRESHOLDS.length || quickScrubSection == 0) {
+                    mAutoAdvanceAlarm.setAlarm(AUTO_ADVANCE_DELAY);
                 } else {
                     mAutoAdvanceAlarm.cancelAlarm();
                 }
@@ -128,9 +138,8 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void snapToNextTaskIfAvailable() {
-        if (mInQuickScrub && mRecentsView.getChildCount() > 0) {
-            int toPage = mStartedFromHome ? 0 : mRecentsView.getNextPage() + 1;
-            mRecentsView.snapToPage(toPage, QUICK_SCRUB_START_DURATION);
+        if (!mStartedFromHome && mInQuickScrub && mRecentsView.getChildCount() > 0) {
+            mRecentsView.snapToPage(mRecentsView.getNextPage() + 1, QUICK_SCRUB_START_DURATION);
         }
     }
 
@@ -148,13 +157,12 @@ public class QuickScrubController implements OnAlarmListener {
     @Override
     public void onAlarm(Alarm alarm) {
         int currPage = mRecentsView.getNextPage();
-        if (mQuickScrubSection == NUM_QUICK_SCRUB_SECTIONS
+        if (mQuickScrubSection == QUICK_SCRUB_THRESHOLDS.length
                 && currPage < mRecentsView.getPageCount() - 1) {
             goToPageWithHaptic(currPage + 1);
         } else if (mQuickScrubSection == 0 && currPage > 0) {
             goToPageWithHaptic(currPage - 1);
         }
-        mHasAlarmRun = true;
         if (ENABLE_AUTO_ADVANCE) {
             mAutoAdvanceAlarm.setAlarm(AUTO_ADVANCE_DELAY);
         }

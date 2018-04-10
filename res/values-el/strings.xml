@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Δεν βρέθηκαν εφαρμογές αντιστοίχισης για \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Αναζήτηση περισσότερων εφαρμογών"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Αγγίξτε παρατεταμένα για επιλογή συντόμευσης."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Πατήσετε δύο φορές παρατεταμένα για επιλογή συντόμευσης ή χρήση προσαρμοσμένων ενεργειών."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>

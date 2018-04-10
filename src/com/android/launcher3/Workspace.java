@@ -349,6 +349,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public float getWallpaperOffsetForCenterPage() {
+        int pageScroll = getScrollForPage(getPageNearestToCenterOfScreen());
+        return mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
+    }
+
     public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
         cl.cellToRect(hCell, vCell, hSpan, vSpan, r);
@@ -441,12 +446,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
-    }
-
-    @Override
-    public void initParentViews(View parent) {
-        super.initParentViews(parent);
-        mPageIndicator.setAccessibilityDelegate(UiFactory.newPageIndicatorAccessibilityDelegate());
     }
 
     private void setupLayoutTransition() {
@@ -1149,30 +1148,37 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * The overlay scroll is being controlled locally, just update our overlay effect
      */
     public void onOverlayScrollChanged(float scroll) {
-
         if (Float.compare(scroll, 1f) == 0) {
             if (!mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
             }
             mOverlayShown = true;
+            // Not announcing the overlay page for accessibility since it announces itself.
         } else if (Float.compare(scroll, 0f) == 0) {
             if (mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+            } else if (Float.compare(mOverlayTranslation, 0f) != 0) {
+                // When arriving to 0 overscroll from non-zero overscroll, announce page for
+                // accessibility since default announcements were disabled while in overscroll
+                // state.
+                // Not doing this if mOverlayShown because in that case the accessibility service
+                // will announce the launcher window description upon regaining focus after
+                // switching from the overlay screen.
+                announcePageForAccessibility();
             }
             mOverlayShown = false;
             tryRunOverlayCallback();
         }
+
         float offset = 0f;
-        float slip = 0f;
 
         scroll = Math.max(scroll - offset, 0);
         scroll = Math.min(1, scroll / (1 - offset));
 
         float alpha = 1 - Interpolators.DEACCEL_3.getInterpolation(scroll);
         float transX = mLauncher.getDragLayer().getMeasuredWidth() * scroll;
-        transX *= 1 - slip;
 
         if (mIsRtl) {
             transX = -transX;
@@ -3351,8 +3357,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    protected String getPageIndicatorDescription() {
-        return getResources().getString(R.string.all_apps_button_label);
+    protected boolean canAnnouncePageDescription() {
+        // Disable announcements while overscrolling potentially to overlay screen because if we end
+        // up on the overlay screen, it will take care of announcing itself.
+        return Float.compare(mOverlayTranslation, 0f) == 0;
     }
 
     @Override

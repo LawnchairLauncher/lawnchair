@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશનો"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"એક શૉર્ટકટ ચૂંટવા માટે સ્પર્શ કરી રાખો."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"એક શૉર્ટકટ ચૂંટવા અથવા કોઈ કસ્ટમ ક્રિયાઓનો ઉપયોગ કરવા માટે બે વાર ટૅપ કરીને દબાવી રાખો."</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"દરેક કાર્ય ઍપ પાસે એક બૅજ હોય છે અને તમારી સંસ્થા દ્વારા તેને સુરક્ષિત રાખવામાં આવે છે. વધુ સરળ ઍક્સેસ માટે ઍપને તમારી હોમ સ્ક્રીન પર ખસેડો."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"તમારી સંસ્થા દ્વારા મેનેજ કરેલ"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"નોટિફિકેશન અને ઍપ બંધ છે"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"બંધ કરો"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"બંધ"</string>
 </resources>

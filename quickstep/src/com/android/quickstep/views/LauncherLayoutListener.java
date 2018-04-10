@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.views;
 
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Rect;
@@ -39,6 +40,10 @@ public class LauncherLayoutListener extends AbstractFloatingView
         super(launcher, null);
         mLauncher = launcher;
         setVisibility(INVISIBLE);
+
+        // For the duration of the gesture, lock the screen orientation to ensure that we do not
+        // rotate mid-quickscrub
+        launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
     }
 
     @Override

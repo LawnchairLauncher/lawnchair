@@ -50,7 +50,7 @@ public class FastOverviewState extends OverviewState {
     }
 
     @Override
-    public float[] getOverviewTranslationFactor(Launcher launcher) {
-        return new float[] {0f, 0.5f};
+    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+        return new float[] {1f, 0.5f};
     }
 }

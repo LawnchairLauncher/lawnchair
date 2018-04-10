@@ -37,7 +37,6 @@
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
-    <dimen name="hotseat_drag_indicator_height">24dp</dimen>
 
     <!-- Hotseat/all-apps scrim -->
     <dimen name="all_apps_scrim_radius">8dp</dimen>
@@ -96,12 +95,7 @@
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-    <!-- Derived dimens -->
-    <dimen name="all_apps_search_bar_field_height_and_margin">56dp</dimen>
-    <!-- all_apps_search_bar_field_height_and_margin + all_apps_header_tab_height -->
-    <dimen name="all_apps_tabs_top_margin">106dp</dimen>
-
- <!-- Widget tray -->
+<!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
 
@@ -143,8 +137,6 @@
     <dimen name="spring_loaded_panel_border">1dp</dimen>
 
 <!-- Folders -->
-    <!-- The size of the padding on the preview background drawable -->
-    <dimen name="folder_preview_padding">10dp</dimen>
     <dimen name="page_indicator_dot_size">8dp</dimen>
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
@@ -230,4 +222,5 @@
 
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_thumb_size">32dp</dimen>
 </resources>

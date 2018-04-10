@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Non se atoparon aplicacións que coincidan con \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Buscar máis aplicacións"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificacións"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Mantén premido un atallo para seleccionalo."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Toca dúas veces e mantén premido para seleccionar un atallo ou utiliza accións personalizadas."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Non hai máis espazo nesta pantalla de inicio."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Non hai máis espazo na bandexa de favoritos"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicacións"</string>
@@ -142,5 +140,5 @@
     <string name="work_mode_on_label" msgid="4781128097185272916">"Perfil xestionado pola túa organización"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"As notificacións e as aplicacións están desactivadas"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Pechar"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Pechado"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Pechada"</string>
 </resources>

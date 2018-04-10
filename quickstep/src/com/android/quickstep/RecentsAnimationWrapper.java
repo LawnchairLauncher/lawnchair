@@ -28,7 +28,9 @@ public class RecentsAnimationWrapper {
     public RecentsAnimationControllerCompat controller;
     public RemoteAnimationTargetCompat[] targets;
 
-    private boolean mInputConsumerEnabled;
+    private boolean mInputConsumerEnabled = false;
+    private boolean mBehindSystemBars = true;
+    private boolean mSplitScreenMinimized = false;
 
     public synchronized void setController(
             RecentsAnimationControllerCompat controller, RemoteAnimationTargetCompat[] targets) {
@@ -74,5 +76,43 @@ public class RecentsAnimationWrapper {
                 }
             });
         }
+    }
+
+    public void setAnimationTargetsBehindSystemBars(boolean behindSystemBars) {
+        if (mBehindSystemBars == behindSystemBars) {
+            return;
+        }
+        mBehindSystemBars = behindSystemBars;
+        BackgroundExecutor.get().submit(() -> {
+            synchronized (this) {
+                TraceHelper.partitionSection("RecentsController",
+                        "Setting behind system bars on " + controller);
+                if (controller != null) {
+                    controller.setAnimationTargetsBehindSystemBars(behindSystemBars);
+                }
+            }
+        });
+    }
+
+    /**
+     * NOTE: As a workaround for conflicting animations (Launcher animating the task leash, and
+     * SystemUI resizing the docked stack, which resizes the task), we currently only set the
+     * minimized mode, and not the inverse.
+     * TODO: Synchronize the minimize animation with the launcher animation
+     */
+    public void setSplitScreenMinimizedForTransaction(boolean minimized) {
+        if (mSplitScreenMinimized || !minimized) {
+            return;
+        }
+        mSplitScreenMinimized = minimized;
+        BackgroundExecutor.get().submit(() -> {
+            synchronized (this) {
+                TraceHelper.partitionSection("RecentsController",
+                        "Setting minimize dock on " + controller);
+                if (controller != null) {
+                    controller.setSplitScreenMinimized(minimized);
+                }
+            }
+        });
     }
 }

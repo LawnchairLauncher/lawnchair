@@ -39,6 +39,10 @@ public abstract class BaseActivity extends Activity {
     protected SystemUiController mSystemUiController;
 
     private boolean mStarted;
+    // When the recents animation is running, the visibility of the Launcher is managed by the
+    // animation
+    private boolean mForceInvisible;
+    private boolean mUserActive;
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
@@ -85,13 +89,30 @@ public abstract class BaseActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        mUserActive = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        mUserActive = false;
+        super.onUserLeaveHint();
+    }
+
+    @Override
     protected void onStop() {
         mStarted = false;
+        mForceInvisible = false;
         super.onStop();
     }
 
     public boolean isStarted() {
         return mStarted;
+    }
+
+    public boolean isUserActive() {
+        return mUserActive;
     }
 
     public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
@@ -106,6 +127,22 @@ public abstract class BaseActivity extends Activity {
         for (int i = mDPChangeListeners.size() - 1; i >= 0; i--) {
             mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
         }
+    }
+
+    /**
+     * Used to set the override visibility state, used only to handle the transition home with the
+     * recents animation.
+     * @see LauncherAppTransitionManagerImpl.getWallpaperOpenRunner()
+     */
+    public void setForceInvisible(boolean invisible) {
+        mForceInvisible = invisible;
+    }
+
+    /**
+     * @return Wether this activity should be considered invisible regardless of actual visibility.
+     */
+    public boolean isForceInvisible() {
+        return mForceInvisible;
     }
 
     /**

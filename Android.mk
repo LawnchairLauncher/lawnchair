@@ -125,6 +125,8 @@ LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/AndroidManifest.xml \
     $(LOCAL_PATH)/AndroidManifest-common.xml
 
+LOCAL_MANIFEST_FILE := go/AndroidManifest.xml
+
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 
 include $(BUILD_PACKAGE)

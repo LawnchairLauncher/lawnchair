@@ -20,7 +20,6 @@ import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_LEFT;
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_RIGHT;
 import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -47,7 +46,7 @@ public class DropTargetBar extends FrameLayout
     protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
 
     private final Runnable mFadeAnimationEndRunnable =
-            () -> updateVisibility(DropTargetBar.this, isAccessibilityEnabled(getContext()));
+            () -> updateVisibility(DropTargetBar.this);
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected boolean mDeferOnDragEnd;

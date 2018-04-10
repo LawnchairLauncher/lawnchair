@@ -144,7 +144,7 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
             mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                     Action.Direction.NONE, ContainerType.WORKSPACE,
                     mWorkspace.getCurrentPage());
-            OptionsPopupView.show(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+            OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
         }
     }
 }

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -34,7 +32,7 @@ public class PropertySetter {
     public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
         if (view != null) {
             view.setAlpha(alpha);
-            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
+            AlphaUpdateListener.updateVisibility(view);
         }
     }
 
@@ -64,8 +62,7 @@ public class PropertySetter {
                 return;
             }
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
-            anim.addListener(new AlphaUpdateListener(
-                    view, isAccessibilityEnabled(view.getContext())));
+            anim.addListener(new AlphaUpdateListener(view));
             anim.setDuration(mDuration).setInterpolator(interpolator);
             mStateAnimator.play(anim);
         }
