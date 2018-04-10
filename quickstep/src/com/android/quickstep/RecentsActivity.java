@@ -15,16 +15,29 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
+import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAnimationRunner;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.SystemUiController;
@@ -32,12 +45,18 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
+import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
+import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * A simple activity to show the recently launched tasks
  */
 public class RecentsActivity extends BaseDraggingActivity {
 
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private RecentsRootView mRecentsRootView;
     private FallbackRecentsView mFallbackRecentsView;
 
@@ -84,8 +103,49 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
-        return null;
+    public ActivityOptions getActivityLaunchOptions(final View v, boolean useDefaultLaunchOptions) {
+        if (useDefaultLaunchOptions || !(v instanceof TaskView)) {
+            return null;
+        }
+
+        final TaskView taskView = (TaskView) v;
+        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mUiHandler) {
+
+            @Override
+            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
+                return composeRecentsLaunchAnimator(taskView, targetCompats);
+            }
+        };
+        return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
+                runner, RECENTS_LAUNCH_DURATION,
+                RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION));
+    }
+
+    /**
+     * Composes the animations for a launch from the recents list if possible.
+     */
+    private AnimatorSet composeRecentsLaunchAnimator(TaskView taskView,
+            RemoteAnimationTargetCompat[] targets) {
+        AnimatorSet target = new AnimatorSet();
+        boolean activityClosing = taskIsATargetWithMode(targets, getTaskId(), MODE_CLOSING);
+        target.play(getRecentsWindowAnimator(taskView, !activityClosing, targets)
+                .setDuration(RECENTS_LAUNCH_DURATION));
+
+        // Found a visible recents task that matches the opening app, lets launch the app from there
+        if (activityClosing) {
+            Animator adjacentAnimation = mFallbackRecentsView
+                    .createAdjacentPageAnimForTaskLaunch(taskView);
+            adjacentAnimation.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+            adjacentAnimation.setDuration(RECENTS_LAUNCH_DURATION);
+            adjacentAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFallbackRecentsView.resetTaskVisuals();
+                }
+            });
+            target.play(adjacentAnimation);
+        }
+        return target;
     }
 
     @Override
@@ -95,6 +155,7 @@ public class RecentsActivity extends BaseDraggingActivity {
     protected void onStart() {
         super.onStart();
         UiFactory.onStart(this);
+        mFallbackRecentsView.resetTaskVisuals();
     }
 
     @Override
