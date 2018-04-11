@@ -79,6 +79,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * A list of recent tasks.
@@ -188,6 +189,14 @@ public abstract class RecentsView<T extends BaseActivity>
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
 
+    private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
+            (inMultiWindowMode) -> {
+        if (!inMultiWindowMode && mOverviewStateEnabled) {
+            // TODO: Re-enable layout transitions for addition of the unpinned task
+            reloadIfNeeded();
+        }
+    };
+
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
@@ -251,6 +260,7 @@ public abstract class RecentsView<T extends BaseActivity>
         super.onAttachedToWindow();
         updateTaskStackListenerState();
         Utilities.getPrefs(getContext()).registerOnSharedPreferenceChangeListener(this);
+        mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
     }
 
     @Override
@@ -258,6 +268,7 @@ public abstract class RecentsView<T extends BaseActivity>
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
         Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
     }
 
     @Override
