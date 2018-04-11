@@ -28,11 +28,13 @@ import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 
 /**
- * Touch controller from going from OVERVIEW to ALL_APPS
+ * Touch controller from going from OVERVIEW to ALL_APPS.
+ *
+ * This is used in landscape mode. It is also used in portrait mode for the fallback recents.
  */
-public class LandscapeStatesTouchController extends PortraitStatesTouchController {
+public class OverviewToAllAppsTouchController extends PortraitStatesTouchController {
 
-    public LandscapeStatesTouchController(Launcher l) {
+    public OverviewToAllAppsTouchController(Launcher l) {
         super(l);
     }
 
@@ -69,4 +71,5 @@ public class LandscapeStatesTouchController extends PortraitStatesTouchControlle
         }
         return fromState;
     }
+
 }
