@@ -41,10 +41,9 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.LauncherLayoutListener;
-import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -142,7 +141,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            LauncherRecentsView.getPageRect(dp, context, outRect);
+            LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
@@ -295,7 +294,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            FallbackRecentsView.getPageRect(dp, context, outRect);
+            LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
