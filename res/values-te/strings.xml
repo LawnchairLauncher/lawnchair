@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం వెతుకు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"షార్ట్‌కట్‌ని ఎంచుకోవడం కోసం నొక్కి, పట్టుకోండి."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"రెండుసార్లు నొక్కి, పట్టుకోవడం ద్వారా షార్ట్‌కట్‌ని ఎంచుకోండి లేదా అనుకూల చర్యలను ఉపయోగించండి."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"అనువర్తనాల జాబితా"</string>
@@ -141,8 +139,6 @@
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ప్రతి కార్యాలయ యాప్‌కు బ్యాడ్జ్‌ ఉంది మరియు మీ సంస్థ ద్వారా సురక్షితంగా ఉంచబడుతుంది. సులభ యాక్సెస్ కోసం యాప్‌లను మీ హోమ్ స్క్రీన్‌కి తరలించండి."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"మీ సంస్థ ద్వారా నిర్వహించబడతాయి"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"నోటిఫికేషన్‌లు మరియు యాప్‌లు ఆఫ్ చేయబడ్డాయి"</string>
-    <!-- no translation found for bottom_work_tab_user_education_close_button (4224492243977802135) -->
-    <skip />
-    <!-- no translation found for bottom_work_tab_user_education_closed (1098340939861869465) -->
-    <skip />
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"మూసివేయి"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"మూసివేయబడింది"</string>
 </resources>

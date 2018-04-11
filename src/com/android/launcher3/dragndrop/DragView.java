@@ -46,6 +46,7 @@ import android.view.View;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
@@ -68,6 +69,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 public class DragView extends View {
     private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
@@ -364,7 +367,10 @@ public class DragView extends View {
     private Drawable getBadge(ItemInfo info, LauncherAppState appState, Object obj) {
         int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            if (info.id == ItemInfo.NO_ID || !(obj instanceof ShortcutInfoCompat)) {
+            boolean iconBadged = (info instanceof ItemInfoWithIcon)
+                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
+            if ((info.id == ItemInfo.NO_ID && !iconBadged)
+                    || !(obj instanceof ShortcutInfoCompat)) {
                 // The item is not yet added on home screen.
                 return new FixedSizeEmptyDrawable(iconSize);
             }

@@ -79,8 +79,8 @@ public class RecentsAnimationInterpolator {
         Rect finalScaledTaskInsets = new Rect(taskInsets);
         Utilities.scaleRect(finalScaledTaskInsets, mFinalTaskScale);
         mTargetTask = new Rect(mInsetWindow);
-        mTargetTask.offsetTo(window.top + insets.top - finalScaledTaskInsets.top,
-                window.left + insets.left - finalScaledTaskInsets.left);
+        mTargetTask.offsetTo(window.left + insets.left - finalScaledTaskInsets.left,
+                window.top + insets.top - finalScaledTaskInsets.top);
 
         float initialWinScale = 1f / mFinalTaskScale;
         Rect scaledWindow = new Rect(mInsetWindow);

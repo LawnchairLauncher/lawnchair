@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.graphics.IconNormalizer;
 
 public class DeviceProfile {
 
@@ -40,7 +41,7 @@ public class DeviceProfile {
     public final boolean transposeLayoutWithOrientation;
 
     // Device properties in current orientation
-    private final boolean isLandscape;
+    public final boolean isLandscape;
     public final boolean isMultiWindowMode;
 
     public final int widthPx;
@@ -81,9 +82,8 @@ public class DeviceProfile {
     public int workspaceCellPaddingXPx;
 
     // Folder
-    public int folderBackgroundOffset;
     public int folderIconSizePx;
-    public int folderIconPreviewPadding;
+    public int folderIconOffsetYPx;
 
     // Folder cell
     public int folderCellWidthPx;
@@ -117,6 +117,7 @@ public class DeviceProfile {
     // Insets
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
+    private final Rect mHotseatPadding = new Rect();
 
     // Icon badges
     public BadgeRenderer mBadgeRenderer;
@@ -339,9 +340,8 @@ public class DeviceProfile {
         }
 
         // Folder icon
-        folderBackgroundOffset = -iconDrawablePaddingPx;
-        folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
-        folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
+        folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
+        folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
@@ -454,6 +454,33 @@ public class DeviceProfile {
                         paddingBottom);
             }
         }
+    }
+
+    public Rect getHotseatLayoutPadding() {
+        if (isVerticalBarLayout()) {
+            if (isSeascape()) {
+                mHotseatPadding.set(
+                        mInsets.left, mInsets.top, hotseatBarSidePaddingPx, mInsets.bottom);
+            } else {
+                mHotseatPadding.set(
+                        hotseatBarSidePaddingPx, mInsets.top, mInsets.right, mInsets.bottom);
+            }
+        } else {
+
+            // We want the edges of the hotseat to line up with the edges of the workspace, but the
+            // icons in the hotseat are a different size, and so don't line up perfectly. To account
+            // for this, we pad the left and right of the hotseat with half of the difference of a
+            // workspace cell vs a hotseat cell.
+            float workspaceCellWidth = (float) widthPx / inv.numColumns;
+            float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
+            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            mHotseatPadding.set(
+                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx,
+                    hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
+                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
+        }
+        return mHotseatPadding;
     }
 
     /**

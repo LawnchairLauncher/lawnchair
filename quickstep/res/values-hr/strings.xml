@@ -22,4 +22,8 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Podijeljeni zaslon"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Prikvači"</string>
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Prijeđite prstom od dna prema gore da biste promijenili aplikaciju"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Pregled"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"Nema nedavnih stavki"</string>
+    <!-- no translation found for accessibility_close_task (5354563209433803643) -->
+    <skip />
 </resources>

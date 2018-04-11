@@ -15,52 +15,42 @@
  */
 package com.android.launcher3.views;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import static com.android.launcher3.BaseDraggingActivity.INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION;
+import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Outline;
-import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.widget.Toast;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.RevealOutlineAnimation;
-import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
-import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.ColorScrim;
+import com.android.launcher3.popup.ArrowPopup;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Popup shown on long pressing an empty space in launcher
  */
-public class OptionsPopupView extends AbstractFloatingView
+public class OptionsPopupView extends ArrowPopup
         implements OnClickListener, OnLongClickListener {
 
-    private final float mOutlineRadius;
-    private final Launcher mLauncher;
-    private final PointF mTouchPoint = new PointF();
-
-    private final ColorScrim mScrim;
-
-    protected Animator mOpenCloseAnimator;
+    private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
+    private RectF mTargetRect;
 
     public OptionsPopupView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -68,31 +58,6 @@ public class OptionsPopupView extends AbstractFloatingView
 
     public OptionsPopupView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        mOutlineRadius = getResources().getDimension(R.dimen.bg_round_rect_radius);
-        setClipToOutline(true);
-        setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), mOutlineRadius);
-            }
-        });
-
-        mLauncher = Launcher.getLauncher(context);
-        mScrim = ColorScrim.createExtractedColorScrim(this);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        attachListeners(findViewById(R.id.wallpaper_button));
-        attachListeners(findViewById(R.id.widget_button));
-        attachListeners(findViewById(R.id.settings_button));
-    }
-
-    private void attachListeners(View view) {
-        view.setOnClickListener(this);
-        view.setOnLongClickListener(this);
     }
 
     @Override
@@ -106,20 +71,14 @@ public class OptionsPopupView extends AbstractFloatingView
     }
 
     private boolean handleViewClick(View view, int action) {
-        if (view.getId() == R.id.wallpaper_button) {
-            mLauncher.onClickWallpaperPicker(null);
-            logTap(action, ControlType.WALLPAPER_BUTTON);
-            close(true);
-            return true;
-        } else if (view.getId() == R.id.widget_button) {
-            logTap(action, ControlType.WIDGETS_BUTTON);
-            if (onWidgetsClicked(mLauncher)) {
-                close(true);
-                return true;
-            }
-        } else if (view.getId() == R.id.settings_button) {
-            startSettings(mLauncher);
-            logTap(action, ControlType.SETTINGS_BUTTON);
+        OptionItem item = mItemMap.get(view);
+        if (item == null) {
+            return false;
+        }
+        if (item.mControlTypeForLog > 0) {
+            logTap(action, item.mControlTypeForLog);
+        }
+        if (item.mClickListener.onLongClick(view)) {
             close(true);
             return true;
         }
@@ -143,63 +102,6 @@ public class OptionsPopupView extends AbstractFloatingView
     }
 
     @Override
-    protected void handleClose(boolean animate) {
-        if (animate) {
-            animateClose();
-        } else {
-            closeComplete();
-        }
-    }
-
-    protected void animateClose() {
-        if (!mIsOpen) {
-            return;
-        }
-        mIsOpen = false;
-
-        final AnimatorSet closeAnim = LauncherAnimUtils.createAnimatorSet();
-        closeAnim.setDuration(getResources().getInteger(R.integer.config_popupOpenCloseDuration));
-
-        // Rectangular reveal (reversed).
-        final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, true);
-        closeAnim.play(revealAnim);
-
-        Animator fadeOut = ObjectAnimator.ofFloat(this, ALPHA, 0);
-        fadeOut.setInterpolator(Interpolators.DEACCEL);
-        closeAnim.play(fadeOut);
-
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 0);
-        gradientAlpha.setInterpolator(Interpolators.DEACCEL);
-        closeAnim.play(gradientAlpha);
-
-        closeAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOpenCloseAnimator = null;
-                closeComplete();
-            }
-        });
-        if (mOpenCloseAnimator != null) {
-            mOpenCloseAnimator.cancel();
-        }
-        mOpenCloseAnimator = closeAnim;
-        closeAnim.start();
-    }
-
-    /**
-     * Closes the popup without animation.
-     */
-    private void closeComplete() {
-        if (mOpenCloseAnimator != null) {
-            mOpenCloseAnimator.cancel();
-            mOpenCloseAnimator = null;
-        }
-        mIsOpen = false;
-        mLauncher.getDragLayer().removeView(this);
-    }
-
-    @Override
     public void logActionCommand(int command) {
         // TODO:
     }
@@ -209,90 +111,49 @@ public class OptionsPopupView extends AbstractFloatingView
         return (type & TYPE_OPTIONS_POPUP) != 0;
     }
 
-    private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        Rect startRect = new Rect();
-        startRect.offset((int) (mTouchPoint.x - lp.x), (int) (mTouchPoint.y - lp.y));
-
-        Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        if (getOutlineProvider() instanceof RevealOutlineAnimation) {
-            ((RevealOutlineAnimation) getOutlineProvider()).getOutline(endRect);
-        }
-
-        return new RoundedRectRevealOutlineProvider
-                (mOutlineRadius, mOutlineRadius, startRect, endRect);
+    @Override
+    protected void getTargetObjectLocation(Rect outPos) {
+        mTargetRect.roundOut(outPos);
     }
 
-    private void animateOpen() {
-        mIsOpen = true;
-        final AnimatorSet openAnim = LauncherAnimUtils.createAnimatorSet();
-        openAnim.setDuration(getResources().getInteger(R.integer.config_popupOpenCloseDuration));
+    public static void show(Launcher launcher, RectF targetRect, List<OptionItem> items) {
+        OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
+                .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
+        popup.mTargetRect = targetRect;
 
-        final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, false);
-        openAnim.play(revealAnim);
-
-        Animator gradientAlpha = ObjectAnimator.ofFloat(mScrim, ColorScrim.PROGRESS, 1);
-        gradientAlpha.setInterpolator(Interpolators.ACCEL);
-        openAnim.play(gradientAlpha);
-
-        mOpenCloseAnimator = openAnim;
-
-        openAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOpenCloseAnimator = null;
-            }
-        });
-        openAnim.start();
+        for (OptionItem item : items) {
+            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            view.getIconView().setBackgroundResource(item.mIconRes);
+            view.getBubbleText().setText(item.mLabelRes);
+            view.setDividerVisibility(View.INVISIBLE);
+            view.setOnClickListener(popup);
+            view.setOnLongClickListener(popup);
+            popup.mItemMap.put(view, item);
+        }
+        popup.reorderAndShow(popup.getChildCount());
     }
 
-    public static void show(Launcher launcher, float x, float y) {
-        DragLayer dl = launcher.getDragLayer();
-        OptionsPopupView view = (OptionsPopupView) launcher.getLayoutInflater()
-                .inflate(R.layout.longpress_options_menu, dl, false);
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) view.getLayoutParams();
-
-        int maxWidth = dl.getWidth();
-        int maxHeight = dl.getHeight();
-        if (x <= 0 || y <= 0 || x >= maxWidth || y >= maxHeight) {
-            x = maxWidth / 2;
-            y = maxHeight / 2;
+    public static void showDefaultOptions(Launcher launcher, float x, float y) {
+        float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
+        if (x < 0 || y < 0) {
+            x = launcher.getDragLayer().getWidth() / 2;
+            y = launcher.getDragLayer().getHeight() / 2;
         }
-        view.mTouchPoint.set(x, y);
+        RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
 
-        int height = lp.height;
+        ArrayList<OptionItem> options = new ArrayList<>();
+        options.add(new OptionItem(R.string.wallpaper_button_text, R.drawable.ic_wallpaper,
+                ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
+        options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
+                ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
+        options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
+                ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
-        // Find a good width;
-        int childCount = view.getChildCount();
-        int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
-        int widthSpec = MeasureSpec.makeMeasureSpec(maxWidth / childCount, MeasureSpec.AT_MOST);
-        int maxChildWidth = 0;
-
-        for (int i = 0; i < childCount; i ++) {
-            View child = ((ViewGroup) view.getChildAt(i)).getChildAt(0);
-            child.measure(widthSpec, heightSpec);
-            maxChildWidth = Math.max(maxChildWidth, child.getMeasuredWidth());
-        }
-        Rect insets = dl.getInsets();
-        int margin = (int) (2 * view.getElevation());
-
-        int width = Math.min(maxWidth - insets.left - insets.right - 2 * margin,
-                maxChildWidth * childCount);
-        lp.width = width;
-
-        // Position is towards the finger
-        lp.customPosition = true;
-        lp.x = Utilities.boundToRange((int) (x - width / 2), insets.left + margin,
-                maxWidth - insets.right - width - margin);
-        lp.y = Utilities.boundToRange((int) (y - height / 2), insets.top + margin,
-                maxHeight - insets.bottom - height - margin);
-
-        view.animateOpen();
-        launcher.getDragLayer().addView(view);
+        show(launcher, target, options);
     }
 
-    public static boolean onWidgetsClicked(Launcher launcher) {
+    public static boolean onWidgetsClicked(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
         if (launcher.getPackageManager().isSafeMode()) {
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -302,9 +163,51 @@ public class OptionsPopupView extends AbstractFloatingView
         }
     }
 
-    public static void startSettings(Launcher launcher) {
+    public static boolean startSettings(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        return true;
+    }
+
+    /**
+     * Event handler for the wallpaper picker button that appears after a long press
+     * on the home screen.
+     */
+    public static boolean startWallpaperPicker(View v) {
+        Launcher launcher = Launcher.getLauncher(v.getContext());
+        if (!Utilities.isWallpaperAllowed(launcher)) {
+            Toast.makeText(launcher, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
+                .putExtra(EXTRA_WALLPAPER_OFFSET,
+                        launcher.getWorkspace().getWallpaperOffsetForCenterPage());
+
+        String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
+        if (!TextUtils.isEmpty(pickerPackage)) {
+            intent.setPackage(pickerPackage);
+        } else {
+            // If there is no target package, use the default intent chooser animation
+            intent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
+        }
+        return launcher.startActivitySafely(v, intent, null);
+    }
+
+    public static class OptionItem {
+
+        private final int mLabelRes;
+        private final int mIconRes;
+        private final int mControlTypeForLog;
+        private final OnLongClickListener mClickListener;
+
+        public OptionItem(int labelRes, int iconRes, int controlTypeForLog,
+                OnLongClickListener clickListener) {
+            mLabelRes = labelRes;
+            mIconRes = iconRes;
+            mControlTypeForLog = controlTypeForLog;
+            mClickListener = clickListener;
+        }
     }
 }

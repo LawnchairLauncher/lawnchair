@@ -15,13 +15,16 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
-
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.util.function.BiPredicate;
 
@@ -30,15 +33,33 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
 
     private final BiPredicate<Launcher, Boolean> mOnInitListener;
 
+    private RemoteAnimationProvider mRemoteAnimationProvider;
+
     public LauncherInitListener(BiPredicate<Launcher, Boolean> onInitListener) {
         mOnInitListener = onInitListener;
     }
 
     @Override
     protected boolean init(Launcher launcher, boolean alreadyOnHome) {
-        // For the duration of the gesture, lock the screen orientation to ensure that we do not
-        // rotate mid-quickscrub
-        launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+        if (mRemoteAnimationProvider != null) {
+            LauncherAppTransitionManagerImpl appTransitionManager =
+                    (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+
+            // Set a one-time animation provider. After the first call, this will get cleared.
+            // TODO: Probably also check the intended target id.
+            appTransitionManager.setRemoteAnimationProvider((targets) -> {
+
+                // On the first call clear the reference.
+                appTransitionManager.setRemoteAnimationProvider(null);
+                RemoteAnimationProvider provider = mRemoteAnimationProvider;
+                mRemoteAnimationProvider = null;
+
+                if (provider != null && launcher.getStateManager().getState().overviewUi) {
+                    return provider.createWindowAnimation(targets);
+                }
+                return null;
+            });
+        }
         return mOnInitListener.test(launcher, alreadyOnHome);
     }
 
@@ -49,6 +70,18 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
 
     @Override
     public void unregister() {
+        mRemoteAnimationProvider = null;
         clearReference();
+    }
+
+    @Override
+    public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
+            Context context, Handler handler, long duration) {
+        mRemoteAnimationProvider = animProvider;
+
+        register();
+
+        Bundle options = animProvider.toActivityOptions(handler, duration).toBundle();
+        context.startActivity(addToIntent(new Intent((intent))), options);
     }
 }

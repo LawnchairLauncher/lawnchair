@@ -20,7 +20,6 @@ import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -83,7 +82,7 @@ public class NotificationItemView {
 
     public void addGutter() {
         if (mGutter == null) {
-            mGutter = mContainer.inflateAndAdd(R.layout.notification_gutter);
+            mGutter = mContainer.inflateAndAdd(R.layout.notification_gutter, mContainer);
         }
     }
 

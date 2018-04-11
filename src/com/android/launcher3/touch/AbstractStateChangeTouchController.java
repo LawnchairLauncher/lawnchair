@@ -19,7 +19,6 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +30,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.PendingAnimation;
 
 /**
  * TouchController for handling state changes
@@ -54,10 +54,12 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     protected LauncherState mFromState;
     protected LauncherState mToState;
     protected AnimatorPlaybackController mCurrentAnimation;
+    protected PendingAnimation mPendingAnimation;
 
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
+    private float mDisplacementShift;
 
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
@@ -68,7 +70,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     /**
      * Initializes the {@code mFromState} and {@code mToState} and swipe direction to use for
-     * the detector. In can of disabling swipe, return 0.
+     * the detector. In case of disabling swipe, return 0.
      */
     protected abstract int getSwipeDirection(MotionEvent ev);
 
@@ -122,16 +124,40 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         return mLauncher.getAllAppsController().getShiftRange();
     }
 
+    /**
+     * Returns the state to go to from fromState given the drag direction. If there is no state in
+     * that direction, returns fromState.
+     */
+    protected abstract LauncherState getTargetState(LauncherState fromState,
+            boolean isDragTowardPositive);
+
     protected abstract float initCurrentAnimation();
+
+    private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
+        LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
+                : reachedToState ? mToState : mFromState;
+        LauncherState newToState = getTargetState(newFromState, isDragTowardPositive);
+
+        if (newFromState == mFromState && newToState == mToState || (newFromState == newToState)) {
+            return false;
+        }
+
+        mFromState = newFromState;
+        mToState = newToState;
+
+        mStartProgress = 0;
+        mProgressMultiplier = initCurrentAnimation();
+        mCurrentAnimation.getTarget().addListener(this);
+        mCurrentAnimation.dispatchOnStart();
+        return true;
+    }
 
     @Override
     public void onDragStart(boolean start) {
         if (mCurrentAnimation == null) {
-            mStartProgress = 0;
-            mProgressMultiplier = initCurrentAnimation();
-
-            mCurrentAnimation.getTarget().addListener(this);
-            mCurrentAnimation.dispatchOnStart();
+            mFromState = mToState = null;
+            reinitCurrentAnimation(false, mDetector.wasInitialTouchPositive());
+            mDisplacementShift = 0;
         } else {
             mCurrentAnimation.pause();
             mStartProgress = mCurrentAnimation.getProgressFraction();
@@ -140,8 +166,19 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     @Override
     public boolean onDrag(float displacement, float velocity) {
-        float deltaProgress = mProgressMultiplier * displacement;
-        updateProgress(deltaProgress + mStartProgress);
+        float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
+        float progress = deltaProgress + mStartProgress;
+        updateProgress(progress);
+        boolean isDragTowardPositive = (displacement - mDisplacementShift) < 0;
+        if (progress <= 0) {
+            if (reinitCurrentAnimation(false, isDragTowardPositive)) {
+                mDisplacementShift = displacement;
+            }
+        } else if (progress >= 1) {
+            if (reinitCurrentAnimation(true, isDragTowardPositive)) {
+                mDisplacementShift = displacement;
+            }
+        }
         return true;
     }
 
@@ -213,17 +250,26 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        if (targetState != mFromState) {
-            // Transition complete. log the action
-            mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
-                    getDirectionForLog(),
-                    mStartContainerType,
-                    mFromState.containerType,
-                    mToState.containerType,
-                    mLauncher.getWorkspace().getCurrentPage());
-        }
         clearState();
-        mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        boolean shouldGoToTargetState = true;
+        if (mPendingAnimation != null) {
+            boolean reachedTarget = mToState == targetState;
+            mPendingAnimation.finish(reachedTarget, logAction);
+            mPendingAnimation = null;
+            shouldGoToTargetState = !reachedTarget;
+        }
+        if (shouldGoToTargetState) {
+            if (targetState != mFromState) {
+                // Transition complete. log the action
+                mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                        getDirectionForLog(),
+                        mStartContainerType,
+                        mFromState.containerType,
+                        mToState.containerType,
+                        mLauncher.getWorkspace().getCurrentPage());
+            }
+            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        }
     }
 
     protected void clearState() {

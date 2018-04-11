@@ -23,10 +23,6 @@ import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FA
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.animation.FloatValueHolder;
-import android.support.animation.SpringAnimation;
-import android.support.animation.SpringForce;
-import android.support.annotation.NonNull;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -39,6 +35,7 @@ import android.view.ViewGroup.MarginLayoutParams;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -55,7 +52,7 @@ import java.util.ArrayList;
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
-        AllAppsStore.OnUpdateListener {
+        AllAppsStore.OnUpdateListener, Insettable {
 
 
     private final Launcher mLauncher;
@@ -64,7 +61,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     private AlphabeticalAppsList mApps;
     private AllAppsContainerView mAppsView;
-    private SpringAnimation mSpring;
 
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
@@ -91,9 +87,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         setHint(spanned);
-
-        // Note: This spring does nothing.
-        mSpring = new SpringAnimation(new FloatValueHolder()).setSpring(new SpringForce(0));
     }
 
     @Override
@@ -143,11 +136,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mAppsView = appsView;
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
-    }
-
-    @Override
-    public @NonNull SpringAnimation getSpringForFling() {
-        return mSpring;
     }
 
     @Override
@@ -206,22 +194,15 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void addOnScrollRangeChangeListener(final OnScrollRangeChangeListener listener) {
-        mLauncher.getHotseat().addOnLayoutChangeListener(new OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                DeviceProfile dp = mLauncher.getDeviceProfile();
-                if (!dp.isVerticalBarLayout()) {
-                    Rect insets = dp.getInsets();
-                    int hotseatBottom = bottom - dp.hotseatBarBottomPaddingPx - insets.bottom;
-                    MarginLayoutParams mlp = ((MarginLayoutParams) getLayoutParams());
-                    int myBot = mlp.topMargin + (int) getTranslationY() + mlp.height;
-                    listener.onScrollRangeChanged(hotseatBottom - myBot);
-                } else {
-                    listener.onScrollRangeChanged(bottom);
-                }
-            }
-        });
+    public void setInsets(Rect insets) {
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        if (dp.isVerticalBarLayout()) {
+            mLauncher.getAllAppsController().setScrollRangeDelta(0);
+        } else {
+            MarginLayoutParams mlp = ((MarginLayoutParams) getLayoutParams());
+            int myBot = mlp.topMargin + (int) getTranslationY() + mlp.height;
+            mLauncher.getAllAppsController().setScrollRangeDelta(
+                    dp.hotseatBarBottomPaddingPx + myBot);
+        }
     }
 }

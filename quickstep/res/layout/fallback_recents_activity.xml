@@ -13,13 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.RecentsRootView
+<com.android.quickstep.fallback.RecentsRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drag_layer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <com.android.quickstep.FallbackRecentsView
+    <com.android.quickstep.fallback.FallbackRecentsView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/overview_panel"
         android:layout_width="match_parent"
@@ -28,4 +29,4 @@
         android:clipToPadding="false"
         android:theme="@style/HomeScreenElementTheme" />
 
-</com.android.quickstep.RecentsRootView>
+</com.android.quickstep.fallback.RecentsRootView>

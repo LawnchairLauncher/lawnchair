@@ -22,12 +22,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ComposeShader;
 import android.graphics.LightingColorFilter;
-import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
@@ -36,6 +33,7 @@ import android.view.View;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -49,12 +47,15 @@ public class TaskThumbnailView extends View {
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
 
     private final float mCornerRadius;
-    private final float mFadeLength;
 
+    private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
     private final Paint mPaint = new Paint();
+    private final Paint mBackgroundPaint = new Paint();
 
     private final Matrix mMatrix = new Matrix();
+
+    private float mClipBottom = -1;
 
     private Task mTask;
     private ThumbnailData mThumbnailData;
@@ -73,9 +74,10 @@ public class TaskThumbnailView extends View {
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
-        mFadeLength = getResources().getDimension(R.dimen.task_fade_length);
         mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
+        mBackgroundPaint.setColor(Color.WHITE);
+        mActivity = BaseActivity.fromContext(context);
     }
 
     public void bind() {
@@ -87,7 +89,9 @@ public class TaskThumbnailView extends View {
      */
     public void setThumbnail(Task task, ThumbnailData thumbnailData) {
         mTask = task;
-        mPaint.setColor(task == null ? Color.BLACK : task.colorBackground | 0xFF000000);
+        int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
+        mPaint.setColor(color);
+        mBackgroundPaint.setColor(color);
 
         if (thumbnailData != null && thumbnailData.thumbnail != null) {
             Bitmap bm = thumbnailData.thumbnail;
@@ -122,14 +126,34 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
-                mCornerRadius, mCornerRadius, mPaint);
+        if (mTask == null) {
+            return;
+        }
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        if (mClipBottom > 0 && !mTask.isLocked) {
+            canvas.save();
+            canvas.clipRect(0, 0, width, mClipBottom);
+
+            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mPaint);
+            canvas.restore();
+            canvas.save();
+            canvas.clipRect(0, mClipBottom, width, height);
+            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius,
+                    mBackgroundPaint);
+            canvas.restore();
+        } else {
+            canvas.drawRoundRect(0, 0, width, height, mCornerRadius,
+                    mCornerRadius, mTask.isLocked ? mBackgroundPaint : mPaint);
+        }
     }
 
     private void updateThumbnailPaintFilter() {
         int mul = (int) (mDimAlpha * 255);
         if (mBitmapShader != null) {
-            mPaint.setColorFilter(getLightingColorFilter(mul));
+            LightingColorFilter filter = getLightingColorFilter(mul);
+            mPaint.setColorFilter(filter);
+            mBackgroundPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
             mPaint.setColor(Color.argb(255, mul, mul, mul));
@@ -138,13 +162,18 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
+        boolean rotate = false;
+        mClipBottom = -1;
         if (mBitmapShader != null && mThumbnailData != null) {
             float scale = mThumbnailData.scale;
+            Rect thumbnailInsets  = mThumbnailData.insets;
             float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
-                    (mThumbnailData.insets.left + mThumbnailData.insets.right) * scale;
+                    (thumbnailInsets.left + thumbnailInsets.right) * scale;
             float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
-                    (mThumbnailData.insets.top + mThumbnailData.insets.bottom) * scale;
+                    (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
+
             final float thumbnailScale;
+            final DeviceProfile profile = mActivity.getDeviceProfile();
 
             if (getMeasuredWidth() == 0) {
                 // If we haven't measured , skip the thumbnail drawing and only draw the background
@@ -152,49 +181,54 @@ public class TaskThumbnailView extends View {
                 thumbnailScale = 0f;
             } else {
                 final Configuration configuration =
-                        getContext().getApplicationContext().getResources().getConfiguration();
-                final DeviceProfile profile = BaseActivity.fromContext(getContext())
-                        .getDeviceProfile();
-                if (configuration.orientation == mThumbnailData.orientation) {
-                    // If we are in the same orientation as the screenshot, just scale it to the
-                    // width of the task view
-                    thumbnailScale = getMeasuredWidth() / thumbnailWidth;
-                } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    // Scale the landscape thumbnail up to app size, then scale that to the task
-                    // view size to match other portrait screenshots
-                    thumbnailScale = ((float) getMeasuredWidth() / profile.widthPx);
-                } else {
-                    // Otherwise, scale the screenshot to fit 1:1 in the current orientation
-                    thumbnailScale = 1;
-                }
+                        getContext().getResources().getConfiguration();
+                // Rotate the screenshot if not in multi-window mode
+                rotate = FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION &&
+                        configuration.orientation != mThumbnailData.orientation &&
+                        !mActivity.isInMultiWindowModeCompat();
+                // Scale the screenshot to always fit the width of the card.
+                thumbnailScale = rotate
+                        ? getMeasuredWidth() / thumbnailHeight
+                        : getMeasuredWidth() / thumbnailWidth;
             }
-            mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
-                    -mThumbnailData.insets.top * scale);
+
+            if (rotate) {
+                int rotationDir = profile.isVerticalBarLayout() && !profile.isSeascape() ? -1 : 1;
+                mMatrix.setRotate(90 * rotationDir);
+                int newLeftInset = rotationDir == 1 ? thumbnailInsets.bottom : thumbnailInsets.top;
+                int newTopInset = rotationDir == 1 ? thumbnailInsets.left : thumbnailInsets.right;
+                mMatrix.postTranslate(-newLeftInset * scale, -newTopInset * scale);
+                if (rotationDir == -1) {
+                    // Crop the right/bottom side of the screenshot rather than left/top
+                    float excessHeight = thumbnailWidth * thumbnailScale - getMeasuredHeight();
+                    mMatrix.postTranslate(0, -excessHeight);
+                }
+                // Move the screenshot to the thumbnail window (rotation moved it out).
+                if (rotationDir == 1) {
+                    mMatrix.postTranslate(mThumbnailData.thumbnail.getHeight(), 0);
+                } else {
+                    mMatrix.postTranslate(0, mThumbnailData.thumbnail.getWidth());
+                }
+            } else {
+                mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
+                        -mThumbnailData.insets.top * scale);
+            }
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
 
             float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
-            Shader shader = mBitmapShader;
-            if (bitmapHeight < getMeasuredHeight()) {
-                int color = mPaint.getColor();
-                LinearGradient fade = new LinearGradient(
-                        0, bitmapHeight - mFadeLength, 0, bitmapHeight,
-                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
-                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
+            if (Math.round(bitmapHeight) < getMeasuredHeight()) {
+                mClipBottom = bitmapHeight;
             }
-
-            float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
-            if (bitmapWidth < getMeasuredWidth()) {
-                int color = mPaint.getColor();
-                LinearGradient fade = new LinearGradient(
-                        bitmapWidth - mFadeLength, 0, bitmapWidth, 0,
-                        color & 0x00FFFFFF, color, Shader.TileMode.CLAMP);
-                shader = new ComposeShader(fade, shader, Mode.DST_OVER);
-            }
-            mPaint.setShader(shader);
+            mPaint.setShader(mBitmapShader);
         }
 
-        mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
+        if (rotate) {
+            // The overlay doesn't really work when the screenshot is rotated, so don't add it.
+            mOverlay.reset();
+        } else {
+            mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
+        }
         invalidate();
     }
 
