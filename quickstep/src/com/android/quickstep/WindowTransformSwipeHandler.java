@@ -31,6 +31,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -73,6 +74,7 @@ import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
+import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.StringJoiner;
@@ -645,24 +647,30 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
-                TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
                         // Update the screenshot of the task
                         ThumbnailData thumbnail =
                                 mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
-                        TaskView taskView = mRecentsView.updateThumbnail(app.taskId, thumbnail);
+                        final TaskView taskView =
+                                mRecentsView.updateThumbnail(app.taskId, thumbnail);
                         if (taskView != null) {
                             taskView.setAlpha(1);
+
                             // Defer finishing the animation until the next launcher frame with the
                             // new thumbnail
-                            mActivityControlHelper.executeOnNextDraw(mActivity, taskView,
-                                    finishTransitionRunnable);
-                            finishTransitionPosted = true;
+                            finishTransitionPosted = new WindowCallbacksCompat(taskView) {
+
+                                @Override
+                                public void onPostDraw(Canvas canvas) {
+                                    finishTransitionRunnable.run();
+                                    detach();
+                                }
+                            }.attach();
+                            break;
                         }
                     }
                 }
-                transaction.apply();
             }
         }
         if (!finishTransitionPosted) {
