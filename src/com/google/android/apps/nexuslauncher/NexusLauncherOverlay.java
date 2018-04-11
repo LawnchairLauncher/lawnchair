@@ -2,46 +2,42 @@ package com.google.android.apps.nexuslauncher;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.google.android.libraries.launcherclient.ISerializableScrollCallback;
-import com.google.android.libraries.launcherclient.GoogleNow;
+import com.google.android.libraries.gsa.launcherclient.ISerializableScrollCallback;
+import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializableScrollCallback {
-    private GoogleNow mNowConnection;
+    final static String PREF_PERSIST_FLAGS = "pref_persistent_flags";
+
+    private LauncherClient mClient;
+    final Launcher mLauncher;
     private Launcher.LauncherOverlayCallbacks mOverlayCallbacks;
-    private boolean mRestartOnStop;
+    boolean mFlagsChanged = false;
     private int mFlags;
-    private boolean mAttached;
-    private final Launcher mLauncher;
+    boolean mAttached = false;
 
     public NexusLauncherOverlay(Launcher launcher) {
-        mAttached = false;
         mLauncher = launcher;
-        mFlags = Utilities.getDevicePrefs(launcher).getInt("pref_persistent_flags", 0);
-        mRestartOnStop = false;
+        mFlags = Utilities.getDevicePrefs(launcher).getInt(PREF_PERSIST_FLAGS, 0);
     }
 
-    public void setNowConnection(GoogleNow nowConnection) {
-        mNowConnection = nowConnection;
-    }
-
-    public void stop() {
-        if (mRestartOnStop) {
-            mLauncher.recreate();
-        }
+    public void setClient(LauncherClient client) {
+        mClient = client;
     }
 
     @Override
     public void setPersistentFlags(int flags) {
-        flags |= (16 | 8);
+        flags = 8 | 16; //Always enable app drawer Google style search bar
+
+        flags &= (8 | 16);
         if (flags != mFlags) {
-            mRestartOnStop = true;
+            mFlagsChanged = true;
             mFlags = flags;
-            Utilities.getDevicePrefs(mLauncher).edit().putInt("pref_persistent_flags", flags).apply();
+            Utilities.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, flags).apply();
         }
     }
 
     @Override
-    public void onServiceStateChanged(boolean overlayAttached, boolean hotwordActive) {
+    public void onServiceStateChanged(boolean overlayAttached) {
         if (overlayAttached != mAttached) {
             mAttached = overlayAttached;
             mLauncher.setLauncherOverlay(overlayAttached ? this : null);
@@ -57,17 +53,17 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
 
     @Override
     public void onScrollChange(float progress, boolean rtl) {
-        mNowConnection.onScroll(progress);
+        mClient.setScroll(progress);
     }
 
     @Override
     public void onScrollInteractionBegin() {
-        mNowConnection.startScroll();
+        mClient.startScroll();
     }
 
     @Override
     public void onScrollInteractionEnd() {
-        mNowConnection.endScroll();
+        mClient.endScroll();
     }
 
     @Override

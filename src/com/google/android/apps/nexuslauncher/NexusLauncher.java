@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.view.Menu;
 import android.view.View;
@@ -23,7 +21,9 @@ import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
-import com.google.android.libraries.launcherclient.GoogleNow;
+import com.google.android.libraries.gsa.launcherclient.LauncherClient;
+import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
+import com.google.android.libraries.gsa.launcherclient.StaticInteger;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -31,27 +31,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NexusLauncher {
-    private final Launcher fB;
-    public final LauncherCallbacks fA;
-    private boolean fC;
-    private final LauncherExterns fD;
+    private final Launcher mLauncher;
+    final LauncherCallbacks mCallbacks;
+    private boolean mFeedRunning;
+    private final LauncherExterns mExterns;
     private boolean mRunning;
-    com.google.android.libraries.launcherclient.GoogleNow fy;
-    com.google.android.apps.nexuslauncher.NexusLauncherOverlay fz;
+    LauncherClient mClient;
+    private NexusLauncherOverlay mOverlay;
     private boolean mStarted;
     private final Bundle mUiInformation = new Bundle();
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
 
     public NexusLauncher(NexusLauncherActivity activity) {
-        fB = activity;
-        fD = activity;
-        fA = new NexusLauncherCallbacks();
-        fD.setLauncherCallbacks(fA);
-    }
-
-    private static GoogleNow.IntegerReference dZ(SharedPreferences sharedPreferences) {
-        return new GoogleNow.IntegerReference(
-                (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 0x2 | 0x4 | 0x8);
+        mLauncher = activity;
+        mExterns = activity;
+        mCallbacks = new NexusLauncherCallbacks();
+        mExterns.setLauncherCallbacks(mCallbacks);
     }
 
     class NexusLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, WallpaperColorInfo.OnChangeListener {
@@ -59,7 +54,7 @@ public class NexusLauncher {
 
         private ItemInfoUpdateReceiver getUpdateReceiver() {
             if (mItemInfoUpdateReceiver == null) {
-                mItemInfoUpdateReceiver = new ItemInfoUpdateReceiver(fB, fA);
+                mItemInfoUpdateReceiver = new ItemInfoUpdateReceiver(mLauncher, mCallbacks);
             }
             return mItemInfoUpdateReceiver;
         }
@@ -69,14 +64,14 @@ public class NexusLauncher {
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
-            SmartspaceController.get(fB).cX(s, printWriter);
+            SmartspaceController.get(mLauncher).cX(s, printWriter);
         }
 
         public void finishBindingItems(final boolean b) {
         }
 
         public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-            return ((CustomAppPredictor) fB.getUserEventDispatcher()).getPredictions();
+            return ((CustomAppPredictor) mLauncher.getUserEventDispatcher()).getPredictions();
         }
 
         @Override
@@ -100,22 +95,23 @@ public class NexusLauncher {
         }
 
         public void onAttachedToWindow() {
-            fy.onAttachedToWindow();
+            mClient.onAttachedToWindow();
         }
 
         public void onCreate(final Bundle bundle) {
-            SharedPreferences prefs = Utilities.getPrefs(fB);
-            fz = new com.google.android.apps.nexuslauncher.NexusLauncherOverlay(fB);
-            fy = new com.google.android.libraries.launcherclient.GoogleNow(fB, fz, dZ(prefs));
-            fz.setNowConnection(fy);
+            SharedPreferences prefs = Utilities.getPrefs(mLauncher);
+            mOverlay = new NexusLauncherOverlay(mLauncher);
+            mClient = new LauncherClient(mLauncher, mOverlay, new StaticInteger(
+                    (prefs.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8));
+            mOverlay.setClient(mClient);
 
             prefs.registerOnSharedPreferenceChangeListener(this);
 
-            SmartspaceController.get(fB).cW();
-            mSmartspace = fB.findViewById(R.id.search_container_workspace);
+            SmartspaceController.get(mLauncher).cW();
+            mSmartspace = mLauncher.findViewById(R.id.search_container_workspace);
 
-            mUiInformation.putInt("system_ui_visibility", fB.getWindow().getDecorView().getSystemUiVisibility());
-            WallpaperColorInfo instance = WallpaperColorInfo.getInstance(fB);
+            mUiInformation.putInt("system_ui_visibility", mLauncher.getWindow().getDecorView().getSystemUiVisibility());
+            WallpaperColorInfo instance = WallpaperColorInfo.getInstance(mLauncher);
             instance.addOnChangeListener(this);
             onExtractedColorsChanged(instance);
 
@@ -123,18 +119,45 @@ public class NexusLauncher {
         }
 
         public void onDestroy() {
-            fy.onDestroy();
-            Utilities.getPrefs(fB).unregisterOnSharedPreferenceChangeListener(this);
+            LauncherClient launcherClient = mClient;
+            if (!launcherClient.mDestroyed) {
+                launcherClient.mActivity.unregisterReceiver(launcherClient.googleInstallListener);
+            }
+
+            launcherClient.mDestroyed = true;
+            launcherClient.mBaseService.disconnect();
+
+            if (launcherClient.mOverlayCallback != null) {
+                launcherClient.mOverlayCallback.mClient = null;
+                launcherClient.mOverlayCallback.mWindowManager = null;
+                launcherClient.mOverlayCallback.mWindow = null;
+                launcherClient.mOverlayCallback = null;
+            }
+
+            LauncherClientService service = launcherClient.mLauncherService;
+            LauncherClient client = service.getClient();
+            if (client != null && client.equals(launcherClient)) {
+                service.mClient = null;
+                if (!launcherClient.mActivity.isChangingConfigurations()) {
+                    service.disconnect();
+                    if (LauncherClientService.sInstance == service) {
+                        LauncherClientService.sInstance = null;
+                    }
+                }
+            }
+
+            Utilities.getPrefs(mLauncher).unregisterOnSharedPreferenceChangeListener(this);
+            WallpaperColorInfo.getInstance(mLauncher).removeOnChangeListener(this);
 
             getUpdateReceiver().onDestroy();
         }
 
         public void onDetachedFromWindow() {
-            fy.onDetachedFromWindow();
+            mClient.onDetachedFromWindow();
         }
 
         public void onHomeIntent() {
-            fy.closeOverlay(fC);
+            mClient.hideOverlay(mFeedRunning);
         }
 
         public void onInteractionBegin() {
@@ -151,7 +174,7 @@ public class NexusLauncher {
 
         public void onPause() {
             mRunning = false;
-            fy.onPause();
+            mClient.onPause();
 
             if (mSmartspace != null) {
                 mSmartspace.onPause();
@@ -171,14 +194,10 @@ public class NexusLauncher {
         public void onResume() {
             mRunning = true;
             if (mStarted) {
-                fC = true;
+                mFeedRunning = true;
             }
 
-            try {
-                fy.onResume();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            mClient.onResume();
 
             if (mSmartspace != null) {
                 mSmartspace.onResume();
@@ -190,16 +209,18 @@ public class NexusLauncher {
 
         public void onStart() {
             mStarted = true;
-            fy.onStart();
+            mClient.onStart();
         }
 
         public void onStop() {
             mStarted = false;
-            fy.onStop();
+            mClient.onStop();
             if (!mRunning) {
-                fC = false;
+                mFeedRunning = false;
             }
-            fz.stop();
+            if (mOverlay.mFlagsChanged) {
+                mOverlay.mLauncher.recreate();
+            }
         }
 
         public void onTrimMemory(int n) {
@@ -225,7 +246,7 @@ public class NexusLauncher {
         }
 
         public void preOnCreate() {
-            DrawableFactory.get(fB);
+            DrawableFactory.get(mLauncher);
         }
 
         public void preOnResume() {
@@ -236,7 +257,7 @@ public class NexusLauncher {
         }
 
         public boolean startSearch(String s, boolean b, Bundle bundle) {
-            View gIcon = fB.findViewById(R.id.g_icon);
+            View gIcon = mLauncher.findViewById(R.id.g_icon);
             while (gIcon != null && !gIcon.isClickable()) {
                 if (gIcon.getParent() instanceof View) {
                     gIcon = (View)gIcon.getParent();
@@ -245,7 +266,7 @@ public class NexusLauncher {
                 }
             }
             if (gIcon != null && gIcon.performClick()) {
-                fD.clearTypedText();
+                mExterns.clearTypedText();
                 return true;
             }
             return false;
@@ -254,19 +275,27 @@ public class NexusLauncher {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (SettingsActivity.ENABLE_MINUS_ONE_PREF.equals(key)) {
-                fy.RB(dZ(sharedPreferences));
+                LauncherClient launcherClient = mClient;
+                StaticInteger i = new StaticInteger(
+                        (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8);
+                if (i.mData != launcherClient.mFlags) {
+                    launcherClient.mFlags = i.mData;
+                    if (launcherClient.mLayoutParams != null) {
+                        launcherClient.exchangeConfig();
+                    }
+                }
             }
         }
 
         @Override
         public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
-            int alpha = fB.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
+            int alpha = mLauncher.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
 
-            mUiInformation.putInt("background_color_hint", primaryColor(wallpaperColorInfo, fB, alpha));
-            mUiInformation.putInt("background_secondary_color_hint", secondaryColor(wallpaperColorInfo, fB, alpha));
-            mUiInformation.putBoolean("is_background_dark", Themes.getAttrBoolean(fB, R.attr.isMainColorDark));
+            mUiInformation.putInt("background_color_hint", primaryColor(wallpaperColorInfo, mLauncher, alpha));
+            mUiInformation.putInt("background_secondary_color_hint", secondaryColor(wallpaperColorInfo, mLauncher, alpha));
+            mUiInformation.putBoolean("is_background_dark", Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark));
 
-            fy.redraw(mUiInformation);
+            mClient.redraw(mUiInformation);
         }
     }
 
