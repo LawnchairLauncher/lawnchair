@@ -100,6 +100,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     public void dispatchInsets() {
+        mLauncher.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 

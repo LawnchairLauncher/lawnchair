@@ -84,6 +84,7 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
     }
 
     public void dispatchInsets() {
+        mActivity.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 }
