@@ -131,7 +131,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
             mStartContainerType = ContainerType.HOTSEAT;
         } else if (mLauncher.isInState(OVERVIEW)) {
-            directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
+            boolean canSwipeDownFromOverview = getTargetState(OVERVIEW, false) != OVERVIEW;
+            directionsToDetectScroll = canSwipeDownFromOverview ? SwipeDetector.DIRECTION_BOTH
+                    : SwipeDetector.DIRECTION_POSITIVE;
             mStartContainerType = ContainerType.TASKSWITCHER;
         } else {
             return 0;
