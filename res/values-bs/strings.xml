@@ -30,7 +30,7 @@
     <string name="home_screen" msgid="806512411299847073">"Početni ekran"</string>
     <string name="custom_actions" msgid="3747508247759093328">"Prilagođene akcije"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Dodirnite &amp; i držite da biste uzeli dodatak."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvaput dodirnite &amp; i držite da biste uzeli vidžet ili koristite prilagođene radnje."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dodirnite dvaput &amp; i držite da biste uzeli vidžet ili koristite prilagođene radnje."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Širina %1$d, visina %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Dodirnite i držite da postavite ručno"</string>
@@ -41,7 +41,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pretraži više aplikacija"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Obavještenja"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Dodirnite i držite da uzmete prečicu."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dvaput dodirnite i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dodirnite dvaput i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na ovom početnom ekranu nema više prostora."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora u ladici Omiljeno"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Spisak aplikacija"</string>
