@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.View.AccessibilityDelegate;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 public abstract class BaseActivity extends Activity {
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
+    private final ArrayList<MultiWindowModeChangedListener> mMultiWindowModeChangedListeners =
+            new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
@@ -101,6 +104,14 @@ public abstract class BaseActivity extends Activity {
     }
 
     @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        for (int i = mMultiWindowModeChangedListeners.size() - 1; i >= 0; i--) {
+            mMultiWindowModeChangedListeners.get(i).onMultiWindowModeChanged(isInMultiWindowMode);
+        }
+    }
+
+    @Override
     protected void onStop() {
         mStarted = false;
         mForceInvisible = false;
@@ -127,6 +138,14 @@ public abstract class BaseActivity extends Activity {
         for (int i = mDPChangeListeners.size() - 1; i >= 0; i--) {
             mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
         }
+    }
+
+    public void addMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
+        mMultiWindowModeChangedListeners.add(listener);
+    }
+
+    public void removeMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
+        mMultiWindowModeChangedListeners.remove(listener);
     }
 
     /**
@@ -156,5 +175,9 @@ public abstract class BaseActivity extends Activity {
             display.getSize(mwSize);
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
+    }
+
+    public interface MultiWindowModeChangedListener {
+        void onMultiWindowModeChanged(boolean isInMultiWindowMode);
     }
 }
