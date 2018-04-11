@@ -62,4 +62,8 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
         setBackground(insets.top == 0 ? null
                 : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
+
+    public void dispatchInsets() {
+        super.setInsets(mInsets);
+    }
 }

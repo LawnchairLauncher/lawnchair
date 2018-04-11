@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
+import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+
 import static com.android.launcher3.LauncherAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
@@ -26,11 +29,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -60,10 +66,13 @@ public class RecentsActivity extends BaseDraggingActivity {
     private RecentsRootView mRecentsRootView;
     private FallbackRecentsView mFallbackRecentsView;
 
+    private Configuration mOldConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mOldConfig = new Configuration(getResources().getConfiguration());
         // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
         // activity.
         LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
@@ -80,6 +89,42 @@ public class RecentsActivity extends BaseDraggingActivity {
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         RecentsActivityTracker.onRecentsActivityCreate(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        int diff = newConfig.diff(mOldConfig);
+        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
+            onHandleConfigChanged();
+        }
+        mOldConfig.setTo(newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        mOldConfig.setTo(newConfig);
+        onHandleConfigChanged();
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+    }
+
+    private void onHandleConfigChanged() {
+        mUserEventDispatcher = null;
+
+        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
+        // activity.
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        setDeviceProfile(appState != null
+                ? appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this)
+                : new InvariantDeviceProfile(this).getDeviceProfile(this));
+
+        AbstractFloatingView.closeOpenViews(this, true,
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
+        dispatchDeviceProfileChanged();
+
+        mRecentsRootView.setup();
+        mRecentsRootView.dispatchInsets();
+        mRecentsRootView.requestLayout();
     }
 
     @Override
