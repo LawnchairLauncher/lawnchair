@@ -98,7 +98,6 @@ public class RecentsActivity extends BaseDraggingActivity {
 
     @Override
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
-        mOldConfig.setTo(newConfig);
         onHandleConfigChanged();
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
     }
@@ -129,7 +128,8 @@ public class RecentsActivity extends BaseDraggingActivity {
             InvariantDeviceProfile idp = appState == null
                     ? new InvariantDeviceProfile(this) : appState.getInvariantDeviceProfile();
             DeviceProfile dp = idp.getDeviceProfile(this);
-            mDeviceProfile = dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize());
+            mDeviceProfile = mRecentsRootView == null ? dp.copy(this)
+                    : dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize());
         } else {
             // If we are reusing the Invariant device profile, make a copy.
             mDeviceProfile = appState == null

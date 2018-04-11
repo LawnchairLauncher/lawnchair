@@ -46,6 +46,7 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 
@@ -91,6 +92,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     @UiThread
     boolean switchToRecentsIfVisible();
+
+    Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target);
+
+    boolean shouldMinimizeSplitScreen();
 
     /**
      * @return {@code true} if recents activity should be started immediately on touchDown,
@@ -260,6 +265,16 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public boolean deferStartingActivity(int downHitTarget) {
             return downHitTarget == HIT_TARGET_BACK;
         }
+
+        @Override
+        public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+            return homeBounds;
+        }
+
+        @Override
+        public boolean shouldMinimizeSplitScreen() {
+            return true;
+        }
     }
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
@@ -376,6 +391,18 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public boolean deferStartingActivity(int downHitTarget) {
             // Always defer starting the activity when using fallback
             return true;
+        }
+
+        @Override
+        public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+            // TODO: Remove this once b/77875376 is fixed
+            return target.sourceContainerBounds;
+        }
+
+        @Override
+        public boolean shouldMinimizeSplitScreen() {
+            // TODO: Remove this once b/77875376 is fixed
+            return false;
         }
     }
 

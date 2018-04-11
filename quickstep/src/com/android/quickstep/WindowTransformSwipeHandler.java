@@ -459,7 +459,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     // TODO: This logic is spartanic!
                     boolean passedThreshold = shift > 0.12f;
                     mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
-                    mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
+                    if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
+                        mRecentsAnimationWrapper
+                                .setSplitScreenMinimizedForTransaction(passedThreshold);
+                    }
                 }
             };
             if (Looper.getMainLooper() == Looper.myLooper()) {
@@ -478,15 +481,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             for (RemoteAnimationTargetCompat target : apps) {
                 if (target.mode == MODE_CLOSING) {
                     DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
-                    final Rect homeStackBounds;
+                    final Rect overviewStackBounds;
 
                     if (minimizedHomeBounds != null) {
-                        homeStackBounds = minimizedHomeBounds;
+                        overviewStackBounds = mActivityControlHelper
+                                .getOverviewWindowBounds(minimizedHomeBounds, target);
                         dp = dp.getMultiWindowProfile(mContext,
                                 new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
                         dp.updateInsets(homeContentInsets);
                     } else {
-                        homeStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
+                        overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
                         // TODO: Workaround for an existing issue where the home content insets are
                         // not valid immediately after rotation, just use the stable insets for now
                         Rect insets = new Rect();
@@ -495,7 +499,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         dp.updateInsets(insets);
                     }
 
-                    mClipAnimationHelper.updateSource(homeStackBounds, target);
+                    mClipAnimationHelper.updateSource(overviewStackBounds, target);
                     initTransitionEndpoints(dp);
                 }
             }
