@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -81,7 +80,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -923,7 +921,9 @@ public class Launcher extends BaseDraggingActivity
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         // Setup the drag layer
-        mDragLayer.setup(mDragController);
+        Runnable setupDragLayer = () -> mDragLayer.setup(mDragController);
+        UiFactory.setOnTouchControllersChangedListener(this, setupDragLayer);
+        setupDragLayer.run();
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1326,6 +1326,8 @@ public class Launcher extends BaseDraggingActivity
 
         unregisterReceiver(mReceiver);
         mWorkspace.removeFolderListeners();
+
+        UiFactory.setOnTouchControllersChangedListener(this, null);
 
         // Stop callbacks from LauncherModel
         // It's possible to receive onDestroy after a new Launcher activity has

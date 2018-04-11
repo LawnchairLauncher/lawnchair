@@ -16,12 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -57,6 +56,10 @@ public class UiFactory {
                     new PortraitStatesTouchController(launcher),
                     new LauncherTaskViewcontroller(launcher)};
         }
+    }
+
+    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
+        OverviewInteractionState.getInstance(context).setOnSwipeUpSettingChangedListener(listener);
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
