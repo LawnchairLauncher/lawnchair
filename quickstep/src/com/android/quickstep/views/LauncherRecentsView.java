@@ -27,7 +27,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.AnyThread;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
@@ -130,10 +129,5 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
-    }
-
-    @AnyThread
-    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
-        LayoutUtils.calculateLauncherTaskSize(context, grid, outRect);
     }
 }

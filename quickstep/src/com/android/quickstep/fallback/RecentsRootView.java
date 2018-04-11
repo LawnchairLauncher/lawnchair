@@ -17,6 +17,7 @@ package com.android.quickstep.fallback;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
@@ -31,6 +32,8 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
     private final RecentsActivity mActivity;
 
+    private final Point mLastKnownSize = new Point(10, 10);
+
     public RecentsRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivity = (RecentsActivity) BaseActivity.fromContext(context);
@@ -39,8 +42,25 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
                 | SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
+    public Point getLastKnownSize() {
+        return mLastKnownSize;
+    }
+
     public void setup() {
         mControllers = new TouchController[] { new RecentsTaskController(mActivity) };
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // Check size changes before the actual measure, to avoid multiple measure calls.
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        if (mLastKnownSize.x != width || mLastKnownSize.y != height) {
+            mLastKnownSize.set(width, height);
+            mActivity.onRootViewSizeChanged();
+        }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @TargetApi(23)

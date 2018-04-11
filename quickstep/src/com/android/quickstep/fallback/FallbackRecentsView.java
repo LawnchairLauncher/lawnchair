@@ -64,11 +64,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
-        LayoutUtils.calculateTaskSize(getContext(), dp, 0, outRect);
+        LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
     }
 
-    @AnyThread
-    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
-        LayoutUtils.calculateTaskSize(context, grid, 0, outRect);
-    }
 }

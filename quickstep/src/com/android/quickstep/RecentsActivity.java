@@ -29,7 +29,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +37,7 @@ import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAnimationRunner;
@@ -73,12 +73,7 @@ public class RecentsActivity extends BaseDraggingActivity {
         super.onCreate(savedInstanceState);
 
         mOldConfig = new Configuration(getResources().getConfiguration());
-        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
-        // activity.
-        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        setDeviceProfile(appState != null
-                ? appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this)
-                : new InvariantDeviceProfile(this).getDeviceProfile(this));
+        initDeviceProfile();
 
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
@@ -108,15 +103,15 @@ public class RecentsActivity extends BaseDraggingActivity {
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
     }
 
+    public void onRootViewSizeChanged() {
+        if (isInMultiWindowModeCompat()) {
+            onHandleConfigChanged();
+        }
+    }
+
     private void onHandleConfigChanged() {
         mUserEventDispatcher = null;
-
-        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
-        // activity.
-        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        setDeviceProfile(appState != null
-                ? appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this)
-                : new InvariantDeviceProfile(this).getDeviceProfile(this));
+        initDeviceProfile();
 
         AbstractFloatingView.closeOpenViews(this, true,
                 AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
@@ -124,7 +119,23 @@ public class RecentsActivity extends BaseDraggingActivity {
 
         mRecentsRootView.setup();
         mRecentsRootView.dispatchInsets();
-        mRecentsRootView.requestLayout();
+    }
+
+    private void initDeviceProfile() {
+        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
+        // activity.
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (isInMultiWindowModeCompat()) {
+            InvariantDeviceProfile idp = appState == null
+                    ? new InvariantDeviceProfile(this) : appState.getInvariantDeviceProfile();
+            DeviceProfile dp = idp.getDeviceProfile(this);
+            mDeviceProfile = dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize());
+        } else {
+            // If we are reusing the Invariant device profile, make a copy.
+            mDeviceProfile = appState == null
+                    ? new InvariantDeviceProfile(this).getDeviceProfile(this)
+                    : appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this);
+        }
     }
 
     @Override
