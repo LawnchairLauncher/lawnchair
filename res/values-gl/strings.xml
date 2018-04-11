@@ -79,7 +79,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Cartafol: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de inicio"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración da pantalla de Inicio"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Función desactivada polo administrador"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Puntos de notificacións"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activado"</string>

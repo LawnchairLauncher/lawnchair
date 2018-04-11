@@ -24,6 +24,5 @@
     <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Stryg opad fra bunden for at skifte apps"</string>
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Oversigt"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Ingen nye elementer"</string>
-    <!-- no translation found for accessibility_close_task (5354563209433803643) -->
-    <skip />
+    <string name="accessibility_close_task" msgid="5354563209433803643">"Luk"</string>
 </resources>
