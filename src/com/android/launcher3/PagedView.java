@@ -695,7 +695,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
         int page = indexToPage(indexOfChild(child));
         if (page != mCurrentPage || !mScroller.isFinished()) {
-            snapToPage(page);
+            if (immediate) {
+                setCurrentPage(page);
+            } else {
+                snapToPage(page);
+            }
             return true;
         }
         return false;
