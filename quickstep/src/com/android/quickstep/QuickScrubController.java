@@ -138,17 +138,26 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void snapToNextTaskIfAvailable() {
-        if (!mStartedFromHome && mInQuickScrub && mRecentsView.getChildCount() > 0) {
-            mRecentsView.snapToPage(mRecentsView.getNextPage() + 1, QUICK_SCRUB_START_DURATION);
+        if (mInQuickScrub && mRecentsView.getChildCount() > 0) {
+            int pageToGoTo = mStartedFromHome ? 0 : mRecentsView.getNextPage() + 1;
+            goToPageWithHaptic(pageToGoTo, QUICK_SCRUB_START_DURATION, true /* forceHaptic */);
         }
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {
+        goToPageWithHaptic(pageToGoTo, -1 /* overrideDuration */, false /* forceHaptic */);
+    }
+
+    private void goToPageWithHaptic(int pageToGoTo, int overrideDuration, boolean forceHaptic) {
         pageToGoTo = Utilities.boundToRange(pageToGoTo, 0, mRecentsView.getPageCount() - 1);
-        if (pageToGoTo != mRecentsView.getNextPage()) {
-            int duration = Math.abs(pageToGoTo - mRecentsView.getNextPage())
+        boolean snappingToPage = pageToGoTo != mRecentsView.getNextPage();
+        if (snappingToPage) {
+            int duration = overrideDuration > -1 ? overrideDuration
+                    : Math.abs(pageToGoTo - mRecentsView.getNextPage())
                             * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
             mRecentsView.snapToPage(pageToGoTo, duration);
+        }
+        if (snappingToPage || forceHaptic) {
             mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
