@@ -121,7 +121,7 @@ public class LauncherStateManager {
      * @see #goToState(LauncherState, boolean, Runnable)
      */
     public void goToState(LauncherState state) {
-        goToState(state, mLauncher.isStarted() /* animated */, 0, null);
+        goToState(state, !mLauncher.isForceInvisible() && mLauncher.isStarted() /* animated */);
     }
 
     /**

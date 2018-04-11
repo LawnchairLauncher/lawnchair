@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
+import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -119,13 +121,24 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
     };
 
+    private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            mLauncher.addForceInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS);
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            mLauncher.clearForceInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS);
+        }
+    };
+
     public LauncherAppTransitionManagerImpl(Context context) {
         mLauncher = Launcher.getLauncher(context);
         mDragLayer = mLauncher.getDragLayer();
         mHandler = new Handler(Looper.getMainLooper());
         mIsRtl = Utilities.isRtl(mLauncher.getResources());
         mDeviceProfile = mLauncher.getDeviceProfile();
-
 
         Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
@@ -147,38 +160,40 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     @Override
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
-            try {
-                RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler) {
+            RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler) {
 
-                    @Override
-                    public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                        AnimatorSet anim = new AnimatorSet();
+                @Override
+                public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
+                    AnimatorSet anim = new AnimatorSet();
 
+                    boolean launcherClosing =
+                            launcherIsATargetWithMode(targetCompats, MODE_CLOSING);
 
-                        if (!composeRecentsLaunchAnimator(v, targetCompats, anim)) {
-                            // Set the state animation first so that any state listeners are called
-                            // before our internal listeners.
-                            mLauncher.getStateManager().setCurrentAnimation(anim);
+                    if (!composeRecentsLaunchAnimator(v, targetCompats, anim)) {
+                        // Set the state animation first so that any state listeners are called
+                        // before our internal listeners.
+                        mLauncher.getStateManager().setCurrentAnimation(anim);
 
-                            anim.play(getIconAnimator(v));
-                            if (launcherIsATargetWithMode(targetCompats, MODE_CLOSING)) {
-                                anim.play(getLauncherContentAnimator(false /* show */));
-                            }
-                            anim.play(getWindowAnimators(v, targetCompats));
+                        anim.play(getIconAnimator(v));
+                        if (launcherClosing) {
+                            anim.play(getLauncherContentAnimator(false /* show */));
                         }
-                        return anim;
+                        anim.play(getWindowAnimators(v, targetCompats));
                     }
-                };
 
-                int duration = findTaskViewToLaunch(launcher, v, null) != null
-                        ? RECENTS_LAUNCH_DURATION : APP_LAUNCH_DURATION;
-                int statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION;
-                return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
-                        runner, duration, statusBarTransitionDelay));
-            } catch (NoClassDefFoundError e) {
-                // Gracefully fall back to default launch options if the user's platform doesn't
-                // have the latest changes.
-            }
+                    if (launcherClosing) {
+                        anim.addListener(mForceInvisibleListener);
+                    }
+
+                    return anim;
+                }
+            };
+
+            int duration = findTaskViewToLaunch(launcher, v, null) != null
+                    ? RECENTS_LAUNCH_DURATION : APP_LAUNCH_DURATION;
+            int statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION;
+            return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
+                    runner, duration, statusBarTransitionDelay));
         }
         return getDefaultActivityLaunchOptions(launcher, v);
     }
@@ -521,19 +536,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private void registerRemoteAnimations() {
         // Unregister this
         if (hasControlRemoteAppTransitionPermission()) {
-            try {
-                RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
-                definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
-                        WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
-                        new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(),
-                                CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+            RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
+            definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
+                    WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
+                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(),
+                            CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
 
-//      TODO: App controlled transition for unlock to home TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER
-
-                new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
-            } catch (NoClassDefFoundError e) {
-                // Gracefully fall back if the user's platform doesn't have the latest changes
-            }
+            // TODO: Transition for unlock to home TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER
+            new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
         }
     }
 
@@ -575,7 +585,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     }
                 }
 
-                mLauncher.setForceInvisible(false);
+                mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
                 return anim;
             }
         };

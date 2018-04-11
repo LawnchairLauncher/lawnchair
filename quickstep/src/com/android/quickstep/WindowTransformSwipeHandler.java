@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
@@ -38,6 +39,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.AnyThread;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -46,6 +48,7 @@ import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -208,7 +211,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
-                this::notifyGestureStarted);
+                this::onGestureStartedWithLauncher);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
                         | STATE_GESTURE_CANCELLED,
                 this::resetStateForAnimationCancel);
@@ -290,7 +293,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivity = activity;
         // Override the visibility of the activity until the gesture actually starts and we swipe
         // up, or until we transition home and the home animation is composed
-        mActivity.setForceInvisible(true);
+        if (alreadyOnHome) {
+            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        } else {
+            mActivity.addForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        }
 
         mRecentsView = activity.getOverviewPanel();
         mQuickScrubController = mRecentsView.getQuickScrubController();
@@ -317,11 +324,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
-            mLauncherTransitionController = mActivityControlHelper
-                    .createControllerForVisibleActivity(activity);
-            mLauncherTransitionController.dispatchOnStart();
-            mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
-
             mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
         } else {
             TraceHelper.beginSection("WTS-init");
@@ -420,6 +422,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (!mWasLauncherAlreadyVisible) {
             mLauncherTransitionController = mActivityControlHelper
                     .createControllerForHiddenActivity(mActivity, mTransitionDragLength);
+            mLauncherTransitionController.dispatchOnStart();
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
         }
     }
@@ -515,7 +518,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void onGestureStarted() {
-        notifyGestureStarted();
+        notifyGestureStartedAsync();
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
         mRecentsAnimationWrapper.enableInputConsumer();
@@ -527,14 +530,26 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
      * Notifies the launcher that the swipe gesture has started. This can be called multiple times
      * on both background and UI threads
      */
-    private void notifyGestureStarted() {
+    @AnyThread
+    private void notifyGestureStartedAsync() {
         final T curActivity = mActivity;
         if (curActivity != null) {
             // Once the gesture starts, we can no longer transition home through the button, so
             // reset the force override of the activity visibility
-            mActivity.setForceInvisible(false);
+            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
             mActivityControlHelper.onQuickstepGestureStarted(
                     curActivity, mWasLauncherAlreadyVisible);
+        }
+    }
+
+    private void onGestureStartedWithLauncher() {
+        notifyGestureStartedAsync();
+
+        if (mWasLauncherAlreadyVisible) {
+            mLauncherTransitionController = mActivityControlHelper
+                    .createControllerForVisibleActivity(mActivity);
+            mLauncherTransitionController.dispatchOnStart();
+            mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
         }
     }
 

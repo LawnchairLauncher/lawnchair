@@ -16,12 +16,15 @@
 
 package com.android.launcher3;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.support.annotation.IntDef;
 import android.view.Display;
 import android.view.View.AccessibilityDelegate;
 
@@ -29,9 +32,21 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.SystemUiController;
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
 public abstract class BaseActivity extends Activity {
+
+    public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
+    public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
+    public static final int INVISIBLE_ALL =
+            INVISIBLE_BY_STATE_HANDLER | INVISIBLE_BY_APP_TRANSITIONS;
+
+    @Retention(SOURCE)
+    @IntDef(
+            flag = true,
+            value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS})
+    public @interface InvisibilityFlags{}
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
     private final ArrayList<MultiWindowModeChangedListener> mMultiWindowModeChangedListeners =
@@ -42,10 +57,11 @@ public abstract class BaseActivity extends Activity {
     protected SystemUiController mSystemUiController;
 
     private boolean mStarted;
+    private boolean mUserActive;
+
     // When the recents animation is running, the visibility of the Launcher is managed by the
     // animation
-    private boolean mForceInvisible;
-    private boolean mUserActive;
+    @InvisibilityFlags private int mForceInvisible;
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
@@ -114,7 +130,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onStop() {
         mStarted = false;
-        mForceInvisible = false;
+        mForceInvisible = 0;
         super.onStop();
     }
 
@@ -153,15 +169,20 @@ public abstract class BaseActivity extends Activity {
      * recents animation.
      * @see LauncherAppTransitionManagerImpl.getWallpaperOpenRunner()
      */
-    public void setForceInvisible(boolean invisible) {
-        mForceInvisible = invisible;
+    public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
+        mForceInvisible |= flag;
     }
+
+    public void clearForceInvisibleFlag(@InvisibilityFlags int flag) {
+        mForceInvisible &= ~flag;
+    }
+
 
     /**
      * @return Wether this activity should be considered invisible regardless of actual visibility.
      */
     public boolean isForceInvisible() {
-        return mForceInvisible;
+        return mForceInvisible != 0;
     }
 
     /**

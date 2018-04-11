@@ -15,9 +15,6 @@
  */
 package com.android.launcher3;
 
-import static com.android.systemui.shared.recents.utilities.Utilities
-        .postAtFrontOfQueueAsynchronously;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -49,7 +46,7 @@ public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
     @BinderThread
     @Override
     public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
-        postAtFrontOfQueueAsynchronously(mHandler, () -> {
+        mHandler.post(() -> {
             // Finish any previous animation
             finishSystemAnimation();
 
@@ -67,7 +64,6 @@ public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
 
         });
     }
-
 
     @UiThread
     public abstract AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats);
@@ -87,7 +83,7 @@ public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
     @BinderThread
     @Override
     public void onAnimationCancelled() {
-        postAtFrontOfQueueAsynchronously(mHandler, () -> {
+        mHandler.post(() -> {
             if (mAnimator != null) {
                 mAnimator.removeListener(this);
                 mAnimator.end();
