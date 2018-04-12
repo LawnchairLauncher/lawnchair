@@ -33,6 +33,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -117,11 +118,18 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     TaskView view = mRecentsView.getPageAt(i);
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
-                        // The task can be dragged up to dismiss it,
-                        // and down to open if it's the current page.
                         mTaskBeingDragged = view;
-                        directionsToDetectScroll = i == mRecentsView.getCurrentPage()
-                                ? SwipeDetector.DIRECTION_BOTH : SwipeDetector.DIRECTION_POSITIVE;
+                        if (!OverviewInteractionState.getInstance(mActivity)
+                                .isSwipeUpGestureEnabled()) {
+                            // Don't allow swipe down to open if we don't support swipe up
+                            // to enter overview.
+                            directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+                        } else {
+                            // The task can be dragged up to dismiss it,
+                            // and down to open if it's the current page.
+                            directionsToDetectScroll = i == mRecentsView.getCurrentPage()
+                                    ? SwipeDetector.DIRECTION_BOTH : SwipeDetector.DIRECTION_POSITIVE;
+                        }
                         break;
                     }
                 }
