@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.content.Context;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
@@ -26,6 +28,8 @@ public class UiFactory {
         return new TouchController[] {
                 launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
+
+    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) { }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {

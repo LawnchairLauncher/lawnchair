@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
@@ -86,6 +85,8 @@ public class OverviewInteractionState {
     private boolean mBackButtonVisible = true;
     private boolean mSwipeUpEnabled = true;
 
+    private Runnable mOnSwipeUpSettingChangedListener;
+
     private OverviewInteractionState(Context context) {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
@@ -124,10 +125,17 @@ public class OverviewInteractionState {
                 break;
             case MSG_SET_SWIPE_UP_ENABLED:
                 mSwipeUpEnabled = msg.arg1 != 0;
+                if (mOnSwipeUpSettingChangedListener != null) {
+                    mOnSwipeUpSettingChangedListener.run();
+                }
                 break;
         }
         applyFlags();
         return true;
+    }
+
+    public void setOnSwipeUpSettingChangedListener(Runnable listener) {
+        mOnSwipeUpSettingChangedListener = listener;
     }
 
     @WorkerThread
