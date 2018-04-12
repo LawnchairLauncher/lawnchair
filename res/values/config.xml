@@ -147,6 +147,7 @@
     <item type="id" name="search_container_all_apps" />
 
 <!-- Recents -->
+    <item type="id" name="overview_panel"/>
     <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
     <integer name="config_recentsMaxIconCacheSize">12</integer>
 

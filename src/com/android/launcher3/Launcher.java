@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -204,6 +205,8 @@ public class Launcher extends BaseDraggingActivity
 
     // UI and state for the overview panel
     private View mOverviewPanel;
+
+    private View mOverviewPanelContainer;
 
     @Thunk boolean mWorkspaceLoading = true;
 
@@ -912,6 +915,7 @@ public class Launcher extends BaseDraggingActivity
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
+        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
         mHotseat = findViewById(R.id.hotseat);
         mDragHandleIndicator = findViewById(R.id.drag_indicator);
         mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
@@ -1190,6 +1194,10 @@ public class Launcher extends BaseDraggingActivity
 
     public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
+    }
+
+    public <T extends View> T getOverviewPanelContainer() {
+        return (T) mOverviewPanelContainer;
     }
 
     public DropTargetBar getDropTargetBar() {
