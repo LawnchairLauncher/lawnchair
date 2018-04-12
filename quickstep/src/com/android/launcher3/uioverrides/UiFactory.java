@@ -41,13 +41,13 @@ public class UiFactory {
         if (!swipeUpEnabled) {
             return new TouchController[] {
                     launcher.getDragController(),
-                    new LandscapeStatesTouchController(launcher),
+                    new OverviewToAllAppsTouchController(launcher),
                     new LauncherTaskViewcontroller(launcher)};
         }
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
-                    new LandscapeStatesTouchController(launcher),
+                    new OverviewToAllAppsTouchController(launcher),
                     new LandscapeEdgeSwipeController(launcher),
                     new LauncherTaskViewcontroller(launcher)};
         } else {
