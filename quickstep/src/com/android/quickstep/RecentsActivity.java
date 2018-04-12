@@ -168,8 +168,9 @@ public class RecentsActivity extends BaseDraggingActivity {
         RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mUiHandler) {
 
             @Override
-            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                return composeRecentsLaunchAnimator(taskView, targetCompats);
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                    AnimationResult result) {
+                result.setAnimation(composeRecentsLaunchAnimator(taskView, targetCompats));
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(

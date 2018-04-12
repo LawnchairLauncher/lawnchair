@@ -56,8 +56,23 @@ public abstract class BaseActivity extends Activity {
     protected UserEventDispatcher mUserEventDispatcher;
     protected SystemUiController mSystemUiController;
 
-    private boolean mStarted;
-    private boolean mUserActive;
+    private static final int ACTIVITY_STATE_STARTED = 1 << 0;
+    private static final int ACTIVITY_STATE_RESUMED = 1 << 1;
+    /**
+     * State flag indicating if the user is active or the actitvity when to background as a result
+     * of user action.
+     * @see #isUserActive()
+     */
+    private static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 2;
+
+    @Retention(SOURCE)
+    @IntDef(
+            flag = true,
+            value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
+    public @interface ActivityFlags{}
+
+    @ActivityFlags
+    private int mActivityFlags;
 
     // When the recents animation is running, the visibility of the Launcher is managed by the
     // animation
@@ -103,19 +118,19 @@ public abstract class BaseActivity extends Activity {
 
     @Override
     protected void onStart() {
-        mStarted = true;
+        mActivityFlags |= ACTIVITY_STATE_STARTED;
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        mUserActive = true;
+        mActivityFlags |= ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE;
         super.onResume();
     }
 
     @Override
     protected void onUserLeaveHint() {
-        mUserActive = false;
+        mActivityFlags &= ~ACTIVITY_STATE_USER_ACTIVE;
         super.onUserLeaveHint();
     }
 
@@ -129,17 +144,30 @@ public abstract class BaseActivity extends Activity {
 
     @Override
     protected void onStop() {
-        mStarted = false;
+        mActivityFlags &= ~ACTIVITY_STATE_STARTED;
         mForceInvisible = 0;
         super.onStop();
     }
 
+    @Override
+    protected void onPause() {
+        mActivityFlags &= ~ACTIVITY_STATE_RESUMED;
+        super.onPause();
+    }
+
     public boolean isStarted() {
-        return mStarted;
+        return (mActivityFlags & ACTIVITY_STATE_STARTED) != 0;
+    }
+
+    /**
+     * isResumed in already defined as a hidden final method in Activity.java
+     */
+    public boolean hasBeenResumed() {
+        return (mActivityFlags & ACTIVITY_STATE_RESUMED) != 0;
     }
 
     public boolean isUserActive() {
-        return mUserActive;
+        return (mActivityFlags & ACTIVITY_STATE_USER_ACTIVE) != 0;
     }
 
     public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {

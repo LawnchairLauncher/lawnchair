@@ -35,6 +35,8 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
 import android.support.v4.os.BuildCompat;
@@ -575,4 +577,12 @@ public final class Utilities {
         return hashSet;
     }
 
+    /**
+     * Utility method to post a runnable on the handler, skipping the synchronization barriers.
+     */
+    public static void postAsyncCallback(Handler handler, Runnable callback) {
+        Message msg = Message.obtain(handler, callback);
+        msg.setAsynchronous(true);
+        handler.sendMessage(msg);
+    }
 }

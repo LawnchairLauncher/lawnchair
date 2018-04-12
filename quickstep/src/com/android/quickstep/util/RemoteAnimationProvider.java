@@ -32,9 +32,11 @@ public interface RemoteAnimationProvider {
 
     default ActivityOptions toActivityOptions(Handler handler, long duration) {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(handler) {
+
             @Override
-            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                return createWindowAnimation(targetCompats);
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                    AnimationResult result) {
+                result.setAnimation(createWindowAnimation(targetCompats));
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(

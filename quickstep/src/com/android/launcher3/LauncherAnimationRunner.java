@@ -15,6 +15,8 @@
  */
 package com.android.launcher3;
 
+import static com.android.launcher3.Utilities.postAsyncCallback;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -28,16 +30,12 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
-        implements RemoteAnimationRunnerCompat {
+public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
 
     private static final int REFRESH_RATE_MS = 16;
 
     private final Handler mHandler;
-
-    private Runnable mSysFinishRunnable;
-
-    private AnimatorSet mAnimator;
+    private AnimationResult mAnimationResult;
 
     public LauncherAnimationRunner(Handler handler) {
         mHandler = handler;
@@ -46,34 +44,26 @@ public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
     @BinderThread
     @Override
     public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
-        mHandler.post(() -> {
-            // Finish any previous animation
-            finishSystemAnimation();
-
-            mSysFinishRunnable = runnable;
-            mAnimator = getAnimator(targetCompats);
-            if (mAnimator == null) {
-                finishSystemAnimation();
-                return;
-            }
-            mAnimator.addListener(this);
-            mAnimator.start();
-            // Because t=0 has the app icon in its original spot, we can skip the
-            // first frame and have the same movement one frame earlier.
-            mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
-
+        postAsyncCallback(mHandler, () -> {
+            finishExistingAnimation();
+            mAnimationResult = new AnimationResult(runnable);
+            onCreateAnimation(targetCompats, mAnimationResult);
         });
     }
 
+    /**
+     * Called on the UI thread when the animation targets are received. The implementation must
+     * call {@link AnimationResult#setAnimation(AnimatorSet)} with the target animation to be run.
+     */
     @UiThread
-    public abstract AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats);
+    public abstract void onCreateAnimation(
+            RemoteAnimationTargetCompat[] targetCompats, AnimationResult result);
 
     @UiThread
-    @Override
-    public void onAnimationEnd(Animator animation) {
-        if (animation == mAnimator) {
-            mAnimator = null;
-            finishSystemAnimation();
+    private void finishExistingAnimation() {
+        if (mAnimationResult != null) {
+            mAnimationResult.finish();
+            mAnimationResult = null;
         }
     }
 
@@ -83,20 +73,55 @@ public abstract class LauncherAnimationRunner extends AnimatorListenerAdapter
     @BinderThread
     @Override
     public void onAnimationCancelled() {
-        mHandler.post(() -> {
-            if (mAnimator != null) {
-                mAnimator.removeListener(this);
-                mAnimator.end();
-                mAnimator = null;
-            }
-        });
+        postAsyncCallback(mHandler, this::finishExistingAnimation);
     }
 
-    @UiThread
-    private void finishSystemAnimation() {
-        if (mSysFinishRunnable != null) {
-            mSysFinishRunnable.run();
-            mSysFinishRunnable = null;
+    public static final class AnimationResult {
+
+        private final Runnable mFinishRunnable;
+
+        private AnimatorSet mAnimator;
+        private boolean mFinished = false;
+        private boolean mInitialized = false;
+
+        private AnimationResult(Runnable finishRunnable) {
+            mFinishRunnable = finishRunnable;
+        }
+
+        @UiThread
+        private void finish() {
+            if (!mFinished) {
+                mFinishRunnable.run();
+                mFinished = true;
+            }
+        }
+
+        @UiThread
+        public void setAnimation(AnimatorSet animation) {
+            if (mInitialized) {
+                throw new IllegalStateException("Animation already initialized");
+            }
+            mInitialized = true;
+            mAnimator = animation;
+            if (mAnimator == null) {
+                finish();
+            } else if (mFinished) {
+                // Animation callback was already finished, skip the animation.
+                mAnimator.end();
+            } else {
+                // Start the animation
+                mAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        finish();
+                    }
+                });
+                mAnimator.start();
+
+                // Because t=0 has the app icon in its original spot, we can skip the
+                // first frame and have the same movement one frame earlier.
+                mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
@@ -163,7 +164,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler) {
 
                 @Override
-                public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
+                public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                        AnimationResult result) {
                     AnimatorSet anim = new AnimatorSet();
 
                     boolean launcherClosing =
@@ -185,7 +187,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         anim.addListener(mForceInvisibleListener);
                     }
 
-                    return anim;
+                    result.setAnimation(anim);
                 }
             };
 
@@ -558,7 +560,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private RemoteAnimationRunnerCompat getWallpaperOpenRunner() {
         return new LauncherAnimationRunner(mHandler) {
             @Override
-            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                    AnimationResult result) {
+                if (!mLauncher.hasBeenResumed()) {
+                    // If launcher is not resumed, wait until new async-frame after resume
+                    mLauncher.setOnResumeCallback(() ->
+                            postAsyncCallback(mHandler, () ->
+                                    onCreateAnimation(targetCompats, result)));
+                    return;
+                }
+
                 AnimatorSet anim = null;
                 RemoteAnimationProvider provider = mRemoteAnimationProvider;
                 if (provider != null) {
@@ -586,7 +597,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 }
 
                 mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
-                return anim;
+                result.setAnimation(anim);
             }
         };
     }

@@ -16,13 +16,12 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
+import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.systemui.shared.recents.utilities.Utilities
-        .postAtFrontOfQueueAsynchronously;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
@@ -248,7 +247,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (Looper.myLooper() == handler.getLooper()) {
             mStateCallback.setState(stateFlag);
         } else {
-            postAtFrontOfQueueAsynchronously(handler, () -> mStateCallback.setState(stateFlag));
+            postAsyncCallback(handler, () -> mStateCallback.setState(stateFlag));
         }
     }
 
