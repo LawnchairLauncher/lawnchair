@@ -79,7 +79,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 /**
  * A list of recent tasks.
@@ -948,8 +947,13 @@ public abstract class RecentsView<T extends BaseActivity>
 
     protected void maybeDrawEmptyMessage(Canvas canvas) {
         if (mShowEmptyMessage && mEmptyTextLayout != null) {
-            mEmptyIcon.draw(canvas);
+            // Offset to center in the visible (non-padded) part of RecentsView
+            mTempRect.set(mInsets.left + getPaddingLeft(), mInsets.top + getPaddingTop(),
+                    mInsets.right + getPaddingRight(), mInsets.bottom + getPaddingBottom());
             canvas.save();
+            canvas.translate((mTempRect.left - mTempRect.right) / 2,
+                    (mTempRect.top - mTempRect.bottom) / 2);
+            mEmptyIcon.draw(canvas);
             canvas.translate(mEmptyMessagePadding,
                     mEmptyIcon.getBounds().bottom + mEmptyMessagePadding);
             mEmptyTextLayout.draw(canvas);
