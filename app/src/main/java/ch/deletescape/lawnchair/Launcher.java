@@ -471,13 +471,8 @@ public class Launcher extends Activity
     public void onPermissionsAsking(View v){
         try{
             String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
-            try{
-                ActivityCompat.requestPermissions(this, pe, REQUEST );
-            }catch(Exception e){
-                Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            ActivityCompat.requestPermissions(this, pe, REQUEST );
             dialog.setContentView(R.layout.app_intro_1_5);
-
         } catch (Exception e){
             Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
