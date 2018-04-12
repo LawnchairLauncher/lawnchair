@@ -27,9 +27,6 @@
     <!-- Title for an option to keep an app pinned to the screen until it is unpinned -->
     <string name="recent_task_option_pin">Pin</string>
 
-    <!-- Text that shows above the navigation bar after launching a few apps -->
-    <string name="recents_swipe_up_onboarding">Swipe up from the bottom to switch apps</string>
-
     <!-- Content description for the recent apps panel (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_desc_recent_apps">Overview</string>
 

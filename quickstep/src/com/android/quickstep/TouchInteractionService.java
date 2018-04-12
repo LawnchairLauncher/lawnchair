@@ -99,8 +99,6 @@ public class TouchInteractionService extends Service {
         public void onBind(ISystemUiProxy iSystemUiProxy) {
             mISystemUiProxy = iSystemUiProxy;
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-            RemoteRunnable.executeSafely(() -> mISystemUiProxy.setRecentsOnboardingText(
-                    getResources().getString(R.string.recents_swipe_up_onboarding)));
             mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
         }
 
