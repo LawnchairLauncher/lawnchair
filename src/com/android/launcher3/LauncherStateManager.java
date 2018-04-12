@@ -173,7 +173,7 @@ public class LauncherStateManager {
                     onCompleteRunnable.run();
                 }
                 return;
-            } else if (!mConfig.userControlled && animated) {
+            } else if (!mConfig.userControlled && animated && mConfig.mTargetState == state) {
                 // We are running the same animation as requested
                 if (onCompleteRunnable != null) {
                     mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
@@ -280,7 +280,7 @@ public class LauncherStateManager {
                 onStateTransitionEnd(state);
             }
         });
-        mConfig.setAnimation(animation);
+        mConfig.setAnimation(animation, state);
         return mConfig.mCurrentAnimation;
     }
 
@@ -370,7 +370,7 @@ public class LauncherStateManager {
         if (reapplyNeeded) {
             reapplyState();
         }
-        mConfig.setAnimation(anim);
+        mConfig.setAnimation(anim, null);
     }
 
     private class StartAnimRunnable implements Runnable {
@@ -401,11 +401,13 @@ public class LauncherStateManager {
         private PropertySetter mProperSetter;
 
         private AnimatorSet mCurrentAnimation;
+        private LauncherState mTargetState;
 
         public void reset() {
             duration = 0;
             userControlled = false;
             mProperSetter = null;
+            mTargetState = null;
 
             if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);
@@ -429,8 +431,9 @@ public class LauncherStateManager {
             }
         }
 
-        public void setAnimation(AnimatorSet animation) {
+        public void setAnimation(AnimatorSet animation, LauncherState targetState) {
             mCurrentAnimation = animation;
+            mTargetState = targetState;
             mCurrentAnimation.addListener(this);
         }
     }
