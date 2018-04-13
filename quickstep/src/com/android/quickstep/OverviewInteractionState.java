@@ -19,6 +19,7 @@ import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABL
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
+import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -74,7 +75,6 @@ public class OverviewInteractionState {
     private static final int MSG_SET_BACK_BUTTON_VISIBLE = 201;
     private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
 
-    private static final String SWIPE_UP_SETTING_NAME = "swipe_up_to_switch_apps_enabled";
     private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
 
     private final Handler mUiHandler;
