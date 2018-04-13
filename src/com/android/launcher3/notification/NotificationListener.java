@@ -219,6 +219,10 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(final StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
             .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
@@ -244,6 +248,10 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(final StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
             = new Pair<>(PackageUserKey.fromNotification(sbn),
             NotificationKeyData.fromNotification(sbn));
