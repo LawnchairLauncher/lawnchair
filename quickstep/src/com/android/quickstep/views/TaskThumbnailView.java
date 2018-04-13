@@ -167,9 +167,9 @@ public class TaskThumbnailView extends View {
         if (mBitmapShader != null && mThumbnailData != null) {
             float scale = mThumbnailData.scale;
             Rect thumbnailInsets  = mThumbnailData.insets;
-            float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
+            final float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
                     (thumbnailInsets.left + thumbnailInsets.right) * scale;
-            float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
+            final float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
                     (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
 
             final float thumbnailScale;
@@ -216,7 +216,8 @@ public class TaskThumbnailView extends View {
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
 
-            float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
+            float bitmapHeight = Math.max((rotate ? thumbnailWidth : thumbnailHeight)
+                    * thumbnailScale, 0);
             if (Math.round(bitmapHeight) < getMeasuredHeight()) {
                 mClipBottom = bitmapHeight;
             }
