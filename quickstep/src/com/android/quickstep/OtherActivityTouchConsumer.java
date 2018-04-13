@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.systemui.shared.system.NavigationBarCompat.QUICK_STEP_DRAG_SLOP_PX;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -45,6 +46,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -229,8 +231,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             Rect minimizedHomeBounds) {
                         if (mInteractionHandler == handler) {
                             TraceHelper.partitionSection("RecentsController", "Received");
-                            handler.onRecentsAnimationStart(controller, apps, homeContentInsets,
-                                    minimizedHomeBounds);
+                            handler.onRecentsAnimationStart(controller,
+                                    new RemoteAnimationTargetSet(apps, MODE_CLOSING),
+                                    homeContentInsets, minimizedHomeBounds);
                         } else {
                             TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);

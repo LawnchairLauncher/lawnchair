@@ -160,6 +160,7 @@ public abstract class RecentsView<T extends BaseActivity>
 
     // Only valid until the launcher state changes to NORMAL
     private int mRunningTaskId = -1;
+    private boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
 
     private boolean mFirstTaskIconScaledDown = false;
@@ -238,14 +239,11 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
-        for (int i = 0; i < getChildCount(); i++) {
-            final TaskView taskView = (TaskView) getChildAt(i);
-            if (taskView.getTask().key.id == taskId) {
-                taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
-                return taskView;
-            }
+        TaskView taskView = getTaskView(taskId);
+        if (taskView != null) {
+            taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
         }
-        return null;
+        return taskView;
     }
 
     @Override
@@ -387,6 +385,9 @@ public abstract class RecentsView<T extends BaseActivity>
                 taskView.resetVisualProperties();
             }
         }
+        if (mRunningTaskTileHidden) {
+            setRunningTaskHidden(mRunningTaskTileHidden);
+        }
 
         updateCurveProperties();
         // Update the set of visible task's data
@@ -524,8 +525,10 @@ public abstract class RecentsView<T extends BaseActivity>
     protected abstract void onAllTasksRemoved();
 
     public void reset() {
-        unloadVisibleTaskData();
         mRunningTaskId = -1;
+        mRunningTaskTileHidden = false;
+
+        unloadVisibleTaskData();
         setCurrentPage(0);
 
         OverviewCallbacks.get(getContext()).onResetOverview();
@@ -562,12 +565,17 @@ public abstract class RecentsView<T extends BaseActivity>
                     new ActivityManager.TaskDescription(), 0, new ComponentName("", ""), false);
             taskView.bind(mTmpRunningTask);
         }
-        setCurrentTask(mRunningTaskId);
+        setCurrentTask(runningTaskId);
+    }
 
-        // Hide the task that we are animating into, ignore if there is no associated task (ie. the
-        // assistant)
-        if (getPageAt(mCurrentPage) != null) {
-            getPageAt(mCurrentPage).setAlpha(0);
+    /**
+     * Hides the tile associated with {@link #mRunningTaskId}
+     */
+    public void setRunningTaskHidden(boolean isHidden) {
+        mRunningTaskTileHidden = isHidden;
+        TaskView runningTask = getTaskView(mRunningTaskId);
+        if (runningTask != null) {
+            runningTask.setAlpha(isHidden ? 0 : mContentAlpha);
         }
     }
 
@@ -575,7 +583,13 @@ public abstract class RecentsView<T extends BaseActivity>
      * Similar to {@link #showTask(int)} but does not put any restrictions on the first tile.
      */
     public void setCurrentTask(int runningTaskId) {
-        mRunningTaskId = runningTaskId;
+        if (mRunningTaskTileHidden) {
+            setRunningTaskHidden(false);
+            mRunningTaskId = runningTaskId;
+            setRunningTaskHidden(true);
+        } else {
+            mRunningTaskId = runningTaskId;
+        }
         setCurrentPage(0);
 
         // Load the tasks (if the loading is already
@@ -837,7 +851,10 @@ public abstract class RecentsView<T extends BaseActivity>
 
         mContentAlpha = alpha;
         for (int i = getChildCount() - 1; i >= 0; i--) {
-            getChildAt(i).setAlpha(alpha);
+            TaskView child = getPageAt(i);
+            if (!mRunningTaskTileHidden || child.getTask().key.id != mRunningTaskId) {
+                getChildAt(i).setAlpha(alpha);
+            }
         }
 
         int alphaInt = Math.round(alpha * 255);

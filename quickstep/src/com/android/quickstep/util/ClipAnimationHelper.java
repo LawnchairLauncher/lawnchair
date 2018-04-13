@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
@@ -55,10 +53,9 @@ public class ClipAnimationHelper {
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private final Matrix mTmpMatrix = new Matrix();
 
-
     public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
         mHomeStackBounds.set(homeStackBounds);
-        mSourceInsets.set(target.getContentInsets());
+        mSourceInsets.set(target.contentInsets);
         mSourceStackBounds.set(target.sourceContainerBounds);
 
         // TODO: Should sourceContainerBounds already have this offset?
@@ -91,7 +88,7 @@ public class ClipAnimationHelper {
         mSourceRect.set(scaledTargetRect);
     }
 
-    public void applyTransform(RemoteAnimationTargetCompat[] targets, float progress) {
+    public void applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
         RectF currentRect;
         synchronized (mTargetRect) {
             currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
@@ -109,17 +106,14 @@ public class ClipAnimationHelper {
         mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
 
         TransactionCompat transaction = new TransactionCompat();
-        for (RemoteAnimationTargetCompat app : targets) {
-            if (app.mode == MODE_CLOSING) {
-                mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                transaction.setMatrix(app.leash, mTmpMatrix)
-                        .setWindowCrop(app.leash, mClipRect);
-                if (app.isNotInRecents) {
-                    transaction.setAlpha(app.leash, 1 - progress);
-                }
-
-                transaction.show(app.leash);
+        for (RemoteAnimationTargetCompat app : targetSet.apps) {
+            mTmpMatrix.postTranslate(app.position.x, app.position.y);
+            transaction.setMatrix(app.leash, mTmpMatrix)
+                    .setWindowCrop(app.leash, mClipRect);
+            if (app.isNotInRecents) {
+                transaction.setAlpha(app.leash, 1 - progress);
             }
+            transaction.show(app.leash);
         }
         transaction.setEarlyWakeup();
         transaction.apply();

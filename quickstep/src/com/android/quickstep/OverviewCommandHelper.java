@@ -53,6 +53,7 @@ import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHel
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -279,15 +280,13 @@ public class OverviewCommandHelper {
                 return anim;
             }
 
-            RemoteAnimationTargetCompat closingTarget = null;
+            RemoteAnimationTargetSet targetSet =
+                    new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
+
+
             // Use the top closing app to determine the insets for the animation
-            for (RemoteAnimationTargetCompat target : targetCompats) {
-                if (target.mode == MODE_CLOSING) {
-                    closingTarget = target;
-                    break;
-                }
-            }
-            if (closingTarget == null) {
+            RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
+            if (runningTaskTarget == null) {
                 Log.e(TAG, "No closing app");
                 anim.play(ValueAnimator.ofInt(0, 1).setDuration(100));
                 return anim;
@@ -302,20 +301,18 @@ public class OverviewCommandHelper {
             rootView.getLocationOnScreen(loc);
             Rect homeBounds = new Rect(loc[0], loc[1],
                     loc[0] + rootView.getWidth(), loc[1] + rootView.getHeight());
-            clipHelper.updateSource(homeBounds, closingTarget);
+            clipHelper.updateSource(homeBounds, runningTaskTarget);
 
             Rect targetRect = new Rect();
             mHelper.getSwipeUpDestinationAndLength(
                     mActivity.getDeviceProfile(), mActivity, targetRect);
             clipHelper.updateTargetRect(targetRect);
 
-
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-            valueAnimator.addUpdateListener((v) -> {
-                clipHelper.applyTransform(targetCompats, (float) v.getAnimatedValue());
-            });
+            valueAnimator.addUpdateListener((v) ->
+                clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue()));
             anim.play(valueAnimator);
             return anim;
         }

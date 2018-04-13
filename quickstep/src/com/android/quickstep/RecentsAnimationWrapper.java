@@ -16,9 +16,9 @@
 package com.android.quickstep;
 
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
@@ -26,17 +26,17 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 public class RecentsAnimationWrapper {
 
     public RecentsAnimationControllerCompat controller;
-    public RemoteAnimationTargetCompat[] targets;
+    public RemoteAnimationTargetSet targetSet;
 
     private boolean mInputConsumerEnabled = false;
     private boolean mBehindSystemBars = true;
     private boolean mSplitScreenMinimized = false;
 
     public synchronized void setController(
-            RecentsAnimationControllerCompat controller, RemoteAnimationTargetCompat[] targets) {
+            RecentsAnimationControllerCompat controller, RemoteAnimationTargetSet targetSet) {
         TraceHelper.partitionSection("RecentsController", "Set controller " + controller);
         this.controller = controller;
-        this.targets = targets;
+        this.targetSet = targetSet;
 
         if (mInputConsumerEnabled) {
             enableInputConsumer();

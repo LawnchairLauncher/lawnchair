@@ -24,7 +24,6 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.systemui.shared.recents.utilities.Utilities
         .postAtFrontOfQueueAsynchronously;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -48,9 +47,9 @@ import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -67,6 +66,7 @@ import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -76,7 +76,6 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -347,6 +346,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mRecentsView.showTask(mRunningTaskId);
+        mRecentsView.setRunningTaskHidden(true);
         mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
         mLayoutListener.open();
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
@@ -436,7 +436,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
                         ? ACCEL_2 : LINEAR;
                 float interpolated = interpolator.getInterpolation(shift);
-                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targets, interpolated);
+                mClipAnimationHelper.applyTransform(
+                        mRecentsAnimationWrapper.targetSet, interpolated);
             }
         }
 
@@ -478,36 +479,37 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] apps, Rect homeContentInsets, Rect minimizedHomeBounds) {
-        if (apps != null) {
-            // Use the top closing app to determine the insets for the animation
-            for (RemoteAnimationTargetCompat target : apps) {
-                if (target.mode == MODE_CLOSING) {
-                    DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
-                    final Rect overviewStackBounds;
+            RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds) {
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        InvariantDeviceProfile idp = appState == null ?
+                new InvariantDeviceProfile(mContext) : appState.getInvariantDeviceProfile();
+        DeviceProfile dp = idp.getDeviceProfile(mContext);
+        final Rect overviewStackBounds;
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
 
-                    if (minimizedHomeBounds != null) {
-                        overviewStackBounds = mActivityControlHelper
-                                .getOverviewWindowBounds(minimizedHomeBounds, target);
-                        dp = dp.getMultiWindowProfile(mContext,
-                                new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
-                        dp.updateInsets(homeContentInsets);
-                    } else {
-                        overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
-                        // TODO: Workaround for an existing issue where the home content insets are
-                        // not valid immediately after rotation, just use the stable insets for now
-                        Rect insets = new Rect();
-                        WindowManagerWrapper.getInstance().getStableInsets(insets);
-                        dp = dp.copy(mContext);
-                        dp.updateInsets(insets);
-                    }
-
-                    mClipAnimationHelper.updateSource(overviewStackBounds, target);
-                    initTransitionEndpoints(dp);
-                }
-            }
+        if (minimizedHomeBounds != null && runningTaskTarget != null) {
+            overviewStackBounds = mActivityControlHelper
+                    .getOverviewWindowBounds(minimizedHomeBounds, runningTaskTarget);
+            dp = dp.getMultiWindowProfile(mContext,
+                    new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
+            dp.updateInsets(homeContentInsets);
+        } else {
+            overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
+            // TODO: Workaround for an existing issue where the home content insets are
+            // not valid immediately after rotation, just use the stable insets for now
+            Rect insets = new Rect();
+            WindowManagerWrapper.getInstance().getStableInsets(insets);
+            dp = dp.copy(mContext);
+            dp.updateInsets(insets);
         }
-        mRecentsAnimationWrapper.setController(controller, apps);
+
+        if (runningTaskTarget != null) {
+            mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
+        }
+        initTransitionEndpoints(dp);
+
+
+        mRecentsAnimationWrapper.setController(controller, targets);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
@@ -641,6 +643,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLauncherTransitionController = null;
         mLayoutListener.finish();
 
+        mRecentsView.setRunningTaskHidden(false);
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
     }
 
@@ -666,29 +669,22 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
-                for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
-                    if (app.mode == MODE_CLOSING) {
-                        // Update the screenshot of the task
-                        ThumbnailData thumbnail =
-                                mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
-                        final TaskView taskView =
-                                mRecentsView.updateThumbnail(app.taskId, thumbnail);
-                        if (taskView != null) {
-                            taskView.setAlpha(1);
+                // Update the screenshot of the task
+                ThumbnailData thumbnail =
+                        mRecentsAnimationWrapper.controller.screenshotTask(mRunningTaskId);
+                final TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, thumbnail);
+                mRecentsView.setRunningTaskHidden(false);
+                if (taskView != null) {
+                    // Defer finishing the animation until the next launcher frame with the
+                    // new thumbnail
+                    finishTransitionPosted = new WindowCallbacksCompat(taskView) {
 
-                            // Defer finishing the animation until the next launcher frame with the
-                            // new thumbnail
-                            finishTransitionPosted = new WindowCallbacksCompat(taskView) {
-
-                                @Override
-                                public void onPostDraw(Canvas canvas) {
-                                    finishTransitionRunnable.run();
-                                    detach();
-                                }
-                            }.attach();
-                            break;
+                        @Override
+                        public void onPostDraw(Canvas canvas) {
+                            finishTransitionRunnable.run();
+                            detach();
                         }
-                    }
+                    }.attach();
                 }
             }
         }
