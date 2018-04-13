@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.views.RecentsView;
@@ -37,11 +36,6 @@ public class FastOverviewState extends OverviewState {
         super.onStateTransitionEnd(launcher);
         RecentsView recentsView = launcher.getOverviewPanel();
         recentsView.getQuickScrubController().onFinishedTransitionToQuickScrub();
-    }
-
-    public void onStateEnabled(Launcher launcher) {
-        super.onStateEnabled(launcher);
-        AbstractFloatingView.closeAllOpenViews(launcher);
     }
 
     @Override
