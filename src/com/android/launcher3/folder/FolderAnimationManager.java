@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
@@ -172,9 +173,8 @@ public class FolderAnimationManager {
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
 
         // Initialize the Folder items' text.
-        PropertyResetListener colorResetListener = new PropertyResetListener<>(
-                BubbleTextView.TEXT_ALPHA_PROPERTY,
-                Color.alpha(Themes.getAttrColor(mContext, android.R.attr.textColorSecondary)));
+        PropertyResetListener colorResetListener =
+                new PropertyResetListener<>(TEXT_ALPHA_PROPERTY, 1f);
         for (BubbleTextView icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
             if (mIsOpening) {
                 icon.setTextVisibility(false);
