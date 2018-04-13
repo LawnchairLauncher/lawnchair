@@ -70,6 +70,9 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
 
+    // Usually we show the back button when a floating view is open. Instead, hide for these types.
+    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {
@@ -170,6 +173,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenView(BaseDraggingActivity activity) {
-        return getOpenView(activity, TYPE_ALL);
+        return getTopOpenViewWithType(activity, TYPE_ALL);
+    }
+
+    public static AbstractFloatingView getTopOpenViewWithType(BaseDraggingActivity activity,
+            @FloatingViewType int type) {
+        return getOpenView(activity, type);
     }
 }
