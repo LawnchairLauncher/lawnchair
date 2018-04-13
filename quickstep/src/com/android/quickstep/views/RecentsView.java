@@ -323,6 +323,9 @@ public abstract class RecentsView<T extends BaseActivity>
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
+        if (ev.getAction() == MotionEvent.ACTION_UP && mShowEmptyMessage) {
+            onAllTasksRemoved();
+        }
         // Do not let touch escape to siblings below this view.
         return true;
     }
