@@ -21,6 +21,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -58,6 +59,7 @@ public class OverviewState extends LauncherState {
     public void onStateEnabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);
+        AbstractFloatingView.closeAllOpenViews(launcher);
     }
 
     @Override
