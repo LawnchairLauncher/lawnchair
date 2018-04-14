@@ -52,6 +52,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final Bitmap mAlphaGradientMask;
 
     private boolean mShowScrim = true;
+    private boolean mShiftScrim = false;
     private int mColor1 = DEFAULT_COLOR;
     private int mColor2 = DEFAULT_COLOR;
     private int mWidth;
@@ -81,6 +82,10 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         updateColors();
         mAlphaGradientMask = createDitheredAlphaMask();
+    }
+
+    public void setShiftScrim(boolean shiftScrim) {
+        mShiftScrim = shiftScrim;
     }
 
     @Override
@@ -142,7 +147,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
                 mWidth * 0.5f,
                 mHeight * gradientCenterY,
                 radius,
-                new int[] { color1, color1, color2 },
+                new int[] { color1, mShiftScrim ? color2 : color1, color2 },
                 new float[] {0f, posScreenBottom, 1f},
                 Shader.TileMode.CLAMP);
         mPaintWithScrim.setShader(shaderWithScrim);
@@ -163,7 +168,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         Paint paint = mShowScrim ? mPaintWithScrim : mPaintNoScrim;
 
         float head = 0.29f;
-        float linearProgress = head + (mProgress * (Utilities.ATLEAST_MARSHMALLOW ? 1f : 0.85f) * (1f - head));
+        float linearProgress = head + (mProgress * (mShiftScrim ? 0.85f : 1f) * (1f - head));
         float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
         float interpolatedAlpha = (255 - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
         paint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
