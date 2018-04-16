@@ -21,12 +21,17 @@ public class CustomEditShortcut extends SystemShortcut {
             factory.ensureInitialLoadComplete();
 
             return new View.OnClickListener() {
+                private boolean mOpened = false;
+
                 @Override
                 public void onClick(View view) {
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                    CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
-                        .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
-                    cbs.populateAndShow(itemInfo);
+                    if (!mOpened) {
+                        mOpened = true;
+                        AbstractFloatingView.closeAllOpenViews(launcher);
+                        CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
+                                .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
+                        cbs.populateAndShow(itemInfo);
+                    }
                 }
             };
         }
