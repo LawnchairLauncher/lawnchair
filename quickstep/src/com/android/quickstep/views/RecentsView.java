@@ -630,9 +630,9 @@ public abstract class RecentsView<T extends BaseActivity>
         TaskView firstTask = (TaskView) getChildAt(0);
         if (firstTask != null) {
             if (animate) {
-                firstTask.animateIconToScale(scale);
+                firstTask.animateIconToScaleAndDim(scale);
             } else {
-                firstTask.setIconScale(scale);
+                firstTask.setIconScaleAndDim(scale);
             }
         }
     }
