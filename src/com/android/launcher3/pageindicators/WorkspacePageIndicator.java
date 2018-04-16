@@ -186,11 +186,6 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
     }
 
-    @Override
-    public void setPageDescription(CharSequence description) {
-        setContentDescription(description);
-    }
-
     public void setShouldAutoHide(boolean shouldAutoHide) {
         mShouldAutoHide = shouldAutoHide;
         if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
