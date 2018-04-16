@@ -28,6 +28,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
+import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.BaseActivity;
@@ -45,6 +47,19 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 public class TaskThumbnailView extends View {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
+
+    public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
+            new FloatProperty<TaskThumbnailView>("dimAlpha") {
+                @Override
+                public void setValue(TaskThumbnailView thumbnail, float dimAlpha) {
+                    thumbnail.setDimAlpha(dimAlpha);
+                }
+
+                @Override
+                public Float get(TaskThumbnailView thumbnailView) {
+                    return thumbnailView.mDimAlpha;
+                }
+            };
 
     private final float mCornerRadius;
 
@@ -111,6 +126,8 @@ public class TaskThumbnailView extends View {
 
     /**
      * Sets the alpha of the dim layer on top of this view.
+     *
+     * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be black.
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
@@ -149,7 +166,7 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailPaintFilter() {
-        int mul = (int) (mDimAlpha * 255);
+        int mul = (int) ((1 - mDimAlpha) * 255);
         if (mBitmapShader != null) {
             LightingColorFilter filter = getLightingColorFilter(mul);
             mPaint.setColorFilter(filter);

@@ -16,6 +16,11 @@
 
 package com.android.quickstep.views;
 
+import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -75,6 +80,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private TaskThumbnailView mSnapshotView;
     private ImageView mIconView;
     private float mCurveScale;
+    private float mCurveDimAlpha;
+    private Animator mDimAlphaAnim;
 
     public TaskView(Context context) {
         this(context, null);
@@ -166,14 +173,27 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         // Do nothing
     }
 
-    public void animateIconToScale(float scale) {
+    public void animateIconToScaleAndDim(float scale) {
         mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
+        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA, scale * mCurveDimAlpha);
+        mDimAlphaAnim.setDuration(SCALE_ICON_DURATION);
+        mDimAlphaAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mDimAlphaAnim = null;
+            }
+        });
+        mDimAlphaAnim.start();
     }
 
-    protected void setIconScale(float iconScale) {
+    protected void setIconScaleAndDim(float iconScale) {
         mIconView.animate().cancel();
         mIconView.setScaleX(iconScale);
         mIconView.setScaleY(iconScale);
+        if (mDimAlphaAnim != null) {
+            mDimAlphaAnim.cancel();
+        }
+        mSnapshotView.setDimAlpha(iconScale * mCurveDimAlpha);
     }
 
     public void resetVisualProperties() {
@@ -190,7 +210,10 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
 
-        mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+        mCurveDimAlpha = curveInterpolation * MAX_PAGE_SCRIM_ALPHA;
+        if (mDimAlphaAnim == null && mIconView.getScaleX() > 0) {
+            mSnapshotView.setDimAlpha(mCurveDimAlpha);
+        }
 
         mCurveScale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
         setScaleX(mCurveScale);
