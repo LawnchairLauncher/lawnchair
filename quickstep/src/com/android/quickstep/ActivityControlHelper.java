@@ -43,6 +43,7 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.LauncherLayoutListener;
+import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -64,6 +65,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      * @return true if there any any UI change as a result of this
      */
     boolean onQuickInteractionStart(T activity, boolean activityVisible);
+
+    float getTranslationYForQuickScrub(T activity);
 
     void executeOnWindowAvailable(T activity, Runnable action);
 
@@ -115,6 +118,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             LauncherState fromState = activity.getStateManager().getState();
             activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
             return !fromState.overviewUi;
+        }
+
+        @Override
+        public float getTranslationYForQuickScrub(Launcher activity) {
+            LauncherRecentsView recentsView = activity.getOverviewPanel();
+            float transYFactor = FAST_OVERVIEW.getOverviewScaleAndTranslationYFactor(activity)[1];
+            return recentsView.computeTranslationYForFactor(transYFactor);
         }
 
         @Override
@@ -273,6 +283,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public boolean onQuickInteractionStart(RecentsActivity activity, boolean activityVisible) {
             // Activity does not need any UI change for quickscrub.
             return false;
+        }
+
+        @Override
+        public float getTranslationYForQuickScrub(RecentsActivity activity) {
+            return 0;
         }
 
         @Override

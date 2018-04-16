@@ -458,17 +458,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 }
                 mLauncherTransitionController.setPlayFraction(shift);
 
-                // Make sure the window follows the first task if it moves, e.g. during quick scrub.
-                View firstTask = mRecentsView.getPageAt(0);
-                // The first task may be null if we are swiping up from a task that does not
-                // appear in the list (ie. the assistant)
-                if (firstTask != null) {
-                    int scrollForFirstTask = mRecentsView.getScrollForPage(0);
-                    int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
-                    mClipAnimationHelper.offsetTarget(firstTask.getScaleX(),
-                            offsetFromFirstTask + firstTask.getTranslationX(),
-                            mRecentsView.getTranslationY());
-                }
                 if (mRecentsAnimationWrapper.controller != null) {
                     // TODO: This logic is spartanic!
                     boolean passedThreshold = shift > 0.12f;
@@ -714,11 +703,31 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void onQuickScrubStart() {
-        mActivityControlHelper.onQuickInteractionStart(mActivity, mWasLauncherAlreadyVisible);
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+            mLauncherTransitionController = null;
+        }
+
+        mActivityControlHelper.onQuickInteractionStart(mActivity, false);
         mQuickScrubController.onQuickScrubStart(false);
 
         // Inform the last progress in case we skipped before.
         mQuickScrubController.onQuickScrubProgress(mCurrentQuickScrubProgress);
+
+        // Make sure the window follows the first task if it moves, e.g. during quick scrub.
+        TaskView firstTask = mRecentsView.getPageAt(0);
+        // The first task may be null if we are swiping up from a task that does not
+        // appear in the list (i.e. the assistant)
+        if (firstTask != null) {
+            int scrollForFirstTask = mRecentsView.getScrollForPage(0);
+            int scrollForSecondTask = mRecentsView.getChildCount() > 1
+                    ? mRecentsView.getScrollForPage(1) : scrollForFirstTask;
+            int offsetFromFirstTask = scrollForFirstTask - scrollForSecondTask;
+            float interpolation = offsetFromFirstTask / (mRecentsView.getWidth() / 2);
+            mClipAnimationHelper.offsetTarget(
+                    firstTask.getCurveScaleForInterpolation(interpolation), offsetFromFirstTask,
+                    mActivityControlHelper.getTranslationYForQuickScrub(mActivity));
+        }
     }
 
     private void onFinishedTransitionToQuickScrub() {

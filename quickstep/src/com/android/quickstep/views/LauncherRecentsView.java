@@ -86,7 +86,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
-        setTranslationY(mTranslationYFactor * (getPaddingBottom() - getPaddingTop()));
+        setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
+    }
+
+    public float computeTranslationYForFactor(float translationYFactor) {
+        return translationYFactor * (getPaddingBottom() - getPaddingTop());
     }
 
     @Override
