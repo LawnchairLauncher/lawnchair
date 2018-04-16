@@ -49,7 +49,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.ArraySet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,7 +178,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                         anim.play(getIconAnimator(v));
                         if (launcherClosing) {
-                            anim.play(getLauncherContentAnimator(false /* show */));
+                            Pair<AnimatorSet, Runnable> launcherContentAnimator =
+                                    getLauncherContentAnimator(false /* show */);
+                            anim.play(launcherContentAnimator.first);
+                            anim.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    launcherContentAnimator.second.run();
+                                }
+                            });
                         }
                         anim.play(getWindowAnimators(v, targetCompats));
                     }
@@ -265,8 +275,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * @param show If true: Animate the content so that it moves upwards and fades in.
      *             Else: Animate the content so that it moves downwards and fades out.
      */
-    private AnimatorSet getLauncherContentAnimator(boolean show) {
+    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean show) {
         AnimatorSet launcherAnimator = new AnimatorSet();
+        Runnable endListener;
 
         float[] alphas = show
                 ? new float[] {0, 1}
@@ -286,6 +297,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(217);
             alpha.setInterpolator(LINEAR);
+            appsView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            alpha.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    appsView.setLayerType(View.LAYER_TYPE_NONE, null);
+                }
+            });
             ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
             transY.setInterpolator(AGGRESSIVE_EASE);
             transY.setDuration(350);
@@ -293,13 +311,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             launcherAnimator.play(alpha);
             launcherAnimator.play(transY);
 
-            launcherAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    appsView.setAlpha(startAlpha);
-                    appsView.setTranslationY(startY);
-                }
-            });
+            endListener = () -> {
+                appsView.setAlpha(startAlpha);
+                appsView.setTranslationY(startY);
+                appsView.setLayerType(View.LAYER_TYPE_NONE, null);
+            };
         } else {
             mDragLayer.setAlpha(alphas[0]);
             mDragLayer.setTranslationY(trans[0]);
@@ -314,15 +330,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             launcherAnimator.play(dragLayerAlpha);
             launcherAnimator.play(dragLayerTransY);
-            launcherAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mDragLayer.setAlpha(1);
-                    mDragLayer.setTranslationY(0);
-                }
-            });
+            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            endListener = () -> {
+                mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
+                mDragLayer.setAlpha(1);
+                mDragLayer.setTranslationY(0);
+            };
         }
-        return launcherAnimator;
+        return new Pair<>(launcherAnimator, endListener);
     }
 
     /**
@@ -647,9 +662,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)
                 || mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            AnimatorSet contentAnimator = getLauncherContentAnimator(true /* show */);
-            contentAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            anim.play(contentAnimator);
+            Pair<AnimatorSet, Runnable> contentAnimator =
+                    getLauncherContentAnimator(true /* show */);
+            contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
+            anim.play(contentAnimator.first);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    contentAnimator.second.run();
+                }
+            });
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
 
