@@ -228,11 +228,6 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     @Override
-    public void setPageDescription(CharSequence description) {
-        setContentDescription(description);
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?

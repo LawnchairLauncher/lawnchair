@@ -25,6 +25,4 @@ public interface PageIndicator {
     void setActiveMarker(int activePage);
 
     void setMarkersCount(int numMarkers);
-
-    void setPageDescription(CharSequence description);
 }
