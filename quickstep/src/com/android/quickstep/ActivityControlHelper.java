@@ -213,9 +213,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 anim.play(shiftAnim);
             }
 
-            // TODO: Link this animation to state animation, so that it is cancelled
-            // automatically on state change
             anim.setDuration(transitionLength * 2);
+            activity.getStateManager().setCurrentAnimation(anim);
             return AnimatorPlaybackController.wrap(anim, transitionLength * 2);
         }
 
