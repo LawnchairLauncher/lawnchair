@@ -39,13 +39,12 @@ import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.R;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -248,7 +247,7 @@ public class TouchInteractionService extends Service {
 
         private final ActivityControlHelper<T> mActivityHelper;
         private final T mActivity;
-        private final View mTarget;
+        private final BaseDragLayer mTarget;
         private final int[] mLocationOnScreen = new int[2];
         private final PointF mDownPos = new PointF();
         private final int mTouchSlop;
@@ -293,7 +292,6 @@ public class TouchInteractionService extends Service {
                     case ACTION_MOVE: {
                         float displacement = ev.getY() - mDownPos.y;
                         if (Math.abs(displacement) >= mTouchSlop) {
-                            mTrackingStarted = true;
                             mTarget.getLocationOnScreen(mLocationOnScreen);
 
                             // Send a down event only when mTouchSlop is crossed.
@@ -301,6 +299,7 @@ public class TouchInteractionService extends Service {
                             down.setAction(ACTION_DOWN);
                             sendEvent(down);
                             down.recycle();
+                            mTrackingStarted = true;
                         }
                     }
                 }
@@ -319,7 +318,10 @@ public class TouchInteractionService extends Service {
             int flags = ev.getEdgeFlags();
             ev.setEdgeFlags(flags | EDGE_NAV_BAR);
             ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-            mTarget.dispatchTouchEvent(ev);
+            if (!mTrackingStarted) {
+                mTarget.onInterceptTouchEvent(ev);
+            }
+            mTarget.onTouchEvent(ev);
             ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
             ev.setEdgeFlags(flags);
         }
