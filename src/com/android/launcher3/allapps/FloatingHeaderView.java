@@ -237,6 +237,11 @@ public class FloatingHeaderView extends LinearLayout implements
     public boolean hasVisibleContent() {
         return false;
     }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
 }
 
 
