@@ -168,4 +168,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     @Override
     public void setMarkersCount(int numMarkers) { }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
 }
