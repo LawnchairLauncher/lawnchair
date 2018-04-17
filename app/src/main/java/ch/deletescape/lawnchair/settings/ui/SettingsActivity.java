@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -40,8 +39,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -58,6 +55,8 @@ import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import me.jfenn.attribouter.Attribouter;
+
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -98,6 +97,8 @@ public class SettingsActivity extends AppCompatActivity implements
         Fragment fragment;
         if (pref instanceof SubPreference) {
             fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+        } else if(pref.getKey().equals("about")){
+            fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
         } else {
             fragment = Fragment.instantiate(this, pref.getFragment());
         }
@@ -186,6 +187,15 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null && "about".equals(preference.getKey())){
+                ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, preference);
+                return true;
+            }
+            return super.onPreferenceTreeClick(preference);
+        }
+
+        @Override
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
@@ -217,11 +227,6 @@ public class SettingsActivity extends AppCompatActivity implements
                 if (Utilities.ATLEAST_NOUGAT) {
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                         .removePreference(findPreference(PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS));
-                }
-            } else if (getContent() == R.xml.launcher_about_preferences) {
-                findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
-                if (BuildConfig.TRAVIS && !BuildConfig.BUILD_TYPE.equalsIgnoreCase("stable")) {
-                    findPreference("about_changelog").setSummary(Utilities.getChangelog());
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
@@ -303,20 +308,6 @@ public class SettingsActivity extends AppCompatActivity implements
                         if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                             Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();
                         }
-                        break;
-                    case "about_translators":
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.about_translators);
-                        builder.setView(R.layout.dialog_translators);
-                        builder.setNeutralButton("OK", null);
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-
-                        // Custom LayoutParams for neutral button of AlertDialog
-                        final Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                        LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
-                        neutralButtonLL.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                        neutralButton.setLayoutParams(neutralButtonLL);
                         break;
                     default:
                         return super.onPreferenceTreeClick(preference);

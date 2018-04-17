@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<about>
+    <appInfo
+        icon="@mipmap/ic_launcher"
+        playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
+        repo="LawnchairLauncher/Lawnchair"
+        websiteUrl="https://lawnchair.info" />
+    <contributors
+        repo=""
+        title="@string/about_our_team">
+        <contributor
+            name="Till Kottmann"
+            avatar="https://avatars.githubusercontent.com/u/13785669"
+            bio="@string/about_bio_deletescape"
+            blog="https://deletescape.ch"
+            login="deletescape"
+            position="1"
+            task="@string/about_role_lead" />
+        <contributor
+            name="David Sn"
+            avatar="https://avatars.githubusercontent.com/u/28547847"
+            bio="@string/about_bio_divadsn"
+            blog="https://www.codebucket.de"
+            login="divadsn"
+            position="2"
+            task="@string/about_role_devops" />
+        <contributor
+            avatar="https://avatars.githubusercontent.com/u/8080853"
+            login="paphonb"
+            position="3"
+            task="@string/about_role_dev" />
+        <contributor
+            name="Jozsef Kiraly"
+            avatar="https://avatars.githubusercontent.com/u/371847"
+            login="fonix232"
+            task="@string/about_role_dev" />
+        <contributor
+            name="reCoded"
+            avatar="https://avatars.githubusercontent.com/u/29968331"
+            bio="@string/about_bio_recoded"
+            login="reC0D3D"
+            task="@string/about_role_dev_mod" />
+        <contributor
+            name="Joshua Baldassarre"
+            avatar="https://avatars.githubusercontent.com/u/20582840"
+            bio="@string/about_bio_josh"
+            blog="https://joshuabaldassarre.github.io/"
+            login="joshuabaldassarre"
+            task="@string/about_role_designer" />
+        <contributor
+            name="Lumiq Creative"
+            avatar="https://avatars.githubusercontent.com/u/30959743"
+            login="lumiqcreative"
+            task="@string/about_role_designer" />
+        <contributor
+            name="Christopher Kardas"
+            avatar="https://avatars.githubusercontent.com/u/15703840"
+            bio="@string/about_bio_chris"
+            blog="https://christopherkardas.me/"
+            login="christopherkardas"
+            task="@string/about_role_special_snowflake" />
+        <contributor
+            name="Rik Koedoot"
+            avatar="https://avatars.githubusercontent.com/u/29402532"
+            login="rickkode"
+            task="@string/about_role_mod_support" />
+        <contributor
+            name="Abhijeet Bohra"
+            avatar="https://avatars.githubusercontent.com/u/34155181"
+            login="abhijeetbohra"
+            task="@string/about_role_mod_support" />
+        <contributor
+            hidden="true"
+            login="TheAndroidMaster" />
+    </contributors>
+    <contributors
+        repo=""
+        title="@string/about_our_family">
+        <contributor
+            name="Amir Zaidi"
+            avatar="https://avatars.githubusercontent.com/u/2102185"
+            login="amirzaidi"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Anas Karbila"
+            avatar="https://avatars.githubusercontent.com/u/7457130"
+            login="thecrazyskull"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Craig Hart"
+            avatar="https://i.imgur.com/ZJLRMvU.png"
+            blog="https://craigary.net/"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Dulce"
+            avatar="https://avatars.githubusercontent.com/u/32991635"
+            login="dulcetiseduce"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Harsh Shandilya"
+            avatar="https://avatars.githubusercontent.com/u/13348378"
+            bio="@string/about_bio_msfjarvis"
+            blog="https://msfjarvis.website/"
+            login="MSF-Jarvis"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Jaffar"
+            avatar="https://i.imgur.com/QS29Pw1.png"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Joaco"
+            avatar="https://i.imgur.com/4IN8bUD.png"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Luca"
+            avatar="https://i.imgur.com/IFXZUr7.png"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Nico Franke"
+            avatar="https://avatars.githubusercontent.com/u/23036430"
+            login="ZerNico"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Pratik"
+            avatar="https://i.imgur.com/ZYTifu9.png"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Rhyse Simpson"
+            avatar="https://avatars.githubusercontent.com/u/7065700"
+            login="Skittles9823"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Shubby"
+            avatar="https://avatars.githubusercontent.com/u/24932404"
+            login="shubchan"
+            task="@string/about_role_family_member" />
+        <contributor
+            name="Yannick"
+            avatar="https://i.imgur.com/p9FrMbi.png"
+            task="@string/about_role_family_member" />
+        <contributor
+            hidden="true"
+            login="TheAndroidMaster" />
+    </contributors>
+    <licenses>
+        <project repo="KwabenBerko/OpenWeatherMap-Android-Library" />
+        <project
+            license="apache-2.0"
+            repo="MrBIMC/VintageChroma" />
+        <project repo="florent37/FiftyShadesOf" />
+        <project
+            repo="fangyidong/json-simple"
+            title="JSON.simple" />
+    </licenses>
+</about>
