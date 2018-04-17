@@ -203,7 +203,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mPageIndicatorViewId > -1) {
             mPageIndicator = parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
-            mPageIndicator.setPageDescription(getPageIndicatorDescription());
         }
     }
 
@@ -310,7 +309,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void updatePageIndicator() {
         if (mPageIndicator != null) {
-            mPageIndicator.setPageDescription(getPageIndicatorDescription());
             mPageIndicator.setActiveMarker(getNextPage());
         }
     }
@@ -1539,10 +1537,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             } break;
         }
         return false;
-    }
-
-    protected String getPageIndicatorDescription() {
-        return getCurrentPageDescription();
     }
 
     protected boolean canAnnouncePageDescription() {
