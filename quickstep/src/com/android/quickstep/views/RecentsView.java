@@ -87,20 +87,9 @@ import java.util.ArrayList;
 public abstract class RecentsView<T extends BaseActivity>
         extends PagedView implements OnSharedPreferenceChangeListener, Insettable {
 
+    public static final boolean DEBUG_SHOW_CLEAR_ALL_BUTTON = false;
+
     private final Rect mTempRect = new Rect();
-
-    public static final FloatProperty<RecentsView> CONTENT_ALPHA =
-            new FloatProperty<RecentsView>("contentAlpha") {
-        @Override
-        public void setValue(RecentsView recentsView, float v) {
-            recentsView.setContentAlpha(v);
-        }
-
-        @Override
-        public Float get(RecentsView recentsView) {
-            return recentsView.mContentAlpha;
-        }
-    };
 
     public static final FloatProperty<RecentsView> ADJACENT_SCALE =
             new FloatProperty<RecentsView>("adjacentScale") {
@@ -179,6 +168,8 @@ public abstract class RecentsView<T extends BaseActivity>
 
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
+
+    private RecentsViewContainer mContainerView;
 
     // Variables for empty state
     private final Drawable mEmptyIcon;
@@ -320,12 +311,18 @@ public abstract class RecentsView<T extends BaseActivity>
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        super.onTouchEvent(ev);
+        if (DEBUG_SHOW_CLEAR_ALL_BUTTON && mTouchState == TOUCH_STATE_REST && mScroller.isFinished()
+                && getChildCount() != 0
+                && ev.getX() > getChildAt(getChildCount() - 1).getRight() - getScrollX()) {
+            // If nothing is in motion, allow events to the right of the last task to go to the
+            // Clear All button.
+            return false;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_UP && mShowEmptyMessage) {
             onAllTasksRemoved();
         }
-        // Do not let touch escape to siblings below this view.
-        return true;
+        return super.onTouchEvent(ev);
     }
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
@@ -423,6 +420,10 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     protected abstract void getTaskSize(DeviceProfile dp, Rect outRect);
+
+    public void getTaskSize(Rect outRect) {
+        getTaskSize(mActivity.getDeviceProfile(), outRect);
+    }
 
     @Override
     protected boolean computeScrollHelper() {
@@ -530,6 +531,7 @@ public abstract class RecentsView<T extends BaseActivity>
 
         unloadVisibleTaskData();
         setCurrentPage(0);
+        scrollTo(0, 0);
 
         OverviewCallbacks.get(getContext()).onResetOverview();
     }
@@ -844,11 +846,11 @@ public abstract class RecentsView<T extends BaseActivity>
         snapToPageRelative(1);
     }
 
-    public void setContentAlpha(float alpha) {
-        if (mContentAlpha == alpha) {
-            return;
-        }
+    public float getContentAlpha() {
+        return mContentAlpha;
+    }
 
+    public void setContentAlpha(float alpha) {
         mContentAlpha = alpha;
         for (int i = getChildCount() - 1; i >= 0; i--) {
             TaskView child = getPageAt(i);
@@ -860,8 +862,6 @@ public abstract class RecentsView<T extends BaseActivity>
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
-
-        setVisibility(alpha > 0 ? VISIBLE : GONE);
     }
 
     public void setAdjacentScale(float adjacentScale) {
@@ -929,6 +929,9 @@ public abstract class RecentsView<T extends BaseActivity>
         mShowEmptyMessage = isEmpty;
         updateEmptyStateUi(hasSizeChanged);
         invalidate();
+        if (mContainerView != null) {
+            mContainerView.onEmptyStateChanged(!DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage);
+        }
     }
 
     @Override
@@ -1094,5 +1097,31 @@ public abstract class RecentsView<T extends BaseActivity>
     @Override
     protected String getCurrentPageDescription() {
         return "";
+    }
+
+    public void dismissAllTasks() {
+        for (int i = 0; i < getChildCount(); ++i) {
+            Task task = getPageAt(i).getTask();
+            if (task != null) {
+                ActivityManagerWrapper.getInstance().removeTask(task.key.id);
+            }
+        }
+        onAllTasksRemoved();
+    }
+
+    @Override
+    protected int computeMaxScrollX() {
+        if (!DEBUG_SHOW_CLEAR_ALL_BUTTON || getChildCount() == 0) {
+            return super.computeMaxScrollX();
+        }
+
+        // Allow a clear_all_container_width-sized gap after the last task.
+        return super.computeMaxScrollX() + (int) getResources().getDimension(
+                R.dimen.clear_all_container_width) - getPaddingEnd();
+    }
+
+    public void setContainerView(RecentsViewContainer containerView) {
+        mContainerView = containerView;
+        mContainerView.onEmptyStateChanged(!DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage);
     }
 }
