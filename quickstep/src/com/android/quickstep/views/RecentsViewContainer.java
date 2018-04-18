@@ -1,5 +1,7 @@
 package com.android.quickstep.views;
 
+import static com.android.quickstep.views.RecentsView.DEBUG_SHOW_CLEAR_ALL_BUTTON;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -50,6 +52,8 @@ public class RecentsViewContainer extends InsettableFrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
+        if (!changed || !DEBUG_SHOW_CLEAR_ALL_BUTTON) return;
+
         mRecentsView.getTaskSize(mTempRect);
 
         mClearAllButton.setTranslationX(
@@ -57,7 +61,7 @@ public class RecentsViewContainer extends InsettableFrameLayout {
                         R.dimen.clear_all_container_width)) / 2);
         mClearAllButton.setTranslationY(
                 mTempRect.top + (mTempRect.height() - mClearAllButton.getMeasuredHeight()) / 2
-                        - mClearAllButton.getY());
+                        - mClearAllButton.getTop());
     }
 
     @Override
