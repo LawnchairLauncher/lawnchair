@@ -130,7 +130,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             "STATE_QUICK_SCRUB_END"
     };
 
-    private static final long MAX_SWIPE_DURATION = 200;
+    private static final long MAX_SWIPE_DURATION = 350;
     private static final long MIN_SWIPE_DURATION = 80;
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
