@@ -150,22 +150,12 @@ public class NotificationListener extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         sIsCreated = true;
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         sIsCreated = false;
-        mNotificationBadgingObserver.unregister();
     }
 
     public static @Nullable NotificationListener getInstanceIfConnected() {
@@ -203,6 +193,17 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerConnected() {
         super.onListenerConnected();
         sIsConnected = true;
+
+        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
+            @Override
+            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled) {
+                    requestUnbind();
+                }
+            }
+        };
+        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+
         onNotificationFullRefresh();
     }
 
@@ -214,6 +215,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
+        mNotificationBadgingObserver.unregister();
     }
 
     @Override
