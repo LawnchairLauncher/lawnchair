@@ -134,6 +134,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final long MIN_SWIPE_DURATION = 80;
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
+    private static final float SWIPE_DURATION_MULTIPLIER =
+            Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
     private final ClipAnimationHelper mClipAnimationHelper = new ClipAnimationHelper();
 
@@ -559,12 +561,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     public void onGestureEnded(float endVelocity) {
         Resources res = mContext.getResources();
         float flingThreshold = res.getDimension(R.dimen.quickstep_fling_threshold_velocity);
-        boolean isFling = Math.abs(endVelocity) > flingThreshold;
+        boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
 
         long duration = MAX_SWIPE_DURATION;
         final float endShift;
         if (!isFling) {
-            endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW ? 1 : 0;
+            endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW && mGestureStarted ? 1 : 0;
+            long expectedDuration = Math.abs(Math.round((endShift - mCurrentShift.value)
+                    * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
+            duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
             mLogAction = Touch.SWIPE;
         } else {
             endShift = endVelocity < 0 ? 1 : 0;
