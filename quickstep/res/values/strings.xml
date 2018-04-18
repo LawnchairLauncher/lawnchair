@@ -35,4 +35,7 @@
 
     <!-- Content description for the recent apps's accessibility option that closes it. [CHAR LIMIT=NONE] -->
     <string name="accessibility_close_task">Close</string>
+
+    <!-- Recents: Title of a button that clears the task list, i.e. closes all tasks. [CHAR LIMIT=30] -->
+    <string name="recents_clear_all">Clear all</string>
 </resources>

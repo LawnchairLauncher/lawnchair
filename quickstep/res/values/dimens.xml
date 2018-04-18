@@ -45,4 +45,7 @@
     <!-- Copied from framework resource:
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
+
+    <!-- Width of the space behind the last task in Overview. In the center of it, there is "Clear all" button. -->
+    <dimen name="clear_all_container_width">168dp</dimen>
 </resources>
