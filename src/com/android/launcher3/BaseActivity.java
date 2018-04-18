@@ -144,7 +144,7 @@ public abstract class BaseActivity extends Activity {
 
     @Override
     protected void onStop() {
-        mActivityFlags &= ~ACTIVITY_STATE_STARTED;
+        mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
         mForceInvisible = 0;
         super.onStop();
     }
