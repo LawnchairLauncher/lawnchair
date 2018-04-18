@@ -59,6 +59,7 @@ public class SettingsActivity extends Activity {
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     private static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
+    private static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
     private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
@@ -273,9 +274,13 @@ public class SettingsActivity extends Activity {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
+            Bundle showFragmentArgs = new Bundle();
+            showFragmentArgs.putString(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString());
+
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
+                    .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                    .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs);
             getActivity().startActivity(intent);
         }
     }
