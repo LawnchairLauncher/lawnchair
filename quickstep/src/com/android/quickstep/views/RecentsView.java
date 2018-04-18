@@ -213,6 +213,7 @@ public abstract class RecentsView<T extends BaseActivity>
         mEmptyMessagePadding = getResources()
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
+        updateEmptyMessage();
     }
 
     @Override
@@ -308,6 +309,56 @@ public abstract class RecentsView<T extends BaseActivity>
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
         }
+    }
+
+    private float calculateClearAllButtonAlpha() {
+        if (mClearAllButton.getVisibility() != View.VISIBLE) return 0;
+
+        // Current visible coordinate of the right border of the rightmost task.
+        final int carouselCurrentRight = getChildAt(getChildCount() - 1).getRight() - getScrollX();
+
+        // As the right border (let's call it E aka carouselCurrentRight) of the carousel moves
+        // over Clear all button, the button changes trasparency.
+        // leftOfAlphaChange < rightOfAlphaChange; these are the points of the 100% and 0% alpha
+        // correspondingly. Alpha changes linearly between 100% and 0% as E moves through this
+        // range. It doesn't change outside of the range.
+
+        // Once E hits the left border of the Clear-All button, the whole button is uncovered,
+        // and it should have alpha 100%.
+        final float leftOfAlphaChange = mClearAllButton.getX();
+
+        // The rightmost possible right coordinate of the carousel.
+        final int carouselMotionLimit = getScrollForPage(getChildCount() - 1) + getWidth()
+                - getPaddingRight() - mInsets.right;
+
+        // The carousel might not be able to ever cover a part of the Clear-all button. Then
+        // always show the button as 100%. Technically, this check also prevents dividing by zero
+        // or a negative number when calculating the transparency ratio below.
+        if (carouselMotionLimit <= leftOfAlphaChange) return 1;
+
+        // If the carousel is able to cover the button completely, we make the button completely
+        // transparent when E hits the right border of the button.
+        // Or, the carousel may not be able to move that far to the right so it completely covers
+        // the button. Then we set the rightmost possible position of the carousel as the point
+        // where the button reaches 0 alpha.
+        final float rightOfAlphaChange = Math.min(
+                mClearAllButton.getX() + mClearAllButton.getWidth(), carouselMotionLimit);
+
+        return Utilities.boundToRange(
+                (rightOfAlphaChange - carouselCurrentRight) /
+                        (rightOfAlphaChange - leftOfAlphaChange), 0, 1);
+    }
+
+    private void updateClearAllButtonAlpha() {
+        if (mClearAllButton != null) {
+            mClearAllButton.setAlpha(calculateClearAllButtonAlpha() * mContentAlpha);
+        }
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        updateClearAllButtonAlpha();
     }
 
     @Override
@@ -864,6 +915,7 @@ public abstract class RecentsView<T extends BaseActivity>
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
+        updateClearAllButtonAlpha();
     }
 
     public void setAdjacentScale(float adjacentScale) {
@@ -948,6 +1000,7 @@ public abstract class RecentsView<T extends BaseActivity>
             mEmptyTextLayout = null;
             mLastMeasureSize.set(getWidth(), getHeight());
         }
+        updateClearAllButtonVisibility();
 
         if (!mShowEmptyMessage) return;
 
@@ -1138,8 +1191,10 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     private void updateClearAllButtonVisibility() {
+        if (mClearAllButton == null) return;
         mClearAllButton.setVisibility(
                 !DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage ? GONE : VISIBLE);
+        updateClearAllButtonAlpha();
     }
 
     public void setClearAllButton(View clearAllButton) {
