@@ -43,7 +43,7 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         });
 
         mRecentsView = (RecentsView) findViewById(R.id.overview_panel);
-        mRecentsView.setContainerView(this);
+        mRecentsView.setClearAllButton(mClearAllButton);
     }
 
     @Override
@@ -73,9 +73,5 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         }
         mRecentsView.setContentAlpha(alpha);
         setVisibility(alpha > 0 ? VISIBLE : GONE);
-    }
-
-    public void onEmptyStateChanged(boolean isEmpty) {
-        mClearAllButton.setVisibility(isEmpty ? GONE : VISIBLE);
     }
 }
