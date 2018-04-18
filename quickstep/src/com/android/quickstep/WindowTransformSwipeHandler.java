@@ -18,7 +18,9 @@ package com.android.quickstep;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
@@ -55,7 +57,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -400,7 +401,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         setStateOnUiThread(STATE_QUICK_SCRUB_START);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(1f, QUICK_SCRUB_START_DURATION);
+        animateToProgress(1f, QUICK_SCRUB_START_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
     }
 
     @WorkerThread
@@ -573,13 +574,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                 // we want the page's snap velocity to approximately match the velocity at
                 // which the user flings, so we scale the duration by a value near to the
-                // derivative of the scroll interpolator at zero, ie. 5.
-                duration = 5 * Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
+                // derivative of the scroll interpolator at zero, ie. 2.
+                long baseDuration = Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
+                duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
             mLogAction = Touch.FLING;
         }
 
-        animateToProgress(endShift, duration);
+        animateToProgress(endShift, duration, DEACCEL);
     }
 
     private void doLogGesture(boolean toLauncher) {
@@ -599,10 +601,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
-    private void animateToProgress(float progress, long duration) {
+    private void animateToProgress(float progress, long duration, Interpolator interpolator) {
         mIsGoingToHome = Float.compare(progress, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
-        anim.setInterpolator(Interpolators.SCROLL);
+        anim.setInterpolator(interpolator);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
