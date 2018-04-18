@@ -148,20 +148,18 @@ public class TaskThumbnailView extends View {
         }
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        if (mClipBottom > 0 && !mTask.isLocked) {
-            canvas.save();
-            canvas.clipRect(0, 0, width, mClipBottom);
 
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mPaint);
-            canvas.restore();
-            canvas.save();
-            canvas.clipRect(0, mClipBottom, width, height);
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius,
-                    mBackgroundPaint);
-            canvas.restore();
-        } else {
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius,
-                    mCornerRadius, mTask.isLocked ? mBackgroundPaint : mPaint);
+        // Always draw the background since the snapshots may be translucent
+        canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mBackgroundPaint);
+        if (!mTask.isLocked) {
+            if (mClipBottom > 0) {
+                canvas.save();
+                canvas.clipRect(0, 0, width, mClipBottom);
+                canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mPaint);
+                canvas.restore();
+            } else {
+                canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mPaint);
+            }
         }
     }
 
