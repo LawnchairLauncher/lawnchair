@@ -80,6 +80,7 @@ public class IconNormalizer {
     private final float[] mLeftBorder;
     private final float[] mRightBorder;
     private final Rect mBounds;
+    private final Path mShapePath;
     private final Matrix mMatrix;
 
     private final Paint mPaintIcon;
@@ -116,6 +117,7 @@ public class IconNormalizer {
         mPaintMaskShapeOutline.setColor(Color.BLACK);
         mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
+        mShapePath = new Path();
         mMatrix = new Matrix();
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
     }
@@ -146,13 +148,13 @@ public class IconNormalizer {
         mMatrix.reset();
         mMatrix.setScale(mBounds.width(), mBounds.height());
         mMatrix.postTranslate(mBounds.left, mBounds.top);
-        maskPath.transform(mMatrix);
+        maskPath.transform(mMatrix, mShapePath);
 
         // XOR operation
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShape);
+        mCanvasARGB.drawPath(mShapePath, mPaintMaskShape);
 
         // DST_OUT operation around the mask path outline
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShapeOutline);
+        mCanvasARGB.drawPath(mShapePath, mPaintMaskShapeOutline);
 
         // Check if the result is almost transparent
         return isTransparentBitmap(mBitmapARGB);
