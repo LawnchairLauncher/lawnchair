@@ -360,7 +360,7 @@ public class Launcher extends BaseDraggingActivity
             dispatchDeviceProfileChanged();
 
             getRootView().dispatchInsets();
-            getStateManager().reapplyState();
+            getStateManager().reapplyState(true /* cancelCurrentAnimation */);
 
             // Recreate touch controllers
             mDragLayer.setup(mDragController);
