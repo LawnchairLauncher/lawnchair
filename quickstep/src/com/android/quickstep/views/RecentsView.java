@@ -66,10 +66,10 @@ import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.QuickScrubController;
-import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.TaskViewDrawable;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
@@ -79,6 +79,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * A list of recent tasks.
@@ -521,7 +522,6 @@ public abstract class RecentsView<T extends BaseActivity>
         }
         mHasVisibleTaskData.clear();
     }
-
 
     protected abstract void onAllTasksRemoved();
 
@@ -1060,23 +1060,27 @@ public abstract class RecentsView<T extends BaseActivity>
             return new PendingAnimation(anim);
         }
 
-        final RecentsAnimationInterpolator recentsInterpolator = tv.getRecentsInterpolator();
-        ValueAnimator targetViewAnim = ValueAnimator.ofFloat(0, 1);
-        targetViewAnim.addUpdateListener((animation) -> {
-            float percent = animation.getAnimatedFraction();
-            TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
-            tv.setScaleX(tw.taskScale);
-            tv.setScaleY(tw.taskScale);
-            tv.setTranslationX(tw.taskX);
-            tv.setTranslationY(tw.taskY);
-        });
-        anim.play(targetViewAnim);
+        tv.setVisibility(INVISIBLE);
+        TaskViewDrawable drawable = new TaskViewDrawable(tv, this);
+        getOverlay().add(drawable);
+
+        ObjectAnimator drawableAnim =
+                ObjectAnimator.ofFloat(drawable, TaskViewDrawable.PROGRESS, 1, 0);
+        drawableAnim.setInterpolator(LINEAR);
+
+        anim.play(drawableAnim);
         anim.setDuration(duration);
+
+        Consumer<Boolean> onTaskLaunchFinish = (r) -> {
+            onTaskLaunched(r);
+            tv.setVisibility(VISIBLE);
+            getOverlay().remove(drawable);
+        };
 
         mPendingAnimation = new PendingAnimation(anim);
         mPendingAnimation.addEndListener((onEndListener) -> {
             if (onEndListener.isSuccess) {
-                tv.launchTask(false);
+                tv.launchTask(false, onTaskLaunchFinish, getHandler());
                 Task task = tv.getTask();
                 if (task != null) {
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
@@ -1084,11 +1088,15 @@ public abstract class RecentsView<T extends BaseActivity>
                             TaskUtils.getComponentKeyForTask(task.key));
                 }
             } else {
-                resetTaskVisuals();
+                onTaskLaunchFinish.accept(false);
             }
             mPendingAnimation = null;
         });
         return mPendingAnimation;
+    }
+
+    protected void onTaskLaunched(boolean success) {
+        resetTaskVisuals();
     }
 
     @Override

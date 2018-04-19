@@ -15,15 +15,23 @@
  */
 package com.android.quickstep.util;
 
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
+import com.android.systemui.shared.system.WindowManagerWrapper;
 
 /**
  * Utility class to handle window clip animation
@@ -125,5 +133,74 @@ public class ClipAnimationHelper {
             Utilities.scaleRectFAboutCenter(mTargetRect, scale);
             mTargetRect.offset(offsetX, offsetY);
         }
+    }
+
+    public void fromTaskThumbnailView(TaskThumbnailView ttv) {
+        BaseDraggingActivity activity = BaseDraggingActivity.fromContext(ttv.getContext());
+        BaseDragLayer dl = activity.getDragLayer();
+
+        int[] pos = new int[2];
+        dl.getLocationOnScreen(pos);
+        mHomeStackBounds.set(0, 0, dl.getWidth(), dl.getHeight());
+        mHomeStackBounds.offset(pos[0], pos[1]);
+
+        if (activity.isInMultiWindowModeCompat()) {
+            // TODO: Fetch multi-window target bounds from system-ui
+            DeviceProfile fullDp = activity.getDeviceProfile().getFullScreenProfile();
+            // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
+            // account for system insets
+            int taskWidth = fullDp.availableWidthPx;
+            int taskHeight = fullDp.availableHeightPx;
+            int halfDividerSize = activity.getResources()
+                    .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
+
+            Rect insets = new Rect();
+            WindowManagerWrapper.getInstance().getStableInsets(insets);
+            if (fullDp.isLandscape) {
+                taskWidth = taskWidth / 2 - halfDividerSize;
+            } else {
+                taskHeight = taskHeight / 2 - halfDividerSize;
+            }
+
+            mSourceStackBounds.set(0, 0, taskWidth, taskHeight);
+            // Align the task to bottom right (probably not true for seascape).
+            mSourceStackBounds.offset(insets.left + fullDp.availableWidthPx - taskWidth,
+                    insets.top + fullDp.availableHeightPx - taskHeight);
+        } else {
+            mSourceStackBounds.set(mHomeStackBounds);
+            mSourceInsets.set(activity.getDeviceProfile().getInsets());
+        }
+
+        Rect targetRect = new Rect();
+        dl.getDescendantRectRelativeToSelf(ttv, targetRect);
+        updateTargetRect(targetRect);
+
+        // Transform the clip relative to the target rect.
+        float scale = mTargetRect.width() / mSourceRect.width();
+        mSourceWindowClipInsets.left = mSourceWindowClipInsets.left * scale;
+        mSourceWindowClipInsets.top = mSourceWindowClipInsets.top * scale;
+        mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
+        mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
+    }
+
+    public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
+        RectF currentRect;
+        synchronized (mTargetRect) {
+            currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
+        }
+
+        canvas.translate(mSourceStackBounds.left - mHomeStackBounds.left,
+                mSourceStackBounds.top - mHomeStackBounds.top);
+        mTmpMatrix.setRectToRect(mTargetRect, currentRect, ScaleToFit.FILL);
+        canvas.concat(mTmpMatrix);
+        canvas.translate(mTargetRect.left, mTargetRect.top);
+
+        float insetProgress = (1 - progress);
+        ttv.drawOnCanvas(canvas,
+                -mSourceWindowClipInsets.left * insetProgress,
+                -mSourceWindowClipInsets.top * insetProgress,
+                ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
+                ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
+                ttv.getCornerRadius() * progress);
     }
 }
