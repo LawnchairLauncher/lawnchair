@@ -131,6 +131,10 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return mSnapshotView;
     }
 
+    public ImageView getIconView() {
+        return mIconView;
+    }
+
     public void launchTask(boolean animate) {
         launchTask(animate, null, null);
     }

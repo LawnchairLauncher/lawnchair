@@ -130,4 +130,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
     }
+
+    @Override
+    protected void onTaskLaunched(boolean success) {
+        if (success) {
+            mActivity.getStateManager().goToState(NORMAL, false /* animate */);
+        }
+        super.onTaskLaunched(success);
+    }
 }
