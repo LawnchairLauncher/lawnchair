@@ -531,7 +531,6 @@ public abstract class RecentsView<T extends BaseActivity>
 
         unloadVisibleTaskData();
         setCurrentPage(0);
-        scrollTo(0, 0);
 
         OverviewCallbacks.get(getContext()).onResetOverview();
     }
