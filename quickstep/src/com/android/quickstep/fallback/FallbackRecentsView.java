@@ -18,7 +18,6 @@ package com.android.quickstep.fallback;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.support.annotation.AnyThread;
 import android.util.AttributeSet;
 import android.view.View;
 
