@@ -24,6 +24,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IntDef;
 import android.view.View;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -33,6 +34,8 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.uioverrides.UiFactory;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 /**
@@ -79,6 +82,21 @@ import java.util.ArrayList;
 public class LauncherStateManager {
 
     public static final String TAG = "StateManager";
+
+    // We separate the state animations into "atomic" and "non-atomic" components. The atomic
+    // components may be run atomically - that is, all at once, instead of user-controlled. However,
+    // atomic components are not restricted to this purpose; they can be user-controlled alongside
+    // non atomic components as well.
+    @IntDef(flag = true, value = {
+            NON_ATOMIC_COMPONENT,
+            ATOMIC_COMPONENT
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AnimationComponents {}
+    public static final int NON_ATOMIC_COMPONENT = 1 << 0;
+    public static final int ATOMIC_COMPONENT = 1 << 1;
+
+    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_COMPONENT;
 
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
@@ -238,13 +256,21 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
-        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null);
+        return createAnimationToNewWorkspace(state, duration, LauncherStateManager.ANIM_ALL);
+    }
+
+    public AnimatorPlaybackController createAnimationToNewWorkspace(
+            LauncherState state, long duration, @AnimationComponents int animComponents) {
+        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null,
+                animComponents);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
-            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable) {
+            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
+            @AnimationComponents int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
+        mConfig.animComponents = animComponents;
         mConfig.duration = duration;
         mConfig.playbackController = AnimatorPlaybackController.wrap(
                 createAnimationToNewWorkspaceInternal(state, builder, null), duration,
@@ -425,6 +451,7 @@ public class LauncherStateManager {
         public long duration;
         public boolean userControlled;
         public AnimatorPlaybackController playbackController;
+        public @AnimationComponents int animComponents = ANIM_ALL;
         private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
@@ -436,6 +463,7 @@ public class LauncherStateManager {
         public void reset() {
             duration = 0;
             userControlled = false;
+            animComponents = ANIM_ALL;
             mPropertySetter = null;
             mTargetState = null;
 
@@ -470,6 +498,14 @@ public class LauncherStateManager {
             mCurrentAnimation = animation;
             mTargetState = targetState;
             mCurrentAnimation.addListener(this);
+        }
+
+        public boolean playAtomicComponent() {
+            return (animComponents & ATOMIC_COMPONENT) != 0;
+        }
+
+        public boolean playNonAtomicComponent() {
+            return (animComponents & NON_ATOMIC_COMPONENT) != 0;
         }
     }
 

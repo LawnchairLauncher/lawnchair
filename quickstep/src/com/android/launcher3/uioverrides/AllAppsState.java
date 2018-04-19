@@ -84,7 +84,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {1f, -0.2f};
+        return new float[] {0.9f, -0.2f};
     }
 
     @Override

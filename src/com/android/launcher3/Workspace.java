@@ -82,7 +82,6 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.touch.WorkspaceTouchListener;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
