@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TextView
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/clear_all_button"
     android:layout_width="wrap_content"
@@ -10,5 +11,6 @@
     android:text="@string/recents_clear_all"
     android:textColor="?attr/workspaceTextColor"
     android:background="?android:attr/selectableItemBackground"
+    launcher:layout_ignoreInsets="true"
     android:textSize="14sp"
 />
