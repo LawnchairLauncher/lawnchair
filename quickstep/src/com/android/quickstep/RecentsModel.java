@@ -26,8 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
@@ -232,6 +234,19 @@ public class RecentsModel extends TaskStackChangeListener {
             mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
         }
         mRecentsTaskLoader.onTrimMemory(level);
+    }
+
+    public void onOverviewShown(boolean fromHome, String tag) {
+        if (mSystemUiProxy == null) {
+            return;
+        }
+        try {
+            mSystemUiProxy.onOverviewShown(fromHome);
+        } catch (RemoteException e) {
+            Log.w(tag,
+                    "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
+                            + ": ", e);
+        }
     }
 
     @WorkerThread

@@ -39,6 +39,7 @@ import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
@@ -48,6 +49,8 @@ import com.android.quickstep.views.TaskView;
  * Touch controller for handling various state transitions in portrait UI.
  */
 public class PortraitStatesTouchController extends AbstractStateChangeTouchController {
+
+    private static final String TAG = "PortraitStatesTouchCtrl";
 
     private static final float TOTAL_DISTANCE_MULTIPLIER = 3f;
     private static final float LINEAR_SCALE_LIMIT = 1 / TOTAL_DISTANCE_MULTIPLIER;
@@ -284,6 +287,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mFromState == NORMAL && targetState == OVERVIEW) {
+            RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
             SysuiEventLogger.writeDummyRecentsTransition(0);
         }
     }

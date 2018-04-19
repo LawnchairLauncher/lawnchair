@@ -12,12 +12,15 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.SysuiEventLogger;
 
 /**
  * Touch controller for handling edge swipes in landscape/seascape UI
  */
 public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchController {
+
+    private static final String TAG = "LandscapeEdgeSwipeCtrl";
 
     public LandscapeEdgeSwipeController(Launcher l) {
         super(l, SwipeDetector.HORIZONTAL);
@@ -69,6 +72,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mFromState == NORMAL && targetState == OVERVIEW) {
+            RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
             SysuiEventLogger.writeDummyRecentsTransition(0);
         }
     }
