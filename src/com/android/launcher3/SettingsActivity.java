@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
+import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -84,6 +87,7 @@ public class SettingsActivity extends Activity {
     public static class LauncherSettingsFragment extends PreferenceFragment {
 
         private IconBadgingObserver mIconBadgingObserver;
+        private RotationLockObserver mRotationLockObserver;
 
         private String mPreferenceKey;
         private boolean mPreferenceHighlighted = false;
@@ -122,6 +126,22 @@ public class SettingsActivity extends Activity {
                 } else {
                     getPreferenceScreen().removePreference(iconShapeOverride);
                 }
+            }
+
+            // Setup allow rotation preference
+            Preference rotationPref = findPreference(ALLOW_ROTATION_PREFERENCE_KEY);
+            if (getResources().getBoolean(R.bool.allow_rotation)) {
+                // Launcher supports rotation by default. No need to show this setting.
+                getPreferenceScreen().removePreference(rotationPref);
+            } else {
+                mRotationLockObserver = new RotationLockObserver(rotationPref, resolver);
+
+                // Register a content observer to listen for system setting changes while
+                // this UI is active.
+                mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
+
+                // Initialize the UI once
+                rotationPref.setDefaultValue(getAllowRotationDefaultValue());
             }
         }
 
@@ -181,6 +201,10 @@ public class SettingsActivity extends Activity {
                 mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
             }
+            if (mRotationLockObserver != null) {
+                mRotationLockObserver.unregister();
+                mRotationLockObserver = null;
+            }
             super.onDestroy();
         }
 
@@ -201,6 +225,23 @@ public class SettingsActivity extends Activity {
             } else {
                 return null;
             }
+        }
+    }
+
+    private static class RotationLockObserver extends SettingsObserver.System {
+
+        private final Preference mRotationPref;
+
+        public RotationLockObserver(Preference rotationPref, ContentResolver resolver) {
+            super(resolver);
+            mRotationPref = rotationPref;
+        }
+
+        @Override
+        public void onSettingChanged(boolean enabled) {
+            mRotationPref.setEnabled(enabled);
+            mRotationPref.setSummary(enabled
+                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
 
