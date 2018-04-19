@@ -945,7 +945,14 @@ public abstract class RecentsView<T extends BaseActivity>
             mEmptyTextLayout = null;
         }
 
-        if (mShowEmptyMessage && hasValidSize && mEmptyTextLayout == null) {
+        if (!mShowEmptyMessage) return;
+
+        // The icon needs to be centered. Need to scoll to horizontal 0 because with Clear-All
+        // space on the right, it's not guaranteed that after deleting all tasks, the horizontal
+        // scroll position will be zero.
+        scrollTo(0, 0);
+
+        if (hasValidSize && mEmptyTextLayout == null) {
             mLastMeasureSize.set(getWidth(), getHeight());
             int availableWidth = mLastMeasureSize.x - mEmptyMessagePadding - mEmptyMessagePadding;
             mEmptyTextLayout = StaticLayout.Builder.obtain(mEmptyMessage, 0, mEmptyMessage.length(),
