@@ -39,6 +39,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.util.LayoutUtils;
@@ -82,6 +83,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     AnimatorPlaybackController createControllerForHiddenActivity(T activity, int transitionLength);
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
+
+    void onOverviewShown(T activity);
 
     @Nullable
     T getCreatedActivity();
@@ -225,6 +228,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return new LauncherInitListener(onInitListener);
         }
 
+        @Override
+        public void onOverviewShown(Launcher launcher) {
+            DiscoveryBounce.showForOverviewIfNeeded(launcher);
+        }
+
         @Nullable
         @Override
         public Launcher getCreatedActivity() {
@@ -364,6 +372,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public ActivityInitListener createActivityInitListener(
                 BiPredicate<RecentsActivity, Boolean> onInitListener) {
             return new RecentsActivityTracker(onInitListener);
+        }
+
+        @Override
+        public void onOverviewShown(RecentsActivity activity) {
+            // Do nothing.
         }
 
         @Nullable

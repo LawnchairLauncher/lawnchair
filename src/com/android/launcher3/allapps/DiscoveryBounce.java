@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
-import android.content.Context;
 import android.view.MotionEvent;
+import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -31,21 +36,21 @@ import com.android.launcher3.R;
 import com.android.launcher3.compat.UserManagerCompat;
 
 /**
- * Floating view responsible for showing discovery bounce animation
+ * Abstract base class of floating view responsible for showing discovery bounce animation
  */
 public class DiscoveryBounce extends AbstractFloatingView {
 
-    public static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
+    public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
+    public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
 
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
 
-    public DiscoveryBounce(Launcher launcher) {
+    public DiscoveryBounce(Launcher launcher, Animator animator) {
         super(launcher, null);
         mLauncher = launcher;
 
-        mDiscoBounceAnimation = AnimatorInflater.loadAnimator(mLauncher,
-                R.animator.discovery_bounce);
+        mDiscoBounceAnimation = animator;
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
         mDiscoBounceAnimation.setTarget(controller);
         mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
@@ -96,16 +101,48 @@ public class DiscoveryBounce extends AbstractFloatingView {
         return (type & TYPE_ON_BOARD_POPUP) != 0;
     }
 
-    public static void showIfNeeded(Launcher launcher) {
+    public static void showForHomeIfNeeded(Launcher launcher) {
         if (!launcher.isInState(NORMAL)
-                || launcher.getSharedPrefs().getBoolean(APPS_VIEW_SHOWN, false)
+                || launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
                 || ActivityManager.isRunningInTestHarness()) {
             return;
         }
 
-        DiscoveryBounce view = new DiscoveryBounce(launcher);
+        DiscoveryBounce view = new DiscoveryBounce(launcher,
+                AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce));
+        view.mIsOpen = true;
+        launcher.getDragLayer().addView(view);
+    }
+
+    public static void showForOverviewIfNeeded(Launcher launcher) {
+        if (!launcher.isInState(OVERVIEW)
+                || launcher.getDeviceProfile().isVerticalBarLayout()
+                || launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
+                || UserManagerCompat.getInstance(launcher).isDemoUser()
+                || ActivityManager.isRunningInTestHarness()) {
+            return;
+        }
+
+        float verticalProgress = OVERVIEW.getVerticalProgress(launcher);
+
+        TimeInterpolator pathInterpolator = new PathInterpolator(0.35f, 0, 0.5f, 1);
+        Keyframe keyframe3 = Keyframe.ofFloat(0.423f, verticalProgress - (1 - 0.9438f));
+        keyframe3.setInterpolator(pathInterpolator);
+        Keyframe keyframe4 = Keyframe.ofFloat(0.654f, verticalProgress);
+        keyframe4.setInterpolator(pathInterpolator);
+
+        PropertyValuesHolder propertyValuesHolder = PropertyValuesHolder.ofKeyframe("progress",
+                Keyframe.ofFloat(0, verticalProgress),
+                Keyframe.ofFloat(0.346f, verticalProgress), keyframe3, keyframe4,
+                Keyframe.ofFloat(1f, verticalProgress));
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(null,
+                new PropertyValuesHolder[]{propertyValuesHolder});
+        animator.setDuration(2166);
+        animator.setRepeatCount(5);
+
+        DiscoveryBounce view = new DiscoveryBounce(launcher, animator);
         view.mIsOpen = true;
         launcher.getDragLayer().addView(view);
     }
