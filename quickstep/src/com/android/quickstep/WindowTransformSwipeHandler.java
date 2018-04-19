@@ -698,6 +698,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             // If we haven't posted the transition end runnable, run it now
             finishTransitionRunnable.run();
         }
+        RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
         doLogGesture(true /* toLauncher */);
     }
 
