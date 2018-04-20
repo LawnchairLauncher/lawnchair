@@ -943,6 +943,7 @@ public abstract class RecentsView<T extends BaseActivity>
         boolean hasValidSize = getWidth() > 0 && getHeight() > 0;
         if (sizeChanged && hasValidSize) {
             mEmptyTextLayout = null;
+            mLastMeasureSize.set(getWidth(), getHeight());
         }
 
         if (!mShowEmptyMessage) return;
@@ -953,7 +954,6 @@ public abstract class RecentsView<T extends BaseActivity>
         scrollTo(0, 0);
 
         if (hasValidSize && mEmptyTextLayout == null) {
-            mLastMeasureSize.set(getWidth(), getHeight());
             int availableWidth = mLastMeasureSize.x - mEmptyMessagePadding - mEmptyMessagePadding;
             mEmptyTextLayout = StaticLayout.Builder.obtain(mEmptyMessage, 0, mEmptyMessage.length(),
                     mEmptyMessagePaint, availableWidth)
