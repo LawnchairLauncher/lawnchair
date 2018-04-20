@@ -49,6 +49,7 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -364,6 +365,9 @@ public class Launcher extends Activity
     private LauncherDialog mCurrentDialog;
     private EditableItemInfo mEditingItem;
 
+    private static final int REQUEST = 112; //for permissions asking
+    AlertDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.loadThemePreference(this);
@@ -375,11 +379,14 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        setScreenOrientation();
 
+        String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
+        if (!hasPermissions(this, pe)){
+            onIntroShow();
+        }
+        setScreenOrientation();
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
-
         // Load configuration-specific DeviceProfile
         mDeviceProfile = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE ?
@@ -452,6 +459,50 @@ public class Launcher extends Activity
         Settings.init(this);
 
         Utilities.showChangelog(this);
+    }
+
+    public void onIntroShow(){
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setView(R.layout.app_intro);
+        dialog = ad.create();
+        dialog.show();
+    }
+
+    public void onPermissionsAsking(View v){
+        try{
+            String[] pe = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION };
+            ActivityCompat.requestPermissions(this, pe, REQUEST );
+            dialog.setContentView(R.layout.app_intro_1_5);
+        } catch (Exception e){
+            Toast.makeText(this, "Failed giving the permissions.\nError: "+e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onOpenComGroup(View v){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/lccommunity"));
+        startActivity(intent);
+    }
+
+    public void onContinueIntro(View v) {
+        String[] pe = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!hasPermissions(this, pe)) {
+            dialog.setContentView(R.layout.app_intro_2_false);
+        }else{
+            dialog.setContentView(R.layout.app_intro_2_true);
+        }
+    }
+
+    public void onFinishIntro(View v) { dialog.dismiss(); }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -766,46 +817,6 @@ public class Launcher extends Activity
         handleActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        PendingRequestArgs pendingArgs = mPendingRequestArgs;
-        if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
-                && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
-            setWaitingForResult(null);
-
-            View v = null;
-            CellLayout layout = getCellLayout(pendingArgs.container, pendingArgs.screenId);
-            if (layout != null) {
-                v = layout.getChildAt(pendingArgs.cellX, pendingArgs.cellY);
-            }
-            Intent intent = pendingArgs.getPendingIntent();
-
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null);
-            } else {
-                // TODO: Show a snack bar with link to settings
-                Toast.makeText(this, getString(R.string.msg_no_phone_permission,
-                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
-                final Launcher _this = this;
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface di, int i) {
-                        Utilities.requestStoragePermission(_this);
-                    }
-                };
-                new AlertDialog.Builder(this).setTitle(R.string.title_storage_permission_required)
-                        .setMessage(R.string.content_storage_permission_required).setPositiveButton(android.R.string.ok, listener)
-                        .setCancelable(false).show();
-            }
-        }
-    }
-
     /**
      * Check to see if a given screen id exists. If not, create it at the end, return the new id.
      *
@@ -1011,6 +1022,15 @@ public class Launcher extends Activity
         return !inputManager.isFullscreenMode();
     }
 
+    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packagename, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         final int uniChar = event.getUnicodeChar();
@@ -1026,7 +1046,7 @@ public class Launcher extends Activity
                 // If there are multiple keystrokes before the search dialog takes focus,
                 // onSearchRequested() will be called for every keystroke,
                 // but it is idempotent, so it's fine.
-                return onSearchRequested();
+                    return onSearchRequested();
             }
         }
 
@@ -2335,12 +2355,9 @@ public class Launcher extends Activity
                 .setMessage(R.string.abandoned_promise_explanation)
                 .setPositiveButton(R.string.abandoned_search, onSearchClickListener)
                 .setNeutralButton(R.string.abandoned_clean_this,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                final UserHandle user = Utilities.myUserHandle();
-                                mWorkspace.removeAbandonedPromise(packageName, user);
-                            }
+                        (dialog, id) -> {
+                            final UserHandle user = Utilities.myUserHandle();
+                            mWorkspace.removeAbandonedPromise(packageName, user);
                         })
                 .create().show();
     }
@@ -2390,12 +2407,7 @@ public class Launcher extends Activity
                 && !shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)) {
             showBrokenAppInstallDialog(
                     shortcut.getTargetComponent().getPackageName(),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            startAppShortcutOrInfoActivity(v);
-                        }
-                    });
+                    (dialog, id) -> startAppShortcutOrInfoActivity(v));
             return;
         }
 

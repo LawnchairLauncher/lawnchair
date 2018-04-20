@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context=".Launcher">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="20dp"
+                android:text="You did not allowed Lawnchair the permissions so You can not enjoy all our features.\nLawnchair will ask for this permission again as long as You deny it.\n\n\nYou can ask us personnaly in our Telegram group why You should enable it.\n"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/telegramgroup"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:onClick="onOpenComGroup"
+                android:padding="10dp"
+                android:text="Telegram community group" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/telegramgroup"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="20dp"
+                android:text="We wish great experiences and nice days with Your Lawnchair!\n\n"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:onClick="onFinishIntro"
+                android:padding="10dp"
+                android:text="Start Lawnchair" />
+
+        </RelativeLayout>
+</LinearLayout>

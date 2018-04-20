@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context=".Launcher">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp"
+                android:text="Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices.\n"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="To let Lawnchair work we need the permission for:\n\n\n"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your storage:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView3"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="to be able to make proper backups.\n" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView4"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your phone status:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView5"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="(Reason missing).\n" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView6"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="Your location:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView7"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="to get proper weather information.\n\n\n" />
+            <Button
+                android:id="@+id/button_permissions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable permissions"
+                android:layout_below="@+id/textView8"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:onClick="onPermissionsAsking" />
+        </RelativeLayout>
+</LinearLayout>
