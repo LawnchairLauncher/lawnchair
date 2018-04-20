@@ -101,13 +101,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
     }
 
-    public static class SplitScreen extends TaskSystemShortcut implements OnPreDrawListener,
-            DeviceProfile.OnDeviceProfileChangeListener, View.OnLayoutChangeListener {
+    public static class SplitScreen extends TaskSystemShortcut {
 
         private Handler mHandler;
-        private RecentsView mRecentsView;
-        private TaskView mTaskView;
-        private BaseDraggingActivity mActivity;
 
         public SplitScreen() {
             super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
@@ -125,11 +121,44 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (!task.isDockable) {
                 return null;
             }
-            mActivity = activity;
-            mRecentsView = activity.getOverviewPanel();
-            mTaskView = taskView;
+            final RecentsView recentsView = activity.getOverviewPanel();
+
             final TaskThumbnailView thumbnailView = taskView.getThumbnail();
             return (v -> {
+                final View.OnLayoutChangeListener onLayoutChangeListener =
+                        new View.OnLayoutChangeListener() {
+                            @Override
+                            public void onLayoutChange(View v, int l, int t, int r, int b,
+                                    int oldL, int oldT, int oldR, int oldB) {
+                                taskView.getRootView().removeOnLayoutChangeListener(this);
+                                recentsView.removeIgnoreResetTask(taskView);
+
+                                // Start animating in the side pages once launcher has been resized
+                                recentsView.dismissTask(taskView, false, false);
+                            }
+                        };
+
+                final DeviceProfile.OnDeviceProfileChangeListener onDeviceProfileChangeListener =
+                        new DeviceProfile.OnDeviceProfileChangeListener() {
+                            @Override
+                            public void onDeviceProfileChanged(DeviceProfile dp) {
+                                activity.removeOnDeviceProfileChangeListener(this);
+                                if (dp.isMultiWindowMode) {
+                                    taskView.getRootView().addOnLayoutChangeListener(
+                                            onLayoutChangeListener);
+                                }
+                            }
+                        };
+
+                final OnPreDrawListener preDrawListener = new OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        taskView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        WindowManagerWrapper.getInstance().endProlongedAnimations();
+                        return true;
+                    }
+                };
+
                 AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
@@ -145,15 +174,15 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
                     // Add a device profile change listener to kick off animating the side tasks
                     // once we enter multiwindow mode and relayout
-                    activity.addOnDeviceProfileChangeListener(this);
+                    activity.addOnDeviceProfileChangeListener(onDeviceProfileChangeListener);
 
                     final Runnable animStartedListener = () -> {
                         // Hide the task view and wait for the window to be resized
                         // TODO: Consider animating in launcher and do an in-place start activity
                         //       afterwards
-                        mRecentsView.addIgnoreResetTask(mTaskView);
-                        mTaskView.setAlpha(0f);
-                        mTaskView.getViewTreeObserver().addOnPreDrawListener(SplitScreen.this);
+                        recentsView.addIgnoreResetTask(taskView);
+                        taskView.setAlpha(0f);
+                        taskView.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
                     };
 
                     final int[] position = new int[2];
@@ -178,31 +207,6 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             future, animStartedListener, mHandler, true /* scaleUp */);
                 }
             });
-        }
-
-        @Override
-        public boolean onPreDraw() {
-            mTaskView.getViewTreeObserver().removeOnPreDrawListener(this);
-            WindowManagerWrapper.getInstance().endProlongedAnimations();
-            return true;
-        }
-
-        @Override
-        public void onDeviceProfileChanged(DeviceProfile dp) {
-            mActivity.removeOnDeviceProfileChangeListener(this);
-            if (dp.isMultiWindowMode) {
-                mTaskView.getRootView().addOnLayoutChangeListener(this);
-            }
-        }
-
-        @Override
-        public void onLayoutChange(View v, int l, int t, int r, int b,
-                int oldL, int oldT, int oldR, int oldB) {
-            mTaskView.getRootView().removeOnLayoutChangeListener(this);
-            mRecentsView.removeIgnoreResetTask(mTaskView);
-
-            // Start animating in the side pages once launcher has been resized
-            mRecentsView.dismissTask(mTaskView, false, false);
         }
     }
 
