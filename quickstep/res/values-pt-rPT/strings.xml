@@ -21,8 +21,9 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Ecrã dividido"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixar"</string>
-    <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Deslize rapidamente para cima a partir da parte inferior para alternar entre aplicações."</string>
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Vista geral"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nenhum item recente"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"Fechar"</string>
+    <!-- no translation found for recents_clear_all (5328176793634888831) -->
+    <skip />
 </resources>

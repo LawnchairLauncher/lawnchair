@@ -81,13 +81,13 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Horma-paperak"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Hasierako pantailaren ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Jakinarazteko biribiltxoak"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Jakinarazpen-biribiltxoak"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktibatuta"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desaktibatuta"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Jakinarazpenetarako sarbidea behar da"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazteko biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazpen-biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Aldatu ezarpenak"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Erakutsi jakinarazteko biribiltxoak"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Erakutsi jakinarazpen-biribiltxoak"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Gehitu ikonoa hasierako pantailan"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Aplikazio berrietan"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Aldatu ikonoaren forma"</string>
