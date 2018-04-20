@@ -279,7 +279,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        if (mCurrentAnimation != null && animation == mCurrentAnimation.getOriginalTarget()) {
+        if (mCurrentAnimation != null && animation == mCurrentAnimation.getTarget()) {
             Log.e(TAG, "Who dare cancel the animation when I am in control", new Exception());
             clearState();
         }

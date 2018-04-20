@@ -17,6 +17,7 @@ package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -52,43 +53,35 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     private final long mDuration;
 
     protected final AnimatorSet mAnim;
-    private AnimatorSet mOriginalTarget;
 
     protected float mCurrentFraction;
     private Runnable mEndAction;
 
+    protected boolean mTargetCancelled = false;
+
     protected AnimatorPlaybackController(AnimatorSet anim, long duration) {
         mAnim = anim;
-        mOriginalTarget = mAnim;
         mDuration = duration;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
         mAnimationPlayer.setInterpolator(Interpolators.LINEAR);
         mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.addUpdateListener(this);
+
+        mAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mTargetCancelled = true;
+            }
+        });
     }
 
     public AnimatorSet getTarget() {
         return mAnim;
     }
 
-    public void setOriginalTarget(AnimatorSet anim) {
-        mOriginalTarget = anim;
-    }
-
-    public AnimatorSet getOriginalTarget() {
-        return mOriginalTarget;
-    }
-
     public long getDuration() {
         return mDuration;
-    }
-
-    public AnimatorPlaybackController cloneFor(AnimatorSet anim) {
-        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(anim, mDuration);
-        controller.setOriginalTarget(mOriginalTarget);
-        controller.setPlayFraction(mCurrentFraction);
-        return controller;
     }
 
     /**
@@ -206,6 +199,11 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         @Override
         public void setPlayFraction(float fraction) {
             mCurrentFraction = fraction;
+            // Let the animator report the progress but don't apply the progress to child
+            // animations if it has been cancelled.
+            if (mTargetCancelled) {
+                return;
+            }
             long playPos = clampDuration(fraction);
             for (ValueAnimator anim : mChildAnimations) {
                 anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));

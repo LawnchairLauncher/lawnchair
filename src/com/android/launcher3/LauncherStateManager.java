@@ -157,6 +157,13 @@ public class LauncherStateManager {
     }
 
     public void reapplyState() {
+        reapplyState(false);
+    }
+
+    public void reapplyState(boolean cancelCurrentAnimation) {
+        if (cancelCurrentAnimation) {
+            cancelAnimation();
+        }
         if (mConfig.mCurrentAnimation == null) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(mState);
