@@ -365,7 +365,7 @@ public class Launcher extends Activity
     private LauncherDialog mCurrentDialog;
     private EditableItemInfo mEditingItem;
 
-    private static final int REQUEST = 112; //for permissions
+    private static final int REQUEST = 112; //for permissions asking
     AlertDialog dialog;
 
     @Override
