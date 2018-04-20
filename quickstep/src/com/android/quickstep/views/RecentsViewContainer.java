@@ -56,7 +56,8 @@ public class RecentsViewContainer extends InsettableFrameLayout {
                 (mClearAllButton.getMeasuredWidth() - getResources().getDimension(
                         R.dimen.clear_all_container_width)) / 2);
         mClearAllButton.setTranslationY(
-                mTempRect.top + (mTempRect.height() - mClearAllButton.getMeasuredHeight()) / 2);
+                mTempRect.top + (mTempRect.height() - mClearAllButton.getMeasuredHeight()) / 2
+                        - mClearAllButton.getTop());
     }
 
     @Override
