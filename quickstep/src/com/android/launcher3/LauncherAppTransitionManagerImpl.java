@@ -50,7 +50,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Surface;
@@ -249,7 +248,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     mLauncher.getStateManager()
                             .createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
             controller.dispatchOnStart();
-            childStateAnimation = controller.getOriginalTarget();
+            childStateAnimation = controller.getTarget();
             launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
