@@ -87,7 +87,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"عطَّل المشرف هذه الميزة"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"نقاط الإشعارات"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"قيد التشغيل"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"قيد الإيقاف"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"غير مفعّل"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>

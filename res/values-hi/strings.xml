@@ -89,7 +89,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="icon_badging_service_title" msgid="2309733118428242174">"नए नोटिफ़िकेशन बताने वाला गोल निशान दिखाएं"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकॉन जोड़ें"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप के लिए"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकॉन का आकार बदलें"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"होम स्‍क्रीन पर"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"सिस्टम डिफ़ॉल्ट का उपयोग करें"</string>
