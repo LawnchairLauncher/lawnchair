@@ -138,4 +138,9 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         }
         super.onTaskLaunched(success);
     }
+
+    @Override
+    public boolean shouldUseMultiWindowTaskSizeStrategy() {
+        return mActivity.isInMultiWindowModeCompat();
+    }
 }
