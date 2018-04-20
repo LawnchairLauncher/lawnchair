@@ -87,7 +87,8 @@ public class RecentsModel extends TaskStackChangeListener {
     private int mTaskChangeId;
     private ISystemUiProxy mSystemUiProxy;
     private boolean mClearAssistCacheOnStackChange = true;
-    private final boolean mPreloadTasksInBackground;
+    private final boolean mIsLowRamDevice;
+    private boolean mPreloadTasksInBackground;
     private final AccessibilityManager mAccessibilityManager;
 
     private RecentsModel(Context context) {
@@ -95,7 +96,7 @@ public class RecentsModel extends TaskStackChangeListener {
 
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        mPreloadTasksInBackground = !activityManager.isLowRamDevice();
+        mIsLowRamDevice = activityManager.isLowRamDevice();
         mMainThreadExecutor = new MainThreadExecutor();
 
         Resources res = context.getResources();
@@ -158,6 +159,10 @@ public class RecentsModel extends TaskStackChangeListener {
             });
         });
         return requestId;
+    }
+
+    public void setPreloadTasksInBackground(boolean preloadTasksInBackground) {
+        mPreloadTasksInBackground = preloadTasksInBackground && !mIsLowRamDevice;
     }
 
     @Override
