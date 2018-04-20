@@ -24,23 +24,18 @@ import java.util.ArrayList;
  */
 public class RemoteAnimationTargetSet {
 
-    public final boolean allTransparent;
     public final RemoteAnimationTargetCompat[] apps;
 
     public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
-        boolean allTransparent = true;
-
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         if (apps != null) {
             for (RemoteAnimationTargetCompat target : apps) {
                 if (target.mode == targetMode) {
-                    allTransparent &= target.isTranslucent;
                     filteredApps.add(target);
                 }
             }
         }
 
-        this.allTransparent = allTransparent;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
     }
 
@@ -51,5 +46,14 @@ public class RemoteAnimationTargetSet {
             }
         }
         return null;
+    }
+
+    public boolean isAnimatingHome() {
+        for (RemoteAnimationTargetCompat target : apps) {
+            if (target.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                return true;
+            }
+        }
+        return false;
     }
 }
