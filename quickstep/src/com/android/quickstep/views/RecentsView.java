@@ -170,7 +170,7 @@ public abstract class RecentsView<T extends BaseActivity>
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
 
-    private RecentsViewContainer mContainerView;
+    private View mClearAllButton;
 
     // Variables for empty state
     private final Drawable mEmptyIcon;
@@ -312,12 +312,15 @@ public abstract class RecentsView<T extends BaseActivity>
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (DEBUG_SHOW_CLEAR_ALL_BUTTON && mTouchState == TOUCH_STATE_REST && mScroller.isFinished()
-                && getChildCount() != 0
-                && ev.getX() > getChildAt(getChildCount() - 1).getRight() - getScrollX()) {
-            // If nothing is in motion, allow events to the right of the last task to go to the
-            // Clear All button.
-            return false;
+        if (DEBUG_SHOW_CLEAR_ALL_BUTTON && ev.getAction() == MotionEvent.ACTION_DOWN
+                && mTouchState == TOUCH_STATE_REST && mScroller.isFinished()
+                && mClearAllButton.getVisibility() == View.VISIBLE) {
+            mClearAllButton.getHitRect(mTempRect);
+            mTempRect.offset(-getLeft(), -getTop());
+            if (mTempRect.contains((int) ev.getX(), (int) ev.getY())) {
+                // If nothing is in motion, let the Clear All button process the event.
+                return false;
+            }
         }
 
         if (ev.getAction() == MotionEvent.ACTION_UP && mShowEmptyMessage) {
@@ -928,8 +931,8 @@ public abstract class RecentsView<T extends BaseActivity>
         mShowEmptyMessage = isEmpty;
         updateEmptyStateUi(hasSizeChanged);
         invalidate();
-        if (mContainerView != null) {
-            mContainerView.onEmptyStateChanged(!DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage);
+        if (mClearAllButton != null) {
+            updateClearAllButtonVisibility();
         }
     }
 
@@ -1134,8 +1137,13 @@ public abstract class RecentsView<T extends BaseActivity>
                 R.dimen.clear_all_container_width) - getPaddingEnd();
     }
 
-    public void setContainerView(RecentsViewContainer containerView) {
-        mContainerView = containerView;
-        mContainerView.onEmptyStateChanged(!DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage);
+    private void updateClearAllButtonVisibility() {
+        mClearAllButton.setVisibility(
+                !DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage ? GONE : VISIBLE);
+    }
+
+    public void setClearAllButton(View clearAllButton) {
+        mClearAllButton = clearAllButton;
+        updateClearAllButtonVisibility();
     }
 }
