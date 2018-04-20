@@ -521,6 +521,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         notifyGestureStartedAsync();
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+        mRecentsAnimationWrapper.hideCurrentInputMethod();
         mRecentsAnimationWrapper.enableInputConsumer();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
                 CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);

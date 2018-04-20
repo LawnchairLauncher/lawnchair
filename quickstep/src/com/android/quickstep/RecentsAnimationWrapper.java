@@ -115,4 +115,15 @@ public class RecentsAnimationWrapper {
             }
         });
     }
+
+    public void hideCurrentInputMethod() {
+        BackgroundExecutor.get().submit(() -> {
+            synchronized (this) {
+                TraceHelper.partitionSection("RecentsController", "Hiding currentinput method");
+                if (controller != null) {
+                    controller.hideCurrentInputMethod();
+                }
+            }
+        });
+    }
 }
