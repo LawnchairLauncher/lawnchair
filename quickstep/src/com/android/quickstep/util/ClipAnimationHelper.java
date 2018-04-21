@@ -27,6 +27,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -135,7 +136,7 @@ public class ClipAnimationHelper {
         }
     }
 
-    public void fromTaskThumbnailView(TaskThumbnailView ttv) {
+    public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(ttv.getContext());
         BaseDragLayer dl = activity.getDragLayer();
 
@@ -144,7 +145,7 @@ public class ClipAnimationHelper {
         mHomeStackBounds.set(0, 0, dl.getWidth(), dl.getHeight());
         mHomeStackBounds.offset(pos[0], pos[1]);
 
-        if (activity.isInMultiWindowModeCompat()) {
+        if (rv.shouldUseMultiWindowTaskSizeStrategy()) {
             // TODO: Fetch multi-window target bounds from system-ui
             DeviceProfile fullDp = activity.getDeviceProfile().getFullScreenProfile();
             // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to

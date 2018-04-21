@@ -66,4 +66,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
         LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
     }
 
+    @Override
+    public boolean shouldUseMultiWindowTaskSizeStrategy() {
+        // Just use the activity task size for multi-window as well.
+        return false;
+    }
 }

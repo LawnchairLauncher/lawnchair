@@ -1098,6 +1098,8 @@ public abstract class RecentsView<T extends BaseActivity>
         return mPendingAnimation;
     }
 
+    public abstract boolean shouldUseMultiWindowTaskSizeStrategy();
+
     protected void onTaskLaunched(boolean success) {
         resetTaskVisuals();
     }
