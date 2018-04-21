@@ -143,6 +143,15 @@ public abstract class BaseActivity extends Activity {
     }
 
     @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+
+        // Needed for activities that auto-enter PiP, which will not trigger a remote animation to
+        // be created
+        clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+    }
+
+    @Override
     protected void onStop() {
         mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
         mForceInvisible = 0;
