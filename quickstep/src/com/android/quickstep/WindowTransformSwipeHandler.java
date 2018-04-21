@@ -333,7 +333,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
         } else {
             TraceHelper.beginSection("WTS-init");
-            // TODO: Implement a better animation for fading in
             View rootView = activity.getRootView();
             rootView.setAlpha(0);
             rootView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
@@ -506,8 +505,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             dp.updateInsets(homeContentInsets);
         } else {
             overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
-            // TODO: Workaround for an existing issue where the home content insets are
-            // not valid immediately after rotation, just use the stable insets for now
+            // If we are not in multi-window mode, home insets should be same as system insets.
             Rect insets = new Rect();
             WindowManagerWrapper.getInstance().getStableInsets(insets);
             dp = dp.copy(mContext);
