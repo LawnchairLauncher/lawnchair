@@ -26,6 +26,7 @@ import static com.android.systemui.shared.system.PackageManagerWrapper
         .ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -36,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
+import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.PatternMatcher;
@@ -49,6 +51,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.util.ClipAnimationHelper;
@@ -59,6 +62,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.TransactionCompat;
 
 import java.util.ArrayList;
 
@@ -254,15 +258,17 @@ public class OverviewCommandHelper {
         private boolean onActivityReady(T activity, Boolean wasVisible) {
             activity.<RecentsView>getOverviewPanel().setCurrentTask(mRunningTaskId);
             AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-            mHelper.prepareRecentsUI(activity, wasVisible);
+            AnimationFactory factory = mHelper.prepareRecentsUI(activity, wasVisible,
+                    (controller) -> {
+                        controller.dispatchOnStart();
+                        ValueAnimator anim = controller.getAnimationPlayer()
+                                .setDuration(RECENTS_LAUNCH_DURATION);
+                        anim.setInterpolator(FAST_OUT_SLOW_IN);
+                        anim.start();
+                });
+            factory.onRemoteAnimationReceived(null);
             if (wasVisible) {
-                AnimatorPlaybackController controller =
-                        mHelper.createControllerForVisibleActivity(activity);
-                controller.dispatchOnStart();
-                ValueAnimator anim =
-                        controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
-                anim.setInterpolator(FAST_OUT_SLOW_IN);
-                anim.start();
+                factory.createActivityController(RECENTS_LAUNCH_DURATION);
             }
             mActivity = activity;
             return false;
@@ -282,7 +288,6 @@ public class OverviewCommandHelper {
 
             RemoteAnimationTargetSet targetSet =
                     new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
-
 
             // Use the top closing app to determine the insets for the animation
             RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
@@ -313,6 +318,22 @@ public class OverviewCommandHelper {
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             valueAnimator.addUpdateListener((v) ->
                 clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue()));
+
+            if (targetSet.isAnimatingHome()) {
+                // If we are animating home, fade in the opening targets
+                RemoteAnimationTargetSet openingSet =
+                        new RemoteAnimationTargetSet(targetCompats, MODE_OPENING);
+
+                TransactionCompat transaction = new TransactionCompat();
+                valueAnimator.addUpdateListener((v) -> {
+                    for (RemoteAnimationTargetCompat app : openingSet.apps) {
+                        transaction.setAlpha(app.leash, (float) v.getAnimatedValue());
+                        transaction.show(app.leash);
+                    }
+                    transaction.setEarlyWakeup();
+                    transaction.apply();
+                });
+            }
             anim.play(valueAnimator);
             return anim;
         }

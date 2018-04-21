@@ -54,7 +54,7 @@ public class LauncherLayoutListener extends AbstractFloatingView
     @Override
     public void setInsets(Rect insets) {
         if (mHandler != null) {
-            mHandler.onLauncherLayoutChanged();
+            mHandler.buildAnimationController();
         }
     }
 
