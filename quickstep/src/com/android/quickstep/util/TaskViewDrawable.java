@@ -64,7 +64,7 @@ public class TaskViewDrawable extends Drawable {
 
         mThumbnailView = tv.getThumbnail();
         mClipAnimationHelper = new ClipAnimationHelper();
-        mClipAnimationHelper.fromTaskThumbnailView(mThumbnailView);
+        mClipAnimationHelper.fromTaskThumbnailView(mThumbnailView, parent);
     }
 
     public void setProgress(float progress) {
