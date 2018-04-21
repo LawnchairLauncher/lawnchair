@@ -25,7 +25,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -112,14 +111,17 @@ public class ClipAnimationHelper {
         mClipRect.bottom = (int)
                 (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress));
 
-        mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
-
         TransactionCompat transaction = new TransactionCompat();
         for (RemoteAnimationTargetCompat app : targetSet.apps) {
-            mTmpMatrix.postTranslate(app.position.x, app.position.y);
-            transaction.setMatrix(app.leash, mTmpMatrix)
-                    .setWindowCrop(app.leash, mClipRect);
-            if (app.isNotInRecents) {
+            if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
+                mTmpMatrix.postTranslate(app.position.x, app.position.y);
+                transaction.setMatrix(app.leash, mTmpMatrix)
+                        .setWindowCrop(app.leash, mClipRect);
+            }
+
+            if (app.isNotInRecents
+                    || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 transaction.setAlpha(app.leash, 1 - progress);
             }
             transaction.show(app.leash);

@@ -63,6 +63,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
@@ -164,6 +165,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
     private QuickScrubController mQuickScrubController;
+    private AnimationFactory mAnimationFactory = (t) -> { };
 
     private Runnable mLauncherDrawnCallback;
 
@@ -212,11 +214,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
-                this::onGestureStartedWithLauncher);
+                this::notifyGestureStartedAsync);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
                         | STATE_GESTURE_CANCELLED,
                 this::resetStateForAnimationCancel);
 
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_APP_CONTROLLER_RECEIVED,
+                this::sendRemoteAnimationsToAnimationFactory);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_SCALED_CONTROLLER_APP,
                 this::resumeLastTask);
@@ -321,7 +325,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             return;
         }
 
-        mActivityControlHelper.prepareRecentsUI(mActivity, mWasLauncherAlreadyVisible);
+        mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
+                mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
@@ -377,9 +382,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLauncherFrameDrawnTime = SystemClock.uptimeMillis();
     }
 
+    private void sendRemoteAnimationsToAnimationFactory() {
+        mAnimationFactory.onRemoteAnimationReceived(mRecentsAnimationWrapper.targetSet);
+    }
+
     private void initializeLauncherAnimationController() {
         mLayoutListener.setHandler(this);
-        onLauncherLayoutChanged();
+        buildAnimationController();
 
         final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
         SysuiEventLogger.writeDummyRecentsTransition(transitionDelay);
@@ -418,15 +427,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     /**
      * Called by {@link #mLayoutListener} when launcher layout changes
      */
-    public void onLauncherLayoutChanged() {
+    public void buildAnimationController() {
         initTransitionEndpoints(mActivity.getDeviceProfile());
+        mAnimationFactory.createActivityController(mTransitionDragLength);
+    }
 
-        if (!mWasLauncherAlreadyVisible) {
-            mLauncherTransitionController = mActivityControlHelper
-                    .createControllerForHiddenActivity(mActivity, mTransitionDragLength);
-            mLauncherTransitionController.dispatchOnStart();
-            mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
-        }
+    private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
+        mLauncherTransitionController = anim;
+        mLauncherTransitionController.dispatchOnStart();
+        mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
     }
 
     @WorkerThread
@@ -543,17 +552,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
             mActivityControlHelper.onQuickstepGestureStarted(
                     curActivity, mWasLauncherAlreadyVisible);
-        }
-    }
-
-    private void onGestureStartedWithLauncher() {
-        notifyGestureStartedAsync();
-
-        if (mWasLauncherAlreadyVisible) {
-            mLauncherTransitionController = mActivityControlHelper
-                    .createControllerForVisibleActivity(mActivity);
-            mLauncherTransitionController.dispatchOnStart();
-            mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
         }
     }
 

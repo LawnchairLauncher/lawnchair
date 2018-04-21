@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.view.View;
@@ -40,15 +39,16 @@ import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -67,19 +67,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void executeOnWindowAvailable(T activity, Runnable action);
 
-    void executeOnNextDraw(T activity, TaskView targetView, Runnable action);
-
     void onTransitionCancelled(T activity, boolean activityVisible);
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
 
     void onSwipeUpComplete(T activity);
 
-    void prepareRecentsUI(T activity, boolean activityVisible);
-
-    AnimatorPlaybackController createControllerForVisibleActivity(T activity);
-
-    AnimatorPlaybackController createControllerForHiddenActivity(T activity, int transitionLength);
+    AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,
+            Consumer<AnimatorPlaybackController> callback);
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
@@ -131,20 +126,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void executeOnNextDraw(Launcher activity, TaskView targetView, Runnable action) {
-            ViewOnDrawExecutor executor = new ViewOnDrawExecutor() {
-                @Override
-                public void onViewDetachedFromWindow(View v) {
-                    if (!isCompleted()) {
-                        runAllTasks();
-                    }
-                }
-            };
-            executor.attachTo(activity, targetView, false /* waitForLoadAnimation */);
-            executor.execute(action);
-        }
-
-        @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
             if (dp.isVerticalBarLayout()) {
@@ -169,7 +150,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void prepareRecentsUI(Launcher activity, boolean activityVisible) {
+        public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
+                Consumer<AnimatorPlaybackController> callback) {
             LauncherState startState = activity.getStateManager().getState();
             if (startState.disableRestore) {
                 startState = activity.getStateManager().getRestState();
@@ -185,37 +167,41 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 // Optimization, hide the all apps view to prevent layout while initializing
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
             }
+
+            return (transitionLength) ->
+                    createActivityController(activity, activityVisible, transitionLength, callback);
         }
 
-        @Override
-        public AnimatorPlaybackController createControllerForVisibleActivity(Launcher activity) {
-            DeviceProfile dp = activity.getDeviceProfile();
-            long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-            return activity.getStateManager().createAnimationToNewWorkspace(OVERVIEW, accuracy);
-        }
+        private void createActivityController(Launcher activity, boolean wasVisible,
+                long transitionLength, Consumer<AnimatorPlaybackController> callback) {
+            if (wasVisible) {
+                DeviceProfile dp = activity.getDeviceProfile();
+                long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
+                callback.accept(activity.getStateManager()
+                        .createAnimationToNewWorkspace(OVERVIEW, accuracy));
+                return;
+            }
 
-        @Override
-        public AnimatorPlaybackController createControllerForHiddenActivity(
-                Launcher activity, int transitionLength) {
+            if (activity.getDeviceProfile().isVerticalBarLayout()) {
+                return;
+            }
+
             AllAppsTransitionController controller = activity.getAllAppsController();
             AnimatorSet anim = new AnimatorSet();
-            if (activity.getDeviceProfile().isVerticalBarLayout()) {
-                // TODO:
-            } else {
-                float scrollRange = Math.max(controller.getShiftRange(), 1);
-                float progressDelta = (transitionLength / scrollRange);
 
-                float endProgress = OVERVIEW.getVerticalProgress(activity);
-                float startProgress = endProgress + progressDelta;
-                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
-                        controller, ALL_APPS_PROGRESS, startProgress, endProgress);
-                shiftAnim.setInterpolator(LINEAR);
-                anim.play(shiftAnim);
-            }
+            float scrollRange = Math.max(controller.getShiftRange(), 1);
+            float progressDelta = (transitionLength / scrollRange);
+
+            float endProgress = OVERVIEW.getVerticalProgress(activity);
+            float startProgress = endProgress + progressDelta;
+            ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
+                    controller, ALL_APPS_PROGRESS, startProgress, endProgress);
+            shiftAnim.setInterpolator(LINEAR);
+            anim.play(shiftAnim);
 
             anim.setDuration(transitionLength * 2);
             activity.getStateManager().setCurrentAnimation(anim);
-            return AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+            callback.accept(AnimatorPlaybackController.wrap(anim, transitionLength * 2));
         }
 
         @Override
@@ -295,13 +281,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void executeOnNextDraw(RecentsActivity activity, TaskView targetView,
-                Runnable action) {
-            // TODO:
-            new Handler(Looper.getMainLooper()).post(action);
-        }
-
-        @Override
         public void onTransitionCancelled(RecentsActivity activity, boolean activityVisible) {
             // TODO:
         }
@@ -324,23 +303,43 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void prepareRecentsUI(RecentsActivity activity, boolean activityVisible) {
-            // TODO:
-        }
+        public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
+                Consumer<AnimatorPlaybackController> callback) {
+            if (activityVisible) {
+                return (transitionLength) -> { };
+            }
 
-        @Override
-        public AnimatorPlaybackController createControllerForVisibleActivity(
-                RecentsActivity activity) {
-            DeviceProfile dp = activity.getDeviceProfile();
-            return createControllerForHiddenActivity(activity, Math.max(dp.widthPx, dp.heightPx));
-        }
+            RecentsViewContainer rv = activity.getOverviewPanelContainer();
+            rv.setContentAlpha(0);
 
-        @Override
-        public AnimatorPlaybackController createControllerForHiddenActivity(
-                RecentsActivity activity, int transitionLength) {
-            // We do not animate anything. Create a empty controller
-            AnimatorSet anim = new AnimatorSet();
-            return AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+            return new AnimationFactory() {
+
+                boolean isAnimatingHome = false;
+
+                @Override
+                public void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) {
+                    isAnimatingHome = targets != null && targets.isAnimatingHome();
+                    if (!isAnimatingHome) {
+                        rv.setContentAlpha(1);
+                    }
+                    createActivityController(getSwipeUpDestinationAndLength(
+                            activity.getDeviceProfile(), activity, new Rect()));
+                }
+
+                @Override
+                public void createActivityController(long transitionLength) {
+                    if (!isAnimatingHome) {
+                        return;
+                    }
+
+                    ObjectAnimator anim = ObjectAnimator
+                            .ofFloat(rv, RecentsViewContainer.CONTENT_ALPHA, 0, 1);
+                    anim.setDuration(transitionLength).setInterpolator(LINEAR);
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.play(anim);
+                    callback.accept(AnimatorPlaybackController.wrap(animatorSet, transitionLength));
+                }
+            };
         }
 
         @Override
@@ -422,5 +421,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
                 Context context, Handler handler, long duration);
+    }
+
+    interface AnimationFactory {
+
+        default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
+
+        void createActivityController(long transitionLength);
     }
 }
