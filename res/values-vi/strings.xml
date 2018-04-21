@@ -79,7 +79,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Thư mục: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Tiện ích con"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hình nền"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Cài đặt trang chủ"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Cài đặt màn hình chính"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Bị tắt bởi quản trị viên của bạn"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Dấu chấm thông báo"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Đang bật"</string>
