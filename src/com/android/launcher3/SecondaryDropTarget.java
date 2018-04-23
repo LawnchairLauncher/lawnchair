@@ -52,7 +52,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     private final Alarm mCacheExpireAlarm;
 
-    private int mCurrentAccessibilityAction = -1;
+    protected int mCurrentAccessibilityAction = -1;
     public SecondaryDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -70,7 +70,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         setupUi(UNINSTALL);
     }
 
-    private void setupUi(int action) {
+    protected void setupUi(int action) {
         if (action == mCurrentAccessibilityAction) {
             return;
         }
