@@ -219,9 +219,18 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             mSnapshotView.setDimAlpha(mCurveDimAlpha);
         }
 
-        mCurveScale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
+        mCurveScale = getCurveScaleForCurveInterpolation(curveInterpolation);
         setScaleX(mCurveScale);
         setScaleY(mCurveScale);
+    }
+
+    public float getCurveScaleForInterpolation(float linearInterpolation) {
+        float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
+        return getCurveScaleForCurveInterpolation(curveInterpolation);
+    }
+
+    private float getCurveScaleForCurveInterpolation(float curveInterpolation) {
+        return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
     public float getCurveScale() {

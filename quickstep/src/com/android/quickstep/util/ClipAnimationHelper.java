@@ -15,9 +15,13 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.SCROLL;
+
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -46,8 +50,10 @@ public class ClipAnimationHelper {
     private final RectF mSourceRect = new RectF();
     // The bounds of the task view in launcher window coordinates
     private final RectF mTargetRect = new RectF();
-    // Doesn't change after initialized, used as an anchor when changing mTargetRect
-    private final RectF mInitialTargetRect = new RectF();
+    // Doesn't change after initialized, used as an anchor when changing mTargetOffset
+    private final PointF mInitialTargetOffset = new PointF();
+    // Set when the final window destination is changed, such as offsetting for quick scrub
+    private final PointF mTargetOffset = new PointF();
     // The insets to be used for clipping the app window, which can be larger than mSourceInsets
     // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
     // app window coordinates.
@@ -60,6 +66,9 @@ public class ClipAnimationHelper {
     private final Rect mClipRect = new Rect();
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private final Matrix mTmpMatrix = new Matrix();
+    private final RectF mTmpRectF = new RectF();
+
+    private float mTargetScale = 1f;
 
     public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
         mHomeStackBounds.set(homeStackBounds);
@@ -75,10 +84,9 @@ public class ClipAnimationHelper {
                 mSourceStackBounds.width() - mSourceInsets.right,
                 mSourceStackBounds.height() - mSourceInsets.bottom);
         mTargetRect.set(targetRect);
-        mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
+        mInitialTargetOffset.set(mHomeStackBounds.left - mSourceStackBounds.left,
                 mHomeStackBounds.top - mSourceStackBounds.top);
-
-        mInitialTargetRect.set(mTargetRect);
+        mTargetOffset.set(mInitialTargetOffset);
 
         // Calculate the clip based on the target rect (since the content insets and the
         // launcher insets may differ, so the aspect ratio of the target rect can differ
@@ -98,10 +106,13 @@ public class ClipAnimationHelper {
 
     public void applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
         RectF currentRect;
-        synchronized (mTargetRect) {
-            currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
+            mTmpRectF.set(mTargetRect);
+            Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
+            currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
+            synchronized (mTargetOffset) {
             // Stay lined up with the center of the target, since it moves for quick scrub.
-            currentRect.offset(mTargetRect.centerX() - currentRect.centerX(), 0);
+            currentRect.offset(mTargetOffset.x * SCROLL.getInterpolation(progress),
+                    mTargetOffset.y  * LINEAR.getInterpolation(progress));
         }
 
         mClipRect.left = (int) (mSourceWindowClipInsets.left * progress);
@@ -131,10 +142,10 @@ public class ClipAnimationHelper {
     }
 
     public void offsetTarget(float scale, float offsetX, float offsetY) {
-        synchronized (mTargetRect) {
-            mTargetRect.set(mInitialTargetRect);
-            Utilities.scaleRectFAboutCenter(mTargetRect, scale);
-            mTargetRect.offset(offsetX, offsetY);
+        synchronized (mTargetOffset) {
+            mTargetScale = scale;
+            mTargetOffset.set(mInitialTargetOffset);
+            mTargetOffset.offset(offsetX, offsetY);
         }
     }
 
@@ -187,13 +198,11 @@ public class ClipAnimationHelper {
     }
 
     public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
-        RectF currentRect;
-        synchronized (mTargetRect) {
-            currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
-        }
+        RectF currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
 
-        canvas.translate(mSourceStackBounds.left - mHomeStackBounds.left,
-                mSourceStackBounds.top - mHomeStackBounds.top);
+        synchronized (mTargetOffset) {
+            canvas.translate(-mTargetOffset.x, -mTargetOffset.y);
+        }
         mTmpMatrix.setRectToRect(mTargetRect, currentRect, ScaleToFit.FILL);
         canvas.concat(mTmpMatrix);
         canvas.translate(mTargetRect.left, mTargetRect.top);
