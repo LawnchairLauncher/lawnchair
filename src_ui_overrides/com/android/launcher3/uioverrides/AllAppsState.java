@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
-import static com.android.launcher3.allapps.DiscoveryBounce.APPS_VIEW_SHOWN;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
 import android.view.View;
@@ -49,8 +49,8 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        if (!launcher.getSharedPrefs().getBoolean(APPS_VIEW_SHOWN, false)) {
-            launcher.getSharedPrefs().edit().putBoolean(APPS_VIEW_SHOWN, true).apply();
+        if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
+            launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
         }
 
         AbstractFloatingView.closeAllOpenViews(launcher);
