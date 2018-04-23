@@ -150,15 +150,6 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             }
                         };
 
-                final OnPreDrawListener preDrawListener = new OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        taskView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        WindowManagerWrapper.getInstance().endProlongedAnimations();
-                        return true;
-                    }
-                };
-
                 AbstractFloatingView.closeOpenViews(activity, true,
                         AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
@@ -182,7 +173,6 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         //       afterwards
                         recentsView.addIgnoreResetTask(taskView);
                         taskView.setAlpha(0f);
-                        taskView.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
                     };
 
                     final int[] position = new int[2];
