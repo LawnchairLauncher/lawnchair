@@ -27,6 +27,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.animation.PathInterpolator;
 
@@ -34,11 +35,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.states.InternalStateHandler;
 
 /**
  * Abstract base class of floating view responsible for showing discovery bounce animation
  */
 public class DiscoveryBounce extends AbstractFloatingView {
+
+    private static final long DELAY_MS = 200;
 
     public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
     public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
@@ -102,11 +106,20 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     public static void showForHomeIfNeeded(Launcher launcher) {
+        showForHomeIfNeeded(launcher, true);
+    }
+
+    private static void showForHomeIfNeeded(Launcher launcher, boolean withDelay) {
         if (!launcher.isInState(NORMAL)
                 || launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
                 || ActivityManager.isRunningInTestHarness()) {
+            return;
+        }
+
+        if (withDelay) {
+            new Handler().postDelayed(() -> showForHomeIfNeeded(launcher, false), DELAY_MS);
             return;
         }
 
@@ -117,11 +130,26 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     public static void showForOverviewIfNeeded(Launcher launcher) {
+        showForOverviewIfNeeded(launcher, true);
+    }
+
+    private static void showForOverviewIfNeeded(Launcher launcher, boolean withDelay) {
         if (!launcher.isInState(OVERVIEW)
+                || !launcher.hasBeenResumed()
+                || launcher.isForceInvisible()
                 || launcher.getDeviceProfile().isVerticalBarLayout()
                 || launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
                 || ActivityManager.isRunningInTestHarness()) {
+            return;
+        }
+
+        if (withDelay) {
+            new Handler().postDelayed(() -> showForOverviewIfNeeded(launcher, false), DELAY_MS);
+            return;
+        } else if (InternalStateHandler.hasPending()
+                || AbstractFloatingView.getTopOpenView(launcher) != null) {
+            // TODO: Move these checks to the top and call this method after invalidate handler.
             return;
         }
 
