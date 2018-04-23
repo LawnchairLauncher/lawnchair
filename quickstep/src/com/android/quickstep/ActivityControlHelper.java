@@ -79,8 +79,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
-    void onOverviewShown(T activity);
-
     @Nullable
     T getCreatedActivity();
 
@@ -150,6 +148,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public void onSwipeUpComplete(Launcher activity) {
             // Re apply state in case we did something funky during the transition.
             activity.getStateManager().reapplyState();
+            DiscoveryBounce.showForOverviewIfNeeded(activity);
         }
 
         @Override
@@ -211,11 +210,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public ActivityInitListener createActivityInitListener(
                 BiPredicate<Launcher, Boolean> onInitListener) {
             return new LauncherInitListener(onInitListener);
-        }
-
-        @Override
-        public void onOverviewShown(Launcher launcher) {
-            DiscoveryBounce.showForOverviewIfNeeded(launcher);
         }
 
         @Nullable
@@ -370,11 +364,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public ActivityInitListener createActivityInitListener(
                 BiPredicate<RecentsActivity, Boolean> onInitListener) {
             return new RecentsActivityTracker(onInitListener);
-        }
-
-        @Override
-        public void onOverviewShown(RecentsActivity activity) {
-            // Do nothing.
         }
 
         @Nullable

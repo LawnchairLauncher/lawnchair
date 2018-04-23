@@ -694,9 +694,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             // If we haven't posted the transition end runnable, run it now
             finishTransitionRunnable.run();
         }
-        RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
-        mActivityControlHelper.onOverviewShown(mActivity);
-        doLogGesture(true /* toLauncher */);
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
@@ -708,9 +705,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         // Animate the first icon.
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
-
         mRecentsView.setSwipeDownShouldLaunchApp(true);
 
+        RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
+
+        doLogGesture(true /* toLauncher */);
         reset();
     }
 
