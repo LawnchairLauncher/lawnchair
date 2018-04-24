@@ -71,8 +71,7 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             // Check if we can handle long press.
-            boolean handleLongPress = AbstractFloatingView.getTopOpenView(mLauncher) == null
-                    && mLauncher.isInState(NORMAL);
+            boolean handleLongPress = canHandleLongPress();
 
             if (handleLongPress) {
                 // Check if the event is not near the edges
@@ -128,6 +127,11 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
         return result;
     }
 
+    private boolean canHandleLongPress() {
+        return AbstractFloatingView.getTopOpenView(mLauncher) == null
+                && mLauncher.isInState(NORMAL);
+    }
+
     private void cancelLongPress() {
         mWorkspace.removeCallbacks(this);
         mLongPressState = STATE_CANCELLED;
@@ -136,15 +140,19 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
     @Override
     public void run() {
         if (mLongPressState == STATE_REQUESTED) {
-            mLongPressState = STATE_PENDING_PARENT_INFORM;
-            mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
+            if (canHandleLongPress()) {
+                mLongPressState = STATE_PENDING_PARENT_INFORM;
+                mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
 
-            mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                    Action.Direction.NONE, ContainerType.WORKSPACE,
-                    mWorkspace.getCurrentPage());
-            OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                        Action.Direction.NONE, ContainerType.WORKSPACE,
+                        mWorkspace.getCurrentPage());
+                OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+            } else {
+                cancelLongPress();
+            }
         }
     }
 }
