@@ -477,7 +477,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onViewAdded(child);
     }
 
-    boolean isTouchActive() {
+    public boolean isTouchActive() {
         return mTouchState != TOUCH_STATE_REST;
     }
 
@@ -974,19 +974,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-        case MotionEvent.ACTION_DOWN:
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             mXDown = ev.getX();
             mYDown = ev.getY();
-            break;
-        case MotionEvent.ACTION_POINTER_UP:
-        case MotionEvent.ACTION_UP:
-            if (mTouchState == TOUCH_STATE_REST) {
-                final CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
-                if (currentPage != null) {
-                    onWallpaperTap(ev);
-                }
-            }
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -1443,7 +1433,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    protected void onWallpaperTap(MotionEvent ev) {
+    public void onWallpaperTap(MotionEvent ev) {
         final int[] position = mTempXY;
         getLocationOnScreen(position);
 
