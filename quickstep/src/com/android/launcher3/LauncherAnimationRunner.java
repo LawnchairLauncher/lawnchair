@@ -16,6 +16,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,20 +36,31 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
     private static final int REFRESH_RATE_MS = 16;
 
     private final Handler mHandler;
+    private final boolean mStartAtFrontOfQueue;
     private AnimationResult mAnimationResult;
 
-    public LauncherAnimationRunner(Handler handler) {
+    /**
+     * @param startAtFrontOfQueue If true, the animation start will be posted at the front of the
+     *                            queue to minimize latency.
+     */
+    public LauncherAnimationRunner(Handler handler, boolean startAtFrontOfQueue) {
         mHandler = handler;
+        mStartAtFrontOfQueue = startAtFrontOfQueue;
     }
 
     @BinderThread
     @Override
     public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
-        postAsyncCallback(mHandler, () -> {
+        Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(runnable);
             onCreateAnimation(targetCompats, mAnimationResult);
-        });
+        };
+        if (mStartAtFrontOfQueue) {
+            postAtFrontOfQueueAsynchronously(mHandler, r);
+        } else {
+            postAsyncCallback(mHandler, r);
+        }
     }
 
     /**
