@@ -451,30 +451,24 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
         }
 
-        if (mLauncherTransitionController != null) {
-            Runnable runOnUi = () -> {
-                if (mLauncherTransitionController == null) {
-                    return;
-                }
-                mLauncherTransitionController.setPlayFraction(shift);
-
-                if (mRecentsAnimationWrapper.controller != null) {
-                    // TODO: This logic is spartanic!
-                    boolean passedThreshold = shift > 0.12f;
-                    mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
-                    if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
-                        mRecentsAnimationWrapper
-                                .setSplitScreenMinimizedForTransaction(passedThreshold);
-                    }
-                }
-            };
-            if (Looper.getMainLooper() == Looper.myLooper()) {
-                runOnUi.run();
-            } else {
-                // The fling operation completed even before the launcher was drawn
-                mMainExecutor.execute(runOnUi);
+        if (mRecentsAnimationWrapper.controller != null) {
+            // TODO: This logic is spartanic!
+            boolean passedThreshold = shift > 0.12f;
+            mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
+            if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
+                mRecentsAnimationWrapper
+                        .setSplitScreenMinimizedForTransaction(passedThreshold);
             }
         }
+
+        mMainExecutor.execute(this::updateFinalShiftUi);
+    }
+
+    private void updateFinalShiftUi() {
+        if (mLauncherTransitionController == null) {
+            return;
+        }
+        mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
     }
 
     public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
