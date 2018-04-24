@@ -172,7 +172,8 @@ public class RecentsActivity extends BaseDraggingActivity {
         }
 
         final TaskView taskView = (TaskView) v;
-        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mUiHandler) {
+        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mUiHandler,
+                true /* startAtFrontOfQueue */) {
 
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
