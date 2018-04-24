@@ -50,7 +50,7 @@ public interface LauncherCallbacks {
     void onAttachedToWindow();
     void onDetachedFromWindow();
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
-    void onHomeIntent();
+    void onHomeIntent(boolean internalStateHandled);
     boolean handleBackPressed();
     void onTrimMemory(int level);
 
