@@ -312,7 +312,7 @@ public abstract class RecentsView<T extends BaseActivity>
     }
 
     private float calculateClearAllButtonAlpha() {
-        if (mClearAllButton.getVisibility() != View.VISIBLE) return 0;
+        if (mClearAllButton.getVisibility() != View.VISIBLE || getChildCount() == 0) return 0;
 
         // Current visible coordinate of the right border of the rightmost task.
         final int carouselCurrentRight = getChildAt(getChildCount() - 1).getRight() - getScrollX();
@@ -725,8 +725,23 @@ public abstract class RecentsView<T extends BaseActivity>
         mIgnoreResetTaskViews.remove(taskView);
     }
 
+    private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
+        addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
+        addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                duration, LINEAR, anim);
+    }
+
+    private void removeTask(Task task, PendingAnimation.OnEndListener onEndListener) {
+        if (task != null) {
+            ActivityManagerWrapper.getInstance().removeTask(task.key.id);
+            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
+                    onEndListener.logAction, Direction.UP,
+                    TaskUtils.getComponentKeyForTask(task.key));
+        }
+    }
+
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
-            boolean removeTask, long duration) {
+            boolean shouldRemoveTask, long duration) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
@@ -758,9 +773,7 @@ public abstract class RecentsView<T extends BaseActivity>
             View child = getChildAt(i);
             if (child == taskView) {
                 if (animateTaskView) {
-                    addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-                    addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
-                            duration, LINEAR, anim);
+                    addDismissedTaskAnimations(taskView, anim, duration);
                 }
             } else {
                 // If we just take newScroll - oldScroll, everything to the right of dragged task
@@ -805,14 +818,8 @@ public abstract class RecentsView<T extends BaseActivity>
         mPendingAnimation = pendingAnimation;
         mPendingAnimation.addEndListener((onEndListener) -> {
            if (onEndListener.isSuccess) {
-               if (removeTask) {
-                   Task task = taskView.getTask();
-                   if (task != null) {
-                       ActivityManagerWrapper.getInstance().removeTask(task.key.id);
-                       mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                               onEndListener.logAction, Direction.UP,
-                               TaskUtils.getComponentKeyForTask(task.key));
-                   }
+               if (shouldRemoveTask) {
+                   removeTask(taskView.getTask(), onEndListener);
                }
                int pageToSnapTo = mCurrentPage;
                if (draggedIndex < pageToSnapTo) {
@@ -827,6 +834,33 @@ public abstract class RecentsView<T extends BaseActivity>
            }
            resetTaskVisuals();
            mPendingAnimation = null;
+        });
+        return pendingAnimation;
+    }
+
+    public PendingAnimation createAllTasksDismissAnimation(long duration) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+            throw new IllegalStateException("Another pending animation is still running");
+        }
+        AnimatorSet anim = new AnimatorSet();
+        PendingAnimation pendingAnimation = new PendingAnimation(anim);
+
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            addDismissedTaskAnimations(getChildAt(i), anim, duration);
+        }
+
+        mPendingAnimation = pendingAnimation;
+        mPendingAnimation.addEndListener((onEndListener) -> {
+            if (onEndListener.isSuccess) {
+                while (getChildCount() != 0) {
+                    TaskView taskView = getPageAt(getChildCount() - 1);
+                    removeTask(taskView.getTask(), onEndListener);
+                    removeView(taskView);
+                }
+                onAllTasksRemoved();
+            }
+            mPendingAnimation = null;
         });
         return pendingAnimation;
     }
@@ -854,15 +888,22 @@ public abstract class RecentsView<T extends BaseActivity>
         }
     }
 
-    public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
-        PendingAnimation pendingAnim = createTaskDismissAnimation(taskView, animateTaskView,
-                removeTask, DISMISS_TASK_DURATION);
+    private void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
                 pendingAnim.anim, DISMISS_TASK_DURATION);
         controller.dispatchOnStart();
         controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
+    }
+
+    public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
+        runDismissAnimation(createTaskDismissAnimation(taskView, animateTaskView, removeTask,
+                DISMISS_TASK_DURATION));
+    }
+
+    public void dismissAllTasks() {
+        runDismissAnimation(createAllTasksDismissAnimation(DISMISS_TASK_DURATION));
     }
 
     @Override
@@ -1169,16 +1210,6 @@ public abstract class RecentsView<T extends BaseActivity>
     @Override
     protected String getCurrentPageDescription() {
         return "";
-    }
-
-    public void dismissAllTasks() {
-        for (int i = 0; i < getChildCount(); ++i) {
-            Task task = getPageAt(i).getTask();
-            if (task != null) {
-                ActivityManagerWrapper.getInstance().removeTask(task.key.id);
-            }
-        }
-        onAllTasksRemoved();
     }
 
     @Override
