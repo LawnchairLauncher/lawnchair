@@ -3,12 +3,12 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/clear_all_button"
+    style="@android:style/Widget.DeviceDefault.Button.Borderless"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="end|top"
     android:fontFamily="sans-serif-medium"
     android:text="@string/recents_clear_all"
     android:textColor="?attr/workspaceTextColor"
-    android:background="?android:attr/selectableItemBackground"
     android:textSize="14sp"
 />
