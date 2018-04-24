@@ -15,6 +15,7 @@
  */
 package com.android.launcher3;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 
 import android.animation.Animator;
@@ -31,8 +32,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
-
-    private static final int REFRESH_RATE_MS = 16;
 
     private final Handler mHandler;
     private AnimationResult mAnimationResult;
@@ -120,7 +119,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
                 // Because t=0 has the app icon in its original spot, we can skip the
                 // first frame and have the same movement one frame earlier.
-                mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
+                mAnimator.setCurrentPlayTime(SINGLE_FRAME_MS);
             }
         }
     }

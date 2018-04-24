@@ -24,7 +24,8 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.TraceHelper;
+
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
@@ -36,7 +37,6 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     private static final String TAG = "FirstFrameAnimatorHlpr";
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
-    private static final int IDEAL_FRAME_DURATION = 16;
     private final View mTarget;
     private long mStartFrame;
     private long mStartTime = -1;
@@ -109,9 +109,9 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             // prevents a large jump in the animation due to an expensive first frame
             } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
                        !mAdjustedSecondFrameTime &&
-                       currentTime > mStartTime + IDEAL_FRAME_DURATION &&
-                       currentPlayTime > IDEAL_FRAME_DURATION) {
-                animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
+                       currentTime > mStartTime + SINGLE_FRAME_MS &&
+                       currentPlayTime > SINGLE_FRAME_MS) {
+                animation.setCurrentPlayTime(SINGLE_FRAME_MS);
                 mAdjustedSecondFrameTime = true;
             } else {
                 if (frameNum > 1) {

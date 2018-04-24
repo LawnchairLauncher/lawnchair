@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -40,7 +41,6 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
 
     private static final String TAG = "ASCTouchController";
     public static final float RECATCH_REJECTION_FRACTION = .0875f;
-    public static final int SINGLE_FRAME_MS = 16;
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
