@@ -226,6 +226,14 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Workaround for b/78520668, explicitly trim memory once UI is hidden
+        UiFactory.onTrimMemory(this, TRIM_MEMORY_UI_HIDDEN);
+    }
+
+    @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         UiFactory.onTrimMemory(this, level);
