@@ -1278,7 +1278,7 @@ public class Launcher extends BaseDraggingActivity
             }
 
             if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onHomeIntent();
+                mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
         }
 
