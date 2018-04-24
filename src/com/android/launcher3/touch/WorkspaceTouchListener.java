@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.ViewConfiguration.getLongPressTimeout;
 
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
@@ -122,6 +124,17 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
             // We don't want to handle touch, let workspace handle it as usual.
             result = false;
         }
+
+        if (action == ACTION_UP || action == ACTION_POINTER_UP) {
+            if (!mWorkspace.isTouchActive()) {
+                final CellLayout currentPage =
+                        (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+                if (currentPage != null) {
+                    mWorkspace.onWallpaperTap(ev);
+                }
+            }
+        }
+
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             cancelLongPress();
         }
