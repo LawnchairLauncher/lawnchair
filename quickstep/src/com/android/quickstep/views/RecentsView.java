@@ -30,8 +30,6 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -85,8 +83,7 @@ import java.util.function.Consumer;
  * A list of recent tasks.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class RecentsView<T extends BaseActivity>
-        extends PagedView implements OnSharedPreferenceChangeListener, Insettable {
+public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable {
 
     public static final boolean DEBUG_SHOW_CLEAR_ALL_BUTTON = false;
 
@@ -104,7 +101,7 @@ public abstract class RecentsView<T extends BaseActivity>
             return recentsView.mAdjacentScale;
         }
     };
-    private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
+    private static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
 
     protected final T mActivity;
@@ -201,7 +198,11 @@ public abstract class RecentsView<T extends BaseActivity>
         mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.getInstance(context);
 
-        onSharedPreferenceChanged(Utilities.getPrefs(context), PREF_FLIP_RECENTS);
+        mIsRtl = Utilities.isRtl(getResources());
+        if (FLIP_RECENTS) {
+            mIsRtl = !mIsRtl;
+        }
+        setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
         mEmptyIcon.setCallback(this);
@@ -214,17 +215,6 @@ public abstract class RecentsView<T extends BaseActivity>
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
         updateEmptyMessage();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(PREF_FLIP_RECENTS)) {
-            mIsRtl = Utilities.isRtl(getResources());
-            if (sharedPreferences.getBoolean(PREF_FLIP_RECENTS, false)) {
-                mIsRtl = !mIsRtl;
-            }
-            setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        }
     }
 
     public boolean isRtl() {
@@ -249,7 +239,6 @@ public abstract class RecentsView<T extends BaseActivity>
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateTaskStackListenerState();
-        Utilities.getPrefs(getContext()).registerOnSharedPreferenceChangeListener(this);
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
     }
 
@@ -257,7 +246,6 @@ public abstract class RecentsView<T extends BaseActivity>
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
-        Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
     }
 
