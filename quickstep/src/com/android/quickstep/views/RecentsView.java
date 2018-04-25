@@ -41,6 +41,7 @@ import android.text.TextPaint;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -84,6 +85,8 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable {
+
+    private static final String TAG = RecentsView.class.getSimpleName();
 
     public static final boolean DEBUG_SHOW_CLEAR_ALL_BUTTON = false;
 
@@ -1156,10 +1159,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         anim.play(drawableAnim);
         anim.setDuration(duration);
 
-        Consumer<Boolean> onTaskLaunchFinish = (r) -> {
-            onTaskLaunched(r);
+        Consumer<Boolean> onTaskLaunchFinish = (result) -> {
+            onTaskLaunched(result);
             tv.setVisibility(VISIBLE);
             getOverlay().remove(drawable);
+            if (!result) {
+                Log.w(TAG, tv.getLaunchTaskFailedMsg());
+            }
         };
 
         mPendingAnimation = new PendingAnimation(anim);

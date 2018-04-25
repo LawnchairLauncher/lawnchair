@@ -202,6 +202,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
     public static class Pin extends TaskSystemShortcut {
 
+        private static final String TAG = Pin.class.getSimpleName();
+
         private Handler mHandler;
 
         public Pin() {
@@ -231,6 +233,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         } catch (RemoteException e) {
                             Log.w(TAG, "Failed to start screen pinning: ", e);
                         }
+                    } else {
+                        Log.w(TAG, taskView.getLaunchTaskFailedMsg());
                     }
                 };
                 taskView.launchTask(true, resultCallback, mHandler);
