@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -58,6 +59,8 @@ import java.util.function.Consumer;
  * A task in the Recents view.
  */
 public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
+
+    private static final String TAG = TaskView.class.getSimpleName();
 
     /** A curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
     private static final TimeInterpolator CURVE_INTERPOLATOR
@@ -136,7 +139,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     }
 
     public void launchTask(boolean animate) {
-        launchTask(animate, null, null);
+        launchTask(animate, (result) -> {
+            if (!result) {
+                Log.w(TAG, getLaunchTaskFailedMsg());
+            }
+        }, getHandler());
     }
 
     public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
@@ -316,5 +323,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
 
         return super.performAccessibilityAction(action, arguments);
+    }
+
+    public String getLaunchTaskFailedMsg() {
+        String msg = "Failed to launch task";
+        if (mTask != null) {
+            msg += " (task=" + mTask.key.baseIntent + " userId=" + mTask.key.userId + ")";
+        }
+        return msg;
     }
 }
