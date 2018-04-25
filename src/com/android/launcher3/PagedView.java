@@ -1556,11 +1556,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return mDownMotionY;
     }
 
-    @Override
-    public boolean onHoverEvent(android.view.MotionEvent event) {
-        return true;
-    }
-
     protected interface ComputePageScrollsLogic {
 
         boolean shouldIncludeView(View view);
