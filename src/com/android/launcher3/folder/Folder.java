@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -507,16 +508,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
-        final Runnable onCompleteRunnable;
         centerAboutIcon();
 
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
-        onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
-            }
-        };
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -532,7 +526,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
 
-                onCompleteRunnable.run();
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
                 mContent.setFocusOnFirstChild();
             }
         });
@@ -614,9 +608,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
             mFolderIcon.clearLeaveBehindIfExists();
         }
 
-        if (!(getParent() instanceof DragLayer)) return;
-        DragLayer parent = (DragLayer) getParent();
-
         if (animate) {
             animateClosed();
         } else {
@@ -625,7 +616,8 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
         // Notify the accessibility manager that this folder "window" has disappeared and no
         // longer occludes the workspace items
-        parent.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        mLauncher.getDragLayer().sendAccessibilityEvent(
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     private void animateClosed() {

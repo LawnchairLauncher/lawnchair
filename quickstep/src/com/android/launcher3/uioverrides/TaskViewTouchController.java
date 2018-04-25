@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -46,7 +47,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private static final String TAG = "OverviewSwipeController";
 
     private static final float ALLOWED_FLING_DIRECTION_CHANGE_PROGRESS = 0.1f;
-    private static final int SINGLE_FRAME_MS = 16;
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;

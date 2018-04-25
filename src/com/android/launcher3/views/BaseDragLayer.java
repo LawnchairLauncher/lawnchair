@@ -34,6 +34,8 @@ import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
  */
@@ -115,6 +117,21 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
             childrenForAccessibility.add(topView);
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (child instanceof AbstractFloatingView) {
+            // Handles the case where the view is removed without being properly closed.
+            // This can happen if something goes wrong during a state change/transition.
+            postDelayed(() -> {
+                AbstractFloatingView floatingView = (AbstractFloatingView) child;
+                if (floatingView.isOpen()) {
+                    floatingView.close(false);
+                }
+            }, SINGLE_FRAME_MS);
         }
     }
 
