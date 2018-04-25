@@ -59,4 +59,8 @@ public class MultiStateCallback {
     public int getState() {
         return mState;
     }
+
+    public boolean hasStates(int stateMask) {
+        return (mState & stateMask) == stateMask;
+    }
 }
