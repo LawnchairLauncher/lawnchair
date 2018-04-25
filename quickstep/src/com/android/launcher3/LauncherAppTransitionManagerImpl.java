@@ -162,7 +162,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     @Override
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
-            RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler) {
+            RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler,
+                    true /* startAtFrontOfQueue */) {
 
                 @Override
                 public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
@@ -572,7 +573,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      *         ie. pressing home, swiping up from nav bar.
      */
     private RemoteAnimationRunnerCompat getWallpaperOpenRunner() {
-        return new LauncherAnimationRunner(mHandler) {
+        return new LauncherAnimationRunner(mHandler, false /* startAtFrontOfQueue */) {
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
                     AnimationResult result) {
