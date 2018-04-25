@@ -41,6 +41,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.util.MultiValueUpdateListener;
+import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -159,7 +160,6 @@ public class TaskUtils {
 
             @Override
             public void onUpdate(float percent) {
-
                 final Surface surface = getSurface(v);
                 final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
                 if (frameNumber == -1) {
@@ -182,6 +182,10 @@ public class TaskUtils {
                 crop.set(tw.winCrop);
 
                 TransactionCompat t = new TransactionCompat();
+                if (isFirstFrame) {
+                    RemoteAnimationProvider.prepareTargetsForFirstFrame(targets, t, MODE_OPENING);
+                    isFirstFrame = false;
+                }
                 for (RemoteAnimationTargetCompat target : targets) {
                     if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
                         t.setAlpha(target.leash, mTaskAlpha.value);
@@ -196,15 +200,10 @@ public class TaskUtils {
                             t.deferTransactionUntil(target.leash, surface, frameNumber);
                         }
                     }
-                    if (isFirstFrame) {
-                        t.show(target.leash);
-                    }
                 }
-                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
-                isFirstFrame = false;
             }
         });
         return appAnimator;

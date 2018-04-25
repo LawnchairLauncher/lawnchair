@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 public class RemoteAnimationTargetSet {
 
+    public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
 
     public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
@@ -36,6 +37,7 @@ public class RemoteAnimationTargetSet {
             }
         }
 
+        this.unfilteredApps = apps;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
     }
 
