@@ -97,6 +97,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         handleClose(animate);
         BaseActivity.fromContext(getContext()).getUserEventDispatcher()
                 .resetElapsedContainerMillis("container closed");
+        mIsOpen = false;
     }
 
     protected abstract void handleClose(boolean animate);
