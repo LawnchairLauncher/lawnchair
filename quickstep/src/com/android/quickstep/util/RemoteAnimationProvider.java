@@ -31,7 +31,8 @@ public interface RemoteAnimationProvider {
     AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targets);
 
     default ActivityOptions toActivityOptions(Handler handler, long duration) {
-        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler) {
+        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler,
+                false /* startAtFrontOfQueue */) {
 
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
