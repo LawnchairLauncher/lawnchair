@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -206,7 +208,8 @@ public class TaskThumbnailView extends View {
                 // Rotate the screenshot if not in multi-window mode
                 rotate = FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION &&
                         configuration.orientation != mThumbnailData.orientation &&
-                        !mActivity.isInMultiWindowModeCompat();
+                        !mActivity.isInMultiWindowModeCompat() &&
+                        mThumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
                 // Scale the screenshot to always fit the width of the card.
                 thumbnailScale = rotate
                         ? getMeasuredWidth() / thumbnailHeight
