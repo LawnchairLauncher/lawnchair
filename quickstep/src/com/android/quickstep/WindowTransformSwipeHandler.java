@@ -442,7 +442,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
         mInteractionType = interactionType;
 
-        setStateOnUiThread(STATE_QUICK_SCRUB_START);
+        setStateOnUiThread(STATE_QUICK_SCRUB_START | STATE_GESTURE_COMPLETED);
 
         // Start the window animation without waiting for launcher.
         animateToProgress(1f, QUICK_SCRUB_START_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
