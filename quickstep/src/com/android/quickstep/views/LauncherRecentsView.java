@@ -35,6 +35,7 @@ import android.view.ViewDebug;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.LayoutUtils;
 
 /**
@@ -117,6 +118,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv);
+
+        if (!OverviewInteractionState.getInstance(mActivity).isSwipeUpGestureEnabled()) {
+            // Hotseat doesn't move when opening recents with the button,
+            // so don't animate it here either.
+            return anim;
+        }
 
         float allAppsProgressOffscreen = ALL_APPS_PROGRESS_OFF_SCREEN;
         LauncherState state = mActivity.getStateManager().getState();
