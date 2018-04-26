@@ -22,7 +22,6 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-import static com.android.systemui.shared.system.NavigationBarCompat.QUICK_STEP_DRAG_SLOP_PX;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
@@ -50,6 +49,7 @@ import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
@@ -79,6 +79,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
     private boolean mPassedInitialSlop;
+    private int mQuickStepDragSlop;
     private float mStartDisplacement;
     private WindowTransformSwipeHandler mInteractionHandler;
     private int mDisplayRotation;
@@ -120,6 +121,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mPassedInitialSlop = false;
+                mQuickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -152,7 +154,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
-                if (!mPassedInitialSlop && Math.abs(displacement) > QUICK_STEP_DRAG_SLOP_PX) {
+                if (!mPassedInitialSlop
+                        && Math.abs(displacement) > mQuickStepDragSlop) {
                     mPassedInitialSlop = true;
                     mStartDisplacement = displacement;
 
