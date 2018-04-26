@@ -102,13 +102,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      */
     boolean deferStartingActivity(int downHitTarget);
 
-    boolean supportsLongSwipe(T activity);
-
-    /**
-     * Must return a non-null controller is supportsLongSwipe was true.
-     */
-    LongSwipeHelper getLongSwipeController(T activity, RemoteAnimationTargetSet targetSet);
-
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
         @Override
@@ -171,13 +164,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
                 Consumer<AnimatorPlaybackController> callback) {
-            final LauncherState startState = activity.getStateManager().getState();
-
-            LauncherState resetState = startState;
+            LauncherState startState = activity.getStateManager().getState();
             if (startState.disableRestore) {
-                resetState = activity.getStateManager().getRestState();
+                startState = activity.getStateManager().getRestState();
             }
-            activity.getStateManager().setRestState(resetState);
+            activity.getStateManager().setRestState(startState);
 
             if (!activityVisible) {
                 // Since the launcher is not visible, we can safely reset the scroll position.
@@ -189,21 +180,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
             }
 
-            return new AnimationFactory() {
-                @Override
-                public void createActivityController(long transitionLength) {
-                    createActivityControllerInternal(activity, activityVisible, transitionLength,
-                            callback);
-                }
-
-                @Override
-                public void onTransitionCancelled() {
-                    activity.getStateManager().goToState(startState, false /* animate */);
-                }
-            };
+            return (transitionLength) ->
+                    createActivityController(activity, activityVisible, transitionLength, callback);
         }
 
-        private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
+        private void createActivityController(Launcher activity, boolean wasVisible,
                 long transitionLength, Consumer<AnimatorPlaybackController> callback) {
             if (wasVisible) {
                 DeviceProfile dp = activity.getDeviceProfile();
@@ -290,20 +271,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public boolean shouldMinimizeSplitScreen() {
             return true;
-        }
-
-        @Override
-        public boolean supportsLongSwipe(Launcher activity) {
-            return !activity.getDeviceProfile().isVerticalBarLayout();
-        }
-
-        @Override
-        public LongSwipeHelper getLongSwipeController(Launcher activity,
-                RemoteAnimationTargetSet targetSet) {
-            if (activity.getDeviceProfile().isVerticalBarLayout()) {
-                return null;
-            }
-            return new LongSwipeHelper(activity, targetSet);
         }
     }
 
@@ -452,17 +419,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             // TODO: Remove this once b/77875376 is fixed
             return false;
         }
-
-        @Override
-        public boolean supportsLongSwipe(RecentsActivity activity) {
-            return false;
-        }
-
-        @Override
-        public LongSwipeHelper getLongSwipeController(RecentsActivity activity,
-                RemoteAnimationTargetSet targetSet) {
-            return null;
-        }
     }
 
     interface LayoutListener {
@@ -489,7 +445,5 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
         void createActivityController(long transitionLength);
-
-        default void onTransitionCancelled() { }
     }
 }

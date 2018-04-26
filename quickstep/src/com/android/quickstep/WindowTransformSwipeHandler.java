@@ -31,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -51,7 +52,9 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -100,27 +103,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final int STATE_HANDLER_INVALIDATED = 1 << 7;
     private static final int STATE_GESTURE_STARTED = 1 << 8;
     private static final int STATE_GESTURE_CANCELLED = 1 << 9;
-    private static final int STATE_GESTURE_COMPLETED = 1 << 10;
 
     // States for quick switch/scrub
-    private static final int STATE_CURRENT_TASK_FINISHED = 1 << 11;
-    private static final int STATE_QUICK_SCRUB_START = 1 << 12;
-    private static final int STATE_QUICK_SCRUB_END = 1 << 13;
-
-    private static final int STATE_CAPTURE_SCREENSHOT = 1 << 14;
-    private static final int STATE_SCREENSHOT_CAPTURED = 1 << 15;
+    private static final int STATE_SWITCH_TO_SCREENSHOT_COMPLETE = 1 << 10;
+    private static final int STATE_QUICK_SCRUB_START = 1 << 11;
+    private static final int STATE_QUICK_SCRUB_END = 1 << 12;
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
             | STATE_LAUNCHER_STARTED;
-
-    private static final int LONG_SWIPE_ENTER_STATE =
-            STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_STARTED
-                    | STATE_APP_CONTROLLER_RECEIVED;
-
-    private static final int LONG_SWIPE_START_STATE =
-            STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_STARTED
-                    | STATE_APP_CONTROLLER_RECEIVED | STATE_SCREENSHOT_CAPTURED;
 
     // For debugging, keep in sync with above states
     private static final String[] STATES = new String[] {
@@ -134,16 +125,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             "STATE_HANDLER_INVALIDATED",
             "STATE_GESTURE_STARTED",
             "STATE_GESTURE_CANCELLED",
-            "STATE_GESTURE_COMPLETED",
-            "STATE_CURRENT_TASK_FINISHED",
+            "STATE_SWITCH_TO_SCREENSHOT_COMPLETE",
+            "STATE_QUICK_SWITCH",
             "STATE_QUICK_SCRUB_START",
-            "STATE_QUICK_SCRUB_END",
-            "STATE_CAPTURE_SCREENSHOT",
-            "STATE_SCREENSHOT_CAPTURED",
+            "STATE_QUICK_SCRUB_END"
     };
 
-    public static final long MAX_SWIPE_DURATION = 350;
-    public static final long MIN_SWIPE_DURATION = 80;
+    private static final long MAX_SWIPE_DURATION = 350;
+    private static final long MIN_SWIPE_DURATION = 80;
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
     private static final float SWIPE_DURATION_MULTIPLIER =
@@ -162,7 +151,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     // visible.
     private final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
 
-    private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
+    private final MainThreadExecutor mMainExecutor = new MainThreadExecutor();
 
     private final Context mContext;
     private final int mRunningTaskId;
@@ -182,6 +171,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private boolean mWasLauncherAlreadyVisible;
 
+    private float mCurrentDisplacement;
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
     private float mCurrentQuickScrubProgress;
@@ -195,11 +185,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
-    private boolean mBgLongSwipeMode = false;
-    private boolean mUiLongSwipeMode = false;
-    private float mLongSwipeDisplacement = 0;
-    private LongSwipeHelper mLongSwipeController;
-
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
             ActivityControlHelper<T> controller) {
         mContext = context;
@@ -209,10 +194,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityInitListener = mActivityControlHelper
                 .createActivityInitListener(this::onActivityInit);
 
-        initStateCallbacks();
         // Register the input consumer on the UI thread, to ensure that it runs after any pending
         // unregister calls
-        executeOnUiThread(mInputConsumer::registerInputConsumer);
+        mMainExecutor.execute(mInputConsumer::registerInputConsumer);
+        initStateCallbacks();
     }
 
     private void initStateCallbacks() {
@@ -241,18 +226,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 this::resumeLastTask);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_ACTIVITY_MULTIPLIER_COMPLETE
-                        | STATE_CAPTURE_SCREENSHOT,
-                this::switchToScreenshot);
-
-        mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
                         | STATE_SCALED_CONTROLLER_RECENTS,
-                this::finishCurrentTransitionToHome);
-
+                this::switchToScreenshot);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_ACTIVITY_MULTIPLIER_COMPLETE
                         | STATE_SCALED_CONTROLLER_RECENTS
-                        | STATE_CURRENT_TASK_FINISHED
-                        | STATE_GESTURE_COMPLETED,
+                        | STATE_SWITCH_TO_SCREENSHOT_COMPLETE,
                 this::setupLauncherUiAfterSwipeUpAnimation);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_APP,
@@ -261,34 +240,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED
-                | STATE_SCALED_CONTROLLER_APP,
-                this::notifyTransitionCancelled);
 
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START,
                 this::onQuickScrubStart);
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START
                 | STATE_SCALED_CONTROLLER_RECENTS, this::onFinishedTransitionToQuickScrub);
-        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_CURRENT_TASK_FINISHED
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_SWITCH_TO_SCREENSHOT_COMPLETE
                 | STATE_QUICK_SCRUB_END, this::switchToFinalAppAfterQuickScrub);
-
-        mStateCallback.addCallback(LONG_SWIPE_ENTER_STATE, this::checkLongSwipeCanEnter);
-        mStateCallback.addCallback(LONG_SWIPE_START_STATE, this::checkLongSwipeCanStart);
-    }
-
-    private void executeOnUiThread(Runnable action) {
-        if (Looper.myLooper() == mMainThreadHandler.getLooper()) {
-            action.run();
-        } else {
-            postAsyncCallback(mMainThreadHandler, action);
-        }
     }
 
     private void setStateOnUiThread(int stateFlag) {
-        if (Looper.myLooper() == mMainThreadHandler.getLooper()) {
+        Handler handler = mMainExecutor.getHandler();
+        if (Looper.myLooper() == handler.getLooper()) {
             mStateCallback.setState(stateFlag);
         } else {
-            postAsyncCallback(mMainThreadHandler, () -> mStateCallback.setState(stateFlag));
+            postAsyncCallback(handler, () -> mStateCallback.setState(stateFlag));
         }
     }
 
@@ -355,7 +321,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (mActivity != activity) {
             return;
         }
-        if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
+        if ((mStateCallback.getState() & STATE_HANDLER_INVALIDATED) != 0) {
             return;
         }
 
@@ -450,26 +416,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     @WorkerThread
     public void updateDisplacement(float displacement) {
-        // We are moving in the negative x/y direction
-        displacement = -displacement;
-        if (displacement > mTransitionDragLength) {
-            mCurrentShift.updateValue(1);
+        mCurrentDisplacement = displacement;
 
-            if (!mBgLongSwipeMode) {
-                mBgLongSwipeMode = true;
-                executeOnUiThread(this::onLongSwipeEnabledUi);
-            }
-            mLongSwipeDisplacement = displacement - mTransitionDragLength;
-            executeOnUiThread(this::onLongSwipeDisplacementUpdated);
-        } else {
-            if (mBgLongSwipeMode) {
-                mBgLongSwipeMode = false;
-                executeOnUiThread(this::onLongSwipeDisabledUi);
-            }
-            float translation = Math.max(displacement, 0);
-            float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
-            mCurrentShift.updateValue(shift);
-        }
+        float translation = Utilities.boundToRange(-mCurrentDisplacement, 0, mTransitionDragLength);
+        float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
+        mCurrentShift.updateValue(shift);
     }
 
     /**
@@ -497,18 +448,20 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 float interpolated = interpolator.getInterpolation(shift);
                 mClipAnimationHelper.applyTransform(
                         mRecentsAnimationWrapper.targetSet, interpolated);
-
-                // TODO: This logic is spartanic!
-                boolean passedThreshold = shift > 0.12f;
-                mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
-                if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
-                    mRecentsAnimationWrapper
-                            .setSplitScreenMinimizedForTransaction(passedThreshold);
-                }
             }
         }
 
-        executeOnUiThread(this::updateFinalShiftUi);
+        if (mRecentsAnimationWrapper.controller != null) {
+            // TODO: This logic is spartanic!
+            boolean passedThreshold = shift > 0.12f;
+            mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
+            if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
+                mRecentsAnimationWrapper
+                        .setSplitScreenMinimizedForTransaction(passedThreshold);
+            }
+        }
+
+        mMainExecutor.execute(this::updateFinalShiftUi);
     }
 
     private void updateFinalShiftUi() {
@@ -586,21 +539,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     @WorkerThread
     public void onGestureEnded(float endVelocity) {
-        float flingThreshold = mContext.getResources()
-                .getDimension(R.dimen.quickstep_fling_threshold_velocity);
+        Resources res = mContext.getResources();
+        float flingThreshold = res.getDimension(R.dimen.quickstep_fling_threshold_velocity);
         boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
-        setStateOnUiThread(STATE_GESTURE_COMPLETED);
 
-        mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
-
-        if (mBgLongSwipeMode) {
-            executeOnUiThread(() -> onLongSwipeGestureFinishUi(endVelocity, isFling));
-        } else {
-            handleNormalGestureEnd(endVelocity, isFling);
-        }
-    }
-
-    private void handleNormalGestureEnd(float endVelocity, boolean isFling) {
         long duration = MAX_SWIPE_DURATION;
         final float endShift;
         if (!isFling) {
@@ -608,10 +550,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             long expectedDuration = Math.abs(Math.round((endShift - mCurrentShift.value)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
+            mLogAction = Touch.SWIPE;
         } else {
             endShift = endVelocity < 0 ? 1 : 0;
-            float minFlingVelocity = mContext.getResources()
-                    .getDimension(R.dimen.quickstep_fling_min_velocity);
+            float minFlingVelocity = res.getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
                 float distanceToTravel = (endShift - mCurrentShift.value) * mTransitionDragLength;
 
@@ -621,6 +563,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 long baseDuration = Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
                 duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
+            mLogAction = Touch.FLING;
         }
 
         animateToProgress(endShift, duration, DEACCEL);
@@ -650,9 +593,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                setStateOnUiThread(mIsGoingToHome
-                        ? (STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT)
-                        : STATE_SCALED_CONTROLLER_APP);
+                setStateOnUiThread(mIsGoingToHome ?
+                        STATE_SCALED_CONTROLLER_RECENTS : STATE_SCALED_CONTROLLER_APP);
             }
         });
         anim.start();
@@ -691,10 +633,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
     }
 
-    private void notifyTransitionCancelled() {
-        mAnimationFactory.onTransitionCancelled();
-    }
-
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityControlHelper.onTransitionCancelled(mActivity, wasVisible);
@@ -708,6 +646,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void switchToScreenshot() {
         boolean finishTransitionPosted = false;
+        final Runnable finishTransitionRunnable = () -> {
+            synchronized (mRecentsAnimationWrapper) {
+                mRecentsAnimationWrapper.finish(true /* toHome */,
+                        () -> setStateOnUiThread(STATE_SWITCH_TO_SCREENSHOT_COMPLETE));
+            }
+        };
+
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
                 // Update the screenshot of the task
@@ -722,7 +667,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                         @Override
                         public void onPostDraw(Canvas canvas) {
-                            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+                            finishTransitionRunnable.run();
                             detach();
                         }
                     }.attach();
@@ -730,15 +675,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
         }
         if (!finishTransitionPosted) {
-            // If we haven't posted a draw callback, set the state immediately.
-            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-        }
-    }
-
-    private void finishCurrentTransitionToHome() {
-        synchronized (mRecentsAnimationWrapper) {
-            mRecentsAnimationWrapper.finish(true /* toHome */,
-                    () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+            // If we haven't posted the transition end runnable, run it now
+            finishTransitionRunnable.run();
         }
     }
 
@@ -834,65 +772,5 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     public void setGestureEndCallback(Runnable gestureEndCallback) {
         mGestureEndCallback = gestureEndCallback;
-    }
-
-    // Handling long swipe
-    private void onLongSwipeEnabledUi() {
-        mUiLongSwipeMode = true;
-        checkLongSwipeCanEnter();
-        checkLongSwipeCanStart();
-    }
-
-    private void onLongSwipeDisabledUi() {
-        mUiLongSwipeMode = false;
-
-        if (mLongSwipeController != null) {
-            mLongSwipeController.destroy();
-
-            // Rebuild animations
-            buildAnimationController();
-        }
-    }
-
-    private void onLongSwipeDisplacementUpdated() {
-        if (!mUiLongSwipeMode || mLongSwipeController == null) {
-            return;
-        }
-
-        mLongSwipeController.onMove(mLongSwipeDisplacement);
-    }
-
-    private void checkLongSwipeCanEnter() {
-        if (!mUiLongSwipeMode || !mStateCallback.hasStates(LONG_SWIPE_ENTER_STATE)
-                || !mActivityControlHelper.supportsLongSwipe(mActivity)) {
-            return;
-        }
-
-        // We are entering long swipe mode, make sure the screen shot is captured.
-        mStateCallback.setState(STATE_CAPTURE_SCREENSHOT);
-
-    }
-
-    private void checkLongSwipeCanStart() {
-        if (!mUiLongSwipeMode || !mStateCallback.hasStates(LONG_SWIPE_START_STATE)
-                || !mActivityControlHelper.supportsLongSwipe(mActivity)) {
-            return;
-        }
-
-        mLongSwipeController = mActivityControlHelper.getLongSwipeController(
-                mActivity, mRecentsAnimationWrapper.targetSet);
-        onLongSwipeDisplacementUpdated();
-    }
-
-    private void onLongSwipeGestureFinishUi(float velocity, boolean isFling) {
-        if (!mUiLongSwipeMode || mLongSwipeController == null) {
-            handleNormalGestureEnd(velocity, isFling);
-            return;
-        }
-
-        finishCurrentTransitionToHome();
-        mLongSwipeController.end(velocity, isFling,
-                () -> setStateOnUiThread(STATE_HANDLER_INVALIDATED));
-
     }
 }
