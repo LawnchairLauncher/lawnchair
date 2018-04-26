@@ -190,7 +190,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                 }
                             });
                         }
-                        anim.play(getWindowAnimators(v, targetCompats));
+                        anim.play(getOpeningWindowAnimators(v, targetCompats));
                     }
 
                     if (launcherClosing) {
@@ -454,7 +454,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * @return Animator that controls the window of the opening targets.
      */
-    private ValueAnimator getWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
+    private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
         Rect bounds = new Rect();
         if (v.getParent() instanceof DeepShortcutView) {
             // Deep shortcut views have their icon drawn in a separate view.
@@ -475,7 +475,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             // Fade alpha for the app window.
             FloatProp mAlpha = new FloatProp(0f, 1f, 0, 60, LINEAR);
-
             boolean isFirstFrame = true;
 
             @Override
@@ -522,6 +521,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 crop.bottom = (int) (crop.top + cropHeight);
 
                 TransactionCompat t = new TransactionCompat();
+                if (isFirstFrame) {
+                    RemoteAnimationProvider.prepareTargetsForFirstFrame(targets, t, MODE_OPENING);
+                    isFirstFrame = false;
+                }
                 for (RemoteAnimationTargetCompat target : targets) {
                     if (target.mode == MODE_OPENING) {
                         t.setAlpha(target.leash, mAlpha.value);
@@ -533,15 +536,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.setWindowCrop(target.leash, crop);
                         t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
                     }
-                    if (isFirstFrame) {
-                        t.show(target.leash);
-                    }
                 }
-                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
-                isFirstFrame = false;
             }
         });
         return appAnimator;
@@ -638,6 +636,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             @Override
             public void onUpdate(float percent) {
                 TransactionCompat t = new TransactionCompat();
+                if (isFirstFrame) {
+                    RemoteAnimationProvider.prepareTargetsForFirstFrame(targets, t, MODE_CLOSING);
+                    isFirstFrame = false;
+                }
                 for (RemoteAnimationTargetCompat app : targets) {
                     if (app.mode == RemoteAnimationTargetCompat.MODE_CLOSING) {
                         t.setAlpha(app.leash, mAlpha.value);
@@ -648,19 +650,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         matrix.postTranslate(app.position.x, app.position.y);
                         t.setMatrix(app.leash, matrix);
                     }
-                    if (isFirstFrame) {
-                        int layer = app.mode == RemoteAnimationTargetCompat.MODE_CLOSING
-                                ? Integer.MAX_VALUE
-                                : app.prefixOrderIndex;
-                        t.setLayer(app.leash, layer);
-                        t.show(app.leash);
-                    }
                 }
-                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
-                isFirstFrame = false;
             }
         });
 
