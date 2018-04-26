@@ -18,16 +18,14 @@ package com.android.quickstep;
 import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
-
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.systemui.shared.system.ActivityManagerWrapper
-        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
-import static com.android.systemui.shared.system.PackageManagerWrapper
-        .ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -37,7 +35,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
-import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.PatternMatcher;
@@ -49,7 +46,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
@@ -210,6 +207,7 @@ public class OverviewCommandHelper {
 
         private ActivityInitListener mListener;
         private T mActivity;
+        private RecentsView mRecentsView;
 
         public RecentsActivityCommand() {
             mHelper = getActivityControlHelper();
@@ -271,6 +269,8 @@ public class OverviewCommandHelper {
                 factory.createActivityController(RECENTS_LAUNCH_DURATION);
             }
             mActivity = activity;
+            mRecentsView = mActivity.getOverviewPanel();
+            mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
             return false;
         }
 
@@ -280,6 +280,15 @@ public class OverviewCommandHelper {
             }
             RemoteAnimationProvider.showOpeningTarget(targetCompats);
             AnimatorSet anim = new AnimatorSet();
+            anim.addListener(new AnimationSuccessListener() {
+                @Override
+                public void onAnimationSuccess(Animator animator) {
+                    if (mRecentsView != null) {
+                        mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */,
+                                true /* animate */);
+                    }
+                }
+            });
             if (mActivity == null) {
                 Log.e(TAG, "Animation created, before activity");
                 anim.play(ValueAnimator.ofInt(0, 1).setDuration(100));
