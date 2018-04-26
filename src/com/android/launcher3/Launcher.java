@@ -738,7 +738,7 @@ public class Launcher extends BaseDraggingActivity
         getStateManager().moveToRestState();
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
-        UiFactory.onTrimMemory(this, TRIM_MEMORY_UI_HIDDEN);
+        onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
 
     @Override
