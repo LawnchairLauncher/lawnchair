@@ -88,8 +88,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
-    public static final boolean DEBUG_SHOW_CLEAR_ALL_BUTTON = false;
-
     private final Rect mTempRect = new Rect();
 
     public static final FloatProperty<RecentsView> ADJACENT_SCALE =
@@ -104,7 +102,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return recentsView.mAdjacentScale;
         }
     };
-    private static final boolean FLIP_RECENTS = true;
+    public static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
 
     protected final T mActivity;
@@ -303,41 +301,55 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private float calculateClearAllButtonAlpha() {
-        if (mClearAllButton.getVisibility() != View.VISIBLE || getChildCount() == 0) return 0;
+        final int childCount = getChildCount();
+        if (mClearAllButton.getVisibility() != View.VISIBLE || childCount == 0) return 0;
 
-        // Current visible coordinate of the right border of the rightmost task.
-        final int carouselCurrentRight = getChildAt(getChildCount() - 1).getRight() - getScrollX();
+        // Current visible coordinate of the end of the oldest task.
+        final View lastChild = getChildAt(childCount - 1);
+        final int carouselCurrentEnd =
+                (mIsRtl ? lastChild.getLeft() : lastChild.getRight()) - getScrollX();
 
-        // As the right border (let's call it E aka carouselCurrentRight) of the carousel moves
-        // over Clear all button, the button changes trasparency.
-        // leftOfAlphaChange < rightOfAlphaChange; these are the points of the 100% and 0% alpha
-        // correspondingly. Alpha changes linearly between 100% and 0% as E moves through this
-        // range. It doesn't change outside of the range.
+        // As the end (let's call it E aka carouselCurrentEnd) of the carousel moves over Clear
+        // all button, the button changes trasparency.
+        // fullAlphaX and zeroAlphaX are the points of the 100% and 0% alpha correspondingly.
+        // Alpha changes linearly between 100% and 0% as E moves through this range. It doesn't
+        // change outside of the range.
 
-        // Once E hits the left border of the Clear-All button, the whole button is uncovered,
-        // and it should have alpha 100%.
-        final float leftOfAlphaChange = mClearAllButton.getX();
+        // Once E hits the border of the Clear-All button that looks towards the most recent
+        // task, the whole button is uncovered, and it should have alpha 100%.
+        final float fullAlphaX = mIsRtl ?
+                mClearAllButton.getX() + mClearAllButton.getWidth() :
+                mClearAllButton.getX();
 
-        // The rightmost possible right coordinate of the carousel.
-        final int carouselMotionLimit = getScrollForPage(getChildCount() - 1) + getWidth()
-                - getPaddingRight() - mInsets.right;
+        // X coordinate of the carousel scrolled as far as possible in the direction towards the
+        // button. Logically, the button is "behind" the least recent task. This is the
+        // coordinate of the end of the least recent task in the carousel just after opening,
+        // with the most recent task in the center, and the rest of tasks go from that point
+        // towards and potentially behind the button.
+        final int carouselMotionLimit = getScrollForPage(childCount - 1) - getScrollForPage(0) +
+                (mIsRtl ?
+                        getPaddingLeft() + mInsets.left :
+                        getWidth() - getPaddingRight() - mInsets.right);
 
         // The carousel might not be able to ever cover a part of the Clear-all button. Then
         // always show the button as 100%. Technically, this check also prevents dividing by zero
-        // or a negative number when calculating the transparency ratio below.
-        if (carouselMotionLimit <= leftOfAlphaChange) return 1;
+        // or getting a negative transparency ratio.
+        if (mIsRtl ? carouselMotionLimit >= fullAlphaX : carouselMotionLimit <= fullAlphaX) {
+            return 1;
+        }
 
         // If the carousel is able to cover the button completely, we make the button completely
-        // transparent when E hits the right border of the button.
-        // Or, the carousel may not be able to move that far to the right so it completely covers
-        // the button. Then we set the rightmost possible position of the carousel as the point
+        // transparent when E hits the border of the button farthest from the most recent task.
+        // Or, the carousel may not be able to move that far towards the button so it completely
+        // covers the it. Then we set the motion limit position of the carousel as the point
         // where the button reaches 0 alpha.
-        final float rightOfAlphaChange = Math.min(
-                mClearAllButton.getX() + mClearAllButton.getWidth(), carouselMotionLimit);
+        final float zeroAlphaX = mIsRtl ?
+                Math.max(mClearAllButton.getX(), carouselMotionLimit) :
+                Math.min(mClearAllButton.getX() + mClearAllButton.getWidth(), carouselMotionLimit);
 
         return Utilities.boundToRange(
-                (rightOfAlphaChange - carouselCurrentRight) /
-                        (rightOfAlphaChange - leftOfAlphaChange), 0, 1);
+                (zeroAlphaX - carouselCurrentEnd) /
+                        (zeroAlphaX - fullAlphaX), 0, 1);
     }
 
     private void updateClearAllButtonAlpha() {
@@ -354,9 +366,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (DEBUG_SHOW_CLEAR_ALL_BUTTON && ev.getAction() == MotionEvent.ACTION_DOWN
-                && mTouchState == TOUCH_STATE_REST && mScroller.isFinished()
-                && mClearAllButton.getVisibility() == View.VISIBLE) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && mTouchState == TOUCH_STATE_REST
+                && mScroller.isFinished() && mClearAllButton.getVisibility() == View.VISIBLE) {
             mClearAllButton.getHitRect(mTempRect);
             mTempRect.offset(-getLeft(), -getTop());
             if (mTempRect.contains((int) ev.getX(), (int) ev.getY())) {
@@ -1206,21 +1217,29 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return "";
     }
 
+    private int additionalScrollForClearAllButton() {
+        return (int) getResources().getDimension(
+                R.dimen.clear_all_container_width) - getPaddingEnd();
+    }
+
     @Override
     protected int computeMaxScrollX() {
-        if (!DEBUG_SHOW_CLEAR_ALL_BUTTON || getChildCount() == 0) {
+        if (getChildCount() == 0) {
             return super.computeMaxScrollX();
         }
 
         // Allow a clear_all_container_width-sized gap after the last task.
-        return super.computeMaxScrollX() + (int) getResources().getDimension(
-                R.dimen.clear_all_container_width) - getPaddingEnd();
+        return super.computeMaxScrollX() + (mIsRtl ? 0 : additionalScrollForClearAllButton());
+    }
+
+    @Override
+    protected int offsetForPageScrolls() {
+        return mIsRtl ? additionalScrollForClearAllButton() : 0;
     }
 
     private void updateClearAllButtonVisibility() {
         if (mClearAllButton == null) return;
-        mClearAllButton.setVisibility(
-                !DEBUG_SHOW_CLEAR_ALL_BUTTON || mShowEmptyMessage ? GONE : VISIBLE);
+        mClearAllButton.setVisibility(mShowEmptyMessage ? GONE : VISIBLE);
         updateClearAllButtonAlpha();
     }
 
