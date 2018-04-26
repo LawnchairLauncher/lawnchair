@@ -42,7 +42,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
@@ -52,7 +51,6 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
@@ -60,7 +58,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
-
 import java.util.ArrayList;
 
 /**
@@ -278,7 +275,6 @@ public class OverviewCommandHelper {
             if (mListener != null) {
                 mListener.unregister();
             }
-            RemoteAnimationProvider.showOpeningTarget(targetCompats);
             AnimatorSet anim = new AnimatorSet();
             anim.addListener(new AnimationSuccessListener() {
                 @Override
@@ -321,12 +317,13 @@ public class OverviewCommandHelper {
             mHelper.getSwipeUpDestinationAndLength(
                     mActivity.getDeviceProfile(), mActivity, targetRect);
             clipHelper.updateTargetRect(targetRect);
+            clipHelper.prepareAnimation(false /* isOpening */);
 
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             valueAnimator.addUpdateListener((v) ->
-                clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue()));
+                    clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue()));
 
             if (targetSet.isAnimatingHome()) {
                 // If we are animating home, fade in the opening targets
@@ -337,9 +334,7 @@ public class OverviewCommandHelper {
                 valueAnimator.addUpdateListener((v) -> {
                     for (RemoteAnimationTargetCompat app : openingSet.apps) {
                         transaction.setAlpha(app.leash, (float) v.getAnimatedValue());
-                        transaction.show(app.leash);
                     }
-                    transaction.setEarlyWakeup();
                     transaction.apply();
                 });
             }

@@ -17,6 +17,8 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.SCROLL;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -68,6 +70,11 @@ public class ClipAnimationHelper {
 
     private float mTargetScale = 1f;
 
+    // Whether to boost the opening animation target layers, or the closing
+    private int mBoostModeTargetLayers = -1;
+    // Wether or not applyTransform has been called yet since prepareAnimation()
+    private boolean mIsFirstFrame = true;
+
     public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
         mHomeStackBounds.set(homeStackBounds);
         mSourceInsets.set(target.contentInsets);
@@ -101,6 +108,11 @@ public class ClipAnimationHelper {
         mSourceRect.set(scaledTargetRect);
     }
 
+    public void prepareAnimation(boolean isOpening) {
+        mIsFirstFrame = true;
+        mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
+    }
+
     public void applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
@@ -121,6 +133,11 @@ public class ClipAnimationHelper {
                 (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress));
 
         TransactionCompat transaction = new TransactionCompat();
+        if (mIsFirstFrame) {
+            RemoteAnimationProvider.prepareTargetsForFirstFrame(targetSet.unfilteredApps,
+                    transaction, mBoostModeTargetLayers);
+            mIsFirstFrame = false;
+        }
         for (RemoteAnimationTargetCompat app : targetSet.apps) {
             if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
@@ -133,9 +150,7 @@ public class ClipAnimationHelper {
                     || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 transaction.setAlpha(app.leash, 1 - progress);
             }
-            transaction.show(app.leash);
         }
-        transaction.setEarlyWakeup();
         transaction.apply();
     }
 
