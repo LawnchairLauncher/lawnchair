@@ -94,6 +94,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 launcher.getText(R.string.action_deep_shortcut)));
     }
 
+    public void addAccessibilityAction(int action, int actionLabel) {
+        mActions.put(action, new AccessibilityAction(action, mLauncher.getText(actionLabel)));
+    }
+
     @Override
     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
