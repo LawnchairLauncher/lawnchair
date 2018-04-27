@@ -106,6 +106,7 @@ enum ControlType {
   BACK_BUTTON = 11; // Deprecated, use enum Command instead
   // GO_TO_PLAYSTORE
   QUICK_SCRUB_BUTTON = 12;
+  CLEAR_ALL_BUTTON = 13;
 }
 
 // Used to define the action component of the LauncherEvent.
