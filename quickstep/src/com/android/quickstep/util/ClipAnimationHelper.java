@@ -26,14 +26,17 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.RemoteException;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -171,27 +174,7 @@ public class ClipAnimationHelper {
         mHomeStackBounds.offset(pos[0], pos[1]);
 
         if (rv.shouldUseMultiWindowTaskSizeStrategy()) {
-            // TODO: Fetch multi-window target bounds from system-ui
-            DeviceProfile fullDp = activity.getDeviceProfile().getFullScreenProfile();
-            // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
-            // account for system insets
-            int taskWidth = fullDp.availableWidthPx;
-            int taskHeight = fullDp.availableHeightPx;
-            int halfDividerSize = activity.getResources()
-                    .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
-
-            Rect insets = new Rect();
-            WindowManagerWrapper.getInstance().getStableInsets(insets);
-            if (fullDp.isLandscape) {
-                taskWidth = taskWidth / 2 - halfDividerSize;
-            } else {
-                taskHeight = taskHeight / 2 - halfDividerSize;
-            }
-
-            mSourceStackBounds.set(0, 0, taskWidth, taskHeight);
-            // Align the task to bottom right (probably not true for seascape).
-            mSourceStackBounds.offset(insets.left + fullDp.availableWidthPx - taskWidth,
-                    insets.top + fullDp.availableHeightPx - taskHeight);
+            updateStackBoundsToMultiWindowTaskSize(activity);
         } else {
             mSourceStackBounds.set(mHomeStackBounds);
             mSourceInsets.set(activity.getDeviceProfile().getInsets());
@@ -208,6 +191,41 @@ public class ClipAnimationHelper {
         mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
         mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
     }
+
+    private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
+        ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+        if (sysUiProxy != null) {
+            try {
+                mSourceStackBounds.set(sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds());
+                return;
+            } catch (RemoteException e) {
+                // Use half screen size
+            }
+        }
+
+        // Assume that the task size is half screen size (minus the insets and the divider size)
+        DeviceProfile fullDp = activity.getDeviceProfile().getFullScreenProfile();
+        // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
+        // account for system insets
+        int taskWidth = fullDp.availableWidthPx;
+        int taskHeight = fullDp.availableHeightPx;
+        int halfDividerSize = activity.getResources()
+                .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
+
+        Rect insets = new Rect();
+        WindowManagerWrapper.getInstance().getStableInsets(insets);
+        if (fullDp.isLandscape) {
+            taskWidth = taskWidth / 2 - halfDividerSize;
+        } else {
+            taskHeight = taskHeight / 2 - halfDividerSize;
+        }
+
+        mSourceStackBounds.set(0, 0, taskWidth, taskHeight);
+        // Align the task to bottom right (probably not true for seascape).
+        mSourceStackBounds.offset(insets.left + fullDp.availableWidthPx - taskWidth,
+                insets.top + fullDp.availableHeightPx - taskHeight);
+    }
+
 
     public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
         RectF currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
