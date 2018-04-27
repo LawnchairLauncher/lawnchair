@@ -65,9 +65,9 @@ import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.QuickScrubController;
-import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.TaskViewDrawable;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -1096,17 +1096,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * If launching one of the adjacent tasks, parallax the center task and other adjacent task
      * to the right.
      */
-    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(
+            TaskView tv, ClipAnimationHelper clipAnimationHelper) {
         AnimatorSet anim = new AnimatorSet();
 
         int taskIndex = indexOfChild(tv);
         int centerTaskIndex = getCurrentPage();
         boolean launchingCenterTask = taskIndex == centerTaskIndex;
 
-        TaskWindowBounds endInterpolation = tv.getRecentsInterpolator().interpolate(1);
-        float toScale = endInterpolation.taskScale;
-        float toTranslationY = endInterpolation.taskY;
-
+        float toScale = clipAnimationHelper.getSourceRect().width()
+                / clipAnimationHelper.getTargetRect().width();
+        float toTranslationY = clipAnimationHelper.getSourceRect().centerY()
+                - clipAnimationHelper.getTargetRect().centerY();
         if (launchingCenterTask) {
             TaskView centerTask = getPageAt(centerTaskIndex);
             if (taskIndex - 1 >= 0) {
@@ -1153,11 +1154,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
-        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv);
 
         int count = getChildCount();
         if (count == 0) {
-            return new PendingAnimation(anim);
+            return new PendingAnimation(new AnimatorSet());
         }
 
         tv.setVisibility(INVISIBLE);
@@ -1168,6 +1168,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 ObjectAnimator.ofFloat(drawable, TaskViewDrawable.PROGRESS, 1, 0);
         drawableAnim.setInterpolator(LINEAR);
 
+        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv,
+                drawable.getClipAnimationHelper());
         anim.play(drawableAnim);
         anim.setDuration(duration);
 

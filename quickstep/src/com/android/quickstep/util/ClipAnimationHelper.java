@@ -20,13 +20,16 @@ import static com.android.launcher3.anim.Interpolators.SCROLL;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
+import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -42,9 +45,12 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.function.BiConsumer;
+
 /**
  * Utility class to handle window clip animation
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class ClipAnimationHelper {
 
     // The bounds of the source app in device coordinates
@@ -78,13 +84,21 @@ public class ClipAnimationHelper {
     // Wether or not applyTransform has been called yet since prepareAnimation()
     private boolean mIsFirstFrame = true;
 
-    public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
-        mHomeStackBounds.set(homeStackBounds);
+    private BiConsumer<TransactionCompat, RemoteAnimationTargetCompat> mTaskTransformCallback =
+            (t, a) -> { };
+
+    private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
         mSourceStackBounds.set(target.sourceContainerBounds);
 
         // TODO: Should sourceContainerBounds already have this offset?
         mSourceStackBounds.offsetTo(target.position.x, target.position.y);
+
+    }
+
+    public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
+        mHomeStackBounds.set(homeStackBounds);
+        updateSourceStack(target);
     }
 
     public void updateTargetRect(Rect targetRect) {
@@ -116,7 +130,7 @@ public class ClipAnimationHelper {
         mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
     }
 
-    public void applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
+    public RectF applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
         Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
@@ -153,8 +167,16 @@ public class ClipAnimationHelper {
                     || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 transaction.setAlpha(app.leash, 1 - progress);
             }
+
+            mTaskTransformCallback.accept(transaction, app);
         }
         transaction.apply();
+        return currentRect;
+    }
+
+    public void setTaskTransformCallback
+            (BiConsumer<TransactionCompat, RemoteAnimationTargetCompat> callback) {
+        mTaskTransformCallback = callback;
     }
 
     public void offsetTarget(float scale, float offsetX, float offsetY) {
@@ -165,6 +187,11 @@ public class ClipAnimationHelper {
     }
 
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv) {
+        fromTaskThumbnailView(ttv, rv, null);
+    }
+
+    public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv,
+            @Nullable RemoteAnimationTargetCompat target) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(ttv.getContext());
         BaseDragLayer dl = activity.getDragLayer();
 
@@ -173,7 +200,9 @@ public class ClipAnimationHelper {
         mHomeStackBounds.set(0, 0, dl.getWidth(), dl.getHeight());
         mHomeStackBounds.offset(pos[0], pos[1]);
 
-        if (rv.shouldUseMultiWindowTaskSizeStrategy()) {
+        if (target != null) {
+            updateSourceStack(target);
+        } else  if (rv.shouldUseMultiWindowTaskSizeStrategy()) {
             updateStackBoundsToMultiWindowTaskSize(activity);
         } else {
             mSourceStackBounds.set(mHomeStackBounds);
@@ -226,7 +255,6 @@ public class ClipAnimationHelper {
                 insets.top + fullDp.availableHeightPx - taskHeight);
     }
 
-
     public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
         RectF currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
         canvas.translate(mSourceStackBounds.left - mHomeStackBounds.left,
@@ -243,5 +271,13 @@ public class ClipAnimationHelper {
                 ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
                 ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
                 ttv.getCornerRadius() * progress);
+    }
+
+    public RectF getTargetRect() {
+        return mTargetRect;
+    }
+
+    public RectF getSourceRect() {
+        return mSourceRect;
     }
 }
