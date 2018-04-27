@@ -27,8 +27,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Matrix;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.Surface;
@@ -36,17 +35,17 @@ import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
-import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
-import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
  * Contains helpful methods for retrieving data from {@link Task}s.
@@ -136,74 +135,64 @@ public class TaskUtils {
         return taskView;
     }
 
-
     /**
      * @return Animator that controls the window of the opening targets for the recents launch
      * animation.
      */
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
-            RemoteAnimationTargetCompat[] targets) {
-        final RecentsAnimationInterpolator recentsInterpolator = v.getRecentsInterpolator();
-
-        Rect crop = new Rect();
-        Matrix matrix = new Matrix();
-
-        ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
+            RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
+        final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
 
             // Defer fading out the view until after the app window gets faded in
-            FloatProp mViewAlpha = new FloatProp(1f, 0f, 75, 75, LINEAR);
-            FloatProp mTaskAlpha = new FloatProp(0f, 1f, 0, 75, LINEAR);
+            final FloatProp mViewAlpha = new FloatProp(1f, 0f, 75, 75, LINEAR);
+            final FloatProp mTaskAlpha = new FloatProp(0f, 1f, 0, 75, LINEAR);
 
-            boolean isFirstFrame = true;
+            final RemoteAnimationTargetSet mTargetSet;
+
+            final RectF mThumbnailRect;
+            private Surface mSurface;
+            private long mFrameNumber;
+
+            {
+                mTargetSet = new RemoteAnimationTargetSet(targets, MODE_OPENING);
+                inOutHelper.setTaskTransformCallback((t, app) -> {
+                    t.setAlpha(app.leash, mTaskAlpha.value);
+
+                    if (!skipViewChanges) {
+                        t.deferTransactionUntil(app.leash, mSurface, mFrameNumber);
+                    }
+                });
+
+                inOutHelper.prepareAnimation(true /* isOpening */);
+                inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
+                        mTargetSet.apps.length == 0 ? null : mTargetSet.apps[0]);
+
+                mThumbnailRect = new RectF(inOutHelper.getTargetRect());
+                mThumbnailRect.offset(-v.getTranslationX(), -v.getTranslationY());
+                Utilities.scaleRectFAboutCenter(mThumbnailRect, 1 / v.getScaleX());
+            }
 
             @Override
             public void onUpdate(float percent) {
-                final Surface surface = getSurface(v);
-                final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
-                if (frameNumber == -1) {
+                mSurface = getSurface(v);
+                mFrameNumber = mSurface != null ? getNextFrameNumber(mSurface) : -1;
+                if (mFrameNumber == -1) {
                     // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
                     Log.w(TAG, "Failed to animate, surface got destroyed.");
                     return;
                 }
-                TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
 
+                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, 1 - percent);
                 if (!skipViewChanges) {
-                    v.setScaleX(tw.taskScale);
-                    v.setScaleY(tw.taskScale);
-                    v.setTranslationX(tw.taskX);
-                    v.setTranslationY(tw.taskY);
+                    float scale = taskBounds.width() / mThumbnailRect.width();
+                    v.setScaleX(scale);
+                    v.setScaleY(scale);
+                    v.setTranslationX(taskBounds.centerX() - mThumbnailRect.centerX());
+                    v.setTranslationY(taskBounds.centerY() - mThumbnailRect.centerY());
                     v.setAlpha(mViewAlpha.value);
                 }
-
-                matrix.setScale(tw.winScale, tw.winScale);
-                matrix.postTranslate(tw.winX, tw.winY);
-                crop.set(tw.winCrop);
-
-                TransactionCompat t = new TransactionCompat();
-                if (isFirstFrame) {
-                    RemoteAnimationProvider.prepareTargetsForFirstFrame(targets, t, MODE_OPENING);
-                    isFirstFrame = false;
-                }
-                for (RemoteAnimationTargetCompat target : targets) {
-                    if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
-                        t.setAlpha(target.leash, mTaskAlpha.value);
-
-                        // TODO: This isn't correct at the beginning of the animation, but better
-                        // than nothing.
-                        matrix.postTranslate(target.position.x, target.position.y);
-                        t.setMatrix(target.leash, matrix);
-                        t.setWindowCrop(target.leash, crop);
-
-                        if (!skipViewChanges) {
-                            t.deferTransactionUntil(target.leash, surface, frameNumber);
-                        }
-                    }
-                }
-                t.apply();
-
-                matrix.reset();
             }
         });
         return appAnimator;

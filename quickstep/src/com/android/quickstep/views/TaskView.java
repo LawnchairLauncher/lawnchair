@@ -26,7 +26,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -39,11 +38,9 @@ import android.widget.ImageView;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -231,6 +228,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         setScaleY(mCurveScale);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        setPivotX((right - left) * 0.5f);
+        setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
+    }
+
     public float getCurveScaleForInterpolation(float linearInterpolation) {
         float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
         return getCurveScaleForCurveInterpolation(curveInterpolation);
@@ -248,23 +252,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public boolean hasOverlappingRendering() {
         // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
         return false;
-    }
-
-    public RecentsAnimationInterpolator getRecentsInterpolator() {
-        Rect taskViewBounds = new Rect();
-        BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
-        DeviceProfile dp = activity.getDeviceProfile();
-        activity.getDragLayer().getDescendantRectRelativeToSelf(this, taskViewBounds);
-
-        // TODO: Use the actual target insets instead of the current thumbnail insets in case the
-        // device state has changed
-        return new RecentsAnimationInterpolator(
-                new Rect(0, 0, dp.widthPx, dp.heightPx),
-                getThumbnail().getInsets(),
-                taskViewBounds,
-                new Rect(0, getThumbnail().getTop(), 0, 0),
-                getScaleX(),
-                getTranslationX());
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
