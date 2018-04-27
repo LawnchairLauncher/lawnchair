@@ -107,6 +107,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
 
+    private static final float[] sTempFloatArray = new float[3];
+
     protected final T mActivity;
     private final QuickScrubController mQuickScrubController;
     private final float mFastFlingVelocity;
@@ -985,11 +987,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private float[] getAdjacentScaleAndTranslation(TaskView currTask, TaskView adjacentTask,
             float currTaskToScale, float currTaskToTranslationY) {
         float displacement = currTask.getWidth() * (currTaskToScale - currTask.getCurveScale());
-        return new float[] {
-                currTaskToScale * adjacentTask.getCurveScale(),
-                mIsRtl ? -displacement : displacement,
-                currTaskToTranslationY
-        };
+        sTempFloatArray[0] = currTaskToScale * adjacentTask.getCurveScale();
+        sTempFloatArray[1] = mIsRtl ? -displacement : displacement;
+        sTempFloatArray[2] = currTaskToTranslationY;
+        return sTempFloatArray;
     }
 
     @Override
