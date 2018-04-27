@@ -1,5 +1,8 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -9,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.InsettableFrameLayout;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 public class RecentsViewContainer extends InsettableFrameLayout {
@@ -29,9 +33,12 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
     private RecentsView mRecentsView;
     private View mClearAllButton;
+    private final Context mContext;
+
 
     public RecentsViewContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     @Override
@@ -40,6 +47,8 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
         mClearAllButton = findViewById(R.id.clear_all_button);
         mClearAllButton.setOnClickListener((v) -> {
+            Launcher.getLauncher(mContext).getUserEventDispatcher()
+                    .logActionOnControl(TAP, CLEAR_ALL_BUTTON);
             mRecentsView.dismissAllTasks();
         });
 
