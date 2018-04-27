@@ -33,12 +33,9 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
     private RecentsView mRecentsView;
     private View mClearAllButton;
-    private final Context mContext;
-
 
     public RecentsViewContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
     }
 
     @Override
@@ -47,7 +44,7 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
         mClearAllButton = findViewById(R.id.clear_all_button);
         mClearAllButton.setOnClickListener((v) -> {
-            Launcher.getLauncher(mContext).getUserEventDispatcher()
+            mRecentsView.mActivity.getUserEventDispatcher()
                     .logActionOnControl(TAP, CLEAR_ALL_BUTTON);
             mRecentsView.dismissAllTasks();
         });
