@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
@@ -256,7 +258,6 @@ public class TouchInteractionService extends Service {
 
         private boolean mTrackingStarted = false;
         private boolean mInvalidated = false;
-        private boolean mHadWindowFocusOnDown;
 
         private float mLastProgress = 0;
         private boolean mStartPending = false;
@@ -281,8 +282,7 @@ public class TouchInteractionService extends Service {
             if (action == ACTION_DOWN) {
                 mTrackingStarted = false;
                 mDownPos.set(ev.getX(), ev.getY());
-                mHadWindowFocusOnDown = mTarget.hasWindowFocus();
-            } else if (!mTrackingStarted && mHadWindowFocusOnDown) {
+            } else if (!mTrackingStarted) {
                 switch (action) {
                     case ACTION_POINTER_UP:
                     case ACTION_POINTER_DOWN:
@@ -328,11 +328,23 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
+        public void onQuickStep(float eventX, float eventY, long eventTime) {
+            if (mInvalidated) {
+                return;
+            }
+            mActivityHelper.onQuickstepGestureStarted(mActivity, true);
+            ActivityManagerWrapper.getInstance()
+                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        }
+
+        @Override
         public void updateTouchTracking(int interactionType) {
             if (mInvalidated) {
                 return;
             }
             if (interactionType == INTERACTION_QUICK_SCRUB) {
+                ActivityManagerWrapper.getInstance()
+                        .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
                 mStartPending = true;
 
                 Runnable action = () -> {
@@ -345,7 +357,6 @@ public class TouchInteractionService extends Service {
                         mQuickScrubController.onQuickScrubEnd();
                         mEndPending = false;
                     }
-
                 };
 
                 mActivityHelper.executeOnWindowAvailable(mActivity, action);
