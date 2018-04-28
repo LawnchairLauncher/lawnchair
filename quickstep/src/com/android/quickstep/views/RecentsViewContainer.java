@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 public class RecentsViewContainer extends InsettableFrameLayout {
@@ -54,6 +53,7 @@ public class RecentsViewContainer extends InsettableFrameLayout {
                 (InsettableFrameLayout.LayoutParams) mClearAllButton.getLayoutParams();
         params.gravity = Gravity.TOP | (RecentsView.FLIP_RECENTS ? Gravity.START : Gravity.END);
         mClearAllButton.setLayoutParams(params);
+        mClearAllButton.forceHasOverlappingRendering(false);
         mRecentsView.setClearAllButton(mClearAllButton);
     }
 
