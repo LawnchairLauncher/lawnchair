@@ -607,7 +607,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int endIndex = mIsRtl ? -1 : childCount;
         final int delta = mIsRtl ? -1 : 1;
 
-        final int verticalPadding = getPaddingTop() + getPaddingBottom();
+        final int verticalCenter = (getPaddingTop() + getMeasuredHeight() + mInsets.top
+                - mInsets.bottom - getPaddingBottom()) / 2;
 
         final int scrollOffsetLeft = mInsets.left + getPaddingLeft();
         boolean pageScrollChanged = false;
@@ -617,9 +618,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 i += delta) {
             final View child = getPageAt(i);
             if (scrollLogic.shouldIncludeView(child)) {
-                final int childTop = getPaddingTop() +
-                        (getMeasuredHeight() - mInsets.bottom - verticalPadding
-                                - child.getMeasuredHeight()) / 2;
+                final int childTop = verticalCenter - child.getMeasuredHeight() / 2;
                 final int childWidth = child.getMeasuredWidth();
 
                 if (layoutChildren) {
