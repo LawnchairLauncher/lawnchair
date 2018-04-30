@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -48,7 +46,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.ColorScrim;
+import com.android.launcher3.uioverrides.AllAppsScrim;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -112,8 +110,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
         // Attach a scrim to be drawn behind all-apps and hotseat
-        new ColorScrim(this, Themes.getAttrColor(context, R.attr.allAppsScrimColor), DEACCEL_2)
-                .attach();
+        new AllAppsScrim(this).attach();
 
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);

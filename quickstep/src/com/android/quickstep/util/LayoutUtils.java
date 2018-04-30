@@ -38,7 +38,14 @@ public class LayoutUtils {
     private @interface MultiWindowStrategy {}
 
     public static void calculateLauncherTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        float extraSpace = dp.isVerticalBarLayout() ? 0 : dp.hotseatBarSizePx;
+        float extraSpace;
+        if (dp.isVerticalBarLayout()) {
+            extraSpace = 0;
+        } else {
+            Resources res = context.getResources();
+            extraSpace = dp.hotseatBarSizePx + res.getDimension(R.dimen.shelf_surface_top_padding)
+                    + res.getDimension(R.dimen.shelf_surface_radius);
+        }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
 
