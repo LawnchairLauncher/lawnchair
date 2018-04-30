@@ -24,8 +24,8 @@
     <string name="work_folder_name" msgid="3753320833950115786">"العمل"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"لم يتم تثبيت التطبيق."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"التطبيق ليس متاحًا"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"تم تعطيل التطبيق الذي تم تنزيله في الوضع الآمن"</string>
-    <string name="safemode_widget_error" msgid="4863470563535682004">"الأدوات معطلة في الوضع الآمن"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"تم إيقاف التطبيق الذي تم تنزيله في الوضع الآمن"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"الأدوات غير مفعّلة في الوضع الآمن"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"الاختصار غير متاح"</string>
     <string name="home_screen" msgid="806512411299847073">"الشاشة الرئيسية"</string>
     <string name="custom_actions" msgid="3747508247759093328">"الإجراءات المخصّصة"</string>
@@ -63,7 +63,7 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"الإعداد"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
-    <string name="disabled_app_label" msgid="6673129024321402780">"تم تعطيل <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"تم إيقاف <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="zero"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار</item>
       <item quantity="two"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به إشعاران (<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>)</item>
@@ -84,11 +84,13 @@
     <string name="widget_button_text" msgid="2880537293434387943">"الأدوات"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"الخلفيات"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"إعدادات الصفحة الرئيسية"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"عطَّل المشرف هذه الميزة"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"أوقف المشرف هذه الميزة"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"السماح بتدوير الشاشة الرئيسية"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"عند تدوير الهاتف"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"نقاط الإشعارات"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"قيد التشغيل"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"غير مفعّل"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تفعيل الوصول إلى الإشعارات"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>
     <string name="icon_badging_service_title" msgid="2309733118428242174">"عرض نقاط الإشعارات"</string>

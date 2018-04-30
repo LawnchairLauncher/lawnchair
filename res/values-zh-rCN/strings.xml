@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主屏幕设置"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已被您的管理员停用"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"允许旋转主屏幕"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"手机旋转时"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"通知圆点"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"开启"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"关闭"</string>

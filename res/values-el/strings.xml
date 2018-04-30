@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ταπετσαρίες"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ρυθμίσεις Αρχ. Οθ."</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Απενεργοποιήθηκε από τον διαχειριστή σας"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Να επιτρέπεται η περιστροφή της αρχικής οθόνης"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Όταν το τηλέφωνο περιστρέφεται"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Κουκκίδες ειδοποίησης"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Ενεργή"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Ανενεργή"</string>

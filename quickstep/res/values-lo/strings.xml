@@ -21,8 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"ແບ່ງໜ້າຈໍ"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ປັກໝຸດ"</string>
-    <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"ປັດຂຶ້ນຈາກລຸ່ມສຸດເພື່ອສະຫຼັບແອັບ"</string>
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"ພາບຮວມ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ບໍ່ມີລາຍການຫຼ້າສຸດ"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"ປິດ"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"ລຶບລ້າງທັງໝົດ"</string>
 </resources>

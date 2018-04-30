@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ્સ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"બંધ"</string>

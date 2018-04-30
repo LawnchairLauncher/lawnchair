@@ -81,8 +81,10 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Folda: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Wijeti"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Mandhari"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Mipangilio ya ukurasa wa mwanzo"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Mipangilio ya mwanzo"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Imezimwa na msimamizi wako"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Ruhusu kuzungusha skrini ya Kwanza"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Simu inapozungushwa"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Vitone vya arifa"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Imewashwa"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Imezimwa"</string>
