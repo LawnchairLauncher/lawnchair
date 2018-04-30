@@ -51,6 +51,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -193,13 +194,14 @@ public class RecentsActivity extends BaseDraggingActivity {
             RemoteAnimationTargetCompat[] targets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(targets, getTaskId(), MODE_CLOSING);
-        target.play(getRecentsWindowAnimator(taskView, !activityClosing, targets)
+        ClipAnimationHelper helper = new ClipAnimationHelper();
+        target.play(getRecentsWindowAnimator(taskView, !activityClosing, targets, helper)
                 .setDuration(RECENTS_LAUNCH_DURATION));
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {
             Animator adjacentAnimation = mFallbackRecentsView
-                    .createAdjacentPageAnimForTaskLaunch(taskView);
+                    .createAdjacentPageAnimForTaskLaunch(taskView, helper);
             adjacentAnimation.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             adjacentAnimation.setDuration(RECENTS_LAUNCH_DURATION);
             adjacentAnimation.addListener(new AnimatorListenerAdapter() {
