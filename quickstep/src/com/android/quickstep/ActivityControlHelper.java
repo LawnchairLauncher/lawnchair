@@ -182,8 +182,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return new AnimationFactory() {
                 @Override
                 public void createActivityController(long transitionLength) {
-                    createActivityControllerInternal(activity, activityVisible, transitionLength,
-                            callback);
+                    createActivityControllerInternal(activity, activityVisible, startState,
+                            transitionLength, callback);
                 }
 
                 @Override
@@ -194,10 +194,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
-                long transitionLength, Consumer<AnimatorPlaybackController> callback) {
+                LauncherState startState, long transitionLength,
+                Consumer<AnimatorPlaybackController> callback) {
             if (wasVisible) {
                 DeviceProfile dp = activity.getDeviceProfile();
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
+                activity.getStateManager().goToState(startState, false);
                 callback.accept(activity.getStateManager()
                         .createAnimationToNewWorkspace(OVERVIEW, accuracy));
                 return;
