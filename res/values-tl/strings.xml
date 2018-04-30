@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Mga Wallpaper"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Mga setting ng Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Na-disable ng iyong admin"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Payagan ang pag-rotate ng Home screen"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Kailan maro-rotate ang telepono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Mga notification dot"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Naka-on"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Naka-off"</string>

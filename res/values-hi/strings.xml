@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"सूचना बिंदु"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"चालू"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"बंद"</string>

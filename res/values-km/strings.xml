@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"ស្លាកជូនដំណឹង"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"បើក"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"បិទ"</string>

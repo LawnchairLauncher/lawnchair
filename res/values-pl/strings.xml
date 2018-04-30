@@ -83,6 +83,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia strony głównej"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Funkcja wyłączona przez administratora"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Zezwalaj na obrót ekranu głównego"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Po obróceniu telefonu"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Plakietki z powiadomieniami"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Włączono"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Wyłączono"</string>
