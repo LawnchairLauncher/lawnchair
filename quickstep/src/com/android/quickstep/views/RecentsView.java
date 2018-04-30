@@ -304,7 +304,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private float calculateClearAllButtonAlpha() {
         final int childCount = getChildCount();
-        if (mClearAllButton.getVisibility() != View.VISIBLE || childCount == 0) return 0;
+        if (mShowEmptyMessage || childCount == 0) return 0;
 
         // Current visible coordinate of the end of the oldest task.
         final View lastChild = getChildAt(childCount - 1);
@@ -356,7 +356,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void updateClearAllButtonAlpha() {
         if (mClearAllButton != null) {
-            mClearAllButton.setAlpha(calculateClearAllButtonAlpha() * mContentAlpha);
+            final float alpha = calculateClearAllButtonAlpha();
+            mClearAllButton.setAlpha(alpha * mContentAlpha);
+            mClearAllButton.setVisibility(alpha == 0 ? INVISIBLE : VISIBLE);
         }
     }
 
@@ -1027,9 +1029,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mShowEmptyMessage = isEmpty;
         updateEmptyStateUi(hasSizeChanged);
         invalidate();
-        if (mClearAllButton != null) {
-            updateClearAllButtonVisibility();
-        }
     }
 
     @Override
@@ -1044,7 +1043,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mEmptyTextLayout = null;
             mLastMeasureSize.set(getWidth(), getHeight());
         }
-        updateClearAllButtonVisibility();
+        updateClearAllButtonAlpha();
 
         if (!mShowEmptyMessage) return;
 
@@ -1238,14 +1237,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mIsRtl ? additionalScrollForClearAllButton() : 0;
     }
 
-    private void updateClearAllButtonVisibility() {
-        if (mClearAllButton == null) return;
-        mClearAllButton.setVisibility(mShowEmptyMessage ? GONE : VISIBLE);
-        updateClearAllButtonAlpha();
-    }
-
     public void setClearAllButton(View clearAllButton) {
         mClearAllButton = clearAllButton;
-        updateClearAllButtonVisibility();
+        updateClearAllButtonAlpha();
     }
 }
