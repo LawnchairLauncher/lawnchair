@@ -48,4 +48,7 @@
 
     <!-- Width of the space behind the last task in Overview. In the center of it, there is "Clear all" button. -->
     <dimen name="clear_all_container_width">168dp</dimen>
+
+    <dimen name="shelf_surface_radius">16dp</dimen>
+    <dimen name="shelf_surface_top_padding">4dp</dimen>
 </resources>
