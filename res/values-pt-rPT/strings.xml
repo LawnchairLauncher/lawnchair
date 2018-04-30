@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagens de fundo"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Definições da página inicial"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desativada pelo gestor"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotação do ecrã principal"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Quando o telemóvel é rodado"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Pontos de notificação"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Ativada"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desativada"</string>

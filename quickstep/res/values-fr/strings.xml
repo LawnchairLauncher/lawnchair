@@ -24,6 +24,5 @@
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Aperçu"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Aucun élément récent"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"Fermer"</string>
-    <!-- no translation found for recents_clear_all (5328176793634888831) -->
-    <skip />
+    <string name="recents_clear_all" msgid="5328176793634888831">"Tout effacer"</string>
 </resources>

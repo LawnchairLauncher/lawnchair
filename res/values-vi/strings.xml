@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hình nền"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Cài đặt màn hình chính"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Bị tắt bởi quản trị viên của bạn"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Cho phép xoay Màn hình chính"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Khi xoay điện thoại"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Dấu chấm thông báo"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Đang bật"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Đã tắt"</string>
