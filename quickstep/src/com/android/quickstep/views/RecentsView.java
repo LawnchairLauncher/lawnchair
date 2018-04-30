@@ -264,6 +264,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             loader.unloadTaskData(task);
             loader.getHighResThumbnailLoader().onTaskInvisible(task);
         }
+        onChildViewsChanged();
     }
 
     public boolean isTaskViewVisible(TaskView tv) {
@@ -358,7 +359,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (mClearAllButton != null) {
             final float alpha = calculateClearAllButtonAlpha();
             mClearAllButton.setAlpha(alpha * mContentAlpha);
-            mClearAllButton.setVisibility(alpha == 0 ? INVISIBLE : VISIBLE);
         }
     }
 
@@ -371,7 +371,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && mTouchState == TOUCH_STATE_REST
-                && mScroller.isFinished() && mClearAllButton.getVisibility() == View.VISIBLE) {
+                && mScroller.isFinished() && mClearAllButton.getAlpha() > 0) {
             mClearAllButton.getHitRect(mTempRect);
             mTempRect.offset(-getLeft(), -getTop());
             if (mTempRect.contains((int) ev.getX(), (int) ev.getY())) {
@@ -1011,6 +1011,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onViewAdded(child);
         child.setAlpha(mContentAlpha);
         setAdjacentScale(mAdjacentScale);
+        onChildViewsChanged();
     }
 
     @Override
@@ -1242,5 +1243,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setClearAllButton(View clearAllButton) {
         mClearAllButton = clearAllButton;
         updateClearAllButtonAlpha();
+    }
+
+    private void onChildViewsChanged() {
+        final int childCount = getChildCount();
+        mClearAllButton.setAccessibilityTraversalAfter(
+                childCount == 0 ? NO_ID : getChildAt(childCount - 1).getId());
+        mClearAllButton.setVisibility(childCount == 0 ? INVISIBLE : VISIBLE);
+    }
+
+    public void revealClearAllButton() {
+        scrollTo(mIsRtl ? 0 : computeMaxScrollX(), 0);
     }
 }
