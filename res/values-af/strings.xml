@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Muurpapiere"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Tuis-instellings"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Gedeaktiveer deur jou administrateur"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Laat toe dat tuisskerm gedraai word"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Wanneer foon gedraai word"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Kennisgewingkolle"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aan"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Af"</string>
