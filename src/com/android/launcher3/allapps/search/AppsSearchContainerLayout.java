@@ -62,6 +62,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private AlphabeticalAppsList mApps;
     private AllAppsContainerView mAppsView;
 
+    // This value was used to position the QSB. We store it here for translationY animations.
+    private final float mFixedTranslationY;
+    private final float mMarginTopAdjusting;
+
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
     }
@@ -78,6 +82,9 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        mFixedTranslationY = getTranslationY();
+        mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
 
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon
@@ -195,14 +202,16 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void setInsets(Rect insets) {
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
+        requestLayout();
+
         DeviceProfile dp = mLauncher.getDeviceProfile();
         if (dp.isVerticalBarLayout()) {
             mLauncher.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            MarginLayoutParams mlp = ((MarginLayoutParams) getLayoutParams());
-            int myBot = mlp.topMargin + (int) getTranslationY() + mlp.height;
             mLauncher.getAllAppsController().setScrollRangeDelta(
-                    dp.hotseatBarBottomPaddingPx + myBot);
+                    insets.bottom + mlp.topMargin + mFixedTranslationY);
         }
     }
 }
