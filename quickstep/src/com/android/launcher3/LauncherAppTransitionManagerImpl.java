@@ -64,6 +64,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
@@ -233,12 +234,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             return false;
         }
 
+        ClipAnimationHelper helper = new ClipAnimationHelper();
+        target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
+                .setDuration(RECENTS_LAUNCH_DURATION));
+
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
         if (launcherClosing) {
-            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
+            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView, helper);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
@@ -258,9 +263,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 }
             };
         }
-
-        target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets)
-                .setDuration(RECENTS_LAUNCH_DURATION));
         target.play(launcherAnim);
 
         // Set the current animation first, before adding windowAnimEndListener. Setting current

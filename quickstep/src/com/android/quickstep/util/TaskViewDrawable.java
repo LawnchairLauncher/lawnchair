@@ -87,6 +87,10 @@ public class TaskViewDrawable extends Drawable {
         canvas.restore();
     }
 
+    public ClipAnimationHelper getClipAnimationHelper() {
+        return mClipAnimationHelper;
+    }
+
     @Override
     public void setAlpha(int i) { }
 
