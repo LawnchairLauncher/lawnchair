@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imazhet e sfondit"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Cilësimet e Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Çaktivizuar nga administratori"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Lejo rrotullimin e ekranit kryesor"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Kur telefoni rrotullohet"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Pikat e njoftimeve"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktiv"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Joaktiv"</string>
@@ -92,7 +94,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Për aplikacionet e reja"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Ndrysho formën e ikonës"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"në ekranin bazë"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Përdor parazgjedhjen e sisteit"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Përdor parazgjedhjen e sistemit"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Katror"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Katror me kënde të rrumbullakëta"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Rreth"</string>

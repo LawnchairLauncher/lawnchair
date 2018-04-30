@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ನಿಮ್ಮ ನಿರ್ವಾಹಕರು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ್ದಾರೆ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ಆನ್"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ಆಫ್"</string>

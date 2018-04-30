@@ -77,10 +77,12 @@
     <string name="folder_closed" msgid="4100806530910930934">"ফোল্ডার বন্ধ করা হয়েছে"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ফোল্ডারের নাম পাল্টে <xliff:g id="NAME">%1$s</xliff:g> করা হয়েছে"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"ফোল্ডার: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"উইজেটগুলি"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"উইজেট"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ওয়ালপেপারগুলি"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"হোম এর সেটিংস"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"হোম সেটিংস"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"হোমস্ক্রীন ঘোরানোর অনুমতি দিন"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"যখন ফোনটি ঘোরানো হয়"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"বিজ্ঞপ্তি ডট"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"চালু হয়েছে"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"বন্ধ আছে"</string>
