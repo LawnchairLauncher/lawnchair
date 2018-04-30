@@ -192,8 +192,10 @@ public abstract class ButtonDropTarget extends TextView
             mCurrentFilter = new ColorMatrix();
         }
 
-        Themes.setColorScaleOnMatrix(getTextColor(), mSrcFilter);
-        Themes.setColorScaleOnMatrix(targetColor, mDstFilter);
+        int defaultTextColor = mOriginalTextColor.getDefaultColor();
+        Themes.setColorChangeOnMatrix(defaultTextColor, getTextColor(), mSrcFilter);
+        Themes.setColorChangeOnMatrix(defaultTextColor, targetColor, mDstFilter);
+
         ValueAnimator anim1 = ValueAnimator.ofObject(
                 new FloatArrayEvaluator(mCurrentFilter.getArray()),
                 mSrcFilter.getArray(), mDstFilter.getArray());
