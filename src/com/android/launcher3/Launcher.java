@@ -1154,12 +1154,6 @@ public class Launcher extends BaseDraggingActivity
         }
     }
 
-    public void onQuickstepGestureStarted(boolean isVisible) {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onQuickstepGestureStarted(isVisible);
-        }
-    }
-
     public AllAppsTransitionController getAllAppsController() {
         return mAllAppsController;
     }
