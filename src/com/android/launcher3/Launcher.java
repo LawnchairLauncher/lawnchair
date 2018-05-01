@@ -283,6 +283,7 @@ public class Launcher extends BaseDraggingActivity
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
+        UiFactory.onCreate(this);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 

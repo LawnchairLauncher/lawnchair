@@ -21,6 +21,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
 import android.content.Context;
 
@@ -28,6 +30,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
@@ -86,6 +89,55 @@ public class UiFactory {
     public static void resetOverview(Launcher launcher) {
         RecentsView recents = launcher.getOverviewPanel();
         recents.reset();
+    }
+
+    public static void onCreate(Launcher launcher) {
+        if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
+            launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
+                @Override
+                public void onStateSetImmediately(LauncherState state) {
+                }
+
+                @Override
+                public void onStateTransitionStart(LauncherState toState) {
+                }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
+                            .isSwipeUpGestureEnabled();
+                    LauncherState prevState = launcher.getStateManager().getLastState();
+
+                    if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
+                            && finalState == ALL_APPS && prevState == NORMAL))) {
+                        launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
+                        launcher.getStateManager().removeStateListener(this);
+                    }
+                }
+            });
+        }
+
+        if (!launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)) {
+            launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
+                @Override
+                public void onStateSetImmediately(LauncherState state) {
+                }
+
+                @Override
+                public void onStateTransitionStart(LauncherState toState) {
+                }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    LauncherState prevState = launcher.getStateManager().getLastState();
+
+                    if (finalState == ALL_APPS && prevState == OVERVIEW) {
+                        launcher.getSharedPrefs().edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
+                        launcher.getStateManager().removeStateListener(this);
+                    }
+                }
+            });
+        }
     }
 
     public static void onStart(Context context) {
