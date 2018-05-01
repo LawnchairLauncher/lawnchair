@@ -97,7 +97,7 @@ public class SpringRelativeLayout extends RelativeLayout {
         mActiveEdge = edge;
     }
 
-    private void setDampedScrollShift(float shift) {
+    protected void setDampedScrollShift(float shift) {
         if (shift != mDampedScrollShift) {
             mDampedScrollShift = shift;
             invalidate();
