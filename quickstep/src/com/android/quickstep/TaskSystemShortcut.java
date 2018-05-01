@@ -27,7 +27,6 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
@@ -239,7 +238,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             Log.w(TAG, "Failed to start screen pinning: ", e);
                         }
                     } else {
-                        Log.w(TAG, taskView.getLaunchTaskFailedMsg());
+                        taskView.notifyTaskLaunchFailed(TAG);
                     }
                 };
                 taskView.launchTask(true, resultCallback, mHandler);

@@ -1177,7 +1177,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             tv.setVisibility(VISIBLE);
             getOverlay().remove(drawable);
             if (!result) {
-                Log.w(TAG, tv.getLaunchTaskFailedMsg());
+                tv.notifyTaskLaunchFailed(TAG);
             }
         };
 
