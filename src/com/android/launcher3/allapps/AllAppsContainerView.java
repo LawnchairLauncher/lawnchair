@@ -47,6 +47,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.ColorScrim;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -122,6 +123,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public AllAppsStore getAppsStore() {
         return mAllAppsStore;
+    }
+
+    @Override
+    protected void setDampedScrollShift(float shift) {
+        // Bound the shift amount to avoid content from drawing on top (Y-val) of the QSB.
+        float maxShift = getSearchView().getHeight() / 2f;
+        super.setDampedScrollShift(Utilities.boundToRange(shift, -maxShift, maxShift));
     }
 
     @Override
