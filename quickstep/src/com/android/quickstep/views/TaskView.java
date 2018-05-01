@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -36,6 +37,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import android.widget.Toast;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
@@ -138,7 +140,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public void launchTask(boolean animate) {
         launchTask(animate, (result) -> {
             if (!result) {
-                Log.w(TAG, getLaunchTaskFailedMsg());
+                notifyTaskLaunchFailed(TAG);
             }
         }, getHandler());
     }
@@ -312,11 +314,12 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return super.performAccessibilityAction(action, arguments);
     }
 
-    public String getLaunchTaskFailedMsg() {
+    public void notifyTaskLaunchFailed(String tag) {
         String msg = "Failed to launch task";
         if (mTask != null) {
             msg += " (task=" + mTask.key.baseIntent + " userId=" + mTask.key.userId + ")";
         }
-        return msg;
+        Log.w(tag, msg);
+        Toast.makeText(getContext(), R.string.activity_not_available, LENGTH_SHORT).show();
     }
 }
