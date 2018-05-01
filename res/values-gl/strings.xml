@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Configuración da pantalla de Inicio"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Función desactivada polo administrador"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir xirar a pantalla de inicio"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Ao xirar o teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Puntos de notificacións"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activado"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desactivado"</string>
