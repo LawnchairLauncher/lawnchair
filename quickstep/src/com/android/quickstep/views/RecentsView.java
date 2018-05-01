@@ -144,6 +144,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             // TODO: Re-enable layout transitions for addition of the unpinned task
             reloadIfNeeded();
         }
+
+        @Override
+        public void onTaskRemoved(int taskId) {
+            TaskView taskView = getTaskView(taskId);
+            if (taskView != null) {
+                dismissTask(taskView, true /* animate */, false /* removeTask */);
+            }
+        }
     };
 
     private int mLoadPlanId = -1;
