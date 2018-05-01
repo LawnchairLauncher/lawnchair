@@ -745,12 +745,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 duration, LINEAR, anim);
     }
 
-    private void removeTask(Task task, PendingAnimation.OnEndListener onEndListener) {
+    private void removeTask(Task task, PendingAnimation.OnEndListener onEndListener,
+            boolean shouldLog) {
         if (task != null) {
             ActivityManagerWrapper.getInstance().removeTask(task.key.id);
-            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    onEndListener.logAction, Direction.UP,
-                    TaskUtils.getComponentKeyForTask(task.key));
+            if (shouldLog) {
+                mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
+                        onEndListener.logAction, Direction.UP,
+                        TaskUtils.getComponentKeyForTask(task.key));
+            }
         }
     }
 
@@ -833,7 +836,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mPendingAnimation.addEndListener((onEndListener) -> {
            if (onEndListener.isSuccess) {
                if (shouldRemoveTask) {
-                   removeTask(taskView.getTask(), onEndListener);
+                   removeTask(taskView.getTask(), onEndListener, true);
                }
                int pageToSnapTo = mCurrentPage;
                if (draggedIndex < pageToSnapTo) {
@@ -869,7 +872,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (onEndListener.isSuccess) {
                 while (getChildCount() != 0) {
                     TaskView taskView = getPageAt(getChildCount() - 1);
-                    removeTask(taskView.getTask(), onEndListener);
+                    removeTask(taskView.getTask(), onEndListener, false);
                     removeView(taskView);
                 }
                 onAllTasksRemoved();
