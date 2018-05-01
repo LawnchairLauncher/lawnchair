@@ -318,7 +318,7 @@ public class Launcher extends BaseDraggingActivity
             if (!internalStateHandled) {
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
-                mDragLayer.setAlpha(0);
+                mLauncherView.setAlpha(0);
             }
         } else {
             // Pages bound synchronously.
@@ -2131,8 +2131,8 @@ public class Launcher extends BaseDraggingActivity
 
     @Override
     public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
-        if (mDragLayer.getAlpha() < 1) {
-            mDragLayer.animate().alpha(1).withEndAction(
+        if (mLauncherView.getAlpha() < 1) {
+            mLauncherView.animate().alpha(1).withEndAction(
                     executor == null ? null : executor::onLoadAnimationCompleted).start();
         } else if (executor != null) {
             executor.onLoadAnimationCompleted();
