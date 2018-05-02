@@ -104,9 +104,9 @@ enum ControlType {
   VERTICAL_SCROLL = 9;
   HOME_INTENT = 10; // Deprecated, use enum Command instead
   BACK_BUTTON = 11; // Deprecated, use enum Command instead
-  // GO_TO_PLAYSTORE
   QUICK_SCRUB_BUTTON = 12;
   CLEAR_ALL_BUTTON = 13;
+  CANCEL_TARGET = 14;
 }
 
 // Used to define the action component of the LauncherEvent.
