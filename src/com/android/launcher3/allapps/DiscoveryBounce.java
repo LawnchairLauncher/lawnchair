@@ -42,7 +42,7 @@ import com.android.launcher3.states.InternalStateHandler;
  */
 public class DiscoveryBounce extends AbstractFloatingView {
 
-    private static final long DELAY_MS = 200;
+    private static final long DELAY_MS = 450;
 
     public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
     public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
