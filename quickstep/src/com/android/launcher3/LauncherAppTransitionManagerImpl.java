@@ -94,7 +94,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private static final int APP_LAUNCH_DURATION = 500;
     // Use a shorter duration for x or y translation to create a curve effect
-    private static final int APP_LAUNCH_CURVED_DURATION = 233;
+    private static final int APP_LAUNCH_CURVED_DURATION = APP_LAUNCH_DURATION / 2;
+    // We scale the durations for the downward app launch animations (minus the scale animation).
+    private static final float APP_LAUNCH_DOWN_DUR_SCALE_FACTOR = 0.8f;
+    private static final int APP_LAUNCH_ALPHA_START_DELAY = 32;
+    private static final int APP_LAUNCH_ALPHA_DURATION = 50;
+
     public static final int RECENTS_LAUNCH_DURATION = 336;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
@@ -420,10 +425,17 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         ObjectAnimator x = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_X, 0f, dX);
         ObjectAnimator y = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_Y, 0f, dY);
 
-        // Adjust the duration to change the "curve" of the app icon to the center.
-        boolean isBelowCenterY = lp.topMargin < centerY;
-        x.setDuration(isBelowCenterY ? APP_LAUNCH_DURATION : APP_LAUNCH_CURVED_DURATION);
-        y.setDuration(isBelowCenterY ? APP_LAUNCH_CURVED_DURATION : APP_LAUNCH_DURATION);
+        // Use upward animation for apps that are either on the bottom half of the screen, or are
+        // relatively close to the center.
+        boolean useUpwardAnimation = lp.topMargin > centerY
+                || Math.abs(dY) < mLauncher.getDeviceProfile().cellHeightPx;
+        if (useUpwardAnimation) {
+            x.setDuration(APP_LAUNCH_CURVED_DURATION);
+            y.setDuration(APP_LAUNCH_DURATION);
+        } else {
+            x.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_DURATION));
+            y.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_CURVED_DURATION));
+        }
         x.setInterpolator(AGGRESSIVE_EASE);
         y.setInterpolator(AGGRESSIVE_EASE);
         appIconAnimatorSet.play(x);
@@ -436,13 +448,20 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         float scale = Math.max(maxScaleX, maxScaleY);
         ObjectAnimator scaleAnim = ObjectAnimator
                 .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
-        scaleAnim.setDuration(APP_LAUNCH_DURATION).setInterpolator(Interpolators.EXAGGERATED_EASE);
+        scaleAnim.setDuration(APP_LAUNCH_DURATION)
+                .setInterpolator(Interpolators.EXAGGERATED_EASE);
         appIconAnimatorSet.play(scaleAnim);
 
         // Fade out the app icon.
         ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);
-        alpha.setStartDelay(32);
-        alpha.setDuration(50);
+        if (useUpwardAnimation) {
+            alpha.setStartDelay(APP_LAUNCH_ALPHA_START_DELAY);
+            alpha.setDuration(APP_LAUNCH_ALPHA_DURATION);
+        } else {
+            alpha.setStartDelay((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR
+                    * APP_LAUNCH_ALPHA_START_DELAY));
+            alpha.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_ALPHA_DURATION));
+        }
         alpha.setInterpolator(LINEAR);
         appIconAnimatorSet.play(alpha);
 
