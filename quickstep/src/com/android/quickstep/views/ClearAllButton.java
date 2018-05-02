@@ -23,9 +23,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.TextView;
+import android.widget.Button;
 
-public class ClearAllButton extends TextView {
+public class ClearAllButton extends Button {
     RecentsView mRecentsView;
 
     public ClearAllButton(Context context, @Nullable AttributeSet attrs) {
