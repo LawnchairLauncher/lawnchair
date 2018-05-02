@@ -40,4 +40,6 @@ public class OverviewCallbacks {
     public void onInitOverviewTransition() { }
 
     public void onResetOverview() { }
+
+    public void closeAllWindows() { }
 }

@@ -24,7 +24,6 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -69,7 +68,6 @@ import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -564,8 +562,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mGestureStarted = true;
         mRecentsAnimationWrapper.hideCurrentInputMethod();
         mRecentsAnimationWrapper.enableInputConsumer();
-        ActivityManagerWrapper.getInstance().closeSystemWindows(
-                CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     /**
@@ -579,8 +575,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             // Once the gesture starts, we can no longer transition home through the button, so
             // reset the force override of the activity visibility
             mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
-            mActivityControlHelper.onQuickstepGestureStarted(
-                    curActivity, mWasLauncherAlreadyVisible);
         }
     }
 
