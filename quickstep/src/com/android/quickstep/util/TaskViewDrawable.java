@@ -21,7 +21,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
-import android.widget.ImageView;
+import android.view.View;
 
 import com.android.launcher3.Utilities;
 import com.android.quickstep.views.RecentsView;
@@ -47,7 +47,7 @@ public class TaskViewDrawable extends Drawable {
             (t) -> (Math.max(t, 0.3f) - 0.3f) / 0.7f;
 
     private final RecentsView mParent;
-    private final ImageView mIconView;
+    private final View mIconView;
     private final int[] mIconPos;
 
     private final TaskThumbnailView mThumbnailView;
