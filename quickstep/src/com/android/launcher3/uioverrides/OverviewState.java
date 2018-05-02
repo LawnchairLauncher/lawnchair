@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
@@ -59,10 +58,6 @@ public class OverviewState extends LauncherState {
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
-            launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
-        }
-
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);
         AbstractFloatingView.closeAllOpenViews(launcher);
