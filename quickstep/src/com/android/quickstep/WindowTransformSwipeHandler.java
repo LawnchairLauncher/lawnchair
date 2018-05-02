@@ -163,9 +163,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 
     private final Context mContext;
-    private final int mRunningTaskId;
     private final ActivityControlHelper<T> mActivityControlHelper;
     private final ActivityInitListener mActivityInitListener;
+
+    private final int mRunningTaskId;
+    private ThumbnailData mTaskSnapshot;
 
     private MultiStateCallback mStateCallback;
     private AnimatorPlaybackController mLauncherTransitionController;
@@ -705,9 +707,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
                 // Update the screenshot of the task
-                ThumbnailData thumbnail =
-                        mRecentsAnimationWrapper.controller.screenshotTask(mRunningTaskId);
-                final TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, thumbnail);
+                if (mTaskSnapshot == null) {
+                    mTaskSnapshot = mRecentsAnimationWrapper.controller
+                            .screenshotTask(mRunningTaskId);
+                }
+                TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
                 mRecentsView.setRunningTaskHidden(false);
                 if (taskView != null) {
                     // Defer finishing the animation until the next launcher frame with the
@@ -880,10 +884,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void onLongSwipeGestureFinishUi(float velocity, boolean isFling) {
         if (!mUiLongSwipeMode || mLongSwipeController == null) {
+            mUiLongSwipeMode = false;
             handleNormalGestureEnd(velocity, isFling);
             return;
         }
-
+        mUiLongSwipeMode = false;
         finishCurrentTransitionToHome();
         mLongSwipeController.end(velocity, isFling,
                 () -> setStateOnUiThread(STATE_HANDLER_INVALIDATED));
