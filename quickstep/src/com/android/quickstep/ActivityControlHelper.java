@@ -263,7 +263,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public RecentsView getVisibleRecentsView() {
             Launcher launcher = getVisibleLaucher();
-            return launcher != null && launcher.isInState(OVERVIEW)
+            return launcher != null && launcher.getStateManager().getState().overviewUi
                     ? launcher.getOverviewPanel() : null;
         }
 

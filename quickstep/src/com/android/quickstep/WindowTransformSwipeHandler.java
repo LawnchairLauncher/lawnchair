@@ -64,7 +64,6 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
@@ -767,7 +766,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mActivityControlHelper.onQuickInteractionStart(mActivity, false);
-        mQuickScrubController.onQuickScrubStart(false);
+        mQuickScrubController.onQuickScrubStart(false, mActivityControlHelper);
 
         // Inform the last progress in case we skipped before.
         mQuickScrubController.onQuickScrubProgress(mCurrentQuickScrubProgress);
