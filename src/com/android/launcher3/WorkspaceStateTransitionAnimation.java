@@ -53,7 +53,7 @@ public class WorkspaceStateTransitionAnimation {
 
     public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
             AnimationConfig config) {
-        setWorkspaceProperty(toState, config.getProperSetter(builder));
+        setWorkspaceProperty(toState, config.getPropertySetter(builder));
     }
 
     public float getFinalScale() {

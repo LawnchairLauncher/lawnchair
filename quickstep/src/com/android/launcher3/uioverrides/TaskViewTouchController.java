@@ -87,12 +87,14 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     protected abstract boolean isRecentsInteractive();
 
+    protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
+    }
+
     @Override
     public void onAnimationCancel(Animator animation) {
         if (mCurrentAnimation != null && animation == mCurrentAnimation.getTarget()) {
             Log.e(TAG, "Who dare cancel the animation when I am in control", new Exception());
-            mDetector.finishedScrolling();
-            mCurrentAnimation = null;
+            clearState();
         }
     }
 
@@ -194,8 +196,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mEndDisplacement = dl.getHeight() - mTempCords[1];
         }
 
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.setOnCancelRunnable(null);
+        }
         mCurrentAnimation = AnimatorPlaybackController
-                .wrap(mPendingAnimation.anim, maxDuration);
+                .wrap(mPendingAnimation.anim, maxDuration, this::clearState);
+        onUserControlledAnimationCreated(mCurrentAnimation);
         mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();
         mProgressMultiplier = 1 / mEndDisplacement;
@@ -271,8 +277,17 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mPendingAnimation.finish(wasSuccess, logAction);
             mPendingAnimation = null;
         }
+        clearState();
+    }
+
+    private void clearState() {
         mDetector.finishedScrolling();
+        mDetector.setDetectableScrollConditions(0, false);
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation = null;
+        }
     }
 }

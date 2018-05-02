@@ -163,7 +163,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
-            setAlphas(toState, config.getProperSetter(builder));
+            setAlphas(toState, config.getPropertySetter(builder));
             // Fail fast
             onProgressAnimationEnd();
             return;
@@ -178,7 +178,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         builder.play(anim);
 
-        setAlphas(toState, config.getProperSetter(builder));
+        setAlphas(toState, config.getPropertySetter(builder));
     }
 
     private void setAlphas(LauncherState toState, PropertySetter setter) {

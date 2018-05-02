@@ -18,10 +18,7 @@ package com.android.launcher3.touch;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -30,13 +27,13 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.util.TouchController;
 
 /**
  * TouchController for handling state changes
  */
-public abstract class AbstractStateChangeTouchController extends AnimatorListenerAdapter
+public abstract class AbstractStateChangeTouchController
         implements TouchController, SwipeDetector.Listener {
 
     private static final String TAG = "ASCTouchController";
@@ -146,8 +143,10 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         mToState = newToState;
 
         mStartProgress = 0;
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.setOnCancelRunnable(null);
+        }
         mProgressMultiplier = initCurrentAnimation();
-        mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();
         return true;
     }
@@ -203,7 +202,6 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
             targetState = (progress > SUCCESS_TRANSITION_PROGRESS) ? mToState : mFromState;
         }
 
-
         final float endProgress;
         final float startProgress;
         final long duration;
@@ -220,6 +218,8 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
                         endProgress - Math.max(progress, 0));
             }
         } else {
+            mCurrentAnimation.setOnCancelRunnable(null);
+            mCurrentAnimation.dispatchOnCancel();
             endProgress = 0;
             if (progress <= 0) {
                 duration = 0;
@@ -236,6 +236,7 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(startProgress, endProgress);
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
+        mCurrentAnimation.dispatchOnStart();
         anim.start();
     }
 
@@ -275,13 +276,6 @@ public abstract class AbstractStateChangeTouchController extends AnimatorListene
     protected void clearState() {
         mCurrentAnimation = null;
         mDetector.finishedScrolling();
-    }
-
-    @Override
-    public void onAnimationCancel(Animator animation) {
-        if (mCurrentAnimation != null && animation == mCurrentAnimation.getTarget()) {
-            Log.e(TAG, "Who dare cancel the animation when I am in control", new Exception());
-            clearState();
-        }
+        mDetector.setDetectableScrollConditions(0, false);
     }
 }

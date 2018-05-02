@@ -29,6 +29,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -44,19 +45,19 @@ public class UiFactory {
             return new TouchController[] {
                     launcher.getDragController(),
                     new OverviewToAllAppsTouchController(launcher),
-                    new LauncherTaskViewcontroller(launcher)};
+                    new LauncherTaskViewController(launcher)};
         }
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
                     new OverviewToAllAppsTouchController(launcher),
                     new LandscapeEdgeSwipeController(launcher),
-                    new LauncherTaskViewcontroller(launcher)};
+                    new LauncherTaskViewController(launcher)};
         } else {
             return new TouchController[] {
                     launcher.getDragController(),
                     new PortraitStatesTouchController(launcher),
-                    new LauncherTaskViewcontroller(launcher)};
+                    new LauncherTaskViewController(launcher)};
         }
     }
 
@@ -114,15 +115,20 @@ public class UiFactory {
         }
     }
 
-    private static class LauncherTaskViewcontroller extends TaskViewTouchController<Launcher> {
+    private static class LauncherTaskViewController extends TaskViewTouchController<Launcher> {
 
-        public LauncherTaskViewcontroller(Launcher activity) {
+        public LauncherTaskViewController(Launcher activity) {
             super(activity);
         }
 
         @Override
         protected boolean isRecentsInteractive() {
             return mActivity.isInState(OVERVIEW);
+        }
+
+        @Override
+        protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
+            mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
         }
     }
 }
