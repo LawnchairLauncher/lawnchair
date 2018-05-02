@@ -167,11 +167,10 @@ public class LoggerUtils {
         if (!(v instanceof ButtonDropTarget)) {
             return newTarget(Target.Type.CONTAINER);
         }
-        Target t = newTarget(Target.Type.CONTROL);
         if (v instanceof ButtonDropTarget) {
-            t.controlType = ((ButtonDropTarget) v).getControlTypeForLogging();
+            return ((ButtonDropTarget) v).getDropTargetForLogging();
         }
-        return t;
+        return newTarget(Target.Type.CONTROL);
     }
 
     public static Target newTarget(int targetType, TargetExtension extension) {
@@ -186,6 +185,7 @@ public class LoggerUtils {
         t.type = targetType;
         return t;
     }
+
     public static Target newContainerTarget(int containerType) {
         Target t = newTarget(Target.Type.CONTAINER);
         t.containerType = containerType;
@@ -197,11 +197,13 @@ public class LoggerUtils {
         a.type = type;
         return a;
     }
+
     public static Action newCommandAction(int command) {
         Action a = newAction(Action.Type.COMMAND);
         a.command = command;
         return a;
     }
+
     public static Action newTouchAction(int touch) {
         Action a = newAction(Action.Type.TOUCH);
         a.touch = touch;
