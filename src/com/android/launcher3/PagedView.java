@@ -1171,11 +1171,19 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     mNextPage = getPageNearestToCenterOfScreen(unscaledScrollX);
                     int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
                     int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
-                    if (mSettleOnPageInFreeScroll && unscaledScrollX > firstPageScroll
-                            && unscaledScrollX < lastPageScroll) {
-                        // Make sure we land directly on a page. If flinging past one of the ends,
-                        // don't change the velocity as it will get stopped at the end anyway.
-                        mScroller.setFinalX((int) (getScrollForPage(mNextPage) * getScaleX()));
+                    if (mSettleOnPageInFreeScroll && unscaledScrollX > 0
+                            && unscaledScrollX < mMaxScrollX) {
+                        // If scrolling ends in the half of the added space that is closer to the
+                        // end, settle to the end. Otherwise snap to the nearest page.
+                        // If flinging past one of the ends, don't change the velocity as it will
+                        // get stopped at the end anyway.
+                        final int finalX = unscaledScrollX < firstPageScroll / 2 ?
+                                0 :
+                                unscaledScrollX > (lastPageScroll + mMaxScrollX) / 2 ?
+                                        mMaxScrollX :
+                                        getScrollForPage(mNextPage);
+
+                        mScroller.setFinalX((int) (finalX * getScaleX()));
                         // Ensure the scroll/snap doesn't happen too fast;
                         int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
                                 - mScroller.getDuration();
