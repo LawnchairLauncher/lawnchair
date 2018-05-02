@@ -43,7 +43,7 @@ public class QuickScrubController implements OnAlarmListener {
      * Snap to a new page when crossing these thresholds. The first and last auto-advance.
      */
     private static final float[] QUICK_SCRUB_THRESHOLDS = new float[] {
-            0.05f, 0.35f, 0.65f, 0.95f
+            0.04f, 0.27f, 0.50f, 0.73f, 0.96f
     };
 
     private static final String TAG = "QuickScrubController";
