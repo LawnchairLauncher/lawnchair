@@ -40,6 +40,8 @@ public class UiFactory {
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) { }
 
+    public static void onCreate(Launcher launcher) { }
+
     public static void onStart(Launcher launcher) { }
 
     public static void onLauncherStateOrResumeChanged(Launcher launcher) { }
