@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -70,12 +69,4 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     boolean hasSettings();
-
-    /**
-     * Called when launcher integrated quickstep and some quickstep gesture started. It can be
-     * called multiple times for a single gesture an UI or background thread.
-     *
-     * @param isVisible if Launcher was visible when the gesture started.
-     */
-    void onQuickstepGestureStarted(boolean isVisible);
 }

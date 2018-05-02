@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
@@ -73,6 +75,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final ActivityControlHelper mActivityControlHelper;
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
+    private final OverviewCallbacks mOverviewCallbacks;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -92,8 +95,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
-            @HitTarget int downHitTarget, VelocityTracker velocityTracker) {
+            @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
+            VelocityTracker velocityTracker) {
         super(base);
+
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
@@ -102,6 +107,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
         mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
+        mOverviewCallbacks = overviewCallbacks;
     }
 
     @Override
@@ -187,6 +193,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler == null) {
             return;
         }
+
+        mOverviewCallbacks.closeAllWindows();
+        ActivityManagerWrapper.getInstance().closeSystemWindows(
+                CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted();
     }

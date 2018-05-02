@@ -164,6 +164,7 @@ public class TouchInteractionService extends Service {
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewInteractionState mOverviewInteractionState;
+    private OverviewCallbacks mOverviewCallbacks;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -179,6 +180,7 @@ public class TouchInteractionService extends Service {
         mMainThreadChoreographer = Choreographer.getInstance();
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
         mOverviewInteractionState = OverviewInteractionState.getInstance(this);
+        mOverviewCallbacks = OverviewCallbacks.get(this);
 
         sConnected = true;
 
@@ -230,7 +232,8 @@ public class TouchInteractionService extends Service {
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
                             mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
-                            mBackgroundThreadChoreographer, downHitTarget, tracker);
+                            mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
+                            tracker);
         }
     }
 
@@ -330,7 +333,7 @@ public class TouchInteractionService extends Service {
             if (mInvalidated) {
                 return;
             }
-            mActivityHelper.onQuickstepGestureStarted(mActivity, true);
+            OverviewCallbacks.get(mActivity).closeAllWindows();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         }
@@ -341,10 +344,11 @@ public class TouchInteractionService extends Service {
                 return;
             }
             if (interactionType == INTERACTION_QUICK_SCRUB) {
+                OverviewCallbacks.get(mActivity).closeAllWindows();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                mStartPending = true;
 
+                mStartPending = true;
                 Runnable action = () -> {
                     mQuickScrubController.onQuickScrubStart(mActivityHelper.onQuickInteractionStart(
                             mActivity, true), mActivityHelper);

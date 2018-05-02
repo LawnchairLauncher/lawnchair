@@ -59,8 +59,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     LayoutListener createLayoutListener(T activity);
 
-    void onQuickstepGestureStarted(T activity, boolean activityVisible);
-
     /**
      * Updates the UI to indicate quick interaction.
      * @return true if there any any UI change as a result of this
@@ -117,11 +115,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public void onQuickstepGestureStarted(Launcher activity, boolean activityVisible) {
-            activity.onQuickstepGestureStarted(activityVisible);
-        }
-
-        @Override
         public boolean onQuickInteractionStart(Launcher activity, boolean activityVisible) {
             LauncherState fromState = activity.getStateManager().getState();
             activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
@@ -137,10 +130,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public void executeOnWindowAvailable(Launcher activity, Runnable action) {
-            if (activity.getWorkspace().runOnOverlayHidden(action)) {
-                // Notify the activity that qiuckscrub has started
-                onQuickstepGestureStarted(activity, true);
-            }
+            activity.getWorkspace().runOnOverlayHidden(action);
         }
 
         @Override
@@ -308,11 +298,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     }
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
-
-        @Override
-        public void onQuickstepGestureStarted(RecentsActivity activity, boolean activityVisible) {
-            // TODO:
-        }
 
         @Override
         public boolean onQuickInteractionStart(RecentsActivity activity, boolean activityVisible) {
