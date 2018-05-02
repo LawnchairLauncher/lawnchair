@@ -63,7 +63,7 @@ public class RecentsViewStateController implements StateHandler {
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        PropertySetter setter = config.getProperSetter(builder);
+        PropertySetter setter = config.getPropertySetter(builder);
         float[] scaleTranslationYFactor = toState.getOverviewScaleAndTranslationYFactor(mLauncher);
         setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0],
                 builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));

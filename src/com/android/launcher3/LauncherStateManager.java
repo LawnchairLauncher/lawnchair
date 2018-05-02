@@ -238,16 +238,18 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
-        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration);
+        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null);
     }
 
-    public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState state, AnimatorSetBuilder builder, long duration) {
+    public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
+            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable) {
         mConfig.reset();
         mConfig.userControlled = true;
         mConfig.duration = duration;
-        return AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, builder, null), duration);
+        mConfig.playbackController = AnimatorPlaybackController.wrap(
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration,
+                onCancelRunnable);
+        return mConfig.playbackController;
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
@@ -358,6 +360,12 @@ public class LauncherStateManager {
         mConfig.reset();
     }
 
+    public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        setCurrentAnimation(controller.getTarget());
+        mConfig.userControlled = true;
+        mConfig.playbackController = controller;
+    }
+
     /**
      * Sets the animation as the current state animation, i.e., canceled when
      * starting another animation and may block some launcher interactions while running.
@@ -405,30 +413,39 @@ public class LauncherStateManager {
     public static class AnimationConfig extends AnimatorListenerAdapter {
         public long duration;
         public boolean userControlled;
-        private PropertySetter mProperSetter;
+        public AnimatorPlaybackController playbackController;
+        private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
         private LauncherState mTargetState;
 
+        /**
+         * Cancels the current animation and resets config variables.
+         */
         public void reset() {
             duration = 0;
             userControlled = false;
-            mProperSetter = null;
+            mPropertySetter = null;
             mTargetState = null;
 
-            if (mCurrentAnimation != null) {
+            if (playbackController != null) {
+                playbackController.getAnimationPlayer().cancel();
+                playbackController.dispatchOnCancel();
+            } else if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);
                 mCurrentAnimation.cancel();
-                mCurrentAnimation = null;
             }
+
+            mCurrentAnimation = null;
+            playbackController = null;
         }
 
-        public PropertySetter getProperSetter(AnimatorSetBuilder builder) {
-            if (mProperSetter == null) {
-                mProperSetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
+        public PropertySetter getPropertySetter(AnimatorSetBuilder builder) {
+            if (mPropertySetter == null) {
+                mPropertySetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
                         : new AnimatedPropertySetter(duration, builder);
             }
-            return mProperSetter;
+            return mPropertySetter;
         }
 
         @Override

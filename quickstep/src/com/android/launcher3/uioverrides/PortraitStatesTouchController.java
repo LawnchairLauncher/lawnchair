@@ -187,10 +187,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             builder = new AnimatorSetBuilder();
         }
 
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false, Touch.SWIPE);
-            mPendingAnimation = null;
-        }
+        cancelPendingAnim();
 
         RecentsView recentsView = mLauncher.getOverviewPanel();
         TaskView taskView = (TaskView) recentsView.getChildAt(recentsView.getNextPage());
@@ -199,10 +196,16 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
             mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
 
-            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy);
+            Runnable onCancelRunnable = () -> {
+                cancelPendingAnim();
+                clearState();
+            };
+            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy,
+                    onCancelRunnable);
+            mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
-                    .createAnimationToNewWorkspace(mToState, builder, maxAccuracy);
+                    .createAnimationToNewWorkspace(mToState, builder, maxAccuracy, this::clearState);
         }
 
         if (totalShift == 0) {
@@ -210,6 +213,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     * OverviewState.getDefaultSwipeHeight(mLauncher);
         }
         return 1 / totalShift;
+    }
+
+    private void cancelPendingAnim() {
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation = null;
+        }
     }
 
     @Override
