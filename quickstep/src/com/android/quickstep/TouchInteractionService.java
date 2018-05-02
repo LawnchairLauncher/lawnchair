@@ -21,9 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
-import static com.android.systemui.shared.system.ActivityManagerWrapper
-        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
@@ -348,8 +346,8 @@ public class TouchInteractionService extends Service {
                 mStartPending = true;
 
                 Runnable action = () -> {
-                    mQuickScrubController.onQuickScrubStart(
-                            mActivityHelper.onQuickInteractionStart(mActivity, true));
+                    mQuickScrubController.onQuickScrubStart(mActivityHelper.onQuickInteractionStart(
+                            mActivity, true), mActivityHelper);
                     mQuickScrubController.onQuickScrubProgress(mLastProgress);
                     mStartPending = false;
 
