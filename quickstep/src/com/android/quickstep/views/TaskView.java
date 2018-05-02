@@ -80,7 +80,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
-    private ImageView mIconView;
+    private IconView mIconView;
     private float mCurveScale;
     private float mCurveDimAlpha;
     private Animator mDimAlphaAnim;
@@ -133,7 +133,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return mSnapshotView;
     }
 
-    public ImageView getIconView() {
+    public IconView getIconView() {
         return mIconView;
     }
 
@@ -163,7 +163,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
-        mIconView.setImageDrawable(task.icon);
+        mIconView.setDrawable(task.icon);
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
@@ -174,7 +174,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataUnloaded() {
         mSnapshotView.setThumbnail(null, null);
-        mIconView.setImageDrawable(null);
+        mIconView.setDrawable(null);
         mIconView.setOnLongClickListener(null);
     }
 
