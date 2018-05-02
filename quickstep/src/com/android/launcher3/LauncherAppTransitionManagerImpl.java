@@ -335,10 +335,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             launcherAnimator.play(dragLayerAlpha);
             launcherAnimator.play(dragLayerTransY);
             mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+            // Pause page indicator animations as they lead to layer trashing.
+            mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
             endListener = () -> {
                 mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
                 mDragLayer.setAlpha(1);
                 mDragLayer.setTranslationY(0);
+                mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
             };
         }
         return new Pair<>(launcherAnimator, endListener);
@@ -694,6 +698,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             workspaceAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+            currentPage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            workspaceAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    currentPage.setLayerType(View.LAYER_TYPE_NONE, null);
+                }
+            });
 
             // Animate the shelf in two parts: slide in, and overeshoot.
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
@@ -714,7 +725,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, slideEnd, 1f);
             allAppsOvershoot.setDuration(153);
             allAppsOvershoot.setInterpolator(Interpolators.OVERSHOOT_0);
-
 
             anim.play(workspaceAnimator);
             anim.playSequentially(allAppsSlideIn, allAppsOvershoot);
