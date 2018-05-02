@@ -41,7 +41,6 @@ import android.text.TextPaint;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -315,52 +314,25 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int childCount = getChildCount();
         if (mShowEmptyMessage || childCount == 0) return 0;
 
-        // Current visible coordinate of the end of the oldest task.
         final View lastChild = getChildAt(childCount - 1);
+
+        // Current visible coordinate of the end of the oldest task.
         final int carouselCurrentEnd =
                 (mIsRtl ? lastChild.getLeft() : lastChild.getRight()) - getScrollX();
 
-        // As the end (let's call it E aka carouselCurrentEnd) of the carousel moves over Clear
-        // all button, the button changes trasparency.
-        // fullAlphaX and zeroAlphaX are the points of the 100% and 0% alpha correspondingly.
-        // Alpha changes linearly between 100% and 0% as E moves through this range. It doesn't
-        // change outside of the range.
+        // Visible button-facing end of a centered task.
+        final int centeredTaskEnd = mIsRtl ?
+                getPaddingLeft() + mInsets.left :
+                getWidth() - getPaddingRight() - mInsets.right;
 
-        // Once E hits the border of the Clear-All button that looks towards the most recent
-        // task, the whole button is uncovered, and it should have alpha 100%.
-        final float fullAlphaX = mIsRtl ?
-                mClearAllButton.getX() + mClearAllButton.getWidth() :
-                mClearAllButton.getX();
-
-        // X coordinate of the carousel scrolled as far as possible in the direction towards the
-        // button. Logically, the button is "behind" the least recent task. This is the
-        // coordinate of the end of the least recent task in the carousel just after opening,
-        // with the most recent task in the center, and the rest of tasks go from that point
-        // towards and potentially behind the button.
-        final int carouselMotionLimit = getScrollForPage(childCount - 1) - getScrollForPage(0) +
-                (mIsRtl ?
-                        getPaddingLeft() + mInsets.left :
-                        getWidth() - getPaddingRight() - mInsets.right);
-
-        // The carousel might not be able to ever cover a part of the Clear-all button. Then
-        // always show the button as 100%. Technically, this check also prevents dividing by zero
-        // or getting a negative transparency ratio.
-        if (mIsRtl ? carouselMotionLimit >= fullAlphaX : carouselMotionLimit <= fullAlphaX) {
-            return 1;
-        }
-
-        // If the carousel is able to cover the button completely, we make the button completely
-        // transparent when E hits the border of the button farthest from the most recent task.
-        // Or, the carousel may not be able to move that far towards the button so it completely
-        // covers the it. Then we set the motion limit position of the carousel as the point
-        // where the button reaches 0 alpha.
-        final float zeroAlphaX = mIsRtl ?
-                Math.max(mClearAllButton.getX(), carouselMotionLimit) :
-                Math.min(mClearAllButton.getX() + mClearAllButton.getWidth(), carouselMotionLimit);
+        // The distance of the carousel travel during which the alpha changes from 0 to 1. This
+        // is the motion between the oldest task in its centered position and the oldest task
+        // scrolled to the end.
+        final int alphaChangeRange = (mIsRtl ? 0 : mMaxScrollX) - getScrollForPage(childCount - 1);
 
         return Utilities.boundToRange(
-                (zeroAlphaX - carouselCurrentEnd) /
-                        (zeroAlphaX - fullAlphaX), 0, 1);
+                ((float) (centeredTaskEnd - carouselCurrentEnd)) /
+                        alphaChangeRange, 0, 1);
     }
 
     private void updateClearAllButtonAlpha() {
