@@ -285,7 +285,7 @@ public class UserEventDispatcher {
      * Used primarily for swipe up and down when state changes when swipe up happens from the
      * navbar bezel, the {@param srcChildContainerType} is NAVBAR and
      * {@param srcParentContainerType} is either one of the two
-     * (1) WORKSPACE: if the launcher the foreground activity
+     * (1) WORKSPACE: if the launcher is the foreground activity
      * (2) APP: if another app was the foreground activity
      */
     public void logStateChangeAction(int action, int dir, int srcChildTargetType,
