@@ -142,6 +142,7 @@ public class LongSwipeHelper {
                 }
             }
         }
+        transaction.setEarlyWakeup();
         transaction.apply();
     }
 
