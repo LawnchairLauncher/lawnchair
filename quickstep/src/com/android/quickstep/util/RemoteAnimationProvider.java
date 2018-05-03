@@ -60,6 +60,5 @@ public interface RemoteAnimationProvider {
             t.setLayer(target.leash, layer);
             t.show(target.leash);
         }
-        t.setEarlyWakeup();
     }
 }

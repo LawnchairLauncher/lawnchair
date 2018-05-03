@@ -167,6 +167,7 @@ public class ClipAnimationHelper {
                     || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 transaction.setAlpha(app.leash, 1 - progress);
             }
+            transaction.setEarlyWakeup();
 
             mTaskTransformCallback.accept(transaction, app);
         }

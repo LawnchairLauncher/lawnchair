@@ -543,6 +543,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
                     }
                 }
+                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
@@ -657,6 +658,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         t.setMatrix(app.leash, matrix);
                     }
                 }
+                t.setEarlyWakeup();
                 t.apply();
 
                 matrix.reset();
