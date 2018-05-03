@@ -17,12 +17,17 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
+    private MotionEvent mTouchDownEvent;
+
     public AllAppsSwipeController(Launcher l) {
         super(l, SwipeDetector.VERTICAL);
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mTouchDownEvent = ev;
+        }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
@@ -41,18 +46,6 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected int getSwipeDirection(MotionEvent ev) {
-        if (mLauncher.isInState(ALL_APPS)) {
-            mStartContainerType = ContainerType.ALLAPPS;
-            return SwipeDetector.DIRECTION_NEGATIVE;
-        } else {
-            mStartContainerType = mLauncher.getDragLayer().isEventOverHotseat(ev) ?
-                    ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-            return SwipeDetector.DIRECTION_POSITIVE;
-        }
-    }
-
-    @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == NORMAL && isDragTowardPositive) {
             return ALL_APPS;
@@ -60,6 +53,12 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             return NORMAL;
         }
         return fromState;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState() {
+        return mLauncher.getDragLayer().isEventOverHotseat(mTouchDownEvent) ?
+                ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
     @Override

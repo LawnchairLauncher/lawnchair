@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
@@ -27,6 +30,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
@@ -65,12 +69,6 @@ public abstract class AbstractStateChangeTouchController
 
     protected abstract boolean canInterceptTouch(MotionEvent ev);
 
-    /**
-     * Initializes the {@code mFromState} and {@code mToState} and swipe direction to use for
-     * the detector. In case of disabling swipe, return 0.
-     */
-    protected abstract int getSwipeDirection(MotionEvent ev);
-
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -94,7 +92,7 @@ public abstract class AbstractStateChangeTouchController
                     ignoreSlopWhenSettling = true;
                 }
             } else {
-                directionsToDetectScroll = getSwipeDirection(ev);
+                directionsToDetectScroll = getSwipeDirection();
                 if (directionsToDetectScroll == 0) {
                     mNoIntercept = true;
                     return false;
@@ -110,6 +108,18 @@ public abstract class AbstractStateChangeTouchController
 
         onControllerTouchEvent(ev);
         return mDetector.isDraggingOrSettling();
+    }
+
+    private int getSwipeDirection() {
+        LauncherState fromState = mLauncher.getStateManager().getState();
+        int swipeDirection = 0;
+        if (getTargetState(fromState, true /* isDragTowardPositive */) != fromState) {
+            swipeDirection |= SwipeDetector.DIRECTION_POSITIVE;
+        }
+        if (getTargetState(fromState, false /* isDragTowardPositive */) != fromState) {
+            swipeDirection |= SwipeDetector.DIRECTION_NEGATIVE;
+        }
+        return swipeDirection;
     }
 
     @Override
@@ -130,6 +140,11 @@ public abstract class AbstractStateChangeTouchController
 
     protected abstract float initCurrentAnimation();
 
+    /**
+     * Returns the container that the touch started from when leaving NORMAL state.
+     */
+    protected abstract int getLogContainerTypeForNormalState();
+
     private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
         LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
                 : reachedToState ? mToState : mFromState;
@@ -137,6 +152,17 @@ public abstract class AbstractStateChangeTouchController
 
         if (newFromState == mFromState && newToState == mToState || (newFromState == newToState)) {
             return false;
+        }
+
+        if (reachedToState) {
+            logReachedState(Touch.SWIPE);
+        }
+        if (newFromState == ALL_APPS) {
+            mStartContainerType = ContainerType.ALLAPPS;
+        } else if (newFromState == NORMAL) {
+            mStartContainerType = getLogContainerTypeForNormalState();
+        } else if (newFromState == OVERVIEW){
+            mStartContainerType = ContainerType.TASKSWITCHER;
         }
 
         mFromState = newFromState;
@@ -261,16 +287,20 @@ public abstract class AbstractStateChangeTouchController
         }
         if (shouldGoToTargetState) {
             if (targetState != mFromState) {
-                // Transition complete. log the action
-                mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
-                        getDirectionForLog(),
-                        mStartContainerType,
-                        mFromState.containerType,
-                        mToState.containerType,
-                        mLauncher.getWorkspace().getCurrentPage());
+                logReachedState(logAction);
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
         }
+    }
+
+    private void logReachedState(int logAction) {
+        // Transition complete. log the action
+        mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                getDirectionForLog(),
+                mStartContainerType,
+                mFromState.containerType,
+                mToState.containerType,
+                mLauncher.getWorkspace().getCurrentPage());
     }
 
     protected void clearState() {
