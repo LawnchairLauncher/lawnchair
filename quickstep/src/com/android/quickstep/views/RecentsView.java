@@ -453,11 +453,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mInsets.set(insets);
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(dp, mTempRect);
+
         mTempRect.top -= getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
-                dp.widthPx - mTempRect.right - mInsets.right,
-                dp.heightPx - mTempRect.bottom - mInsets.bottom);
+                dp.availableWidthPx + mInsets.left - mTempRect.right,
+                dp.availableHeightPx + mInsets.top - mTempRect.bottom);
     }
 
     protected abstract void getTaskSize(DeviceProfile dp, Rect outRect);
