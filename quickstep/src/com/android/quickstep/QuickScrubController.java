@@ -106,7 +106,7 @@ public class QuickScrubController implements OnAlarmListener {
         };
         int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
                 * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
-        if (mRecentsView.snapToPage(page, snapDuration)) {
+        if (mRecentsView.getChildCount() > 0 && mRecentsView.snapToPage(page, snapDuration)) {
             // Settle on the page then launch it
             mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
         } else {
