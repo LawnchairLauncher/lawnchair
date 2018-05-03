@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.dynamicui;
+package com.android.launcher3.uioverrides.dynamicui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -27,7 +27,6 @@ import android.util.Range;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.WallpaperColorsCompat;
 
 import java.util.Arrays;
 import java.util.LinkedList;

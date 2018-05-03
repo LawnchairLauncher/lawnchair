@@ -34,7 +34,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * View scrim which draws behind hotseat and workspace
