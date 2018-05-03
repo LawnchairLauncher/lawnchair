@@ -11,6 +11,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.SysuiEventLogger;
@@ -39,14 +40,14 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected int getSwipeDirection(MotionEvent ev) {
-        return SwipeDetector.DIRECTION_BOTH;
-    }
-
-    @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() != isDragTowardPositive;
         return draggingFromNav ? OVERVIEW : NORMAL;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState() {
+        return LauncherLogProto.ContainerType.NAVBAR;
     }
 
     @Override
