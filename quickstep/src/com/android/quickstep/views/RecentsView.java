@@ -1160,15 +1160,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             onTaskLaunched(result);
             tv.setVisibility(VISIBLE);
             getOverlay().remove(drawable);
-            if (!result) {
-                tv.notifyTaskLaunchFailed(TAG);
-            }
         };
 
         mPendingAnimation = new PendingAnimation(anim);
         mPendingAnimation.addEndListener((onEndListener) -> {
             if (onEndListener.isSuccess) {
-                tv.launchTask(false, onTaskLaunchFinish, getHandler());
+                Consumer<Boolean> onLaunchResult = (result) -> {
+                    onTaskLaunchFinish.accept(result);
+                    if (!result) {
+                        tv.notifyTaskLaunchFailed(TAG);
+                    }
+                };
+                tv.launchTask(false, onLaunchResult, getHandler());
                 Task task = tv.getTask();
                 if (task != null) {
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
