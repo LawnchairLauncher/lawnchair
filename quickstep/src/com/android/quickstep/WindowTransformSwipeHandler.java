@@ -778,7 +778,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             int scrollForSecondTask = mRecentsView.getChildCount() > 1
                     ? mRecentsView.getScrollForPage(1) : scrollForFirstTask;
             int offsetFromFirstTask = scrollForFirstTask - scrollForSecondTask;
-            float interpolation = offsetFromFirstTask / (mRecentsView.getWidth() / 2);
+            final float interpolation;
+            if (mRecentsView.getWidth() == 0) {
+                interpolation = scrollForSecondTask == scrollForFirstTask ? 0 : 1;
+            } else {
+                interpolation = (float) offsetFromFirstTask / (mRecentsView.getWidth() / 2);
+            }
             mClipAnimationHelper.offsetTarget(
                     firstTask.getCurveScaleForInterpolation(interpolation), offsetFromFirstTask,
                     mActivityControlHelper.getTranslationYForQuickScrub(mActivity));
