@@ -125,26 +125,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected int getSwipeDirection(MotionEvent ev) {
-        final int directionsToDetectScroll;
-        if (mLauncher.isInState(ALL_APPS)) {
-            directionsToDetectScroll = SwipeDetector.DIRECTION_NEGATIVE;
-            mStartContainerType = ContainerType.ALLAPPS;
-        } else if (mLauncher.isInState(NORMAL)) {
-            directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
-            mStartContainerType = ContainerType.HOTSEAT;
-        } else if (mLauncher.isInState(OVERVIEW)) {
-            boolean canSwipeDownFromOverview = getTargetState(OVERVIEW, false) != OVERVIEW;
-            directionsToDetectScroll = canSwipeDownFromOverview ? SwipeDetector.DIRECTION_BOTH
-                    : SwipeDetector.DIRECTION_POSITIVE;
-            mStartContainerType = ContainerType.TASKSWITCHER;
-        } else {
-            return 0;
-        }
-        return directionsToDetectScroll;
-    }
-
-    @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == ALL_APPS && !isDragTowardPositive) {
             // Should swipe down go to OVERVIEW instead?
@@ -152,10 +132,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     mLauncher.getStateManager().getLastState() : NORMAL;
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? ALL_APPS : NORMAL;
-        } else if (isDragTowardPositive) {
+        } else if (fromState == NORMAL && isDragTowardPositive) {
             return TouchInteractionService.isConnected() ? OVERVIEW : ALL_APPS;
         }
         return fromState;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState() {
+        return ContainerType.HOTSEAT;
     }
 
     private AnimatorSetBuilder getNormalToOverviewAnimation() {
