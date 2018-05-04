@@ -206,6 +206,10 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         mOnCancelRunnable = runnable;
     }
 
+    public Runnable getOnCancelRunnable() {
+        return mOnCancelRunnable;
+    }
+
     public static class AnimatorPlaybackControllerVL extends AnimatorPlaybackController {
 
         private final ValueAnimator[] mChildAnimations;
