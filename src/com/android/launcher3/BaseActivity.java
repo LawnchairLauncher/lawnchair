@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.app.Activity;
@@ -153,6 +154,12 @@ public abstract class BaseActivity extends Activity {
     protected void onPause() {
         mActivityFlags &= ~ACTIVITY_STATE_RESUMED;
         super.onPause();
+
+        // Reset the overridden sysui flags used for the task-swipe launch animation, we do this
+        // here instead of at the end of the animation because the start of the new activity does
+        // not happen immediately, which would cause us to reset to launcher's sysui flags and then
+        // back to the new app (causing a flash)
+        getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
     }
 
     public boolean isStarted() {
