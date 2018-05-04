@@ -17,6 +17,8 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.RecentsView.ADJACENT_SCALE;
 import static com.android.quickstep.views.RecentsViewContainer.CONTENT_ALPHA;
@@ -24,12 +26,14 @@ import static com.android.quickstep.views.RecentsViewContainer.CONTENT_ALPHA;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
@@ -69,7 +73,13 @@ public class RecentsViewStateController implements StateHandler {
         PropertySetter setter = config.getPropertySetter(builder);
         float[] scaleTranslationYFactor = toState.getOverviewScaleAndTranslationYFactor(mLauncher);
         setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0], LINEAR);
-        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1], LINEAR);
+        Interpolator transYInterpolator = LINEAR;
+        if (toState == LauncherState.FAST_OVERVIEW) {
+            transYInterpolator = Interpolators.clampToProgress(QUICK_SCRUB_START_INTERPOLATOR, 0,
+                    QUICK_SCRUB_TRANSLATION_Y_FACTOR);
+        }
+        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1],
+                transYInterpolator);
         setter.setFloat(mRecentsViewContainer, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
                 AGGRESSIVE_EASE_IN_OUT);
 

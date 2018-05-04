@@ -17,11 +17,9 @@ package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_DURATION;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 
@@ -455,7 +453,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         setStateOnUiThread(STATE_QUICK_SCRUB_START | STATE_GESTURE_COMPLETED);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(1f, QUICK_SCRUB_START_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
+        animateToProgress(1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR);
     }
 
     @WorkerThread
@@ -502,10 +500,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
-            Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
-                    ? ACCEL_2 : LINEAR;
-            float interpolated = interpolator.getInterpolation(shift);
-            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, interpolated);
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift);
 
             // TODO: This logic is spartanic!
             boolean passedThreshold = shift > 0.12f;
@@ -793,7 +788,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
             mClipAnimationHelper.offsetTarget(
                     firstTask.getCurveScaleForInterpolation(interpolation), offsetFromFirstTask,
-                    mActivityControlHelper.getTranslationYForQuickScrub(mActivity));
+                    mActivityControlHelper.getTranslationYForQuickScrub(mActivity),
+                    QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR);
         }
     }
 
