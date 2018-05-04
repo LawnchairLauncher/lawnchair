@@ -247,7 +247,7 @@
     <dimen name="qsb_shadow_margin">6dp</dimen>
     <dimen name="qsb_widget_height">56dp</dimen>
     <dimen name="qsb_hotseat_bottom_margin">-4dp</dimen>
-    <dimen name="qsb_hotseat_bottom_margin_hw">12dp</dimen>
+    <dimen name="qsb_hotseat_bottom_margin_hw">2dp</dimen>
     <dimen name="hotseat_qsb_scroll_shadow_blur_radius">1.5dp</dimen>
     <dimen name="hotseat_qsb_scroll_key_shadow_offset">2dp</dimen>
     <dimen name="all_apps_extra_search_padding">8dp</dimen>
