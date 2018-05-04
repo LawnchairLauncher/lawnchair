@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.compat;
+package com.android.launcher3.uioverrides.dynamicui;
 
 /**
  * A compatibility layer around platform implementation of WallpaperColors

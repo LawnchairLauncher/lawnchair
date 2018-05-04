@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.compat;
+package com.android.launcher3.uioverrides.dynamicui;
 
 import static android.app.WallpaperManager.FLAG_SYSTEM;
 
@@ -58,7 +58,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     private static final String VERSION_PREFIX = "1,";
     private static final String KEY_COLORS = "wallpaper_parsed_colors";
     private static final String ACTION_EXTRACTION_COMPLETE =
-            "com.android.launcher3.compat.WallpaperManagerCompatVL.EXTRACTION_COMPLETE";
+            "com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL.EXTRACTION_COMPLETE";
 
     private final ArrayList<OnColorsChangedListenerCompat> mListeners = new ArrayList<>();
 

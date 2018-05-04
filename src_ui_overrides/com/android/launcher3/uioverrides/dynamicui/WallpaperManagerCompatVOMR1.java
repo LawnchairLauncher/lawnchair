@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.compat;
+package com.android.launcher3.uioverrides.dynamicui;
 
 import android.annotation.TargetApi;
 import android.app.WallpaperColors;
@@ -25,7 +25,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.lang.reflect.Method;
-
 
 @TargetApi(27)
 public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {

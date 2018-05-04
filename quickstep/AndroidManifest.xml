@@ -19,6 +19,7 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3" >
 
     <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="28"/>
@@ -70,6 +71,12 @@
                 <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
             </intent-filter>
         </provider>
+
+
+        <service
+            android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
+            tools:node="remove" />
+
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.compat;
+package com.android.launcher3.uioverrides.dynamicui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
