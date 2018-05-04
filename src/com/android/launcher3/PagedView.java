@@ -1495,17 +1495,24 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return ScrollView.class.getName();
     }
 
+    protected boolean isPageOrderFlipped() {
+        return false;
+    }
+
     /* Accessibility */
     @SuppressWarnings("deprecation")
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
+        final boolean pagesFlipped = isPageOrderFlipped();
         info.setScrollable(getPageCount() > 1);
         if (getCurrentPage() < getPageCount() - 1) {
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD
+                    : AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
         }
         if (getCurrentPage() > 0) {
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
+                    : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
         }
 
         // Accessibility-wise, PagedView doesn't support long click, so disabling it.
@@ -1529,24 +1536,40 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         event.setScrollable(getPageCount() > 1);
     }
 
+    private boolean accessibilityScrollLeft() {
+        if (getCurrentPage() > 0) {
+            scrollLeft();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean accessibilityScrollRight() {
+        if (getCurrentPage() < getPageCount() - 1) {
+            scrollRight();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (super.performAccessibilityAction(action, arguments)) {
             return true;
         }
+        final boolean pagesFlipped = isPageOrderFlipped();
         switch (action) {
             case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
-                if (getCurrentPage() < getPageCount() - 1) {
-                    scrollRight();
+                if (pagesFlipped ? accessibilityScrollLeft() : accessibilityScrollRight()) {
                     return true;
                 }
             } break;
             case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
-                if (getCurrentPage() > 0) {
-                    scrollLeft();
+                if (pagesFlipped ? accessibilityScrollRight() : accessibilityScrollLeft()) {
                     return true;
                 }
-            } break;
+            }
+            break;
         }
         return false;
     }
