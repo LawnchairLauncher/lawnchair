@@ -36,6 +36,8 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -54,6 +56,8 @@ import java.util.concurrent.ExecutionException;
 public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
+
+    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static OverviewInteractionState INSTANCE;
@@ -80,6 +84,7 @@ public class OverviewInteractionState {
 
     private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
 
+    private final Context mContext;
     private final Handler mUiHandler;
     private final Handler mBgHandler;
 
@@ -91,6 +96,7 @@ public class OverviewInteractionState {
     private Runnable mOnSwipeUpSettingChangedListener;
 
     private OverviewInteractionState(Context context) {
+        mContext = context;
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
@@ -133,6 +139,8 @@ public class OverviewInteractionState {
                 break;
             case MSG_SET_SWIPE_UP_ENABLED:
                 mSwipeUpEnabled = msg.arg1 != 0;
+                resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+
                 if (mOnSwipeUpSettingChangedListener != null) {
                     mOnSwipeUpSettingChangedListener.run();
                 }
@@ -179,6 +187,7 @@ public class OverviewInteractionState {
             mResolver.registerContentObserver(Settings.Secure.getUriFor(SWIPE_UP_SETTING_NAME),
                     false, this);
             mSwipeUpEnabled = getValue();
+            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
         }
 
         @Override
@@ -199,6 +208,16 @@ public class OverviewInteractionState {
             return Integer.parseInt(sdkInt) >= Build.VERSION_CODES.P;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
+        if (mSwipeUpEnabled && !Utilities.getPrefs(mContext).getBoolean(
+                HAS_ENABLED_QUICKSTEP_ONCE, true)) {
+            Utilities.getPrefs(mContext).edit()
+                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
+                    .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
+                    .apply();
         }
     }
 }
