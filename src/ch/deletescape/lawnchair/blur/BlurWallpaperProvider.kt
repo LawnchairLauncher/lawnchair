@@ -21,11 +21,10 @@ import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.hasStoragePermission
 import ch.deletescape.lawnchair.launcherAppState
 import ch.deletescape.lawnchair.lawnchairPrefs
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.util.*
-
-
 
 class BlurWallpaperProvider(val context: Context) {
 
@@ -299,6 +298,10 @@ class BlurWallpaperProvider(val context: Context) {
 
         fun isEnabled(flag: Int): Boolean {
             return isEnabled && sEnabledFlag and flag != 0
+        }
+
+        fun getInstance(context: Context): BlurWallpaperProvider {
+            return LauncherAppState.getInstance(context).launcher.blurWallpaperProvider
         }
     }
 }

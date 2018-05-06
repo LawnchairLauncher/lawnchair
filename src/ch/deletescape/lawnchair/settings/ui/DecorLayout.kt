@@ -3,9 +3,12 @@ package ch.deletescape.lawnchair.settings.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
-import android.util.AttributeSet
+import android.graphics.drawable.ColorDrawable
 import android.view.*
 import android.widget.FrameLayout
+import ch.deletescape.lawnchair.blur.BlurDrawable
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.getColorAttr
 import com.android.launcher3.R
 
 @SuppressLint("ViewConstructor")
@@ -24,7 +27,12 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
     var actionBarElevation: Float
         get() = actionBarContainer.elevation
-        set(value) { actionBarContainer.elevation = value }
+        set(value) {
+            actionBarContainer.elevation = value
+            actionBarContainer.background =
+                    if (value.compareTo(0f) == 0) null
+                    else ColorDrawable(context.getColorAttr(android.R.attr.windowBackground))
+        }
 
     init {
         fitsSystemWindows = false
@@ -35,6 +43,23 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
         statusBarBackground = findViewById(R.id.status_bar_bg)
         navigationBarBackground = findViewById(R.id.nav_bar_bg)
         navigationBarDivider = findViewById(R.id.nav_bar_divider)
+
+        if (BlurWallpaperProvider.isEnabled) {
+            findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
+            background = BlurWallpaperProvider.getInstance(context).createDrawable()
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        (background as BlurDrawable?)?.startListening()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        (background as BlurDrawable?)?.stopListening()
     }
 
     override fun onApplyWindowInsets(i: WindowInsets): WindowInsets {

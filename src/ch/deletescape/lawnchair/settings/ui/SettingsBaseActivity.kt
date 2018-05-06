@@ -29,6 +29,8 @@ open class SettingsBaseActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        Utilities.setLightUi(window)
     }
 
     override fun setContentView(v: View) {

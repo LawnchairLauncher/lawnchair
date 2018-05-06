@@ -38,15 +38,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.TwoStatePreference;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -66,6 +62,7 @@ import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+
 import static com.android.launcher3.Utilities.restartLauncher;
 
 /**
@@ -89,7 +86,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utilities.setLightUi(getWindow());
         setContentView(R.layout.activity_settings);
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);

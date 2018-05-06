@@ -225,6 +225,8 @@
         <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
+        <item name="android:colorControlNormal">?colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
