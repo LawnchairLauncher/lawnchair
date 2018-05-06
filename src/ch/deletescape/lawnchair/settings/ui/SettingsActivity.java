@@ -200,18 +200,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         }
 
         @Override
-        public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-            RecyclerView recyclerView = (RecyclerView) inflater
-                    .inflate(R.layout.settings_recycler_view, parent, false);
-
-            recyclerView.setLayoutManager(onCreateLayoutManager());
-            recyclerView.setAccessibilityDelegateCompat(
-                    new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
-
-            return recyclerView;
-        }
-
-        @Override
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);

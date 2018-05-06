@@ -33,6 +33,5 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:navigationBarDividerColor">#1f000000</item>
     </style>
 </resources>

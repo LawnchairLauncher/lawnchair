@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="?android:windowBackground">
 
-            <android.support.v7.widget.Toolbar
+            <ch.deletescape.lawnchair.views.CenteredToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -45,5 +45,5 @@
         android:id="@+id/nav_bar_divider"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#1f000000"/>
+        android:background="#00000000"/>
 </merge>

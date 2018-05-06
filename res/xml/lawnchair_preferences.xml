@@ -18,36 +18,31 @@
         android:title="@string/pixel_ui_pref_title"
         android:summary="@string/pixel_ui_pref_summary"
         android:icon="@drawable/ic_ui"
-        app:content="@xml/lawnchair_theme_preferences"
-        android:layout="@layout/sub_preference" />
+        app:content="@xml/lawnchair_theme_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_desktop"
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"
-        app:content="@xml/lawnchair_desktop_preferences"
-        android:layout="@layout/sub_preference" />
+        app:content="@xml/lawnchair_desktop_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_dock"
         android:summary="@string/dock_pref_summary"
         android:title="@string/dock_pref_title"
-        app:content="@xml/lawnchair_dock_preferences"
-        android:layout="@layout/sub_preference" />
+        app:content="@xml/lawnchair_dock_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_app_drawer"
         android:summary="@string/app_drawer_pref_summary"
         android:title="@string/app_drawer_pref_title"
-        app:content="@xml/lawnchair_app_drawer_preferences"
-        android:layout="@layout/sub_preference" />
+        app:content="@xml/lawnchair_app_drawer_preferences" />
 
     <Preference
         android:key="backups"
         android:title="@string/backups"
         android:summary="@string/backup_pref_summary"
-        android:icon="@drawable/ic_import_export"
-        android:layout="@layout/sub_preference">
+        android:icon="@drawable/ic_import_export">
 
         <!--suppress AndroidDomInspection (Injected at compile time) -->
         <intent
@@ -59,14 +54,12 @@
         android:key="developerOptions"
         android:icon="@drawable/ic_settings_development"
         android:title="@string/developer_options_title"
-        app:content="@xml/lawnchair_dev_options_preference"
-        android:layout="@layout/sub_preference" />
+        app:content="@xml/lawnchair_dev_options_preference" />
 
     <Preference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
-        android:icon="@drawable/ic_information"
-        android:layout="@layout/sub_preference">
+        android:icon="@drawable/ic_information">
 
         <!--suppress AndroidDomInspection (Injected at compile time) -->
         <intent

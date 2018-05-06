@@ -218,8 +218,9 @@
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
         <item name="colorPrimary">?android:windowBackground</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
@@ -228,10 +229,11 @@
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
     </style>
+    <style name="SettingsTheme.V2.ActionBar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="fontFamily">@font/google_sans</item>
+    </style>
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
-        <item name="android:textColorPrimary">?attr/colorAccent</item>
-        <item name="android:textColorSecondary">?attr/colorAccent</item>
-        <item name="android:colorControlNormal">?attr/colorAccent</item>
+        <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
     <style name="BorderlessButton" parent="Theme.AppCompat.Light">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
