@@ -80,3 +80,10 @@ fun Context.getDrawableAttr(attr: Int): Drawable? {
     ta.recycle()
     return drawable
 }
+
+fun Context.getDimenAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val size = ta.getDimensionPixelSize(0, 0)
+    ta.recycle()
+    return size
+}

@@ -256,4 +256,7 @@
     <dimen name="all_apps_scrim_radius">8dp</dimen>
     <dimen name="all_apps_scrim_blur">4dp</dimen>
     <dimen name="all_apps_scrim_margin">8dp</dimen>
+    <dimen name="large_title_horizontal_padding">70dp</dimen>
+    <dimen name="large_title_vertical_padding">24dp</dimen>
+    <dimen name="large_title_height">84dp</dimen>
 </resources>

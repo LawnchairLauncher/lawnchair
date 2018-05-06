@@ -12,7 +12,7 @@ import com.android.launcher3.Utilities
 
 @SuppressLint("Registered")
 open class SettingsBaseActivity : AppCompatActivity() {
-    private val decorLayout by lazy { DecorLayout(this, window) }
+    val decorLayout by lazy { DecorLayout(this, window) }
     var actionBarElevation: Float
         get() = decorLayout.actionBarElevation
         set(value) { decorLayout.actionBarElevation = value }

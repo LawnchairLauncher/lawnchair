@@ -68,7 +68,7 @@ import static com.android.launcher3.Utilities.restartLauncher;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends SettingsBaseActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends SettingsBaseActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, FragmentManager.OnBackStackChangedListener {
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
@@ -86,6 +86,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getDecorLayout().setUseLargeTitle(true);
         setContentView(R.layout.activity_settings);
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
@@ -96,6 +97,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .replace(R.id.content, new LauncherSettingsFragment())
                     .commit();
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         sharedPrefs = Utilities.getLawnchairPrefs(this);
         updateUpButton();
@@ -113,15 +116,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
-            updateUpButton(true);
         }
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        updateUpButton();
     }
 
     private void updateUpButton() {
@@ -129,8 +125,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     }
 
     private void updateUpButton(boolean enabled) {
+        if (getSupportActionBar() == null) return;
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
         setActionBarElevation(enabled ? mAppBarHeight : 0);
+        getDecorLayout().setUseLargeTitle(!enabled);
     }
 
     @Override
@@ -140,6 +138,11 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        updateUpButton();
     }
 
     private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
@@ -198,7 +201,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(R.string.settings_button_text);
+            getActivity().setTitle(R.string.app_name);
             if (mDeveloperOptions != null &&
                     Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
                 getPreferenceScreen().addPreference(mDeveloperOptions);

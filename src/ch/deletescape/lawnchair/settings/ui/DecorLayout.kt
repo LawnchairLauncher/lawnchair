@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.getColorAttr
+import ch.deletescape.lawnchair.getDimenAttr
 import com.android.launcher3.R
 
 @SuppressLint("ViewConstructor")
@@ -18,7 +19,10 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
     private val frameOffsets = Rect()
 
     private val contentContainer: View
+    private val contentFrame: View
     private val actionBarContainer: View
+    private val toolbar: View
+    private val largeTitle: View
     private val statusBarBackground: View
     private val navigationBarBackground: View
     private val navigationBarDivider: View
@@ -29,20 +33,46 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
         get() = actionBarContainer.elevation
         set(value) {
             actionBarContainer.elevation = value
-            actionBarContainer.background =
-                    if (value.compareTo(0f) == 0) null
-                    else ColorDrawable(context.getColorAttr(android.R.attr.windowBackground))
+            if (value.compareTo(0f) == 0) {
+                actionBarContainer.background = null
+                window.statusBarColor = 0
+            } else {
+                val backgroundColor = context.getColorAttr(android.R.attr.windowBackground)
+                actionBarContainer.background = ColorDrawable(backgroundColor)
+                window.statusBarColor = backgroundColor
+            }
         }
+
+    var useLargeTitle: Boolean = false
+        set(value) {
+            largeTitle.visibility = if (value) View.VISIBLE else View.GONE
+            toolbar.visibility = if (value) View.GONE else View.VISIBLE
+            updateContentTopMargin(value)
+        }
+
+    private fun updateContentTopMargin(value: Boolean) {
+        val layoutParams = contentFrame.layoutParams as LayoutParams
+        if (value) {
+            layoutParams.topMargin = context.resources.getDimensionPixelSize(R.dimen.large_title_height)
+        } else {
+            layoutParams.topMargin = context.getDimenAttr(R.attr.actionBarSize)
+        }
+    }
 
     init {
         fitsSystemWindows = false
         LayoutInflater.from(context).inflate(R.layout.decor_layout, this)
 
         contentContainer = findViewById(R.id.content_container)
+        contentFrame = findViewById(android.R.id.content)
         actionBarContainer = findViewById(R.id.action_bar_container)
+        toolbar = findViewById(R.id.toolbar)
+        largeTitle = findViewById(R.id.large_title)
         statusBarBackground = findViewById(R.id.status_bar_bg)
         navigationBarBackground = findViewById(R.id.nav_bar_bg)
         navigationBarDivider = findViewById(R.id.nav_bar_divider)
+
+        updateContentTopMargin(false)
 
         if (BlurWallpaperProvider.isEnabled) {
             findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
