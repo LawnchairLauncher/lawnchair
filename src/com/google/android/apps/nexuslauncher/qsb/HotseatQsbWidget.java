@@ -31,7 +31,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 
 public class HotseatQsbWidget extends AbstractQsbLayout {
-    private boolean mIsDefaultLiveWallpaper;
+    private boolean mIsGoogleColored;
     private boolean mGoogleHasFocus;
     private AnimatorSet mAnimatorSet;
     private boolean mSearchRequested;
@@ -53,7 +53,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
                 setGoogleColored();
             }
         };
-        mIsDefaultLiveWallpaper = isDefaultLiveWallpaper();
+        mIsGoogleColored = isGoogleColored();
         setColors();
         setOnClickListener(this);
     }
@@ -67,8 +67,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
     }
 
     private void setColors() {
-        View.inflate(new ContextThemeWrapper(getContext(), mIsDefaultLiveWallpaper ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
-        bz(mIsDefaultLiveWallpaper ? 0xCCFFFFFF : 0x99FAFAFA);
+        View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
+        bz(mIsGoogleColored ? 0xCCFFFFFF : 0x99FAFAFA);
     }
 
     private void openQSB() {
@@ -93,8 +93,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
     }
 
     private void setGoogleColored() {
-        if (mIsDefaultLiveWallpaper != isDefaultLiveWallpaper()) {
-            mIsDefaultLiveWallpaper ^= true;
+        if (mIsGoogleColored != isGoogleColored()) {
+            mIsGoogleColored ^= true;
             removeAllViews();
             setColors();
             loadAndGetPreferences();
@@ -109,7 +109,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
         }
     }
 
-    private boolean isDefaultLiveWallpaper() {
+    private boolean isGoogleColored() {
+        if (Utilities.getLawnchairPrefs(getContext()).getDockColoredGoogle()) {
+            return true;
+        }
         WallpaperInfo wallpaperInfo = WallpaperManager.getInstance(getContext()).getWallpaperInfo();
         return wallpaperInfo != null && wallpaperInfo.getComponent().flattenToString().equals(getContext().getString(R.string.default_live_wallpaper));
     }

@@ -66,6 +66,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Dock
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
     val dockSearchBar = true
 
     // Drawer

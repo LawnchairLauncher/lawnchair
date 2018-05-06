@@ -5,6 +5,11 @@
         android:key="pref_hideDockGradient"
         android:title="@string/hide_dock_gradient"
         android:defaultValue="false"
-        android:persistent="true"
-        />
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_dockColoredGoogle"
+        android:title="@string/dock_colored_google"
+        android:defaultValue="false"
+        android:persistent="true" />
 </PreferenceScreen>
