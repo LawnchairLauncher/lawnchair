@@ -127,7 +127,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     private void updateUpButton(boolean enabled) {
         if (getSupportActionBar() == null) return;
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
-        setActionBarElevation(enabled ? mAppBarHeight : 0);
         getDecorLayout().setUseLargeTitle(!enabled);
     }
 
@@ -164,6 +163,16 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             }
             return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
         }
+
+        @Override
+        public void setDivider(Drawable divider) {
+            super.setDivider(null);
+        }
+
+        @Override
+        public void setDividerHeight(int height) {
+            super.setDividerHeight(0);
+        }
     }
 
     /**
@@ -186,16 +195,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
                 getPreferenceScreen().removePreference(mDeveloperOptions);
             }
-        }
-
-        @Override
-        public void setDivider(Drawable divider) {
-            super.setDivider(null);
-        }
-
-        @Override
-        public void setDividerHeight(int height) {
-            super.setDividerHeight(0);
         }
 
         @Override
