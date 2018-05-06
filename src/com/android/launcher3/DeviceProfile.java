@@ -146,7 +146,9 @@ public class DeviceProfile {
     // Insets
     private Rect mInsets = new Rect();
 
-    private final int mBottomMarginHw;
+    public int originalHotseatBarSizePx;
+    public final int mBottomMarginHw;
+    private boolean mAddedBottomMarginHw = false;
 
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
@@ -231,12 +233,9 @@ public class DeviceProfile {
         hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
         hotseatBarSizePx = getHotseatSize(inv, res, dm);
+        originalHotseatBarSizePx = getHotseatSize(inv, res, dm);
 
-        mBottomMarginHw = 0; // res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw); (For now)
-        if (!isVerticalBarLayout()) {
-            hotseatBarSizePx += mBottomMarginHw;
-            hotseatBarBottomPaddingPx += mBottomMarginHw;
-        }
+        mBottomMarginHw = res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw);
 
         // Determine sizes.
         widthPx = width;
@@ -473,14 +472,16 @@ public class DeviceProfile {
 
     public void updateInsets(Rect insets) {
         if (!isVerticalBarLayout()) {
-            if (mInsets.bottom == 0 && insets.bottom != 0) {
+            if (mAddedBottomMarginHw && insets.bottom != 0) {
                 //Navbar is now shown, remove padding
                 hotseatBarSizePx -= mBottomMarginHw;
                 hotseatBarBottomPaddingPx -= mBottomMarginHw;
-            } else if (mInsets.bottom != 0 && insets.bottom == 0) {
+                mAddedBottomMarginHw = false;
+            } else if (!mAddedBottomMarginHw && insets.bottom == 0) {
                 //Navbar is now hidden, show padding
                 hotseatBarSizePx += mBottomMarginHw;
                 hotseatBarBottomPaddingPx += mBottomMarginHw;
+                mAddedBottomMarginHw = true;
             }
         }
         mInsets.set(insets);

@@ -152,10 +152,18 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             mDrawHeight = 0f
         } else {
             mPadding.setEmpty()
-            mDrawHeight = (mDeviceProfile.hotseatBarSizePx + insets.bottom).toFloat() + resources.getDimension(R.dimen.all_apps_scrim_margin)
+            mDrawHeight = getHotseatHeight(insets).toFloat() + resources.getDimension(R.dimen.all_apps_scrim_margin)
         }
         updateDrawRect(mDeviceProfile)
         invalidate()
+    }
+
+    private fun getHotseatHeight(insets: Rect): Int {
+        return if (insets.bottom != 0) {
+            mDeviceProfile.originalHotseatBarSizePx + insets.bottom
+        } else {
+            mDeviceProfile.originalHotseatBarSizePx + mDeviceProfile.mBottomMarginHw
+        }
     }
 
     private fun updateDrawRect(deviceProfile: DeviceProfile) {
