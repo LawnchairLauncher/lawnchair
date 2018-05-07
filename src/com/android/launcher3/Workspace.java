@@ -517,6 +517,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         // Remove the pages and clear the screen models
+        removeFolderListeners();
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
