@@ -213,6 +213,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.P)
     private void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         mNumNotifications = notificationKeys.size();
@@ -261,14 +262,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         reorderAndShow(viewsToFlip);
 
         ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
-        int numShortcuts = mShortcuts.size() + systemShortcuts.size();
-        if (mNumNotifications == 0) {
-            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                    numShortcuts, originalIcon.getContentDescription().toString()));
-        } else {
-            setContentDescription(getContext().getString(
-                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
-                    mNumNotifications, originalIcon.getContentDescription().toString()));
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            setAccessibilityPaneTitle(getContext().getString(mNumNotifications == 0 ?
+                    R.string.action_deep_shortcut :
+                    R.string.shortcuts_menu_with_notifications_description));
         }
 
         mLauncher.getDragController().addDragListener(this);
