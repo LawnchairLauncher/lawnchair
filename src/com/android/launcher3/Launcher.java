@@ -2338,7 +2338,8 @@ public class Launcher extends BaseDraggingActivity
         }
         if (currentFocus.getTag() instanceof ItemInfo
                 && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.action_deep_shortcut),
+            shortcutInfos.add(new KeyboardShortcutInfo(
+                    getString(R.string.shortcuts_menu_with_notifications_description),
                     KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
         }
         if (!shortcutInfos.isEmpty()) {

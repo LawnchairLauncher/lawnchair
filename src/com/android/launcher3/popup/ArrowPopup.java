@@ -35,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -51,8 +50,6 @@ import com.android.launcher3.util.Themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -371,10 +368,6 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
-                sendCustomAccessibilityEvent(
-                        ArrowPopup.this,
-                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        getContext().getString(R.string.action_deep_shortcut));
             }
         });
 

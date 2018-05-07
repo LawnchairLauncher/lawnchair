@@ -139,6 +139,7 @@
     <item type="id" name="action_move_screen_forwards" />
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
+    <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
 
 <!-- QSB IDs. DO not change -->
