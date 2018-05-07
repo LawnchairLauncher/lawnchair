@@ -17,7 +17,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
     <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -247,6 +247,8 @@
         <item name="android:colorEdgeEffect">?colorAccent</item>
         <item name="android:colorControlNormal">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
         <item name="useLightSystemBars">true</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
