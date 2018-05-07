@@ -200,7 +200,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     private void setGoogleSans(TextView... views) {
-        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/GoogleSans-Regular.ttf");
+        Typeface tf = Utilities.getGoogleSans(getContext());
         for (TextView view : views) {
             if (view != null) {
                 view.setTypeface(tf);

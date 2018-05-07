@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.view.View
+import android.view.ViewGroup
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 
@@ -86,4 +88,11 @@ fun Context.getDimenAttr(attr: Int): Int {
     val size = ta.getDimensionPixelSize(0, 0)
     ta.recycle()
     return size
+}
+
+inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
+    val count = childCount
+    for (i in (0 until count)) {
+        action(getChildAt(i))
+    }
 }

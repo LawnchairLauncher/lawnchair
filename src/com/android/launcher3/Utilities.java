@@ -35,6 +35,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -740,5 +741,9 @@ public final class Utilities {
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
         window.getDecorView().setSystemUiVisibility(flags);
+    }
+
+    public static Typeface getGoogleSans(Context context) {
+        return Typeface.createFromAsset(context.getAssets(), "fonts/GoogleSans-Regular.ttf");
     }
 }

@@ -37,7 +37,9 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.Themes;
 
-public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
+import ch.deletescape.lawnchair.views.LawnchairAppWidgetHostView;
+
+public class PendingAppWidgetHostView extends LawnchairAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
