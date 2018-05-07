@@ -677,6 +677,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mActivityInitListener.unregister();
         mInputConsumer.unregisterInputConsumer();
+        mTaskSnapshot = null;
     }
 
     private void invalidateHandlerWithLauncher() {
