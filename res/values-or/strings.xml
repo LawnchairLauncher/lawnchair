@@ -130,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ଉଚ୍ଚତା କମ୍‌ କରନ୍ତୁ"</string>
     <string name="widget_resized" msgid="9130327887929620">"ୱିଜେଟକୁ <xliff:g id="NUMBER_0">%1$s</xliff:g> ଓସାର ଓ <xliff:g id="NUMBER_1">%2$s</xliff:g> ଉଚ୍ଚରେ ପୁନଃଆକାର ଦିଆଗଲା"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ଶର୍ଟକଟ୍‍"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ପାଇଁ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>ଟି ଶର୍ଟକଟ୍‌"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ପାଇଁ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>ଟି ଶର୍ଟକଟ୍‌ ଏବଂ <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>ଟି ବିଜ୍ଞପ୍ତି"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ଖାରଜ କରନ୍ତୁ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ବିଜ୍ଞପ୍ତି ଖାରଜ କରାଗଲା"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ବ୍ୟକ୍ତିଗତ"</string>

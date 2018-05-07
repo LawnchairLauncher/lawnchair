@@ -30,7 +30,7 @@
     <string name="home_screen" msgid="806512411299847073">"الشاشة الرئيسية"</string>
     <string name="custom_actions" msgid="3747508247759093328">"الإجراءات المخصّصة"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"المس مع الاستمرار لاختيار إحدى الأدوات."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"انقر نقرًا مزدوجًا مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"انقر مرّتين مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏العرض %1$d الطول %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"انقر مع الاستمرار لإضافة العنصر يدويًا"</string>
@@ -41,7 +41,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"البحث عن مزيد من التطبيقات"</string>
     <string name="notifications_header" msgid="1404149926117359025">"الإشعارات"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"انقر مع الاستمرار لاختيار اختصار."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"يمكنك النقر نقرًا مزدوجًا مع الاستمرار لاختيار اختصار أو استخدام الإجراءات المخصصة."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"يمكنك النقر مرّتين مع الاستمرار لاختيار اختصار أو استخدام الإجراءات المخصصة."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"لا يوجد المزيد من الحقول في علبة المفضلة"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"قائمة التطبيقات"</string>
@@ -134,8 +134,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"تقليل الارتفاع"</string>
     <string name="widget_resized" msgid="9130327887929620">"تم تغيير حجم الأداة إلى العرض <xliff:g id="NUMBER_0">%1$s</xliff:g> والارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"الاختصارات"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار لتطبيق <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"هناك <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار و<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> إشعار عن <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"تجاهل"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"تم تجاهل الإشعار"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصية"</string>

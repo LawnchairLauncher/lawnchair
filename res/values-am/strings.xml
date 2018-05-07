@@ -130,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ቁመት ይቀንሱ"</string>
     <string name="widget_resized" msgid="9130327887929620">"የመግብር መጠን ወደ ስፋት <xliff:g id="NUMBER_0">%1$s</xliff:g> ቁመት <xliff:g id="NUMBER_1">%2$s</xliff:g> ተለውጧል"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"አቋራጮች"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> የ<xliff:g id="APP_NAME">%2$s</xliff:g> አቋራጮች"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> አቋራጮች እና <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ማሳወቂያዎች ለ<xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"አሰናብት"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ማሳወቂያ ተሰናብቷል"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"የግል"</string>

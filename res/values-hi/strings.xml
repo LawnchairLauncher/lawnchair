@@ -130,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ऊंचाई घटाएं"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेट का आकार बदलकर उसकी चौड़ाई <xliff:g id="NUMBER_0">%1$s</xliff:g> और ऊंचाई <xliff:g id="NUMBER_1">%2$s</xliff:g> कर दी गई"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट और <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाएं हैं"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
