@@ -7,8 +7,5 @@
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
-    <style name="SettingsTheme.V2" parent="SettingsTheme.Base">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-    </style>
+    <style name="SettingsTheme.V2" parent="SettingsTheme.Base" />
 </resources>

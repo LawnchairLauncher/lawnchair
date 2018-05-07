@@ -72,6 +72,17 @@
         <item name="isMainColorDark">true</item>
     </style>
 
+    <style name="LauncherThemeBlack" parent="@style/LauncherThemeDark">
+        <item name="android:colorPrimary">#000000</item>
+        <item name="allAppsScrimColor">#7A000000</item>
+        <item name="allAppsNavBarScrimColor">#80000000</item>
+        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
+        <item name="popupColorSecondary">#000000</item>
+        <item name="popupColorTertiary">#212121</item>
+        <item name="widgetsTheme">@style/WidgetContainerTheme.Black</item>
+        <item name="isMainColorDark">true</item>
+    </style>
+
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
     Various foreground colors are overridden to be workspaceTextColor so that they are properly
@@ -100,6 +111,11 @@
 
     <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+        <item name="bottomSheetNavBarColor">#00000000</item>
+    </style>
+
+    <style name="WidgetContainerTheme.Black" parent="LauncherThemeBlack">
+        <item name="android:colorPrimaryDark">#000000</item>
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
@@ -195,6 +211,9 @@
     <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
+    <style name="GoogleSearchLauncherThemeBlack" parent="@style/LauncherThemeBlack">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
     <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
@@ -217,6 +236,7 @@
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
+
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="colorPrimary">?android:windowBackground</item>
@@ -227,6 +247,7 @@
         <item name="android:colorEdgeEffect">?colorAccent</item>
         <item name="android:colorControlNormal">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="useLightSystemBars">true</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
@@ -237,6 +258,31 @@
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
+
+    <style name="SettingsTheme.V2.Dark" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">?android:windowBackground</item>
+        <item name="colorPrimaryDark">?android:windowBackground</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/SettingsTheme.V2.Dark.ActionBar</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:colorEdgeEffect">?colorAccent</item>
+        <item name="android:colorControlNormal">?colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="useLightSystemBars">false</item>
+    </style>
+    <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
+        <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
+    </style>
+
+    <style name="SettingsTheme.V2.Black" parent="@style/SettingsTheme.V2.Dark">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="actionBarTheme">@style/SettingsTheme.V2.Black.ActionBar</item>
+    </style>
+    <style name="SettingsTheme.V2.Black.ActionBar" parent="SettingsTheme.V2.Black">
+        <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
+    </style>
+
     <style name="BorderlessButton" parent="Theme.AppCompat.Light">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
         <item name="colorAccent">@color/colorAccent</item>

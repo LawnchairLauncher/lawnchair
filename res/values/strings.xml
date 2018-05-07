@@ -431,4 +431,11 @@
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_p_style">P style dock</string>
+    <string name="theme_pref_title">Launcher theme</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_auto_black">Auto (with OLED black)</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark_text">Light (with dark text)</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_black">Dark (with OLED black)</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import ch.deletescape.lawnchair.settings.GridSize
+import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
@@ -57,7 +58,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
-    var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
+    var launcherTheme by StringIntPref("pref_launcherTheme", 1, { ThemeManager.getInstance(context).onThemeChanged() })
 
     // Desktop
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
@@ -252,6 +253,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         override fun onSetValue(value: Set<String>) {
             edit { putStringSet(getKey(), value) }
+        }
+    }
+
+    open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+
+        override fun onSetValue(value: Int) {
+            edit { putString(getKey(), "$value") }
         }
     }
 

@@ -762,4 +762,12 @@ public final class Utilities {
 
         return new Pair<>(x, y);
     }
+
+    public static int setFlag(int flags, int flag, boolean value) {
+        if (value) {
+            return flags | flag;
+        } else {
+            return flags & ~flag;
+        }
+    }
 }

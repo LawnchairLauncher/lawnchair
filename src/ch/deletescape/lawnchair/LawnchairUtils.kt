@@ -90,6 +90,13 @@ fun Context.getDimenAttr(attr: Int): Int {
     return size
 }
 
+fun Context.getBooleanAttr(attr: Int): Boolean {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getBoolean(0, false)
+    ta.recycle()
+    return value
+}
+
 inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
     val count = childCount
     for (i in (0 until count)) {

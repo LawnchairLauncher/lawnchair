@@ -1,12 +1,10 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -64,26 +62,6 @@ public class NexusLauncherActivity extends Launcher {
 
     private boolean showSmartspace() {
         return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
-    }
-
-    public void overrideTheme(boolean isDark, boolean supportsDarkText) {
-        int flags = Utilities.getDevicePrefs(this).getInt("pref_persistent_flags", 0);
-        boolean forceDark = Utilities.getLawnchairPrefs(this).getOverrideLauncherTheme();
-        int orientFlag = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 16 : 8;
-        boolean useGoogleInOrientation = (orientFlag & flags) != 0;
-        if (forceDark) {
-            setTheme(R.style.GoogleSearchLauncherThemeDark);
-        } else {
-            if ((useGoogleInOrientation && isDark)) {
-                setTheme(R.style.GoogleSearchLauncherThemeDark);
-            } else if (useGoogleInOrientation && supportsDarkText && Utilities.ATLEAST_NOUGAT) {
-                setTheme(R.style.GoogleSearchLauncherThemeDarkText);
-            } else if (useGoogleInOrientation) {
-                setTheme(R.style.GoogleSearchLauncherTheme);
-            } else {
-                super.overrideTheme(isDark, supportsDarkText);
-            }
-        }
     }
 
     public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {

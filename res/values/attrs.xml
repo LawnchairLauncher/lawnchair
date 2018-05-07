@@ -166,4 +166,5 @@
 
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
+    <attr name="useLightSystemBars" format="boolean" />
 </resources>

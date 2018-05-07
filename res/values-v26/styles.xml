@@ -25,13 +25,16 @@
     </style>
     <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->`
+        <item name="bottomSheetNavBarColor">#00000000</item>
+    </style>
+    <style name="WidgetContainerTheme.Black" parent="LauncherThemeBlack">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:colorPrimaryDark">#000000</item>
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
     <style name="SettingsTheme.V2" parent="SettingsTheme.Base">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>

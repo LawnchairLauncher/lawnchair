@@ -152,7 +152,9 @@ import java.util.concurrent.Executor;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
+import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.theme.ThemeManager;
 
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
@@ -383,9 +385,7 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.preOnCreate();
         }
 
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        ThemeManager.Companion.getInstance(this).addOverride(new ThemeOverride.Launcher(this));
 
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
         boolean pStyleDock = prefs.getDockPStyle();

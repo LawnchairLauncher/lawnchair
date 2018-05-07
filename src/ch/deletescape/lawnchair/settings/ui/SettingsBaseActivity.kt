@@ -7,6 +7,9 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.getBooleanAttr
+import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -18,19 +21,26 @@ open class SettingsBaseActivity : AppCompatActivity() {
         set(value) { decorLayout.actionBarElevation = value }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.getInstance(this).addOverride(ThemeOverride.Settings(this))
+
         super.onCreate(savedInstanceState)
         super.setContentView(decorLayout)
-
-        if (!Utilities.ATLEAST_OREO_MR1 && Utilities.ATLEAST_OREO) {
-            Utilities.setLightUi(window)
-            window.statusBarColor = 0
-            window.navigationBarColor = 0
-        }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        Utilities.setLightUi(window)
+        var flags = window.decorView.systemUiVisibility
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            val useLightBars = getBooleanAttr(R.attr.useLightSystemBars)
+            flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR, useLightBars)
+            if (Utilities.ATLEAST_OREO) {
+                flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR, useLightBars)
+            }
+        }
+        flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.decorView.systemUiVisibility = flags
     }
 
     override fun setContentView(v: View) {

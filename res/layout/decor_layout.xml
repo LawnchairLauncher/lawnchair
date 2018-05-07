@@ -34,7 +34,7 @@
                 android:minHeight="?actionBarSize"
                 android:background="@android:color/transparent"
                 app:titleTextColor="?colorAccent"
-                android:theme="@style/SettingsTheme.V2.ActionBar" />
+                android:theme="?actionBarTheme" />
 
             <TextView
                 android:id="@+id/large_title"
@@ -52,6 +52,7 @@
                 android:textAppearance="?titleTextAppearance"
                 android:textSize="36dp"
                 android:visibility="gone"
+                android:theme="?actionBarTheme"
                 tools:ignore="SpUsage" />
         </FrameLayout>
     </FrameLayout>
