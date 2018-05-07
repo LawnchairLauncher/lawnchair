@@ -250,6 +250,7 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
         <item name="useLightSystemBars">true</item>
+        <item name="alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
@@ -259,6 +260,10 @@
     </style>
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
+    </style>
+    <style name="SettingsTheme.V2.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_material_background</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="SettingsTheme.V2.Dark" parent="@style/Theme.AppCompat.NoActionBar">
@@ -272,9 +277,14 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="useLightSystemBars">false</item>
+        <item name="alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
     </style>
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
+    </style>
+    <style name="SettingsTheme.V2.Dark.Dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_material_background</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="SettingsTheme.V2.Black" parent="@style/SettingsTheme.V2.Dark">
