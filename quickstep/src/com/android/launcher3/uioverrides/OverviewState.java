@@ -35,7 +35,7 @@ import com.android.quickstep.views.RecentsView;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI;
+            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public OverviewState(int id) {
         this(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);

@@ -25,7 +25,8 @@ import com.android.quickstep.views.RecentsView;
 public class FastOverviewState extends OverviewState {
 
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_DISABLE_RESTORE
-            | FLAG_DISABLE_INTERACTION | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON;
+            | FLAG_DISABLE_INTERACTION | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON
+            | FLAG_DISABLE_ACCESSIBILITY;
 
     public FastOverviewState(int id) {
         super(id, QuickScrubController.QUICK_SCRUB_START_DURATION, STATE_FLAGS);
