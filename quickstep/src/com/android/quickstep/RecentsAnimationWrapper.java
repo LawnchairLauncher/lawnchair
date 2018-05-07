@@ -58,6 +58,7 @@ public class RecentsAnimationWrapper {
                     if (onFinishComplete != null) {
                         onFinishComplete.run();
                     }
+                    controller = null;
                 }
             }
         });
