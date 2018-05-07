@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -153,6 +154,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
+    private TaskStackChangeListener mTaskStackClearFlagListener = new TaskStackChangeListener() {
+        @Override
+        public void onPinnedStackAnimationStarted() {
+            // Needed for activities that auto-enter PiP, which will not trigger a remote
+            // animation to be created
+            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        }
+    };
+
     private int mLoadPlanId = -1;
 
     // Only valid until the launcher state changes to NORMAL
@@ -250,6 +260,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onAttachedToWindow();
         updateTaskStackListenerState();
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackClearFlagListener);
     }
 
     @Override
@@ -257,6 +268,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                mTaskStackClearFlagListener);
     }
 
     @Override
