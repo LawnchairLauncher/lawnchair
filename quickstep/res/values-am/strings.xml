@@ -25,4 +25,6 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"ምንም የቅርብ ጊዜ ንጥሎች የሉም"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"ዝጋ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ሁሉንም አጽዳ"</string>
+    <!-- no translation found for accessibility_recent_apps (4058661986695117371) -->
+    <skip />
 </resources>
