@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair
 
+import ch.deletescape.lawnchair.views.LawnchairAppWidgetHostView
 import com.android.launcher3.Launcher
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.PageIndicatorLineCaret
@@ -39,5 +40,20 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
         if (indicator is PageIndicatorLineCaret) {
             indicator.updateLineHeight()
         }
+    }
+
+    val smartspaceWidgets = HashSet<LawnchairAppWidgetHostView>()
+
+    fun addSmartspaceWidget(hostView: LawnchairAppWidgetHostView) {
+        smartspaceWidgets.add(hostView)
+    }
+
+    fun removeSmartspaceWidget(hostView: LawnchairAppWidgetHostView) {
+        smartspaceWidgets.remove(hostView)
+    }
+
+    fun updateSmartspace() {
+        launcher.refreshGrid()
+        smartspaceWidgets.forEach { it -> it.updateText() }
     }
 }

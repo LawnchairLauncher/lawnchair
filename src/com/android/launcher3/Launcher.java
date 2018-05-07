@@ -353,7 +353,7 @@ public class Launcher extends BaseActivity
     }
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
-    private LawnchairPreferencesChangeCallback mLawnchairPrefChangeCallback;
+    public LawnchairPreferencesChangeCallback mPrefCallback;
     private boolean mRestart = false;
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
@@ -480,8 +480,8 @@ public class Launcher extends BaseActivity
             mRotationPrefChangeHandler = new RotationPrefChangeHandler();
             mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
-        mLawnchairPrefChangeCallback = new LawnchairPreferencesChangeCallback(this);
-        Utilities.getLawnchairPrefs(this).registerCallback(mLawnchairPrefChangeCallback);
+        mPrefCallback = new LawnchairPreferencesChangeCallback(this);
+        Utilities.getLawnchairPrefs(this).registerCallback(mPrefCallback);
 
         if (PinItemDragListener.handleDragRequest(this, getIntent())) {
             // Temporarily enable the rotation

@@ -1,12 +1,12 @@
 package com.google.android.apps.nexuslauncher.graphics;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.icu.text.DateFormat;
 import android.icu.text.DisplayContext;
+import android.support.annotation.RequiresApi;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
@@ -36,29 +36,10 @@ public class IcuDateTextView extends DoubleShadowTextView {
         };
     }
 
-    @TargetApi(24)
     public void reloadDateFormat(boolean forcedChange) {
         String format;
         if (Utilities.ATLEAST_NOUGAT) {
-            if (mDateFormat == null || forcedChange) {
-                (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                        .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
-                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-            }
-            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
-            boolean showTime = prefs.getSmartspaceTime();
-            boolean showDate = prefs.getSmartspaceDate();
-            if (showTime) {
-                if (showDate) {
-                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                            .getString(R.string.icu_abbrev_time_date), Locale.getDefault()))
-                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-                } else {
-                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                            .getString(R.string.icu_abbrev_time), Locale.getDefault()))
-                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-                }
-            }
+            mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat);
             format = mDateFormat.format(System.currentTimeMillis());
         } else {
             format = DateUtils.formatDateTime(getContext(), System.currentTimeMillis(),
@@ -66,6 +47,30 @@ public class IcuDateTextView extends DoubleShadowTextView {
         }
         setText(format);
         setContentDescription(format);
+    }
+
+    @RequiresApi(24)
+    public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat) {
+        if (oldFormat == null || forcedChange) {
+            (oldFormat = DateFormat.getInstanceForSkeleton(context
+                    .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
+                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+        }
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+        boolean showTime = prefs.getSmartspaceTime();
+        boolean showDate = prefs.getSmartspaceDate();
+        if (showTime) {
+            if (showDate) {
+                (oldFormat = DateFormat.getInstanceForSkeleton(context
+                        .getString(R.string.icu_abbrev_time_date), Locale.getDefault()))
+                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+            } else {
+                (oldFormat = DateFormat.getInstanceForSkeleton(context
+                        .getString(R.string.icu_abbrev_time), Locale.getDefault()))
+                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+            }
+        }
+        return oldFormat;
     }
 
     private void registerReceiver() {

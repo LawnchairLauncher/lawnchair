@@ -45,6 +45,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
+    private val updateSmartspace = { updateSmartspace() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
@@ -114,6 +115,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateBlur() {
         onChangeCallback?.updateBlur()
+    }
+
+    private fun updateSmartspace() {
+        onChangeCallback?.updateSmartspace()
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
