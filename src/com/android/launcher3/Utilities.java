@@ -751,7 +751,7 @@ public final class Utilities {
     }
 
     public static Pair<Integer, Integer> getScreenSize(Context context) {
-        int x, y, orientation = context.getResources().getConfiguration().orientation;
+        int x, y;
         WindowManager wm = ((WindowManager)
                 context.getSystemService(Context.WINDOW_SERVICE));
         Display display = wm.getDefaultDisplay();
