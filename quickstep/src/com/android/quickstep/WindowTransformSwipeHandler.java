@@ -387,7 +387,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setRunningTaskHidden(true);
-        mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+        mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
         mLayoutListener.open();
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
@@ -685,7 +685,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLayoutListener.finish();
 
         mRecentsView.setRunningTaskHidden(false);
-        mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
+        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
     }
 
     private void notifyTransitionCancelled() {
@@ -749,7 +749,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.
-        mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
+        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
         mRecentsView.setSwipeDownShouldLaunchApp(true);
 
         RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);

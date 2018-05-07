@@ -170,7 +170,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
 
-    private boolean mFirstTaskIconScaledDown = false;
+    private boolean mRunningTaskIconScaledDown = false;
 
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
@@ -638,13 +638,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Similar to {@link #showTask(int)} but does not put any restrictions on the first tile.
      */
     public void setCurrentTask(int runningTaskId) {
-        if (mRunningTaskTileHidden) {
-            setRunningTaskHidden(false);
-            mRunningTaskId = runningTaskId;
-            setRunningTaskHidden(true);
-        } else {
-            mRunningTaskId = runningTaskId;
-        }
+        boolean runningTaskTileHidden = mRunningTaskTileHidden;
+        boolean runningTaskIconScaledDown = mRunningTaskIconScaledDown;
+
+        setRunningTaskIconScaledDown(false, false);
+        setRunningTaskHidden(false);
+        mRunningTaskId = runningTaskId;
+        setRunningTaskIconScaledDown(runningTaskIconScaledDown, false);
+        setRunningTaskHidden(runningTaskTileHidden);
+
         setCurrentPage(0);
 
         // Load the tasks (if the loading is already
@@ -672,17 +674,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mQuickScrubController;
     }
 
-    public void setFirstTaskIconScaledDown(boolean isScaledDown, boolean animate) {
-        if (mFirstTaskIconScaledDown == isScaledDown) {
+    public void setRunningTaskIconScaledDown(boolean isScaledDown, boolean animate) {
+        if (mRunningTaskIconScaledDown == isScaledDown) {
             return;
         }
-        mFirstTaskIconScaledDown = isScaledDown;
+        mRunningTaskIconScaledDown = isScaledDown;
         applyIconScale(animate);
     }
 
     private void applyIconScale(boolean animate) {
-        float scale = mFirstTaskIconScaledDown ? 0 : 1;
-        TaskView firstTask = (TaskView) getChildAt(0);
+        float scale = mRunningTaskIconScaledDown ? 0 : 1;
+        TaskView firstTask = getTaskView(mRunningTaskId);
         if (firstTask != null) {
             if (animate) {
                 firstTask.animateIconToScaleAndDim(scale);
