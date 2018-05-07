@@ -34,6 +34,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -53,8 +54,10 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
@@ -745,5 +748,18 @@ public final class Utilities {
 
     public static Typeface getGoogleSans(Context context) {
         return Typeface.createFromAsset(context.getAssets(), "fonts/GoogleSans-Regular.ttf");
+    }
+
+    public static Pair<Integer, Integer> getScreenSize(Context context) {
+        int x, y, orientation = context.getResources().getConfiguration().orientation;
+        WindowManager wm = ((WindowManager)
+                context.getSystemService(Context.WINDOW_SERVICE));
+        Display display = wm.getDefaultDisplay();
+        Point screenSize = new Point();
+        display.getRealSize(screenSize);
+        x = screenSize.x;
+        y = screenSize.y;
+
+        return new Pair<>(x, y);
     }
 }

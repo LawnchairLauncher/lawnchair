@@ -224,10 +224,10 @@ class BlurDrawable internal constructor(
         canvas.restoreToCount(saveCount)
 
         if (mTopRounded) {
-            mTopRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, mRect.top, null) }
+            mTopRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, mRect.top, mPaint) }
         }
         if (mBottomRounded) {
-            mBottomRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, bottomY, null) }
+            mBottomRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, bottomY, mPaint) }
         }
     }
 
@@ -299,7 +299,8 @@ class BlurDrawable internal constructor(
         }
 
     override fun setAlpha(alpha: Int) {
-        mShouldDraw = alpha == 255
+        mShouldDraw = alpha > 0
+        mPaint.alpha = alpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {

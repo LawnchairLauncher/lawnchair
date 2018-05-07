@@ -11,10 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
-import com.android.launcher3.DeviceProfile
-import com.android.launcher3.Insettable
-import com.android.launcher3.Launcher
-import com.android.launcher3.R
+import com.android.launcher3.*
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.graphics.GradientView
 import com.android.launcher3.graphics.ShadowGenerator
@@ -83,8 +80,9 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         }
     }
 
-    private val blurDrawable = if (pStyle && BlurWallpaperProvider.isEnabled) {
-        context.blurWallpaperProvider.createDrawable(mRadius, false).apply { callback = blurDrawableCallback }
+    private val blurRadius = if (pStyle) mRadius else 0f
+    private val blurDrawable = if (BlurWallpaperProvider.isEnabled) {
+        context.blurWallpaperProvider.createDrawable(blurRadius, false).apply { callback = blurDrawableCallback }
     } else {
         null
     }
@@ -131,6 +129,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
                 canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
             }
         } else {
+            blurDrawable?.draw(canvas)
             super.onDraw(canvas)
         }
     }
@@ -185,13 +184,19 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             invalidateDrawRect()
         } else {
             super.setProgress(progress, shiftRange)
+            blurDrawable?.alpha = (progress * 255).toInt()
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        blurDrawable?.setBounds(left, top, right, bottom)
+        if (pStyle) {
+            blurDrawable?.setBounds(left, top, right, bottom)
+        } else {
+            val screenSize = Utilities.getScreenSize(context)
+            blurDrawable?.setBounds(0, 0, screenSize.first, screenSize.second)
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -209,6 +214,6 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun setTranslationX(translationX: Float) {
         super.setTranslationX(translationX)
 
-        blurDrawable?.setPotitionX(translationX)
+        if (pStyle) blurDrawable?.setPotitionX(translationX)
     }
 }
