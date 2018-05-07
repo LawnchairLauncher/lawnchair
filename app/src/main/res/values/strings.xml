@@ -543,6 +543,7 @@
 
     <!-- About screen -->
 
+    <string name="about_twitter" translatable="false">Twitter</string>
     <string name="title_attribouter_licenses">Open Source Licenses</string>
     <string name="title_attribouter_email">Email</string>
     <string name="title_attribouter_website">Website</string>
@@ -553,6 +554,7 @@
     <string name="title_attribouter_license_conditions">Conditions</string>
     <string name="title_attribouter_license_limitations">Limitations</string>
     <string name="title_attribouter_more_info">More Info</string>
+    <string name="title_attribouter_translators">Translators</string>
     <string name="about_our_team">Our team</string>
     <string name="about_our_contributors">Our main contributors</string>
     <string name="about_our_family">Our other family members</string>

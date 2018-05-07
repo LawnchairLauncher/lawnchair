@@ -4,9 +4,16 @@
         icon="@mipmap/ic_launcher"
         playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
         repo="LawnchairLauncher/Lawnchair"
-        websiteUrl="https://lawnchair.info" />
+        websiteUrl="https://lawnchair.info">
+        <link
+            name="@string/about_twitter"
+            icon="@drawable/ic_twitter"
+            priority="-1"
+            url="https://twitter.com/lawnchairapp" />
+    </appInfo>
     <contributors
         repo=""
+        showDefaults="false"
         title="@string/about_our_team">
         <contributor
             name="Till Kottmann"
@@ -15,7 +22,12 @@
             blog="https://deletescape.ch"
             login="deletescape"
             position="1"
-            task="@string/about_role_lead" />
+            task="@string/about_role_lead">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/deletescape" />
+        </contributor>
         <contributor
             name="David Sn"
             avatar="https://avatars.githubusercontent.com/u/28547847"
@@ -23,7 +35,12 @@
             blog="https://www.codebucket.de"
             login="divadsn"
             position="2"
-            task="@string/about_role_devops" />
+            task="@string/about_role_devops">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/divadsn" />
+        </contributor>
         <contributor
             avatar="https://avatars.githubusercontent.com/u/8080853"
             login="paphonb"
@@ -39,42 +56,73 @@
             avatar="https://avatars.githubusercontent.com/u/29968331"
             bio="@string/about_bio_recoded"
             login="reC0D3D"
-            task="@string/about_role_dev_mod" />
+            task="@string/about_role_dev_mod">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/colinrecoded" />
+        </contributor>
         <contributor
             name="Joshua Baldassarre"
             avatar="https://avatars.githubusercontent.com/u/20582840"
             bio="@string/about_bio_josh"
             blog="https://joshuabaldassarre.github.io/"
             login="joshuabaldassarre"
-            task="@string/about_role_designer" />
+            task="@string/about_role_designer">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/JoshBaldassarre" />
+        </contributor>
         <contributor
             name="Lumiq Creative"
             avatar="https://avatars.githubusercontent.com/u/30959743"
             login="lumiqcreative"
-            task="@string/about_role_designer" />
+            task="@string/about_role_designer">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                priority="3"
+                url="https://twitter.com/lumiqcreative" />
+        </contributor>
         <contributor
             name="Christopher Kardas"
             avatar="https://avatars.githubusercontent.com/u/15703840"
             bio="@string/about_bio_chris"
             blog="https://christopherkardas.me/"
             login="christopherkardas"
-            task="@string/about_role_special_snowflake" />
+            task="@string/about_role_special_snowflake">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/chris_kardas" />
+        </contributor>
         <contributor
             name="Rik Koedoot"
             avatar="https://avatars.githubusercontent.com/u/29402532"
             login="rickkode"
-            task="@string/about_role_mod_support" />
+            task="@string/about_role_mod_support">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                priority="3"
+                url="https://twitter.com/RickKode" />
+        </contributor>
         <contributor
             name="Abhijeet Bohra"
             avatar="https://avatars.githubusercontent.com/u/34155181"
             login="abhijeetbohra"
-            task="@string/about_role_mod_support" />
-        <contributor
-            hidden="true"
-            login="TheAndroidMaster" />
+            task="@string/about_role_mod_support">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                priority="3"
+                url="https://twitter.com/bohra_abhijeet" />
+        </contributor>
     </contributors>
     <contributors
         repo=""
+        showDefaults="false"
         title="@string/about_our_family">
         <contributor
             name="Amir Zaidi"
@@ -138,10 +186,2266 @@
             name="Yannick"
             avatar="https://i.imgur.com/p9FrMbi.png"
             task="@string/about_role_family_member" />
-        <contributor
-            hidden="true"
-            login="TheAndroidMaster" />
     </contributors>
+
+    <translators overflow="10">
+        <translator
+            name="Till Kottmann (deletescape)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de,fr,es,it,pl" />
+        <translator
+            name="abc0922001"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh,ja,da,ta,zh" />
+        <translator
+            name="Mevlüt TOPÇU (_DarkKnight_)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Róbert Barát (rbarat)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sk,cs" />
+        <translator
+            name="olap"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="no" />
+        <translator
+            name="DejanMartinov"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="Lukas Novotny (novas78)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="cs" />
+        <translator
+            name="Rik Koedoot [Rick Kode] (rickkode)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Jaime Muñoz Martín (jmmartin_5)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca,es" />
+        <translator
+            name="Ramdhani Fathurrohman (dhani_fathur)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Αχι Κ. (AxiK101)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+        <translator
+            name="Tomi_Ohl"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="Craig Hart (craigaryhart)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh,zh,sv,id" />
+        <translator
+            name="Adiitya Andre (adiiit.and)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Leonardo Alfonzo (leoalfonzorodriguez)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="deejay.bosz (irving_83666)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="ZAKKY Al - Mattaque (officialzakkyal)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Nội Hoàng (hoangnoi174)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="Trung Đoàn (trungdoan2507)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="김지훈 (Kim, Jihoon) (ample8897)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="Omer Peled (TheOmer77)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="藤井 (Fujii)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ja" />
+        <translator
+            name="Igor Sorocean (sorocean.igor)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ro" />
+        <translator
+            name="KkWebworld (Kirtik) (kkwebworld)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Martin P. (edisso999)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Sylvain NEVEU (sylvaineveu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Myroslav (Starfever)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk,ru" />
+        <translator
+            name="Maksud Mansurov (MaxFour)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="b1nny"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Tavo Bernal (gbernal29o)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Hứa Minh Quân (boystyle2010)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="Alex Black (nitan.marcel)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ro" />
+        <translator
+            name="Patrick Fruh (Kaeltis)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Nikita Shakarun (nikita78_1996)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Đinh Thị Thanh Vân (librathien21)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="Vikas Kumar (vk8298416)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta,hi,no,he,sv" />
+        <translator
+            name="Timbets"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fi" />
+        <translator
+            name="Eduardo Addad de Oliveira (eduardoaddad)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Rateb (wolforpion)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Armin (Arcec)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="Michele Catanese (catanesemichele)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Gilar Jodi (jexixka)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="jjhitel"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="Osman Onur KOÇ (osmanonurkoc)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Kyeongbok Lee (kblee0)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="drauks"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="Sahendra Mallick (MallickSahendra)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Yihao zhuo (yihao_zhuo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it,zh,zh" />
+        <translator
+            name="Facundo Montero (FacuM)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es,pt" />
+        <translator
+            name="jznsamuel (jasonsamuel88)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="pierre kergaravat (pkerga)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="S.Jaafar Al-Mosawi (s.jaafarahmed)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Kamalesh Kv (கமலேஷ்) (kkamalesh93)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Carlos Barbancho (c.barbancho)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca,es" />
+        <translator
+            name="Y_oo"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="ItsYogSothoth"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Matheus Oliveira (matheusbaliver)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="franco98silva (franciscolom)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="vladir95"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Kidox"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Мурад  Лугуев (blackkiller1527)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="天线宝宝 (brownursidae)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Victor Zamanian (victor.zamanian)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="Wendrel"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Darth Vader (Dvaderfun)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru,uk" />
+        <translator
+            name="JAMES BALBO (jamesbalbo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Rafał Bieryt (wuzimuuu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Enayat Kh (cooldude04enayat)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="CodePLeX Dev (codeplexdev)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Atul anand (bunnytherocker)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Aron1234"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Adel (AdelmohamedzAz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Alberta Sun (tvozjiboh)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh,zh" />
+        <translator
+            name="Sannita"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Đào Minh Tuệ (dmtue04tnd)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="Команда Платинум (sonicfanboy2710)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="itmsak"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ja,de" />
+        <translator
+            name="Marius D (swinnaiscool)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="pedrof1991"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="J.Philippe (wokija)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="mustafa. (musoter)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="FanKXXD"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Burak Dede (TheNexus)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Cicero Ivanilton Silva Santos (silvaivanilto)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Zepp (ZeppLu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Ramiro López Baigorria (ramirolb)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Valerio (Valerio27)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="iwant el gladys (indiez26)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Ireneusz Chorosz (ichorosz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Dietrix"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk,ru" />
+        <translator
+            name="kostas ntamadakis (kostasntamas)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+        <translator
+            name="Julian David Lopez Correa (julxorian)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="artnas"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="入土触须 (mengjing923wqfl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Raghav Joshi (raghavjoshi079)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="af,hi" />
+        <translator
+            name="Rancher"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="4PERTURE"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Dennis Janssen (dennisjanssen)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Lucas Daniel (LucasD.)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="BCP"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca,es" />
+        <translator
+            name="wyjek"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="aohandreiFL"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ro" />
+        <translator
+            name="chenjunyu19"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Antonio Forcina (antonio-forcina)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="intelligentcasanova"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="fonix232"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="Hebők András (HebokAndras)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="Joaquin Origlia (jiotv.97)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="PeterPaulBron"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Jeet Parab (jeetparab0)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Pakkito403 (Pakkito403) (franciscosancheztrabajos)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Jounis Bazwiti (younis12c)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Wayne890309"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Benjamin Mikkelsen (Drsela)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="Andreas Knoben (andreasknoben)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Sergi Parra (t3m1X)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Sim4"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+        <translator
+            name="Wang Mation (wangmation)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="jaffarfareed9"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Alexandre Duarte (alexandrecgduarte)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="abacate123"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Ale12"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Torgoo_"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="HelliosDarkline"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="toniolol"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Santi (SantiLlompart)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es,ca" />
+        <translator
+            name="DeletedAccount"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="speymolt"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Christian Bilevits (chrillebile)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="Francisco Sánchez (drivelinemusicproductions)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="susemano"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Daniel A. (dannylp111)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="MKAdam (If.you.know.better.than.me.do.it.If.not.shut.up)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="evogp"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="locx (locxFIN)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fi" />
+        <translator
+            name="Bruno Gonçalves (barletta)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Andy Gatto (gattoandy9)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Богдан Будаев (bogdanturbo793)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Cenkay KESER (Cenkay)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Maiswa"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Максим Булов (maxbulov)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Joseph Knight (JosephDarKnight)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Tostapunk"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Bharata Gangga (bharataganggakrishnayudha)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="marcelo santos (picinin.marcelo21)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="David Sn (divadsn)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de,pl" />
+        <translator
+            name="clement2e"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="m4xsun"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="Carlos Alberto Ramos Domiciano (crlsrd123)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca,pt" />
+        <translator
+            name="imchuck"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Abdullah Ahmed (3bdulla7.2000)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Youssef Elmajbri (youssefelmajbri)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar,fr" />
+        <translator
+            name="Miroslav Alkhimovich (akzen)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Woland (ProfessorWoland)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="Renzo Sparta (exequiel0210)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="jerrygo2"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="Mathias Privat (mathiasprivat12)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="chu121su12"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Paul Rakleed (rakleed)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Lucas Natero (lnatero0)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="bicodegas"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Mario Consalvo (marioconsalvo1)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="marhtroehcuela"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Kostyan_nsk"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Jorge da Silva (jorgesilva859)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="ali demirtas (alidemirtas)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="haseoxth"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh,zh" />
+        <translator
+            name="gengyj16"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="h_amak"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Mayank Nagpal (mayanknagpal.nm)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Willet1978"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Igor Stanisic (igor.p.stanisic)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="elyashiv_sabach"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Rasa Kateb (amirrasa.kateb)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fa" />
+        <translator
+            name="sauihdik"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fi" />
+        <translator
+            name="bomba6"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Beatriz E. López Solache (bea.solache)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="paranthaba"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Josep Sala (josepsalabaldoma)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Angelo Rellini (arellini)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Marco Marinho (marcomarinho12)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Piotr (shivverpl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Carlos Perales Ayala (carlosperalesa)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="thomasginn"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Igor Radichi (igorradichi)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Edi Misiak (misiakadrian)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Jerin J (jerinvathikulam)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="DebK S (Dev) (debsinha03)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Leonardo González (leorules.juarez4)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Daniel Rocha (danroc)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt,fr" />
+        <translator
+            name="syed abuthahir (syed.abuthahir.75470)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Johan Alsøe (johan.alsoe)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="Ilya Bokov (bokov.yoyo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Zé Esquecido (belas.gameplays2)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="carlenco"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Sanket Ramesh Naik (sankie4u)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Flavio sandoval (flavio.dajesa)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Jorge Abel (JorgeAbel)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="pblomeza"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Sai Inguva (saigamespace3)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Alexandru 2000 (amarius2000)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ro" />
+        <translator
+            name="Cheng Lüüü (cheng.rivulet)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Tomyx_13"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Marius (vallasmarius)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="sp3nc3r (andribonetti)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Lucas Selli (lucas.selli.ls)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Víctor Moreno Marín (vmorenomarin)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="shadow20012"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Mara95"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="abhinav13 (Abhinavgupta371)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Ayman Halawa (aymahalawa)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Volodymyr Zhdanov (wight554)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Ryti (jimg923)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Andrew091299"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk" />
+        <translator
+            name="hydargos 123 (hydargos123)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Mehrshad Shafaghi Omam (mehrshad_shafaghi)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fa" />
+        <translator
+            name="Musthaq Ahamad (haxzie)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="small7178"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="Guillemot Moussu (guillemot.moussu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Pravin Ramana (pravinramana25)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Bruno Oliveira (brunodeoliveiratr)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="hositozi"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fa" />
+        <translator
+            name="Elias Idänheimo (eliasidanheimo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fi" />
+        <translator
+            name="Amedeo Caramazza (Amedeo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Mariusz Purwin (00raq00)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Martin Stemplinger (mstempl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Looop"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="b0rgsen"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="LPW 00 (lukas00nfs)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Dmitry Demin (dmitrymolko)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Alan Laiter (alan.laiter)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="K.K. Slaughter 2070 (year2000kx)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Yuly Nesterov (inpr1se.mail)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="ZeroSimple"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="El Dainosor (ElDainosor)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Pratik.P. Patil (pratik.p.patil1999)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Fran Soto (franrsq)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Daniel De León Bastidas (daniel.de.leonrap)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Nosophoros"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="ℳιуα (Miyaku)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id,zh" />
+        <translator
+            name="Faizan Ahmad Khan (fakku_inzsasz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Sagar Gaur (gaursagar21)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Kartikeya Prasad (kartikeya.prasad93)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Harsh Shandilya (MSF-Jarvis)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Rafael Álvarez Olivera (rafaelalvarezqro)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="granbom"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="j144df"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Setiawan Yuki (setiawan.yuki10)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Богдан (bogdan1995)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="kR (krkkPL)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Jorge Pedrero (Tryskel) (jorgepedrero)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Kikemotions"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es,pt" />
+        <translator
+            name="Jan Honsberg (jhonsberg)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="akino.amer"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Max1024"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk" />
+        <translator
+            name="Mads Moth Jensen (m.moth)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="Saksham Barsaiyan (sakshambarsaiyan25)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Queentus Redfield (Queentus)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Ashutosh Sundresh (ashutoshsundresh)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="no,ta" />
+        <translator
+            name="Piotr Migocki (migockipiotr)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="jdranzer"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Cryng Wolf (cryngwolf)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Vinesh Iyappan (Vinesh)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="Daniel Pinto (danielpinto)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="untaldanny"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Edgar Albalate Ibañez (devgar)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca,es" />
+        <translator
+            name="Loustik"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Mamiglia"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="r3djok3r1"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Abhijeet Bohra (notabhijeet)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="romaryu"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Hiếu Lê (hieuck1996)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="LeeGang2000"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Matteus Legat (MatLegat)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="PuCiNhOOO"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Simon Shi (simonsmh)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="guz"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="ZK-SuaVitel"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="adrian1234a"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="DH O (hoon6821g)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="Ravindra Thoriya (ravithoria)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="midi1996"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Tommaso Bolzoni (themichi00)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="a789ha"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Tadu"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Leonid Melyoshin (leon0399)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="إبراهيم الاسماعيل (ahmedalismaeil)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Sebastiano Licciardello (loleren97)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Konstantin Kruglov (kkruglov)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Robson Silva Dos Anjos (robsonsilvadosanjos)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Wilmer Alzate (waar19)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="武帅宾 (cubinwu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Alessandro Dias Batista (falsificador.adb)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Hữu Huy Lê (huyaries05)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="vi" />
+        <translator
+            name="Garfield78"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Yut Ki Heung (alanpo55.rt)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Marcel Alexandru (alexandrumarcel)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ro" />
+        <translator
+            name="Herlin Lozano Villamar (fabian_96)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="iconteral"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Ariel Rakhamimov (arielr550)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Nicolas Mariniello (nicolasmariniello)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="錢玟弘 (lspss9609501)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Abid (abid.belkaid)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="XNJ4 (gaetan62950)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Sri Sandeep (sandyorton7)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="David Villalba (dvizkierdo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Павел Крысенко (p.krysenko)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Hen Ry (Henry2o1o)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Shoaib Shah (shoaibshah575)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Rommyke"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Иван Иванов (ivankk0q)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Necdet Ali Özdür (necdetaliozdur)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="mohit tank (tankmohit11)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="János Erkli (erklijani0521)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="SettlerSW"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="MisakaLPHa (SCPaLPHa)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Артём Лабазов (ab123321)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Manuel Inilo Ramírez (manuelinilo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Martin Chrástek (Martin005)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="cs" />
+        <translator
+            name="Tobias K. (netusermania)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Keerten Kakria (keertenk)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Ali Fang (chsqwyx)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Michel Pinquier (mpinquier)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Sanchay Kumar Gupta (sanchaykumargupta)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Chuyao"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="TuAndroTecno (anderap_8)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="itaysonlab"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Damobaigan"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="sladkOy"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Aniol Juanola (anjuanolavil)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="José Martínez (josemartinezcarvajal39)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Yaşar Tuna Zorlu (TunaKhan)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Muhammad Fawwaz Orabi (mfawwaz93)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="sk8higher"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Alan Jonathan Velasco (mcnigth_)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Siddharth Jadav (siddharthjdv944)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Emirhan02"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Jie Lin (linjie997)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="fabulation (spoutnik_bleu)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Jaydev Desai (jaydevdesai15)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="reneantoniotg"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Szabolcs Horváth (szabolcs.horvath)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="BoxDox"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Rheno1080"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="trzpro (emosemir1907)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Давид Мамедов (mamedov1081)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="セレナ！ (SMAR73X)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="chepui"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="John Economou (hsoc)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+        <translator
+            name="NinjaCat"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Poussinou"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Jan-Philipp Ottmüller (jpJuni0r)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Adrian.Renteria.Robledo"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Dmitrijs Ņevskis (nevskis)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Flippy Mann (eismond)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="piferal"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Patrick Garcia Ibañez (pagaiba.97)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Marc Ràfols Ibáñez (Ichtaina)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Alessandro Caputo (alecaputo97)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Nicolai Winther (nicolai.a.winther)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="SinnloserTyp (drache101101)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="zalan.nemeth (zazi)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hu" />
+        <translator
+            name="zangoq"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Gemerfoxy Ichiro (mdigreget)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="David Slawotsky (slawotsky)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Kuba Wojciechowski (nullbytepl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Yagami Lite (rey290197)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Krzysztof R (k.rajca94)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Benjamin Vigier (tuxfre)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Mr.Chun (saggit)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Cristóbal Aguilera (cristobal.aguilera094)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Ahmad Yahya (zahray0d)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ar" />
+        <translator
+            name="Adrián Escolano Martín (escolano.adrian)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Siddharth Mishra (siddharthdhananjai)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Golge Adam (KuzeydekiBuyucu) (bunyamink99)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Sándør Shumakøff (kain.razierus)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Morshedul Alam (morshedintouch)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Victor Chistov (april435)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Andrew Grishaev (isibandrey)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Sven Müller (smueller177)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Kilian Gozalbo (reykilibo)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Noah Oxer (blueshuk2)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="srishti (srishag)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Rkraghav"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Leonardo Amaral (pqatsi)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Àlvar Mercadé Ibáñez (alvarm)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="baddaysequence"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Leobardo A. Diaz Ruiz (Nekrotl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Nathan Adamczuk (nathangato72)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Rodrigo Mescua (rodrigo.mescua)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Vinicius Krebs (vinikrebs)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="VadKo"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Vibhanshu Upadhyay (vibhanshuranjanupadhyay)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="franco.silva.71 (FSilva1998)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Bethesda (titanz1000gb)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Shivam Gupta (thewiseguyshivam)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="sh0w0ffin"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Diego Ariel Esposito (lobitosfe)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Varun Jamwal (varunjamwal007)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Jesús de la Higuera Cuesta (TheJedeX)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="sOUTHX"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Paul Herrmann (shisaya24)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="DatInnovator (datinnovator)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ja" />
+        <translator
+            name="Nikolas Eduardo Lopez (nlopez.1995)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="murasakiookamiryuu (rairakku-shoku)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Антон Райв (bezpredel134)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Emon Egleh (emonegleh)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Ataberk Özen (MacTavishOT)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="HELPR"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fi" />
+        <translator
+            name="Daniel Gava (danielgava1)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Harsh V23 (yoyoharshking)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="SecondThundeR (vladgrom2206.com)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="MikeWortin"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk" />
+        <translator
+            name="joao garces (joaogarces1235)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Adolfo Fd Dz (adolfofd)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Synthetic20"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Erik Rodrigo Pech Espinosa (erikespinosa33)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Krystian Kamil Grupa (kriixone)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Jordy (Jordy19)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="marklocci"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Atila Vizi (Zomby1977)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="Даниил Чулков (biqdan)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Frank Hernandez (franciscohdez93)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Matthew Hon Jun Yoon (joanchoo2201)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Данил Кирницкий (technodanila)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Dhruv Saxena (dhruvsaaaxena.1998)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Padmanabh Rawal (pdmnbhrawal)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Matheus Oliveira (mathbaliver)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Luis Rojo (darksidecorrales)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="cesar martinez villanueva (cesarmttz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="smk23"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Rawi666"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Michal “Bedami” Bedáň (Ebedami)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="cs" />
+        <translator
+            name="張剛益 (po660717ke)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="__void__main"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="ฟี ครับ (hanafee353)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Гриша Федоров (epandadrifter)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Marcello Travaini (ciorkino)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Troy Lutz (troylutz1970)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Christian de la Cruz (chrisdlc119)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Playhi"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="lordjbs"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="da" />
+        <translator
+            name="Zeca José (Zecajose)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Oliwer Suchy (OliwerOlekSuch) (moko.oliwa)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Rodrigo Martínez (DqrKn3Zz) (rear097)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Thiago Blera (thiagoblera)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Cesar Enrique Etchevarne (etchevarnecesar)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Michael Mior (michaelmior)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Дима Тенсей (dimatensei)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="uk" />
+        <translator
+            name="Антон Курилов (anton0kurilov)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Shrikrishna Joisa (kitty_jois)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="JulesBertolino"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Carlos Santos (icarlos2u)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Örjan skärberg (Ojje_)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sv" />
+        <translator
+            name="leibale1998"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="KingJonSnow 8216 (lucas46191)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="陳翰慶 (frank460699)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="张张成 (zhang20010924)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Maximiliano Schimmel (maxi.schimmel)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="zhishen CHM (chmzhishen)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="ps1ove"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Shuli Hershberg (shulius81)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="malnomalno"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="persi-persu"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Tirawaver"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="ㅤㅤㅤ ㅤㅤㅤ   ஈஜிலின் (Egeline_Thurai)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ta" />
+        <translator
+            name="hellomc"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Geoffrey.R Hsu (NovaDNG)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Itai Pendler (itaipendler123456)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Silvio Jahnke (fivo86)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="n4rc0s"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Álvaro Laguna García (alvaroazul123)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Chen Keriteal (keriteal985)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="SrSands"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="MehmetNadir"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Álvaro Miguieles Lechenbauer (amiguielesl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Jeffrey van de Velde (DeadPeople)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Борислав Ландик (borislavlandik00)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Luana Ramos (fluana094)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="jcmeliton"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="bluemeda"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="victorgrimaldo"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Junior Zancan (JRZancan)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="paletta (palettawebmind)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="José Rafael Carrero León (josercl)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Lumiq Creative (LumiqCreative)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Andrew Botalov (andrewbotalov80)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Егор Куковеров (egorxxx29)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Edmar Junior (guetron)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Quentin Igier (quentinomino)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="PN_Rus"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Sanchith Hegde (SanchithHegde)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="José Flávio Sobreira (jfsobreira)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Ysongh"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Tom Br (binderinholz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Bartek Orkiszewski (Baskey)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Nicolás Danelón (nicolasdanelon)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Иван Иванко (idenis013)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="webartisan"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Matteo Filisina (matteofilisina)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="RaSenal kiko (CyengineKiko)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Luca g (lucagoemans)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="james18210"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Julio Alberto García (Yllelder)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Avinia The Huntress (TheAvinia)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="Philip de Bruin (phlpdbrn)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="nl" />
+        <translator
+            name="Ian Barrera (Ian_Barrera)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Abhay Ruparel (abhayruparel2000)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Joaquín Ignacio Aramendía (Samsagax)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Galang Wicaksono (boomblebee)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="id" />
+        <translator
+            name="Heccel Arenas (Nikogta2013)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="xhanzx"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Vikalp Gandha (vikalp.gandha34)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="hi" />
+        <translator
+            name="Carsten Rebbien (rebbien)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Jérémie Walter (jeremie.walter)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Fábio Ferreira (fabiogasparferreira)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Lorenzo Alinari (zampa03)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="alan león (alan.leon.gutierrez)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Christian Collado (christiancolladoruiz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Óscar Fernández Díaz (oscarferdiclase)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Pshemo K (1847harp)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Fabrício Furiatti (fabriciofuriatti)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Andrey (Damanox)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Daniel Wieczorek (Kennyluz)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pl" />
+        <translator
+            name="Dylan Dll (dylanpartemi)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Alain Danteny (adanteny)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="khan WuDeng (twobladessword)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Leandro F. Sanchez (fabian.leandro94)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="윤정민 (lego37yoon)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="조현지 (guswl032548)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ko" />
+        <translator
+            name="hawkblue"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Nikos Chrisoulis (nikchris)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+        <translator
+            name="Nico Franke (ZerNico)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="minuteman"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Eudald Puy Polls (eudaldpuypolls)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ca" />
+        <translator
+            name="Hüseyin Soylu (hsoyluu34)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="tr" />
+        <translator
+            name="Oriol Deiros (estision)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="André Cerqueira (acerqueira021)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Laba Biba (lababiba1)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="gershik"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="nolt ssj (nolt.ssj)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="marto28"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru,de" />
+        <translator
+            name="mesnevi"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Christoph Loy (beatbrot)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Kaydan “Cempy” Chou (blageur83)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="fr" />
+        <translator
+            name="Ariel Parra (willpavi16)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="David Martinez Bardon (davidmb60)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Brazil-pt-br"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="Depressive Depressions (johann.sandoval78)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Goloso98"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="pt" />
+        <translator
+            name="ZenoLabs"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="it" />
+        <translator
+            name="Andrey Sitnikov (exakt)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de,ru" />
+        <translator
+            name="Ara Mendez (ooskarargueta08)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Edgar Cooper (feels2797)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="ru" />
+        <translator
+            name="Namefhf"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="dthulke"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="de" />
+        <translator
+            name="Hadar “Hadi Gretshel” Gotshal (gohadar)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="he" />
+        <translator
+            name="Franco Silva (franco98silva)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="Edgar Albalate Ibañez (gardorko)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="saltana"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="blue-dogerino"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="sr" />
+        <translator
+            name="Gerardo Herrera Diaz (GerardoHD)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="es" />
+        <translator
+            name="王继平 (wangjiping1997)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="zh" />
+        <translator
+            name="Αλεξανδρος Καν (alekooooos)"
+            avatar="https://i2.wp.com/crowdin.com/images/user-picture.png"
+            locales="el" />
+    </translators>
     <licenses>
         <project repo="KwabenBerko/OpenWeatherMap-Android-Library" />
         <project
