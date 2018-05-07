@@ -12,4 +12,16 @@
         android:title="@string/dock_colored_google"
         android:defaultValue="false"
         android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_hotseatShowArrow"
+        android:title="@string/hotseat_show_arrow"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_hotseatShowPageIndicator"
+        android:title="@string/hotseat_show_page_indicator"
+        android:defaultValue="true"
+        android:persistent="true" />
 </PreferenceScreen>

@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -60,7 +59,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private int mTotalScroll;
     private Paint mLinePaint;
     private Launcher mLauncher;
-    private final int mLineHeight;
+    private int mLineHeight;
     private ImageView mAllAppsHandle;
 
     private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
@@ -123,12 +122,11 @@ public class PageIndicatorLineCaret extends PageIndicator {
     public PageIndicatorLineCaret(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        Resources res = context.getResources();
         mLinePaint = new Paint();
         mLinePaint.setAlpha(0);
 
         mLauncher = Launcher.getLauncher(context);
-        mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+        updateLineHeight();
         setCaretDrawable(new CaretDrawable(context));
 
         boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
@@ -284,5 +282,14 @@ public class PageIndicatorLineCaret extends PageIndicator {
         });
         mAnimators[animatorIndex].setDuration(LINE_ANIMATE_DURATION);
         mAnimators[animatorIndex].start();
+    }
+
+    public void updateLineHeight() {
+        if (Utilities.getLawnchairPrefs(getContext()).getDockShowPageIndicator()) {
+            mLineHeight = getContext().getResources().getDimensionPixelSize(
+                    R.dimen.dynamic_grid_page_indicator_line_height);
+        } else {
+            mLineHeight = 0;
+        }
     }
 }

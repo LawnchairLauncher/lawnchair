@@ -370,7 +370,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, 0);
         }
-        mCaretController.setHidden(FeatureFlags.LAUNCHER3_P_ALL_APPS && !verticalBarLayout);
+        mCaretController.setHidden(!Utilities.getLawnchairPrefs(mLauncher)
+                .getDockShowArrow() && !verticalBarLayout);
         mCaretController.setForceDark(verticalBarLayout && forceChange && !mIsDarkTheme);
     }
 

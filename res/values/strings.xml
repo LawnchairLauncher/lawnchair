@@ -428,4 +428,6 @@
     <string name="blur_radius_pref_title">Blur amount</string>
     <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resolution could possibly fix this.</string>
     <string name="dock_colored_google">Use colored Google icon</string>
+    <string name="hotseat_show_arrow">Show arrow</string>
+    <string name="hotseat_show_page_indicator">Show page indicator</string>
 </resources>

@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair
 
 import com.android.launcher3.Launcher
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.pageindicators.PageIndicatorLineCaret
 
 class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
 
@@ -27,5 +28,16 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
 
     fun updateBlur() {
         launcher.blurWallpaperProvider.updateAsync()
+    }
+
+    fun resetAllApps() {
+        launcher.mAllAppsController.progress = 1f
+    }
+
+    fun updatePageIndicator() {
+        val indicator = launcher.workspace.pageIndicator
+        if (indicator is PageIndicatorLineCaret) {
+            indicator.updateLineHeight()
+        }
     }
 }

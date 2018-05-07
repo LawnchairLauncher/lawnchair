@@ -68,6 +68,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
     val dockSearchBar = true
+    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, { onChangeCallback?.resetAllApps() })
+    val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
