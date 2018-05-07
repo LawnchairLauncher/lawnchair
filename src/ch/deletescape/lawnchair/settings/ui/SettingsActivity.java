@@ -92,9 +92,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
+        int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
+        isSubSettings = content != 0;
         if (savedInstanceState == null) {
-            int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
-            isSubSettings = content != 0;
             Fragment fragment = content != 0
                     ? SubSettingsFragment.newInstance(getIntent())
                     : new LauncherSettingsFragment();
