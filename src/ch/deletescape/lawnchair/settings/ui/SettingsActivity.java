@@ -82,6 +82,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     private LawnchairPreferences sharedPrefs;
     private int mAppBarHeight;
+    private boolean isSubSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +93,14 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
         if (savedInstanceState == null) {
+            int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
+            isSubSettings = content != 0;
+            Fragment fragment = content != 0
+                    ? SubSettingsFragment.newInstance(getIntent())
+                    : new LauncherSettingsFragment();
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content, new LauncherSettingsFragment())
+                    .replace(R.id.content, fragment)
                     .commit();
         }
 
@@ -106,6 +112,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
+        if (preference instanceof SubPreference) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra(SubSettingsFragment.TITLE, preference.getTitle());
+            intent.putExtra(SubSettingsFragment.CONTENT_RES_ID, ((SubPreference) preference).getContent());
+            startActivity(intent);
+            return true;
+        }
         Fragment fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         if (fragment instanceof DialogFragment) {
             ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
@@ -121,7 +134,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     }
 
     private void updateUpButton() {
-        updateUpButton(getSupportFragmentManager().getBackStackEntryCount() != 0);
+        updateUpButton(isSubSettings || getSupportFragmentManager().getBackStackEntryCount() != 0);
     }
 
     private void updateUpButton(boolean enabled) {
@@ -354,6 +367,15 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             Bundle b = new Bundle(2);
             b.putString(TITLE, (String) preference.getTitle());
             b.putInt(CONTENT_RES_ID, preference.getContent());
+            fragment.setArguments(b);
+            return fragment;
+        }
+
+        public static SubSettingsFragment newInstance(Intent intent) {
+            SubSettingsFragment fragment = new SubSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, intent.getStringExtra(TITLE));
+            b.putInt(CONTENT_RES_ID, intent.getIntExtra(CONTENT_RES_ID, 0));
             fragment.setArguments(b);
             return fragment;
         }
