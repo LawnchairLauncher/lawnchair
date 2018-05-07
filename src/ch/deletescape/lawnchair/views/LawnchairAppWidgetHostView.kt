@@ -80,7 +80,10 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
                     firstText = false
                     dateFormat = IcuDateTextView.getDateFormat(context, false, null)
                     if (dateFormat != null) {
-                        v.text = dateFormat?.format(System.currentTimeMillis())
+                        val text = dateFormat?.format(System.currentTimeMillis())
+                        if (v.text != text) {
+                            v.text = text
+                        }
                     }
                 }
                 v.typeface = typeface
