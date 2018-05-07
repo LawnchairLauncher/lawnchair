@@ -430,4 +430,5 @@
     <string name="dock_colored_google">Use colored Google icon</string>
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
+    <string name="hotseat_p_style">P style dock</string>
 </resources>

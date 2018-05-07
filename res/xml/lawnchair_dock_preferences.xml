@@ -2,8 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        android:key="pref_dockPStyle"
+        android:title="@string/hotseat_p_style"
+        android:defaultValue="true"
+        android:persistent="true"
+        android:disableDependentsState="true" />
+
+    <SwitchPreference
         android:key="pref_hideDockGradient"
         android:title="@string/hide_dock_gradient"
+        android:dependency="pref_dockPStyle"
         android:defaultValue="false"
         android:persistent="true" />
 

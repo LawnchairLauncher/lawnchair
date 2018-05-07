@@ -150,6 +150,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 
@@ -386,10 +387,15 @@ public class Launcher extends BaseActivity
         wallpaperColorInfo.setOnThemeChangeListener(this);
         overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
 
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
+        boolean pStyleDock = prefs.getDockPStyle();
+        FeatureFlags.LAUNCHER3_P_ALL_APPS = pStyleDock;
+        FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS = !pStyleDock;
+
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
-        Utilities.getLawnchairPrefs(this).getGridSize();
+        prefs.getGridSize();
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);

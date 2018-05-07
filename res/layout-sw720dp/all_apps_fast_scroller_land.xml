@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge>
+    <include layout="@layout/all_apps_fast_scroller" />
+</merge>

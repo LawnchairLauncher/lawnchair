@@ -70,6 +70,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockSearchBar = true
     val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, { onChangeCallback?.resetAllApps() })
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
+    val dockPStyle by BooleanPref("pref_dockPStyle", true, recreate)
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)

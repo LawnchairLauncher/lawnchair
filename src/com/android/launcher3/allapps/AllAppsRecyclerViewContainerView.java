@@ -16,8 +16,10 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -28,6 +30,7 @@ import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * A container for RecyclerView to allow for the click shadow view to be shown behind an icon that
@@ -69,5 +72,17 @@ public class AllAppsRecyclerViewContainerView extends RelativeLayout
             mTouchFeedbackView.alignWithIconView(icon, (ViewGroup) icon.getParent(), rv);
             mTouchFeedbackView.animateShadow();
         }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        int scroller = R.layout.all_apps_fast_scroller;
+        if (getContext().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE && !FeatureFlags.LAUNCHER3_P_ALL_APPS) {
+            scroller = R.layout.all_apps_fast_scroller_land;
+        }
+        LayoutInflater.from(getContext()).inflate(scroller, this);
     }
 }
