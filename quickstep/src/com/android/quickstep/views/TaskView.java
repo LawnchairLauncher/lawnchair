@@ -213,6 +213,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         setTranslationY(0f);
         setTranslationZ(0);
         setAlpha(1f);
+        setIconScaleAndDim(1);
     }
 
     @Override

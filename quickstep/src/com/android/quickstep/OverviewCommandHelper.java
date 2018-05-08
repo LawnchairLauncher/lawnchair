@@ -267,7 +267,7 @@ public class OverviewCommandHelper {
             }
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
-            mRecentsView.setFirstTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+            mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
             return false;
         }
 
@@ -280,7 +280,7 @@ public class OverviewCommandHelper {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     if (mRecentsView != null) {
-                        mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */,
+                        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */,
                                 true /* animate */);
                     }
                 }
