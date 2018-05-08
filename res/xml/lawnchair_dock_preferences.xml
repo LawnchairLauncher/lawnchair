@@ -8,6 +8,15 @@
         android:persistent="true"
         android:disableDependentsState="true" />
 
+    <ListPreference
+        android:key="pref_dockStyle"
+        android:title="@string/dock_style_pref_title"
+        android:summary="%s"
+        android:entries="@array/dockStyles"
+        android:entryValues="@array/dockStyleValues"
+        android:defaultValue="3"
+        android:persistent="true" />
+
     <SwitchPreference
         android:key="pref_hideDockGradient"
         android:title="@string/hide_dock_gradient"
@@ -16,8 +25,15 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_dockSearchBar"
+        android:title="@string/dock_search_bar"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_dockColoredGoogle"
         android:title="@string/dock_colored_google"
+        android:dependency="pref_dockSearchBar"
         android:defaultValue="false"
         android:persistent="true" />
 

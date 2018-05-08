@@ -385,12 +385,15 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.preOnCreate();
         }
 
-        ThemeManager.Companion.getInstance(this).addOverride(new ThemeOverride.Launcher(this));
-
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
-        boolean pStyleDock = prefs.getDockPStyle();
-        FeatureFlags.LAUNCHER3_P_ALL_APPS = pStyleDock;
-        FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS = !pStyleDock;
+
+        boolean dockSearchBar = prefs.getDockSearchBar();
+        ThemeManager.Companion.getInstance(this).addOverride(
+                dockSearchBar ? new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this));
+
+        boolean gradientStyleDock = prefs.getDockGradientStyle();
+        FeatureFlags.LAUNCHER3_P_ALL_APPS = !gradientStyleDock;
+        FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS = gradientStyleDock;
 
         super.onCreate(savedInstanceState);
 

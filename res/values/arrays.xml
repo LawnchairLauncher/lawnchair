@@ -17,4 +17,16 @@
         <item>4</item>
         <item>12</item>
     </string-array>
+
+    <string-array name="dockStyles">
+        <item>@string/dock_style_p</item>
+        <item>@string/dock_style_o</item>
+        <item>@string/dock_style_n</item>
+    </string-array>
+
+    <string-array name="dockStyleValues">
+        <item>3</item>
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 </resources>

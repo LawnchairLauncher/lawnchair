@@ -40,8 +40,9 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private val mDrawRect = Rect()
     private val mPadding = Rect()
     private val mInsets = Rect()
+    private val mRounded by lazy { Utilities.getLawnchairPrefs(context).dockRoundedCorners }
     private val mShadowHelper by lazy { NinePatchDrawHelper() }
-    private val mRadius by lazy { resources.getDimension(R.dimen.all_apps_scrim_radius) }
+    private val mRadius by lazy { if (mRounded) resources.getDimension(R.dimen.all_apps_scrim_radius) else 0f }
     private val mShadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
     private val mDrawMargin by lazy { mRadius + mShadowBlur }
     private val mDeviceProfile by lazy { Launcher.getLauncher(context).deviceProfile }
@@ -111,23 +112,24 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
                 setBounds(mPadding.left, height.toInt(), width.toInt(), (getHeight().toFloat() + mRadius).toInt())
                 draw(canvas)
             }
-            if (mPadding.left <= 0 && mPadding.right <= 0) {
-                mShadowHelper.draw(mShadowBitmap, canvas, mPadding.left.toFloat() - mShadowBlur, height - mShadowBlur, width + mShadowBlur)
-                canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
-            } else {
-                val f = mPadding.left.toFloat() - mShadowBlur
-                val f2 = height - mShadowBlur
-                val f3 = mShadowBlur + width
-                val height2 = getHeight().toFloat()
-                mShadowHelper.draw(mShadowBitmap, canvas, f, f2, f3)
-                val height3 = mShadowBitmap.height
-                mShadowHelper.mSrc.top = height3 - 5
-                mShadowHelper.mSrc.bottom = height3
-                mShadowHelper.mDst.top = f2 + height3.toFloat()
-                mShadowHelper.mDst.bottom = height2
-                mShadowHelper.draw3Patch(mShadowBitmap, canvas, f, f3)
-                canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
+            if (mRounded) {
+                if (mPadding.left <= 0 && mPadding.right <= 0) {
+                    mShadowHelper.draw(mShadowBitmap, canvas, mPadding.left.toFloat() - mShadowBlur, height - mShadowBlur, width + mShadowBlur)
+                } else {
+                    val f = mPadding.left.toFloat() - mShadowBlur
+                    val f2 = height - mShadowBlur
+                    val f3 = mShadowBlur + width
+                    val height2 = getHeight().toFloat()
+                    mShadowHelper.draw(mShadowBitmap, canvas, f, f2, f3)
+                    val height3 = mShadowBitmap.height
+                    mShadowHelper.mSrc.top = height3 - 5
+                    mShadowHelper.mSrc.bottom = height3
+                    mShadowHelper.mDst.top = f2 + height3.toFloat()
+                    mShadowHelper.mDst.bottom = height2
+                    mShadowHelper.draw3Patch(mShadowBitmap, canvas, f, f3)
+                }
             }
+            canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
         } else {
             blurDrawable?.draw(canvas)
             super.onDraw(canvas)
@@ -151,7 +153,8 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             mDrawHeight = 0f
         } else {
             mPadding.setEmpty()
-            mDrawHeight = getHotseatHeight(insets).toFloat() + resources.getDimension(R.dimen.all_apps_scrim_margin)
+            mDrawHeight = getHotseatHeight(insets).toFloat()
+            if (mRounded) mDrawHeight += resources.getDimension(R.dimen.all_apps_scrim_margin)
         }
         updateDrawRect(mDeviceProfile)
         invalidate()

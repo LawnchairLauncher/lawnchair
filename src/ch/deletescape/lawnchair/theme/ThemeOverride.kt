@@ -48,6 +48,14 @@ abstract class ThemeOverride(val activity: Activity) {
 
     class Launcher(activity: Activity) : ThemeOverride(activity) {
 
+        override val lightTheme = R.style.LauncherTheme
+        override val darkTextTheme = R.style.LauncherThemeDarkText
+        override val darkTheme = R.style.LauncherThemeDark
+        override val blackTheme = R.style.LauncherThemeBlack
+    }
+
+    class LauncherQsb(activity: Activity) : ThemeOverride(activity) {
+
         override val lightTheme = R.style.GoogleSearchLauncherTheme
         override val darkTextTheme = R.style.GoogleSearchLauncherThemeDarkText
         override val darkTheme = R.style.GoogleSearchLauncherThemeDark
