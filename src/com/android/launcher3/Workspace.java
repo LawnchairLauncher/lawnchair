@@ -75,8 +75,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.graphics.ViewScrim;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -279,9 +277,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
-
-        // Attach a scrim
-        new WorkspaceAndHotseatScrim(this).attach();
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
     }
 
@@ -2152,7 +2147,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         // Invalidating the scrim will also force this CellLayout
         // to be invalidated so that it is highlighted if necessary.
-        ViewScrim.get(this).invalidate();
+        mLauncher.getDragLayer().getScrim().invalidate();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {

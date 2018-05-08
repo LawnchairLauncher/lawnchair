@@ -27,6 +27,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -42,10 +44,12 @@ import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.ViewScrim;
+import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
@@ -77,6 +81,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
+    private final WorkspaceAndHotseatScrim mScrim;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -92,10 +97,16 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+        mScrim = new WorkspaceAndHotseatScrim(this);
     }
 
-    public void setup(DragController dragController) {
+    public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
+        mScrim.setWorkspace(workspace);
+        recreateControllers();
+    }
+
+    public void recreateControllers() {
         mControllers = UiFactory.createTouchControllers(mActivity);
     }
 
@@ -542,7 +553,24 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
+        mScrim.draw(canvas);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mScrim.setSize(w, h);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        mScrim.onInsetsChanged(insets);
+    }
+
+    public WorkspaceAndHotseatScrim getScrim() {
+        return mScrim;
     }
 }
