@@ -374,7 +374,18 @@ public class LauncherStateManager {
      */
     public void setCurrentAnimation(AnimatorSet anim, Animator... childAnimations) {
         for (Animator childAnim : childAnimations) {
-            if (childAnim != null && mConfig.mCurrentAnimation == childAnim) {
+            if (childAnim == null) {
+                continue;
+            }
+            if (mConfig.playbackController != null
+                    && mConfig.playbackController.getTarget() == childAnim) {
+                if (mConfig.mCurrentAnimation != null) {
+                    mConfig.mCurrentAnimation.removeListener(mConfig);
+                    mConfig.mCurrentAnimation = null;
+                }
+                mConfig.playbackController = null;
+                break;
+            } else if (mConfig.mCurrentAnimation == childAnim) {
                 mConfig.mCurrentAnimation.removeListener(mConfig);
                 mConfig.mCurrentAnimation = null;
                 break;
