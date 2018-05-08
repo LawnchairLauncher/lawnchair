@@ -45,6 +45,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
@@ -359,9 +361,7 @@ public class Launcher extends BaseDraggingActivity
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
             dispatchDeviceProfileChanged();
-
-            getRootView().dispatchInsets();
-            getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+            reapplyUi();
 
             // Recreate touch controllers
             mDragLayer.setup(mDragController);
@@ -376,6 +376,12 @@ public class Launcher extends BaseDraggingActivity
     }
 
     @Override
+    protected void reapplyUi() {
+        getRootView().dispatchInsets();
+        getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+    }
+
+    @Override
     public void rebindModel() {
         int currentPage = mWorkspace.getNextPage();
         if (mModel.startLoader(currentPage)) {
@@ -386,7 +392,14 @@ public class Launcher extends BaseDraggingActivity
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
-        setDeviceProfile(idp.getDeviceProfile(this));
+        mDeviceProfile = idp.getDeviceProfile(this);
+        if (isInMultiWindowModeCompat()) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point mwSize = new Point();
+            display.getSize(mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+        }
+        onDeviceProfileInitiated();
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout(), true);
     }
 
