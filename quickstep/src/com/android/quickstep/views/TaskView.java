@@ -30,14 +30,15 @@ import android.graphics.Outline;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.Log;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-
 import android.widget.Toast;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
@@ -76,12 +77,26 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
      */
     private static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
 
-    private static final long SCALE_ICON_DURATION = 120;
+    public static final long SCALE_ICON_DURATION = 120;
+
+    public static final Property<TaskView, Float> ZOOM_SCALE =
+            new FloatProperty<TaskView>("zoomScale") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setZoomScale(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mZoomScale;
+                }
+            };
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private IconView mIconView;
     private float mCurveScale;
+    private float mZoomScale;
     private float mCurveDimAlpha;
     private Animator mDimAlphaAnim;
 
@@ -207,8 +222,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     }
 
     public void resetVisualProperties() {
-        setScaleX(1f);
-        setScaleY(1f);
+        setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
@@ -226,9 +240,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             mSnapshotView.setDimAlpha(mCurveDimAlpha);
         }
 
-        mCurveScale = getCurveScaleForCurveInterpolation(curveInterpolation);
-        setScaleX(mCurveScale);
-        setScaleY(mCurveScale);
+        setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
     }
 
     @Override
@@ -247,8 +259,24 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
+    private void setCurveScale(float curveScale) {
+        mCurveScale = curveScale;
+        onScaleChanged();
+    }
+
     public float getCurveScale() {
         return mCurveScale;
+    }
+
+    public void setZoomScale(float adjacentScale) {
+        mZoomScale = adjacentScale;
+        onScaleChanged();
+    }
+
+    private void onScaleChanged() {
+        float scale = mCurveScale * mZoomScale;
+        setScaleX(scale);
+        setScaleY(scale);
     }
 
     @Override
