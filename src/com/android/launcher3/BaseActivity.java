@@ -213,19 +213,6 @@ public abstract class BaseActivity extends Activity {
         return mForceInvisible != 0;
     }
 
-    /**
-     * Sets the device profile, adjusting it accordingly in case of multi-window
-     */
-    protected void setDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
-        if (isInMultiWindowModeCompat()) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
-        }
-    }
-
     public interface MultiWindowModeChangedListener {
         void onMultiWindowModeChanged(boolean isInMultiWindowMode);
     }

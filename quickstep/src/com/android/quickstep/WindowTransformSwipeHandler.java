@@ -43,6 +43,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -541,6 +542,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             dp = dp.copy(mContext);
             dp.updateInsets(insets);
         }
+        dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
 
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);

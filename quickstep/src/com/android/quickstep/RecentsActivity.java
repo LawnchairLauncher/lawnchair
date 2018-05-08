@@ -121,6 +121,11 @@ public class RecentsActivity extends BaseDraggingActivity {
         dispatchDeviceProfileChanged();
 
         mRecentsRootView.setup();
+        reapplyUi();
+    }
+
+    @Override
+    protected void reapplyUi() {
         mRecentsRootView.dispatchInsets();
     }
 
@@ -140,6 +145,7 @@ public class RecentsActivity extends BaseDraggingActivity {
                     ? new InvariantDeviceProfile(this).getDeviceProfile(this)
                     : appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this);
         }
+        onDeviceProfileInitiated();
     }
 
     @Override
