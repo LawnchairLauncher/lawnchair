@@ -309,7 +309,6 @@
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
 
     <!-- About Lawnchair -->
-    <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
     <string name="about_title">About</string>
     <string name="about_pref_summary">Get to know about the Lawnchair team</string>
     <string name="changelog_title">Changelog for build #%d</string>
@@ -453,10 +452,6 @@
     <string name="animated_clock_icon_title">Animate clock icon</string>
     <string name="animated_clock_icon_alternative_clock_apps_title">Animate alternative clock apps</string>
     <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
-    <string name="about_summary_title">Summary</string>
-    <string name="about_version">Version</string>
-    <string name="about_icon_designer">App icon designer</string>
-    <string name="about_contributors_title">Contributors</string>
     <string name="location_permission_warn">Location permission is required to switch to another provider!</string>
     <string name="num_cols_drawer_pref_title">Number of columns in drawer</string>
     <string name="shortcut_backport_warning">This could be slow, use at your own risk</string>
@@ -474,7 +469,6 @@
     <!-- Time format for Weather Widget -->
     <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="about_translators">Translators</string>
     <string name="lock_desktop">Lock desktop</string>
     <string name="lawnfeed_not_found">Lawnfeed not installed</string>
     <string name="google_app_not_found">Google app not installed</string>
@@ -546,4 +540,36 @@
     <string name="pref_category_misc">Miscellaneous</string>
     <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resoultion could possibly fix this.</string>
     <string name="legacy_backup">Legacy backup file</string>
+
+    <!-- About screen -->
+
+    <string name="about_twitter" translatable="false">Twitter</string>
+    <string name="title_attribouter_licenses">Open Source Licenses</string>
+    <string name="title_attribouter_email">Email</string>
+    <string name="title_attribouter_website">Website</string>
+    <string name="title_attribouter_rate">Rate</string>
+    <string name="title_attribouter_version">Version %1$s</string>
+    <string name="title_attribouter_license">License</string>
+    <string name="title_attribouter_license_permissions">Permissions</string>
+    <string name="title_attribouter_license_conditions">Conditions</string>
+    <string name="title_attribouter_license_limitations">Limitations</string>
+    <string name="title_attribouter_more_info">More Info</string>
+    <string name="title_attribouter_translators">Translators</string>
+    <string name="about_our_team">Our team</string>
+    <string name="about_our_contributors">Our main contributors</string>
+    <string name="about_our_family">Our other family members</string>
+    <string name="about_role_lead">Lead Developer</string>
+    <string name="about_role_devops">DevOps</string>
+    <string name="about_role_dev">Developer</string>
+    <string name="about_role_dev_mod">Developer / Moderator</string>
+    <string name="about_role_designer">Designer</string>
+    <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+    <string name="about_role_mod_support">Moderator / Support</string>
+    <string name="about_role_family_member">Family Member</string>
+    <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
+    <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
+    <string name="about_bio_recoded">Mild coder and graphics designer.</string>
+    <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
+    <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 </resources>
