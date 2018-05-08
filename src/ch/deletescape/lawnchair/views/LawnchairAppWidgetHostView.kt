@@ -4,12 +4,17 @@ import android.annotation.TargetApi
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.icu.text.DateFormat
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.forEachChild
+import ch.deletescape.lawnchair.getBooleanAttr
+import ch.deletescape.lawnchair.getColorAttr
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppWidgetHostView
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
 
@@ -33,8 +38,12 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
 
     private var isSmartspace = false
     private var firstText = false
+    private var firstImage = false
     private var dateFormat: DateFormat? = null
     private val typeface by lazy { Utilities.getGoogleSans(context) }
+    private val textColor by lazy { context.getColorAttr(R.attr.workspaceTextColor) }
+    private val darkText by lazy { context.getBooleanAttr(R.attr.isWorkspaceDarkText) }
+    private val divider by lazy { ColorDrawable(textColor) }
 
     override fun setAppWidget(appWidgetId: Int, info: AppWidgetProviderInfo?) {
         super.setAppWidget(appWidgetId, info)
@@ -50,6 +59,7 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
     fun updateText() {
         if (isSmartspace) {
             firstText = true
+            firstImage = true
             forceProductSans(this)
         }
     }
@@ -87,6 +97,13 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
                     }
                 }
                 v.typeface = typeface
+                v.setTextColor(textColor)
+                if (darkText) v.setShadowLayer(0f, 0f, 0f, 0)
+            } else if (v is ImageView) {
+                if (firstImage) {
+                    firstImage = false
+                    v.setImageDrawable(divider)
+                }
             }
         }
     }
