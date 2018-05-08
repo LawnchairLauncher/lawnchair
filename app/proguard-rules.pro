@@ -71,6 +71,10 @@
   *;
 }
 
+-keep,allowshrinking,allowoptimization class me.jfenn.attribouter.** {
+ *;
+}
+
 -dontwarn javax.**
 -dontwarn org.codehaus.mojo.animal_sniffer.**
 
