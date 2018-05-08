@@ -41,6 +41,8 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             while (cursor.moveToNext()) {
                 componentList.mApps.add(AppSearchProvider.dl(Uri.parse(cursor.getString(suggestIntentData)), mContext));
             }
+        } catch (NullPointerException ignored) {
+
         } finally {
             if (cursor != null) {
                 cursor.close();

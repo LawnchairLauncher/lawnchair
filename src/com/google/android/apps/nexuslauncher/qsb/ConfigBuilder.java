@@ -191,6 +191,7 @@ public class ConfigBuilder {
         GridLayoutManager.SpanSizeLookup spanSizeLookup = ((GridLayoutManager) bX.getLayoutManager())
                 .getSpanSizeLookup();
         int i3 = Math.min(this.mActivity.getDeviceProfile().allAppsNumCols, bX.getChildCount());
+        int lastView = 0;
         int childCount = bX.getChildCount();
         BubbleTextView[] bubbleTextViewArr = new BubbleTextView[i3];
         int i4 = -1;
@@ -208,7 +209,9 @@ public class ConfigBuilder {
                         }
                     }
                     i4 = spanGroupIndex;
-                    bubbleTextViewArr[((GridLayoutManager.LayoutParams) childViewHolder.itemView.getLayoutParams()).getSpanIndex()] = (BubbleTextView) childViewHolder.itemView;
+                    int index = ((GridLayoutManager.LayoutParams) childViewHolder.itemView.getLayoutParams()).getSpanIndex();
+                    lastView = Math.max(lastView, index);
+                    bubbleTextViewArr[index] = (BubbleTextView) childViewHolder.itemView;
                 }
             }
         }
@@ -220,7 +223,7 @@ public class ConfigBuilder {
         this.cq = bubbleTextViewArr[0];
         this.cl.es = i3;
         this.co = bX.getChildViewHolder(bubbleTextViewArr[0]).getItemViewType() == 4;
-        a_search viewBounds = getViewBounds(bubbleTextViewArr[i3 - 1]);
+        a_search viewBounds = getViewBounds(bubbleTextViewArr[lastView]);
         a_search viewBounds2 = getViewBounds(bubbleTextViewArr[0]);
         if (Utilities.isRtl(this.mActivity.getResources())) {
             a_search aVar = viewBounds;
