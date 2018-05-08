@@ -26,9 +26,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.uioverrides.AllAppsScrim;
-import com.android.launcher3.graphics.ViewScrim;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ScrimView;
 
 /**
  * Handles AllApps view transition.
@@ -57,7 +56,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     };
 
     private AllAppsContainerView mAppsView;
-    private AllAppsScrim mAllAppsScrim;
+    private ScrimView mScrimView;
 
     private final Launcher mLauncher;
     private final boolean mIsDarkTheme;
@@ -117,7 +116,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     public void setProgress(float progress) {
         mProgress = progress;
-        mAllAppsScrim.onVerticalProgress(progress);
+        mScrimView.setProgress(progress);
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
@@ -209,8 +208,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     public void setupViews(AllAppsContainerView appsView) {
         mAppsView = appsView;
-        mAllAppsScrim = (AllAppsScrim) ViewScrim.get(mAppsView);
-        mAllAppsScrim.reInitUi();
+        mScrimView = mLauncher.findViewById(R.id.scrim_view);
     }
 
     /**
@@ -220,8 +218,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mScrollRangeDelta = delta;
         mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
 
-        if (mAllAppsScrim != null) {
-            mAllAppsScrim.reInitUi();
+        if (mScrimView != null) {
+            mScrimView.reInitUi();
         }
     }
 

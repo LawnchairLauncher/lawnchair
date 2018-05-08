@@ -52,17 +52,15 @@ public class LauncherState {
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int DRAG_HANDLE_INDICATOR = 1 << 5;
 
-    protected static final int FLAG_SHOW_SCRIM = 1 << 0;
-    protected static final int FLAG_MULTI_PAGE = 1 << 1;
-    protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 2;
-    protected static final int FLAG_DISABLE_RESTORE = 1 << 3;
-    protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 4;
-    protected static final int FLAG_DISABLE_PAGE_CLIPPING = 1 << 5;
-    protected static final int FLAG_PAGE_BACKGROUNDS = 1 << 6;
-    protected static final int FLAG_ALL_APPS_SCRIM = 1 << 7;
-    protected static final int FLAG_DISABLE_INTERACTION = 1 << 8;
-    protected static final int FLAG_OVERVIEW_UI = 1 << 9;
-    protected static final int FLAG_HIDE_BACK_BUTTON = 1 << 10;
+    protected static final int FLAG_MULTI_PAGE = 1 << 0;
+    protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;
+    protected static final int FLAG_DISABLE_RESTORE = 1 << 2;
+    protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 3;
+    protected static final int FLAG_DISABLE_PAGE_CLIPPING = 1 << 4;
+    protected static final int FLAG_PAGE_BACKGROUNDS = 1 << 5;
+    protected static final int FLAG_DISABLE_INTERACTION = 1 << 6;
+    protected static final int FLAG_OVERVIEW_UI = 1 << 7;
+    protected static final int FLAG_HIDE_BACK_BUTTON = 1 << 8;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
             new PageAlphaProvider(ACCEL_2) {
@@ -116,9 +114,7 @@ public class LauncherState {
      *
      * @see WorkspaceStateTransitionAnimation
      */
-    public final boolean hasScrim;
     public final boolean hasWorkspacePageBackground;
-    public final boolean hasAllAppsScrim;
 
     public final int transitionDuration;
 
@@ -153,10 +149,7 @@ public class LauncherState {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
 
-        this.hasScrim = (flags & FLAG_SHOW_SCRIM) != 0;
         this.hasWorkspacePageBackground = (flags & FLAG_PAGE_BACKGROUNDS) != 0;
-        this.hasAllAppsScrim = (flags & FLAG_ALL_APPS_SCRIM) != 0;
-
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
@@ -213,6 +206,10 @@ public class LauncherState {
      */
     public float getVerticalProgress(Launcher launcher) {
         return 1f;
+    }
+
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
+        return 0;
     }
 
     public String getDescription(Launcher launcher) {
