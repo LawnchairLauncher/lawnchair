@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -960,15 +961,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (currTask == null) {
             return;
         }
-        currTask.setScaleX(mAdjacentScale);
-        currTask.setScaleY(mAdjacentScale);
+        currTask.setZoomScale(mAdjacentScale);
 
         if (mCurrentPage - 1 >= 0) {
             TaskView adjacentTask = getPageAt(mCurrentPage - 1);
             float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
                     mAdjacentScale, 0);
-            adjacentTask.setScaleX(scaleAndTranslation[0]);
-            adjacentTask.setScaleY(scaleAndTranslation[0]);
+            adjacentTask.setZoomScale(scaleAndTranslation[0]);
             adjacentTask.setTranslationX(-scaleAndTranslation[1]);
             adjacentTask.setTranslationY(scaleAndTranslation[2]);
         }
@@ -976,8 +975,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             TaskView adjacentTask = getPageAt(mCurrentPage + 1);
             float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
                     mAdjacentScale, 0);
-            adjacentTask.setScaleX(scaleAndTranslation[0]);
-            adjacentTask.setScaleY(scaleAndTranslation[0]);
+            adjacentTask.setZoomScale(scaleAndTranslation[0]);
             adjacentTask.setTranslationX(scaleAndTranslation[1]);
             adjacentTask.setTranslationY(scaleAndTranslation[2]);
         }
@@ -986,7 +984,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private float[] getAdjacentScaleAndTranslation(TaskView currTask, TaskView adjacentTask,
             float currTaskToScale, float currTaskToTranslationY) {
         float displacement = currTask.getWidth() * (currTaskToScale - currTask.getCurveScale());
-        sTempFloatArray[0] = currTaskToScale * adjacentTask.getCurveScale();
+        sTempFloatArray[0] = currTaskToScale;
         sTempFloatArray[1] = mIsRtl ? -displacement : displacement;
         sTempFloatArray[2] = currTaskToTranslationY;
         return sTempFloatArray;
@@ -1127,13 +1125,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return anim;
     }
 
-    private ObjectAnimator createAnimForChild(View child, float[] toScaleAndTranslation) {
-        return ObjectAnimator.ofPropertyValuesHolder(child,
+    private Animator createAnimForChild(TaskView child, float[] toScaleAndTranslation) {
+        AnimatorSet anim = new AnimatorSet();
+        anim.play(ObjectAnimator.ofFloat(child, TaskView.ZOOM_SCALE, toScaleAndTranslation[0]));
+        anim.play(ObjectAnimator.ofPropertyValuesHolder(child,
                         new PropertyListBuilder()
-                                .scale(child.getScaleX() * toScaleAndTranslation[0])
                                 .translationX(toScaleAndTranslation[1])
                                 .translationY(toScaleAndTranslation[2])
-                                .build());
+                                .build()));
+        return anim;
     }
 
     public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {

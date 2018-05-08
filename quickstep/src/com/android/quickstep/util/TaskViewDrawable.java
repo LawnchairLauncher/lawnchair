@@ -15,7 +15,9 @@
  */
 package com.android.quickstep.util;
 
-import android.animation.TimeInterpolator;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
@@ -30,7 +32,7 @@ import com.android.quickstep.views.TaskView;
 
 public class TaskViewDrawable extends Drawable {
 
-    public static FloatProperty<TaskViewDrawable> PROGRESS =
+    public static final FloatProperty<TaskViewDrawable> PROGRESS =
             new FloatProperty<TaskViewDrawable>("progress") {
                 @Override
                 public void setValue(TaskViewDrawable taskViewDrawable, float v) {
@@ -43,8 +45,10 @@ public class TaskViewDrawable extends Drawable {
                 }
             };
 
-    private static final TimeInterpolator ICON_SIZE_INTERPOLATOR =
-            (t) -> (Math.max(t, 0.3f) - 0.3f) / 0.7f;
+    /**
+     * The progress at which we play the atomic icon scale animation.
+     */
+    private static final float ICON_SCALE_THRESHOLD = 0.95f;
 
     private final RecentsView mParent;
     private final View mIconView;
@@ -55,11 +59,15 @@ public class TaskViewDrawable extends Drawable {
     private final ClipAnimationHelper mClipAnimationHelper;
 
     private float mProgress = 1;
+    private boolean mPassedIconScaleThreshold;
+    private ValueAnimator mIconScaleAnimator;
+    private float mIconScale;
 
     public TaskViewDrawable(TaskView tv, RecentsView parent) {
         mParent = parent;
         mIconView = tv.getIconView();
         mIconPos = new int[2];
+        mIconScale = mIconView.getScaleX();
         Utilities.getDescendantCoordRelativeToAncestor(mIconView, parent, mIconPos, true);
 
         mThumbnailView = tv.getThumbnail();
@@ -70,6 +78,37 @@ public class TaskViewDrawable extends Drawable {
     public void setProgress(float progress) {
         mProgress = progress;
         mParent.invalidate();
+        boolean passedIconScaleThreshold = progress <= ICON_SCALE_THRESHOLD;
+        if (mPassedIconScaleThreshold != passedIconScaleThreshold) {
+            mPassedIconScaleThreshold = passedIconScaleThreshold;
+            animateIconScale(mPassedIconScaleThreshold ? 0 : 1);
+        }
+    }
+
+    private void animateIconScale(float toScale) {
+        if (mIconScaleAnimator != null) {
+            mIconScaleAnimator.cancel();
+        }
+        mIconScaleAnimator = ValueAnimator.ofFloat(mIconScale, toScale);
+        mIconScaleAnimator.addUpdateListener(valueAnimator -> {
+            mIconScale = (float) valueAnimator.getAnimatedValue();
+            if (mProgress > ICON_SCALE_THRESHOLD) {
+                // Speed up the icon scale to ensure it is 1 when progress is 1.
+                float iconProgress = (mProgress - ICON_SCALE_THRESHOLD) / (1 - ICON_SCALE_THRESHOLD);
+                if (iconProgress > mIconScale) {
+                    mIconScale = iconProgress;
+                }
+            }
+            invalidateSelf();
+        });
+        mIconScaleAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIconScaleAnimator = null;
+            }
+        });
+        mIconScaleAnimator.setDuration(TaskView.SCALE_ICON_DURATION);
+        mIconScaleAnimator.start();
     }
 
     @Override
@@ -81,8 +120,7 @@ public class TaskViewDrawable extends Drawable {
 
         canvas.save();
         canvas.translate(mIconPos[0], mIconPos[1]);
-        float scale = ICON_SIZE_INTERPOLATOR.getInterpolation(mProgress);
-        canvas.scale(scale, scale, mIconView.getWidth() / 2, mIconView.getHeight() / 2);
+        canvas.scale(mIconScale, mIconScale, mIconView.getWidth() / 2, mIconView.getHeight() / 2);
         mIconView.draw(canvas);
         canvas.restore();
     }
