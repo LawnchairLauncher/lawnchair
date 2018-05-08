@@ -327,25 +327,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int childCount = getChildCount();
         if (mShowEmptyMessage || childCount == 0) return 0;
 
-        final View lastChild = getChildAt(childCount - 1);
-
-        // Current visible coordinate of the end of the oldest task.
-        final int carouselCurrentEnd =
-                (mIsRtl ? lastChild.getLeft() : lastChild.getRight()) - getScrollX();
-
-        // Visible button-facing end of a centered task.
-        final int centeredTaskEnd = mIsRtl ?
-                getPaddingLeft() + mInsets.left :
-                getWidth() - getPaddingRight() - mInsets.right;
-
-        // The distance of the carousel travel during which the alpha changes from 0 to 1. This
-        // is the motion between the oldest task in its centered position and the oldest task
-        // scrolled to the end.
-        final int alphaChangeRange = (mIsRtl ? 0 : mMaxScrollX) - getScrollForPage(childCount - 1);
+        final int scrollEnd = mIsRtl ? 0 : mMaxScrollX;
+        final int oldestChildScroll = getScrollForPage(childCount - 1);
 
         return Utilities.boundToRange(
-                ((float) (centeredTaskEnd - carouselCurrentEnd)) /
-                        alphaChangeRange, 0, 1);
+                ((float) (getScrollX() - oldestChildScroll)) /
+                        (scrollEnd - oldestChildScroll), 0, 1);
     }
 
     private void updateClearAllButtonAlpha() {
