@@ -57,6 +57,9 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
+        <include android:id="@+id/scrim_view"
+            layout="@layout/scrim_view" />
+
         <include
             android:id="@+id/apps_view"
             layout="@layout/all_apps"

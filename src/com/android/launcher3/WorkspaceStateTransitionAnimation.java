@@ -96,9 +96,7 @@ public class WorkspaceStateTransitionAnimation {
 
         // Set scrim
         propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,
-                state.hasScrim ? 1 : 0, Interpolators.LINEAR);
-        propertySetter.setFloat(ViewScrim.get(mLauncher.getAppsView()), ViewScrim.PROGRESS,
-                state.hasAllAppsScrim ? 1 : 0, Interpolators.LINEAR);
+                state.getWorkspaceScrimAlpha(mLauncher), Interpolators.LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

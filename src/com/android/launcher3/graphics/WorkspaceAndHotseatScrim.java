@@ -61,7 +61,6 @@ public class WorkspaceAndHotseatScrim extends ViewScrim<Workspace> implements
 
     private int mFullScrimColor;
 
-    private final int mMaxAlpha;
     private int mAlpha = 0;
 
     public WorkspaceAndHotseatScrim(Workspace view) {
@@ -69,7 +68,6 @@ public class WorkspaceAndHotseatScrim extends ViewScrim<Workspace> implements
         mLauncher = Launcher.getLauncher(view.getContext());
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
 
-        mMaxAlpha = mLauncher.getResources().getInteger(R.integer.config_workspaceScrimAlpha);
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
 
@@ -108,7 +106,7 @@ public class WorkspaceAndHotseatScrim extends ViewScrim<Workspace> implements
 
     @Override
     protected void onProgressChanged() {
-        mAlpha = Math.round(mMaxAlpha * mProgress);
+        mAlpha = Math.round(255 * mProgress);
     }
 
     @Override
@@ -126,9 +124,9 @@ public class WorkspaceAndHotseatScrim extends ViewScrim<Workspace> implements
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
         // for super light wallpaper it needs to be darken for contrast to workspace
         // for dark wallpapers the text is white so darkening works as well
-        mFullScrimColor = ColorUtils.compositeColors(DARK_SCRIM_COLOR,
-                wallpaperColorInfo.getMainColor());
-        mBottomMaskPaint.setColor(mFullScrimColor);
+        mBottomMaskPaint.setColor(ColorUtils.compositeColors(DARK_SCRIM_COLOR,
+                wallpaperColorInfo.getMainColor()));
+        mFullScrimColor = wallpaperColorInfo.getMainColor();
     }
 
     public Bitmap createDitheredAlphaMask() {
