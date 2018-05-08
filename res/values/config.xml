@@ -41,9 +41,6 @@
     <item type="id" name="drag_event_parity" />
 
 <!-- AllApps & Launcher transitions -->
-    <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
-    <integer name="config_workspaceScrimAlpha">76</integer>
-
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 

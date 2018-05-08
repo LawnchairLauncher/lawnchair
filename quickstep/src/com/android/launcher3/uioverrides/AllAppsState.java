@@ -31,7 +31,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY | FLAG_ALL_APPS_SCRIM;
+    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
 
     private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
         @Override

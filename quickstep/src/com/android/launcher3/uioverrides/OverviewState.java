@@ -34,7 +34,7 @@ import com.android.quickstep.views.RecentsView;
  */
 public class OverviewState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
+    private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public OverviewState(int id) {
@@ -98,6 +98,11 @@ public class OverviewState extends LauncherState {
                     (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
                             ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
+    }
+
+    @Override
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
+        return 0.5f;
     }
 
     @Override
