@@ -406,7 +406,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             taskView.bind(task);
         }
         resetTaskVisuals();
-        applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
             mQuickScrubController.snapToNextTaskIfAvailable();
@@ -426,6 +425,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
         }
+        applyIconScale(false /* animate */);
 
         updateCurveProperties();
         // Update the set of visible task's data
