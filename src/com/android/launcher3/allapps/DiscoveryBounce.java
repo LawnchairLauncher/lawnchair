@@ -156,14 +156,14 @@ public class DiscoveryBounce extends AbstractFloatingView {
         float verticalProgress = OVERVIEW.getVerticalProgress(launcher);
 
         TimeInterpolator pathInterpolator = new PathInterpolator(0.35f, 0, 0.5f, 1);
-        Keyframe keyframe3 = Keyframe.ofFloat(0.423f, verticalProgress - (1 - 0.9438f));
+        Keyframe keyframe3 = Keyframe.ofFloat(0.423f, verticalProgress - (1 - 0.9738f));
         keyframe3.setInterpolator(pathInterpolator);
-        Keyframe keyframe4 = Keyframe.ofFloat(0.654f, verticalProgress);
+        Keyframe keyframe4 = Keyframe.ofFloat(0.754f, verticalProgress);
         keyframe4.setInterpolator(pathInterpolator);
 
         PropertyValuesHolder propertyValuesHolder = PropertyValuesHolder.ofKeyframe("progress",
                 Keyframe.ofFloat(0, verticalProgress),
-                Keyframe.ofFloat(0.346f, verticalProgress), keyframe3, keyframe4,
+                Keyframe.ofFloat(0.246f, verticalProgress), keyframe3, keyframe4,
                 Keyframe.ofFloat(1f, verticalProgress));
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(null,
                 new PropertyValuesHolder[]{propertyValuesHolder});
