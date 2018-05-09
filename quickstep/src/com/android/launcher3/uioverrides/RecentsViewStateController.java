@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATION;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
@@ -63,12 +62,14 @@ public class RecentsViewStateController implements StateHandler {
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
+        if (!config.playAtomicComponent()) {
+            // The entire recents animation is played atomically.
+            return;
+        }
         PropertySetter setter = config.getPropertySetter(builder);
         float[] scaleTranslationYFactor = toState.getOverviewScaleAndTranslationYFactor(mLauncher);
-        setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0],
-                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
-        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1],
-                builder.getInterpolator(ANIM_OVERVIEW_TRANSLATION, LINEAR));
+        setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0], LINEAR);
+        setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1], LINEAR);
         setter.setFloat(mRecentsViewContainer, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
                 AGGRESSIVE_EASE_IN_OUT);
 
