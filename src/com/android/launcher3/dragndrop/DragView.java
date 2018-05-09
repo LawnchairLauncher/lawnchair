@@ -288,7 +288,7 @@ public class DragView extends View {
 
             if (mScaledMaskPath != null) {
                 mBgSpringDrawable.setColorFilter(mBaseFilter);
-                mBgSpringDrawable.setColorFilter(mBaseFilter);
+                mFgSpringDrawable.setColorFilter(mBaseFilter);
                 mBadge.setColorFilter(mBaseFilter);
             }
         } else {
