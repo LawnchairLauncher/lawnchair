@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -56,11 +57,11 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected float initCurrentAnimation() {
+    protected float initCurrentAnimation(@AnimationComponents int animComponent) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
-        mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, maxAccuracy);
+        mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
+                maxAccuracy, animComponent);
         return (mLauncher.getDeviceProfile().isSeascape() ? 2 : -2) / range;
     }
 

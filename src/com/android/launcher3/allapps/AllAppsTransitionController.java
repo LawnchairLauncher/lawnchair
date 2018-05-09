@@ -166,6 +166,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             return;
         }
 
+        if (!config.playNonAtomicComponent()) {
+            // There is no atomic component for the all apps transition, so just return early.
+            return;
+        }
+
         Interpolator interpolator = config.userControlled ? LINEAR : FAST_OUT_SLOW_IN;
         ObjectAnimator anim =
                 ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);

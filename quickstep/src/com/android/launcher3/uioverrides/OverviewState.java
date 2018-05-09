@@ -25,6 +25,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
@@ -47,8 +48,12 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        // TODO: provide a valid value
-        return new float[]{1, 0, -launcher.getDeviceProfile().hotseatBarSizePx / 2};
+        RecentsView recentsView = launcher.getOverviewPanel();
+        Workspace workspace = launcher.getWorkspace();
+        recentsView.getTaskSize(sTempRect);
+        float scale = (float) sTempRect.width() / workspace.getWidth();
+        float parallaxFactor = 0.4f;
+        return new float[]{scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor};
     }
 
     @Override
