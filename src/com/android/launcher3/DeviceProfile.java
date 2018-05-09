@@ -25,6 +25,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
@@ -118,6 +120,7 @@ public class DeviceProfile {
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
     private final Rect mHotseatPadding = new Rect();
+    private boolean mIsSeascape;
 
     // Icon badges
     public BadgeRenderer mBadgeRenderer;
@@ -519,9 +522,22 @@ public class DeviceProfile {
         return isLandscape && transposeLayoutWithOrientation;
     }
 
+    /**
+     * Updates orientation information and returns true if it has changed from the previous value.
+     */
+    public boolean updateIsSeascape(WindowManager wm) {
+        if (isVerticalBarLayout()) {
+            boolean isSeascape = wm.getDefaultDisplay().getRotation() == Surface.ROTATION_270;
+            if (mIsSeascape != isSeascape) {
+                mIsSeascape = isSeascape;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isSeascape() {
-        // TODO: This might not hold true for multi window mode, use configuration insead.
-        return isVerticalBarLayout() && mInsets.left > mInsets.right;
+        return isVerticalBarLayout() && mIsSeascape;
     }
 
     public boolean shouldFadeAdjacentWorkspaceScreens() {
