@@ -16,8 +16,10 @@
 
 package com.android.launcher3.logging;
 
+import static com.android.launcher3.logging.LoggerUtils.newAction;
 import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newControlTarget;
 import static com.android.launcher3.logging.LoggerUtils.newDropTarget;
 import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
@@ -163,6 +165,8 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, intent);
     }
 
+    public void logActionTip(int actionType, int viewType) { }
+
     public void logTaskLaunchOrDismiss(int action, int direction, ComponentKey componentKey) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE or FLING
                 newTarget(Target.Type.ITEM));
@@ -243,6 +247,15 @@ public class UserEventDispatcher {
         logActionOnControl(action, controlType, controlInContainer, -1);
     }
 
+    public void logActionOnControl(int action, int controlType, int parentContainer,
+                                   int grandParentContainer){
+        LauncherEvent event = newLauncherEvent(newTouchAction(action),
+                newControlTarget(controlType),
+                newContainerTarget(parentContainer),
+                newContainerTarget(grandParentContainer));
+        dispatchUserEvent(event, null);
+    }
+
     public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
                                    int parentContainerType) {
         final LauncherEvent event = (controlInContainer == null && parentContainerType < 0)
@@ -266,6 +279,13 @@ public class UserEventDispatcher {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Type.TOUCH),
                 target);
         event.action.isOutside = true;
+        dispatchUserEvent(event, null);
+    }
+
+    public void logActionBounceTip(int containerType) {
+        LauncherEvent event = newLauncherEvent(newAction(Action.Type.TIP),
+                newContainerTarget(containerType));
+        event.srcTarget[0].tipType = LauncherLogProto.TipType.BOUNCE;
         dispatchUserEvent(event, null);
     }
 
@@ -393,7 +413,7 @@ public class UserEventDispatcher {
         if (!IS_VERBOSE) {
             return;
         }
-        String log = "action:" + LoggerUtils.getActionStr(ev.action);
+        String log = "\n\naction:" + LoggerUtils.getActionStr(ev.action);
         if (ev.srcTarget != null && ev.srcTarget.length > 0) {
             log += "\n Source " + getTargetsStr(ev.srcTarget);
         }

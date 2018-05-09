@@ -147,6 +147,11 @@ public class TouchInteractionService extends Service {
             TraceHelper.endSection("SysUiBinder", "onQuickStep");
 
         }
+
+        @Override
+        public void onTip(int actionType, int viewType) {
+            mOverviewCommandHelper.onTip(actionType, viewType);
+        }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
