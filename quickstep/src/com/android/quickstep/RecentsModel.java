@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
@@ -190,7 +192,7 @@ public class RecentsModel extends TaskStackChangeListener {
     @Override
     public void onTaskStackChangedBackground() {
         int userId = UserHandle.myUserId();
-        if (!mPreloadTasksInBackground || !checkCurrentUserId(userId, false /* debug */)) {
+        if (!mPreloadTasksInBackground || !checkCurrentOrManagedUserId(userId, mContext)) {
             // TODO: Only register this for the current user
             return;
         }

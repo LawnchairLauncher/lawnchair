@@ -47,6 +47,8 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.List;
+
 /**
  * Contains helpful methods for retrieving data from {@link Task}s.
  */
@@ -202,6 +204,19 @@ public class TaskUtils {
             int taskId, int mode) {
         for (RemoteAnimationTargetCompat target : targets) {
             if (target.mode == mode && target.taskId == taskId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkCurrentOrManagedUserId(int currentUserId, Context context) {
+        if (currentUserId == UserHandle.myUserId()) {
+            return true;
+        }
+        List<UserHandle> allUsers = UserManagerCompat.getInstance(context).getUserProfiles();
+        for (int i = allUsers.size() - 1; i >= 0; i--) {
+            if (currentUserId == allUsers.get(i).getIdentifier()) {
                 return true;
             }
         }
