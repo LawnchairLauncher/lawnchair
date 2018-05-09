@@ -28,6 +28,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -36,6 +37,7 @@ import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -77,11 +79,18 @@ public abstract class AbstractStateChangeTouchController
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
     private float mDisplacementShift;
+    private boolean mCanBlockFling;
+    private boolean mBlockFling;
 
     private AnimatorSet mAtomicAnim;
     private boolean mPassedOverviewAtomicThreshold;
-    private boolean mCanBlockFling;
-    private boolean mBlockFling;
+    // mAtomicAnim plays the atomic components of the state animations when we pass the threshold.
+    // However, if we reinit to transition to a new state (e.g. OVERVIEW -> ALL_APPS) before the
+    // atomic animation finishes, we only control the non-atomic components so that we don't
+    // interfere with the atomic animation. When the atomic animation ends, we start controlling
+    // the atomic components as well, using this controller.
+    private AnimatorPlaybackController mAtomicComponentsController;
+    private float mAtomicComponentsStartProgress;
 
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
@@ -185,16 +194,30 @@ public abstract class AbstractStateChangeTouchController
 
         mStartProgress = 0;
         mPassedOverviewAtomicThreshold = false;
-        if (mAtomicAnim != null) {
-            // Most likely the animation is finished by now, but just in case it's not,
-            // make sure the next state animation starts from the expected state.
-            mAtomicAnim.end();
-        }
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setOnCancelRunnable(null);
         }
         int animComponents = goingBetweenNormalAndOverview(mFromState, mToState)
                 ? NON_ATOMIC_COMPONENT : ANIM_ALL;
+        if (mAtomicAnim != null) {
+            // Control the non-atomic components until the atomic animation finishes, then control
+            // the atomic components as well.
+            animComponents = NON_ATOMIC_COMPONENT;
+            mAtomicAnim.addListener(new AnimationSuccessListener() {
+                @Override
+                public void onAnimationSuccess(Animator animation) {
+                    cancelAtomicComponentsController();
+                    mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
+                    long duration = (long) (getShiftRange() * 2);
+                    mAtomicComponentsController = AnimatorPlaybackController.wrap(
+                            createAtomicAnimForState(mToState, duration), duration);
+                    mAtomicComponentsController.dispatchOnStart();
+                }
+            });
+        }
+        if (goingBetweenNormalAndOverview(mFromState, mToState)) {
+            cancelAtomicComponentsController();
+        }
         mProgressMultiplier = initCurrentAnimation(animComponents);
         mCurrentAnimation.dispatchOnStart();
         return true;
@@ -210,6 +233,7 @@ public abstract class AbstractStateChangeTouchController
     public void onDragStart(boolean start) {
         if (mCurrentAnimation == null) {
             mFromState = mToState = null;
+            mAtomicComponentsController = null;
             reinitCurrentAnimation(false, mDetector.wasInitialTouchPositive());
             mDisplacementShift = 0;
         } else {
@@ -246,6 +270,9 @@ public abstract class AbstractStateChangeTouchController
 
     protected void updateProgress(float fraction) {
         mCurrentAnimation.setPlayFraction(fraction);
+        if (mAtomicComponentsController != null) {
+            mAtomicComponentsController.setPlayFraction(fraction - mAtomicComponentsStartProgress);
+        }
         maybeUpdateAtomicAnim(mFromState, mToState, fraction);
     }
 
@@ -267,15 +294,9 @@ public abstract class AbstractStateChangeTouchController
             if (mAtomicAnim != null) {
                 mAtomicAnim.cancel();
             }
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
-            AnimationConfig config = new AnimationConfig();
-            config.animComponents = ATOMIC_COMPONENT;
-            config.duration = targetState == OVERVIEW ? ATOMIC_NORMAL_TO_OVERVIEW_DURATION
+            long duration = targetState == OVERVIEW ? ATOMIC_NORMAL_TO_OVERVIEW_DURATION
                     : ATOMIC_OVERVIEW_TO_NORMAL_DURATION;
-            for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
-                handler.setStateWithAnimation(targetState, builder, config);
-            }
-            mAtomicAnim = builder.build();
+            mAtomicAnim = createAtomicAnimForState(targetState, duration);
             mAtomicAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -283,7 +304,19 @@ public abstract class AbstractStateChangeTouchController
                 }
             });
             mAtomicAnim.start();
+            mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
         }
+    }
+
+    private AnimatorSet createAtomicAnimForState(LauncherState targetState, long duration) {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        AnimationConfig config = new AnimationConfig();
+        config.animComponents = ATOMIC_COMPONENT;
+        config.duration = duration;
+        for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
+            handler.setStateWithAnimation(targetState, builder, config);
+        }
+        return builder.build();
     }
 
     @Override
@@ -353,6 +386,38 @@ public abstract class AbstractStateChangeTouchController
                 targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
         anim.start();
+        if (mAtomicAnim == null) {
+            startAtomicComponentsAnim(endProgress, anim.getDuration());
+        } else {
+            mAtomicAnim.addListener(new AnimationSuccessListener() {
+                @Override
+                public void onAnimationSuccess(Animator animator) {
+                    startAtomicComponentsAnim(endProgress, anim.getDuration());
+                }
+            });
+        }
+    }
+
+    /**
+     * Animates the atomic components from the current progress to the final progress.
+     *
+     * Note that this only applies when we are controlling the atomic components separately from
+     * the non-atomic components, which only happens if we reinit before the atomic animation
+     * finishes.
+     */
+    private void startAtomicComponentsAnim(float toProgress, long duration) {
+        if (mAtomicComponentsController != null) {
+            ValueAnimator atomicAnim = mAtomicComponentsController.getAnimationPlayer();
+            atomicAnim.setFloatValues(mAtomicComponentsController.getProgressFraction(), toProgress);
+            atomicAnim.setDuration(duration);
+            atomicAnim.start();
+            atomicAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAtomicComponentsController = null;
+                }
+            });
+        }
     }
 
     private long getRemainingAtomicDuration() {
@@ -409,7 +474,15 @@ public abstract class AbstractStateChangeTouchController
 
     protected void clearState() {
         mCurrentAnimation = null;
+        cancelAtomicComponentsController();
         mDetector.finishedScrolling();
         mDetector.setDetectableScrollConditions(0, false);
+    }
+
+    private void cancelAtomicComponentsController() {
+        if (mAtomicComponentsController != null) {
+            mAtomicComponentsController.getAnimationPlayer().cancel();
+            mAtomicComponentsController = null;
+        }
     }
 }
