@@ -42,6 +42,7 @@
     <dimen name="all_apps_scrim_radius">8dp</dimen>
     <dimen name="all_apps_scrim_margin">8dp</dimen>
     <dimen name="all_apps_scrim_blur">4dp</dimen>
+    <dimen name="vertical_drag_handle_size">24dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>

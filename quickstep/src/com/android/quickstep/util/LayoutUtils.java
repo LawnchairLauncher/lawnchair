@@ -43,8 +43,7 @@ public class LayoutUtils {
             extraSpace = 0;
         } else {
             Resources res = context.getResources();
-            extraSpace = dp.hotseatBarSizePx + res.getDimension(R.dimen.shelf_surface_top_padding)
-                    + res.getDimension(R.dimen.shelf_surface_radius);
+            extraSpace = dp.hotseatBarSizePx + res.getDimension(R.dimen.vertical_drag_handle_size);
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
