@@ -15,28 +15,63 @@
  */
 package com.android.launcher3.views;
 
+import static android.content.Context.ACCESSIBILITY_SERVICE;
 import static android.support.v4.graphics.ColorUtils.compositeColors;
 import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
+import android.support.v4.widget.ExploreByTouchHelper;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeListener;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.Themes;
+
+import java.util.List;
 
 /**
  * Simple scrim which draws a flat color
  */
-public class ScrimView extends View implements Insettable, OnChangeListener {
+public class ScrimView extends View implements Insettable, OnChangeListener,
+        AccessibilityStateChangeListener, StateListener {
 
+    private static final int WALLPAPERS = R.string.wallpaper_button_text;
+    private static final int WIDGETS = R.string.widget_button_text;
+    private static final int SETTINGS = R.string.settings_button_text;
+
+    private final Rect mTempRect = new Rect();
+    private final int[] mTempPos = new int[2];
+
+    protected final Launcher mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
+    private final AccessibilityManager mAM;
     protected final int mEndScrim;
 
     protected float mMaxScrimAlpha;
@@ -48,28 +83,56 @@ public class ScrimView extends View implements Insettable, OnChangeListener {
     protected int mEndFlatColor;
     protected int mEndFlatColorAlpha;
 
+    protected final int mDragHandleSize;
+    private final Rect mDragHandleBounds;
+    private final AccessibilityHelper mAccessibilityHelper;
+    @Nullable
+    protected Drawable mDragHandle;
+
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mLauncher = Launcher.getLauncher(context);
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(context);
         mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
 
         mMaxScrimAlpha = 0.7f;
+
+        mDragHandleSize = context.getResources()
+                .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
+        mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
+
+        mAccessibilityHelper = new AccessibilityHelper();
+        ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
+
+        mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
     }
 
     @Override
-    public void setInsets(Rect insets) { }
+    public void setInsets(Rect insets) {
+        updateDragHandleBounds();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        updateDragHandleBounds();
+    }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mWallpaperColorInfo.addOnChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
+
+        mAM.addAccessibilityStateChangeListener(this);
+        onAccessibilityStateChanged(mAM.isEnabled());
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mWallpaperColorInfo.removeOnChangeListener(this);
+        mAM.removeAccessibilityStateChangeListener(this);
     }
 
     @Override
@@ -91,6 +154,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener {
         if (mProgress != progress) {
             mProgress = progress;
             updateColors();
+            updateDragHandleAlpha();
             invalidate();
         }
     }
@@ -102,10 +166,158 @@ public class ScrimView extends View implements Insettable, OnChangeListener {
                 mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
     }
 
+    protected void updateDragHandleAlpha() {
+        if (mDragHandle != null) {
+            mDragHandle.setAlpha(Math.round(255 * Utilities.boundToRange(mProgress, 0, 1)));
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (mCurrentFlatColor != 0) {
             canvas.drawColor(mCurrentFlatColor);
+        }
+    }
+
+    protected void updateDragHandleBounds() {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        final int left;
+        final int width = getMeasuredWidth();
+        final int top = getMeasuredHeight() - mDragHandleSize - grid.getInsets().bottom;
+        final int topMargin;
+
+        if (grid.isVerticalBarLayout()) {
+            topMargin = grid.workspacePadding.bottom;
+            if (grid.isSeascape()) {
+                left = width - grid.getInsets().right - mDragHandleSize;
+            } else {
+                left = mDragHandleSize + grid.getInsets().left;
+            }
+        } else {
+            left = (width - mDragHandleSize) / 2;
+            topMargin = grid.hotseatBarSizePx;
+        }
+        mDragHandleBounds.offsetTo(left, top - topMargin);
+
+        if (mDragHandle != null) {
+            mDragHandle.setBounds(mDragHandleBounds);
+        }
+    }
+
+    @Override
+    public void onAccessibilityStateChanged(boolean enabled) {
+        LauncherStateManager stateManager = mLauncher.getStateManager();
+        stateManager.removeStateListener(this);
+
+        if (enabled) {
+            mDragHandle = mLauncher.getDrawable(R.drawable.drag_handle_indicator);
+            mDragHandle.setBounds(mDragHandleBounds);
+
+            stateManager.addStateListener(this);
+            onStateSetImmediately(mLauncher.getStateManager().getState());
+
+            updateDragHandleAlpha();
+        } else {
+            mDragHandle = null;
+        }
+        invalidate();
+    }
+
+    @Override
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        return mAccessibilityHelper.dispatchHoverEvent(event) || super.dispatchHoverEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return mAccessibilityHelper.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onFocusChanged(boolean gainFocus, int direction,
+            Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        mAccessibilityHelper.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+    }
+
+    @Override
+    public void onStateTransitionStart(LauncherState toState) {}
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        onStateSetImmediately(finalState);
+    }
+
+    @Override
+    public void onStateSetImmediately(LauncherState state) {
+        setImportantForAccessibility(state == ALL_APPS
+                ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+    }
+
+    private class AccessibilityHelper extends ExploreByTouchHelper {
+
+        private static final int DRAG_HANDLE_ID = 1;
+
+        public AccessibilityHelper() {
+            super(ScrimView.this);
+        }
+
+        @Override
+        protected int getVirtualViewAt(float x, float y) {
+            return  mDragHandleBounds.contains((int) x, (int) y)
+                    ? DRAG_HANDLE_ID : INVALID_ID;
+        }
+
+        @Override
+        protected void getVisibleVirtualViews(List<Integer> virtualViewIds) {
+            virtualViewIds.add(DRAG_HANDLE_ID);
+        }
+
+        @Override
+        protected void onPopulateNodeForVirtualView(int virtualViewId,
+                AccessibilityNodeInfoCompat node) {
+            node.setContentDescription(getContext().getString(R.string.all_apps_button_label));
+            node.setBoundsInParent(mDragHandleBounds);
+
+            getLocationOnScreen(mTempPos);
+            mTempRect.set(mDragHandleBounds);
+            mTempRect.offset(mTempPos[0], mTempPos[1]);
+            node.setBoundsInScreen(mTempRect);
+
+            node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            node.setClickable(true);
+            node.setFocusable(true);
+
+            if (mLauncher.isInState(NORMAL)) {
+                Context context = getContext();
+                if (Utilities.isWallpaperAllowed(context)) {
+                    node.addAction(
+                            new AccessibilityActionCompat(WALLPAPERS, context.getText(WALLPAPERS)));
+                }
+                node.addAction(new AccessibilityActionCompat(WIDGETS, context.getText(WIDGETS)));
+                node.addAction(new AccessibilityActionCompat(SETTINGS, context.getText(SETTINGS)));
+            }
+        }
+
+        @Override
+        protected boolean onPerformActionForVirtualView(
+                int virtualViewId, int action, Bundle arguments) {
+            if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+                mLauncher.getUserEventDispatcher().logActionOnControl(
+                        Action.Touch.TAP, ControlType.ALL_APPS_BUTTON,
+                        mLauncher.getStateManager().getState().containerType);
+                mLauncher.getStateManager().goToState(ALL_APPS);
+                return true;
+            } else if (action == WALLPAPERS) {
+                return OptionsPopupView.startWallpaperPicker(ScrimView.this);
+            } else if (action == WIDGETS) {
+                return OptionsPopupView.onWidgetsClicked(ScrimView.this);
+            } else if (action == SETTINGS) {
+                return OptionsPopupView.startSettings(ScrimView.this);
+            }
+
+            return false;
         }
     }
 }

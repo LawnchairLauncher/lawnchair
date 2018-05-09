@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.DRAG_HANDLE_INDICATOR;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -88,10 +87,6 @@ public class WorkspaceStateTransitionAnimation {
 
         propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
                 (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0,
-                pageAlphaProvider.interpolator);
-
-        propertySetter.setViewAlpha(mLauncher.getDragHandleIndicator(),
-                (elements & DRAG_HANDLE_INDICATOR) != 0 ? 1 : 0,
                 pageAlphaProvider.interpolator);
 
         // Set scrim

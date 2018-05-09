@@ -67,9 +67,6 @@
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
-        <include android:id="@+id/drag_indicator"
-            layout="@layout/drag_handle_indicator" />
-
         <!-- DO NOT CHANGE THE ID -->
         <include
             android:id="@+id/hotseat"

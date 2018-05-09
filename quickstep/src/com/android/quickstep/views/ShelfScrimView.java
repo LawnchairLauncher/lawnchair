@@ -31,7 +31,6 @@ import android.graphics.Path.Op;
 import android.util.AttributeSet;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
@@ -49,8 +48,6 @@ public class ShelfScrimView extends ScrimView {
     private static final int THRESHOLD_ALPHA_DARK = 102;
     private static final int THRESHOLD_ALPHA_LIGHT = 46;
 
-    private final Launcher mLauncher;
-
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
 
@@ -58,7 +55,6 @@ public class ShelfScrimView extends ScrimView {
     private final int mEndAlpha;
     private final int mThresholdAlpha;
     private final float mRadius;
-    private final float mTopPadding;
     private final float mMaxScrimAlpha;
     private final Paint mPaint;
 
@@ -77,15 +73,12 @@ public class ShelfScrimView extends ScrimView {
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        mLauncher = Launcher.getLauncher(context);
         mMaxScrimAlpha = OVERVIEW.getWorkspaceScrimAlpha(mLauncher);
 
         mEndAlpha = Color.alpha(mEndScrim);
         mThresholdAlpha = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark)
                 ? THRESHOLD_ALPHA_DARK : THRESHOLD_ALPHA_LIGHT;
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
-        mTopPadding = mLauncher.getResources().getDimension(R.dimen.shelf_surface_top_padding);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         // Just assume the easiest UI for now, until we have the proper layout information.
@@ -110,9 +103,9 @@ public class ShelfScrimView extends ScrimView {
             mRemainingScreenPathValid = false;
             updateColors();
         }
+        updateDragHandleAlpha();
         invalidate();
     }
-
 
     @Override
     public void updateColors() {
@@ -131,6 +124,7 @@ public class ShelfScrimView extends ScrimView {
                         (1 - mProgress) / (1 - mMoveThreshold)));
                 mShelfColor = setAlphaComponent(mEndScrim, alpha);
             }
+
             mRemainingScreenColor = 0;
         } else if (mProgress <= 0) {
             mScrimMoveFactor = 0;
@@ -150,23 +144,42 @@ public class ShelfScrimView extends ScrimView {
     }
 
     @Override
+    protected void updateDragHandleAlpha() {
+        if (mDrawingFlatColor) {
+            super.updateDragHandleAlpha();
+        } else if (mDragHandle != null) {
+            mDragHandle.setAlpha(255);
+        }
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
+        float translate = drawBackground(canvas);
+
+        if (mDragHandle != null) {
+            canvas.translate(0, -translate);
+            mDragHandle.draw(canvas);
+            canvas.translate(0, translate);
+        }
+    }
+
+    private float drawBackground(Canvas canvas) {
         if (mDrawingFlatColor) {
             if (mCurrentFlatColor != 0) {
                 canvas.drawColor(mCurrentFlatColor);
             }
-            return;
+            return 0;
         }
 
         if (mShelfColor == 0) {
-            return;
+            return 0;
         } else if (mScrimMoveFactor <= 0) {
             canvas.drawColor(mShelfColor);
-            return;
+            return getHeight();
         }
 
         float minTop = getHeight() - mMinSize;
-        float top = minTop * mScrimMoveFactor - mTopPadding - mRadius;
+        float top = minTop * mScrimMoveFactor - mDragHandleSize;
 
         // Draw the scrim over the remaining screen if needed.
         if (mRemainingScreenColor != 0) {
@@ -192,5 +205,6 @@ public class ShelfScrimView extends ScrimView {
         mPaint.setColor(mShelfColor);
         canvas.drawRoundRect(0, top, getWidth(), getHeight() + mRadius,
                 mRadius, mRadius, mPaint);
+        return minTop - mDragHandleSize - top;
     }
 }

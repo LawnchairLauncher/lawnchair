@@ -92,9 +92,9 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return DRAG_HANDLE_INDICATOR;
+            return 0;
         } else {
-            return HOTSEAT_SEARCH_BOX | DRAG_HANDLE_INDICATOR |
+            return HOTSEAT_SEARCH_BOX |
                     (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
                             ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
