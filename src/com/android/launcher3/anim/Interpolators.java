@@ -38,6 +38,7 @@ public class Interpolators {
 
     public static final Interpolator DEACCEL = new DecelerateInterpolator();
     public static final Interpolator DEACCEL_1_5 = new DecelerateInterpolator(1.5f);
+    public static final Interpolator DEACCEL_1_7 = new DecelerateInterpolator(1.7f);
     public static final Interpolator DEACCEL_2 = new DecelerateInterpolator(2);
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
@@ -56,8 +57,6 @@ public class Interpolators {
         exaggeratedEase.cubicTo(0.225f, 0.94f, 0.5f, 1f, 1f, 1f);
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
-
-    public static final Interpolator APP_CLOSE_ALPHA = new PathInterpolator(0.4f, 0, 1f, 1f);
 
     public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
 
