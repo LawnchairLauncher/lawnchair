@@ -15,25 +15,25 @@
 -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dynamic_grid_min_page_indicator_size"
-    android:height="@dimen/dynamic_grid_min_page_indicator_size"
-    android:viewportWidth="48.0"
-    android:viewportHeight="48.0" >
+    android:width="@dimen/vertical_drag_handle_size"
+    android:height="@dimen/vertical_drag_handle_size"
+    android:viewportWidth="36.0"
+    android:viewportHeight="36.0" >
 
     <group
-        android:translateX="17.5"
-        android:translateY="17.5">
+        android:translateX="11.5"
+        android:translateY="11.5">
         <path
             android:pathData="M2 8.5L6.5 4L11 8.5"
             android:strokeColor="?attr/workspaceAmbientShadowColor"
-            android:strokeWidth="4"
+            android:strokeWidth="3.6"
             android:strokeLineCap="round"
             android:strokeLineJoin="round" />
 
         <path
             android:pathData="M2 8.5L6.5 4L11 8.5"
             android:strokeColor="?attr/workspaceTextColor"
-            android:strokeWidth="2"
+            android:strokeWidth="1.8"
             android:strokeLineCap="round"
             android:strokeLineJoin="round" />
         </group>

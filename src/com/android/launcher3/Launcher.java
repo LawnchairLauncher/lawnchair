@@ -196,7 +196,6 @@ public class Launcher extends BaseDraggingActivity
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
-    private View mDragHandleIndicator;
     @Nullable private View mHotseatSearchBox;
 
     private DropTargetBar mDropTargetBar;
@@ -933,7 +932,6 @@ public class Launcher extends BaseDraggingActivity
         mOverviewPanel = findViewById(R.id.overview_panel);
         mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
         mHotseat = findViewById(R.id.hotseat);
-        mDragHandleIndicator = findViewById(R.id.drag_indicator);
         mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1192,10 +1190,6 @@ public class Launcher extends BaseDraggingActivity
 
     public Hotseat getHotseat() {
         return mHotseat;
-    }
-
-    public View getDragHandleIndicator() {
-        return mDragHandleIndicator;
     }
 
     public View getHotseatSearchBox() {
