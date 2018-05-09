@@ -32,7 +32,6 @@ import java.util.List;
 public class AnimatorSetBuilder {
 
     public static final int ANIM_VERTICAL_PROGRESS = 0;
-    public static final int ANIM_OVERVIEW_TRANSLATION = 1;
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 
@@ -56,9 +55,9 @@ public class AnimatorSetBuilder {
         AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         anim.playTogether(mAnims);
         if (!mOnFinishRunnables.isEmpty()) {
-            anim.addListener(new AnimatorListenerAdapter() {
+            anim.addListener(new AnimationSuccessListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationSuccess(Animator animation) {
                     for (Runnable onFinishRunnable : mOnFinishRunnables) {
                         onFinishRunnable.run();
                     }

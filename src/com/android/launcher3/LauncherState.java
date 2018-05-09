@@ -21,6 +21,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
+import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -84,6 +85,8 @@ public class LauncherState {
     public static final LauncherState OVERVIEW = new OverviewState(2);
     public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
     public static final LauncherState ALL_APPS = new AllAppsState(4);
+
+    protected static final Rect sTempRect = new Rect();
 
     public final int ordinal;
 
