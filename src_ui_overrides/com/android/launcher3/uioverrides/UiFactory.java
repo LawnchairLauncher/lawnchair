@@ -56,4 +56,6 @@ public class UiFactory {
     }
 
     public static void prepareToShowOverview(Launcher launcher) { }
+
+    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) { }
 }

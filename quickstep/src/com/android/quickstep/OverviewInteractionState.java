@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
@@ -46,7 +45,6 @@ import java.util.concurrent.ExecutionException;
  *
  *   - FLAG_DISABLE_QUICK_SCRUB
  *   - FLAG_DISABLE_SWIPE_UP
- *   - FLAG_HIDE_BACK_BUTTON
  *   - FLAG_SHOW_OVERVIEW_BUTTON
  *
  * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
@@ -81,7 +79,7 @@ public class OverviewInteractionState {
     }
 
     private static final int MSG_SET_PROXY = 200;
-    private static final int MSG_SET_BACK_BUTTON_VISIBLE = 201;
+    private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
     private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
 
     private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
@@ -92,13 +90,16 @@ public class OverviewInteractionState {
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
-    private boolean mBackButtonVisible = true;
     private boolean mSwipeUpEnabled = true;
 
     private Runnable mOnSwipeUpSettingChangedListener;
 
     private OverviewInteractionState(Context context) {
         mContext = context;
+
+        // Data posted to the uihandler will be sent to the bghandler. Data is sent to uihandler
+        // because of its high send frequency and data may be very different than the previous value
+        // For example, send back alpha on uihandler to avoid flickering when setting its visibility
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
@@ -116,9 +117,9 @@ public class OverviewInteractionState {
         return mSwipeUpEnabled;
     }
 
-    public void setBackButtonVisible(boolean visible) {
-        mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_VISIBLE);
-        mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_VISIBLE, visible ? 1 : 0, 0)
+    public void setBackButtonAlpha(float alpha, boolean animate) {
+        mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
+        mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)
                 .sendToTarget();
     }
 
@@ -127,7 +128,7 @@ public class OverviewInteractionState {
     }
 
     private boolean handleUiMessage(Message msg) {
-        mBgHandler.obtainMessage(msg.what, msg.arg1, msg.arg2).sendToTarget();
+        mBgHandler.obtainMessage(msg.what, msg.arg1, msg.arg2, msg.obj).sendToTarget();
         return true;
     }
 
@@ -136,9 +137,9 @@ public class OverviewInteractionState {
             case MSG_SET_PROXY:
                 mISystemUiProxy = (ISystemUiProxy) msg.obj;
                 break;
-            case MSG_SET_BACK_BUTTON_VISIBLE:
-                mBackButtonVisible = msg.arg1 != 0;
-                break;
+            case MSG_SET_BACK_BUTTON_ALPHA:
+                applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
+                return true;
             case MSG_SET_SWIPE_UP_ENABLED:
                 mSwipeUpEnabled = msg.arg1 != 0;
                 resetHomeBounceSeenOnQuickstepEnabledFirstTime();
@@ -162,16 +163,26 @@ public class OverviewInteractionState {
             return;
         }
 
-        int flags;
-        if (mSwipeUpEnabled) {
-            flags = mBackButtonVisible ? 0 : FLAG_HIDE_BACK_BUTTON;
-        } else {
+        int flags = 0;
+        if (!mSwipeUpEnabled) {
             flags = FLAG_DISABLE_SWIPE_UP | FLAG_DISABLE_QUICK_SCRUB | FLAG_SHOW_OVERVIEW_BUTTON;
         }
         try {
             mISystemUiProxy.setInteractionState(flags);
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview interaction flags", e);
+        }
+    }
+
+    @WorkerThread
+    private void applyBackButtonAlpha(float alpha, boolean animate) {
+        if (mISystemUiProxy == null) {
+            return;
+        }
+        try {
+            mISystemUiProxy.setBackButtonAlpha(alpha, animate);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Unable to update overview back button alpha", e);
         }
     }
 

@@ -93,7 +93,11 @@ public class UiFactory {
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
         }
         OverviewInteractionState.getInstance(launcher)
-                .setBackButtonVisible(!shouldBackButtonBeHidden);
+                .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
+    }
+
+    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) {
+         OverviewInteractionState.getInstance(launcher).setBackButtonAlpha(alpha,animate);
     }
 
     public static void resetOverview(Launcher launcher) {
