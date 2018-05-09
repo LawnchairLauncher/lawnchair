@@ -21,9 +21,12 @@ import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_B
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
+import static com.android.launcher3.Utilities.getSystemProperty;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -91,9 +94,14 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
-                context.getContentResolver());
-        mSwipeUpSettingObserver.register();
+        if (shouldIgnoreSwipeUpEnabledSettings()) {
+            mSwipeUpSettingObserver = null;
+            mSwipeUpEnabled = true;
+        } else {
+            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
+                    context.getContentResolver());
+            mSwipeUpSettingObserver.register();
+        }
     }
 
     public boolean isSwipeUpGestureEnabled() {
@@ -182,6 +190,15 @@ public class OverviewInteractionState {
 
         private boolean getValue() {
             return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, 0) == 1;
+        }
+    }
+
+    private boolean shouldIgnoreSwipeUpEnabledSettings() {
+        String sdkInt = getSystemProperty("ro.product.first_api_level", "0");
+        try {
+            return Integer.parseInt(sdkInt) >= Build.VERSION_CODES.P;
+        } catch (Exception e) {
+            return false;
         }
     }
 }
