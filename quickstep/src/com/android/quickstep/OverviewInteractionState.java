@@ -203,7 +203,12 @@ public class OverviewInteractionState {
     }
 
     private boolean shouldIgnoreSwipeUpEnabledSettings() {
-        String sdkInt = getSystemProperty("ro.product.first_api_level", "0");
+        int deviceApiLevel = Build.VERSION.SDK_INT;
+
+        // Note: on factory ROM devices, this first_api_level property is intentionally not set.
+        // deviceApiLevel is used in these case.
+        String sdkInt = getSystemProperty("ro.product.first_api_level",
+                Integer.toString(deviceApiLevel));
         try {
             return Integer.parseInt(sdkInt) >= Build.VERSION_CODES.P;
         } catch (Exception e) {
