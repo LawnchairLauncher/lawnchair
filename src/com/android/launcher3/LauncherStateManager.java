@@ -387,6 +387,7 @@ public class LauncherStateManager {
     }
 
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        clearCurrentAnimation();
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;
@@ -405,15 +406,10 @@ public class LauncherStateManager {
             }
             if (mConfig.playbackController != null
                     && mConfig.playbackController.getTarget() == childAnim) {
-                if (mConfig.mCurrentAnimation != null) {
-                    mConfig.mCurrentAnimation.removeListener(mConfig);
-                    mConfig.mCurrentAnimation = null;
-                }
-                mConfig.playbackController = null;
+                clearCurrentAnimation();
                 break;
             } else if (mConfig.mCurrentAnimation == childAnim) {
-                mConfig.mCurrentAnimation.removeListener(mConfig);
-                mConfig.mCurrentAnimation = null;
+                clearCurrentAnimation();
                 break;
             }
         }
@@ -423,6 +419,14 @@ public class LauncherStateManager {
             reapplyState();
         }
         mConfig.setAnimation(anim, null);
+    }
+
+    private void clearCurrentAnimation() {
+        if (mConfig.mCurrentAnimation != null) {
+            mConfig.mCurrentAnimation.removeListener(mConfig);
+            mConfig.mCurrentAnimation = null;
+        }
+        mConfig.playbackController = null;
     }
 
     private class StartAnimRunnable implements Runnable {
