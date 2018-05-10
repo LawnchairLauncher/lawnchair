@@ -310,7 +310,7 @@
 
     <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_deep_shortcut">Shortcuts</string>
-    <!-- Accessibility description when the shortcuts menu has notifications as well as shortcuts. [CHAR_LIMIT=50] -->
+    <!-- Accessibility description when the context menu of a launcher icon that has notifications as well as shortcuts (providing quick access to app's actions). The "shortcuts" translation should be consistent with the one for action_deep_shortcut. [CHAR_LIMIT=50] -->
     <string name="shortcuts_menu_with_notifications_description">Shortcuts and notifications
     </string>
 
