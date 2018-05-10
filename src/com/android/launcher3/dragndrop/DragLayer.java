@@ -62,6 +62,12 @@ import java.util.ArrayList;
  */
 public class DragLayer extends BaseDragLayer<Launcher> {
 
+    public static final int ALPHA_INDEX_OVERLAY = 0;
+    public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
+    public static final int ALPHA_INDEX_TRANSITIONS = 2;
+    public static final int ALPHA_INDEX_SWIPE_UP = 3;
+    private static final int ALPHA_CHANNEL_COUNT = 4;
+
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
@@ -90,7 +96,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
      * @param attrs The attributes set containing the Workspace's customization values.
      */
     public DragLayer(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, ALPHA_CHANNEL_COUNT);
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(false);

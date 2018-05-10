@@ -26,6 +26,7 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -58,6 +59,8 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
@@ -368,15 +371,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
         } else {
             TraceHelper.beginSection("WTS-init");
-            View rootView = activity.getRootView();
-            rootView.setAlpha(0);
-            rootView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
+            View dragLayer = activity.getDragLayer();
+            mActivityControlHelper.getAlphaProperty(activity).setValue(0);
+            dragLayer.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
 
                 @Override
                 public void onDraw() {
                     TraceHelper.endSection("WTS-init", "Launcher frame is drawn");
-                    rootView.post(() ->
-                            rootView.getViewTreeObserver().removeOnDrawListener(this));
+                    dragLayer.post(() ->
+                            dragLayer.getViewTreeObserver().removeOnDrawListener(this));
                     if (activity != mActivity) {
                         return;
                     }
@@ -398,15 +401,22 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void launcherFrameDrawn() {
-        View rootView = mActivity.getRootView();
-        if (rootView.getAlpha() < 1) {
+        AlphaProperty property = mActivityControlHelper.getAlphaProperty(mActivity);
+        if (property.getValue() < 1) {
             if (mGestureStarted) {
                 final MultiStateCallback callback = mStateCallback;
-                rootView.animate().alpha(1)
-                        .setDuration(getFadeInDuration())
-                        .withEndAction(() -> callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE));
+                ObjectAnimator animator = ObjectAnimator.ofFloat(
+                        property, MultiValueAlpha.VALUE, 1);
+                animator.setDuration(getFadeInDuration()).addListener(
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
+                            }
+                        });
+                animator.start();
             } else {
-                rootView.setAlpha(1);
+                property.setValue(1);
                 mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
             }
         }
@@ -682,6 +692,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void invalidateHandlerWithLauncher() {
         mLauncherTransitionController = null;
         mLayoutListener.finish();
+        mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
         mRecentsView.setRunningTaskHidden(false);
         mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, false /* animate */);

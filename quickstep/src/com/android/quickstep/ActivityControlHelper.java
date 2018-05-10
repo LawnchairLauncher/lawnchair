@@ -41,6 +41,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
@@ -102,6 +104,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     boolean deferStartingActivity(int downHitTarget);
 
     boolean supportsLongSwipe(T activity);
+
+    AlphaProperty getAlphaProperty(T activity);
 
     /**
      * Must return a non-null controller is supportsLongSwipe was true.
@@ -298,6 +302,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
             return new LongSwipeHelper(activity, targetSet);
         }
+
+        @Override
+        public AlphaProperty getAlphaProperty(Launcher activity) {
+            return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
+        }
     }
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
@@ -450,6 +459,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public LongSwipeHelper getLongSwipeController(RecentsActivity activity,
                 RemoteAnimationTargetSet targetSet) {
             return null;
+        }
+
+        @Override
+        public AlphaProperty getAlphaProperty(RecentsActivity activity) {
+            return activity.getDragLayer().getAlphaProperty(0);
         }
     }
 
