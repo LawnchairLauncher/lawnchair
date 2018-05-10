@@ -36,7 +36,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Property;
 import android.view.View;
 
@@ -137,6 +136,7 @@ public class WorkspaceAndHotseatScrim implements
     private int mScrimAlpha = 0;
 
     private float mSysUiProgress = 1;
+    private boolean mHideSysUiScrim;
 
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
@@ -184,7 +184,7 @@ public class WorkspaceAndHotseatScrim implements
             canvas.restore();
         }
 
-        if (mHasSysUiScrim) {
+        if (!mHideSysUiScrim && mHasSysUiScrim) {
             if (mSysUiProgress <= 0) {
                 mAnimateScrimOnNextDraw = false;
                 return;
@@ -264,6 +264,14 @@ public class WorkspaceAndHotseatScrim implements
         }
     }
 
+    public void hideSysUiScrim(boolean hideSysUiScrim) {
+        mHideSysUiScrim = hideSysUiScrim;
+        if (!hideSysUiScrim) {
+            mAnimateScrimOnNextDraw = true;
+        }
+        invalidate();
+    }
+
     private void setSysUiProgress(float progress) {
         if (progress != mSysUiProgress) {
             mSysUiProgress = progress;
@@ -274,7 +282,9 @@ public class WorkspaceAndHotseatScrim implements
     private void reapplySysUiAlpha() {
         if (mHasSysUiScrim) {
             reapplySysUiAlphaNoInvalidate();
-            invalidate();
+            if (!mHideSysUiScrim) {
+                invalidate();
+            }
         }
     }
 
