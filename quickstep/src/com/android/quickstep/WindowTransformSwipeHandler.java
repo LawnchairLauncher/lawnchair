@@ -491,21 +491,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void updateFinalShift() {
         float shift = mCurrentShift.value;
 
-        synchronized (mRecentsAnimationWrapper) {
-            if (mRecentsAnimationWrapper.controller != null) {
-                Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
-                        ? ACCEL_2 : LINEAR;
-                float interpolated = interpolator.getInterpolation(shift);
-                mClipAnimationHelper.applyTransform(
-                        mRecentsAnimationWrapper.targetSet, interpolated);
+        RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+        if (controller != null) {
+            Interpolator interpolator = mInteractionType == INTERACTION_QUICK_SCRUB
+                    ? ACCEL_2 : LINEAR;
+            float interpolated = interpolator.getInterpolation(shift);
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, interpolated);
 
-                // TODO: This logic is spartanic!
-                boolean passedThreshold = shift > 0.12f;
-                mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
-                if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
-                    mRecentsAnimationWrapper
-                            .setSplitScreenMinimizedForTransaction(passedThreshold);
-                }
+            // TODO: This logic is spartanic!
+            boolean passedThreshold = shift > 0.12f;
+            mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
+            if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
+                mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
             }
         }
 
@@ -707,27 +704,25 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void switchToScreenshot() {
         boolean finishTransitionPosted = false;
-        synchronized (mRecentsAnimationWrapper) {
-            if (mRecentsAnimationWrapper.controller != null) {
-                // Update the screenshot of the task
-                if (mTaskSnapshot == null) {
-                    mTaskSnapshot = mRecentsAnimationWrapper.controller
-                            .screenshotTask(mRunningTaskId);
-                }
-                TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
-                mRecentsView.setRunningTaskHidden(false);
-                if (taskView != null) {
-                    // Defer finishing the animation until the next launcher frame with the
-                    // new thumbnail
-                    finishTransitionPosted = new WindowCallbacksCompat(taskView) {
+        RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+        if (controller != null) {
+            // Update the screenshot of the task
+            if (mTaskSnapshot == null) {
+                mTaskSnapshot = controller.screenshotTask(mRunningTaskId);
+            }
+            TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
+            mRecentsView.setRunningTaskHidden(false);
+            if (taskView != null) {
+                // Defer finishing the animation until the next launcher frame with the
+                // new thumbnail
+                finishTransitionPosted = new WindowCallbacksCompat(taskView) {
 
-                        @Override
-                        public void onPostDraw(Canvas canvas) {
-                            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                            detach();
-                        }
-                    }.attach();
-                }
+                    @Override
+                    public void onPostDraw(Canvas canvas) {
+                        setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+                        detach();
+                    }
+                }.attach();
             }
         }
         if (!finishTransitionPosted) {
