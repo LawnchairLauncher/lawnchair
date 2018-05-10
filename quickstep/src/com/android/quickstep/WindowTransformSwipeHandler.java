@@ -880,6 +880,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             return;
         }
 
+        RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
+        if (targetSet == null) {
+            // This can happen when cancelAnimation comes on the background thread, while we are
+            // processing the long swipe on the UI thread.
+            return;
+        }
+
         mLongSwipeController = mActivityControlHelper.getLongSwipeController(
                 mActivity, mRecentsAnimationWrapper.targetSet);
         onLongSwipeDisplacementUpdated();
