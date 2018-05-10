@@ -14,8 +14,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
-import com.android.launcher3.util.Themes;
-
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Launcher mLauncher;
@@ -103,8 +101,6 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
         }
-        setBackground(insets.top == 0 ? null
-                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     public void dispatchInsets() {

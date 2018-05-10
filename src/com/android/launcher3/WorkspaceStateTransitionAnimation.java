@@ -21,6 +21,8 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SCRIM_PROGRESS;
+import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROGRESS;
 
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -30,7 +32,7 @@ import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.graphics.ViewScrim;
+import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -103,8 +105,11 @@ public class WorkspaceStateTransitionAnimation {
                 pageAlphaProvider.interpolator);
 
         // Set scrim
-        propertySetter.setFloat(ViewScrim.get(mWorkspace), ViewScrim.PROGRESS,
-                state.getWorkspaceScrimAlpha(mLauncher), Interpolators.LINEAR);
+        WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
+        propertySetter.setFloat(scrim, SCRIM_PROGRESS, state.getWorkspaceScrimAlpha(mLauncher),
+                Interpolators.LINEAR);
+        propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0,
+                Interpolators.LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
