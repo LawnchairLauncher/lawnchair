@@ -18,10 +18,13 @@ package com.android.quickstep;
 import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
+
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
-import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.PackageManagerWrapper
+        .ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -42,6 +45,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
@@ -55,9 +59,11 @@ import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
+
 import java.util.ArrayList;
 
 /**
@@ -205,6 +211,7 @@ public class OverviewCommandHelper {
         private ActivityInitListener mListener;
         private T mActivity;
         private RecentsView mRecentsView;
+        private final long mToggleClickedTime = SystemClock.uptimeMillis();
 
         public RecentsActivityCommand() {
             mHelper = getActivityControlHelper();
@@ -272,6 +279,9 @@ public class OverviewCommandHelper {
         }
 
         private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+            LatencyTrackerCompat.logToggleRecents(
+                    (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
+
             if (mListener != null) {
                 mListener.unregister();
             }
