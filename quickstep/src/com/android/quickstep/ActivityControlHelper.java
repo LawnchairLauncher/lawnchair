@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -271,7 +272,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public boolean deferStartingActivity(int downHitTarget) {
-            return downHitTarget == HIT_TARGET_BACK;
+            return downHitTarget == HIT_TARGET_BACK || downHitTarget == HIT_TARGET_ROTATION;
         }
 
         @Override
