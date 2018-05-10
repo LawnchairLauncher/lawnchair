@@ -21,6 +21,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -123,13 +124,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
+            if (!mHandleTaskStackChanges) {
+                return;
+            }
             updateThumbnail(taskId, snapshot);
         }
 
         @Override
         public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+            if (!mHandleTaskStackChanges) {
+                return;
+            }
             // Check this is for the right user
-            if (!checkCurrentUserId(userId, false /* debug */)) {
+            if (!checkCurrentOrManagedUserId(userId, getContext())) {
                 return;
             }
 
@@ -142,20 +149,24 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         @Override
         public void onActivityUnpinned() {
+            if (!mHandleTaskStackChanges) {
+                return;
+            }
             // TODO: Re-enable layout transitions for addition of the unpinned task
             reloadIfNeeded();
         }
 
         @Override
         public void onTaskRemoved(int taskId) {
+            if (!mHandleTaskStackChanges) {
+                return;
+            }
             TaskView taskView = getTaskView(taskId);
             if (taskView != null) {
                 dismissTask(taskView, true /* animate */, false /* removeTask */);
             }
         }
-    };
 
-    private TaskStackChangeListener mTaskStackClearFlagListener = new TaskStackChangeListener() {
         @Override
         public void onPinnedStackAnimationStarted() {
             // Needed for activities that auto-enter PiP, which will not trigger a remote
@@ -174,7 +185,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mRunningTaskIconScaledDown = false;
 
     private boolean mOverviewStateEnabled;
-    private boolean mTaskStackListenerRegistered;
+    private boolean mHandleTaskStackChanges;
     private Runnable mNextPageSwitchRunnable;
     private boolean mSwipeDownShouldLaunchApp;
 
@@ -261,7 +272,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onAttachedToWindow();
         updateTaskStackListenerState();
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackClearFlagListener);
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
     }
 
     @Override
@@ -269,8 +280,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
-                mTaskStackClearFlagListener);
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
     }
 
     @Override
@@ -434,18 +444,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void updateTaskStackListenerState() {
-        boolean registerStackListener = mOverviewStateEnabled && isAttachedToWindow()
+        boolean handleTaskStackChanges = mOverviewStateEnabled && isAttachedToWindow()
                 && getWindowVisibility() == VISIBLE;
-        if (registerStackListener != mTaskStackListenerRegistered) {
-            if (registerStackListener) {
-                ActivityManagerWrapper.getInstance()
-                        .registerTaskStackListener(mTaskStackListener);
+        if (handleTaskStackChanges != mHandleTaskStackChanges) {
+            mHandleTaskStackChanges = handleTaskStackChanges;
+            if (handleTaskStackChanges) {
                 reloadIfNeeded();
-            } else {
-                ActivityManagerWrapper.getInstance()
-                        .unregisterTaskStackListener(mTaskStackListener);
             }
-            mTaskStackListenerRegistered = registerStackListener;
         }
     }
 
