@@ -22,10 +22,13 @@ import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -103,6 +106,8 @@ import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
@@ -308,7 +313,7 @@ public class Launcher extends BaseDraggingActivity
             if (!internalStateHandled) {
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
-                mLauncherView.setAlpha(0);
+                mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).setValue(0);
             }
         } else {
             // Pages bound synchronously.
@@ -2086,9 +2091,18 @@ public class Launcher extends BaseDraggingActivity
 
     @Override
     public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
-        if (mLauncherView.getAlpha() < 1) {
-            mLauncherView.animate().alpha(1).withEndAction(
-                    executor == null ? null : executor::onLoadAnimationCompleted).start();
+        AlphaProperty property = mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
+        if (property.getValue() < 1) {
+            ObjectAnimator anim = ObjectAnimator.ofFloat(property, MultiValueAlpha.VALUE, 1);
+            if (executor != null) {
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        executor.onLoadAnimationCompleted();
+                    }
+                });
+            }
+            anim.start();
         } else if (executor != null) {
             executor.onLoadAnimationCompleted();
         }
