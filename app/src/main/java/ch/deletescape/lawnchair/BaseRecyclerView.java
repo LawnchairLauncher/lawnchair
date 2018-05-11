@@ -52,6 +52,8 @@ public abstract class BaseRecyclerView extends RecyclerView
     private int mLastY;
     protected Rect mBackgroundPadding = new Rect();
 
+    private float mContentTranslationY;
+
     public BaseRecyclerView(Context context) {
         this(context, null);
     }
@@ -64,6 +66,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         super(context, attrs, defStyleAttr);
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
         mScrollbar = new BaseRecyclerViewFastScrollBar(this, getResources());
+        mContentTranslationY = 0;
 
         ScrollListener listener = new ScrollListener();
         addOnScrollListener(listener);
@@ -176,8 +179,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * VisibleHeight = View height - top padding - bottom padding
      */
     protected int getVisibleHeight() {
-        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
-        return visibleHeight;
+        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
     }
 
     /**
@@ -191,8 +193,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int availableScrollBarHeight = getVisibleHeight() - mScrollbar.getThumbHeight();
-        return availableScrollBarHeight;
+        return getVisibleHeight() - mScrollbar.getThumbHeight();
     }
 
     /**
@@ -211,7 +212,12 @@ public abstract class BaseRecyclerView extends RecyclerView
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        boolean translate = Float.compare(mContentTranslationY, 0) != 0;
+        if (translate)
+            canvas.translate(0, mContentTranslationY);
         super.dispatchDraw(canvas);
+        if (translate)
+            canvas.translate(0, -mContentTranslationY);
         onUpdateScrollbar(0);
         mScrollbar.draw(canvas);
     }
@@ -251,6 +257,15 @@ public abstract class BaseRecyclerView extends RecyclerView
         } else {
             return getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
         }
+    }
+
+    public float getContentTranslationY() {
+        return mContentTranslationY;
+    }
+
+    public void setContentTranslationY(float f) {
+        mContentTranslationY = f;
+        invalidate();
     }
 
     /**

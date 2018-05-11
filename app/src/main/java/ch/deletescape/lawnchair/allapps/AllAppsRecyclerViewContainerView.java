@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.ClickShadowView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.Utilities;
 
 /**
  * A container for RecyclerView to allow for the click shadow view to be shown behind an icon that
@@ -69,7 +69,7 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     }
 
     private int getSearchBar() {
-        return FeatureFlags.useRoundSearchBar(getContext()) ?
+        return Utilities.getPrefs(getContext()).getUseRoundSearchBar() ?
                 R.layout.all_apps_search_bar_round :
                 R.layout.all_apps_search_bar;
     }

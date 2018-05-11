@@ -74,9 +74,6 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, Context context) {
-        if (mAppFilter != null && !mAppFilter.shouldShowApp(info.componentName, context)) {
-            return;
-        }
         if (findActivity(data, info.componentName, info.user)) {
             return;
         }
@@ -255,5 +252,9 @@ public class AllAppsList {
             }
         }
         return null;
+    }
+
+    public AppFilter getAppFilter() {
+        return mAppFilter;
     }
 }

@@ -19,19 +19,19 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
   <string name="work_folder_name">Εργασία</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">Η εφαρμογή δεν έχει εγκατασταθεί.</string>
+  <string name="activity_not_found">Η εφαρμογή δεν είναι εγκατεστημένη.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Η εφαρμογή δεν είναι διαθέσιμη</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Η λήψη εφαρμογών απενεργοποήθηκε στην Ασφαλή λειτουργία</string>
+  <string name="safemode_shortcut_error">Στην Ασφαλή λειτουργία,
+απενεργοποιούνται οι εφαρμογές που εσείς έχετε εγκαταστήσει</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία</string>
+  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιούνται στην ασφαλή λειτουργία</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Η συντόμευση δεν είναι διαθέσιμη</string>
   <!-- Widgets -->
@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">Πλάτος %1$d επί ύψος %2$d</string>
   <!-- All Apps -->
@@ -52,13 +51,12 @@
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν\"<xliff:g id="Query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Αναζήτηση περισσότερων εφαρμογών</string>
+  <string name="all_apps_search_market_message">Αναζήτηση για περισσότερες εφαρμογές</string>
   <!-- Drag and drop -->
-  <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα</string>
+  <string name="hotseat_out_of_space">Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Λίστα εφαρμογών</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -71,7 +69,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Πληροφορίες εφαρμογής</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">εγκατάσταση συντομεύσεων</string>
   <!-- Permission description -->
@@ -87,7 +84,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> δεν επιτρέπεται να πραγματοποιεί τηλεφωνικές κλήσεις</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -99,12 +95,11 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> είναι απενεργοποιημένη</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Σελίδα %1$d από %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Αρχική οθόνη %1$d από %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Νέα σελίδα αρχικής οθόνης</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -125,7 +120,7 @@
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Ταπετσαρίες</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Ρυθμίσεις</string>
+  <string name="settings_button_text">Ρυθμίσεις Αρχικής Σελίδας</string>
   <!-- Message shown when a feature is disabled by the administrator -->
   <string name="msg_disabled_by_admin">Απενεργοποιήθηκε από τον διαχειριστή σας</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
@@ -243,76 +238,234 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Αρχική οθόνη και οθόνη κλειδώματος</string>
   <string name="title_show_google_app">Εμφάνιση %1$s</string>
-  <string name="title_show_google_app_default">Εμφάνιση Google app</string>
+  <string name="title_show_google_app_default">Εμφάνιση εφαρμογής Google</string>
   <string name="label_search">Αναζήτηση</string>
   <string name="label_voice_search">Φωνητική αναζήτηση</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d συντομεύσεις και %2$d ειδοποιήσεις για %3$s</string>
   <string name="notifications_header">Ειδοποιήσεις</string>
   <string name="widgets_bottom_sheet_title">Γραφικό στοιχείο %1$s.</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
+  <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του Lawnchair</string>
+  <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
-  <string name="icon_pack_preference_summary">Επιλέξτε ένα πακέτο εικονιδίων</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Ενεργοποίηση σκοτεινού θέματος</string>
+  <string name="icon_pack_preference_summary">Επιλογή πακέτου εικονιδίων</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
+  <string name="hotseat_show_arrow">Εμφάνιση βέλους</string>
+  <string name="hotseat_show_page_indicator">Εμφάνιση ένδειξης κύλισης</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
+  <string name="transparent_hotseat_pref_title">Διαφανής μπάρα εφαρμογών</string>
+  <string name="dynamic_ui_pref_title">Εξαγωγή χρώματος έμφασης από την ταπετσαρία</string>
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
+  <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
+  <string name="pref_iconLabelsInTwoLines">Ετικέτες εικονιδίων σε δύο γραμμές</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
   <string name="workspace_label_color_hue_pref_title">Χρώμα ετικετών εικονιδίων στην αρχική οθόνη</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Αριθμός στηλών</string>
-  <string name="num_rows_pref_title">Αριθμός γραμμών</string>
+  <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
+  <string name="num_cols_pref_title">Αριθμός στηλών αρχικής οθόνης</string>
+  <string name="num_rows_pref_title">Αριθμός γραμμών αρχικής οθόνης</string>
   <string name="num_hotseat_icons_pref_title">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
   <string name="icon_scale_pref_title">Κλίμακα εικονιδίου</string>
+  <string name="hotseat_height_scale">Κλίμακα ύψους</string>
+  <string name="hotseat_custom_opacity">Αδιαφάνεια μπάρας εφαρμογών</string>
+  <string name="hotseat_uses_custom_opacity">Ενεργοποίηση προσαρμοζόμενης αδιαφάνειας μπάρας εφαρμογών</string>
   <string name="icon_text_scale_pref_title">Κλίμακα κειμένου εικονιδίου</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
-  <string name="pull_down_notis_pref_title">Pull down to Notifications</string>
-  <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar.</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="icon_text_padding_scale_pref_title">Κλίμακα διάκενου εικονιδίου και ετικέτας</string>
+  <string name="full_width_width_widgets_pref_title">Γραφικά στοιχεία σε πλήρες πλάτος</string>
+  <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
+  <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
+  <string name="notification_access_pref_summary">Επιτρέψτε στον Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
+  <string name="general_pref_title">Επιφάνεια Εργασίας</string>
+  <string name="dock_pref_title">Μπάρα Εφαρμογών</string>
+  <string name="app_drawer_pref_title">Συρτάρι Εφαρμογών</string>
+  <string name="pixel_ui_pref_title">Θέματα</string>
+  <string name="behavior_pref_title">Συμπεριφορά</string>
+  <string name="debug_pref_title">Αντιμετώπιση Σφαλμάτων</string>
+  <string name="general_pref_summary">Διαμόρφωση της επιφάνειας εργασίας</string>
+  <string name="dock_pref_summary">Διαμόρφωση της μπάρας εφαρμογών</string>
+  <string name="app_drawer_pref_summary">Διαμόρφωση του συρταριού εφαρμογών</string>
+  <string name="pixel_ui_pref_summary">Παραμετροποίηση διαφόρων στοιχείων του εκκινητή</string>
+  <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
+  <string name="behavior_pref_summary">Αλλαγή της συμπεριφοράς του Lawnchair</string>
+  <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεων</string>
+  <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
+  <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
+  <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
+  <string name="show_search_pill_title">Εμφάνιση γραφικού Google Search Pill</string>
+  <string name="show_date_or_weather_title">Εμφάνιση γραφικού ημερομηνίας/καιρού στη δεξιά πλευρά</string>
+  <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
+  <string name="use_round_searhbar">Χρήση στρογγυλής μπάρας αναζήτησης στο συρτάρι εφαρμογών</string>
+  <string name="pixel_style_icons_pref_title">Χρήση κυκλικών εικονιδίων Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Όταν ενεργοποιηθούν τα κυκλικά εικονίδια, θα χρησιμοποιηθούν, όπου είναι δυνατόν</string>
+  <string name="show_google_now_tab_pref_title">Εμφάνιση σελίδας Google Now</string>
+  <string name="restart_lawnchair_pref_title">Κάντε επανεκκίνηση του Lawnchair</string>
+  <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
+  <string name="rebuild_icondb_pref_title">Αναδόμηση βάσης δεδομένων των εικονιδίων</string>
+  <string name="pinch_to_overview_pref_title">Τσιμπήστε για επισκόπηση</string>
+  <string name="pinch_to_overview_pref_summary">Τσιμπήστε στην αρχική οθόνη για να ανοίξει η επισκόπηση αρχικών οθονών</string>
+  <string name="light_statusbar_pref_title">Χρωματισμός εικονιδίων μπάρας ειδοποιήσεων</string>
+  <string name="light_statusbar_pref_force">Η μπάρα ειδοποιήσεων θα εμφανίζει σκοτεινά εικονίδια</string>
+  <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει φωτεινά εικονίδια</string>
+  <string name="keep_scroll_state_pref_title">Αποθήκευση θέσης κύλισης</string>
+  <string name="keep_scroll_state_pref_summary">Αποθήκευση της θέσης κύλισης στο συρτάρι εφαρμογών</string>
+  <string name="home_opens_drawer_pref_title">Το κουμπί αρχικής οθόνης θα ανοίγει το συρτάρι εφαρμογών</string>
+  <string name="home_opens_drawer_pref_summary">Πατώντας το κουμπί αρχικής οθόνης της συσκευής στην επιφάνεια εργασίας θα ανοίγει το συρτάρι εφαρμογών</string>
+  <string name="show_hidden_pref_title">Εμφάνιση κρυφών εφαρμογών</string>
+  <string name="show_hidden_pref_on">Οι κρυφές εφαρμογές θα επανεμφανίζονται για να αλλάξετε τις ρυθμίσεις ορατότητας</string>
+  <string name="show_hidden_pref_off">Οι κρυφές εφαρμογές δεν θα είναι ορατές</string>
+  <string name="export_db_title">Βάσης δεδομένων</string>
+  <string name="import_db_title">Βάσης δεδομένων</string>
+  <string name="export_prefs_title">Ρυθμίσεων</string>
+  <string name="import_prefs_title">Ρυθμίσεων</string>
+  <string name="notification_listener_label">Εκκινητής Lawnchair - Εικονίδια ειδοποιήσεων</string>
+  <string name="color_extraction_label">Εκκινητής Lawnchair - Εξαγωγή χρώματος</string>
+  <string name="test_title">Δοκιμή</string>
+  <string name="visibility">Ορατότητα</string>
+  <string name="default_text">Προεπιλογή</string>
+  <string name="edit_icon_reset">Επαναφορά</string>
+  <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
+  <string name="pref_category_homescreen">Αρχική οθόνη</string>
+  <string name="theme_pref_title">Θέμα</string>
+  <string name="theme_light">Φωτεινό</string>
+  <string name="theme_dark">Σκοτεινό</string>
+  <string name="theme_black">Μαύρο</string>
+  <string name="hide_hotseat_pref_title">Απόκρυψη μπάρας εφαρμογών</string>
+  <string name="all_icons">Όλα τα εικονίδια</string>
+  <string name="pull_down_action_pref_title">Σύρετε προς τα κάτω για…</string>
+  <string name="pull_down_do_nothing">Δεν θα κάνει τίποτα</string>
+  <string name="pull_down_notis">Εμφάνιση ειδοποιήσεων</string>
+  <string name="pull_down_search">Άνοιγμα αναζήτησης Google</string>
+  <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
+  <string name="enable_screen_rotation">Ενεργοποίηση περιστροφής οθόνης</string>
+  <string name="use_system_fonts_title">Χρησιμοποιήστε γραμματοσειρές του συστήματος για τις ετικέτες εφαρμογών</string>
+  <!-- Import/Export Strings -->
+  <string name="backup_import_title">Εισαγωγή</string>
+  <string name="backup_export_title">Εξαγωγή</string>
+  <string name="settings_export_success">Οι ρυθμίσεις εξήχθησαν επιτυχώς</string>
+  <string name="db_export_success">Η βάση δεδομένων εξήχθη επιτυχώς</string>
+  <string name="settings_import_success">Οι ρυθμίσεις επαναφέρθηκαν επιτυχώς</string>
+  <string name="db_import_success">Η βάση δεδομένων επαναφέρθηκε επιτυχώς</string>
+  <string name="export_error">Δεν ήταν δυνατή η δημιουργία αντιγράφων ασφαλείας</string>
+  <string name="import_error">Δεν ήταν δυνατή η επαναφορά</string>
+  <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
+  <string name="imexport_external_storage_unreadable">Η εξωτερική μονάδα αποθήκευσης δεν είναι αναγνώσιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
+  <string name="imexport_external_storage_unwritable">Η εξωτερική μονάδα αποθήκευσης δεν είναι εγγράψιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
+  <string name="units_metric">Μετρικό (°C)</string>
+  <string name="units_imperial">Αγγλοσαξονικό (°F)</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Καιρός</string>
+  <string name="pref_weather_title">Ενεργοποίηση καιρού</string>
+  <string name="pref_weather_units">Μονάδα μέτρησης καιρού</string>
+  <string name="pref_weather_city_summary">Για καλύτερα αποτελέσματα να συμπεριλάβετε και τον κωδικό χώρας</string>
+  <string name="pref_weather_city_title">Πόλη</string>
+  <string name="none">Κανένα</string>
+  <string name="pref_applyTheme">Εφαρμογή θέματος σε</string>
+  <string name="pref_applyBlur">Εφαρμόστε εφέ θολότητας σε</string>
+  <string name="search_bar">Μπάρα αναζήτησης</string>
+  <string name="folder">Φάκελος</string>
+  <string name="dock_allapps"><![CDATA[Μπάρα εφαρμογών & συρτάρι εφαρμογών]]></string>
+  <string name="app_shortcuts">Συντομεύσεις εφαρμογών</string>
+  <string name="blur_effect">Εφέ θολώματος</string>
+  <string name="pref_weather_provider">Πάροχος καιρού</string>
+  <string name="loading">Φόρτωση…</string>
+  <string name="icon_shape_override_label">Σχήμα εικονιδίων</string>
+  <string name="icon_shape_system_default">Χωρίς αλλαγή</string>
+  <string name="icon_shape_none">Κανένα</string>
+  <string name="icon_shape_square">Τετράγωνο</string>
+  <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
+  <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
+  <string name="icon_shape_circle">Κυκλικό</string>
+  <string name="icon_shape_teardrop">Δάκρυ</string>
+  <string name="animated_clock_icon_title">Ζωντανό εικονίδιο ρολογιού</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Κινούμενα γραφικά για εναλλακτικές εφαρμογές ρολογιού</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Ενεργοποιήστε αυτό εάν δεν χρησιμοποιείται το ρολόι Google ως προεπιλεγμένη εφαρμογή ρολογιού</string>
+  <string name="about_summary_title">Σύνοψη</string>
+  <string name="about_version">Αριθμός έκδοσης</string>
+  <string name="about_icon_designer">Σχεδιαστής Εικονιδίου Lawnchair</string>
+  <string name="about_contributors_title">Συντελεστές</string>
+  <string name="location_permission_warn">Απαιτείται η παραχώρηση άδειας ανάγνωσης τοποθεσίας για αλλαγή παρόχου καιρού!</string>
+  <string name="num_cols_drawer_pref_title">Αριθμός στηλών στο συρτάρι εφαρμογών</string>
+  <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
+  <string name="pref_backport_shortcuts">Ενεργοποίηση συντομεύσεων εφαρμογών</string>
+  <string name="weather_api_key_not_set">Δεν έχει οριστεί κλειδί API</string>
+  <string name="pref_weather_api_key_title">Κλειδί API</string>
+  <string name="about_changelog">Αρχείο καταγραφής αλλαγών</string>
+  <string name="pref_all_apps_custom_label_color">Χρήση προσαρμοσμένου χρώματος ετικέτας εικονιδίων</string>
+  <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
+  <string name="pref_num_rows_drawer">Αριθμός γραμμών στο συρτάρι εφαρμογών</string>
+  <string name="center_wallpaper_pref_title">Κεντράρισμα ταπετσαρίας όταν υπάρχει μόνο μία αρχική οθόνη</string>
+  <string name="center_wallpaper_pref_summary">Λειτουργεί μόνο εάν η αρχική οθόνη χρησιμοποιεί μία σελίδα</string>
+  <string name="vertical_drawer_layout_pref_title">Εμφάνιση ως κάθετη λίστα εφαρμογών</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
+  <string name="about_translators">Μεταφραστές</string>
+  <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
+  <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
+  <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
+  <string name="lawnfeed_incompatible">Εγκατεστημένη ασύμβατη έκδοση Lawnfeed</string>
+  <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
+  <string name="enable_spring_pref_title">Ενεργοποίηση εφέ μεταπήδησης</string>
+  <string name="hide_app">Κρυφές εφαρμογές</string>
+  <string name="hide_app_sum">Απόκρυψη εφαρμογών από το συρτάρι εφαρμογών</string>
+  <string name="hide_app_selected">&#160;επιλεγμένη/ες εφαρμογές</string>
+  <string name="hidden_app">Κρυφές εφαρμογές</string>
+  <string name="hide_app_apply">Εφαρμογή</string>
+  <string name="unauthorized_device">Αυτή η συσκευή έχει εγκατεστημένα ορισμένα πειρατικά εργαλεία. Παρακαλώ απεγκαταστήστε τα για να συνεχίσετε.</string>
+  <string name="hide_app_reset">Επαναφορά</string>
+  <string name="two_row_dock">Μπάρα εφαρμογών με δύο σειρές</string>
+  <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
+  <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
+  <string name="error_no_browser">Δεν βρέθηκε καμία δραστηριότητα για να διαχειριστεί τις διευθύνσεις URL</string>
+  <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Το Lawnfeed δεν είναι ενεργοποιημένο</string>
+  <string name="lawnfeed_not_enabled">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε ενεργοποιήσει την επιλογή στις ρυθμίσεις.\n\nΘέλετε να την ενεργοποιήσετε τώρα;</string>
+  <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
+  <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
+  <string name="title_storage_permission_required">Απαιτείται άδεια πρόσβασης στον αποθηκευτικό χώρο</string>
+  <string name="content_storage_permission_required">Στο Android 8.1 και άνω απαιτείται άδεια αποθήκευσης για τις εφαρμογές για να αποκτήσετε πρόσβαση στην ταπετσαρία. Χωρίς την άδεια ο Lawnchair μπορεί να διακοπεί ή να δείξει απροσδόκητες συμπεριφορές.</string>
+  <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
+  <string name="backups">Αντίγραφα Ασφαλείας</string>
+  <string name="new_backup">Δημιουργία</string>
+  <string name="restore_backup">Επαναφορά</string>
+  <string name="backup_name">Όνομα</string>
+  <string name="backup_location">Τοποθεσία</string>
+  <string name="choose_backup_path">Περιήγηση</string>
+  <string name="backup_homescreen">Αρχική οθόνη</string>
+  <string name="backup_contents">Περιεχόμενο αντιγράφου ασφαλείας</string>
+  <string name="backup_settings">Ρυθμίσεις Αρχικής Σελίδας</string>
+  <string name="backup_wallpaper">Ταπετσαρία</string>
+  <string name="backup_error_blank_name">Το όνομα δεν πρέπει να είναι άδειο</string>
+  <string name="backup_error_blank_location">Η τοποθεσία δεν πρέπει να είναι κενή</string>
+  <string name="backup_error_blank_contents">Το περιεχόμενο δεν πρέπει να είναι κενό</string>
+  <string name="backup_creating">Δημιουργία αντιγράφου ασφαλείας</string>
+  <string name="no_recent_backups">Δεν υπάρχουν πρόσφατα αντίγραφα ασφαλείας</string>
+  <string name="backup_loading">Φόρτωση...</string>
+  <string name="backup_invalid">Μη διαθέσιμο</string>
+  <string name="backup_remove_from_recents">Κατάργηση από τη λίστα</string>
+  <string name="backup_share">Κοινοποίηση</string>
+  <string name="backup_timestamp">Δημιουργήθηκε στο</string>
+  <string name="backup_restoring">Επαναφορά αντιγράφου ασφαλείας</string>
+  <string name="backup_restarting">Επανεκκίνηση…</string>
+  <string name="restore_contents">Επαναφορά περιεχομένου</string>
+  <string name="restore_success">Επαναφορά επιτυχής</string>
+  <string name="backup_failed">Αποτυχία δημιουργίας αντιγράφου ασφαλείας</string>
+  <string name="restore_failed">Επαναφορά απέτυχε</string>
+  <string name="restore_read_meta_fail">Μη έγκυρο αρχείο αντιγράφου ασφαλείας</string>
+  <string name="backup_share_title">Κοινή χρήση αντιγράφου ασφαλείας</string>
+  <string name="backup_share_text">Αρχείο αντιγράφου ασφαλείας Lawnchair</string>
+  <string name="read_external_storage_required">Άδεια αποθήκευσης απαιτείται για να δημιουργήσετε αντίγραφο ασφαλείας</string>
+  <string name="local_backups">Τοπικά αντίγραφα ασφαλείας</string>
+  <string name="backup_location_device_storage">Αποθηκευτικός χώρος συσκευής</string>
+  <string name="backup_location_documents_storage">Αποθηκευτικός χώρος εγγράφων</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Μπάρα αναζήτησης Pixel</string>
+  <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Διάφορα</string>
 </resources>

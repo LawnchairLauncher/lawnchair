@@ -7,10 +7,6 @@
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
 
-    <!-- A string pointer to the original app name string. This allows derived projects to
-     easily override the app name without providing all translations -->
-    <string name="derived_app_name" translatable="false">@string/app_name</string>
-
     <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
@@ -52,8 +48,8 @@
     <integer name="config_dropAnimMaxDuration">500</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
-    <integer name="config_folderExpandDuration">120</integer>
-    <integer name="config_materialFolderExpandDuration">200</integer>
+    <integer name="config_folderExpandDuration">110</integer>
+    <integer name="config_materialFolderExpandDuration">180</integer>
     <integer name="config_materialFolderExpandStagger">60</integer>
 
     <!-- The distance at which the animation should take the max duration -->
@@ -65,15 +61,17 @@
     <!-- View ID to use for blocked area on the first screen -->
     <item type="id" name="workspace_blocked_row" />
 
+    <!-- Hotseat -->
+    <bool name="hotseat_transpose_layout_with_orientation">true</bool>
+
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
-    <!-- Deep shortcuts -->
-    <integer name="config_deepShortcutOpenDuration">220</integer>
+    <!-- Popup items -->
     <integer name="config_deepShortcutArrowOpenDuration">80</integer>
-    <integer name="config_deepShortcutOpenStagger">40</integer>
-    <integer name="config_deepShortcutCloseDuration">150</integer>
-    <integer name="config_deepShortcutCloseStagger">20</integer>
+    <integer name="config_removeNotificationViewDuration">300</integer>
+    <integer name="config_popupOpenCloseDuration">150</integer>
+    <integer name="config_popupArrowOpenDuration">80</integer>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -87,5 +85,4 @@
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
 
-    <integer name="config_removeNotificationViewDuration">300</integer>
 </resources>

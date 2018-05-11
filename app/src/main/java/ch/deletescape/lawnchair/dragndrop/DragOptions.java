@@ -41,12 +41,33 @@ public class DragOptions {
     public DeferDragCondition deferDragCondition = new DeferDragCondition();
     public PreDragCondition preDragCondition = null;
 
+    /**
+     * Specifies a condition that must be met before DragListener#onDragStart() is called.
+     * By default, there is no condition and onDragStart() is called immediately following
+     * DragController#startDrag().
+     *
+     * This condition can be overridden, and callbacks are provided for the following cases:
+     * - The pre-drag starts, but onDragStart() is deferred (onPreDragStart()).
+     * - The pre-drag ends before the condition is met (onPreDragEnd(false)).
+     * - The actual drag starts when the condition is met (onPreDragEnd(true)).
+     */
     public interface PreDragCondition {
-        void onPreDragEnd(DropTarget.DragObject dragObject, boolean makeOriginalVisible);
 
+        boolean shouldStartDrag(double distanceDragged);
+
+        /**
+         * The pre-drag has started, but onDragStart() is
+         * deferred until shouldStartDrag() returns true.
+         */
         void onPreDragStart(DropTarget.DragObject dragObject);
 
-        boolean shouldStartDrag(double d);
+        /**
+         * The pre-drag has ended. This gets called at the same time as onDragStart()
+         * if the condition is met, otherwise at the same time as onDragEnd().
+         * @param dragStarted Whether the pre-drag ended because the actual drag started.
+         *                    This will be true if the condition was met, otherwise false.
+         */
+        void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
     }
 
     /**

@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -41,7 +40,6 @@
   <string name="long_accessible_way_to_add">ダブルタップ後に押し続けてウィジェットを選択するか、カスタム操作を使用してください。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$dx%2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">幅 %1$d、高さ %2$d</string>
   <!-- All Apps -->
@@ -54,8 +52,7 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">他のアプリを検索</string>
   <!-- Drag and drop -->
-  <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">このホーム画面に空きスペースがありません。</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">お気に入りトレイに空きスペースがありません</string>
@@ -71,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">アプリ情報</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">ショートカットのインストール</string>
   <!-- Permission description -->
@@ -87,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">「<xliff:g id="APP_NAME">%1$s</xliff:g>」から電話をかけることはできません</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">ウィジェットを表示できません</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -99,18 +94,17 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">「<xliff:g id="APP_NAME">%1$s</xliff:g>」は無効です</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">%1$d/%2$dページ</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">ホーム画面: %1$d/%2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">新しいホーム画面ページ</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">タップしてフォルダを閉じます</string>
+  <string name="folder_tap_to_close">タップしてフォルダーを閉じる</string>
   <!-- Instruction that clicking outside will commit folder rename -->
   <string name="folder_tap_to_rename">タップして変更後の名前を保存します</string>
   <!-- Indication that folder closed -->
@@ -202,7 +196,7 @@
   <string name="action_deep_shortcut">ショートカット</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="APP_NAME">%2$s</xliff:g>用の <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 件のショートカット</string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">編集</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">壁紙を設定</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -236,82 +230,240 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">壁紙のトリミング</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">ホーム画面</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">ロック画面</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">ホーム画面とロック画面</string>
+  <string name="title_show_google_app">%1$s を表示</string>
+  <string name="title_show_google_app_default">Googleアプリを見る</string>
+  <string name="label_search">検索</string>
+  <string name="label_voice_search">音声検索</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d のショートカットと %3$s の %2$d 通知</string>
+  <string name="notifications_header">通知</string>
+  <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
+  <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。AOSP の Launcher3 に基づいて出来ています。</string>
+  <string name="about_title">アプリについて</string>
+  <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
+  <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Enable dark theme</string>
-  <string name="blur_pref_title">Enable blur</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
-  <string name="pull_down_notis_pref_title">Pull down to Notifications</string>
-  <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar.</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="icon_pack_preference_title">アイコンパック</string>
+  <string name="icon_pack_preference_summary">アイコンパックを選択</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">ドックは壁紙の色を使用する</string>
+  <string name="hotseat_show_arrow">矢印を表示</string>
+  <string name="hotseat_show_page_indicator">ページインジケーターを表示</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">ドックは壁紙から抽出された色で着色されます</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">ドックはグレーの色になりますが、壁紙の明るさによって調整されます</string>
+  <string name="transparent_hotseat_pref_title">透明なドック</string>
+  <string name="dynamic_ui_pref_title">壁紙からアクセントの色を抽出する</string>
+  <string name="blur_pref_title">ぼかしを有効にする</string>
+  <string name="blur_pref_summary">ぼかし効果を部分的にインターフェースに適用します\nまたライブ壁紙とは互換性はありません</string>
+  <string name="blur_radius_pref_title">ぼかしの範囲</string>
+  <string name="pref_iconLabelsInTwoLines">アイコンラベルを2行で表示</string>
+  <string name="white_google_icon_pref_title">白いGoogleアイコンを使用する</string>
+  <string name="hide_icon_labels_pref_title">ホーム画面のアイコンラベルを非表示にする</string>
+  <string name="hide_all_apps_icon_labels_pref_title">ドロワーでアイコンラベルを表示しない</string>
+  <string name="workspace_label_color_hue_pref_title">ホーム画面のアイコンラベルの色</string>
+  <string name="all_apps_opacity_pref_title">アプリドロワーの不透明度</string>
+  <string name="num_cols_pref_title">列数</string>
+  <string name="num_rows_pref_title">行数</string>
+  <string name="num_hotseat_icons_pref_title">ドック内のアイコン数</string>
+  <string name="icon_scale_pref_title">アイコンスケール</string>
+  <string name="hotseat_height_scale">高さの単位</string>
+  <string name="hotseat_custom_opacity">ドックの透明度</string>
+  <string name="hotseat_uses_custom_opacity">ドックの透明度調整を有効にする</string>
+  <string name="icon_text_scale_pref_title">アイコンのテキストスケール</string>
+  <string name="icon_text_padding_scale_pref_title">アイコンの空き単位</string>
+  <string name="full_width_width_widgets_pref_title">全幅ウィジェット</string>
+  <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
+  <string name="notification_access_pref_title">通知バッジとプレビュー</string>
+  <string name="notification_access_pref_summary">Lawnchairがこの機能を有効にするために通知にアクセスできるようにする</string>
+  <string name="general_pref_title">デスクトップ</string>
+  <string name="dock_pref_title">ドック</string>
+  <string name="app_drawer_pref_title">アプリドロワー</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="behavior_pref_title">動作</string>
+  <string name="debug_pref_title">デバッグ</string>
+  <string name="general_pref_summary">デスクトップをカスタマイズします</string>
+  <string name="dock_pref_summary">ドックをカスタマイズします</string>
+  <string name="app_drawer_pref_summary">アプリドロワーをカスタマイズします</string>
+  <string name="pixel_ui_pref_summary">Pixel Launcherの特徴的な機能を有効にします</string>
+  <string name="backup_pref_title">バックアップとリストア</string>
+  <string name="behavior_pref_summary">Lawnchairの動作設定を変更します</string>
+  <string name="backup_pref_summary">データベースと設定をバックアップ</string>
+  <string name="debug_pref_summary">再起動またはアイコンデータベースの再構築</string>
+  <string name="show_pixel_bar_pref_title">Pixelのトップバーを表示する</string>
+  <string name="use_wide_searchbar_pref_title">ワイドな検索バーを使用する</string>
+  <string name="show_search_pill_title">グーグル検索ピルを表示</string>
+  <string name="show_date_or_weather_title">日付と天気を右側に表示</string>
+  <string name="show_mic_pref_title">Google アシスタントボタンを表示する</string>
+  <string name="use_round_searhbar">丸型の検索バーを使用する</string>
+  <string name="pixel_style_icons_pref_title">Pixel アイコンを使用する</string>
+  <string name="pixel_style_icons_pref_summary">有効になっている場合は可能な限り円形のアイコンが使用されます</string>
+  <string name="show_google_now_tab_pref_title">Google Now ページを表示する</string>
+  <string name="restart_lawnchair_pref_title"> Lawnchair を再起動</string>
+  <string name="restart_lawnchair_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
+  <string name="rebuild_icondb_pref_title">アイコンデータベースを再構築する</string>
+  <string name="pinch_to_overview_pref_title">概要にピンチ</string>
+  <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
+  <string name="light_statusbar_pref_title">明るいステータスバー</string>
+  <string name="light_statusbar_pref_force">ステータスバーは常に暗いアイコンで表示されます</string>
+  <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます</string>
+  <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
+  <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します</string>
+  <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開く</string>
+  <string name="home_opens_drawer_pref_summary">ホーム画面でホームボタンを押すと、アプリドロワーが開きます</string>
+  <string name="show_hidden_pref_title">隠しアプリを表示する</string>
+  <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
+  <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
+  <string name="export_db_title">データベース</string>
+  <string name="import_db_title">データベース</string>
+  <string name="export_prefs_title">設定</string>
+  <string name="import_prefs_title">設定</string>
+  <string name="notification_listener_label">Lawnchair - 通知バッジ</string>
+  <string name="color_extraction_label">Lawnchair - 色の抽出</string>
+  <string name="test_title">テスト</string>
+  <string name="visibility">可視性</string>
+  <string name="default_text">デフォルト</string>
+  <string name="edit_icon_reset">リセット</string>
+  <string name="show_top_shadow_title">上部にシャドウを表示する</string>
+  <string name="pref_category_homescreen">ホーム画面</string>
+  <string name="theme_pref_title">テーマ</string>
+  <string name="theme_light">明るい</string>
+  <string name="theme_dark">暗い</string>
+  <string name="theme_black">黒</string>
+  <string name="hide_hotseat_pref_title">ドックを隠す</string>
+  <string name="all_icons">全てのアイコン</string>
+  <string name="pull_down_action_pref_title">プルダウンの動作</string>
+  <string name="pull_down_do_nothing">何もしない</string>
+  <string name="pull_down_notis">通知を表示</string>
+  <string name="pull_down_search">検索を開く</string>
+  <string name="pull_down_apps_search">アプリを検索</string>
+  <string name="enable_screen_rotation">画面の回転を有効にする</string>
+  <string name="use_system_fonts_title">ラベルにシステムフォントを利用する</string>
+  <!-- Import/Export Strings -->
+  <string name="backup_import_title">リストア</string>
+  <string name="backup_export_title">バックアップ</string>
+  <string name="settings_export_success">設定のバックアップに成功しました</string>
+  <string name="db_export_success">データベースのバックアップに成功しました</string>
+  <string name="settings_import_success">設定のリストアに成功しました</string>
+  <string name="db_import_success">データベースのリストアに成功しました</string>
+  <string name="export_error">バックアップすることはできませんでした</string>
+  <string name="import_error">復元することはできませんでした</string>
+  <string name="imexport_no_backup_found">バックアップが見つかりません</string>
+  <string name="imexport_external_storage_unreadable">外部ストレージを読み取ることができません (設定で権限を許可して下さい)</string>
+  <string name="imexport_external_storage_unwritable">外部ストレージに書き込むことができません (設定で権限を許可して下さい)</string>
+  <string name="units_metric">メトリック法（摂氏）</string>
+  <string name="units_imperial">インペリアル法（華氏）</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">天気</string>
+  <string name="pref_weather_title">天気情報を有効にする</string>
+  <string name="pref_weather_units">天気の単位</string>
+  <string name="pref_weather_city_summary">国コードを含めると最良の結果を返します（例: Tokyo,JP）</string>
+  <string name="pref_weather_city_title">都市</string>
+  <string name="none">設定しない</string>
+  <string name="pref_applyTheme">テーマの適用範囲</string>
+  <string name="pref_applyBlur">ぼかしの適用範囲</string>
+  <string name="search_bar">検索バー</string>
+  <string name="folder">フォルダ</string>
+  <string name="dock_allapps"><![CDATA[ドックとドロワー]]></string>
+  <string name="app_shortcuts">アプリ ショートカット</string>
+  <string name="blur_effect">ぼかし効果</string>
+  <string name="pref_weather_provider">天気プロバイダ</string>
+  <string name="loading">読み込んでいます…</string>
+  <string name="icon_shape_override_label">アイコンの形の変更</string>
+  <string name="icon_shape_system_default">変更しない</string>
+  <string name="icon_shape_none">無し</string>
+  <string name="icon_shape_square">四角形</string>
+  <string name="icon_shape_rounded_square">丸い長方形</string>
+  <string name="icon_shape_squircle">丸い四角形</string>
+  <string name="icon_shape_circle">サークル</string>
+  <string name="icon_shape_teardrop">涙形</string>
+  <string name="animated_clock_icon_title">時計アイコンのアニメーション</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">別の時計アプリをアニメーション化</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">既定の時計アプリとしてGoogle 時計を使用しない場合は有効にしてください</string>
+  <string name="about_summary_title">概要</string>
+  <string name="about_version">バージョン</string>
+  <string name="about_icon_designer">アイコンデザイナー</string>
+  <string name="about_contributors_title">貢献者</string>
+  <string name="location_permission_warn">位置情報のアクセス許可は、別のプロバイダに切り替える為に必要です！</string>
+  <string name="num_cols_drawer_pref_title">ドロワーの列数</string>
+  <string name="shortcut_backport_warning">動作が遅くなる可能性があります。自己責任で使用してください。</string>
+  <string name="pref_backport_shortcuts">バックポートのショートカット</string>
+  <string name="weather_api_key_not_set">API キーが設定されていません</string>
+  <string name="pref_weather_api_key_title">API キー</string>
+  <string name="about_changelog">変更履歴</string>
+  <string name="pref_all_apps_custom_label_color">選択したラベルの色を使用する</string>
+  <string name="pref_all_apps_label_color">ドロワーのアイコンラベルの色</string>
+  <string name="pref_num_rows_drawer">ドロワーの行数</string>
+  <string name="center_wallpaper_pref_title">ページが1つの場合は壁紙を中心位置にする</string>
+  <string name="center_wallpaper_pref_summary">ホーム画面は、１画面で使用している場合のみ機能します。</string>
+  <string name="vertical_drawer_layout_pref_title">縦リストとして表示</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">M月dd日,EEEE</string>
+  <string name="about_translators">翻訳者</string>
+  <string name="lock_desktop">デスクトップをロック</string>
+  <string name="lawnfeed_not_found">Lawnfeed はインストールされていません</string>
+  <string name="google_app_not_found">Google アプリはインストールされていません</string>
+  <string name="lawnfeed_incompatible">互換性がないバージョンのLawnfeedがインストールされています</string>
+  <string name="set_default_launcher">既定のランチャーにセット</string>
+  <string name="enable_spring_pref_title">スプリング効果を有効にする</string>
+  <string name="hide_app">アプリを隠す</string>
+  <string name="hide_app_sum">ドロワーからアプリを非表示にする</string>
+  <string name="hide_app_selected">&#160;選択済み</string>
+  <string name="hidden_app">非表示のアプリ</string>
+  <string name="hide_app_apply">適用</string>
+  <string name="unauthorized_device">このデバイスにはいくつかの海賊版や著作権侵害を助長するアプリがインストールされています。続行するにはアンインストールを行ってください。</string>
+  <string name="hide_app_reset">リセット</string>
+  <string name="two_row_dock">ドックを2行で表示する</string>
+  <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
+  <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
+  <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
+  <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeedが有効になっていません</string>
+  <string name="lawnfeed_not_enabled">Google Now ページを開こうとしましたが、動作設定でこのオプションが有効になっていません。\n\n今すぐ有効にしますか？</string>
+  <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
+  <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
+  <string name="title_storage_permission_required">ストレージへのアクセス許可</string>
+  <string name="content_storage_permission_required">Android 8.1以上ではアプリで壁紙を設定する時にストレージへのアクセス許可が必要です。アクセス許可をしていない場合、Lawnchairがクラッシュしたり予期しない動作をします。</string>
+  <string name="disable_popup">今後表示しない</string>
+  <string name="backups">バックアップ</string>
+  <string name="new_backup">バックアップを作成</string>
+  <string name="restore_backup">バックアップから復元</string>
+  <string name="backup_name">バックアップ名</string>
+  <string name="backup_location">バックアップ先</string>
+  <string name="choose_backup_path">バックアップ先を選択</string>
+  <string name="backup_homescreen">ホーム画面</string>
+  <string name="backup_contents">バックアップ項目</string>
+  <string name="backup_settings">設定</string>
+  <string name="backup_wallpaper">壁紙</string>
+  <string name="backup_error_blank_name">バックアップ名を空欄には出来ません</string>
+  <string name="backup_error_blank_location">バックアップ先を空欄には出来ません</string>
+  <string name="backup_error_blank_contents">バックアップ項目が未選択です</string>
+  <string name="backup_creating">バックアップを作成中</string>
+  <string name="no_recent_backups">最新のバックアップが有りません</string>
+  <string name="backup_loading">読み込んでいます…</string>
+  <string name="backup_invalid">利用出来ません</string>
+  <string name="backup_remove_from_recents">リストから削除する</string>
+  <string name="backup_share">共有</string>
+  <string name="backup_timestamp">作成日時</string>
+  <string name="backup_restoring">バックアップから復元</string>
+  <string name="backup_restarting">再起動中</string>
+  <string name="restore_contents">バックアップ項目を復元</string>
+  <string name="restore_success">正常にバックアップから復元されました</string>
+  <string name="backup_failed">バックアップ作成に失敗しました</string>
+  <string name="restore_failed">バックアップから復元に失敗しました</string>
+  <string name="restore_read_meta_fail">バックアップファイルが無効です</string>
+  <string name="backup_share_title">共有名</string>
+  <string name="backup_share_text">Lawnchairバックアップファイル</string>
+  <string name="read_external_storage_required">バックアップを作成するにはストレージへのアクセス許可が必要です</string>
+  <string name="local_backups">ローカルバックアップ</string>
+  <string name="backup_location_device_storage">Documentsフォルダー</string>
+  <string name="backup_location_documents_storage">保存先を選択</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel検索バー</string>
+  <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">その他</string>
 </resources>

@@ -55,8 +55,8 @@
             android:paddingTop="@dimen/folder_label_padding_top"
             android:maxLines="1"
             android:textColor="?attr/folderNameTextColor"
-            android:textColorHighlight="#ffCCCCCC"
-            android:textColorHint="#ff808080"
+            android:textColorHighlight="@color/folder_name_highlight_color"
+            android:textColorHint="@color/folder_name_hint_color"
             android:textSize="@dimen/folder_label_text_size" />
 
         <ch.deletescape.lawnchair.pageindicators.PageIndicatorDots

@@ -68,28 +68,28 @@ public class DefaultAppSearchAlgorithm {
     }
 
     protected boolean matches(AppInfo info, String query) {
-        int queryLength = query.length();
+        return matches(info.title.toString().toLowerCase(), query);
+    }
 
-        String title = info.title.toString();
-        int titleLength = title.length();
+    protected boolean matches(String haystack, String needle) {
+        // Assumes both haystack and needle are lowercase
+        int queryLength = needle.length();
+        int titleLength = haystack.length();
 
         if (titleLength < queryLength || queryLength <= 0) {
             return false;
         }
 
-        int lastType;
-        int thisType = Character.UNASSIGNED;
-        int nextType = Character.getType(title.codePointAt(0));
-
-        int end = titleLength - queryLength;
-        for (int i = 0; i <= end; i++) {
-            lastType = thisType;
-            thisType = nextType;
-            nextType = i < (titleLength - 1) ?
-                    Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
-            if (isBreak(thisType, lastType, nextType) &&
-                    title.substring(i, i + queryLength).equalsIgnoreCase(query)) {
-                return true;
+        // This algorithms works by iterating over the "haystack" string,
+        // and the "needle" query is searched character by character on it
+        // without going back. For instance, "ffox" would match in "firefox".
+        int hi;
+        int ni = 0;
+        for (hi = 0; hi < titleLength; hi++) {
+            if (haystack.charAt(hi) == needle.charAt(ni)) {
+                ni++;
+                if (ni == queryLength)
+                    return true; // All characters consumed, the query matched
             }
         }
         return false;
@@ -127,6 +127,7 @@ public class DefaultAppSearchAlgorithm {
             case Character.CURRENCY_SYMBOL:
             case Character.OTHER_PUNCTUATION:
             case Character.DASH_PUNCTUATION:
+            case Character.OTHER_LETTER:
                 // Always a break point for a symbol
                 return true;
             default:

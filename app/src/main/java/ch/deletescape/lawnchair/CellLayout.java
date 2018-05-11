@@ -150,7 +150,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private boolean mDragging = false;
 
-    private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     private boolean mIsHotseat = false;
@@ -230,7 +229,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
-        mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
+        TimeInterpolator easeOutInterpolator = new DecelerateInterpolator(2.5f);
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);
@@ -250,7 +249,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
                     new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
-            anim.getAnimator().setInterpolator(mEaseOutInterpolator);
+            anim.getAnimator().setInterpolator(easeOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
                 @Override
@@ -571,8 +570,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mIsHotseat;
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params, boolean markCells) {
-        final LayoutParams lp = params;
+    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams lp, boolean markCells) {
 
         if (child instanceof BubbleTextView) {
             BubbleTextView view = (BubbleTextView) child;
@@ -788,10 +786,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = childWidthSize;
-            int vSpace = childHeightSize;
-            int hFreeSpace = hSpace - (mCountX * mCellWidth);
-            int vFreeSpace = vSpace - (mCountY * mCellHeight);
+            int hFreeSpace = childWidthSize - (mCountX * mCellWidth);
+            int vFreeSpace = childHeightSize - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap, numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,

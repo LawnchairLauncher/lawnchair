@@ -47,7 +47,7 @@ public abstract class BasicTexture implements Texture {
     protected int mTextureHeight;
 
     protected GLCanvas mCanvasRef = null;
-    private static WeakHashMap<BasicTexture, Object> sAllTextures
+    private static final WeakHashMap<BasicTexture, Object> sAllTextures
             = new WeakHashMap<>();
     private static ThreadLocal<Class<BasicTexture>> sInFinalizer = new ThreadLocal<>();
 

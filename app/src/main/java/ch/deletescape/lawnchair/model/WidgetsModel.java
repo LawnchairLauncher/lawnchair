@@ -46,12 +46,11 @@ public class WidgetsModel {
             InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
             for (AppWidgetProviderInfo fromProviderInfo : AppWidgetManagerCompat.getInstance(context).getAllProviders(/*packageUserKey*/)) {
                 arrayList.add(new WidgetItem(LauncherAppWidgetProviderInfo.fromProviderInfo(fromProviderInfo), packageManager, idp));
-
             }
             for (ShortcutConfigActivityInfo widgetItem : LauncherAppsCompat.getInstance(context).getCustomShortcutActivityList(packageUserKey)) {
                 arrayList.add(new WidgetItem(widgetItem));
             }
-            setWidgetsAndShortcuts(arrayList, context, packageUserKey);
+            setWidgetsAndShortcuts(arrayList, context, mWidgetsList.isEmpty() ? null : packageUserKey);
         } catch (Exception e) {
             /*if (!Utilities.isBinderSizeError(e)) {
                 throw e;
@@ -98,6 +97,8 @@ public class WidgetsModel {
             }
             if (this.mAppFilter.shouldShowApp(widgetItem2.componentName, context)) {
                 String packageName = widgetItem2.componentName.getPackageName();
+                if (packageUserKey != null  && !packageUserKey.mPackageName.equals(packageName))
+                    continue;
                 PackageItemInfo obj = hashMap.get(packageName);
                 if (obj == null) {
                     obj = new PackageItemInfo(packageName);

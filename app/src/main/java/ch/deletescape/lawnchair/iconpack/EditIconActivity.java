@@ -1,18 +1,17 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.UserHandle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,35 +20,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.deletescape.lawnchair.AppInfo;
-import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
-public class EditIconActivity extends Activity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
+public class EditIconActivity extends AppCompatActivity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
 
     private static final int REQUEST_PICK_ICON = 0;
-    private LauncherActivityInfoCompat mInfo;
-    private SharedPreferences mPrefs;
+    private EditableItemInfo mInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        Utilities.setupPirateLocale(this);
+
+        Utilities.getPrefs(this).getEnableScreenRotation();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
 
-        mPrefs = Utilities.getPrefs(getApplicationContext());
-
-        ComponentName componentName = getIntent().getExtras().getParcelable("componentName");
-        UserHandle user = getIntent().getExtras().getParcelable("userHandle");
-        Intent intent = new Intent();
-        intent.setComponent(componentName);
-        mInfo = LauncherActivityInfoCompat.create(this, user, intent);
-        AppInfo appInfo = new AppInfo(this, mInfo, user, LauncherAppState.getInstance().getIconCache());
+        mInfo = getIntent().getExtras().getParcelable("itemInfo");
+        if (mInfo == null) {
+            finish();
+            return;
+        }
+        ComponentName component = mInfo.getComponentName();
         List<IconPackInfo> iconPacks = new ArrayList<>(loadAvailableIconPacks().values());
         Collections.sort(iconPacks, new Comparator<IconPackInfo>() {
             @Override
@@ -58,15 +57,22 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
             }
         });
 
-        setTitle(appInfo.originalTitle);
+        setTitle(mInfo.getTitle());
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
-        RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
-        CustomIconAdapter iconAdapter = new CustomIconAdapter(this, mInfo, iconPacks);
-        iconAdapter.setListener(this);
-        iconRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        iconRecyclerView.setAdapter(iconAdapter);
+        if (mInfo.getType() == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION && mInfo.getComponentName() != null) {
+            RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
+            Intent i = new Intent(Intent.ACTION_MAIN).setComponent(component);
+            LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(this, mInfo.getUser(), i);
+            CustomIconAdapter iconAdapter = new CustomIconAdapter(this, laic, iconPacks);
+            iconAdapter.setListener(this);
+            iconRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            iconRecyclerView.setAdapter(iconAdapter);
+        } else {
+            findViewById(R.id.iconRecyclerView).setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+        }
 
         RecyclerView iconPackRecyclerView = findViewById(R.id.iconPackRecyclerView);
         IconPackAdapter iconPackAdapter = new IconPackAdapter(this, iconPacks);
@@ -113,22 +119,22 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     }
 
     private void setAlternateIcon(String alternateIcon) {
-        String key = mInfo.getComponentName().flattenToString();
-        mPrefs.edit().putString("alternateIcon_" + key, alternateIcon).apply();
-        updateCache();
+        Intent data = new Intent();
+        data.putExtra("alternateIcon", alternateIcon);
+        setResult(RESULT_OK, data);
         finish();
     }
 
     private void resetIcon() {
-        String key = mInfo.getComponentName().flattenToString();
-        mPrefs.edit().remove("alternateIcon_" + key).apply();
-        updateCache();
+        Intent data = new Intent();
+        data.putExtra("alternateIcon", "-1");
+        setResult(RESULT_OK, data);
         finish();
     }
 
-    private void updateCache() {
+    /*private void updateCache() {
         Utilities.updatePackage(this, mInfo.getUser(), mInfo.getComponentName().getPackageName());
-    }
+    }*/
 
     @Override
     public void startPicker(IconPackInfo iconPackInfo) {
@@ -143,7 +149,7 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
         if (requestCode == REQUEST_PICK_ICON) {
             if (resultCode == RESULT_OK) {
                 String packageName = data.getStringExtra("packageName");
-                String resourceName = data.getStringExtra("resourceName");
+                String resourceName = data.getStringExtra("resource");
                 setAlternateIcon("resource/" + packageName + "/" + resourceName);
                 finish();
             }

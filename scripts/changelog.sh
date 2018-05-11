@@ -1,10 +1,12 @@
-MERGE_PREFIX="Merge pull request"
+#!/usr/bin/env sh
 
-GIT_COMMIT_LOG="$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
+if [ ! -z "$TRAVIS_TAG" ]
+then
+    TRAVIS_COMMIT_RANGE="$(git describe --abbrev=0 --tags $TRAVIS_TAG^)..$TRAVIS_TAG"
+fi
 
-echo " <b>Changelog for build #${TRAVIS_BUILD_NUMBER}</b>${NEWLINE}"
-
+GIT_COMMIT_LOG="$(git log --format='%s (by %cn)' $TRAVIS_COMMIT_RANGE)"
 printf '%s\n' "$GIT_COMMIT_LOG" | while IFS= read -r line
 do
-  echo "- ${line}"
+    echo "- ${line}"
 done

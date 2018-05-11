@@ -1,9 +1,12 @@
 package ch.deletescape.lawnchair.pixelify;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.TextPaint;
 import android.text.TextWatcher;
@@ -57,9 +60,9 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
-        int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns;
-        int marginEnd = (size - deviceProfile.iconSizePx) / 2;
-        width = (deviceProfile.inv.numColumns - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
+        int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumnsOriginal;
+        int marginEnd = (size - deviceProfile.iconSizePxOriginal) / 2;
+        width = (deviceProfile.inv.numColumnsOriginal - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
         text = "";
         update();
         setMarginEnd(dateText1, marginEnd);
@@ -120,7 +123,14 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
     @Override
     public void onClick(View v) {
         Context context = v.getContext();
-        Intent LaunchIntent = new Intent(Intent.ACTION_VIEW).setType("vnd.android.cursor.item/event");
-        context.startActivity(LaunchIntent);
+        long currentTime = System.currentTimeMillis();
+        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+        builder.appendPath("time");
+        ContentUris.appendId(builder, currentTime);
+
+        Launcher launcher = Launcher.getLauncher(getContext());
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        intent.setSourceBounds(launcher.getViewBounds(dateText1));
+        context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
     }
 }

@@ -31,15 +31,23 @@ public class MultiHashMap<K, V> extends HashMap<K, ArrayList<V>> {
         super(size);
     }
 
-    public void addToList(K key, V value) {
+    public ArrayList<V> getOrCreate(K key) {
         ArrayList<V> list = get(key);
         if (list == null) {
             list = new ArrayList<>();
-            list.add(value);
             put(key, list);
-        } else {
-            list.add(value);
         }
+        return list;
+    }
+
+    public void addToList(K key, V value) {
+        ArrayList<V> list = getOrCreate(key);
+        list.add(value);
+    }
+
+    public void addAllToList(K key, ArrayList<V> values) {
+        ArrayList<V> list = getOrCreate(key);
+        list.addAll(values);
     }
 
     @Override

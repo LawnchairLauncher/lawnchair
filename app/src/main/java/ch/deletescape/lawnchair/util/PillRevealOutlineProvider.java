@@ -31,14 +31,11 @@ public class PillRevealOutlineProvider extends RevealOutlineAnimation {
     private float mFinalRadius;
 
     /**
-     * @param x        reveal center x
-     * @param y        reveal center y
-     * @param pillRect round rect that represents the final pill shape
+     * @param x             reveal center x
+     * @param y             reveal center y
+     * @param pillRect      round rect that represents the final pill shape
+     * @param outlineRadius radius of the pill outline
      */
-    public PillRevealOutlineProvider(int x, int y, Rect pillRect) {
-        this(x, y, pillRect, pillRect.height() / 2f);
-    }
-
     public PillRevealOutlineProvider(int x, int y, Rect pillRect, float outlineRadius) {
         mCenterX = x;
         mCenterY = y;

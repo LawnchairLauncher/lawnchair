@@ -27,7 +27,6 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
 
@@ -88,7 +87,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
 
-        int startIndex = FeatureFlags.showPixelBar(host.getContext()) ? 1 : 0;
+        int startIndex = Utilities.getPrefs(host.getContext()).getShowPixelBar() ? 1 : 0;
         if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }

@@ -36,7 +36,6 @@ import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.FocusHelper.PagedFolderKeyEventListener;
-import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
@@ -71,7 +70,6 @@ public class FolderPagedView extends PagedView {
     public final boolean mIsRtl;
 
     private final LayoutInflater mInflater;
-    private final IconCache mIconCache;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
     @Thunk
@@ -106,7 +104,6 @@ public class FolderPagedView extends PagedView {
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
         mInflater = LayoutInflater.from(context);
-        mIconCache = app.getIconCache();
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -542,7 +539,6 @@ public class FolderPagedView extends PagedView {
      */
     public void realTimeReorder(int empty, int target) {
         completePendingPageChanges();
-        int delay = 0;
         float delayAmount = START_VIEW_REORDER_DELAY;
 
         // Animation only happens on the current page.
@@ -647,6 +643,8 @@ public class FolderPagedView extends PagedView {
             return;
         }
 
+
+        int delay = 0;
         CellLayout page = getPageAt(pageToAnimate);
         for (int i = startPos; i != endPos; i += direction) {
             int nextPos = i + direction;

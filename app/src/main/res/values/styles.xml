@@ -18,7 +18,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -26,7 +26,7 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
-    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -43,23 +43,25 @@
 
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
-        <item name="folderNameTextColor">#EE777777</item>
-        <item name="folderBgIntensity">245</item>
+        <item name="folderNameTextColor">@color/folder_name_text_color</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensity</item>
         <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
         <item name="appPopupTextColor">?android:textColorSecondary</item>
         <item name="appPopupHeaderBgColor">@color/popup_header_background_color</item>
-        <item name="appPopupBgColor">@color/popup_background_color</item>
+        <item name="popupColorPrimary">@color/popup_background_color</item>
+        <item name="popupColorSecondary">#fff5f5f5</item>
+        <item name="popupColorTertiary">@color/notification_color_beneath</item>
         <item name="allAppsContainerColor">@color/all_apps_container_color</item>
-        <item name="allAppsContainerColorBlur">#00ffffff</item>
-        <item name="allAppsEmptySearchTextColor">#212121</item>
-        <item name="blurTintColor">#45ffffff</item>
-        <item name="notificationBeneathColor">@color/notification_color_beneath</item>
-        <item name="qsbBgColor">@android:color/white</item>
-        <item name="folderBgColorBlur">#75ffffff</item>
-        <item name="roundSearchBarBgColor">#10000000</item>
-        <item name="roundSearchBarDividerColor">#10111111</item>
-        <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
-        <item name="roundSearchBarTextColor">#4c4c4c</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur</item>
+        <item name="allAppsEmptySearchTextColor">@color/all_apps_empty_search_text_color</item>
+        <item name="blurTintColor">@color/blur_tint_color</item>
+        <item name="qsbBgColor">@color/qsb_background</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur</item>
+        <item name="roundSearchBarBgColor">@color/all_apps_round_searchbar_bg_color</item>
+        <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color</item>
+        <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color</item>
+        <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color</item>
+        <item name="searchBarTextColor">@color/search_bar_text_color</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -68,43 +70,90 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
-
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color_dark</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color_dark</item>
-        <item name="folderNameTextColor">#EEEEEEEE</item>
-        <item name="folderBgIntensity">75</item>
+        <item name="folderNameTextColor">@color/folder_name_text_color_dark</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensityDark</item>
         <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
         <item name="appPopupTextColor">?android:textColorSecondary</item>
-        <item name="appPopupHeaderBgColor">#ff101010</item>
-        <item name="appPopupBgColor">#ff212121</item>
-        <item name="allAppsContainerColor">#ff212121</item>
-        <item name="allAppsContainerColorBlur">#00212121</item>
-        <item name="allAppsEmptySearchTextColor">@android:color/white</item>
-        <item name="blurTintColor">#45212121</item>
-        <item name="notificationBeneathColor">#ff252525</item>
-        <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
-        <item name="folderBgColorBlur">#75212121</item>
-        <item name="roundSearchBarBgColor">#10ffffff</item>
-        <item name="roundSearchBarDividerColor">#10eeeeee</item>
-        <item name="roundSearchBarHintColor">@android:color/white</item>
-        <item name="roundSearchBarTextColor">@android:color/white</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color_dark</item>
+        <item name="popupColorPrimary">#ff212121</item>
+        <item name="popupColorSecondary">#ff424242</item>
+        <item name="popupColorTertiary">#ff757575</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color_dark</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur_dark</item>
+        <item name="allAppsEmptySearchTextColor">?android:textColorSecondary</item>
+        <item name="blurTintColor">@color/blur_tint_color_dark</item>
+        <item name="qsbBgColor">@color/qsb_background_dark</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur_dark</item>
+        <item name="roundSearchBarBgColor">@color/all_apps_round_searchbar_bg_color_dark</item>
+        <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color_dark</item>
+        <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color_dark</item>
+        <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color_dark</item>
+        <item name="searchBarTextColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="Theme" parent="@style/LauncherTheme" />
+    <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color_black</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensityBlack</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color_black</item>
+        <item name="popupColorPrimary">#ff000000</item>
+        <item name="popupColorSecondary">#ff000000</item>
+        <item name="popupColorTertiary">#ff000000</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color_black</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur_black</item>
+        <item name="blurTintColor">@color/blur_tint_color_black</item>
+        <item name="qsbBgColor">@color/qsb_background_black</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur_black</item>
+    </style>
 
-    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
-        <item name="android:colorAccent">@color/accent_material_light</item>
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings</item>
+        <item name="colorPrimary">@color/color_primary_settings</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="blurTintColor">#45ffffff</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
+        <item name="android:colorEdgeEffect">@color/accent_material_light</item>
     </style>
 
-    <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
-        <item name="android:colorAccent">@color/accent_material_light</item>
+    <style name="SettingsHome" parent="SettingsTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
+
+    <style name="SettingsTheme.Dark" parent="Theme.AppCompat">
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings_dark</item>
+        <item name="colorPrimary">@color/color_primary_settings_dark</item>
+        <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings_dark</item>
+        <item name="android:colorEdgeEffect">@color/accent_material_light</item>
+    </style>
+
+    <style name="SettingsHome.Dark" parent="SettingsTheme.Dark">
+        <item name="android:listDivider">@null</item>
+    </style>
+
+    <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings_black</item>
+        <item name="colorPrimary">@color/color_primary_settings_black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:listDivider">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings_black</item>
+        <item name="android:colorEdgeEffect">@color/accent_material_light</item>
+    </style>
+
+    <style name="SettingsHome.Black" parent="SettingsTheme.Black">
+        <item name="android:listDivider">@null</item>
     </style>
 
     <!-- Theme for the widget container. -->
     <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
+    <style name="WidgetContainerTheme.Dark" parent="@style/SettingsTheme.Dark">
         <item name="colorSecondary">@color/secondary_color</item>
     </style>
 
@@ -130,7 +179,6 @@
         <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
     <style name="Icon.AllApps">
@@ -154,21 +202,12 @@
         <item name="iconDisplay">folder</item>
     </style>
 
-    <style name="Icon.DeepShortcut">
-        <item name="android:gravity">start|center_vertical</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
-        <item name="android:paddingStart">@dimen/bg_pill_height</item>
-        <item name="android:paddingEnd">@dimen/deep_shortcut_padding_end</item>
-        <item name="android:drawableEnd">@drawable/deep_shortcuts_drag_handle</item>
-        <item name="android:drawablePadding">@dimen/deep_shortcut_drawable_padding</item>
-        <item name="android:textColor">#FF212121</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
-        <item name="layoutHorizontal">true</item>
-        <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
+    <style name="WeatherWidget" />
+
+    <style name="WeatherWidget.Text">
+        <item name="android:shadowRadius">3.0</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowColor">#33000000</item>
     </style>
 
     <!-- Drop targets -->
@@ -214,7 +253,7 @@
         <item name="android:windowShowWallpaper">true</item>
     </style>
 
-    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.Material.Light.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88212121</item>
         <item name="android:contentInsetEnd">0dp</item>
@@ -245,5 +284,21 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:alpha">0.0</item>
         <item name="android:elevation">3.0dip</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="PopupGutter">
+        <item name="android:background">@drawable/gutter_horizontal</item>
+        <item name="android:elevation">@dimen/notification_elevation</item>
+        <item name="android:backgroundTint">?popupColorSecondary</item>
+        <item name="android:backgroundTintMode">multiply</item>
+        <item name="android:outlineProvider">none</item>
     </style>
 </resources>

@@ -6,13 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import java.util.List;
-
 import ch.deletescape.lawnchair.R;
 
 public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.Holder> {
 
-    List<IconPack.IconEntry> mIconList;
+    private IconPack.IconCategory mCategory;
     private Listener mListener;
 
     @Override
@@ -24,27 +22,27 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.Holder
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        holder.bind(mIconList.get(position));
+        holder.bind(mCategory.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mIconList == null ? 0 : mIconList.size();
-    }
-
-    public void setIconList(List<IconPack.IconEntry> iconList) {
-        mIconList = iconList;
-        notifyDataSetChanged();
+        return mCategory == null ? 0 : mCategory.getIconCount();
     }
 
     private void onSelect(int position) {
-        IconPack.IconEntry iconEntry = mIconList.get(position);
+        IconPack.IconEntry iconEntry = mCategory.get(position);
         if (mListener != null)
             mListener.onSelect(iconEntry);
     }
 
     public void setListener(Listener listener) {
         mListener = listener;
+    }
+
+    public void setIconCategory(IconPack.IconCategory category) {
+        mCategory = category;
+        notifyDataSetChanged();
     }
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {

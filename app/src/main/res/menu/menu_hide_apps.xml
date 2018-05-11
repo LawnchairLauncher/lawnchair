@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_apply"
+        android:title="@string/hide_app_apply"
+        android:icon="@drawable/ic_check"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_reset"
+        android:title="@string/hide_app_reset" />
+</menu>

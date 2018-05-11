@@ -24,7 +24,6 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -34,6 +33,7 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -226,10 +226,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
 
-        if (BlurWallpaperProvider.isEnabled()) {
+        if (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_FOLDER)) {
             int tintColor = Utilities.resolveAttributeData(context, R.attr.folderBgColorBlur);
 
-            mBlurDrawable = BlurWallpaperProvider.getInstance().createDrawable(
+            mBlurDrawable = BlurWallpaperProvider.Companion.getInstance().createDrawable(
                     res.getDimensionPixelSize(R.dimen.folder_background_radius), false);
             mBlurDrawable.setBlurredView(mLauncher.getWorkspace());
             mBlurDrawable.setShouldProvideOutline(true);
@@ -255,6 +255,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         mFolderName.setOnFocusChangeListener(this);
+        mFolderName.setEnabled(!mLauncher.isEditingDisabled());
 
         if (!Utilities.ATLEAST_MARSHMALLOW) {
             // We disable action mode in older OSes where floating selection menu is not yet
@@ -304,10 +305,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean onLongClick(View v) {
-        if (this.mLauncher.isDraggingEnabled()) {
-            return startDrag(v, new DragOptions());
-        }
-        return true;
+        return !mLauncher.isDraggingEnabled() || startDrag(v, new DragOptions());
     }
 
     public boolean startDrag(View v, DragOptions options) {
@@ -514,7 +512,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(R.layout.user_folder_icon_normalized, null);
+        return (Folder) LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_FOLDER)).inflate(R.layout.user_folder_icon_normalized, null);
     }
 
     private void prepareReveal() {
@@ -564,7 +562,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         float radius = (float) Math.hypot(rx, ry);
 
         Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
-                (int) getPivotY(), 0, radius).createRevealAnimator(this);
+                (int) getPivotY(), 0, radius).createRevealAnimator(this, false, true);
         reveal.setDuration(mMaterialExpandDuration);
         reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 

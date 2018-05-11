@@ -53,7 +53,7 @@ public abstract class LauncherAppsCompat {
     }
 
     private static LauncherAppsCompat sInstance;
-    private static Object sInstanceLock = new Object();
+    private static final Object sInstanceLock = new Object();
 
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {

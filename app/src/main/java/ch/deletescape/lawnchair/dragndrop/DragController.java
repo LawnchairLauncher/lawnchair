@@ -44,6 +44,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.accessibility.DragViewStateAnnouncer;
+import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -109,6 +110,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
     private ArrayList<DragListener> mListeners = new ArrayList<>();
     private DropTarget mFlingToDeleteDropTarget;
+    private DropTarget mFlingToUninstallDropTarget;
 
     /**
      * The window token used as the parent for the DragView.
@@ -228,6 +230,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, scaleDps);
+        dragView.setItemInfo(dragInfo);
 
         mDragObject.dragComplete = false;
         if (mOptions.isAccessibleDrag) {
@@ -285,7 +288,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             listener.onDragStart(mDragObject, mOptions);
         }
         if (mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragEnd(mDragObject, false);
+            mOptions.preDragCondition.onPreDragEnd(mDragObject, true);
         }
         mOptions.deferDragCondition.onDragStart();
         mIsDragDeferred = false;
@@ -385,10 +388,10 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private void callOnDragEnd() {
         if (this.mIsInPreDrag && this.mOptions.preDragCondition != null) {
-            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, true);
+            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, false);
         }
         this.mIsInPreDrag = false;
-        for (DragListener onDragEnd : this.mListeners) {
+        for (DragListener onDragEnd : new ArrayList<>(mListeners)) {
             onDragEnd.onDragEnd();
         }
     }
@@ -459,7 +462,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         } else {
             vec = isFlingingToDelete(mDragObject.dragSource);
             if (vec != null) {
-                dropTarget = mFlingToDeleteDropTarget;
+                dropTarget = mDragObject.dragSource instanceof AllAppsContainerView ?
+                        mFlingToUninstallDropTarget : mFlingToDeleteDropTarget;
             } else {
                 dropTarget = findDropTarget((int) x, (int) y, mCoordinatesTemp);
             }
@@ -479,7 +483,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (mOptions != null && mOptions.isAccessibleDrag) {
             return false;
         }
@@ -620,7 +624,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(MotionEvent ev) {
         if (mDragDriver == null || mOptions == null || mOptions.isAccessibleDrag) {
             return false;
         }
@@ -700,6 +704,11 @@ public class DragController implements DragDriver.EventListener, TouchController
             // Do a quick dot product test to ensure that we are flinging upwards
             PointF upVec = new PointF(0f, -1f);
             theta = getAngleBetweenVectors(vel, upVec);
+        } else if (mLauncher.getDeviceProfile().isVerticalBarLayout() &&
+                mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
+            // Remove icon is on left side instead of top, so check if we are flinging to the left.
+            PointF leftVec = new PointF(-1f, 0f);
+            theta = getAngleBetweenVectors(vel, leftVec);
         }
         if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
             return vel;
@@ -819,6 +828,10 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     public void setFlingToDeleteDropTarget(DropTarget target) {
         mFlingToDeleteDropTarget = target;
+    }
+
+    public void setFlingToUninstallDropTarget(DropTarget target) {
+        mFlingToUninstallDropTarget = target;
     }
 
     private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {

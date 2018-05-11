@@ -52,10 +52,6 @@
   public float getBrightness();
 }
 
--keep class ch.deletescape.lawnchair.MemoryDumpActivity {
-  *;
-}
-
 -keep class ch.deletescape.lawnchair.PreloadIconDrawable {
   public float getAnimationProgress();
   public void setAnimationProgress(float);
@@ -75,6 +71,13 @@
   *;
 }
 
+-keep,allowshrinking,allowoptimization class me.jfenn.attribouter.** {
+ *;
+}
+
+-dontwarn javax.**
+-dontwarn org.codehaus.mojo.animal_sniffer.**
+
 -keep class ch.deletescape.lawnchair.DeferredHandler {
  *;
 }
@@ -82,5 +85,9 @@
 # Proguard will strip new callbacks in LauncherApps.Callback from
 # WrappedCallback if compiled against an older SDK. Don't let this happen.
 -keep class ch.deletescape.lawnchair.compat.** {
+  *;
+}
+
+-keep class ch.deletescape.lawnchair.preferences.HiddenAppsFragment {
   *;
 }

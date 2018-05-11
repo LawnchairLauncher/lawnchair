@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/g_icon"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="1.0"
         android:scaleType="center"

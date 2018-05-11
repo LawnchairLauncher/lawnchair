@@ -18,18 +18,17 @@ package ch.deletescape.lawnchair.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityRecordCompat;
+import android.support.animation.DynamicAnimation;
+import android.support.animation.SpringAnimation;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
@@ -41,6 +40,8 @@ import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
+import ch.deletescape.lawnchair.anim.SpringAnimationHandler;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
@@ -71,7 +72,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             | VIEW_TYPE_SECTION_BREAK;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
-
     public interface BindViewCallback {
         void onBindView(ViewHolder holder);
     }
@@ -88,6 +88,67 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
+    class AllAppsSpringAnimationFactory implements SpringAnimationHandler.AnimationFactory<ViewHolder> {
+
+        @NonNull
+        public SpringAnimation initialize(ViewHolder viewHolder) {
+            return SpringAnimationHandler.Companion.forView(viewHolder.itemView, DynamicAnimation.TRANSLATION_Y, 0);
+        }
+
+        public void update(@NonNull SpringAnimation springAnimation, ViewHolder viewHolder) {
+            int appPosition = getAppPosition(viewHolder.getAdapterPosition(), AllAppsGridAdapter.this.mAppsPerRow, AllAppsGridAdapter.this.mAppsPerRow);
+            int get1 = appPosition % AllAppsGridAdapter.this.mAppsPerRow;
+            appPosition /= AllAppsGridAdapter.this.mAppsPerRow;
+            int numAppRows = AllAppsGridAdapter.this.mApps.getNumAppRows() - 1;
+            if (appPosition > numAppRows / 2) {
+                appPosition = Math.abs(numAppRows - appPosition);
+            }
+            float f = ((float) (appPosition + 1)) * 0.5f;
+            float columnFactor = getColumnFactor(get1, AllAppsGridAdapter.this.mAppsPerRow);
+            float f2 = (f + columnFactor) * -100.0f;
+            columnFactor = (columnFactor + f) * 100.0f;
+            springAnimation
+                    .setMinValue(f2)
+                    .setMaxValue(columnFactor)
+                    .getSpring()
+                    .setStiffness(Utilities.boundToRange(900.0f - (((float) appPosition) * 50.0f), 580.0f, 900.0f))
+                    .setDampingRatio(0.55f);
+        }
+
+        private int getAppPosition(int i, int i2, int i3) {
+            if (i < i2) {
+                return i;
+            }
+            int i4 = 0;
+            if (i2 != 0) {
+                i4 = 1;
+            }
+            return ((i3 - i2) + i) - i4;
+        }
+
+        private float getColumnFactor(int i, int i2) {
+            Object obj = null;
+            float f = (float) (i2 / 2);
+            int abs = (int) Math.abs(((float) i) - f);
+            if (i2 % 2 == 0) {
+                obj = 1;
+            }
+            if (obj != null && ((float) i) < f) {
+                abs--;
+            }
+            float f2 = 0.0f;
+            for (int i3 = abs; i3 > 0; i3--) {
+                if (i3 == 1) {
+                    f2 += 0.2f;
+                } else {
+                    f2 += 0.1f;
+                }
+            }
+            return f2;
+        }
+    }
+
+
     /**
      * A subclass of GridLayoutManager that overrides accessibility values during app search.
      */
@@ -103,9 +164,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
             // Ensure that we only report the number apps for accessibility not including other
             // adapter views
-            final AccessibilityRecordCompat record = AccessibilityEventCompat
-                    .asRecord(event);
-            record.setItemCount(mApps.getNumFilteredApps());
+            event.setItemCount(mApps.getNumFilteredApps());
         }
 
         @Override
@@ -168,6 +227,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private Intent mMarketSearchIntent;
 
     private int mAppIconTextColor;
+    private int mAppIconTextMaxLines;
+    private final IAllAppsThemer mTheme;
+
+    private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
@@ -177,9 +240,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mEmptySearchMessage = res.getString(R.string.all_apps_loading_message);
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
         mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
-        mLayoutInflater = LayoutInflater.from(launcher);
+        mLayoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_ALLAPPS));
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
+        mTheme = Utilities.getThemer().allAppsTheme(launcher);
+        if (Utilities.getPrefs(launcher).getEnablePhysics())
+            mSpringAnimationHandler = new SpringAnimationHandler<>(0, new AllAppsSpringAnimationFactory());
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -248,19 +314,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SECTION_BREAK:
                 return new ViewHolder(new View(parent.getContext()));
             case VIEW_TYPE_ICON: {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
+                View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons
                 DeviceProfile profile = mLauncher.getDeviceProfile();
-                Point cellSize = profile.getCellSize();
                 GridLayoutManager.LayoutParams lp =
                         (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = cellSize.y;
+                lp.height = mTheme.iconHeight(profile.getAllAppsCellHeight(mLauncher));
                 icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             }
@@ -270,7 +333,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setTextColor(Utilities.getDynamicAccent(mLauncher));
+                searchMarketView.setTextColor(mTheme.getSearchBarHintTextColor());
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -281,12 +344,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_DIVIDER:
                 ImageView divider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false);
-                if (!FeatureFlags.useRoundSearchBar(mLauncher))
-                    divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
+                if (!Utilities.getPrefs(mLauncher).getUseRoundSearchBar())
+                    divider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                ImageView marketDivider = (ImageView) mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false);
+                marketDivider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
+                return new ViewHolder(marketDivider);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -297,10 +362,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.mContent;
-                icon.applyFromApplicationInfo(info);
-                icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
-                icon.setTextColor(mAppIconTextColor);
+                if (holder.mContent instanceof BubbleTextView) {
+                    BubbleTextView icon = (BubbleTextView) holder.mContent;
+                    icon.applyFromApplicationInfo(info);
+                    icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+                    icon.setTextColor(mAppIconTextColor);
+                    // TODO: currently this cuts off the text
+                    // icon.setLines(mAppIconTextMaxLines);
+                    // icon.setMaxLines(mAppIconTextMaxLines);
+                    // icon.setSingleLine(mAppIconTextMaxLines == 1);
+                } else if (holder.mContent instanceof AllAppsIconRowView) {
+                    AllAppsIconRowView row = (AllAppsIconRowView) holder.mContent;
+                    row.applyFromApplicationInfo(info);
+                    row.setText(info.title);
+                    row.setTextColor(mAppIconTextColor);
+                }
                 break;
             }
             case VIEW_TYPE_EMPTY_SEARCH:
@@ -340,7 +416,26 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
-    public void setAppIconTextColor(int color) {
+    public void setAppIconTextStyle(int color, int maxLines) {
         mAppIconTextColor = color;
+        mAppIconTextMaxLines = maxLines;
+    }
+
+    public SpringAnimationHandler<ViewHolder> getSpringAnimationHandler() {
+        return mSpringAnimationHandler;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        int itemViewType = holder.getItemViewType();
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
+            mSpringAnimationHandler.add(holder.itemView, holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        int itemViewType = holder.getItemViewType();
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
+            mSpringAnimationHandler.remove(holder.itemView);
     }
 }

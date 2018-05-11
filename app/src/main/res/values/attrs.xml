@@ -27,6 +27,7 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="deep_shortcut" value="4" />
+            <enum name="all_apps_vertical" value="5" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />
@@ -122,17 +123,21 @@
         <attr name="maxValue" format="float" />
         <attr name="summaryFormat" format="string" />
         <attr name="summaryMultiplier" format="integer" />
-        <attr name="defaultValue" format="float" />
+        <attr name="defaultSeekbarValue" format="float" />
+        <attr name="steps" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="SubPreference">
-        <attr name="content" format="reference"/>
+        <attr name="content" format="reference" />
+        <attr name="longClickContent" format="reference" />
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />
+    <attr name="popupColorPrimary" format="color" />
+    <attr name="popupColorSecondary" format="color" />
+    <attr name="popupColorTertiary" format="color" />
     <attr name="appPopupTextColor" format="color" />
     <attr name="appPopupHeaderBgColor" format="color" />
-    <attr name="appPopupBgColor" format="color" />
     <attr name="folderBgIntensity" format="integer" />
     <attr name="folderIconTextColor" format="color" />
     <attr name="folderNameTextColor" format="color" />
@@ -141,12 +146,12 @@
     <attr name="allAppsEmptySearchTextColor" format="color" />
     <attr name="blurTintColor" format="color" />
     <attr name="deepShortcutsHandleColor" format="color" />
-    <attr name="notificationBeneathColor" format="color" />
     <attr name="qsbBgColor" format="color" />
     <attr name="folderBgColorBlur" format="color" />
     <attr name="roundSearchBarBgColor" format="color" />
     <attr name="roundSearchBarDividerColor" format="color" />
     <attr name="roundSearchBarHintColor" format="color" />
     <attr name="roundSearchBarTextColor" format="color" />
+    <attr name="searchBarTextColor" format="color" />
 
 </resources>

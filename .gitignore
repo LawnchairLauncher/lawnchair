@@ -5,6 +5,9 @@
 *.apk
 *.ap_
 
+# Calculated md5 checksums
+*.md5sum
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -37,11 +40,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
+.idea
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

@@ -46,7 +46,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         // Get the hover color
         mHoverColor = Utilities.getColorAccent(getContext());
 
-        setDrawable(R.drawable.ic_info_launcher);
+        setDrawable(R.drawable.ic_info_no_shadow);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         boolean developmentSettingsEnabled = Settings.Global.getInt(resolver,
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
         return developmentSettingsEnabled
-                && (info instanceof ShortcutInfo || info instanceof PendingAddItemInfo
+                && (info instanceof AppInfo || info instanceof ShortcutInfo || info instanceof PendingAddItemInfo
                 || info instanceof LauncherAppWidgetInfo)
                 && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }

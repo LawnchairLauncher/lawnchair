@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="pref_plane"
+        android:title="Amazing Plane" />
+    <SwitchPreference
+        android:key="pref_ayy_matey"
+        android:title="Get aboard t' ship" />
+    <Preference
+        android:summary="Just blame Syko for all our bugs, the death of your dog, your wife leaving you or nuclear war."
+        android:title="Who to blame?" />
+</android.support.v7.preference.PreferenceScreen>

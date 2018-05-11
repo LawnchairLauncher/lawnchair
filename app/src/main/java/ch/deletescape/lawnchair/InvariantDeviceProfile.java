@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -36,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.util.Thunk;
 
 public class InvariantDeviceProfile {
@@ -59,7 +60,12 @@ public class InvariantDeviceProfile {
      * Number of icons per row and column in the workspace.
      */
     public int numRows;
+    public int numRowsOriginal;
     public int numColumns;
+    public int numColumnsOriginal;
+
+    public int numColumnsDrawer;
+    public int numRowsDrawer;
 
     /**
      * Number of icons per row and column in the folder.
@@ -67,39 +73,46 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public float allAppsIconSize;
+    public float iconSizeOriginal;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+    public float allAppsIconTextSize;
     public int searchHeightAddition;
 
     /**
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
+    public int numHotseatIconsOriginal;
     float hotseatIconSize;
+    float hotseatIconSizeOriginal;
     int defaultLayoutId;
 
-    DeviceProfile profile;
+    DeviceProfile landscapeProfile;
+    DeviceProfile portraitProfile;
 
     public Point defaultWallpaperSize;
 
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(Context context, InvariantDeviceProfile p) {
-        this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
+    public InvariantDeviceProfile(InvariantDeviceProfile p) {
+        this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns, p.numColumnsDrawer,
                 p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc,
+    InvariantDeviceProfile(String n, float w, float h, int r, int c, int cd, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
         numRows = r;
         numColumns = c;
+        numColumnsDrawer = cd;
         numFolderRows = fr;
         numFolderColumns = fc;
         iconSize = is;
@@ -131,17 +144,26 @@ public class InvariantDeviceProfile {
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
+        numRowsOriginal = numRows;
         numColumns = closestProfile.numColumns;
+        numColumnsOriginal = numColumns;
+        numColumnsDrawer = numColumns;
+        numRowsDrawer = numRows;
         numHotseatIcons = closestProfile.numHotseatIcons;
+        numHotseatIconsOriginal = numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
+        iconSizeOriginal = iconSize;
+        allAppsIconSize = iconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
+        allAppsIconTextSize = iconTextSize;
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
+        hotseatIconSizeOriginal = hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         customizationHook(context);
@@ -153,8 +175,10 @@ public class InvariantDeviceProfile {
         int smallSide = Math.min(realSize.x, realSize.y);
         int largeSide = Math.max(realSize.x, realSize.y);
 
-        profile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide);
+        landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
+                largeSide, smallSide, true /* isLandscape */);
+        portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
+                smallSide, largeSide, false /* isLandscape */);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects
@@ -167,31 +191,64 @@ public class InvariantDeviceProfile {
         }
     }
 
-    public void customizationHook(Context context) {
+    public void refresh(Context context) {
+        landscapeProfile.refresh();
+        portraitProfile.refresh();
+        customizationHook(context);
+    }
+
+    private void customizationHook(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
-        SharedPreferences prefs = Utilities.getPrefs(context.getApplicationContext());
-        String valueDefault = "default";
-        if (!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)) {
-            numRows = Integer.valueOf(prefs.getString("pref_numRows", ""));
+        IPreferenceProvider prefs = Utilities.getPrefs(context);
+        String valueDefault = PreferenceFlags.PREF_DEFAULT_STRING;
+        if (!prefs.numRows(valueDefault).equals(valueDefault)) {
+            numRows = Integer.valueOf(prefs.numRows(""));
+        } else {
+            numRows = numRowsOriginal;
         }
-        if (!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)) {
-            numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
+        if (!prefs.numCols(valueDefault).equals(valueDefault)) {
+            numColumns = Integer.valueOf(prefs.numCols(""));
+        } else {
+            numColumns = numColumnsOriginal;
         }
-        if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
-            numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
+        if (!prefs.numColsDrawer(valueDefault).equals(valueDefault)) {
+            numColumnsDrawer = Integer.valueOf(prefs.numColsDrawer(""));
+        } else {
+            numColumnsDrawer = numColumnsOriginal;
         }
-        if (prefs.getFloat("pref_iconScaleSB", 1f) != 1f) {
-            float iconScale = prefs.getFloat("pref_iconScaleSB", 1f);
+        if (!prefs.numRowsDrawer(valueDefault).equals(valueDefault)) {
+            numRowsDrawer = Integer.valueOf(prefs.numRowsDrawer(""));
+        } else {
+            numRowsDrawer = numRowsOriginal;
+        }
+        if (!prefs.numHotseatIcons(valueDefault).equals(valueDefault)) {
+            numHotseatIcons = Integer.valueOf(prefs.numHotseatIcons(""));
+        } else {
+            numHotseatIcons = numHotseatIconsOriginal;
+        }
+        if (prefs.getIconScaleSB() != 1f) {
+            float iconScale = prefs.getIconScaleSB();
             iconSize *= iconScale;
-            hotseatIconSize *= iconScale;
-            iconBitmapSize = Math.max(1, Utilities.pxFromDp(iconSize, dm));
-            fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         }
-        if (prefs.getFloat("pref_iconTextScaleSB", 1f) != 1f) {
-            iconTextSize *= prefs.getFloat("pref_iconTextScaleSB", 1f);
+        if (prefs.getHotseatIconScale() != 1f) {
+            float iconScale = prefs.getHotseatIconScale();
+            hotseatIconSize *= iconScale;
+        }
+        if (prefs.getAllAppsIconScale() != 1f) {
+            float iconScale = prefs.getAllAppsIconScale();
+            allAppsIconSize *= iconScale;
+        }
+        float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), hotseatIconSize);
+        iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+        if (prefs.getIconTextScaleSB() != 1f) {
+            iconTextSize *= prefs.getIconTextScaleSB();
+        }
+        if (prefs.getAllAppsIconTextScale() != 1f) {
+            allAppsIconTextSize *= prefs.getAllAppsIconTextScale();
         }
     }
 
@@ -209,11 +266,12 @@ public class InvariantDeviceProfile {
                     int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
                     int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
                     float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
-                    profiles.add(new InvariantDeviceProfile(context,
+                    profiles.add(new InvariantDeviceProfile(
                             a.getString(R.styleable.InvariantDeviceProfile_name),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
                             numRows,
+                            numColumns,
                             numColumns,
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
@@ -292,7 +350,7 @@ public class InvariantDeviceProfile {
 
         InvariantDeviceProfile out = new InvariantDeviceProfile();
         for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
-            p = new InvariantDeviceProfile(context, points.get(i));
+            p = new InvariantDeviceProfile(points.get(i));
             float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
             weights += w;
             out.add(p.multiply(w));

@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair.util;
 
+import android.support.annotation.NonNull;
 import android.util.LongSparseArray;
 
 import java.util.Iterator;
@@ -38,6 +39,7 @@ public class LongArrayMap<E> extends LongSparseArray<E> implements Iterable<E> {
         return (LongArrayMap<E>) super.clone();
     }
 
+    @NonNull
     @Override
     public Iterator<E> iterator() {
         return new ValueIterator();

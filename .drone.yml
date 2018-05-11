@@ -1,0 +1,50 @@
+pipeline:
+  changelog:
+    image: lawnchairlauncher/drone-changelog:dev
+    output: changelog.txt
+    volumes:
+      - /opt/drone/cache:/cache
+    when:
+      event: push
+  build:
+    image: runmymind/docker-android-sdk:ubuntu-standalone
+    secrets: [ awareness_api_key, store_password, key_password ]
+    environment:
+      - MAJOR_MINOR=alpha
+      - TRAVIS=true
+      - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
+      - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
+    commands:
+      - bash ./gradlew assembleDebug
+  deploy:
+    image: lawnchairlauncher/drone-telegram:dev
+    secrets: [ bot_token, channel_id ]
+    apk_path: app/build/outputs/apk/debug/app-debug.apk
+    mapping_path: app/build/outputs/mapping/debug/mapping.txt
+    channel_id: "-1001180711841"
+    when:
+      event: push
+      status: success
+  upload:
+    image: lawnchairlauncher/drone-transfer.sh:latest
+    upload: app/build/outputs/apk/debug/app-debug.apk
+    when:
+      event: pull_request
+      status: success
+  telegram:
+    image: appleboy/drone-telegram:latest
+    secrets: [ telegram_token ]
+    to: "-1001092684628"
+    message: >
+      {{#success build.status}}
+        Build {{build.number}} succeeded. Good job mate!
+      {{else}}
+        Build {{build.number}} failed. Fix me please sir!
+      {{/success}}
+    when:
+      event: [push, tag, deployment]
+      status: [ failure, success ]
+
+branches:
+  include: alpha
+  exclude: [ l10n_alpha2, v2-alpha ]

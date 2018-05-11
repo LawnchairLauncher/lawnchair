@@ -40,12 +40,6 @@ public class PackageItemInfo extends ItemInfo {
      */
     public String packageName;
 
-    /**
-     * Character that is used as a section name for the {@link ItemInfo#title}.
-     * (e.g., "G" will be stored if title is "Google")
-     */
-    public String titleSectionName;
-
     public PackageItemInfo(String packageName) {
         this.packageName = packageName;
     }

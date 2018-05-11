@@ -42,6 +42,8 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     int mNumScreens;
     int mNumPagesForWallpaperParallax;
 
+    private boolean mCenterWallpaper;
+
     public WallpaperOffsetInterpolator(Workspace workspace) {
         mChoreographer = Choreographer.getInstance();
         mInterpolator = new DecelerateInterpolator(1.5f);
@@ -49,11 +51,17 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         mWorkspace = workspace;
         mWallpaperManager = WallpaperManager.getInstance(workspace.getContext());
         mIsRtl = Utilities.isRtl(workspace.getResources());
+        updateCenterWallpaper();
     }
 
     @Override
     public void doFrame(long frameTimeNanos) {
         updateOffset(false);
+    }
+
+    public void updateCenterWallpaper() {
+        mCenterWallpaper = Utilities.getPrefs(mWorkspace.getContext()).getCenterWallpaper();
+        syncWithScroll();
     }
 
     private void updateOffset(boolean force) {
@@ -108,9 +116,13 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     public float wallpaperOffsetForScroll(int scroll) {
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
+        // Lawnchair edit: Default to the center when there is only one Page
         int numScrollingPages = getNumScreensExcludingEmpty();
-        if (mLockedToDefaultPage || numScrollingPages <= 1) {
-            return mIsRtl ? 1f : 0f;
+        float edge = mIsRtl ? 1f : 0f;
+        if (numScrollingPages <= 1) {
+            return (mWallpaperIsLiveWallpaper || !mCenterWallpaper) ? edge : 0.5f;
+        } else if (mLockedToDefaultPage) {
+            return edge;
         }
 
         // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace

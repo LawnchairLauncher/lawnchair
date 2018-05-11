@@ -44,12 +44,12 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     protected LauncherApps mLauncherApps;
     private Context mContext;
 
-    private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
+    private final Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
             = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
         mContext = context;
-        mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
+        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
     @Override

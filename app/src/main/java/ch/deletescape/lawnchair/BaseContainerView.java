@@ -39,7 +39,7 @@ public abstract class BaseContainerView extends FrameLayout
     protected int mContainerPaddingBottom;
 
     private InsetDrawable mRevealDrawable;
-    protected final Drawable mBaseDrawable;
+    protected Drawable mBaseDrawable;
 
     private View mRevealView;
     private View mContent;
@@ -112,7 +112,8 @@ public abstract class BaseContainerView extends FrameLayout
         Context context = getContext();
         Launcher launcher = Launcher.getLauncher(context);
 
-        if (this instanceof AllAppsContainerView) {
+        if (this instanceof AllAppsContainerView &&
+                !launcher.getDeviceProfile().isVerticalBarLayout()) {
             mContainerPaddingLeft = mContainerPaddingRight = 0;
             mContainerPaddingTop = mContainerPaddingBottom = 0;
         } else {
@@ -120,7 +121,11 @@ public abstract class BaseContainerView extends FrameLayout
             int[] padding = grid.getContainerPadding();
             mContainerPaddingLeft = padding[0] + grid.edgeMarginPx;
             mContainerPaddingRight = padding[1] + grid.edgeMarginPx;
-            mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;
+            if (!launcher.getDeviceProfile().isVerticalBarLayout()) {
+                mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;
+            } else {
+                mContainerPaddingTop = mContainerPaddingBottom = 0;
+            }
         }
 
         mRevealDrawable = new InsetDrawable(mBaseDrawable,

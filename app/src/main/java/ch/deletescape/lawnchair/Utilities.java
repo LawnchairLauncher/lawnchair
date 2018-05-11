@@ -16,8 +16,11 @@
 
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -30,6 +33,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -40,16 +44,23 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.os.UserHandle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -64,10 +75,13 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -81,12 +95,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
+import ch.deletescape.lawnchair.config.IThemer;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
+import ch.deletescape.lawnchair.overlay.LawnfeedClient;
+import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
+import ch.deletescape.lawnchair.util.LooperExecutor;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 /**
@@ -95,13 +118,14 @@ import ch.deletescape.lawnchair.util.PackageManagerHelper;
 public final class Utilities {
 
     private static final String TAG = "Launcher.Utilities";
+    private static final String LAUNCHER_RESTART_KEY = "launcher_restart_key";
+    private static final int WAIT_BEFORE_RESTART = 250;
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
-    private static final String KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber";
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -111,19 +135,23 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
-    public static boolean isNycMR1OrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
-    }
-
-    public static boolean isNycOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
-
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+    public static final boolean ATLEAST_NOUGAT =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+    public static final boolean ATLEAST_NOUGAT_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+
+    public static final boolean ATLEAST_OREO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+
+    public static final boolean ATLEAST_OREO_M1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "ch.deletescape.lawnchair.WALLPAPER_OFFSET";
@@ -133,12 +161,25 @@ public final class Utilities {
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final int KEEP_ALIVE = 1;
+
     /**
      * An {@link Executor} to be used with async task with no limit on the queue size.
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+    // Blacklisted APKs which will be hidden, these include simple regex formatting, without
+    // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
+    // Taken from: https://github.com/substratum/substratum/blob/dev/app/src/main/java/projekt/substratum/common/Systems.java
+    private static final String[] BLACKLISTED_APPLICATIONS = {
+        "com.android.vending.billing.InAppBillingService.",
+        "uret.jasi2169.",
+        "com.dimonvideo.luckypatcher",
+        "com.chelpus.",
+        "com.forpda.lp",
+        "zone.jasi2169."
+    };
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -198,6 +239,8 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (isAdaptive(icon))
+            bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
 
@@ -238,6 +281,14 @@ public final class Utilities {
         return ShadowGenerator.getInstance().recreateIcon(icon);
     }
 
+    public static Bitmap addShadowToIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().recreateIcon(icon, size);
+    }
+
+    public static Bitmap getShadowForIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().createShadow(icon, size);
+    }
+
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
@@ -261,13 +312,9 @@ public final class Utilities {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    /**
-     * @param scale the scale to apply before drawing {@param icon} on the canvas
-     */
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
-
             int width = iconBitmapSize;
             int height = iconBitmapSize;
 
@@ -283,6 +330,7 @@ public final class Utilities {
                     bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
                 }
             }
+
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -294,27 +342,32 @@ public final class Utilities {
                     width = (int) (height * ratio);
                 }
             }
-
             // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
 
-            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(iconBitmapSize, iconBitmapSize,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth - width) / 2;
-            final int top = (textureHeight - height) / 2;
+            final int left = (iconBitmapSize -width) / 2;
+            final int top = (iconBitmapSize -height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left + width, top + height);
+            if (Utilities.isAdaptive(icon)) {
+                int offset = Math.max((int)(ShadowGenerator.BLUR_FACTOR * iconBitmapSize),
+                        Math.min(left, top));
+                int size = Math.max(width, height);
+                icon.setBounds(offset, offset, size, size);
+            } else {
+                icon.setBounds(left, top, left+width, top+height);
+            }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+            canvas.scale(scale, scale, iconBitmapSize / 2, iconBitmapSize / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
+
             return bitmap;
         }
     }
@@ -457,7 +510,7 @@ public final class Utilities {
         }
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -488,7 +541,7 @@ public final class Utilities {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -567,7 +620,7 @@ public final class Utilities {
      * @param action intent action used to find the apk
      * @return a pair of apk package name and the resources.
      */
-    static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
         final Intent intent = new Intent(action);
         for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
             if (info.activityInfo != null &&
@@ -620,11 +673,12 @@ public final class Utilities {
     /**
      * Calculates the height of a given string at a specific text size.
      */
-    public static int calculateTextHeight(float textSizePx) {
+    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
-        return (int) Math.ceil(fm.bottom - fm.top);
+        int result = (int) Math.ceil(fm.bottom - fm.top);
+        return twoLines ? result * 2 : result;
     }
 
     public static boolean isRtl(Resources res) {
@@ -673,26 +727,47 @@ public final class Utilities {
                 size, metrics));
     }
 
+    public static Paint.FontMetricsInt fontMetricsIntFromFontMetrics(Paint.FontMetrics fontMetrics) {
+        Paint.FontMetricsInt fontMetricsInt = new Paint.FontMetricsInt();
+        fontMetricsInt.ascent = Math.round(fontMetrics.ascent);
+        fontMetricsInt.bottom = Math.round(fontMetrics.bottom);
+        fontMetricsInt.descent = Math.round(fontMetrics.descent);
+        fontMetricsInt.leading = Math.round(fontMetrics.leading);
+        fontMetricsInt.top = Math.round(fontMetrics.top);
+        return fontMetricsInt;
+    }
+
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
     public static boolean isBootCompleted() {
-        return "1".equals(getSystemProperty("sys.boot_completed", "1"));
+        return "1".equals(getProp("sys.boot_completed", "1"));
     }
 
-    public static String getSystemProperty(String property, String defaultValue) {
+    private static String getProp(String propName, String defaultValue) {
+        Process p = null;
+        String result = defaultValue;
         try {
-            Class clazz = Class.forName("android.os.SystemProperties");
-            Method getter = clazz.getDeclaredMethod("get", String.class);
-            String value = (String) getter.invoke(null, property);
-            if (!TextUtils.isEmpty(value)) {
-                return value;
+            p = new ProcessBuilder("/system/bin/getprop", propName)
+                    .redirectErrorStream(true).start();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream())
+            )) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result = line;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to read system properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
-        return defaultValue;
+        return result;
     }
 
     /**
@@ -725,22 +800,27 @@ public final class Utilities {
         return spanned;
     }
 
-    public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    @NonNull
+    public static IPreferenceProvider getPrefs(Context context) {
+        return PreferenceProvider.INSTANCE.getPreferences(context);
+    }
+
+    @NonNull
+    public static IThemer getThemer() {
+        return ThemeProvider.INSTANCE.getThemer();
     }
 
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+        return powerManager != null && powerManager.isPowerSaveMode();
     }
 
     public static boolean isWallapaperAllowed(Context context) {
-        if (isNycOrAbove()) {
+        if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
+                return (Boolean) (wm != null ? wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
+                        .invoke(wm) : false);
             } catch (Exception ignored) {
             }
         }
@@ -763,8 +843,30 @@ public final class Utilities {
         return c == null || c.isEmpty();
     }
 
-    public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= 26;
+    public static void setDefaultLauncher(@NotNull Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        ComponentName fakeLauncher =
+                new ComponentName(context.getPackageName(), context.getPackageName() + ".FakeLauncher");
+        ComponentName launcher = new ComponentName(context, Launcher.class);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        Intent picker = new Intent(Intent.ACTION_MAIN);
+        picker.addCategory(Intent.CATEGORY_HOME);
+        picker.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(picker);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+    }
+
+    public static boolean hasStoragePermission(Context context) {
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    public static void requestStoragePermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, Launcher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
 
     /**
@@ -774,7 +876,7 @@ public final class Utilities {
      */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
 
-        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+        FixedSizeBitmapDrawable(Bitmap bitmap) {
             super(null, bitmap);
         }
 
@@ -805,7 +907,7 @@ public final class Utilities {
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
+        if (accessibilityManager != null && accessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
             event.getText().add(text);
@@ -813,82 +915,8 @@ public final class Utilities {
         }
     }
 
-    public static int getColor(Context context, String huePrefName, String defaultHue, String variationPrefName, String defaultVariation) {
-        int hueId = Integer.valueOf(Utilities.getPrefs(context).getString(huePrefName, defaultHue));
-        if (hueId < 0) {
-            switch (hueId) {
-                case -2:
-                    return Color.BLACK;
-                case -1:
-                    return Color.TRANSPARENT;
-                default:
-                    return Color.WHITE;
-            }
-        }
-        String[] hueArray = getHueArray(hueId, context);
-        int variation = Integer.valueOf(Utilities.getPrefs(context).getString(variationPrefName, defaultVariation));
-        return Color.parseColor(hueArray[variation]);
-    }
-
-    private static String[] getHueArray(int hueId, Context context) {
-        Resources res = context.getResources();
-        switch (hueId) {
-            case 0:
-                return res.getStringArray(R.array.arr_red);
-            case 1:
-                return res.getStringArray(R.array.arr_pink);
-            case 2:
-                return res.getStringArray(R.array.arr_purple);
-            case 3:
-                return res.getStringArray(R.array.arr_deep_purple);
-            case 4:
-                return res.getStringArray(R.array.arr_indigo);
-            case 5:
-                return res.getStringArray(R.array.arr_blue);
-            case 6:
-                return res.getStringArray(R.array.arr_light_blue);
-            case 7:
-                return res.getStringArray(R.array.arr_cyan);
-            case 8:
-                return res.getStringArray(R.array.arr_teal);
-            case 9:
-                return res.getStringArray(R.array.arr_green);
-            case 10:
-                return res.getStringArray(R.array.arr_light_green);
-            case 11:
-                return res.getStringArray(R.array.arr_lime);
-            case 12:
-                return res.getStringArray(R.array.arr_yellow);
-            case 13:
-                return res.getStringArray(R.array.arr_amber);
-            case 14:
-                return res.getStringArray(R.array.arr_orange);
-            case 15:
-                return res.getStringArray(R.array.arr_deep_orange);
-            case 16:
-                return res.getStringArray(R.array.arr_brown);
-            case 17:
-                return res.getStringArray(R.array.arr_grey);
-            case 18:
-                return res.getStringArray(R.array.arr_blue_grey);
-            default:
-                return null;
-        }
-    }
-
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
-    }
-
-    public static Bitmap addNotificationBadgeToIcon(Bitmap icon) {
-        Bitmap b = icon.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas c = new Canvas(b);
-        Paint badgePaint = new Paint();
-        badgePaint.setStyle(Paint.Style.FILL);
-        badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
-        int radius = b.getWidth() / 12;
-        c.drawCircle(b.getWidth() - (radius + 15), radius + 15, radius, badgePaint);
-        return b;
     }
 
     public static <T> HashSet<T> singletonHashSet(T obj) {
@@ -898,21 +926,26 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        getPrefs(context).edit().putBoolean("visibility_" + key, visible).apply();
+        Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
+        if (visible)
+            hiddenApps.remove(key);
+        else
+            hiddenApps.add(key);
+        getPrefs(context).setHiddenAppsSet(hiddenApps);
     }
 
     public static boolean isAppHidden(Context context, String key) {
-        return !getPrefs(context).getBoolean("visibility_" + key, true);
+        return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
     public static int getDynamicAccent(Context context) {
-        if (!FeatureFlags.isDynamicUiEnabled(context)) return getColorAccent(context);
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 
     public static int getDynamicBadgeColor(Context context) {
         int defaultColor = context.getResources().getColor(R.color.badge_color);
-        if (!FeatureFlags.isDynamicUiEnabled(context)) return defaultColor;
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
 
@@ -922,22 +955,18 @@ public final class Utilities {
         return typedValue.data;
     }
 
-    private static int getPreviousBuildNumber(SharedPreferences prefs) {
-        return prefs.getInt(KEY_PREVIOUS_BUILD_NUMBER, 0);
+    private static int getPreviousBuildNumber(IPreferenceProvider prefs) {
+        return prefs.getPreviousBuildNumber();
     }
 
-    private static void setBuildNumber(SharedPreferences prefs, int buildNumber) {
-        prefs.edit().putInt(KEY_PREVIOUS_BUILD_NUMBER, buildNumber).apply();
+    private static void setBuildNumber(IPreferenceProvider prefs, int buildNumber) {
+        prefs.setPreviousBuildNumber(buildNumber);
     }
 
     public static void showChangelog(Context context) {
-        showChangelog(context, false);
-    }
-
-    public static void showChangelog(Context context, boolean force) {
-        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
-        final SharedPreferences prefs = getPrefs(context);
-        if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
+        final IPreferenceProvider prefs = getPrefs(context);
+        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
                     .setMessage(getChangelog().trim())
@@ -952,19 +981,18 @@ public final class Utilities {
     }
 
     @NonNull
-    private static String getChangelog() {
+    public static String getChangelog() {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
-            if (line.startsWith("Merge pull request")) continue;
-            if (line.startsWith("[no ci]")) {
+            if (line.contains("[no ci]")) {
                 line = line.replace("[no ci]", "");
             }
-            builder
-                    .append("- ")
-                    .append(line.trim())
-                    .append("\n");
+
+            builder.append(line.trim()).append('\n');
         }
+
+        builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
 
@@ -976,5 +1004,302 @@ public final class Utilities {
         if (!queryForPinnedShortcuts.isEmpty()) {
             instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
         }
+    }
+
+    public static Drawable getMyIcon(Context context) {
+        return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
+    }
+
+    public static boolean isAwarenessApiEnabled(Context context) {
+        IPreferenceProvider prefs = getPrefs(context);
+        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
+    }
+
+    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+        if (componentName == null) {
+            return false;
+        }
+
+        if (stockAppOnly) {
+            return "com.google.android.deskclock/com.android.deskclock.DeskClock".equals(componentName.flattenToString());
+        }
+
+        // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
+        // Or that contain .clock./.deskclock or end with those?
+        ArrayList<String> clockApps = new ArrayList<>();
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
+
+        return clockApps.contains(componentName.flattenToString());
+    }
+
+    public static boolean isAdaptive(Drawable drawable) {
+        return drawable != null && (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat);
+    }
+
+    private static void ensureAdaptiveIcon(Drawable drawable) {
+        if (!isAdaptive(drawable))
+            throw new IllegalStateException("Not an adaptive icon");
+    }
+
+    public static Drawable getBackground(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getBackground();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getBackground();
+        return null;
+    }
+
+    public static Drawable getForeground(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getForeground();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getForeground();
+        return null;
+    }
+
+    public static Path getIconMask(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getIconMask();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getIconMask();
+        return null;
+    }
+
+    public static boolean isAnimatedClock(Context context, ComponentName componentName) {
+        return Utilities.getPrefs(context).getAnimatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(context).getAnimatedClockIconAlternativeClockApps());
+    }
+
+    public static boolean isBlacklistedAppInstalled(Context context) {
+        final PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo packageInfo : packages) {
+            for (String packageName : BLACKLISTED_APPLICATIONS) {
+                if (packageInfo.packageName.startsWith(packageName)) {
+                    return true;
+                }
+            }
+        }
+
+        return BLACKLISTED_APPLICATIONS.length == 0;
+    }
+
+    public static void showLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.ENABLED) return;
+        final IPreferenceProvider prefs = getPrefs(context);
+
+        // Don't show anything if the user have selected "Don't show again" or Google Now page is enabled
+        if (prefs.getDisableLawnfeedPopup() || prefs.getShowGoogleNowTab()) {
+            return;
+        }
+
+        // Show a popup about the disabled Google Now page option
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.lawnfeed_not_enabled_title)
+                .setMessage(R.string.lawnfeed_not_enabled)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @SuppressLint("ApplySharedPref")
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Enable Google Now page setting
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                        settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
+
+                        // Restart Lawnchair to enable Lawnfeed
+                        LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
+                    }
+                })
+                .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        prefs.setDisableLawnfeedPopup(true);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    public static void showOutdatedLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
+
+        // Disable Google Now page setting if the user have enabled Google Now page
+        if (Utilities.getPrefs(context).getShowGoogleNowTab()) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, false).commit();
+        }
+
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.lawnfeed_outdated_title)
+                .setMessage(R.string.lawnfeed_outdated)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Open website with download link for Lawnfeed
+                        openURLinBrowser(context, "https://lawnchair.info/getlawnfeed.html");
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    public static void openURLinBrowser(Context context, String url) {
+        openURLinBrowser(context, url, null, null);
+    }
+
+    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.setSourceBounds(sourceBounds);
+            if(options == null){
+                context.startActivity(intent);
+            } else {
+                context.startActivity(intent, options);
+            }
+        } catch (ActivityNotFoundException exc) {
+            // Believe me, this actually happens.
+            Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean checkOutdatedLawnfeed(Context context) {
+        // Don't check Lawnfeed version on CI builds, should fix disabled setting option
+        if (!BuildConfig.ENABLE_LAWNFEED) return false;
+
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(LawnfeedClient.PROXY_PACKAGE, 0);
+            // All Lawnfeed builds below version code 1655 aren't signed properly!
+            if (info != null && info.versionCode <= 1655 && !info.versionName.equals("dev")) {
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException ignored) {}
+
+        return false;
+    }
+
+    public static void restartLauncher(final Context context) {
+        new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(WAIT_BEFORE_RESTART);
+                } catch (Exception e) {
+                    Log.e("SettingsActivity", "Error waiting", e);
+                }
+
+                Intent intent = new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_HOME)
+                        .setPackage(context.getPackageName())
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Create a pending intent so the application is restarted after Process.killProcess() was called.
+                // We use an AlarmManager to call this intent in 50ms
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pendingIntent);
+
+                // Kill the application
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+    }
+
+    public static int getNumberOfHotseatRows(Context context){
+        boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
+        return twoLines ? 2 : 1;
+    }
+
+    public static void showResetAlternativeIcons(final Context context, final List<String> appsList) {
+        if (appsList.size() <= 0) {
+            return;
+        }
+
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.reset_alternative_icons_title)
+            .setMessage(String.format(context.getString(R.string.reset_alternative_icons), appsList.size()))
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    IPreferenceProvider prefs = Utilities.getPrefs(context);
+                    Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
+
+                    for (String app : appsList) {
+                        prefs.removeAlternateIcon(app);
+                    }
+
+                    // Ensure those icons get updated
+                    launcher.scheduleReloadIcons();
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .show();
+    }
+
+    public static List<String> getAlternativeIconList(Context context) {
+        List<String> apps = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        for (String key : prefs.getAll().keySet()) {
+            if (key.startsWith(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX)) {
+                String regex = "^" + PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX;
+                apps.add(key.replaceFirst(regex, ""));
+            }
+        }
+
+        return apps;
+    }
+
+    public static boolean hasAlternativeIcon(Context context, ComponentName componentName) {
+        return getAlternativeIconList(context).contains(componentName.flattenToString());
+    }
+
+    public static void setupPirateLocale(Activity activity){
+        if (!PreferenceProvider.INSTANCE.getPreferences(activity).getAyyMatey()) {
+            return;
+        }
+        // Based on: https://stackoverflow.com/a/9173571
+        Locale locale = new Locale("pir");
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources baseResources = activity.getBaseContext().getResources();
+        baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
+    }
+
+    public static void checkRestoreSuccess(Context context) {
+        IPreferenceProvider prefs = getPrefs(context);
+        if (prefs.getRestoreSuccess()) {
+            prefs.setRestoreSuccess(true);
+            context.startActivity(new Intent(context, RestoreBackupActivity.class)
+                .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+        }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    public static void killLauncher() {
+        System.exit(0);
     }
 }

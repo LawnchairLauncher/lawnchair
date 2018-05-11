@@ -18,6 +18,7 @@
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_page_indicator_height">28dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
     <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
     <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
@@ -34,6 +35,8 @@
 
     <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
+    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
+    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
 
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -55,12 +58,14 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
+    <dimen name="all_apps_list_bottom_padding">8dp</dimen>
     <dimen name="all_apps_search_bar_round_height">68dp</dimen>
     <dimen name="all_apps_search_bar_round_margin_bottom">20dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>
+    <dimen name="all_apps_caret_workspace_offset">4dp</dimen>
 
     <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
@@ -123,7 +128,6 @@
 
     <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
-    <dimen name="bg_pill_height">48dp</dimen>
     <dimen name="deferred_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
@@ -150,15 +154,14 @@
     <dimen name="qsb_button_height">56.0dip</dimen>
     <dimen name="qsb_button_elevation">3.0dip</dimen>
     <dimen name="qsb_overlap_margin">-50.0dip</dimen>
-    <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
-    <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
     <dimen name="qsb_touch_extension">20.0dip</dimen>
     <dimen name="notification_padding_start">16.0dip</dimen>
     <dimen name="notification_padding_end">12.0dip</dimen>
     <dimen name="notification_footer_icon_row_padding">15.0dip</dimen>
-    <dimen name="notification_header_height">32.0dip</dimen>
-    <dimen name="notification_main_height">80.0dip</dimen>
-    <dimen name="notification_footer_height">32.0dip</dimen>
+    <dimen name="notification_header_height">36dp</dimen>
+    <dimen name="notification_main_height">84dp</dimen>
+    <dimen name="notification_footer_height">32dp</dimen>
+    <dimen name="notification_empty_footer_height">6dp</dimen>
     <dimen name="notification_header_text_size">13.0sp</dimen>
     <dimen name="notification_header_count_text_size">12.0sp</dimen>
     <dimen name="notification_main_text_size">14.0sp</dimen>
@@ -185,9 +188,10 @@
     <dimen name="popup_arrow_horizontal_offset_start">23.0dip</dimen>
     <dimen name="popup_arrow_horizontal_offset_end">19.0dip</dimen>
     <dimen name="popup_arrow_corner_radius">2.0dip</dimen>
+    <dimen name="popup_system_shortcut_height">48dp</dimen>
     <dimen name="bg_popup_item_width">220.0dip</dimen>
     <dimen name="bg_popup_item_height">56.0dip</dimen>
-    <dimen name="popup_items_spacing">4.0dip</dimen>
+    <dimen name="popup_items_spacing">0dp</dimen>
     <dimen name="horizontal_ellipsis_size">18.0dip</dimen>
     <dimen name="horizontal_ellipsis_offset">19.0dip</dimen>
     <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>
@@ -207,7 +211,11 @@
     <dimen name="widget_section_indent">0.0dip</dimen>
     <dimen name="widget_row_divider">2.0dip</dimen>
     <dimen name="folder_background_radius">2dp</dimen>
-    <dimen name="all_apps_round_search_bar">56dp</dimen>
     <dimen name="icon_preview_size">48dp</dimen>
     <dimen name="icon_grid_column_width">80dp</dimen>
+    <dimen name="all_apps_vertical_row_height">80dp</dimen>
+    <dimen name="all_apps_vertical_row_padding">16.0dip</dimen>
+    <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
+    <dimen name="popup_elevation">9dp</dimen>
 </resources>

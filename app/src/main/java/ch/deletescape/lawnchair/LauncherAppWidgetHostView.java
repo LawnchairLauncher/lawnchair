@@ -32,7 +32,6 @@ import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer.TouchCompleteListener;
 
 /**
@@ -65,7 +64,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @Override
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (FeatureFlags.allowFullWidthWidgets(getContext()) && info != null) {
+        if (Utilities.getPrefs(getContext()).getAllowFullWidthWidgets() && info != null) {
             setPadding(0, 0, 0, 0);
         }
     }

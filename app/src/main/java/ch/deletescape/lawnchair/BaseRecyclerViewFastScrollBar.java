@@ -90,7 +90,7 @@ public class BaseRecyclerViewFastScrollBar {
         mTrackPaint = new Paint();
         mTrackPaint.setColor(rv.getFastScrollerTrackColor(Color.BLACK));
         mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
-        mThumbActiveColor = mThumbInactiveColor = Utilities.getDynamicAccent(rv.getContext());
+        mThumbActiveColor = mThumbInactiveColor = Utilities.getThemer().allAppsTheme(rv.getContext()).getFastScrollerHandleColor();
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
         mThumbPaint.setColor(mThumbInactiveColor);

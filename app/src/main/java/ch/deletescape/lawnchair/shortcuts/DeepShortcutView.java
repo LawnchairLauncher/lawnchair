@@ -40,6 +40,8 @@ public class DeepShortcutView extends FrameLayout {
         super.onFinishInflate();
         this.mBubbleText = findViewById(R.id.bubble_text);
         this.mIconView = findViewById(R.id.icon);
+        if (Launcher.getLauncher(getContext()).isEditingDisabled())
+            mBubbleText.setCompoundDrawables(null, null, null, null);
     }
 
     public BubbleTextView getBubbleText() {
@@ -51,10 +53,9 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     public Point getIconCenter() {
-        Point point = sTempPoint;
         int measuredHeight = getMeasuredHeight() / 2;
         sTempPoint.x = measuredHeight;
-        point.y = measuredHeight;
+        sTempPoint.y = measuredHeight;
         if (Utilities.isRtl(getResources())) {
             sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
         }

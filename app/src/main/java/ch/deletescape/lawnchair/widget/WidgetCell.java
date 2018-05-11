@@ -77,7 +77,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public void applyFromCellItem(WidgetItem widgetItem, WidgetPreviewLoader widgetPreviewLoader) {
         this.mItem = widgetItem;
         this.mWidgetName.setText(this.mItem.label);
-        this.mWidgetDims.setText(getContext().getString(R.string.widget_dims_format, new Object[]{Integer.valueOf(this.mItem.spanX), Integer.valueOf(this.mItem.spanY)}));
+        this.mWidgetDims.setText(getContext().getString(R.string.widget_dims_format, new Object[]{this.mItem.spanX, this.mItem.spanY}));
         this.mWidgetDims.setContentDescription(getContext().getString(R.string.widget_accessible_dims_format, this.mItem.spanX, this.mItem.spanY));
         this.mWidgetPreviewLoader = widgetPreviewLoader;
         if (widgetItem.activityInfo != null) {
@@ -130,10 +130,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         boolean onTouchEvent = super.onTouchEvent(motionEvent);
-        if (this.mStylusEventHelper.onMotionEvent(motionEvent)) {
-            return true;
-        }
-        return onTouchEvent;
+        return this.mStylusEventHelper.onMotionEvent(motionEvent) || onTouchEvent;
     }
 
     @Override

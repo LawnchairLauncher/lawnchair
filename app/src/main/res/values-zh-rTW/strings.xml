@@ -19,11 +19,10 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">公司</string>
+  <string name="work_folder_name">工作</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">應用程式未安裝。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -41,7 +40,6 @@
   <string name="long_accessible_way_to_add">輕觸兩下並按住小工具即可選取，您也可以使用自訂動作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">寬度為 %1$d，高度為 %2$d</string>
   <!-- All Apps -->
@@ -54,8 +52,7 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">搜尋更多應用程式</string>
   <!-- Drag and drop -->
-  <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">這個主螢幕已無空間。</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">「我的最愛」欄中已無可用空間</string>
@@ -71,9 +68,8 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">應用程式資訊</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">安裝捷徑</string>
+  <string name="permlab_install_shortcut">創建捷徑</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">允許應用程式自動新增捷徑。</string>
   <!-- Permission short label -->
@@ -83,11 +79,10 @@
   <!-- Permission short label -->
   <string name="permlab_write_settings">寫入主螢幕設定和捷徑</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">允許應用程式變更主螢幕中的設定和捷徑。</string>
+  <string name="permdesc_write_settings">允許應用程式變更主螢幕中的設定和快捷方式。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> 無法撥打電話</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">載入小工具時發生問題</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -99,13 +94,12 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">已停用 <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">第 %1$d 頁，共 %2$d 頁</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">主螢幕：第 %1$d 頁，共 %2$d 頁</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">新的主畫面頁面</string>
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
+  <string name="workspace_new_page">新的主螢幕頁面</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">資料夾已開啟 （<xliff:g example="5" id="width">%1$d</xliff:g> x <xliff:g example="3" id="height">%2$d</xliff:g>）</string>
@@ -129,7 +123,7 @@
   <!-- Message shown when a feature is disabled by the administrator -->
   <string name="msg_disabled_by_admin">已由您的管理員停用</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-  <string name="accessibility_action_overview">總覽</string>
+  <string name="accessibility_action_overview">概覽</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
@@ -155,7 +149,7 @@
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">將項目移至這裡</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">已將項目新增到主畫面</string>
+  <string name="item_added_to_workspace">已將項目新增到主螢幕</string>
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">已移除項目</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
@@ -242,7 +236,7 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">主螢幕和鎖定畫面</string>
   <string name="title_show_google_app">顯示 %1$s</string>
-  <string name="title_show_google_app_default">顯示Google應用程式</string>
+  <string name="title_show_google_app_default">顯示 Google 應用程式</string>
   <string name="label_search">搜尋</string>
   <string name="label_voice_search">語音搜尋</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d 捷徑和 %3$s 的 %2$d 通知</string>
@@ -251,41 +245,61 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
+  <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
   <string name="changelog_title">更新日誌 #%d</string>
   <string name="week_day_format">%1$s：%2$s</string>
   <string name="icon_pack_preference_title">圖示包</string>
   <string name="icon_pack_preference_summary">選擇一個圖示包</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock欄使用桌布的顏色</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock欄將從壁紙中提取的顏色著色</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock欄使用灰色，但會根據桌布亮度自動調整</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock 欄使用桌布的顏色</string>
+  <string name="hotseat_show_arrow">顯示箭頭</string>
+  <string name="hotseat_show_page_indicator">顯示頁面的指標</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock 欄將從壁紙中提取的顏色著色</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock 欄使用灰色，但會根據桌布亮度自動調整</string>
   <string name="transparent_hotseat_pref_title">透明的Dock欄</string>
   <string name="dynamic_ui_pref_title">從桌布提取強調色</string>
-  <string name="dark_theme_pref_title">使用深色主題</string>
   <string name="blur_pref_title">開啟模糊</string>
+  <string name="blur_pref_summary">介面的模糊效果\n無法用於動態桌布</string>
   <string name="blur_radius_pref_title">模糊範圍</string>
+  <string name="pref_iconLabelsInTwoLines">兩行展示圖示標籤</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
-  <string name="hide_icon_labels_pref_title">在主螢幕上隱藏圖示標籤</string>
+  <string name="hide_icon_labels_pref_title">隱藏主畫面上的文字</string>
+  <string name="hide_all_apps_icon_labels_pref_title">隱藏應用程式清單中的文字</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
-  <string name="workspace_label_color_variation_pref_title">主螢幕上的圖示標籤顏色變化</string>
-  <string name="all_apps_opacity_pref_title">抽屜透明度</string>
-  <string name="num_cols_pref_title">列數</string>
-  <string name="num_rows_pref_title">行數</string>
-  <string name="num_hotseat_icons_pref_title">Dock欄上的圖示數量</string>
+  <string name="all_apps_opacity_pref_title">抽屜不透明度</string>
+  <string name="num_cols_pref_title">欄數</string>
+  <string name="num_rows_pref_title">列數</string>
+  <string name="num_hotseat_icons_pref_title">Dock 欄上的圖示數量</string>
   <string name="icon_scale_pref_title">圖示大小</string>
+  <string name="hotseat_height_scale">高度範圍</string>
+  <string name="hotseat_custom_opacity">Dock 欄的不透明度</string>
+  <string name="hotseat_uses_custom_opacity">启用自訂 Dock 欄的不透明度</string>
   <string name="icon_text_scale_pref_title">圖示字型大小</string>
+  <string name="icon_text_padding_scale_pref_title">圖示填滿範圍</string>
   <string name="full_width_width_widgets_pref_title">全寬小工具</string>
   <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
-  <string name="ui_pref_title">使用者介面</string>
-  <string name="pixel_style_pref_title">Pixel風格</string>
-  <string name="behavior_pref_title">功能</string>
+  <string name="general_pref_title">桌面</string>
+  <string name="dock_pref_title">Dock 欄</string>
+  <string name="app_drawer_pref_title">應用程式抽屜</string>
+  <string name="pixel_ui_pref_title">主題</string>
+  <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">除錯模式</string>
-  <string name="import_export_pref_title">匯入／匯出</string>
-  <string name="show_pixel_bar_pref_title">顯示Pixel頂欄</string>
+  <string name="general_pref_summary">主畫面、Dock 欄及應用程式抽屜</string>
+  <string name="dock_pref_summary">自訂您的 Dock 欄</string>
+  <string name="app_drawer_pref_summary">自訂您的應用程式抽屜</string>
+  <string name="pixel_ui_pref_summary">為不同元素應用主題</string>
+  <string name="backup_pref_title">備份 &amp; 恢復</string>
+  <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
+  <string name="backup_pref_summary">備份 / 恢復您的設定和資料庫</string>
+  <string name="debug_pref_summary">重新啟動或重建圖示資料庫</string>
+  <string name="show_pixel_bar_pref_title">顯示 Pixel 頂欄</string>
   <string name="use_wide_searchbar_pref_title">使用寬的搜尋欄</string>
+  <string name="show_search_pill_title">顯示 Google 搜尋球</string>
+  <string name="show_date_or_weather_title">在右側顯示日期/天氣</string>
   <string name="show_mic_pref_title">顯示 Google Assistant 按鈕</string>
-  <string name="pixel_style_icons_pref_title">使用Pixel圖示</string>
+  <string name="use_round_searhbar">使用圓形的應用程式搜尋欄</string>
+  <string name="pixel_style_icons_pref_title">使用 Pixel 圖示</string>
   <string name="pixel_style_icons_pref_summary">儘可能使用圓形圖示</string>
   <string name="show_google_now_tab_pref_title">顯示 Google Now 頁面</string>
   <string name="restart_lawnchair_pref_title">重新啟動 Lawnchair</string>
@@ -293,69 +307,164 @@
   <string name="rebuild_icondb_pref_title">重建圖示快取</string>
   <string name="pinch_to_overview_pref_title">捏合來概覽</string>
   <string name="pinch_to_overview_pref_summary">在主螢幕捏合來概覽</string>
-  <string name="pull_down_notis_pref_title">下拉顯示通知</string>
-  <string name="pull_down_notis_pref_on">在主螢幕下滑呼出狀態欄。</string>
-  <string name="pull_down_notis_pref_off">當主螢幕下滑時呼出狀態欄。</string>
   <string name="light_statusbar_pref_title">亮色狀態欄</string>
-  <string name="light_statusbar_pref_on">使用亮色的桌布時，狀態欄可能顯示黑色圖示。</string>
-  <string name="light_statusbar_pref_off">狀態欄將一直顯示亮色圖示。</string>
-  <string name="haptic_feedback_pref_title">啟用震動</string>
-  <string name="keep_scroll_state_pref_title">保持滾動軸位置</string>
+  <string name="light_statusbar_pref_force">狀態列將顯示深色圖示</string>
+  <string name="light_statusbar_pref_off">狀態欄將顯示亮色圖示。</string>
+  <string name="keep_scroll_state_pref_title">記住滾動軸位置</string>
   <string name="keep_scroll_state_pref_summary">在抽屜裡保持滾動軸位置</string>
-  <string name="home_opens_drawer_pref_title">Home鍵打開應用抽屜</string>
-  <string name="home_opens_drawer_pref_summary">在主畫面按Home鍵打開應用抽屜</string>
+  <string name="home_opens_drawer_pref_title">Home 鍵打開應用抽屜</string>
+  <string name="home_opens_drawer_pref_summary">在主螢幕按 Home 鍵開啟應用程式清單</string>
   <string name="show_hidden_pref_title">顯示隱藏的應用程式</string>
   <string name="show_hidden_pref_on">顯示隱藏的應用程式來調整可見性設置</string>
-  <string name="show_hidden_pref_off">不顯示影藏的應用程式</string>
+  <string name="show_hidden_pref_off">不顯示隱藏的應用程式</string>
   <string name="export_db_title">匯出資料庫</string>
   <string name="import_db_title">匯入資料庫</string>
   <string name="export_prefs_title">匯出設定</string>
   <string name="import_prefs_title">匯入設定</string>
-  <string name="notification_listener_label">Lawnchair－未讀計數</string>
-  <string name="color_extraction_label">Lawnchair－顏色提取</string>
+  <string name="notification_listener_label">Lawnchair - 未讀計數</string>
+  <string name="color_extraction_label">Lawnchair - 顏色提取</string>
   <string name="test_title">測試</string>
   <string name="visibility">可見性</string>
-  <!-- Customization Color -->
-  <string name="white">白色</string>
-  <!-- Customization Color -->
-  <string name="black">黑色</string>
-  <!-- Customization Color -->
-  <string name="red">紅色</string>
-  <!-- Customization Color -->
-  <string name="pink">粉紅色</string>
-  <!-- Customization Color -->
-  <string name="purple">紫色</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">深紫色</string>
-  <!-- Customization Color -->
-  <string name="indigo">靛青色</string>
-  <!-- Customization Color -->
-  <string name="blue">藍色</string>
-  <!-- Customization Color -->
-  <string name="light_blue">亮藍色</string>
-  <!-- Customization Color -->
-  <string name="cyan">青藍色</string>
-  <!-- Customization Color -->
-  <string name="teal">藍綠色</string>
-  <!-- Customization Color -->
-  <string name="green">綠色</string>
-  <!-- Customization Color -->
-  <string name="light_green">亮綠色</string>
-  <!-- Customization Color -->
-  <string name="lime">黃綠色</string>
-  <!-- Customization Color -->
-  <string name="yellow">黃色</string>
-  <!-- Customization Color -->
-  <string name="amber">琥珀色</string>
-  <!-- Customization Color -->
-  <string name="orange">橘色</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">深橘色</string>
-  <!-- Customization Color -->
-  <string name="brown">棕色</string>
-  <!-- Customization Color -->
-  <string name="grey">灰色</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">藍灰色</string>
   <string name="default_text">預設</string>
+  <string name="edit_icon_reset">重設</string>
+  <string name="show_top_shadow_title">顯示頂部陰影</string>
+  <string name="pref_category_homescreen">主畫面</string>
+  <string name="theme_pref_title">主題</string>
+  <string name="theme_light">亮色主題</string>
+  <string name="theme_dark">暗色主題</string>
+  <string name="theme_black">黑色主題</string>
+  <string name="hide_hotseat_pref_title">隱藏 Dock 欄</string>
+  <string name="all_icons">所有的圖示</string>
+  <string name="pull_down_action_pref_title">下拉手勢</string>
+  <string name="pull_down_do_nothing">無動作</string>
+  <string name="pull_down_notis">顯示通知</string>
+  <string name="pull_down_search">開啟搜尋</string>
+  <string name="pull_down_apps_search">應用程式搜尋</string>
+  <string name="enable_screen_rotation">允許螢幕旋轉</string>
+  <string name="use_system_fonts_title">標籤使用系統字體</string>
+  <!-- Import/Export Strings -->
+  <string name="backup_import_title">恢復</string>
+  <string name="backup_export_title">匯出</string>
+  <string name="settings_export_success">設定備份成功</string>
+  <string name="db_export_success">資料庫備份成功</string>
+  <string name="settings_import_success">設定還原成功</string>
+  <string name="db_import_success">資料庫還原成功</string>
+  <string name="export_error">無法備份</string>
+  <string name="import_error">無法還原</string>
+  <string name="imexport_no_backup_found">找不到備份</string>
+  <string name="imexport_external_storage_unreadable">無法讀取外部儲存空間 (設定中允許權限)</string>
+  <string name="imexport_external_storage_unwritable">無法寫入外部儲存空間 (設定中允許權限)</string>
+  <string name="units_metric">公制</string>
+  <string name="units_imperial">英制</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">天氣</string>
+  <string name="pref_weather_title">啟用天氣</string>
+  <string name="pref_weather_units">天氣單位</string>
+  <string name="pref_weather_city_summary">為了取得最佳結果，請設定國家 / 地區</string>
+  <string name="pref_weather_city_title">城市</string>
+  <string name="none">無</string>
+  <string name="pref_applyTheme">套用主題至</string>
+  <string name="pref_applyBlur">套用模糊效果至</string>
+  <string name="search_bar">搜索欄</string>
+  <string name="folder">資料夾</string>
+  <string name="dock_allapps"><![CDATA[Dock 欄與應用程式抽屜]]></string>
+  <string name="app_shortcuts">應用程式捷徑</string>
+  <string name="blur_effect">模糊效果</string>
+  <string name="pref_weather_provider">天氣供應商</string>
+  <string name="loading">載入中…</string>
+  <string name="icon_shape_override_label">變更圖示形狀</string>
+  <string name="icon_shape_system_default">不要變更</string>
+  <string name="icon_shape_none">無</string>
+  <string name="icon_shape_square">正方形</string>
+  <string name="icon_shape_rounded_square">圓角方形</string>
+  <string name="icon_shape_squircle">圓方形</string>
+  <string name="icon_shape_circle">圓形</string>
+  <string name="icon_shape_teardrop">水滴型</string>
+  <string name="animated_clock_icon_title">動態時鐘圖示</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">為其他時鐘應用顯示動態圖標</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">如果您不使用 Google 時鐘作為默認時鐘，請啟用此功能</string>
+  <string name="about_summary_title">概要</string>
+  <string name="about_version">版本</string>
+  <string name="about_icon_designer">應用程式圖示的設計者</string>
+  <string name="about_contributors_title">貢獻者</string>
+  <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供商</string>
+  <string name="num_cols_drawer_pref_title">應用程式抽屜的欄數</string>
+  <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
+  <string name="pref_backport_shortcuts">向低版本 Android 啟用應用捷徑</string>
+  <string name="weather_api_key_not_set">API Key 尚未設定</string>
+  <string name="pref_weather_api_key_title">API Key</string>
+  <string name="about_changelog">更新日誌</string>
+  <string name="pref_all_apps_custom_label_color">使用自訂標籤顏色</string>
+  <string name="pref_all_apps_label_color">應用程式抽屜圖示的標籤顏色</string>
+  <string name="pref_num_rows_drawer">應用程式清單的列數</string>
+  <string name="center_wallpaper_pref_title">當僅有一頁時，置中桌布</string>
+  <string name="center_wallpaper_pref_summary">當僅有一頁時才有效</string>
+  <string name="vertical_drawer_layout_pref_title">顯示為縱向清單</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
+  <string name="about_translators">翻譯者</string>
+  <string name="lock_desktop">鎖定桌面</string>
+  <string name="lawnfeed_not_found">未安裝 Lawnfeed</string>
+  <string name="google_app_not_found">未安裝 Google 應用</string>
+  <string name="lawnfeed_incompatible">安裝了不相容的 Lawnfeed 版本</string>
+  <string name="set_default_launcher">設定預設啟動器</string>
+  <string name="enable_spring_pref_title">啟用彈簧效果</string>
+  <string name="hide_app">隱藏應用程式</string>
+  <string name="hide_app_sum">從應用程式清單中隱藏應用程式</string>
+  <string name="hide_app_selected">&#160;已選</string>
+  <string name="hidden_app">隱藏的應用程式</string>
+  <string name="hide_app_apply">套用</string>
+  <string name="unauthorized_device">此裝置安裝了一些盜版工具，請解除安裝它們以便繼續。</string>
+  <string name="hide_app_reset">重設</string>
+  <string name="two_row_dock">兩行 Dock 欄</string>
+  <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
+  <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
+  <string name="error_no_browser">找不到處理 URL 的 Activity</string>
+  <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">未啟用 Lawnfeed</string>
+  <string name="lawnfeed_not_enabled">您好像正在嘗試開啟 Google 即時頁面，但您尚未在功能設定中啟用該選項。\n\n您想現在開啟嗎？</string>
+  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
+  <string name="lawnfeed_outdated">需要新版本的 Lawnfeed 才能使用此版本的 Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的
+ Lawnfeed。\n\n您想現在下載嗎？</string>
+  <string name="title_storage_permission_required">需要儲存權限</string>
+  <string name="content_storage_permission_required">在 Android 8.1 及以上版本中，應用程式存取桌布需要存儲權限。 沒有上述權限許可，Lawnchair 可能會發生錯誤或顯示意外的行為。</string>
+  <string name="disable_popup">不再提示</string>
+  <string name="backups">備份</string>
+  <string name="new_backup">新建</string>
+  <string name="restore_backup">還原</string>
+  <string name="backup_name">名稱</string>
+  <string name="backup_location">地點</string>
+  <string name="choose_backup_path">瀏覽</string>
+  <string name="backup_homescreen">主螢幕</string>
+  <string name="backup_contents">备份内容</string>
+  <string name="backup_settings">設定</string>
+  <string name="backup_wallpaper">桌布</string>
+  <string name="backup_error_blank_name">名稱不能空白</string>
+  <string name="backup_error_blank_location">位置不能空白</string>
+  <string name="backup_error_blank_contents">內容不能空白</string>
+  <string name="backup_creating">建立備份</string>
+  <string name="no_recent_backups">沒有最近的備份</string>
+  <string name="backup_loading">載入中...</string>
+  <string name="backup_invalid">不可用</string>
+  <string name="backup_remove_from_recents">從清單中移除</string>
+  <string name="backup_share">分享</string>
+  <string name="backup_timestamp">建立於</string>
+  <string name="backup_restoring">回復備份中</string>
+  <string name="backup_restarting">重新啟動中</string>
+  <string name="restore_contents">還原內容</string>
+  <string name="restore_success">還原成功</string>
+  <string name="backup_failed">備份失敗</string>
+  <string name="restore_failed">還原失敗</string>
+  <string name="restore_read_meta_fail">無效的備份文件</string>
+  <string name="backup_share_title">分享備份</string>
+  <string name="backup_share_text">Lawnchair 備份檔案</string>
+  <string name="read_external_storage_required">新建備份區要儲存權限</string>
+  <string name="local_backups">本機備份</string>
+  <string name="backup_location_device_storage">裝置儲存空間</string>
+  <string name="backup_location_documents_storage">文件儲存</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel 搜索欄</string>
+  <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">其他設定</string>
 </resources>

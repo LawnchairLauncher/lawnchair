@@ -39,11 +39,11 @@
         android:id="@+id/wallpaper_item_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:singleLine="true"
         android:ellipsize="marquee"
         android:gravity="center"
         android:padding="4dp"
         android:layout_gravity="bottom"
         android:background="@color/wallpaper_picker_translucent_gray"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/wallpaper_picker_item_label_text_color" />
 </ch.deletescape.wallpaperpicker.CheckableFrameLayout>

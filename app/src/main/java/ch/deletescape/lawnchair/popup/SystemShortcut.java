@@ -1,20 +1,17 @@
 package ch.deletescape.lawnchair.popup;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 import ch.deletescape.lawnchair.AbstractFloatingView;
-import ch.deletescape.lawnchair.DeleteDropTarget;
 import ch.deletescape.lawnchair.EditAppDialog;
+import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.InfoDropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.Themes;
 import ch.deletescape.lawnchair.widget.WidgetsBottomSheet;
@@ -46,12 +43,16 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
-            if (launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
+            if (launcher.isEditingDisabled())
+                return null;
+            if (itemInfo.getTargetComponent() == null ||
+                    launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
                 return null;
             }
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    launcher.closeFolder();
                     AbstractFloatingView.closeAllOpenViews(launcher);
                     ((WidgetsBottomSheet) launcher.getLayoutInflater().inflate(R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false)).populateAndShow(itemInfo);
                 }
@@ -66,13 +67,13 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (launcher.isEditingDisabled())
+                return null;
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i = new Intent(Intent.ACTION_MAIN).setComponent(itemInfo.getTargetComponent());
-                    LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(launcher, itemInfo.user, i);
-                    ch.deletescape.lawnchair.AppInfo appInfo = new ch.deletescape.lawnchair.AppInfo(launcher, laic, itemInfo.user, launcher.getIconCache());
-                    launcher.openDialog(new EditAppDialog(launcher, appInfo, launcher));
+                    AbstractFloatingView.closeAllOpenViews(launcher);
+                    launcher.openDialog(new EditAppDialog(launcher, (EditableItemInfo) itemInfo, launcher));
                 }
             };
         }

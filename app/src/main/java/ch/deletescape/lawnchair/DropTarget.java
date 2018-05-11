@@ -51,22 +51,22 @@ public interface DropTarget {
         /**
          * The view that moves around while you drag.
          */
-        public DragView dragView = null;
+        public DragView dragView;
 
         /**
          * The data associated with the object, after item is dropped.
          */
-        public ItemInfo dragInfo = null;
+        public ItemInfo dragInfo;
 
         /**
          * The data associated with the object  being dragged
          */
-        public ItemInfo originalDragInfo = null;
+        public ItemInfo originalDragInfo;
 
         /**
          * Where the drag originated
          */
-        public DragSource dragSource = null;
+        public DragSource dragSource;
 
         /**
          * The object is part of an accessible drag operation
@@ -76,7 +76,7 @@ public interface DropTarget {
         /**
          * Post drag animation runnable
          */
-        public Runnable postAnimationRunnable = null;
+        public Runnable postAnimationRunnable;
 
         /**
          * Indicates that the drag operation was cancelled

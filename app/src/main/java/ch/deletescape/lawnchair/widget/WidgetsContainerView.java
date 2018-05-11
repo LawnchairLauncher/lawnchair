@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -20,6 +21,7 @@ import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.util.MultiHashMap;
@@ -40,9 +42,13 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
     }
 
     public WidgetsContainerView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+        super(new ContextThemeWrapper(context, getTheme()), attributeSet, i);
         this.mLauncher = Launcher.getLauncher(context);
         this.mAdapter = new WidgetsListAdapter(this, this, context);
+    }
+
+    private static int getTheme() {
+        return FeatureFlags.INSTANCE.getUseDarkTheme() ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
     }
 
     public View getTouchDelegateTargetView() {
@@ -78,14 +84,11 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
 
     @Override
     public boolean onLongClick(View view) {
-        if (this.mLauncher.isWidgetsViewVisible()) {
-            return handleLongClick(view);
-        }
-        return false;
+        return mLauncher.isWidgetsViewVisible() && handleLongClick(view);
     }
 
     public boolean handleLongClick(View view) {
-        if (view.isInTouchMode() && !this.mLauncher.getWorkspace().isSwitchingState() && this.mLauncher.isDraggingEnabled()) {
+        if (view.isInTouchMode() && !mLauncher.getWorkspace().isSwitchingState() && mLauncher.isDraggingEnabled()) {
             return beginDragging(view);
         }
         return false;
@@ -116,7 +119,7 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
 
     @Override
     public boolean supportsFlingToDelete() {
-        return false;
+        return true;
     }
 
     @Override

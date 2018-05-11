@@ -65,7 +65,7 @@ public class PackageManagerHelper {
         // The value of FLAG_SUSPENDED was reused by a hidden constant
         // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
         // or later.
-        return Utilities.isNycOrAbove() && (info.flags & FLAG_SUSPENDED) != 0;
+        return Utilities.ATLEAST_NOUGAT && (info.flags & FLAG_SUSPENDED) != 0;
     }
 
     /**

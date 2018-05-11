@@ -38,6 +38,10 @@ import ch.deletescape.lawnchair.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
 
+    protected FastBitmapDrawable() {
+
+    }
+
     /**
      * The possible states that a FastBitmapDrawable can be in.
      */
@@ -97,7 +101,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap mBitmap;
+    private Bitmap mBitmap;
     private State mState = State.NORMAL;
 
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
@@ -112,6 +116,8 @@ public class FastBitmapDrawable extends Drawable {
 
     private IconPalette mIconPalette;
 
+    private boolean mEnableStates = true;
+
     public FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());
@@ -124,7 +130,7 @@ public class FastBitmapDrawable extends Drawable {
 
     public IconPalette getIconPalette() {
         if (this.mIconPalette == null) {
-            this.mIconPalette = IconPalette.fromDominantColor(Utilities.findDominantColorByHue(this.mBitmap, 20));
+            this.mIconPalette = IconPalette.fromDominantColor(Utilities.findDominantColorByHue(mBitmap, 20));
         }
         return this.mIconPalette;
     }
@@ -149,6 +155,14 @@ public class FastBitmapDrawable extends Drawable {
     public void setFilterBitmap(boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
         mPaint.setAntiAlias(filterBitmap);
+    }
+
+    public void setEnableStates(boolean enableStates) {
+        mEnableStates = enableStates;
+    }
+
+    public boolean getEnableStates() {
+        return mEnableStates;
     }
 
     @Override
@@ -180,12 +194,20 @@ public class FastBitmapDrawable extends Drawable {
         return mBitmap;
     }
 
+    public void setBitmap(Bitmap bitmap) {
+        if (mBitmap != null)
+            mBitmap.recycle();
+        mBitmap = bitmap;
+        invalidateSelf();
+    }
+
     /**
      * Animates this drawable to a new state.
      *
      * @return whether the state has changed.
      */
     public boolean animateState(State newState) {
+        if (!mEnableStates) return false;
         State prevState = mState;
         if (mState != newState) {
             mState = newState;
@@ -212,6 +234,7 @@ public class FastBitmapDrawable extends Drawable {
      * @return whether the state has changed.
      */
     public boolean setState(State newState) {
+        if (!mEnableStates) return false;
         if (mState != newState) {
             mState = newState;
 
@@ -308,6 +331,7 @@ public class FastBitmapDrawable extends Drawable {
      * Updates the paint to reflect the current brightness and saturation.
      */
     private void updateFilter() {
+        if (!mEnableStates) return;
         boolean usePorterDuffFilter = false;
         int key = -1;
         if (mDesaturation > 0) {

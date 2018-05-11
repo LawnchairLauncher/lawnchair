@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2017 The MoKee Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,56 +17,99 @@
 
 package ch.deletescape.lawnchair.settings.ui;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.net.Uri;
+import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import me.jfenn.attribouter.Attribouter;
+
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends AppCompatActivity implements
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static IPreferenceProvider sharedPrefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
-
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        setContentView(R.layout.activity_settings);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        if (FeatureFlags.INSTANCE.getCurrentTheme() != 2)
+            BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
-            getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new LauncherSettingsFragment())
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, new LauncherSettingsFragment())
+
                     .commit();
         }
+
+        sharedPrefs = Utilities.getPrefs(this);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        updateUpButton();
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        Fragment fragment;
         if (pref instanceof SubPreference) {
-            Fragment fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+        } else if(pref.getKey().equals("about")){
+            fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
+        } else {
+            fragment = Fragment.instantiate(this, pref.getFragment());
+        }
+        if (fragment != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(pref.getTitle());
             transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
-            transaction.replace(android.R.id.content, fragment);
+            transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             return true;
         }
         return false;
@@ -74,7 +118,11 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+        updateUpButton();
+    }
+
+    private void updateUpButton() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getSupportFragmentManager().getBackStackEntryCount() != 0);
     }
 
     @Override
@@ -86,16 +134,65 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
+            FeatureFlags.INSTANCE.loadThemePreference(this);
+            recreate();
+        }
+    }
+
+    private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            Object item = listAdapter.getItem(position);
+
+            if (item instanceof SubPreference) {
+                SubPreference subPreference = (SubPreference) item;
+                if (subPreference.onLongClick(null)) {
+                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
+        }
+    }
+
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends PreferenceFragment {
+    public static class LauncherSettingsFragment extends BaseFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            setDivider(null);
+            return view;
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.launcher_preferences);
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null && "about".equals(preference.getKey())){
+                ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, preference);
+                return true;
+            }
+            return super.onPreferenceTreeClick(preference);
         }
 
         @Override
@@ -103,19 +200,9 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
         }
-
-        @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if (preference.getKey() != null && preference.getKey().equals("about")) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
-                startActivity(i);
-                return true;
-            }
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        }
     }
 
-    public static class SubSettingsFragment extends PreferenceFragment {
+    public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener {
 
         private static final String TITLE = "title";
         private static final String CONTENT_RES_ID = "content_res_id";
@@ -123,17 +210,73 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
-            addPreferencesFromResource(getContent());
+            if (getContent() == R.xml.launcher_theme_preferences) {
+                Preference prefWeatherEnabled = findPreference(FeatureFlags.KEY_PREF_WEATHER);
+                prefWeatherEnabled.setOnPreferenceChangeListener(this);
+                Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
+                prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
+                prefWeatherProvider.setOnPreferenceChangeListener(this);
+                updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
+                Preference overrideShapePreference = findPreference(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE);
+                if (IconShapeOverride.Companion.isSupported(getActivity())) {
+                    IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
+                } else {
+                    ((PreferenceCategory) findPreference("prefCat_homeScreen"))
+                            .removePreference(overrideShapePreference);
+                }
+                if (Utilities.ATLEAST_NOUGAT) {
+                    ((PreferenceCategory) findPreference("prefCat_homeScreen"))
+                        .removePreference(findPreference(PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS));
+                }
+            } else if (getContent() == R.xml.launcher_behavior_preferences) {
+                if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
+                    getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
+                }
+
+                // Remove Google Now tab option when Lawnfeed is not installed
+                int enabledState = ILauncherClient.Companion.getEnabledState(getContext());
+                if (BuildConfig.ENABLE_LAWNFEED && enabledState == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
+                    getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_SHOW_NOW_TAB));
+                }
+            }
         }
 
         @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        public void onCreatePreferences(Bundle bundle, String s) {
+            addPreferencesFromResource(getContent());
+        }
+
+        private void updateEnabledState(String weatherProvider) {
+            boolean awarenessApiEnabled = weatherProvider.equals(PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS);
+            Preference prefWeatherCity = findPreference(PreferenceFlags.KEY_WEATHER_CITY);
+            Preference prefWeatherApiKey = findPreference(PreferenceFlags.KEY_WEATHER_API_KEY);
+            prefWeatherCity.setEnabled(!awarenessApiEnabled);
+            prefWeatherApiKey.setEnabled(!awarenessApiEnabled);
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
-                    case "notification_access":
-                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    case PreferenceFlags.KEY_WEATHER_PROVIDER:
+                        updateEnabledState((String) newValue);
                         break;
+                    case FeatureFlags.KEY_PREF_WEATHER:
+                        Context context = getActivity();
+                        if (Utilities.getPrefs(context).getShowWeather() && Utilities.isAwarenessApiEnabled(context)) {
+                            checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                        }
+                        break;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
                     case "kill":
                         LauncherAppState.getInstance().getLauncher().scheduleKill();
                         break;
@@ -141,24 +284,52 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                         break;
                     case "export_db":
-                        DumbImportExportTask.exportDB(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportDB(getActivity());
                         break;
                     case "import_db":
-                        DumbImportExportTask.importDB(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importDB(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
                         break;
                     case "export_prefs":
-                        DumbImportExportTask.exportPrefs(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportPrefs(getActivity());
                         break;
                     case "import_prefs":
-                        DumbImportExportTask.importPrefs(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importPrefs(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
+                        break;
+                    case PreferenceFlags.KEY_WEATHER_PROVIDER:
+                        if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     default:
-                        return false;
+                        return super.onPreferenceTreeClick(preference);
                 }
                 return true;
             }
+            return super.onPreferenceTreeClick(preference);
+        }
+
+        private boolean checkStoragePermission() {
+            return checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        private boolean checkPermission(String permission) {
+            boolean granted = ContextCompat.checkSelfPermission(
+                    getActivity(),
+                    permission) == PackageManager.PERMISSION_GRANTED;
+            if (granted) return true;
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{permission},
+                    0);
             return false;
         }
 
@@ -179,6 +350,11 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             b.putInt(CONTENT_RES_ID, preference.getContent());
             fragment.setArguments(b);
             return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            return super.onCreateView(FeatureFlags.INSTANCE.getLayoutInflator(inflater), container, savedInstanceState);
         }
     }
 }

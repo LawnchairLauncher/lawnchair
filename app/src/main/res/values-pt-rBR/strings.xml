@@ -19,17 +19,16 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Trabalhando</string>
+  <string name="work_folder_name">Trabalho</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">O app não está instalado.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">O app não está disponível</string>
+  <string name="activity_not_available">O Aplicativo não está disponível</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">App transferido por download desativado no modo de segurança</string>
+  <string name="safemode_shortcut_error">Download de aplicativos está desativado no modo de segurança</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgets desativados no modo de segurança</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -41,7 +40,6 @@
   <string name="long_accessible_way_to_add">Toque duas vezes e segure para selecionar um widget ou usar ações personalizadas.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d de largura por %2$d de altura</string>
   <!-- All Apps -->
@@ -52,10 +50,9 @@
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">Nenhum app encontrado que corresponda a \"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Pesquisar mais apps</string>
+  <string name="all_apps_search_market_message">Pesquisar por mais aplicativos</string>
   <!-- Drag and drop -->
-  <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Não há mais espaço na tela inicial.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Sem espaço na barra de favoritos</string>
@@ -71,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Informações do app</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">instalar atalhos</string>
   <!-- Permission description -->
@@ -87,24 +83,22 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> não tem permissão para fazer chamadas</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Problema ao carregar o widget</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Configuração</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Este é um app do sistema e não pode ser desinstalado.</string>
+  <string name="uninstall_system_app_text">Este é um aplicativo do sistema e não pode ser desinstalado.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Pasta sem nome</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> desativado</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Página %1$d de %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Tela inicial %1$d de %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Nova página na tela inicial</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -116,7 +110,7 @@
   <!-- Indication that folder closed -->
   <string name="folder_closed">Pasta fechada</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Pasta renomeada para <xliff:g id="Name">%1$s</xliff:g></string>
+  <string name="folder_renamed">Pasta renomeada para <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Folder name format -->
   <string name="folder_name_format">Pasta: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
@@ -141,10 +135,10 @@
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">Pesquisar</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">Este app não está instalado</string>
+  <string name="abandoned_promises_title">Este aplicativo não está instalado</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">O app deste ícone não está instalado. Você pode remover o ícone, ou procurar o app e instalá-lo manualmente.</string>
+  <string name="abandoned_promise_explanation">O aplicativo deste ícone não está instalado. Você pode remover o ícone, ou procurar o aplicativo e instalá-lo manualmente.    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title">Fazendo download de <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> concluído</string>
   <!-- Title for an app whose download has been started. -->
@@ -250,61 +244,77 @@
   <string name="notifications_header">Notificações</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair é um Launcher criado por Kottmann (aka deletescape). Baseia-se no Launcher3 da AOSP.</string>
+  <string name="about_text">Lawnchair é um Launcher criado por Till Kottmann (deletescape). Baseado no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="about_pref_summary">Conheça a equipe por trás do Lawnchair</string>
+  <string name="changelog_title">Novidades da versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
-  <string name="icon_pack_preference_summary">Selecione um pacote de ícone</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do papel de parede no dock</string>
+  <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do plano de fundo no dock</string>
+  <string name="hotseat_show_arrow">Mostrar indicador de exibição</string>
+  <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
   <string name="hotseat_uses_extracted_colors_pref_on">O dock será colorido com uma cor extraída do papel de parede</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">O dock será de cor cinza, mas ajustada pelo brilho do papel de parede</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">O dock será cinza e acompanhará o brilho do plano de fundo</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
-  <string name="dynamic_ui_pref_title">Extraia cor do papel de parede</string>
-  <string name="dark_theme_pref_title">Usar tema escuro</string>
+  <string name="dynamic_ui_pref_title">Extrair cor do plano de fundo</string>
   <string name="blur_pref_title">Ativar desfoque</string>
+  <string name="blur_pref_summary">Aplicar o efeito de desfoque para partes do interface\nNão compatível com plano de fundo animado</string>
   <string name="blur_radius_pref_title">Raio de desfoque</string>
-  <string name="white_google_icon_pref_title">Usar ícone do google branco</string>
-  <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
+  <string name="pref_iconLabelsInTwoLines">Nome de ícones em duas linhas</string>
+  <string name="white_google_icon_pref_title">Usar o ícone branco do Google</string>
+  <string name="hide_icon_labels_pref_title">Ocultar textos dos ícones na tela inicial</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
-  <string name="workspace_label_color_variation_pref_title">Variação de cor dos rótulos dos ícones na tela inicial</string>
   <string name="all_apps_opacity_pref_title">Opacidade de gaveta</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones no dock</string>
-  <string name="icon_scale_pref_title">Escala de ícones</string>
+  <string name="icon_scale_pref_title">Tamanho de ícones</string>
+  <string name="hotseat_height_scale">Escala de altura</string>
+  <string name="hotseat_custom_opacity">Opacidade do dock</string>
+  <string name="hotseat_uses_custom_opacity">Habilitar a opacidade do dock personalizada</string>
   <string name="icon_text_scale_pref_title">Escala de texto dos ícones</string>
-  <string name="full_width_width_widgets_pref_title">Preencher widgets na horizontal</string>
-  <string name="full_width_widgets_pref_summary">Permitir que os widgets abranger a largura inteira sem preenchimento</string>
+  <string name="icon_text_padding_scale_pref_title">Escala de títulos dos ícones</string>
+  <string name="full_width_width_widgets_pref_title">Widgets encostam nas bordas</string>
+  <string name="full_width_widgets_pref_summary">Permite que os widgets encostem nas bordas laterais</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
-  <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para mostra uma previa delas</string>
-  <string name="ui_pref_title">Personalizações</string>
-  <string name="pixel_style_pref_title">Estilo Pixel</string>
+  <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para exibir prévias</string>
+  <string name="general_pref_title">Geral</string>
+  <string name="dock_pref_title">Barra de aplicativos</string>
+  <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
-  <string name="import_export_pref_title">Importar/exportar</string>
+  <string name="general_pref_summary">Tela inicial, dock e gaveta de aplicativos</string>
+  <string name="dock_pref_summary">Personalize seu Dock</string>
+  <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
+  <string name="pixel_ui_pref_summary">Habilitar funções exclusivas do Pixel Launcher</string>
+  <string name="backup_pref_title">Backup</string>
+  <string name="behavior_pref_summary">Adicione funções extras ao Lawnchair</string>
+  <string name="backup_pref_summary">Fazer backup das suas configurações</string>
+  <string name="debug_pref_summary">Refazer imagem dos ícones</string>
   <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Use uma barra de pesquisa circular</string>
-  <string name="show_mic_pref_title">Mostrar botão de assistente de Google</string>
-  <string name="pixel_style_icons_pref_title">Usar ícones Pixel</string>
+  <string name="use_wide_searchbar_pref_title">Usar barra de pesquisa circular</string>
+  <string name="show_search_pill_title">Mostrar pílula da Pesquisa do Google</string>
+  <string name="show_date_or_weather_title">Mostrar data/tempo no lado direito</string>
+  <string name="show_mic_pref_title">Mostrar botão do Google Assistente</string>
+  <string name="use_round_searhbar">Usar barra de pesquisa arredondada</string>
+  <string name="pixel_style_icons_pref_title">Usar ícones redondos</string>
   <string name="pixel_style_icons_pref_summary">Quando habilitados, ícones circulares serão usados quando possível</string>
   <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>
   <string name="restart_lawnchair_pref_title">Reiniciar o Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Pode ser útil se algumas configurações não forem aplicadas corretamente</string>
   <string name="rebuild_icondb_pref_title">Reconstruir o banco de dados dos ícones</string>
   <string name="pinch_to_overview_pref_title">Pince para visão geral</string>
-  <string name="pinch_to_overview_pref_summary">Pince na tela inicial para abrir a visão geral</string>
-  <string name="pull_down_notis_pref_title">Movimento de puxar para baixo para abrir notificações</string>
-  <string name="pull_down_notis_pref_on">Puxando para baixo na tela inicial irá expandir a barra de status</string>
-  <string name="pull_down_notis_pref_off">Quando ativado puxando para baixo na tela inicial expanda a barra de status</string>
+  <string name="pinch_to_overview_pref_summary">Pinçar na tela inicial para abrir a visão geral</string>
   <string name="light_statusbar_pref_title">Ícones da barra de status brancos</string>
-  <string name="light_statusbar_pref_on">A barra de status pode mostrar ícones escuros quando usando um papel de parede de claro</string>
-  <string name="light_statusbar_pref_off">A barra de status sempre mostrará ícones claros</string>
-  <string name="haptic_feedback_pref_title">Habilitar vibração tátil</string>
+  <string name="light_statusbar_pref_force">A barra de status mostrará ícones escuros</string>
+  <string name="light_statusbar_pref_off">A barra de status mostrará ícones claros</string>
   <string name="keep_scroll_state_pref_title">Salvar a posição da rolagem</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição da rolagem da gaveta de apps</string>
-  <string name="home_opens_drawer_pref_title">Botão da tela inicial abre a gaveta de apps</string>
-  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial mostrará a gaveta de apps</string>
+  <string name="home_opens_drawer_pref_title">Botão de início abre a gaveta de apps</string>
+  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial abrirá a gaveta de apps</string>
   <string name="show_hidden_pref_title">Mostrar apps ocultos</string>
   <string name="show_hidden_pref_on">Apps ocultos serão mostrados para alterar as configurações de visibilidade</string>
   <string name="show_hidden_pref_off">Apps ocultos não serão mostrados</string>
@@ -316,47 +326,145 @@
   <string name="color_extraction_label">Lawnchair - Extração de cor</string>
   <string name="test_title">Teste</string>
   <string name="visibility">Visibilidade</string>
-  <!-- Customization Color -->
-  <string name="white">Branco</string>
-  <!-- Customization Color -->
-  <string name="black">Preto</string>
-  <!-- Customization Color -->
-  <string name="red">Vermelho</string>
-  <!-- Customization Color -->
-  <string name="pink">Rosa</string>
-  <!-- Customization Color -->
-  <string name="purple">Roxo</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Roxo escuro</string>
-  <!-- Customization Color -->
-  <string name="indigo">Índigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Azul</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Azul claro</string>
-  <!-- Customization Color -->
-  <string name="cyan">Ciano</string>
-  <!-- Customization Color -->
-  <string name="teal">Azul-petróleo</string>
-  <!-- Customization Color -->
-  <string name="green">Verde</string>
-  <!-- Customization Color -->
-  <string name="light_green">Verde claro</string>
-  <!-- Customization Color -->
-  <string name="lime">Verde limão</string>
-  <!-- Customization Color -->
-  <string name="yellow">Amarelo</string>
-  <!-- Customization Color -->
-  <string name="amber">Âmbar</string>
-  <!-- Customization Color -->
-  <string name="orange">Laranja</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Laranja escuro</string>
-  <!-- Customization Color -->
-  <string name="brown">Marrom</string>
-  <!-- Customization Color -->
-  <string name="grey">Cinza</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Cinza azulado</string>
   <string name="default_text">Padrão</string>
+  <string name="edit_icon_reset">Redefinir</string>
+  <string name="show_top_shadow_title">Escurecer barra de notificação</string>
+  <string name="pref_category_homescreen">Tela inicial</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Claro</string>
+  <string name="theme_dark">Escuro</string>
+  <string name="theme_black">Preto</string>
+  <string name="hide_hotseat_pref_title">Ocultar dock</string>
+  <string name="all_icons">Todos os Ícones</string>
+  <string name="pull_down_action_pref_title">Ação de puxar para baixo</string>
+  <string name="pull_down_do_nothing">Não fazer nada</string>
+  <string name="pull_down_notis">Mostrar notificações</string>
+  <string name="pull_down_search">Abrir pesquisa</string>
+  <string name="pull_down_apps_search">Abrir pesquisa de aplicativos</string>
+  <string name="enable_screen_rotation">Ativar a rotação de tela</string>
+  <string name="use_system_fonts_title">Use fontes do sistema para rótulos</string>
+  <!-- Import/Export Strings -->
+  <string name="backup_import_title">Restaurar backup</string>
+  <string name="backup_export_title">Fazer backup</string>
+  <string name="settings_export_success">Backup de configurações realizado com sucesso</string>
+  <string name="db_export_success">Backup de banco de dados realizado com sucesso</string>
+  <string name="settings_import_success">Restauração de configurações realizado com sucesso</string>
+  <string name="db_import_success">Restauração de banco de dados realizado com sucesso</string>
+  <string name="export_error">Não foi possível fazer o backup</string>
+  <string name="import_error">Não foi possível restaurar</string>
+  <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
+  <string name="imexport_external_storage_unreadable">Armazenamento externo não é legível (conceder permissão em configurações)</string>
+  <string name="imexport_external_storage_unwritable">Armazenamento externo não é gravável (conceder permissão em configurações)</string>
+  <string name="units_metric">Métrico</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Previsão do Tempo</string>
+  <string name="pref_weather_title">Ativar previsão do tempo</string>
+  <string name="pref_weather_units">Unidades de temperatura</string>
+  <string name="pref_weather_city_summary">Para melhores resultados incluir código de país</string>
+  <string name="pref_weather_city_title">Cidade</string>
+  <string name="none">Nenhum</string>
+  <string name="pref_applyTheme">Aplicar tema</string>
+  <string name="pref_applyBlur">Aplicar desfoque</string>
+  <string name="search_bar">Barra de pesquisa</string>
+  <string name="folder">Pasta</string>
+  <string name="dock_allapps"><![CDATA[Dock & todos os apps]]></string>
+  <string name="app_shortcuts">Atalhos do App</string>
+  <string name="blur_effect">Efeito de desfoque</string>
+  <string name="pref_weather_provider">Provedor de previsão do tempo</string>
+  <string name="loading">Carregando…</string>
+  <string name="icon_shape_override_label">Alterar o formato dos Icones</string>
+  <string name="icon_shape_system_default">Não mudar</string>
+  <string name="icon_shape_none">Nenhum</string>
+  <string name="icon_shape_square">Quadrado</string>
+  <string name="icon_shape_rounded_square">Cantos arredondados</string>
+  <string name="icon_shape_squircle">Quadrado redondo</string>
+  <string name="icon_shape_circle">Círculo</string>
+  <string name="icon_shape_teardrop">Lágrima</string>
+  <string name="animated_clock_icon_title">Ícone do relógio animado</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Ativar animação para apps de relógio alternativos</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Ative isso se você não usa o relógio da Google como relógio padrão</string>
+  <string name="about_summary_title">Resumo</string>
+  <string name="about_version">Versão</string>
+  <string name="about_icon_designer">Criador do Ícone</string>
+  <string name="about_contributors_title">Colaboradores</string>
+  <string name="location_permission_warn">Permissão de localização necessária para mudar de provedor!</string>
+  <string name="num_cols_drawer_pref_title">Número de colunas na exibição na gaveta de aplicativos</string>
+  <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
+  <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
+  <string name="weather_api_key_not_set">Chave da API não definida</string>
+  <string name="pref_weather_api_key_title">Chave da API</string>
+  <string name="about_changelog">Novidades</string>
+  <string name="pref_all_apps_custom_label_color">Usar cor dos textos dos ícones personalizada</string>
+  <string name="pref_all_apps_label_color">Cor do texto dos ícones na gaveta de apps</string>
+  <string name="pref_num_rows_drawer">Número de linhas na gaveta de apps</string>
+  <string name="center_wallpaper_pref_title">Centralizar papel de parede quando houver apenas uma página</string>
+  <string name="center_wallpaper_pref_summary">Só funciona se a tela inicial usar uma página</string>
+  <string name="vertical_drawer_layout_pref_title">Exibir como lista vertical</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
+  <string name="about_translators">Tradutores</string>
+  <string name="lock_desktop">Impedir mudanças</string>
+  <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
+  <string name="google_app_not_found">Aplicativo do Google não instalado</string>
+  <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalada</string>
+  <string name="set_default_launcher">Definir como Launcher padrão</string>
+  <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
+  <string name="hide_app">Ocultar app</string>
+  <string name="hide_app_sum">Ocultar aplicativos da gaveta de aplicativos</string>
+  <string name="hide_app_selected">&#160;selecionado</string>
+  <string name="hidden_app">Aplicativos ocultos</string>
+  <string name="hide_app_apply">Aplicar</string>
+  <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
+  <string name="hide_app_reset">Redefinir</string>
+  <string name="two_row_dock">Dock com 2 linhas</string>
+  <string name="reset_alternative_icons_title">Redefinir os ícones de apps alternativos?</string>
+  <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, deseja restaurá-los?</string>
+  <string name="error_no_browser">Nenhum navegador encontrado para abrir URLs</string>
+  <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed não habilitado</string>
+  <string name="lawnfeed_not_enabled">Parece que você está tentando abrir a página do Google Now, mas você não ativou a opção nas configurações de comportamento.\n\nVocê quer habilitá-lo agora?</string>
+  <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
+  <string name="title_storage_permission_required">Permissão de armazenamento recusada</string>
+  <string name="content_storage_permission_required">No Android 8.1 e acima, a permissão de armazenamento é necessária para que os aplicativos acessem o papel de parede. Sem a permissão indicada, a Lawchair pode falhar ou mostrar comportamentos inesperados.</string>
+  <string name="disable_popup">Lembrar minha escolha</string>
+  <string name="backups">Backups</string>
+  <string name="new_backup">Criar</string>
+  <string name="restore_backup">Restaurar</string>
+  <string name="backup_name">Nome</string>
+  <string name="backup_location">Localização</string>
+  <string name="choose_backup_path">Navegar</string>
+  <string name="backup_homescreen">Tela Inicial</string>
+  <string name="backup_contents">Conteúdo de backup</string>
+  <string name="backup_settings">Importar configurações</string>
+  <string name="backup_wallpaper">Papel de parede</string>
+  <string name="backup_error_blank_name">O nome não pode ficar em branco</string>
+  <string name="backup_error_blank_location">O local não deve ficar em branco</string>
+  <string name="backup_error_blank_contents">O conteúdo não pode ficar em branco</string>
+  <string name="backup_creating">Criando backup</string>
+  <string name="no_recent_backups">Nenhum backup recente</string>
+  <string name="backup_loading">Carregando...</string>
+  <string name="backup_invalid">Indisponível</string>
+  <string name="backup_remove_from_recents">Remover da lista</string>
+  <string name="backup_share">Compartilhar</string>
+  <string name="backup_timestamp">Data de criação</string>
+  <string name="backup_restoring">Restaurando backup</string>
+  <string name="backup_restarting">Reiniciando</string>
+  <string name="restore_contents">Restaurar conteúdo</string>
+  <string name="restore_success">Restauração com sucesso</string>
+  <string name="backup_failed">Erro ao fazer backup</string>
+  <string name="restore_failed">Falha na restauração</string>
+  <string name="restore_read_meta_fail">Arquivo de backup inválido</string>
+  <string name="backup_share_title">Compartilhar backup</string>
+  <string name="backup_share_text">Arquivo de backup do Lawnchair</string>
+  <string name="read_external_storage_required">Permissão de armazenamento é necessária para criar backup</string>
+  <string name="local_backups">Backups locais</string>
+  <string name="backup_location_device_storage">Armazenamento do dispositivo</string>
+  <string name="backup_location_documents_storage">Armazenamento de documentos</string>
+  <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Barra de pesquisa de Pixel</string>
+  <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Diversos</string>
 </resources>

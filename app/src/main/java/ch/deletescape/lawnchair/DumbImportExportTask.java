@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -19,62 +18,85 @@ public class DumbImportExportTask {
     public static void exportDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
         File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
-        exportFile(db, activity);
+        File backup = getDbBackupFile();
+        exportFile(db, backup, activity);
     }
 
     public static void importDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
         File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
-        importFile(db, activity);
+        File backup = getDbBackupFile();
+        importFile(db, backup, activity);
     }
 
     public static void exportPrefs(Activity activity) {
-        ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
-        exportFile(prefs, activity);
+        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
+        File backup = getSettingsBackupFile();
+        exportFile(prefs, backup, activity);
+    }
+
+    @NonNull
+    public static File getDbBackupFile() {
+        return new File(getFolder(), LauncherFiles.LAUNCHER_DB);
+    }
+
+    @NonNull
+    public static File getSettingsBackupFile() {
+        return new File(getFolder(), LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml");
     }
 
     public static void importPrefs(Activity activity) {
-        ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
-        importFile(prefs, activity);
+        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
+        File backup = getSettingsBackupFile();
+        importFile(prefs, backup, activity);
     }
 
-    private static void exportFile(File file, Activity activity) {
+    private static void exportFile(File file, File backup, Activity activity) {
         if (!isExternalStorageWritable() || !canWriteStorage(activity)) {
-            Toast.makeText(activity, "External Storage is not writable (grant Permission in settings)", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.imexport_external_storage_unwritable), Toast.LENGTH_LONG).show();
             return;
         }
-        File backup = new File(getFolder(), file.getName());
+
         if (backup.exists()) {
             backup.delete();
         }
+
         if (copy(file, backup)) {
-            Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+            if (file.getName().equals(LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
+                Toast.makeText(activity, activity.getString(R.string.settings_export_success), Toast.LENGTH_LONG).show();
+            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+                Toast.makeText(activity, activity.getString(R.string.db_export_success), Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(activity, "Error: Failed to copy file", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.export_error), Toast.LENGTH_LONG).show();
         }
     }
 
-    private static void importFile(File file, Activity activity) {
+    private static void importFile(File file, File backup, Activity activity) {
         if (!isExternalStorageReadable() || !canWriteStorage(activity)) {
-            Toast.makeText(activity, "External Storage is not writable (grant Permission in settings)", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.imexport_external_storage_unreadable), Toast.LENGTH_LONG).show();
             return;
         }
-        File backup = new File(getFolder(), file.getName());
+
         if (!backup.exists()) {
-            Toast.makeText(activity, "No backup found", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.imexport_no_backup_found), Toast.LENGTH_LONG).show();
             return;
         }
+
         if (file.exists()) {
             file.delete();
         }
+
         if (copy(backup, file)) {
-            Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+            if (file.getName().equals(LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
+                Toast.makeText(activity, activity.getString(R.string.settings_import_success), Toast.LENGTH_LONG).show();
+            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+                Toast.makeText(activity, activity.getString(R.string.db_import_success), Toast.LENGTH_LONG).show();
+          }
         } else {
-            Toast.makeText(activity, "Error: Failed to copy file", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.import_error), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -92,7 +114,7 @@ public class DumbImportExportTask {
         return ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private static boolean copy(File inFile, File outFile) {
+    public static boolean copy(File inFile, File outFile) {
         FileInputStream in;
         FileOutputStream out;
         try {

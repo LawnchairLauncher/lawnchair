@@ -22,33 +22,58 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.animation.DynamicAnimation;
+import android.support.animation.SpringAnimation;
+import android.support.animation.SpringForce;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.util.Arrays;
 
+import ch.deletescape.lawnchair.FastBitmapDrawable;
+import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
+import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
+import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.Thunk;
 
-public class DragView extends View {
+public class DragView extends FrameLayout {
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
     @Thunk
     static float sDragAlpha = 1f;
     private final float mInitialScale;
+    private final Launcher mLauncher;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk
-    Paint mPaint;
+    Paint mPaint, mMaskPaint;
     private final int mRegistrationX;
     private final int mRegistrationY;
 
@@ -74,8 +99,19 @@ public class DragView extends View {
     private int mLastTouchY;
     private int mAnimatedShiftX;
     private int mAnimatedShiftY;
+    private boolean mAnimationStarted;
     private final int[] mTempLoc = new int[2];
 
+    private ImageView mFgImageView;
+    private ImageView mBgImageView;
+
+    private SpringAnimation mSpringX;
+    private SpringAnimation mSpringY;
+
+    private float mDelta;
+
+    private Canvas mTmpCanvas;
+    private Bitmap mTmpBitmap;
 
     /**
      * Construct the drag view.
@@ -91,6 +127,7 @@ public class DragView extends View {
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
                     final float initialScale, final float finalScaleDps) {
         super(launcher);
+        mLauncher = launcher;
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
 
@@ -131,9 +168,13 @@ public class DragView extends View {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        mMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        mMaskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
         mInitialScale = initialScale;
+        setWillNotDraw(false);
+        mDelta = (int) (getResources().getDisplayMetrics().density * 8.0f);
     }
 
     /**
@@ -169,11 +210,6 @@ public class DragView extends View {
 
     public Rect getDragRegion() {
         return mDragRegion;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     @Override
@@ -295,6 +331,7 @@ public class DragView extends View {
         post(new Runnable() {
             @Override
             public void run() {
+                mAnimationStarted = true;
                 mAnim.start();
             }
         });
@@ -313,24 +350,45 @@ public class DragView extends View {
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     public void move(int touchX, int touchY) {
+        if (touchX > 0 && touchY > 0 && mLastTouchX > 0 && mLastTouchY > 0) {
+            applySpring(mLastTouchX - touchX, mLastTouchY - touchY);
+        }
         mLastTouchX = touchX;
         mLastTouchY = touchY;
         applyTranslation();
     }
 
-    public void animateShift(final int shiftX, final int shiftY) {
-        if (mAnim.isStarted()) {
-            return;
-        }
+    public void shift(final int shiftX, final int shiftY) {
         mAnimatedShiftX = shiftX;
         mAnimatedShiftY = shiftY;
         applyTranslation();
+    }
+
+    public void animateShift(int shiftX, int shiftY) {
+        animateShift(shiftX, shiftY, false);
+    }
+
+    public void animateShift(int shiftX, int shiftY, final boolean inverse) {
+        final int baseShiftX = mAnimatedShiftX;
+        final int baseShiftY = mAnimatedShiftY;
+        final int targetShiftX = shiftX - baseShiftX;
+        final int targetShiftY = shiftY - baseShiftY;
+        mAnimatedShiftX = shiftX;
+        mAnimatedShiftY = shiftY;
+        applyTranslation();
+        if (!mAnim.isRunning()) {
+            if (mAnimationStarted) {
+                mAnim = LauncherAnimUtils.ofFloat(0f, 1f);
+                mAnim.setDuration(VIEW_ZOOM_DURATION);
+            }
+            mAnim.start();
+        }
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = 1 - animation.getAnimatedFraction();
-                mAnimatedShiftX = (int) (fraction * shiftX);
-                mAnimatedShiftY = (int) (fraction * shiftY);
+                float fraction = inverse ? animation.getAnimatedFraction() : (1 - animation.getAnimatedFraction());
+                mAnimatedShiftX = baseShiftX + (int) (fraction * targetShiftX);
+                mAnimatedShiftY = baseShiftY + (int) (fraction * targetShiftY);
                 applyTranslation();
             }
         });
@@ -343,7 +401,7 @@ public class DragView extends View {
 
     public void remove() {
         if (getParent() != null) {
-            mDragLayer.removeView(DragView.this);
+            mDragLayer.removeView(this);
         }
     }
 
@@ -351,4 +409,126 @@ public class DragView extends View {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
                 Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
+
+    public void setItemInfo(final ItemInfo itemInfo) {
+        if (!Utilities.ATLEAST_NOUGAT)
+            return;
+        if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(new Runnable() {
+                public void run() {
+                    LauncherAppState instance = LauncherAppState.getInstance();
+                    Object[] objArr = new Object[1];
+                    Drawable fullDrawable = getFullDrawable(itemInfo, instance, objArr);
+                    if (Utilities.isAdaptive(fullDrawable)) {
+                        int width = mBitmap.getWidth();
+                        int height = mBitmap.getHeight();
+                        float dimension = mLauncher.getResources().getDimension(R.dimen.blur_size_medium_outline);
+                        float scale = IconNormalizer.getInstance().getScale(fullDrawable, null) * ((((float) width) - dimension) / ((float) width));
+                        fullDrawable.setBounds(0, 0, width, height);
+                        mFgImageView = setupImageView(Utilities.getForeground(fullDrawable), scale);
+                        mBgImageView = setupImageView(Utilities.getBackground(fullDrawable), scale);
+                        mSpringX = setupSpringAnimation((-width) / 4, width / 4, DynamicAnimation.TRANSLATION_X);
+                        mSpringY = setupSpringAnimation((-height) / 4, height / 4, DynamicAnimation.TRANSLATION_Y);
+                        mTmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                        mTmpCanvas = new Canvas(mTmpBitmap);
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            public void run() {
+                                addView(mBgImageView);
+                                addView(mFgImageView);
+                                setWillNotDraw(true);
+                                if (itemInfo.isDisabled()) {
+                                    FastBitmapDrawable fastBitmapDrawable = new FastBitmapDrawable(null);
+                                    ColorFilter colorFilter = fastBitmapDrawable.getColorFilter();
+                                    mBgImageView.setColorFilter(colorFilter);
+                                    mFgImageView.setColorFilter(colorFilter);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    private SpringAnimation setupSpringAnimation(int minValue, int maxValue, DynamicAnimation.ViewProperty iVar) {
+        SpringAnimation springAnimation = new SpringAnimation(mFgImageView, iVar, 0);
+        springAnimation.setMinValue((float) minValue).setMaxValue((float) maxValue);
+        springAnimation.setSpring(new SpringForce(0).setDampingRatio(1).setStiffness(4000));
+        return springAnimation;
+    }
+
+    private ImageView setupImageView(Drawable drawable, float f) {
+        FrameLayout.LayoutParams layoutParams =
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ImageView imageView = new ImageView(getContext());
+        imageView.setLayoutParams(layoutParams);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setScaleX(f);
+        imageView.setScaleY(f);
+        imageView.setImageDrawable(drawable);
+        return imageView;
+    }
+
+    private Drawable getFullDrawable(ItemInfo itemInfo, LauncherAppState launcherAppState, Object[] objArr) {
+        if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            LauncherActivityInfoCompat resolveActivity = LauncherAppsCompat.getInstance(mLauncher).resolveActivity(itemInfo.getIntent(), itemInfo.user);
+            objArr[0] = resolveActivity;
+            if (resolveActivity != null) {
+                if (Utilities.isAnimatedClock(getContext(), resolveActivity.getComponentName()))
+                    return ClockIconDrawable.Companion.create(getContext());
+                return launcherAppState.getIconCache().getFullResIcon(resolveActivity, false);
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    private Path getMaskPath(Drawable drawable, float f) {
+        Matrix matrix = new Matrix();
+        float f2 = 0.97f * f;
+        matrix.setScale(f2, f2, (float) drawable.getBounds().centerX(), (float) drawable.getBounds().centerY());
+        Path path = new Path();
+        Utilities.getIconMask(drawable).transform(matrix, path);
+        return path;
+    }
+
+    private void applySpring(int x, int y) {
+        if (mSpringX != null && mSpringY != null) {
+            mSpringX.animateToFinalPosition(Utilities.boundToRange(x, -mDelta, mDelta));
+            mSpringY.animateToFinalPosition(Utilities.boundToRange(y, -mDelta, mDelta));
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        int width = right - left;
+        int height = bottom - top;
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).layout((-width) / 4, (-height) / 4, (width / 4) + width, (height / 4) + height);
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        setMeasuredDimension(width, height);
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).measure(width, height);
+        }
+    }
+
+    protected void dispatchDraw(Canvas canvas) {
+        if (mTmpCanvas != null) {
+            super.dispatchDraw(mTmpCanvas);
+            mTmpCanvas.drawBitmap(mBitmap, 0, 0, mMaskPaint);
+            canvas.drawBitmap(mTmpBitmap, 0, 0, mPaint);
+            return;
+        }
+        super.dispatchDraw(canvas);
+    }
+
 }

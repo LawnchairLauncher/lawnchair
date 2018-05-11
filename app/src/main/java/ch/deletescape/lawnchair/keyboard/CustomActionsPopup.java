@@ -33,13 +33,13 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
         }
     }
 
-    private List getActionList() {
+    private List<AccessibilityAction> getActionList() {
         if (this.mIcon == null || (!(this.mIcon.getTag() instanceof ItemInfo))) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         AccessibilityNodeInfo obtain = AccessibilityNodeInfo.obtain();
         //this.mDelegate.addSupportedActions(this.mIcon, obtain, true);
-        List arrayList = new ArrayList(obtain.getActionList());
+        List<AccessibilityAction> arrayList = new ArrayList<>(obtain.getActionList());
         obtain.recycle();
         return arrayList;
     }

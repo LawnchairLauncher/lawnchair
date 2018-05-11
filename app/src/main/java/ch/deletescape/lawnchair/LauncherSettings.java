@@ -88,6 +88,8 @@ public class LauncherSettings {
          * <P>Type: BLOB</P>
          */
         String ICON = "icon";
+
+        String CUSTOM_ICON = "customIcon";
     }
 
     /**
@@ -251,6 +253,8 @@ public class LauncherSettings {
          */
         public static final String OPTIONS = "options";
 
+        public static final String TITLE_ALIAS = "titleAlias";
+
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
             db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
@@ -268,6 +272,8 @@ public class LauncherSettings {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
+                    "customIcon BLOB," +
+                    "titleAlias TEXT," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
