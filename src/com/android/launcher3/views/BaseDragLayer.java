@@ -30,6 +30,8 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
@@ -45,16 +47,17 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     protected final Rect mHitRect = new Rect();
 
     protected final T mActivity;
+    private final MultiValueAlpha mMultiValueAlpha;
 
     protected TouchController[] mControllers;
     protected TouchController mActiveController;
     private TouchCompleteListener mTouchCompleteListener;
 
-    public BaseDragLayer(Context context, AttributeSet attrs) {
+    public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
         mActivity = (T) BaseActivity.fromContext(context);
+        mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
-
 
     public boolean isEventOverView(View view, MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
@@ -274,6 +277,10 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     @Override
     protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
+    }
+
+    public AlphaProperty getAlphaProperty(int index) {
+        return mMultiValueAlpha.getProperty(index);
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
