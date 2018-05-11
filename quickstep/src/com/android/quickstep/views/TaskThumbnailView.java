@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -39,7 +38,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.SystemUiController;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -145,20 +143,6 @@ public class TaskThumbnailView extends View {
         return new Rect();
     }
 
-    public int getSysUiStatusNavFlags() {
-        if (mThumbnailData != null) {
-            int flags = 0;
-            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0
-                    ? SystemUiController.FLAG_LIGHT_STATUS
-                    : SystemUiController.FLAG_DARK_STATUS;
-            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
-                    ? SystemUiController.FLAG_LIGHT_NAV
-                    : SystemUiController.FLAG_DARK_NAV;
-            return flags;
-        }
-        return 0;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
@@ -170,23 +154,20 @@ public class TaskThumbnailView extends View {
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
-        // Draw the background in all cases, except when the thumbnail data is opaque
-        final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
-                || mThumbnailData == null;
-        if (drawBackgroundOnly || mClipBottom > 0 || mThumbnailData.isTranslucent) {
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
-            if (drawBackgroundOnly) {
-                return;
-            }
+        // Always draw the background since the snapshots may be translucent
+        canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
+        if (mTask == null) {
+            return;
         }
-
-        if (mClipBottom > 0) {
-            canvas.save();
-            canvas.clipRect(x, y, width, mClipBottom);
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
-            canvas.restore();
-        } else {
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
+        if (!mTask.isLocked) {
+            if (mClipBottom > 0) {
+                canvas.save();
+                canvas.clipRect(x, y, width, mClipBottom);
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
+                canvas.restore();
+            } else {
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
+            }
         }
     }
 
