@@ -138,7 +138,7 @@ public class OverviewCommandHelper {
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
             overviewComponent = new ComponentName(mContext, RecentsActivity.class);
-            mActivityControlHelper = new FallbackActivityControllerHelper();
+            mActivityControlHelper = new FallbackActivityControllerHelper(defaultHome);
             overviewIntentCategory = Intent.CATEGORY_DEFAULT;
 
             // User's default home app can change as a result of package updates of this app (such

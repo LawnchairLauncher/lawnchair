@@ -35,6 +35,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOverviewStateEnabled(true);
+        getQuickScrubController().onFinishedTransitionToQuickScrub();
     }
 
     @Override
