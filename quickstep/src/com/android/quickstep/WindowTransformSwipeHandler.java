@@ -171,6 +171,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private final ActivityInitListener mActivityInitListener;
 
     private final int mRunningTaskId;
+    private final RunningTaskInfo mRunningTaskInfo;
     private ThumbnailData mTaskSnapshot;
 
     private MultiStateCallback mStateCallback;
@@ -207,6 +208,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
             ActivityControlHelper<T> controller) {
         mContext = context;
+        mRunningTaskInfo = runningTaskInfo;
         mRunningTaskId = runningTaskInfo.id;
         mTouchTimeMs = touchTimeMs;
         mActivityControlHelper = controller;
@@ -772,8 +774,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mLauncherTransitionController = null;
         }
 
-        mActivityControlHelper.onQuickInteractionStart(mActivity, false);
-        mQuickScrubController.onQuickScrubStart(false, mActivityControlHelper);
+        mActivityControlHelper.onQuickInteractionStart(mActivity, mRunningTaskInfo, false);
 
         // Inform the last progress in case we skipped before.
         mQuickScrubController.onQuickScrubProgress(mCurrentQuickScrubProgress);
