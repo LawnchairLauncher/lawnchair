@@ -350,8 +350,7 @@ public class TouchInteractionService extends Service {
 
                 mStartPending = true;
                 Runnable action = () -> {
-                    mQuickScrubController.onQuickScrubStart(mActivityHelper.onQuickInteractionStart(
-                            mActivity, true), mActivityHelper);
+                    mActivityHelper.onQuickInteractionStart(mActivity, null, true);
                     mQuickScrubController.onQuickScrubProgress(mLastProgress);
                     mStartPending = false;
 

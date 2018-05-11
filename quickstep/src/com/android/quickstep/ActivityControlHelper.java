@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -24,10 +25,15 @@ import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.view.View;
@@ -52,21 +58,23 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
  */
+@TargetApi(Build.VERSION_CODES.P)
 public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     LayoutListener createLayoutListener(T activity);
 
     /**
      * Updates the UI to indicate quick interaction.
-     * @return true if there any any UI change as a result of this
      */
-    boolean onQuickInteractionStart(T activity, boolean activityVisible);
+    void onQuickInteractionStart(T activity, @Nullable RunningTaskInfo taskInfo,
+            boolean activityVisible);
 
     float getTranslationYForQuickScrub(T activity);
 
@@ -120,10 +128,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public boolean onQuickInteractionStart(Launcher activity, boolean activityVisible) {
+        public void onQuickInteractionStart(Launcher activity, RunningTaskInfo taskInfo,
+                boolean activityVisible) {
             LauncherState fromState = activity.getStateManager().getState();
             activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
-            return !fromState.overviewUi;
+
+            QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
+                    .getQuickScrubController();
+            controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this);
         }
 
         @Override
@@ -311,10 +323,27 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
 
+        private final ComponentName mHomeComponent;
+        private final Handler mUiHandler = new Handler(Looper.getMainLooper());
+
+        public FallbackActivityControllerHelper(ComponentName homeComponent) {
+            mHomeComponent = homeComponent;
+        }
+
         @Override
-        public boolean onQuickInteractionStart(RecentsActivity activity, boolean activityVisible) {
-            // Activity does not need any UI change for quickscrub.
-            return false;
+        public void onQuickInteractionStart(RecentsActivity activity, RunningTaskInfo taskInfo,
+                boolean activityVisible) {
+            QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
+                    .getQuickScrubController();
+
+            // TODO: match user is as well
+            boolean startingFromHome = !activityVisible &&
+                    (taskInfo == null || Objects.equals(taskInfo.topActivity, mHomeComponent));
+            controller.onQuickScrubStart(startingFromHome, this);
+            if (activityVisible) {
+                mUiHandler.postDelayed(controller::onFinishedTransitionToQuickScrub,
+                        OVERVIEW_TRANSITION_MS);
+            }
         }
 
         @Override
@@ -465,6 +494,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public AlphaProperty getAlphaProperty(RecentsActivity activity) {
             return activity.getDragLayer().getAlphaProperty(0);
         }
+
     }
 
     interface LayoutListener {
