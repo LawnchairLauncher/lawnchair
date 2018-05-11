@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -106,6 +107,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     };
     public static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
+    // The threshold at which we update the SystemUI flags when animating from the task into the app
+    private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.6f;
 
     private static final float[] sTempFloatArray = new float[3];
 
@@ -1152,12 +1155,21 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         tv.setVisibility(INVISIBLE);
+        int targetSysUiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
         TaskViewDrawable drawable = new TaskViewDrawable(tv, this);
         getOverlay().add(drawable);
 
         ObjectAnimator drawableAnim =
                 ObjectAnimator.ofFloat(drawable, TaskViewDrawable.PROGRESS, 1, 0);
         drawableAnim.setInterpolator(LINEAR);
+        drawableAnim.addUpdateListener((animator) -> {
+            // Once we pass a certain threshold, update the sysui flags to match the target tasks'
+            // flags
+            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW,
+                    animator.getAnimatedFraction() > UPDATE_SYSUI_FLAGS_THRESHOLD
+                            ? targetSysUiFlags
+                            : 0);
+        });
 
         AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv,
                 drawable.getClipAnimationHelper());
