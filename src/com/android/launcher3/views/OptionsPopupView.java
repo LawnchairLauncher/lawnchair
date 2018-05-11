@@ -184,6 +184,7 @@ public class OptionsPopupView extends ArrowPopup
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
         if (!TextUtils.isEmpty(pickerPackage)) {
