@@ -148,6 +148,9 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     protected void onTaskLaunched(boolean success) {
         if (success) {
             mActivity.getStateManager().goToState(NORMAL, false /* animate */);
+        } else {
+            LauncherState state = mActivity.getStateManager().getState();
+            mActivity.getAllAppsController().setProgress(state.getVerticalProgress(mActivity));
         }
         super.onTaskLaunched(success);
     }
