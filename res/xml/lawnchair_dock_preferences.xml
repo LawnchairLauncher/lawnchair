@@ -18,13 +18,6 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_hideDockGradient"
-        android:title="@string/hide_dock_gradient"
-        android:dependency="pref_dockPStyle"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <SwitchPreference
         android:key="pref_dockSearchBar"
         android:title="@string/dock_search_bar"
         android:defaultValue="true"

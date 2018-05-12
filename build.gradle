@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0-beta4'
+        classpath 'com.android.tools.build:gradle:3.1.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }

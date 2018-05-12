@@ -67,7 +67,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
 
     // Dock
-    val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
     val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, { onChangeCallback?.resetAllApps() })
@@ -75,6 +74,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockStyle by StringIntPref("pref_dockStyle", 3, recreate)
     val dockGradientStyle get() = (dockStyle and 1) == 0
     val dockRoundedCorners get() = (dockStyle and 2) != 0
+    val hideDockGradient get() = (dockStyle and 4) != 0
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
