@@ -65,7 +65,6 @@ import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -425,8 +424,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         buildAnimationController();
 
         final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
-        SysuiEventLogger.writeDummyRecentsTransition(transitionDelay);
-
         if (LatencyTrackerCompat.isEnabled(mContext)) {
             LatencyTrackerCompat.logToggleRecents((int) transitionDelay);
         }

@@ -56,7 +56,6 @@ import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHel
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
@@ -229,10 +228,7 @@ public class OverviewCommandHelper {
 
             if (!handleCommand(elapsedTime)) {
                 // Start overview
-                if (mHelper.switchToRecentsIfVisible()) {
-                    SysuiEventLogger.writeDummyRecentsTransition(0);
-                    // Do nothing
-                } else {
+                if (!mHelper.switchToRecentsIfVisible()) {
                     mListener = mHelper.createActivityInitListener(this::onActivityReady);
                     mListener.registerAndStartActivity(overviewIntent, this::createWindowAnimation,
                             mContext, mMainThreadExecutor.getHandler(), RECENTS_LAUNCH_DURATION);

@@ -41,7 +41,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.SysuiEventLogger;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -210,7 +209,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mFromState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
-            SysuiEventLogger.writeDummyRecentsTransition(0);
         }
     }
 
