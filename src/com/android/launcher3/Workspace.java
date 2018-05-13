@@ -88,6 +88,7 @@ import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.quickstep.OverviewInteractionState;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -2103,6 +2104,8 @@ public class Workspace extends PagedView
         showCustomContentIfNecessary();
         mForceDrawAdjacentPages = false;
         mTransitionProgress = 1;
+
+        OverviewInteractionState.getInstance(getContext()).onLauncherStateOrFocusChanged(mLauncher);
     }
 
     void updateCustomContentVisibility() {

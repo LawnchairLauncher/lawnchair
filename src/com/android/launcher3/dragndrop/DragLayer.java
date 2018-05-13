@@ -24,35 +24,18 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.AppWidgetResizeFrame;
-import com.android.launcher3.CellLayout;
-import com.android.launcher3.DropTargetBar;
-import com.android.launcher3.ExtendedEditText;
-import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetHostView;
-import com.android.launcher3.PinchToOverviewListener;
-import com.android.launcher3.R;
-import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.*;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
@@ -64,6 +47,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsBottomSheet;
+import com.android.quickstep.OverviewInteractionState;
 
 import java.util.ArrayList;
 
@@ -807,11 +791,13 @@ public class DragLayer extends InsettableFrameLayout {
     public void onChildViewAdded(View parent, View child) {
         super.onChildViewAdded(parent, child);
         updateChildIndices();
+        OverviewInteractionState.getInstance(getContext()).onLauncherStateOrFocusChanged(Launcher.getLauncher(getContext()));
     }
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
         updateChildIndices();
+        OverviewInteractionState.getInstance(getContext()).onLauncherStateOrFocusChanged(Launcher.getLauncher(getContext()));
     }
 
     @Override
