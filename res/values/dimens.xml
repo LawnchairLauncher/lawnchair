@@ -212,7 +212,7 @@
     <dimen name="badge_large_padding">3dp</dimen>
 
 <!-- Notifications -->
-    <dimen name="bg_round_rect_radius">12dp</dimen>
+    <dimen name="bg_round_rect_radius">8dp</dimen>
     <dimen name="notification_padding_start">16dp</dimen>
     <dimen name="notification_padding_end">12dp</dimen>
     <!-- notification_padding_end + (icon_size - footer_icon_size) / 2 -->
