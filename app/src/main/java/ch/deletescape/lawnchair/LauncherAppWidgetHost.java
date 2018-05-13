@@ -16,10 +16,13 @@
 
 package ch.deletescape.lawnchair;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
 
@@ -101,5 +104,16 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.
         info.initSpans();
+    }
+
+    public void startBindFlow(Activity activity,
+                              int appWidgetId, AppWidgetProviderInfo info, int requestCode) {
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
+        // TODO: we need to make sure that this accounts for the options bundle.
+        // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+        activity.startActivityForResult(intent, requestCode);
     }
 }

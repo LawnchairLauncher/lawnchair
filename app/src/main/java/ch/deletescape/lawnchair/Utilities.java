@@ -75,6 +75,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.preferences.PreferenceImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -803,6 +804,11 @@ public final class Utilities {
     @NonNull
     public static IPreferenceProvider getPrefs(Context context) {
         return PreferenceProvider.INSTANCE.getPreferences(context);
+    }
+
+    @NonNull
+    public static SharedPreferences getSharedPrefs(Context context) {
+        return PreferenceImpl.Companion.getSharedPrefs(context);
     }
 
     @NonNull

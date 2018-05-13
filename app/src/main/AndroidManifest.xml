@@ -223,6 +223,17 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
+        <activity android:name="ch.deletescape.lawnchair.dragndrop.AddItemActivity"
+            android:theme="@android:style/Theme.Material.Light.Dialog.Alert"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/action_add_to_workspace" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

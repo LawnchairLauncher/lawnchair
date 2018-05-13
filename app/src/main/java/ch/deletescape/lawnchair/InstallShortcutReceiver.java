@@ -16,6 +16,8 @@
 
 package ch.deletescape.lawnchair;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,21 +26,21 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
@@ -54,6 +56,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             "com.android.launcher.action.INSTALL_SHORTCUT";
 
     private static final String LAUNCH_INTENT_KEY = "intent.launch";
+    private static final String DEEPSHORTCUT_TYPE_KEY = "isDeepShortcut";
+    private static final String APP_WIDGET_TYPE_KEY = "isAppWidget";
     private static final String NAME_KEY = "name";
     private static final String ICON_KEY = "icon";
     private static final String ICON_RESOURCE_NAME_KEY = "iconResource";
@@ -256,6 +260,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static class PendingInstallShortcutInfo {
 
         final LauncherActivityInfoCompat activityInfo;
+        final ShortcutInfoCompat shortcutInfo;
+        final AppWidgetProviderInfo providerInfo;
 
         final Intent data;
         final Context mContext;
@@ -274,6 +280,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             label = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
             user = Utilities.myUserHandle();
             activityInfo = null;
+            shortcutInfo = null;
+            providerInfo = null;
         }
 
         /**
@@ -283,10 +291,46 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             this.data = null;
             mContext = context;
             activityInfo = info;
+            shortcutInfo = null;
+            providerInfo = null;
             user = info.getUser();
 
             launchIntent = AppInfo.makeLaunchIntent(context, info, user);
             label = info.getLabel().toString();
+        }
+
+        /**
+         * Initializes a PendingInstallShortcutInfo to represent a launcher target.
+         */
+        public PendingInstallShortcutInfo(ShortcutInfoCompat info, Context context) {
+            activityInfo = null;
+            shortcutInfo = info;
+            providerInfo = null;
+
+            data = null;
+            mContext = context;
+            user = info.getUserHandle();
+
+            launchIntent = info.makeIntent(context);
+            label = info.getShortLabel().toString();
+        }
+
+        /**
+         * Initializes a PendingInstallShortcutInfo to represent a launcher target.
+         */
+        public PendingInstallShortcutInfo(
+                AppWidgetProviderInfo info, int widgetId, Context context) {
+            activityInfo = null;
+            shortcutInfo = null;
+            providerInfo = info;
+
+            data = null;
+            mContext = context;
+            user = info.getProfile();
+
+            launchIntent = new Intent().setComponent(info.provider)
+                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            label = info.label;
         }
 
         public String encodeToString() {
@@ -298,6 +342,34 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             .object()
                             .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                             .key(APP_SHORTCUT_TYPE_KEY).value(true)
+                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                                    .getSerialNumberForUser(user))
+                            .endObject().toString();
+                } catch (JSONException e) {
+                    Log.d(TAG, "Exception when adding shortcut: " + e);
+                    return null;
+                }
+            } else if (shortcutInfo != null) {
+                try {
+                    return new JSONStringer()
+                            .object()
+                            .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
+                            .key(DEEPSHORTCUT_TYPE_KEY).value(true)
+                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                                    .getSerialNumberForUser(user))
+                            .endObject().toString();
+                } catch (JSONException e) {
+                    Log.d(TAG, "Exception when adding shortcut: " + e);
+                    return null;
+                }
+            } else if (providerInfo != null) {
+                try {
+                    // If it a launcher target, we only need component name, and user to
+                    // recreate this.
+                    return new JSONStringer()
+                            .object()
+                            .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
+                            .key(APP_WIDGET_TYPE_KEY).value(true)
                             .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
                                     .getSerialNumberForUser(user))
                             .endObject().toString();
@@ -350,6 +422,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         public ShortcutInfo getShortcutInfo() {
             if (activityInfo != null) {
                 return new ShortcutInfo(activityInfo, mContext);
+            } else if (shortcutInfo != null) {
+                return new ShortcutInfo(shortcutInfo, mContext);
             } else {
                 return LauncherAppState.getInstance().getModel().infoFromShortcutIntent(mContext, data);
             }
@@ -371,7 +445,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static PendingInstallShortcutInfo decode(String encoded, Context context) {
         try {
-            JSONObject object = (JSONObject) new JSONTokener(encoded).nextValue();
+            Decoder object = new Decoder(encoded, context);
             Intent launcherIntent = Intent.parseUri(object.getString(LAUNCH_INTENT_KEY), 0);
 
             if (object.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
@@ -385,6 +459,28 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
                         .resolveActivity(launcherIntent, user);
                 return info == null ? null : new PendingInstallShortcutInfo(info, context);
+            } else if (object.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
+                DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
+                List<ShortcutInfoCompat> si = sm.queryForFullDetails(
+                        object.launcherIntent.getPackage(),
+                        Arrays.asList(object.launcherIntent.getStringExtra(
+                                ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
+                        object.user);
+                if (si.isEmpty()) {
+                    return null;
+                } else {
+                    return new PendingInstallShortcutInfo(si.get(0), context);
+                }
+            } else if (object.optBoolean(APP_WIDGET_TYPE_KEY)) {
+                int widgetId = object.launcherIntent
+                        .getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+                AppWidgetProviderInfo info = AppWidgetManager.getInstance(context)
+                        .getAppWidgetInfo(widgetId);
+                if (info == null || !info.provider.equals(object.launcherIntent.getComponent()) ||
+                        !info.getProfile().equals(object.user)) {
+                    return null;
+                }
+                return new PendingInstallShortcutInfo(info, widgetId, context);
             }
 
             Intent data = new Intent();
@@ -411,6 +507,22 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             Log.d(TAG, "Exception reading shortcut to add: " + e);
         }
         return null;
+    }
+
+    private static class Decoder extends JSONObject {
+        public final Intent launcherIntent;
+        public final UserHandle user;
+
+        private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
+            super(encoded);
+            launcherIntent = Intent.parseUri(getString(LAUNCH_INTENT_KEY), 0);
+            user = has(USER_HANDLE_KEY) ? UserManagerCompat.getInstance(context)
+                    .getUserForSerialNumber(getLong(USER_HANDLE_KEY))
+                    : Process.myUserHandle();
+            if (user == null) {
+                throw new JSONException("Invalid user");
+            }
+        }
     }
 
     /**
@@ -441,5 +553,13 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         // Ignore any conflicts in the label name, as that can change based on locale.
         LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat.create(original.mContext, original.user, original.launchIntent);
         return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
+    }
+
+    public static void queueShortcut(ShortcutInfoCompat info, Context context) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
+    }
+
+    public static void queueWidget(AppWidgetProviderInfo info, int widgetId, Context context) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, widgetId, context), context);
     }
 }
