@@ -9,11 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import ch.deletescape.lawnchair.R
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.config.FeatureFlags
 
 @SuppressLint("Registered")
 open class BackupBaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        FeatureFlags.applyDarkTheme(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
@@ -21,6 +24,9 @@ open class BackupBaseActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        if (FeatureFlags.currentTheme != 2)
+            BlurWallpaperProvider.applyBlurBackground(this)
     }
 
     override fun setContentView(v: View) {
