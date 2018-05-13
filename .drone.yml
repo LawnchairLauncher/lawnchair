@@ -32,7 +32,7 @@ pipeline:
       secrets: [ telegram_token ]
       to: "-1001092684628"
       format: html
-      message: "<b>{{repo.owner}}/{{repo.name}}</b><br />
+      message: "<b>{{repo.owner}}/{{repo.name}}</b><br>
         {{#success build.status}}
         Build {{build.number}} succeeded. Good job mate!
         {{else}}
