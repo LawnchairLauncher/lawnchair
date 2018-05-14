@@ -250,10 +250,11 @@ public class ClipAnimationHelper {
             taskHeight = taskHeight / 2 - halfDividerSize;
         }
 
+        // Align the task to bottom left/right edge (closer to nav bar).
+        int left = activity.getDeviceProfile().isSeascape() ? insets.left
+                : (insets.left + fullDp.availableWidthPx - taskWidth);
         mSourceStackBounds.set(0, 0, taskWidth, taskHeight);
-        // Align the task to bottom right (probably not true for seascape).
-        mSourceStackBounds.offset(insets.left + fullDp.availableWidthPx - taskWidth,
-                insets.top + fullDp.availableHeightPx - taskHeight);
+        mSourceStackBounds.offset(left, insets.top + fullDp.availableHeightPx - taskHeight);
     }
 
     public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
