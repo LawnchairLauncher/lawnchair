@@ -20,6 +20,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -46,6 +47,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
+    private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
@@ -69,7 +71,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
-    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, { onChangeCallback?.resetAllApps() })
+    val dockDefaultOpacity = 100
+    val dockCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, resetAllApps)
+    val dockOpacity by AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, resetAllApps)
+    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, resetAllApps)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val dockStyle by StringIntPref("pref_dockStyle", 3, recreate)
     val dockGradientStyle get() = (dockStyle and 1) == 0
@@ -79,6 +84,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+    val allAppsCustomOpacity by BooleanPref("pref_allAppsShouldUseCustomOpacity", false, doNothing)
+    val allAppsDefaultOpacity = 235
+    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)
+    val allAppsStartAlpha get() = if (dockCustomOpacity) dockOpacity else dockDefaultOpacity
+    val allAppsEndAlpha get() = if (allAppsCustomOpacity) allAppsOpacity else allAppsDefaultOpacity
+    val allAppsAlphaRange get() = allAppsEndAlpha - allAppsStartAlpha
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -273,6 +284,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         override fun onSetValue(value: Int) {
             edit { putInt(getKey(), value) }
+        }
+    }
+
+    open inner class AlphaPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun onGetValue(): Int = (sharedPrefs.getFloat(getKey(), defaultValue.toFloat() / 255) * 255).roundToInt()
+
+        override fun onSetValue(value: Int) {
+            edit { putFloat(getKey(), value.toFloat() / 255) }
         }
     }
 

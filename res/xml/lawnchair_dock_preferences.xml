@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <SwitchPreference
-        android:key="pref_dockPStyle"
-        android:title="@string/hotseat_p_style"
-        android:defaultValue="true"
-        android:persistent="true"
-        android:disableDependentsState="true" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
         android:key="pref_dockStyle"
@@ -28,6 +22,23 @@
         android:title="@string/dock_colored_google"
         android:dependency="pref_dockSearchBar"
         android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_hotseatShouldUseCustomOpacity"
+        android:title="@string/hotseat_uses_custom_opacity"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_hotseatCustomOpacity"
+        android:title="@string/hotseat_custom_opacity"
+        android:dependency="pref_hotseatShouldUseCustomOpacity"
+        app:minValue="0"
+        app:maxValue="1"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
+        app:defaultSeekbarValue="0.39"
         android:persistent="true" />
 
     <SwitchPreference

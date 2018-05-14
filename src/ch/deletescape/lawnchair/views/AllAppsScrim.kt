@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
@@ -35,6 +36,9 @@ import com.android.launcher3.graphics.ShadowGenerator
 class AllAppsScrim(context: Context, attrs: AttributeSet?)
     : GradientView(context, attrs), Insettable {
     private val pStyle = FeatureFlags.LAUNCHER3_P_ALL_APPS
+    private val prefs by lazy { LawnchairPreferences.getInstance(context) }
+    private val normalMinAlpha get() = prefs.allAppsStartAlpha
+    private val allAppsAlpha get() = prefs.allAppsStartAlpha
 
     private val mFillPaint = Paint(1)
     private val mDrawRect = Rect()
@@ -46,8 +50,8 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private val mShadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
     private val mDrawMargin by lazy { mRadius + mShadowBlur }
     private val mDeviceProfile by lazy { Launcher.getLauncher(context).deviceProfile }
-    private val mMinAlpha by lazy { if (mDeviceProfile.isVerticalBarLayout) 235 else 100 }
-    private val mAlphaRange by lazy { 235 - mMinAlpha }
+    private val mMinAlpha get() = if (mDeviceProfile.isVerticalBarLayout) allAppsAlpha else normalMinAlpha
+    private val mAlphaRange get() = prefs.allAppsAlphaRange
     private val mFillAlpha by lazy { mMinAlpha }
     private val mShadowBitmap by lazy {
         val tmp = mRadius + mShadowBlur

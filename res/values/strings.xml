@@ -444,4 +444,8 @@
     <string name="dock_style_n">Android N</string>
     <string name="dock_style_transparent">Transparent</string>
     <string name="dock_search_bar">Show search bar on dock</string>
+    <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
+    <string name="hotseat_custom_opacity">Dock opacity</string>
+    <string name="all_apps_uses_custom_opacity">Custom drawer opacity</string>
+    <string name="all_apps_opacity_pref_title">Drawer opacity</string>
 </resources>

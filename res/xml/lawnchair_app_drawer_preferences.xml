@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
         android:key="pref_show_predictions"
@@ -18,5 +19,22 @@
         android:key="pref_hideAllAppsAppLabels"
         android:title="@string/hide_all_apps_icon_labels_pref_title"
         android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_allAppsShouldUseCustomOpacity"
+        android:title="@string/all_apps_uses_custom_opacity"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_allAppsOpacitySB"
+        android:title="@string/all_apps_opacity_pref_title"
+        android:dependency="pref_allAppsShouldUseCustomOpacity"
+        app:minValue="0"
+        app:maxValue="1"
+        app:defaultSeekbarValue="0.92"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
         android:persistent="true" />
 </PreferenceScreen>
