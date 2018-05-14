@@ -22,7 +22,7 @@ package com.android.launcher3.config;
 public final class FeatureFlags extends BaseFlags {
 
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
-    public static final boolean LEGACY_ICON_TREATMENT = true;
+    public static final boolean LEGACY_ICON_TREATMENT = false;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static boolean QSB_ON_FIRST_SCREEN = true;
