@@ -59,6 +59,9 @@ import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+
 /**
  * A simple activity to show the recently launched tasks
  */
@@ -270,5 +273,12 @@ public class RecentsActivity extends BaseDraggingActivity {
         startActivity(new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+        writer.println(prefix + "Misc:");
+        dumpMisc(writer);
     }
 }

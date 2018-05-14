@@ -2279,8 +2279,8 @@ public class Launcher extends BaseDraggingActivity
         writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
         writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
         writer.println(" mPendingActivityResult=" + mPendingActivityResult);
-        writer.println(" deviceProfile isTransposed=" + getDeviceProfile().isVerticalBarLayout());
-        writer.println(" orientation=" + getResources().getConfiguration().orientation);
+        writer.println(" mRotationHelper: " + mRotationHelper);
+        dumpMisc(writer);
 
         try {
             FileLog.flushAll(writer);
