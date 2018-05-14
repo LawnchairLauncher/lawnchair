@@ -435,9 +435,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLayoutListener.setHandler(this);
         buildAnimationController();
 
-        final long transitionDelay = mLauncherFrameDrawnTime - mTouchTimeMs;
         if (LatencyTrackerCompat.isEnabled(mContext)) {
-            LatencyTrackerCompat.logToggleRecents((int) transitionDelay);
+            LatencyTrackerCompat.logToggleRecents((int) (mLauncherFrameDrawnTime - mTouchTimeMs));
         }
     }
 
