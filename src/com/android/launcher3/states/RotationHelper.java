@@ -150,4 +150,12 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             mActivity.setRequestedOrientation(activityFlags);
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("[mStateHandlerRequest=%d, mCurrentStateRequest=%d,"
+                + " mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, mAutoRotateEnabled=%b]",
+                mStateHandlerRequest, mCurrentStateRequest, mLastActivityFlags,
+                mIgnoreAutoRotateSettings, mAutoRotateEnabled);
+    }
 }

@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.app.Activity;
@@ -24,15 +25,14 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.support.annotation.IntDef;
-import android.view.Display;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.SystemUiController;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
@@ -222,5 +222,13 @@ public abstract class BaseActivity extends Activity {
 
     public interface MultiWindowModeChangedListener {
         void onMultiWindowModeChanged(boolean isInMultiWindowMode);
+    }
+
+    protected void dumpMisc(PrintWriter writer) {
+        writer.println(" deviceProfile isTransposed=" + getDeviceProfile().isVerticalBarLayout());
+        writer.println(" orientation=" + getResources().getConfiguration().orientation);
+        writer.println(" mSystemUiController: " + mSystemUiController);
+        writer.println(" mActivityFlags: " + mActivityFlags);
+        writer.println(" mForceInvisible: " + mForceInvisible);
     }
 }

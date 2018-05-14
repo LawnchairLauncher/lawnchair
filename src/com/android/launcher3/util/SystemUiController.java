@@ -16,10 +16,13 @@
 
 package com.android.launcher3.util;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 
 import com.android.launcher3.Utilities;
+
+import java.util.Arrays;
 
 /**
  * Utility class to manage various window flags to control system UI.
@@ -77,5 +80,10 @@ public class SystemUiController {
         if (newFlags != oldFlags) {
             mWindow.getDecorView().setSystemUiVisibility(newFlags);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "mStates=" + Arrays.toString(mStates);
     }
 }
