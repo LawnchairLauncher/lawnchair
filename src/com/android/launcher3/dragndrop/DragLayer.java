@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -479,6 +480,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 case ANIMATION_END_REMAIN_VISIBLE:
                     break;
                 }
+                mDropAnim = null;
             }
         });
         mDropAnim.start();
@@ -488,6 +490,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         if (mDropAnim != null) {
             mDropAnim.cancel();
         }
+        mDropAnim = null;
         if (mDropView != null) {
             mDragController.onDeferredEndDrag(mDropView);
         }
