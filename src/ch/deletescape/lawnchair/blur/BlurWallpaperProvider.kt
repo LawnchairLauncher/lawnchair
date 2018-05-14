@@ -135,25 +135,9 @@ class BlurWallpaperProvider(val context: Context) {
             return bitmap
         }
 
-        val scaledWidth = (bitmap.width * upscaleFactor).toInt()
-        val scaledHeight = (bitmap.height * upscaleFactor).toInt()
-        val scaled = Bitmap.createScaledBitmap(
-                bitmap,
-                scaledWidth,
-                scaledHeight, false)
-
-        val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas()
-        canvas.setBitmap(result)
-
-        val paint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
-        if (widthFactor > heightFactor) {
-            canvas.drawBitmap(scaled, 0f, ((height - scaledHeight) / 2).toFloat(), paint)
-        } else {
-            canvas.drawBitmap(scaled, ((width - scaledWidth) / 2).toFloat(), 0f, paint)
-        }
-
-        return result
+        val scaledWidth = Math.max(width, (bitmap.width * upscaleFactor).toInt())
+        val scaledHeight = Math.max(height, (bitmap.height * upscaleFactor).toInt())
+        return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false)
     }
 
     fun blur(image: Bitmap): Bitmap {
