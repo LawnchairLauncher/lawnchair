@@ -48,7 +48,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/google_sans"
                 android:singleLine="true"
-                android:text="@string/app_name"
+                android:text="@string/derived_app_name"
                 android:textAppearance="?titleTextAppearance"
                 android:textSize="36dp"
                 android:visibility="gone"

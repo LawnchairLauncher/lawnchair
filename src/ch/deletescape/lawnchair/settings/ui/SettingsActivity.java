@@ -213,7 +213,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(R.string.app_name);
+            getActivity().setTitle(R.string.derived_app_name);
             if (mDeveloperOptions != null &&
                     Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
                 getPreferenceScreen().addPreference(mDeveloperOptions);
