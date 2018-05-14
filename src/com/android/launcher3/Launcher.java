@@ -2305,16 +2305,18 @@ public class Launcher extends BaseDraggingActivity
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
                     KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
         }
-        View currentFocus = getCurrentFocus();
-        if (new CustomActionsPopup(this, currentFocus).canShow()) {
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
-                    KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
-        }
-        if (currentFocus.getTag() instanceof ItemInfo
-                && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
-            shortcutInfos.add(new KeyboardShortcutInfo(
-                    getString(R.string.shortcuts_menu_with_notifications_description),
-                    KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
+        final View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            if (new CustomActionsPopup(this, currentFocus).canShow()) {
+                shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
+                        KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
+            }
+            if (currentFocus.getTag() instanceof ItemInfo
+                    && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
+                shortcutInfos.add(new KeyboardShortcutInfo(
+                        getString(R.string.shortcuts_menu_with_notifications_description),
+                        KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
+            }
         }
         if (!shortcutInfos.isEmpty()) {
             data.add(new KeyboardShortcutGroup(getString(R.string.home_screen), shortcutInfos));
