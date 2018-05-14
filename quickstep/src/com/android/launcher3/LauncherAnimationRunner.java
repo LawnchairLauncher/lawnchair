@@ -118,6 +118,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
                 finish();
             } else if (mFinished) {
                 // Animation callback was already finished, skip the animation.
+                mAnimator.start();
                 mAnimator.end();
             } else {
                 // Start the animation
