@@ -31,6 +31,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.userevent.nano.LauncherLogProto.TipType;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.lang.reflect.Field;
@@ -76,7 +77,7 @@ public class LoggerUtils {
                 }
                 return str;
             case Action.Type.COMMAND: return getFieldName(action.command, Action.Command.class);
-            default: return UNKNOWN;
+            default: return getFieldName(action.type, Action.Type.class);
         }
     }
 
@@ -84,23 +85,32 @@ public class LoggerUtils {
         if (t == null){
             return "";
         }
+        String str = "";
         switch (t.type) {
             case Target.Type.ITEM:
-                return getItemStr(t);
+                str = getItemStr(t);
+                break;
             case Target.Type.CONTROL:
-                return getFieldName(t.controlType, ControlType.class);
+                str = getFieldName(t.controlType, ControlType.class);
+                break;
             case Target.Type.CONTAINER:
-                String str = getFieldName(t.containerType, ContainerType.class);
+                str = getFieldName(t.containerType, ContainerType.class);
                 if (t.containerType == ContainerType.WORKSPACE ||
                         t.containerType == ContainerType.HOTSEAT) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
                     str += " grid(" + t.gridX + "," + t.gridY+ ")";
                 }
-                return str;
+                break;
             default:
-                return "UNKNOWN TARGET TYPE";
+                str += "UNKNOWN TARGET TYPE";
         }
+
+        if (t.tipType != TipType.DEFAULT_NONE) {
+            str += " " + getFieldName(t.tipType, TipType.class);
+        }
+
+        return str;
     }
 
     private static String getItemStr(Target t) {
@@ -183,6 +193,12 @@ public class LoggerUtils {
     public static Target newTarget(int targetType) {
         Target t = new Target();
         t.type = targetType;
+        return t;
+    }
+
+    public static Target newControlTarget(int controlType) {
+        Target t = newTarget(Target.Type.CONTROL);
+        t.controlType = controlType;
         return t;
     }
 

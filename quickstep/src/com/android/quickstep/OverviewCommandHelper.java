@@ -48,8 +48,10 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
@@ -187,6 +189,17 @@ public class OverviewCommandHelper {
 
     public void onOverviewShown() {
         mMainThreadExecutor.execute(new ShowRecentsCommand());
+    }
+
+    public void onTip(int actionType, int viewType) {
+        mMainThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                UserEventDispatcher.newInstance(mContext,
+                        new InvariantDeviceProfile(mContext).getDeviceProfile(mContext))
+                        .logActionTip(actionType, viewType);
+            }
+        });
     }
 
     public ActivityControlHelper getActivityControlHelper() {
