@@ -52,6 +52,8 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
@@ -224,6 +226,7 @@ public class OverviewCommandHelper {
         private T mActivity;
         private RecentsView mRecentsView;
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
+        private boolean mUserEventLogged;
 
         public RecentsActivityCommand() {
             mHelper = getActivityControlHelper();
@@ -241,7 +244,7 @@ public class OverviewCommandHelper {
 
             if (!handleCommand(elapsedTime)) {
                 // Start overview
-                if (!mHelper.switchToRecentsIfVisible()) {
+                if (!mHelper.switchToRecentsIfVisible(true)) {
                     mListener = mHelper.createActivityInitListener(this::onActivityReady);
                     mListener.registerAndStartActivity(overviewIntent, this::createWindowAnimation,
                             mContext, mMainThreadExecutor.getHandler(), RECENTS_LAUNCH_DURATION);
@@ -284,6 +287,11 @@ public class OverviewCommandHelper {
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
             mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+            if (!mUserEventLogged) {
+                activity.getUserEventDispatcher().logActionCommand(Action.Command.RECENTS_BUTTON,
+                        mHelper.getContainerType(), ContainerType.TASKSWITCHER);
+                mUserEventLogged = true;
+            }
             return false;
         }
 

@@ -48,6 +48,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -99,7 +100,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     RecentsView getVisibleRecentsView();
 
     @UiThread
-    boolean switchToRecentsIfVisible();
+    boolean switchToRecentsIfVisible(boolean fromRecentsButton);
 
     Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target);
 
@@ -119,6 +120,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      * Must return a non-null controller is supportsLongSwipe was true.
      */
     LongSwipeHelper getLongSwipeController(T activity, RemoteAnimationTargetSet targetSet);
+
+    /**
+     * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
+     */
+    int getContainerType();
 
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
@@ -277,9 +283,15 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public boolean switchToRecentsIfVisible() {
+        public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
             Launcher launcher = getVisibleLaucher();
             if (launcher != null) {
+                if (fromRecentsButton) {
+                    launcher.getUserEventDispatcher().logActionCommand(
+                            LauncherLogProto.Action.Command.RECENTS_BUTTON,
+                            getContainerType(),
+                            LauncherLogProto.ContainerType.TASKSWITCHER);
+                }
                 launcher.getStateManager().goToState(OVERVIEW);
                 return true;
             }
@@ -318,6 +330,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public AlphaProperty getAlphaProperty(Launcher activity) {
             return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
+        }
+
+        @Override
+        public int getContainerType() {
+            final Launcher launcher = getVisibleLaucher();
+            return launcher != null ? launcher.getStateManager().getState().containerType
+                    : LauncherLogProto.ContainerType.APP;
         }
     }
 
@@ -457,7 +476,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public boolean switchToRecentsIfVisible() {
+        public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
             return false;
         }
 
@@ -495,6 +514,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return activity.getDragLayer().getAlphaProperty(0);
         }
 
+        @Override
+        public int getContainerType() {
+            return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
+        }
     }
 
     interface LayoutListener {
