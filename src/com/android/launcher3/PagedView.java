@@ -92,7 +92,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mCurrentPage;
-    private int mChildCountOnLastLayout;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mNextPage = INVALID_PAGE;
@@ -543,18 +542,19 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         mIsLayoutValid = true;
-        if (getChildCount() == 0) {
+        final int childCount = getChildCount();
+        boolean pageScrollChanged = false;
+        if (mPageScrolls == null || childCount != mPageScrolls.length) {
+            mPageScrolls = new int[childCount];
+            pageScrollChanged = true;
+        }
+
+        if (childCount == 0) {
             return;
         }
 
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
-        final int childCount = getChildCount();
 
-        boolean pageScrollChanged = false;
-        if (mPageScrolls == null || childCount != mChildCountOnLastLayout) {
-            mPageScrolls = new int[childCount];
-            pageScrollChanged = true;
-        }
         if (getPageScrolls(mPageScrolls, true, SIMPLE_SCROLL_LOGIC)) {
             pageScrollChanged = true;
         }
@@ -591,7 +591,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mScroller.isFinished() && pageScrollChanged) {
             setCurrentPage(getNextPage());
         }
-        mChildCountOnLastLayout = childCount;
     }
 
     /**
