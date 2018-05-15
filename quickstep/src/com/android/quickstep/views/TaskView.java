@@ -17,7 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
+import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA_MULTIPLIER;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -78,6 +78,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
 
     public static final long SCALE_ICON_DURATION = 120;
+    private static final long DIM_ANIM_DURATION = 700;
 
     public static final Property<TaskView, Float> ZOOM_SCALE =
             new FloatProperty<TaskView>("zoomScale") {
@@ -97,7 +98,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private IconView mIconView;
     private float mCurveScale;
     private float mZoomScale;
-    private float mCurveDimAlpha;
     private Animator mDimAlphaAnim;
 
     public TaskView(Context context) {
@@ -200,8 +200,9 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     public void animateIconToScaleAndDim(float scale) {
         mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
-        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA, scale * mCurveDimAlpha);
-        mDimAlphaAnim.setDuration(SCALE_ICON_DURATION);
+        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA_MULTIPLIER, 1 - scale,
+                scale);
+        mDimAlphaAnim.setDuration(DIM_ANIM_DURATION);
         mDimAlphaAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -218,7 +219,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         if (mDimAlphaAnim != null) {
             mDimAlphaAnim.cancel();
         }
-        mSnapshotView.setDimAlpha(iconScale * mCurveDimAlpha);
+        mSnapshotView.setDimAlphaMultipler(iconScale);
     }
 
     public void resetVisualProperties() {
@@ -235,11 +236,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
 
-        mCurveDimAlpha = curveInterpolation * MAX_PAGE_SCRIM_ALPHA;
-        if (mDimAlphaAnim == null && mIconView.getScaleX() > 0) {
-            mSnapshotView.setDimAlpha(mCurveDimAlpha);
-        }
-
+        mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
     }
 

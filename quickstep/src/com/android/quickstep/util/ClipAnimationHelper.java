@@ -16,7 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.SCROLL;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -30,11 +30,13 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -78,6 +80,9 @@ public class ClipAnimationHelper {
     private final RectF mTmpRectF = new RectF();
 
     private float mTargetScale = 1f;
+    private Interpolator mInterpolator = LINEAR;
+    // We translate y slightly faster than the rest of the animation for quick scrub.
+    private Interpolator mOffsetYInterpolator = LINEAR;
 
     // Whether to boost the opening animation target layers, or the closing
     private int mBoostModeTargetLayers = -1;
@@ -134,12 +139,13 @@ public class ClipAnimationHelper {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
         Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
+        float offsetYProgress = mOffsetYInterpolator.getInterpolation(progress);
+        progress = mInterpolator.getInterpolation(progress);
         currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
 
         synchronized (mTargetOffset) {
             // Stay lined up with the center of the target, since it moves for quick scrub.
-            currentRect.offset(mTargetOffset.x * SCROLL.getInterpolation(progress),
-                    mTargetOffset.y  * LINEAR.getInterpolation(progress));
+            currentRect.offset(mTargetOffset.x * progress, mTargetOffset.y  * offsetYProgress);
         }
 
         mClipRect.left = (int) (mSourceWindowClipInsets.left * progress);
@@ -180,11 +186,14 @@ public class ClipAnimationHelper {
         mTaskTransformCallback = callback;
     }
 
-    public void offsetTarget(float scale, float offsetX, float offsetY) {
+    public void offsetTarget(float scale, float offsetX, float offsetY, Interpolator interpolator) {
         synchronized (mTargetOffset) {
-            mTargetScale = scale;
             mTargetOffset.set(offsetX, offsetY);
         }
+        mTargetScale = scale;
+        mInterpolator = interpolator;
+        mOffsetYInterpolator = Interpolators.clampToProgress(mInterpolator, 0,
+                QUICK_SCRUB_TRANSLATION_Y_FACTOR);
     }
 
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv) {

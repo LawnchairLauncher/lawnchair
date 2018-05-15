@@ -16,8 +16,11 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BaseActivity;
@@ -37,7 +40,11 @@ import com.android.quickstep.views.TaskView;
  */
 public class QuickScrubController implements OnAlarmListener {
 
-    public static final int QUICK_SCRUB_START_DURATION = 210;
+    public static final int QUICK_SCRUB_FROM_APP_START_DURATION = 240;
+    public static final int QUICK_SCRUB_FROM_HOME_START_DURATION = 150;
+    // We want the translation y to finish faster than the rest of the animation.
+    public static final float QUICK_SCRUB_TRANSLATION_Y_FACTOR = 5f / 6;
+    public static final Interpolator QUICK_SCRUB_START_INTERPOLATOR = FAST_OUT_SLOW_IN;
 
     /**
      * Snap to a new page when crossing these thresholds. The first and last auto-advance.
@@ -168,23 +175,27 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void snapToNextTaskIfAvailable() {
         if (mInQuickScrub && mRecentsView.getChildCount() > 0) {
+            int duration = mStartedFromHome ? QUICK_SCRUB_FROM_HOME_START_DURATION
+                    : QUICK_SCRUB_FROM_APP_START_DURATION;
             int pageToGoTo = mStartedFromHome ? 0 : mRecentsView.getNextPage() + 1;
-            goToPageWithHaptic(pageToGoTo, QUICK_SCRUB_START_DURATION, true /* forceHaptic */);
+            goToPageWithHaptic(pageToGoTo, duration, true /* forceHaptic */,
+                    QUICK_SCRUB_START_INTERPOLATOR);
         }
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {
-        goToPageWithHaptic(pageToGoTo, -1 /* overrideDuration */, false /* forceHaptic */);
+        goToPageWithHaptic(pageToGoTo, -1 /* overrideDuration */, false /* forceHaptic */, null);
     }
 
-    private void goToPageWithHaptic(int pageToGoTo, int overrideDuration, boolean forceHaptic) {
+    private void goToPageWithHaptic(int pageToGoTo, int overrideDuration, boolean forceHaptic,
+            Interpolator interpolator) {
         pageToGoTo = Utilities.boundToRange(pageToGoTo, 0, mRecentsView.getPageCount() - 1);
         boolean snappingToPage = pageToGoTo != mRecentsView.getNextPage();
         if (snappingToPage) {
             int duration = overrideDuration > -1 ? overrideDuration
                     : Math.abs(pageToGoTo - mRecentsView.getNextPage())
                             * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
-            mRecentsView.snapToPage(pageToGoTo, duration);
+            mRecentsView.snapToPage(pageToGoTo, duration, interpolator);
         }
         if (snappingToPage || forceHaptic) {
             mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,

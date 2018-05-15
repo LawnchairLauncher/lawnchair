@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -52,16 +51,16 @@ public class TaskThumbnailView extends View {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
 
-    public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
-            new FloatProperty<TaskThumbnailView>("dimAlpha") {
+    public static final Property<TaskThumbnailView, Float> DIM_ALPHA_MULTIPLIER =
+            new FloatProperty<TaskThumbnailView>("dimAlphaMultiplier") {
                 @Override
-                public void setValue(TaskThumbnailView thumbnail, float dimAlpha) {
-                    thumbnail.setDimAlpha(dimAlpha);
+                public void setValue(TaskThumbnailView thumbnail, float dimAlphaMultiplier) {
+                    thumbnail.setDimAlphaMultipler(dimAlphaMultiplier);
                 }
 
                 @Override
                 public Float get(TaskThumbnailView thumbnailView) {
-                    return thumbnailView.mDimAlpha;
+                    return thumbnailView.mDimAlphaMultiplier;
                 }
             };
 
@@ -81,6 +80,7 @@ public class TaskThumbnailView extends View {
     protected BitmapShader mBitmapShader;
 
     private float mDimAlpha = 1f;
+    private float mDimAlphaMultiplier = 1f;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -126,6 +126,11 @@ public class TaskThumbnailView extends View {
             mOverlay.reset();
         }
         updateThumbnailPaintFilter();
+    }
+
+    public void setDimAlphaMultipler(float dimAlphaMultipler) {
+        mDimAlphaMultiplier = dimAlphaMultipler;
+        setDimAlpha(mDimAlpha);
     }
 
     /**
@@ -191,7 +196,7 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailPaintFilter() {
-        int mul = (int) ((1 - mDimAlpha) * 255);
+        int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
         if (mBitmapShader != null) {
             LightingColorFilter filter = getLightingColorFilter(mul);
             mPaint.setColorFilter(filter);
