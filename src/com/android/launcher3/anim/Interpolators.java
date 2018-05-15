@@ -115,4 +115,24 @@ public class Interpolators {
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {
         return Math.abs(velocity) > FAST_FLING_PX_MS ? SCROLL : SCROLL_CUBIC;
     }
+
+    /**
+     * Runs the given interpolator such that the entire progress is set between the given bounds.
+     * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
+     */
+    public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
+            float upperBound) {
+        if (upperBound <= lowerBound) {
+            throw new IllegalArgumentException("lowerBound must be less than upperBound");
+        }
+        return t -> {
+            if (t < lowerBound) {
+                return 0;
+            }
+            if (t > upperBound) {
+                return 1;
+            }
+            return interpolator.getInterpolation((t - lowerBound) / (upperBound - lowerBound));
+        };
+    }
 }

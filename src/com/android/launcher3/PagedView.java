@@ -27,6 +27,7 @@ import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InputDevice;
@@ -44,6 +45,7 @@ import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.Thunk;
@@ -1429,7 +1431,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return snapToPage(whichPage, duration, false, null);
     }
 
-    protected boolean snapToPage(int whichPage, int duration, TimeInterpolator interpolator) {
+    public boolean snapToPage(int whichPage, int duration, TimeInterpolator interpolator) {
         return snapToPage(whichPage, duration, false, interpolator);
     }
 
@@ -1448,6 +1450,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected boolean snapToPage(int whichPage, int delta, int duration, boolean immediate,
             TimeInterpolator interpolator) {
+
+        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            duration *= Settings.System.getFloat(getContext().getContentResolver(),
+                    Settings.System.WINDOW_ANIMATION_SCALE, 1);
+        }
+
         whichPage = validateNewPage(whichPage);
 
         mNextPage = whichPage;

@@ -28,7 +28,7 @@ public class FastOverviewState extends OverviewState {
             | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON | FLAG_DISABLE_ACCESSIBILITY;
 
     public FastOverviewState(int id) {
-        super(id, QuickScrubController.QUICK_SCRUB_START_DURATION, STATE_FLAGS);
+        super(id, QuickScrubController.QUICK_SCRUB_FROM_HOME_START_DURATION, STATE_FLAGS);
     }
 
     @Override
