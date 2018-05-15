@@ -18,14 +18,24 @@ package com.android.launcher3.views;
 import static android.content.Context.ACCESSIBILITY_SERVICE;
 import static android.support.v4.graphics.ColorUtils.compositeColors;
 import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
+import static android.view.MotionEvent.ACTION_DOWN;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.RectEvaluator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -85,6 +95,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     protected final int mDragHandleSize;
     private final Rect mDragHandleBounds;
+    private final RectF mHitRect = new RectF();
+
     private final AccessibilityHelper mAccessibilityHelper;
     @Nullable
     protected Drawable mDragHandle;
@@ -110,6 +122,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     @Override
     public void setInsets(Rect insets) {
         updateDragHandleBounds();
+        updateDragHandleVisibility(null);
     }
 
     @Override
@@ -179,6 +192,46 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean value = super.onTouchEvent(event);
+        if (!value && mDragHandle != null && event.getAction() == ACTION_DOWN
+                && mDragHandle.getAlpha() == 255
+                && mHitRect.contains(event.getX(), event.getY())) {
+
+            final Drawable drawable = mDragHandle;
+            mDragHandle = null;
+            drawable.setBounds(mDragHandleBounds);
+
+            Rect topBounds = new Rect(mDragHandleBounds);
+            topBounds.offset(0, -mDragHandleBounds.height() / 2);
+
+            Rect invalidateRegion = new Rect(mDragHandleBounds);
+            invalidateRegion.top = topBounds.top;
+
+            Keyframe frameTop = Keyframe.ofObject(0.6f, topBounds);
+            frameTop.setInterpolator(DEACCEL);
+            Keyframe frameBot = Keyframe.ofObject(1, mDragHandleBounds);
+            frameBot.setInterpolator(ACCEL);
+            PropertyValuesHolder holder = PropertyValuesHolder .ofKeyframe("bounds",
+                    Keyframe.ofObject(0, mDragHandleBounds), frameTop, frameBot);
+            holder.setEvaluator(new RectEvaluator());
+
+            ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    getOverlay().remove(drawable);
+                    updateDragHandleVisibility(drawable);
+                }
+            });
+            anim.addUpdateListener((v) -> invalidate(invalidateRegion));
+            getOverlay().add(drawable);
+            anim.start();
+        }
+        return value;
+    }
+
     protected void updateDragHandleBounds() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         final int left;
@@ -198,6 +251,9 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             topMargin = grid.hotseatBarSizePx;
         }
         mDragHandleBounds.offsetTo(left, top - topMargin);
+        mHitRect.set(mDragHandleBounds);
+        float inset = -mDragHandleSize / 2;
+        mHitRect.inset(inset, inset);
 
         if (mDragHandle != null) {
             mDragHandle.setBounds(mDragHandleBounds);
@@ -210,17 +266,29 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         stateManager.removeStateListener(this);
 
         if (enabled) {
-            mDragHandle = mLauncher.getDrawable(R.drawable.drag_handle_indicator);
-            mDragHandle.setBounds(mDragHandleBounds);
-
             stateManager.addStateListener(this);
             onStateSetImmediately(mLauncher.getStateManager().getState());
-
-            updateDragHandleAlpha();
         } else {
-            mDragHandle = null;
+            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
-        invalidate();
+        updateDragHandleVisibility(null);
+    }
+
+    private void updateDragHandleVisibility(Drawable recycle) {
+        boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
+        boolean wasVisible = mDragHandle != null;
+        if (visible != wasVisible) {
+            if (visible) {
+                mDragHandle = recycle != null ? recycle :
+                        mLauncher.getDrawable(R.drawable.drag_handle_indicator);
+                mDragHandle.setBounds(mDragHandleBounds);
+
+                updateDragHandleAlpha();
+            } else {
+                mDragHandle = null;
+            }
+            invalidate();
+        }
     }
 
     @Override
