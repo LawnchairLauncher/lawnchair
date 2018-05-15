@@ -21,8 +21,8 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -1038,14 +1038,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
         updateClearAllButtonAlpha();
 
-        if (!mShowEmptyMessage) return;
-
-        // The icon needs to be centered. Need to scoll to horizontal 0 because with Clear-All
-        // space on the right, it's not guaranteed that after deleting all tasks, the horizontal
-        // scroll position will be zero.
-        scrollTo(0, 0);
-
-        if (hasValidSize && mEmptyTextLayout == null) {
+        if (mShowEmptyMessage && hasValidSize && mEmptyTextLayout == null) {
             int availableWidth = mLastMeasureSize.x - mEmptyMessagePadding - mEmptyMessagePadding;
             mEmptyTextLayout = StaticLayout.Builder.obtain(mEmptyMessage, 0, mEmptyMessage.length(),
                     mEmptyMessagePaint, availableWidth)
@@ -1072,7 +1065,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mTempRect.set(mInsets.left + getPaddingLeft(), mInsets.top + getPaddingTop(),
                     mInsets.right + getPaddingRight(), mInsets.bottom + getPaddingBottom());
             canvas.save();
-            canvas.translate((mTempRect.left - mTempRect.right) / 2,
+            canvas.translate(getScrollX() + (mTempRect.left - mTempRect.right) / 2,
                     (mTempRect.top - mTempRect.bottom) / 2);
             mEmptyIcon.draw(canvas);
             canvas.translate(mEmptyMessagePadding,
