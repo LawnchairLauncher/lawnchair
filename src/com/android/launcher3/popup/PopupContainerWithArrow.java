@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -263,9 +264,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
         ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            setAccessibilityPaneTitle(getContext().getString(mNumNotifications == 0 ?
-                    R.string.action_deep_shortcut :
-                    R.string.shortcuts_menu_with_notifications_description));
+            setAccessibilityPaneTitle(getTitleForAccessibility());
         }
 
         mLauncher.getDragController().addDragListener(this);
@@ -279,6 +278,17 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, mShortcuts, notificationKeys));
+    }
+
+    private String getTitleForAccessibility() {
+        return getContext().getString(mNumNotifications == 0 ?
+                R.string.action_deep_shortcut :
+                R.string.shortcuts_menu_with_notifications_description);
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(this, "");
     }
 
     @Override
