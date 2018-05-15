@@ -90,6 +90,7 @@ enum ContainerType {
   TASKSWITCHER = 12; // Recents UI Container (QuickStep)
   APP = 13; // Foreground activity is another app (QuickStep)
   TIP = 14; // Onboarding texts (QuickStep)
+  SIDELOADED_LAUNCHER = 15;
 }
 
 // Used to define what type of control a Target would represent.
@@ -148,11 +149,12 @@ message Action {
   enum Command {
     HOME_INTENT = 0;
     BACK = 1;
-    ENTRY = 2;    // Indicates entry to one of Launcher container type target
-                  // not using the HOME_INTENT
-    CANCEL = 3;   // Indicates that a confirmation screen was cancelled
-    CONFIRM = 4;  // Indicates thata confirmation screen was accepted
-    STOP = 5;     // Indicates onStop() was called (screen time out, power off)
+    ENTRY = 2;          // Indicates entry to one of Launcher container type target
+                        // not using the HOME_INTENT
+    CANCEL = 3;         // Indicates that a confirmation screen was cancelled
+    CONFIRM = 4;        // Indicates thata confirmation screen was accepted
+    STOP = 5;           // Indicates onStop() was called (screen time out, power off)
+    RECENTS_BUTTON = 6; // Indicates that Recents button was pressed
   }
 
   optional Type type = 1;
