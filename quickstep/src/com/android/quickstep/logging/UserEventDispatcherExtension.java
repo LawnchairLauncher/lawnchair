@@ -15,14 +15,31 @@
  */
 package com.android.quickstep.logging;
 
+import android.util.Log;
+
+import static com.android.launcher3.logging.LoggerUtils.newAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CANCEL_TARGET;
+import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
+import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
+import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
+import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
+
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.nano.LauncherDumpProto;
+import com.android.launcher3.userevent.nano.LauncherLogExtensions;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.MetricsLoggerCompat;
 
 /**
- * This class handles AOSP MetricsLogger function calls.
+ * This class handles AOSP MetricsLogger function calls and logging around
+ * quickstep interactions.
  */
 public class UserEventDispatcherExtension extends UserEventDispatcher {
+
+    private static final String TAG = "UserEventDispatcher";
 
     public void logStateChangeAction(int action, int dir, int srcChildTargetType,
                                      int srcParentContainerType, int dstContainerType,
@@ -31,5 +48,38 @@ public class UserEventDispatcherExtension extends UserEventDispatcher {
                 dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
         super.logStateChangeAction(action, dir, srcChildTargetType, srcParentContainerType,
                 dstContainerType, pageIndex);
+    }
+
+    public void logActionTip(int actionType, int viewType) {
+        LauncherLogProto.Action action = new LauncherLogProto.Action();
+        LauncherLogProto.Target target = new LauncherLogProto.Target();
+        switch(actionType) {
+            case VISIBLE:
+                action.type = LauncherLogProto.Action.Type.TIP;
+                target.type = LauncherLogProto.Target.Type.CONTAINER;
+                target.containerType = LauncherLogProto.ContainerType.TIP;
+                break;
+            case DISMISS:
+                action.type = LauncherLogProto.Action.Type.TOUCH;
+                action.touch = LauncherLogProto.Action.Touch.TAP;
+                target.type = LauncherLogProto.Target.Type.CONTROL;
+                target.controlType = CANCEL_TARGET;
+                break;
+            default:
+                Log.e(TAG, "Unexpected action type = " + actionType);
+        }
+
+        switch(viewType) {
+            case RECENTS_QUICK_SCRUB_ONBOARDING_TIP:
+                target.tipType = LauncherLogProto.TipType.QUICK_SCRUB_TEXT;
+                break;
+            case RECENTS_SWIPE_UP_ONBOARDING_TIP:
+                target.tipType = LauncherLogProto.TipType.SWIPE_UP_TEXT;
+                break;
+            default:
+                Log.e(TAG, "Unexpected viewType = " + viewType);
+        }
+        LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
+        dispatchUserEvent(event, null);
     }
 }

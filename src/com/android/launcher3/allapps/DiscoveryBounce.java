@@ -18,6 +18,8 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.HOTSEAT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.PREDICTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -128,6 +130,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce));
         view.mIsOpen = true;
         launcher.getDragLayer().addView(view);
+        launcher.getUserEventDispatcher().logActionBounceTip(HOTSEAT);
     }
 
     public static void showForOverviewIfNeeded(Launcher launcher) {
@@ -175,6 +178,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         DiscoveryBounce view = new DiscoveryBounce(launcher, animator);
         view.mIsOpen = true;
         launcher.getDragLayer().addView(view);
+        launcher.getUserEventDispatcher().logActionBounceTip(PREDICTION);
     }
 
     private static boolean shouldShowForWorkProfile(Launcher launcher) {
