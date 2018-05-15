@@ -30,8 +30,10 @@ import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.SystemUiController;
 
+import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -222,6 +224,13 @@ public abstract class BaseActivity extends Activity {
 
     public interface MultiWindowModeChangedListener {
         void onMultiWindowModeChanged(boolean isInMultiWindowMode);
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        if (!UiFactory.dumpActivity(this, writer)) {
+            super.dump(prefix, fd, writer, args);
+        }
     }
 
     protected void dumpMisc(PrintWriter writer) {
