@@ -121,6 +121,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
     private final SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
 
+    private boolean mIsClearAllButtonFullyRevealed;
+
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
@@ -337,11 +339,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    private int getScrollEnd() {
+        return mIsRtl ? 0 : mMaxScrollX;
+    }
+
     private float calculateClearAllButtonAlpha() {
         final int childCount = getChildCount();
         if (mShowEmptyMessage || childCount == 0) return 0;
 
-        final int scrollEnd = mIsRtl ? 0 : mMaxScrollX;
+        final int scrollEnd = getScrollEnd();
         final int oldestChildScroll = getScrollForPage(childCount - 1);
 
         return Utilities.boundToRange(
@@ -352,6 +358,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void updateClearAllButtonAlpha() {
         if (mClearAllButton != null) {
             final float alpha = calculateClearAllButtonAlpha();
+            mIsClearAllButtonFullyRevealed = alpha == 1;
             mClearAllButton.setAlpha(alpha * mContentAlpha);
         }
     }
@@ -363,9 +370,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Override
+    protected void restoreScrollOnLayout() {
+        if (mIsClearAllButtonFullyRevealed) {
+            scrollAndForceFinish(getScrollEnd());
+        } else {
+            super.restoreScrollOnLayout();
+        }
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && mTouchState == TOUCH_STATE_REST
-                && mScroller.isFinished() && mClearAllButton.getAlpha() > 0) {
+                && mScroller.isFinished() && mIsClearAllButtonFullyRevealed) {
             mClearAllButton.getHitRect(mTempRect);
             mTempRect.offset(-getLeft(), -getTop());
             if (mTempRect.contains((int) ev.getX(), (int) ev.getY())) {
@@ -829,7 +845,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                removeView(taskView);
                if (getChildCount() == 0) {
                    onAllTasksRemoved();
-               } else {
+               } else if (!mIsClearAllButtonFullyRevealed) {
                    snapToPageImmediately(pageToSnapTo);
                }
            }

@@ -238,6 +238,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return index;
     }
 
+    protected void scrollAndForceFinish(int scrollX) {
+        scrollTo(scrollX, 0);
+        mScroller.setFinalX(scrollX);
+        forceFinishScroller(true);
+    }
+
     /**
      * Updates the scroll of the current page immediately to its final scroll position.  We use this
      * in CustomizePagedView to allow tabs to share the same PagedView while resetting the scroll of
@@ -249,9 +255,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
             newX = getScrollForPage(mCurrentPage);
         }
-        scrollTo(newX, 0);
-        mScroller.setFinalX(newX);
-        forceFinishScroller(true);
+        scrollAndForceFinish(newX);
     }
 
     private void abortScrollerAnimation(boolean resetNextPage) {
@@ -538,6 +542,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         setMeasuredDimension(widthSize, heightSize);
     }
 
+    protected void restoreScrollOnLayout() {
+        setCurrentPage(getNextPage());
+    }
+
     @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -589,7 +597,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         if (mScroller.isFinished() && pageScrollChanged) {
-            setCurrentPage(getNextPage());
+            restoreScrollOnLayout();
         }
     }
 
