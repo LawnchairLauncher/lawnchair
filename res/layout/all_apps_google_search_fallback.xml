@@ -24,10 +24,12 @@
     android:background="@android:color/transparent"
     android:focusableInTouchMode="true"
     android:gravity="start|center"
+    android:hint="@string/all_apps_search_bar_hint"
     android:imeOptions="actionSearch|flagNoExtractUi"
     android:inputType="textCapWords|textNoSuggestions"
     android:maxLines="1"
     android:scrollHorizontally="true"
     android:singleLine="true"
     android:textColor="#ff212121"
+    android:textColorHint="?android:colorAccent"
     android:textSize="16sp" />

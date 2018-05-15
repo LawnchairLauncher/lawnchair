@@ -12,7 +12,8 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
@@ -22,8 +23,12 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+import org.jetbrains.annotations.NotNull;
 
-public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, WallpaperColorInfo.OnChangeListener {
+public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager,
+        WallpaperColorInfo.OnChangeListener, LawnchairPreferences.OnPreferenceChangeListener {
+    public static final String KEY_ALL_APPS_GOOGLE_SEARCH = "pref_allAppsGoogleSearch";
+
     private AllAppsRecyclerView mRecyclerView;
     private FallbackAppsSearchView mFallback;
     private int mAlpha;
@@ -31,6 +36,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private AlphabeticalAppsList mApps;
     private SpringAnimation mSpring;
     private float mStartY;
+    private boolean mAllAppsGoogleSearch;
 
     public AllAppsQsbLayout(final Context context) {
         this(context, null);
@@ -61,15 +67,17 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private void searchFallback() {
-        if (mFallback != null) {
-            mFallback.showKeyboard();
-            return;
-        }
-        setOnClickListener(null);
-        mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
-        mFallback.bu(this, mApps, mRecyclerView);
-        addView(mFallback);
+        ensureFallbackView();
         mFallback.showKeyboard();
+    }
+
+    private void ensureFallbackView() {
+        if (mFallback == null) {
+            mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
+            mFallback.bu(this, mApps, mRecyclerView);
+            addView(mFallback);
+        }
+        mFallback.setVisibility(View.VISIBLE);
     }
 
     public void addOnScrollRangeChangeListener(final SearchUiManager.OnScrollRangeChangeListener onScrollRangeChangeListener) {
@@ -145,12 +153,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
         instance.addOnChangeListener(this);
         onExtractedColorsChanged(instance);
+        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_ALL_APPS_GOOGLE_SEARCH, this);
     }
 
     public void onClick(final View view) {
         super.onClick(view);
         if (view == this) {
-            if (!Utilities.ATLEAST_NOUGAT) {
+            if (!Utilities.ATLEAST_NOUGAT || !mAllAppsGoogleSearch) {
                 searchFallback();
                 return;
             }
@@ -162,6 +171,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected void onDetachedFromWindow() {
+        Utilities.getLawnchairPrefs(getContext()).removeOnPreferenceChangeListener(KEY_ALL_APPS_GOOGLE_SEARCH, this);
         WallpaperColorInfo.getInstance(getContext()).removeOnChangeListener(this);
         super.onDetachedFromWindow();
     }
@@ -184,6 +194,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         useAlpha(0);
         if (mFallback != null) {
             mFallback.clearSearchResult();
+            if (mAllAppsGoogleSearch) {
+                removeFallbackView();
+            }
+        }
+    }
+
+    private void removeFallbackView() {
+        if (mFallback != null) {
             setOnClickListener(this);
             removeView(mFallback);
             mFallback = null;
@@ -193,5 +211,20 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @NonNull
     public SpringAnimation getSpringForFling() {
         return mSpring;
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs) {
+        boolean allAppsGoogleSearch = prefs.getAllAppsGoogleSearch();
+        if (mAllAppsGoogleSearch != allAppsGoogleSearch) {
+            mAllAppsGoogleSearch = allAppsGoogleSearch;
+            ((ImageView) findViewById(R.id.g_icon)).setImageResource(mAllAppsGoogleSearch ?
+                    R.drawable.ic_super_g_color : R.drawable.ic_allapps_search);
+            if (mAllAppsGoogleSearch) {
+                removeFallbackView();
+            } else {
+                ensureFallbackView();
+            }
+        }
     }
 }

@@ -6,8 +6,13 @@
         android:key="pref_show_predictions"
         android:title="@string/title_app_suggestions"
         android:summary="@string/summary_app_suggestions"
-        android:defaultValue="true"
-        />
+        android:defaultValue="true" />
+
+    <SwitchPreference
+        android:key="pref_allAppsGoogleSearch"
+        android:title="@string/title_all_apps_google_search"
+        android:summary="@string/summary_all_apps_google_search"
+        android:defaultValue="true" />
 
     <Preference
         android:key="pref_hiddenApps"

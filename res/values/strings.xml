@@ -448,4 +448,6 @@
     <string name="hotseat_custom_opacity">Dock opacity</string>
     <string name="all_apps_uses_custom_opacity">Custom drawer opacity</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
+    <string name="title_all_apps_google_search">Google search</string>
+    <string name="summary_all_apps_google_search">Show Google Search instead of normal apps search</string>
 </resources>

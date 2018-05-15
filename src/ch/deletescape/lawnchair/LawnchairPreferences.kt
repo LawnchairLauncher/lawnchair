@@ -20,12 +20,14 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
+    private val onChangeListeners: MutableMap<String, MutableSet<OnPreferenceChangeListener>> = HashMap()
     private var onChangeCallback: LawnchairPreferencesChangeCallback? = null
     val sharedPrefs = migratePrefs()
 
@@ -90,6 +92,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsStartAlpha get() = if (dockCustomOpacity) dockOpacity else dockDefaultOpacity
     val allAppsEndAlpha get() = if (allAppsCustomOpacity) allAppsOpacity else allAppsDefaultOpacity
     val allAppsAlphaRange get() = allAppsEndAlpha - allAppsStartAlpha
+    val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -133,6 +136,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateSmartspace() {
         onChangeCallback?.updateSmartspace()
+    }
+
+    fun addOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
+        if (onChangeListeners[key] == null) {
+            onChangeListeners[key] = HashSet()
+        }
+        onChangeListeners[key]?.add(listener)
+        listener.onValueChanged(key, this)
+    }
+
+    fun removeOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
+        onChangeListeners[key]?.remove(listener)
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
@@ -408,6 +423,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
+        onChangeListeners[key]?.forEach { it.onValueChanged(key, this) }
     }
 
     fun registerCallback(callback: LawnchairPreferencesChangeCallback) {
@@ -435,6 +451,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 }
             }
         }
+    }
+
+    interface OnPreferenceChangeListener {
+
+        fun onValueChanged(key: String, prefs: LawnchairPreferences)
     }
 
     companion object {
