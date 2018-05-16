@@ -133,7 +133,7 @@ public class QuickScrubController implements OnAlarmListener {
      */
     private void breakOutOfQuickScrub() {
         if (mRecentsView.getChildCount() == 0 || mActivityControlHelper == null
-                || !mActivityControlHelper.switchToRecentsIfVisible()) {
+                || !mActivityControlHelper.switchToRecentsIfVisible(false)) {
             mActivity.onBackPressed();
         }
     }
