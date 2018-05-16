@@ -109,7 +109,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mLastMotionXRemainder;
     private float mTotalMotionX;
 
-    private int[] mPageScrolls;
+    protected int[] mPageScrolls;
 
     protected final static int TOUCH_STATE_REST = 0;
     protected final static int TOUCH_STATE_SCROLLING = 1;
