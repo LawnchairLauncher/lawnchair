@@ -132,6 +132,7 @@ public class UserEventDispatcher {
     private boolean mIsInLandscapeMode;
     private String mUuidStr;
     protected InstantAppResolver mInstantAppResolver;
+    private boolean mAppOrTaskLaunch;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -163,11 +164,13 @@ public class UserEventDispatcher {
             fillIntentInfo(event.srcTarget[0], intent);
         }
         dispatchUserEvent(event, intent);
+        mAppOrTaskLaunch = true;
     }
 
     public void logActionTip(int actionType, int viewType) { }
 
-    public void logTaskLaunchOrDismiss(int action, int direction, ComponentKey componentKey) {
+    public void logTaskLaunchOrDismiss(int action, int direction, int taskIndex,
+            ComponentKey componentKey) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE or FLING
                 newTarget(Target.Type.ITEM));
         if (action == Action.Touch.SWIPE || action == Action.Touch.FLING) {
@@ -175,8 +178,10 @@ public class UserEventDispatcher {
             event.action.dir = direction;
         }
         event.srcTarget[0].itemType = LauncherLogProto.ItemType.TASK;
+        event.srcTarget[0].pageIndex = taskIndex;
         fillComponentInfo(event.srcTarget[0], componentKey.componentName);
         dispatchUserEvent(event, null);
+        mAppOrTaskLaunch = true;
     }
 
     protected void fillIntentInfo(Target target, Intent intent) {
@@ -211,6 +216,11 @@ public class UserEventDispatcher {
 
     public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command), srcTarget);
+        if (command == Action.Command.STOP && mAppOrTaskLaunch) {
+            // Prevent double logging by skipping STOP when app or task has been launched.
+            return;
+        }
+
         if (dstTarget != null) {
             event.destTarget = new Target[1];
             event.destTarget[0] = dstTarget;
@@ -405,6 +415,7 @@ public class UserEventDispatcher {
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        mAppOrTaskLaunch = false;
         ev.isInLandscapeMode = mIsInLandscapeMode;
         ev.isInMultiWindowMode = mIsInMultiWindowMode;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
@@ -413,7 +424,8 @@ public class UserEventDispatcher {
         if (!IS_VERBOSE) {
             return;
         }
-        String log = "\n\naction:" + LoggerUtils.getActionStr(ev.action);
+        String log = "\n-----------------------------------------------------"
+                + "\naction:" + LoggerUtils.getActionStr(ev.action);
         if (ev.srcTarget != null && ev.srcTarget.length > 0) {
             log += "\n Source " + getTargetsStr(ev.srcTarget);
         }

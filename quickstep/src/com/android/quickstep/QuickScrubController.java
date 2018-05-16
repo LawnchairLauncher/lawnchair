@@ -26,9 +26,8 @@ import com.android.launcher3.Alarm;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -124,9 +123,9 @@ public class QuickScrubController implements OnAlarmListener {
                 mOnFinishedTransitionToQuickScrubRunnable = launchTaskRunnable;
             }
         }
-        mActivity.getUserEventDispatcher().logActionOnControl(Touch.DRAGDROP,
-                ControlType.QUICK_SCRUB_BUTTON, null, mStartedFromHome ?
-                        ContainerType.WORKSPACE : ContainerType.APP);
+        mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(Touch.DRAGDROP,
+                LauncherLogProto.Action.Direction.NONE, page,
+                TaskUtils.getComponentKeyForTask(mRecentsView.getPageAt(page).getTask().key));
     }
 
     /**
