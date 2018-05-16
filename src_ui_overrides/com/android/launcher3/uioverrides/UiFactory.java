@@ -16,11 +16,14 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
+
+import java.io.PrintWriter;
 
 public class UiFactory {
 
@@ -47,4 +50,9 @@ public class UiFactory {
     public static void onLauncherStateOrResumeChanged(Launcher launcher) { }
 
     public static void onTrimMemory(Launcher launcher, int level) { }
+
+    public static boolean dumpActivity(Activity activity, PrintWriter writer) {
+        return false;
+    }
+
 }
