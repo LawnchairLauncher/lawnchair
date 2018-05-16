@@ -128,7 +128,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
-        boolean forceChange = shiftCurrent <= mShiftRange / 4;
+        boolean forceChange = shiftCurrent - mScrimView.getDragHandleSize()
+                <= mLauncher.getDeviceProfile().getInsets().top / 2;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
         } else {
