@@ -418,7 +418,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int requiredChildCount = tasks.size();
         for (int i = getChildCount(); i < requiredChildCount; i++) {
             final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
-            taskView.setOnClickListener(this::onTaskClicked);
             addView(taskView);
         }
         while (getChildCount() > requiredChildCount) {
@@ -442,17 +441,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mQuickScrubController.snapToNextTaskIfAvailable();
         }
         onTaskStackUpdated();
-    }
-
-    private void onTaskClicked(View v) {
-        TaskView taskView = (TaskView) v;
-        if (taskView.getTask() == null) {
-            return;
-        }
-        taskView.launchTask(true /* animate */);
-        mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                Touch.TAP, Direction.NONE, indexOfChild(taskView),
-                TaskUtils.getComponentKeyForTask(taskView.getTask().key));
     }
 
     protected void onTaskStackUpdated() { }

@@ -110,6 +110,15 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOnClickListener((view) -> {
+            if (getTask() == null) {
+                return;
+            }
+            launchTask(true /* animate */);
+            BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+                    Touch.TAP, Direction.NONE, ((RecentsView) getParent()).indexOfChild(this),
+                    TaskUtils.getComponentKeyForTask(getTask().key));
+        });
         setOutlineProvider(new TaskOutlineProvider(getResources()));
     }
 
