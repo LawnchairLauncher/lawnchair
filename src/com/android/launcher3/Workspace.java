@@ -1297,7 +1297,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void updatePageAlphaValues() {
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        // We need to check the isDragging case because updatePageAlphaValues is called between
+        // goToState(SPRING_LOADED) and onStartStateTransition.
+        if (!workspaceInModalState() && !mIsSwitchingState && !mDragController.isDragging()) {
             int screenCenter = getScrollX() + getMeasuredWidth() / 2;
             for (int i = 0; i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
