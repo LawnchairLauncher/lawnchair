@@ -1228,6 +1228,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (currChild != null) {
             currChild.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
         }
+        loadVisibleTaskData();
     }
 
     @Override
