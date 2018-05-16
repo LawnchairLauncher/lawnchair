@@ -388,4 +388,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             return false;
         }
     }
+
+    public int getDragHandleSize() {
+        return mDragHandleSize;
+    }
 }
