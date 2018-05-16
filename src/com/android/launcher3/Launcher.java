@@ -240,7 +240,6 @@ public class Launcher extends BaseDraggingActivity
     private PendingRequestArgs mPendingRequestArgs;
 
     public ViewGroupFocusHelper mFocusHandler;
-    private boolean mAppLaunchSuccess;
 
     private RotationHelper mRotationHelper;
 
@@ -730,10 +729,8 @@ public class Launcher extends BaseDraggingActivity
         }
         mAppWidgetHost.setListenIfResumed(false);
 
-        if (!mAppLaunchSuccess) {
-            getUserEventDispatcher().logActionCommand(Action.Command.STOP,
-                    mStateManager.getState().containerType, -1);
-        }
+        getUserEventDispatcher().logActionCommand(Action.Command.STOP,
+                mStateManager.getState().containerType, -1);
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
 
@@ -760,7 +757,6 @@ public class Launcher extends BaseDraggingActivity
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
 
-        mAppLaunchSuccess = false;
         getUserEventDispatcher().resetElapsedSessionMillis();
         setOnResumeCallback(null);
         // Process any items that were added while Launcher was away.
@@ -1634,8 +1630,8 @@ public class Launcher extends BaseDraggingActivity
     }
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        mAppLaunchSuccess = super.startActivitySafely(v, intent, item);
-        if (mAppLaunchSuccess && v instanceof BubbleTextView) {
+        boolean success = super.startActivitySafely(v, intent, item);
+        if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished
             // launching, enable the press state and keep this reference to reset the press
@@ -1644,7 +1640,7 @@ public class Launcher extends BaseDraggingActivity
             btv.setStayPressed(true);
             setOnResumeCallback(btv);
         }
-        return mAppLaunchSuccess;
+        return success;
     }
 
     boolean isHotseatLayout(View layout) {

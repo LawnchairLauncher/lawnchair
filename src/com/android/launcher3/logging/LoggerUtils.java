@@ -131,6 +131,9 @@ public class LoggerUtils {
                     + "), pageIdx=" + t.pageIndex;
 
         }
+        if (t.itemType == ItemType.TASK) {
+            typeStr += ", pageIdx=" + t.pageIndex;
+        }
         return typeStr;
     }
 
