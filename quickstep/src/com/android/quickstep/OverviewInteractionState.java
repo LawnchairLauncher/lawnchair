@@ -21,12 +21,10 @@ import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_B
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
-import static com.android.launcher3.Utilities.getSystemProperty;
-
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -58,6 +56,10 @@ public class OverviewInteractionState {
     private static final String TAG = "OverviewFlags";
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
+    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
+            "config_swipe_up_gesture_setting_available";
+    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
+            "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static OverviewInteractionState INSTANCE;
@@ -100,13 +102,13 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (shouldIgnoreSwipeUpEnabledSettings()) {
-            mSwipeUpSettingObserver = null;
-            mSwipeUpEnabled = true;
-        } else {
+        if (getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME)) {
             mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
                     context.getContentResolver());
             mSwipeUpSettingObserver.register();
+        } else {
+            mSwipeUpSettingObserver = null;
+            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
         }
     }
 
@@ -176,11 +178,13 @@ public class OverviewInteractionState {
     private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
         private Handler mHandler;
         private ContentResolver mResolver;
+        private final int defaultValue;
 
         SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
             super(handler);
             mHandler = handler;
             mResolver = resolver;
+            defaultValue = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME) ? 1 : 0;
         }
 
         public void register() {
@@ -198,20 +202,18 @@ public class OverviewInteractionState {
         }
 
         private boolean getValue() {
-            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, 0) == 1;
+            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
         }
     }
 
-    private boolean shouldIgnoreSwipeUpEnabledSettings() {
-        int deviceApiLevel = Build.VERSION.SDK_INT;
+    private boolean getSystemBooleanRes(String resName) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
 
-        // Note: on factory ROM devices, this first_api_level property is intentionally not set.
-        // deviceApiLevel is used in these case.
-        String sdkInt = getSystemProperty("ro.product.first_api_level",
-                Integer.toString(deviceApiLevel));
-        try {
-            return Integer.parseInt(sdkInt) >= Build.VERSION_CODES.P;
-        } catch (Exception e) {
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
             return false;
         }
     }
