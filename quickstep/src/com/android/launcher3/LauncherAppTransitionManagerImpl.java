@@ -21,7 +21,9 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -58,6 +60,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -328,6 +331,30 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 appsView.setAlpha(startAlpha);
                 appsView.setTranslationY(startY);
                 appsView.setLayerType(View.LAYER_TYPE_NONE, null);
+            };
+        } else if (mLauncher.isInState(OVERVIEW)) {
+            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+            launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                    allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
+
+            View overview = mLauncher.getOverviewPanelContainer();
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(overview, View.ALPHA, alphas);
+            alpha.setDuration(217);
+            alpha.setInterpolator(LINEAR);
+            launcherAnimator.play(alpha);
+
+            ObjectAnimator transY = ObjectAnimator.ofFloat(overview, View.TRANSLATION_Y, trans);
+            transY.setInterpolator(AGGRESSIVE_EASE);
+            transY.setDuration(350);
+            launcherAnimator.play(transY);
+
+            overview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+            endListener = () -> {
+                overview.setLayerType(View.LAYER_TYPE_NONE, null);
+                overview.setAlpha(1f);
+                overview.setTranslationY(0f);
+                mLauncher.getStateManager().reapplyState();
             };
         } else {
             mDragLayerAlpha.setValue(alphas[0]);
