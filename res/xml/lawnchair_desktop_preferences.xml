@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
         android:key="pref_smartspace"
@@ -69,6 +70,17 @@
     <ch.deletescape.lawnchair.settings.ui.GridSizePreference
         android:key="pref_desktop_grid_size"
         android:title="@string/grid_size" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_iconSize"
+        android:persistent="true"
+        android:title="@string/icon_scale_pref_title"
+        app:defaultSeekbarValue="1.0"
+        app:maxValue="1.5"
+        app:minValue="0.3"
+        app:steps="120"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100" />
 
     <SwitchPreference
         android:defaultValue="false"

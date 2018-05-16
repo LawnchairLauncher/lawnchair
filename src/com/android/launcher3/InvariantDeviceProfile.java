@@ -27,6 +27,7 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import ch.deletescape.lawnchair.settings.IconScale;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 
@@ -78,7 +79,9 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public float iconSizeOriginal;
     public float landscapeIconSize;
+    public float landscapeIconSizeOriginal;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
@@ -159,10 +162,14 @@ public class InvariantDeviceProfile {
         minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
+        iconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        landscapeIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+
+        new IconScale(Utilities.getLawnchairPrefs(context), "iconSize", this);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize

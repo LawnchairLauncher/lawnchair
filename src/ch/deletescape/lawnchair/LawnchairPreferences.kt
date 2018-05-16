@@ -47,7 +47,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
-    private val restart = { restart() }
+    val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
