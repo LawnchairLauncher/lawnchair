@@ -108,6 +108,12 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         if (!pStyle) super.createRadialShader()
     }
 
+    fun getTop(progress: Float, shiftRange: Float): Float {
+        if (height == 0) return shiftRange
+        val offsetY = -shiftRange * (1 - progress)
+        return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat()
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (pStyle) {
             val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat()

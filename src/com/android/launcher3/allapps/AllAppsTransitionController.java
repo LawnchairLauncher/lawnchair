@@ -1,11 +1,6 @@
 package com.android.launcher3.allapps;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
+import android.animation.*;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -18,17 +13,10 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
-
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
+import ch.deletescape.lawnchair.views.AllAppsScrim;
+import com.android.launcher3.*;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -105,7 +93,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private Animator mDiscoBounceAnimation;
-    private GradientView mGradientView;
+    private AllAppsScrim mGradientView;
 
     private SpringAnimation mSearchSpring;
     private SpringAnimationHandler mSpringAnimationHandler;
@@ -360,9 +348,14 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         }
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
-        boolean forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
-                shift <= mShiftRange / 4 :
-                shift <= mStatusBarHeight / 2;
+        boolean forceChange;
+        if (FeatureFlags.LAUNCHER3_P_ALL_APPS && mGradientView != null) {
+            forceChange = mGradientView.getTop(mProgress, mShiftRange) <= mStatusBarHeight / 2;
+        } else {
+            forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
+                    shift <= mShiftRange / 4 :
+                    shift <= mStatusBarHeight / 2;
+        }
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
@@ -378,7 +371,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private void updateAllAppsBg(float progress) {
         // gradient
         if (mGradientView == null) {
-            mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
+            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
             mGradientView.setVisibility(View.VISIBLE);
         }
         mGradientView.setProgress(progress, mShiftRange);
