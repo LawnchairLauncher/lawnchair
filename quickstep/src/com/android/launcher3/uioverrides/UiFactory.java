@@ -24,7 +24,9 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Base64;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -32,12 +34,18 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.zip.Deflater;
 
 public class UiFactory {
 
@@ -165,6 +173,32 @@ public class UiFactory {
         if (model != null) {
             model.onTrimMemory(level);
         }
+    }
+
+    public static boolean dumpActivity(Activity activity, PrintWriter writer) {
+        if (!Utilities.IS_DEBUG_DEVICE) {
+            return false;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        if (!(new ActivityCompat(activity).encodeViewHierarchy(out))) {
+            return false;
+        }
+
+        Deflater deflater = new Deflater();
+        deflater.setInput(out.toByteArray());
+        deflater.finish();
+
+        out.reset();
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer); // returns the generated code... index
+            out.write(buffer, 0, count);
+        }
+
+        writer.println("--encoded-view-dump-v0--");
+        writer.println(Base64.encodeToString(
+                out.toByteArray(), Base64.NO_WRAP | Base64.NO_PADDING));
+        return true;
     }
 
     private static class LauncherTaskViewController extends TaskViewTouchController<Launcher> {
