@@ -345,14 +345,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private float calculateClearAllButtonAlpha() {
         final int childCount = getChildCount();
-        if (mShowEmptyMessage || childCount == 0) return 0;
+        if (mShowEmptyMessage || childCount == 0 || mPageScrolls == null
+                || childCount != mPageScrolls.length) {
+            return 0;
+        }
 
         final int scrollEnd = getScrollEnd();
         final int oldestChildScroll = getScrollForPage(childCount - 1);
 
-        return Utilities.boundToRange(
-                ((float) (getScrollX() - oldestChildScroll)) /
-                        (scrollEnd - oldestChildScroll), 0, 1);
+        final int clearAllButtonMotionRange = scrollEnd - oldestChildScroll;
+        if (clearAllButtonMotionRange == 0) return 0;
+
+        final float alphaUnbound = ((float) (getScrollX() - oldestChildScroll)) /
+                clearAllButtonMotionRange;
+        if (alphaUnbound > 1) return 0;
+
+        return Math.max(alphaUnbound, 0);
     }
 
     private void updateClearAllButtonAlpha() {
