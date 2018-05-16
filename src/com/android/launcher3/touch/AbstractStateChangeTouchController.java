@@ -64,8 +64,7 @@ public abstract class AbstractStateChangeTouchController
      * Play an atomic recents animation when the progress from NORMAL to OVERVIEW reaches this.
      */
     public static final float ATOMIC_OVERVIEW_ANIM_THRESHOLD = 0.5f;
-    private static final long ATOMIC_NORMAL_TO_OVERVIEW_DURATION = 120;
-    private static final long ATOMIC_OVERVIEW_TO_NORMAL_DURATION = 200;
+    protected static final long ATOMIC_DURATION = 200;
 
     protected final Launcher mLauncher;
     protected final SwipeDetector mDetector;
@@ -213,7 +212,7 @@ public abstract class AbstractStateChangeTouchController
                     mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
                     long duration = (long) (getShiftRange() * 2);
                     mAtomicComponentsController = AnimatorPlaybackController.wrap(
-                            createAtomicAnimForState(mToState, duration), duration);
+                            createAtomicAnimForState(mFromState, mToState, duration), duration);
                     mAtomicComponentsController.dispatchOnStart();
                 }
             });
@@ -295,14 +294,13 @@ public abstract class AbstractStateChangeTouchController
                 : 1f - ATOMIC_OVERVIEW_ANIM_THRESHOLD;
         boolean passedThreshold = progress >= threshold;
         if (passedThreshold != mPassedOverviewAtomicThreshold) {
-            LauncherState targetState = passedThreshold ? toState : fromState;
+            LauncherState atomicFromState = passedThreshold ? fromState: toState;
+            LauncherState atomicToState = passedThreshold ? toState : fromState;
             mPassedOverviewAtomicThreshold = passedThreshold;
             if (mAtomicAnim != null) {
                 mAtomicAnim.cancel();
             }
-            long duration = targetState == OVERVIEW ? ATOMIC_NORMAL_TO_OVERVIEW_DURATION
-                    : ATOMIC_OVERVIEW_TO_NORMAL_DURATION;
-            mAtomicAnim = createAtomicAnimForState(targetState, duration);
+            mAtomicAnim = createAtomicAnimForState(atomicFromState, atomicToState, ATOMIC_DURATION);
             mAtomicAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -314,8 +312,10 @@ public abstract class AbstractStateChangeTouchController
         }
     }
 
-    private AnimatorSet createAtomicAnimForState(LauncherState targetState, long duration) {
+    private AnimatorSet createAtomicAnimForState(LauncherState fromState, LauncherState targetState,
+            long duration) {
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        mLauncher.getStateManager().prepareForAtomicAnimation(fromState, targetState, builder);
         AnimationConfig config = new AnimationConfig();
         config.animComponents = ATOMIC_COMPONENT;
         config.duration = duration;

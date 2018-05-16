@@ -197,7 +197,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     }
                 };
                 animator.setFloatValues(0, 1);
-                animator.setDuration(Math.max(expectedDuration, 300)).setInterpolator(LINEAR);
+                animator.setDuration(Math.min(expectedDuration, ATOMIC_DURATION))
+                        .setInterpolator(LINEAR);
             }
         } else {
             mFinishFastOnSecondTouch = false;

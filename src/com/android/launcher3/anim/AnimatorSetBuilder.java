@@ -16,7 +16,6 @@
 package com.android.launcher3.anim;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.util.SparseArray;
 import android.view.animation.Interpolator;
@@ -32,6 +31,10 @@ import java.util.List;
 public class AnimatorSetBuilder {
 
     public static final int ANIM_VERTICAL_PROGRESS = 0;
+    public static final int ANIM_WORKSPACE_SCALE = 1;
+    public static final int ANIM_WORKSPACE_FADE = 2;
+    public static final int ANIM_OVERVIEW_SCALE = 3;
+    public static final int ANIM_OVERVIEW_FADE = 4;
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 
