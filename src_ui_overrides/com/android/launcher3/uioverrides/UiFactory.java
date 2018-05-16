@@ -55,4 +55,5 @@ public class UiFactory {
         return false;
     }
 
+    public static void prepareToShowOverview(Launcher launcher) { }
 }

@@ -3,6 +3,8 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -172,7 +174,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             return;
         }
 
-        Interpolator interpolator = config.userControlled ? LINEAR : FAST_OUT_SLOW_IN;
+        Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
+                ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
+                : FAST_OUT_SLOW_IN;
         ObjectAnimator anim =
                 ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);

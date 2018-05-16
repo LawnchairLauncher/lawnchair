@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR;
@@ -72,16 +76,17 @@ public class RecentsViewStateController implements StateHandler {
         }
         PropertySetter setter = config.getPropertySetter(builder);
         float[] scaleTranslationYFactor = toState.getOverviewScaleAndTranslationYFactor(mLauncher);
-        setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0], LINEAR);
-        Interpolator transYInterpolator = LINEAR;
-        if (toState == LauncherState.FAST_OVERVIEW) {
+        Interpolator scaleInterpolator = builder.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
+        setter.setFloat(mRecentsView, ADJACENT_SCALE, scaleTranslationYFactor[0], scaleInterpolator);
+        Interpolator transYInterpolator = scaleInterpolator;
+        if (mLauncher.getStateManager().getState() == OVERVIEW && toState == FAST_OVERVIEW) {
             transYInterpolator = Interpolators.clampToProgress(QUICK_SCRUB_START_INTERPOLATOR, 0,
                     QUICK_SCRUB_TRANSLATION_Y_FACTOR);
         }
         setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1],
                 transYInterpolator);
         setter.setFloat(mRecentsViewContainer, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
-                AGGRESSIVE_EASE_IN_OUT);
+                builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);

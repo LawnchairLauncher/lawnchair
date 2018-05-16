@@ -68,8 +68,10 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        // TODO: interpolate
-        return LauncherState.OVERVIEW.getWorkspaceScaleAndTranslation(launcher);
+        float[] scaleAndTranslation = LauncherState.OVERVIEW.getWorkspaceScaleAndTranslation(
+                launcher);
+        scaleAndTranslation[0] = 1;
+        return scaleAndTranslation;
     }
 
     @Override

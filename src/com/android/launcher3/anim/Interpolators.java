@@ -58,7 +58,7 @@ public class Interpolators {
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
 
-    public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
+    public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);

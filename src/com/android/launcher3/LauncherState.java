@@ -186,7 +186,7 @@ public class LauncherState {
      *   translationY factor where 0 is top aligned and 0.5 is centered vertically
      */
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {1.2f, 0.2f};
+        return new float[] {1.1f, 0f};
     }
 
     public void onStateEnabled(Launcher launcher) {

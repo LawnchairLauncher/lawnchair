@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides;
 
+import static android.view.View.VISIBLE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -199,6 +200,13 @@ public class UiFactory {
         writer.println(Base64.encodeToString(
                 out.toByteArray(), Base64.NO_WRAP | Base64.NO_PADDING));
         return true;
+    }
+
+    public static void prepareToShowOverview(Launcher launcher) {
+        RecentsView overview = launcher.getOverviewPanel();
+        if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
+            overview.setAdjacentScale(1.33f);
+        }
     }
 
     private static class LauncherTaskViewController extends TaskViewTouchController<Launcher> {
