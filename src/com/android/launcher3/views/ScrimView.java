@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
@@ -113,10 +114,15 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
                 .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
         mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
 
-        mAccessibilityHelper = new AccessibilityHelper();
+        mAccessibilityHelper = createAccessibilityHelper();
         ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
 
         mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
+    }
+
+    @NonNull
+    protected AccessibilityHelper createAccessibilityHelper() {
+        return new AccessibilityHelper();
     }
 
     @Override
@@ -189,6 +195,9 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected void onDraw(Canvas canvas) {
         if (mCurrentFlatColor != 0) {
             canvas.drawColor(mCurrentFlatColor);
+        }
+        if (mDragHandle != null) {
+            mDragHandle.draw(canvas);
         }
     }
 
@@ -323,7 +332,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
     }
 
-    private class AccessibilityHelper extends ExploreByTouchHelper {
+    protected class AccessibilityHelper extends ExploreByTouchHelper {
 
         private static final int DRAG_HANDLE_ID = 1;
 

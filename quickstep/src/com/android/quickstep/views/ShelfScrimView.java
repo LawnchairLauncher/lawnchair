@@ -28,6 +28,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.AttributeSet;
 
 import com.android.launcher3.DeviceProfile;
@@ -48,6 +51,7 @@ public class ShelfScrimView extends ScrimView {
     private static final int THRESHOLD_ALPHA_DARK = 102;
     private static final int THRESHOLD_ALPHA_LIGHT = 46;
     private static final int THRESHOLD_ALPHA_SUPER_LIGHT = 128;
+    private static final int CLEAR_ALL_TASKS = R.string.recents_clear_all;
 
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
@@ -212,5 +216,44 @@ public class ShelfScrimView extends ScrimView {
         canvas.drawRoundRect(0, top, getWidth(), getHeight() + mRadius,
                 mRadius, mRadius, mPaint);
         return minTop - mDragHandleSize - top;
+    }
+
+    @NonNull
+    @Override
+    protected AccessibilityHelper createAccessibilityHelper() {
+        return new ShelfScrimAccessibilityHelper();
+    }
+
+    protected class ShelfScrimAccessibilityHelper extends AccessibilityHelper {
+        @Override
+        protected void onPopulateNodeForVirtualView(int virtualViewId,
+                AccessibilityNodeInfoCompat node) {
+            super.onPopulateNodeForVirtualView(virtualViewId, node);
+
+            if (mLauncher.isInState(OVERVIEW)) {
+                final RecentsView overviewPanel = mLauncher.getOverviewPanel();
+                if (overviewPanel.getChildCount() != 0) {
+                    node.addAction(
+                            new AccessibilityNodeInfoCompat.AccessibilityActionCompat(
+                                    CLEAR_ALL_TASKS,
+                                    getContext().getText(CLEAR_ALL_TASKS)));
+                }
+            }
+        }
+
+        @Override
+        protected boolean onPerformActionForVirtualView(
+                int virtualViewId, int action, Bundle arguments) {
+            if (super.onPerformActionForVirtualView(virtualViewId, action, arguments)) return true;
+
+            if (action == CLEAR_ALL_TASKS) {
+                if (mLauncher.isInState(OVERVIEW)) {
+                    mLauncher.<RecentsView>getOverviewPanel().dismissAllTasks();
+                }
+                return true;
+            }
+
+            return false;
+        }
     }
 }
