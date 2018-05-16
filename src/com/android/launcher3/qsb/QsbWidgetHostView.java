@@ -73,6 +73,18 @@ public class QsbWidgetHostView extends AppWidgetHostView {
         return getDefaultView(this);
     }
 
+    @Override
+    protected View getDefaultView() {
+        View v = super.getDefaultView();
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Launcher.getLauncher(getContext()).startSearch("", false, null, true);
+            }
+        });
+        return v;
+    }
+
     public static View getDefaultView(ViewGroup parent) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.qsb_default_view, parent, false);
