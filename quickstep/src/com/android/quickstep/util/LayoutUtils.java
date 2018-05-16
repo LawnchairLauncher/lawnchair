@@ -104,7 +104,7 @@ public class LayoutUtils {
         float outHeight = scale * taskHeight;
 
         // Center in the visible space
-        float x = insets.left + (taskWidth - outWidth) / 2;
+        float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
         float y = insets.top + Math.max(topIconMargin,
                 (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
         outRect.set(Math.round(x), Math.round(y),
