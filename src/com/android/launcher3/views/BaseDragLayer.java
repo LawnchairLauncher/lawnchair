@@ -117,9 +117,17 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
-            childrenForAccessibility.add(topView);
+            addAccessibleChildToList(topView, childrenForAccessibility);
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
+        }
+    }
+
+    protected void addAccessibleChildToList(View child, ArrayList<View> outList) {
+        if (child.isImportantForAccessibility()) {
+            outList.add(child);
+        } else {
+            child.addChildrenForAccessibility(outList);
         }
     }
 

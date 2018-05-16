@@ -21,8 +21,10 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.Insettable;
@@ -55,6 +57,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapter = new WidgetsListAdapter(context,
                 LayoutInflater.from(context), apps.getWidgetCache(), apps.getIconCache(),
                 this, this);
+
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -74,6 +77,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         springLayout.addSpringView(R.id.widgets_list_view);
         mRecyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
         onWidgetsBound();
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(mRecyclerView, getContext().getString(
+                mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 
     @Override
@@ -149,10 +158,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private void open(boolean animate) {
-        if (mIsOpen) {
-            return;
-        }
-        mIsOpen = true;
         if (animate) {
             if (mLauncher.getDragLayer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
@@ -180,6 +185,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             setTranslationShift(TRANSLATION_SHIFT_OPENED);
             mAdapter.setApplyBitmapDeferred(false, mRecyclerView);
+            post(this::announceAccessibilityChanges);
         }
     }
 
@@ -212,6 +218,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
+        sheet.mIsOpen = true;
         launcher.getDragLayer().addView(sheet);
         sheet.open(animate);
         return sheet;
