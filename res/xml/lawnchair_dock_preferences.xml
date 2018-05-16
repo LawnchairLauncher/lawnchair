@@ -52,4 +52,8 @@
         android:title="@string/hotseat_show_page_indicator"
         android:defaultValue="true"
         android:persistent="true" />
+
+    <ch.deletescape.lawnchair.settings.ui.DockGridSizePreference
+        android:key="pref_dock_grid_size"
+        android:title="@string/num_hotseat_icons_pref_title" />
 </PreferenceScreen>

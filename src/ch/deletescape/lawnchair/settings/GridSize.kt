@@ -4,32 +4,32 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 
-class GridSize(
-        private val prefs: LawnchairPreferences,
+open class GridSize(
+        prefs: LawnchairPreferences,
         rowsKey: String,
-        columnsKey: String,
-        targetObject: Any) {
+        targetObject: Any,
+        private val onChangeListener: () -> Unit) {
 
     var numRows by JavaField<Int>(targetObject, rowsKey)
-    var numColumns by JavaField<Int>(targetObject, columnsKey)
     val numRowsOriginal by JavaField<Int>(targetObject, "${rowsKey}Original")
-    val numColumnsOriginal by JavaField<Int>(targetObject, "${columnsKey}Original")
 
-    private val onChange = {
+    protected val onChange = {
         applyCustomization()
-        prefs.refreshGrid()
+        onChangeListener.invoke()
     }
 
     var numRowsPref by prefs.IntPref("pref_$rowsKey", 0, onChange)
-    var numColumnsPref by prefs.IntPref("pref_$columnsKey", 0, onChange)
 
     init {
-        applyCustomization()
+        applyNumRows()
     }
 
-    private fun applyCustomization() {
+    protected open fun applyCustomization() {
+        applyNumRows()
+    }
+
+    private fun applyNumRows() {
         numRows = fromPref(numRowsPref, numRowsOriginal)
-        numColumns = fromPref(numColumnsPref, numColumnsOriginal)
     }
 
     fun fromPref(value: Int, default: Int) = if (value != 0) value else default

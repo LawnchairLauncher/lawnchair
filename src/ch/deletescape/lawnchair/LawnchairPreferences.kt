@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import ch.deletescape.lawnchair.settings.GridSize
+import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
@@ -68,7 +69,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-    val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
+    val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
 
     // Dock
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
@@ -82,6 +83,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGradientStyle get() = (dockStyle and 1) == 0
     val dockRoundedCorners get() = (dockStyle and 2) != 0
     val hideDockGradient get() = (dockStyle and 4) != 0
+    val dockGridSize by lazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)

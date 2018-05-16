@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -117,15 +116,19 @@ public class Hotseat extends FrameLayout
             inflate(getContext(), R.layout.search_container_hotseat, this);
         }
 
+        mContent = findViewById(R.id.layout);
+        updateGridSize();
+
+        resetLayout();
+    }
+
+    void updateGridSize() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isVerticalBarLayout()) {
             mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {
             mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
-
-        resetLayout();
     }
 
     void resetLayout() {

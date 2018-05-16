@@ -354,6 +354,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             final DialogFragment f;
             if (preference instanceof GridSizePreference) {
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof DockGridSizePreference) {
+                f = DockGridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;

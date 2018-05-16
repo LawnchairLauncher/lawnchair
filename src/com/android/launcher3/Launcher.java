@@ -339,6 +339,7 @@ public class Launcher extends BaseActivity
 
         LauncherAppState app = LauncherAppState.getInstance(this);
         prefs.getGridSize();
+        prefs.getDockGridSize();
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
