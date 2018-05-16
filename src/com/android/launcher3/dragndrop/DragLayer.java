@@ -28,8 +28,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -126,18 +124,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
-    public boolean isEventOverHotseat(MotionEvent ev) {
-        return isEventOverView(mActivity.getHotseat(), ev);
-    }
-
-    private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
-        return isEventOverView(folder, ev);
-    }
-
-    private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        return isEventOverView(mActivity.getDropTargetBar(), ev);
-    }
-
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
         ViewScrim scrim = ViewScrim.get(child);
@@ -157,24 +143,29 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         return super.findActiveController(ev);
     }
 
+    private boolean isEventOverAccessibleDropTargetBar(MotionEvent ev) {
+        return isInAccessibleDrag() && isEventOverView(mActivity.getDropTargetBar(), ev);
+    }
+
     @Override
     public boolean onInterceptHoverEvent(MotionEvent ev) {
         if (mActivity == null || mActivity.getWorkspace() == null) {
             return false;
         }
-        Folder currentFolder = Folder.getOpen(mActivity);
-        if (currentFolder == null) {
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+        if (!(topView instanceof Folder)) {
             return false;
         } else {
             AccessibilityManager accessibilityManager = (AccessibilityManager)
                     getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             if (accessibilityManager.isTouchExplorationEnabled()) {
+                Folder currentFolder = (Folder) topView;
                 final int action = ev.getAction();
                 boolean isOverFolderOrSearchBar;
                 switch (action) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                isEventOverAccessibleDropTargetBar(ev);
                         if (!isOverFolderOrSearchBar) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -183,8 +174,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                         mHoverPointClosesFolder = false;
                         break;
                     case MotionEvent.ACTION_HOVER_MOVE:
-                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                isEventOverAccessibleDropTargetBar(ev);
                         if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -219,18 +210,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
-        // Shortcuts can appear above folder
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (topView != null) {
-            if (child == topView) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
-            if (isInAccessibleDrag() && child instanceof DropTargetBar) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
-            // Skip propagating onRequestSendAccessibilityEvent for all other children
-            // which are not topView
-            return false;
+        if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+            return true;
         }
         return super.onRequestSendAccessibilityEvent(child, event);
     }
@@ -239,11 +220,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
-            // Only add the top view as a child for accessibility when it is open
-            childrenForAccessibility.add(topView);
-
+            addAccessibleChildToList(topView, childrenForAccessibility);
             if (isInAccessibleDrag()) {
-                childrenForAccessibility.add(mActivity.getDropTargetBar());
+                addAccessibleChildToList(mActivity.getDropTargetBar(), childrenForAccessibility);
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);

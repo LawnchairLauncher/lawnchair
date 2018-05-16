@@ -16,10 +16,18 @@
 
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -121,6 +129,25 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         return false;
+    }
+
+    protected void announceAccessibilityChanges() {
+        Pair<View, String> targetInfo = getAccessibilityTarget();
+        if (targetInfo == null || !isAccessibilityEnabled(getContext())) {
+            return;
+        }
+        sendCustomAccessibilityEvent(
+                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
+
+        if (mIsOpen) {
+            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+        }
+        BaseDraggingActivity.fromContext(getContext()).getDragLayer()
+                .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+    }
+
+    protected Pair<View, String> getAccessibilityTarget() {
+        return null;
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
