@@ -50,6 +50,7 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
@@ -242,6 +243,10 @@ public class Launcher extends BaseDraggingActivity
     public ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
+
+
+    private final Handler mHandler = new Handler();
+    private final Runnable mLogOnDelayedResume = this::logOnDelayedResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -727,10 +732,11 @@ public class Launcher extends BaseDraggingActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
-        mAppWidgetHost.setListenIfResumed(false);
-
         getUserEventDispatcher().logActionCommand(Action.Command.STOP,
                 mStateManager.getState().containerType, -1);
+
+        mAppWidgetHost.setListenIfResumed(false);
+
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
 
@@ -751,13 +757,23 @@ public class Launcher extends BaseDraggingActivity
         UiFactory.onStart(this);
     }
 
+    private void logOnDelayedResume() {
+        if (hasBeenResumed()) {
+            getUserEventDispatcher().logActionCommand(Action.Command.RESUME,
+                    mStateManager.getState().containerType, -1);
+            getUserEventDispatcher().startSession();
+        }
+    }
+
     @Override
     protected void onResume() {
         TraceHelper.beginSection("ON_RESUME");
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
 
-        getUserEventDispatcher().resetElapsedSessionMillis();
+        mHandler.removeCallbacks(mLogOnDelayedResume);
+        Utilities.postAsyncCallback(mHandler, mLogOnDelayedResume);
+
         setOnResumeCallback(null);
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(
