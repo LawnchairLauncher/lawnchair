@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -32,6 +33,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -43,6 +45,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
@@ -80,7 +83,7 @@ public abstract class AbstractStateChangeTouchController
     private float mProgressMultiplier;
     private float mDisplacementShift;
     private boolean mCanBlockFling;
-    private boolean mBlockFling;
+    private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
     private AnimatorSet mAtomicAnim;
     private boolean mPassedOverviewAtomicThreshold;
@@ -241,7 +244,7 @@ public abstract class AbstractStateChangeTouchController
             mStartProgress = mCurrentAnimation.getProgressFraction();
         }
         mCanBlockFling = mFromState == NORMAL;
-        mBlockFling = false;
+        mFlingBlockCheck.unblockFling();
     }
 
     @Override
@@ -253,16 +256,19 @@ public abstract class AbstractStateChangeTouchController
         if (progress <= 0) {
             if (reinitCurrentAnimation(false, isDragTowardPositive)) {
                 mDisplacementShift = displacement;
-                mBlockFling = mCanBlockFling;
+                if (mCanBlockFling) {
+                    mFlingBlockCheck.blockFling();
+                }
             }
         } else if (progress >= 1) {
             if (reinitCurrentAnimation(true, isDragTowardPositive)) {
                 mDisplacementShift = displacement;
-                mBlockFling = mCanBlockFling;
+                if (mCanBlockFling) {
+                    mFlingBlockCheck.blockFling();
+                }
             }
-        } else if (Math.abs(velocity) < SwipeDetector.RELEASE_VELOCITY_PX_MS) {
-            // We prevent flinging after passing a state, but allow it if the user pauses briefly.
-            mBlockFling = false;
+        } else {
+            mFlingBlockCheck.onEvent();
         }
 
         return true;
@@ -325,7 +331,7 @@ public abstract class AbstractStateChangeTouchController
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
 
-        boolean blockedFling = fling && mBlockFling;
+        boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
         if (blockedFling) {
             fling = false;
         }
@@ -338,14 +344,17 @@ public abstract class AbstractStateChangeTouchController
             // snap to top or bottom using the release velocity
         } else {
             logAction = Touch.SWIPE;
-            targetState = (progress > SUCCESS_TRANSITION_PROGRESS) ? mToState : mFromState;
+            float successProgress = mToState == ALL_APPS
+                    ? MIN_PROGRESS_TO_ALL_APPS : SUCCESS_TRANSITION_PROGRESS;
+            targetState = (progress > successProgress) ? mToState : mFromState;
         }
 
         final float endProgress;
         final float startProgress;
         final long duration;
         // Increase the duration if we prevented the fling, as we are going against a high velocity.
-        final long durationMultiplier = blockedFling && targetState == mFromState ? 6 : 1;
+        final int durationMultiplier = blockedFling && targetState == mFromState
+                ? LauncherAnimUtils.blockedFlingDurationFactor(velocity) : 1;
 
         if (targetState == mToState) {
             endProgress = 1;

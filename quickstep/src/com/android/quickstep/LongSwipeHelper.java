@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -26,6 +27,7 @@ import android.animation.ValueAnimator;
 import android.view.Surface;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
@@ -33,7 +35,9 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.FlingBlockCheck;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 
@@ -44,7 +48,6 @@ import com.android.systemui.shared.system.TransactionCompat;
  */
 public class LongSwipeHelper {
 
-    private static final float MIN_PROGRESS_TO_ALL_APPS = 0.35f;
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_TO_ALL_APPS, 1 / (1 - MIN_PROGRESS_TO_ALL_APPS));
 
@@ -53,6 +56,7 @@ public class LongSwipeHelper {
 
     private float mMaxSwipeDistance = 1;
     private AnimatorPlaybackController mAnimator;
+    private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
     LongSwipeHelper(Launcher launcher, RemoteAnimationTargetSet targetSet) {
         mLauncher = launcher;
@@ -62,6 +66,7 @@ public class LongSwipeHelper {
 
     private void init() {
         setTargetAlpha(0, true);
+        mFlingBlockCheck.blockFling();
 
         // Init animations
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
@@ -74,6 +79,7 @@ public class LongSwipeHelper {
 
     public void onMove(float displacement) {
         mAnimator.setPlayFraction(displacement / mMaxSwipeDistance);
+        mFlingBlockCheck.onEvent();
     }
 
     public void destroy() {
@@ -89,6 +95,11 @@ public class LongSwipeHelper {
         final float currentFraction = mAnimator.getProgressFraction();
         final boolean toAllApps;
         float endProgress;
+
+        boolean blockedFling = isFling && mFlingBlockCheck.isBlocked();
+        if (blockedFling) {
+            isFling = false;
+        }
 
         if (!isFling) {
             toAllApps = currentFraction > MIN_PROGRESS_TO_ALL_APPS;
@@ -114,7 +125,11 @@ public class LongSwipeHelper {
             }
         }
 
-        mAnimator.setEndAction(() -> onSwipeAnimationComplete(toAllApps, isFling, callback));
+        if (blockedFling && !toAllApps) {
+            duration *= LauncherAnimUtils.blockedFlingDurationFactor(0);
+        }
+        final boolean finalIsFling = isFling;
+        mAnimator.setEndAction(() -> onSwipeAnimationComplete(toAllApps, finalIsFling, callback));
         ValueAnimator animator = mAnimator.getAnimationPlayer();
         animator.setDuration(duration).setInterpolator(DEACCEL);
         animator.setFloatValues(currentFraction, endProgress);
@@ -150,6 +165,7 @@ public class LongSwipeHelper {
         mLauncher.getStateManager().goToState(toAllApps ? ALL_APPS : OVERVIEW, false);
         if (!toAllApps) {
             DiscoveryBounce.showForOverviewIfNeeded(mLauncher);
+            mLauncher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(true);
         }
 
         mLauncher.getUserEventDispatcher().logStateChangeAction(
