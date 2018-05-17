@@ -209,11 +209,13 @@ public abstract class AbstractStateChangeTouchController
                 @Override
                 public void onAnimationSuccess(Animator animation) {
                     cancelAtomicComponentsController();
-                    mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
-                    long duration = (long) (getShiftRange() * 2);
-                    mAtomicComponentsController = AnimatorPlaybackController.wrap(
-                            createAtomicAnimForState(mFromState, mToState, duration), duration);
-                    mAtomicComponentsController.dispatchOnStart();
+                    if (mCurrentAnimation != null) {
+                        mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
+                        long duration = (long) (getShiftRange() * 2);
+                        mAtomicComponentsController = AnimatorPlaybackController.wrap(
+                                createAtomicAnimForState(mFromState, mToState, duration), duration);
+                        mAtomicComponentsController.dispatchOnStart();
+                    }
                 }
             });
         }
