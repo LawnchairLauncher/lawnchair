@@ -39,6 +39,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -78,6 +80,8 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.TaskStack;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -166,10 +170,38 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (!mHandleTaskStackChanges) {
                 return;
             }
-            TaskView taskView = getTaskView(taskId);
-            if (taskView != null) {
-                dismissTask(taskView, true /* animate */, false /* removeTask */);
-            }
+            BackgroundExecutor.get().submit(() -> {
+                TaskView taskView = getTaskView(taskId);
+                if (taskView == null) {
+                    return;
+                }
+                Handler handler = taskView.getHandler();
+                if (handler == null) {
+                    return;
+                }
+
+                // TODO: Add callbacks from AM reflecting adding/removing from the recents list, and
+                //       remove all these checks
+                Task.TaskKey taskKey = taskView.getTask().key;
+                if (PackageManagerWrapper.getInstance().getActivityInfo(taskKey.getComponent(),
+                        taskKey.userId) == null) {
+                    // The package was uninstalled
+                    handler.post(() ->
+                            dismissTask(taskView, true /* animate */, false /* removeTask */));
+                } else {
+                    RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(getContext());
+                    RecentsTaskLoadPlan.PreloadOptions opts =
+                            new RecentsTaskLoadPlan.PreloadOptions();
+                    opts.loadTitles = false;
+                    loadPlan.preloadPlan(opts, mModel.getRecentsTaskLoader(), -1,
+                            UserHandle.myUserId());
+                    if (loadPlan.getTaskStack().findTaskWithId(taskId) == null) {
+                        // The task was removed from the recents list
+                        handler.post(() ->
+                                dismissTask(taskView, true /* animate */, false /* removeTask */));
+                    }
+                }
+            });
         }
 
         @Override
