@@ -396,7 +396,6 @@ public class LauncherStateManager {
             setRestState(null);
         }
 
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
         UiFactory.onLauncherStateOrResumeChanged(mLauncher);
     }
 
