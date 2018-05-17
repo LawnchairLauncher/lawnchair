@@ -141,13 +141,12 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
     }
 
-    public final Bundle getActivityLaunchOptionsAsBundle(View v, boolean useDefaultLaunchOptions) {
-        ActivityOptions activityOptions = getActivityLaunchOptions(v, useDefaultLaunchOptions);
+    public final Bundle getActivityLaunchOptionsAsBundle(View v) {
+        ActivityOptions activityOptions = getActivityLaunchOptions(v);
         return activityOptions == null ? null : activityOptions.toBundle();
     }
 
-    public abstract ActivityOptions getActivityLaunchOptions(
-            View v, boolean useDefaultLaunchOptions);
+    public abstract ActivityOptions getActivityLaunchOptions(View v);
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
@@ -160,7 +159,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         boolean useLaunchAnimation = (v != null) &&
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
+                ? getActivityLaunchOptionsAsBundle(v)
                 : null;
 
         UserHandle user = item == null ? null : item.user;
