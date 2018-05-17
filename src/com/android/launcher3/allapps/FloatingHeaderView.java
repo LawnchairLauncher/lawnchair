@@ -96,7 +96,7 @@ public class FloatingHeaderView extends LinearLayout implements
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
-        setMainActive(mMainRVActive);
+        setMainActive(mMainRVActive || mWorkRV == null);
         reset(false);
     }
 
