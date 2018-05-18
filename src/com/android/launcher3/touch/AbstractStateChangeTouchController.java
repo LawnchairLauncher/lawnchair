@@ -42,6 +42,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -221,6 +222,8 @@ public abstract class AbstractStateChangeTouchController
             cancelAtomicComponentsController();
         }
         mProgressMultiplier = initCurrentAnimation(animComponents);
+        mCurrentAnimation.getAnimationPlayer().addUpdateListener(animation ->
+                setBackButtonAlphaWithProgress((float) animation.getAnimatedValue()));
         mCurrentAnimation.dispatchOnStart();
         return true;
     }
@@ -279,6 +282,7 @@ public abstract class AbstractStateChangeTouchController
             mAtomicComponentsController.setPlayFraction(fraction - mAtomicComponentsStartProgress);
         }
         maybeUpdateAtomicAnim(mFromState, mToState, fraction);
+        setBackButtonAlphaWithProgress(fraction);
     }
 
     /**
@@ -468,6 +472,14 @@ public abstract class AbstractStateChangeTouchController
                 logReachedState(logAction);
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        }
+    }
+
+    private void setBackButtonAlphaWithProgress(float progress) {
+        if (mFromState.hideBackButton ^ mToState.hideBackButton) {
+            progress = Utilities.boundToRange(progress, 0, 1);
+            final float alpha = mToState.hideBackButton ? 1 - progress : progress;
+            UiFactory.setBackButtonAlpha(mLauncher, alpha, false /* animate */);
         }
     }
 
