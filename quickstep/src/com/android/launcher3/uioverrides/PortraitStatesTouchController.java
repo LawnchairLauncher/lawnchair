@@ -189,14 +189,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             if (isFling && expectedDuration != 0) {
                 // Update all apps interpolator to add a bit of overshoot starting from currFraction
                 final float currFraction = mCurrentAnimation.getProgressFraction();
-                mAllAppsInterpolatorWrapper.baseInterpolator
-                        = new OvershootInterpolator(Math.min(Math.abs(velocity) / 3, 3f)) {
-                    @Override
-                    public float getInterpolation(float t) {
-                        return super.getInterpolation(t) + ((1 - t) * currFraction);
-                    }
-                };
-                animator.setFloatValues(0, 1);
+                mAllAppsInterpolatorWrapper.baseInterpolator = Interpolators.clampToProgress(
+                        new OvershootInterpolator(Math.min(Math.abs(velocity), 3f)), currFraction, 1);
                 animator.setDuration(Math.min(expectedDuration, ATOMIC_DURATION))
                         .setInterpolator(LINEAR);
             }
