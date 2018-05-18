@@ -109,6 +109,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final int STATE_CAPTURE_SCREENSHOT = 1 << 14;
     private static final int STATE_SCREENSHOT_CAPTURED = 1 << 15;
 
+    private static final int STATE_RESUME_LAST_TASK = 1 << 16;
+
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
             | STATE_LAUNCHER_STARTED;
@@ -139,6 +141,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             "STATE_QUICK_SCRUB_END",
             "STATE_CAPTURE_SCREENSHOT",
             "STATE_SCREENSHOT_CAPTURED",
+            "STATE_RESUME_LAST_TASK",
     };
 
     public static final long MAX_SWIPE_DURATION = 350;
@@ -187,6 +190,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
     private float mCurrentQuickScrubProgress;
+    private boolean mQuickScrubBlocked;
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
 
@@ -239,9 +243,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_APP_CONTROLLER_RECEIVED,
                 this::sendRemoteAnimationsToAnimationFactory);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_SCALED_CONTROLLER_APP,
+
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_APP,
+                this::resumeLastTaskForQuickstep);
+        mStateCallback.addCallback(STATE_RESUME_LAST_TASK | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
+
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_ACTIVITY_MULTIPLIER_COMPLETE
                         | STATE_CAPTURE_SCREENSHOT,
@@ -257,9 +264,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         | STATE_CURRENT_TASK_FINISHED
                         | STATE_GESTURE_COMPLETED,
                 this::setupLauncherUiAfterSwipeUpAnimation);
-
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_APP,
-                this::reset);
 
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -657,9 +661,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     @UiThread
+    private void resumeLastTaskForQuickstep() {
+        setStateOnUiThread(STATE_RESUME_LAST_TASK);
+        doLogGesture(false /* toLauncher */);
+        reset();
+    }
+
+    @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toHome */, null);
-        doLogGesture(false /* toLauncher */);
     }
 
     public void reset() {
@@ -760,6 +770,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void onQuickScrubStart() {
+        if (!mQuickScrubController.prepareQuickScrub(TAG)) {
+            mQuickScrubBlocked = true;
+            setStateOnUiThread(STATE_RESUME_LAST_TASK | STATE_HANDLER_INVALIDATED);
+            return;
+        }
         if (mLauncherTransitionController != null) {
             mLauncherTransitionController.getAnimationPlayer().end();
             mLauncherTransitionController = null;
@@ -793,12 +808,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void onFinishedTransitionToQuickScrub() {
+        if (mQuickScrubBlocked) {
+            return;
+        }
         mQuickScrubController.onFinishedTransitionToQuickScrub();
     }
 
     public void onQuickScrubProgress(float progress) {
         mCurrentQuickScrubProgress = progress;
-        if (Looper.myLooper() != Looper.getMainLooper() || mQuickScrubController == null) {
+        if (Looper.myLooper() != Looper.getMainLooper() || mQuickScrubController == null
+                || mQuickScrubBlocked) {
             return;
         }
         mQuickScrubController.onQuickScrubProgress(progress);
@@ -809,6 +828,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void switchToFinalAppAfterQuickScrub() {
+        if (mQuickScrubBlocked) {
+            return;
+        }
         mQuickScrubController.onQuickScrubEnd();
 
         // Normally this is handled in reset(), but since we are still scrubbing after the

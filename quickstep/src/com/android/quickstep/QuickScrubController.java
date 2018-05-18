@@ -63,6 +63,7 @@ public class QuickScrubController implements OnAlarmListener {
     private final BaseActivity mActivity;
 
     private boolean mInQuickScrub;
+    private boolean mWaitingForTaskLaunch;
     private int mQuickScrubSection;
     private boolean mStartedFromHome;
     private boolean mFinishedTransitionToQuickScrub;
@@ -79,11 +80,11 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void onQuickScrubStart(boolean startingFromHome, ActivityControlHelper controlHelper) {
+        prepareQuickScrub(TAG);
         mInQuickScrub = true;
         mStartedFromHome = startingFromHome;
         mQuickScrubSection = 0;
         mFinishedTransitionToQuickScrub = false;
-        mOnFinishedTransitionToQuickScrubRunnable = null;
         mActivityControlHelper = controlHelper;
 
         snapToNextTaskIfAvailable();
@@ -99,11 +100,17 @@ public class QuickScrubController implements OnAlarmListener {
         Runnable launchTaskRunnable = () -> {
             TaskView taskView = mRecentsView.getPageAt(page);
             if (taskView != null) {
+                mWaitingForTaskLaunch = true;
                 taskView.launchTask(true, (result) -> {
                     if (!result) {
                         taskView.notifyTaskLaunchFailed(TAG);
                         breakOutOfQuickScrub();
+                    } else {
+                        mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(Touch.DRAGDROP,
+                                LauncherLogProto.Action.Direction.NONE, page,
+                                TaskUtils.getComponentKeyForTask(taskView.getTask().key));
                     }
+                    mWaitingForTaskLaunch = false;
                 }, taskView.getHandler());
             } else {
                 breakOutOfQuickScrub();
@@ -123,9 +130,19 @@ public class QuickScrubController implements OnAlarmListener {
                 mOnFinishedTransitionToQuickScrubRunnable = launchTaskRunnable;
             }
         }
-        mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(Touch.DRAGDROP,
-                LauncherLogProto.Action.Direction.NONE, page,
-                TaskUtils.getComponentKeyForTask(mRecentsView.getPageAt(page).getTask().key));
+    }
+
+    /**
+     * Initializes the UI for quick scrub, returns true if success.
+     */
+    public boolean prepareQuickScrub(String tag) {
+        if (mWaitingForTaskLaunch || mInQuickScrub) {
+            Log.d(tag, "Waiting for last scrub to finish, will skip this interaction");
+            return false;
+        }
+        mOnFinishedTransitionToQuickScrubRunnable = null;
+        mRecentsView.setNextPageSwitchRunnable(null);
+        return true;
     }
 
     /**
@@ -166,9 +183,11 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void onFinishedTransitionToQuickScrub() {
         mFinishedTransitionToQuickScrub = true;
-        if (mOnFinishedTransitionToQuickScrubRunnable != null) {
-            mOnFinishedTransitionToQuickScrubRunnable.run();
-            mOnFinishedTransitionToQuickScrubRunnable = null;
+        Runnable action = mOnFinishedTransitionToQuickScrubRunnable;
+        // Clear the runnable before executing it, to prevent potential recursion.
+        mOnFinishedTransitionToQuickScrubRunnable = null;
+        if (action != null) {
+            action.run();
         }
     }
 

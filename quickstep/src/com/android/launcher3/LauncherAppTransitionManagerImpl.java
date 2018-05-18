@@ -127,13 +127,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
-    private final AnimatorListenerAdapter mReapplyStateListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mLauncher.getStateManager().reapplyState();
-        }
-    };
-
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -260,7 +253,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
             // Make sure recents gets fixed up by resetting task alphas and scales, etc.
-            windowAnimEndListener = mReapplyStateListener;
+            windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLauncher.getStateManager().moveToRestState();
+                    mLauncher.getStateManager().reapplyState();
+                }
+            };
         } else {
             AnimatorPlaybackController controller =
                     mLauncher.getStateManager()
