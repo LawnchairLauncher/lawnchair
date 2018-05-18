@@ -15,7 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.view.View.TRANSLATION_Y;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -25,6 +27,7 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
@@ -55,14 +58,15 @@ import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.TouchConsumer.InteractionType;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.LauncherLayoutListener;
-import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Objects;
@@ -248,26 +252,50 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 return;
             }
 
-            if (activity.getDeviceProfile().isVerticalBarLayout()) {
-                return;
-            }
-
-            AllAppsTransitionController controller = activity.getAllAppsController();
             AnimatorSet anim = new AnimatorSet();
 
-            float scrollRange = Math.max(controller.getShiftRange(), 1);
-            float progressDelta = (transitionLength / scrollRange);
+            if (!activity.getDeviceProfile().isVerticalBarLayout()) {
+                AllAppsTransitionController controller = activity.getAllAppsController();
+                float scrollRange = Math.max(controller.getShiftRange(), 1);
+                float progressDelta = (transitionLength / scrollRange);
 
-            float endProgress = endState.getVerticalProgress(activity);
-            float startProgress = endProgress + progressDelta;
-            ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
-                    controller, ALL_APPS_PROGRESS, startProgress, endProgress);
-            shiftAnim.setInterpolator(LINEAR);
-            anim.play(shiftAnim);
+                float endProgress = endState.getVerticalProgress(activity);
+                float startProgress = endProgress + progressDelta;
+                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
+                        controller, ALL_APPS_PROGRESS, startProgress, endProgress);
+                shiftAnim.setInterpolator(LINEAR);
+                anim.play(shiftAnim);
+            }
+
+            if (interactionType == INTERACTION_NORMAL) {
+                playScaleDownAnim(anim, activity);
+            }
 
             anim.setDuration(transitionLength * 2);
             activity.getStateManager().setCurrentAnimation(anim);
             callback.accept(AnimatorPlaybackController.wrap(anim, transitionLength * 2));
+        }
+
+        /**
+         * Scale down recents from the center task being full screen to being in overview.
+         */
+        private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
+            RecentsView recentsView = launcher.getOverviewPanel();
+            TaskView v = recentsView.getPageAt(recentsView.getCurrentPage());
+            ClipAnimationHelper clipHelper = new ClipAnimationHelper();
+            clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
+            if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
+                float fromScale = clipHelper.getSourceRect().width()
+                        / clipHelper.getTargetRect().width();
+                float fromTranslationY = clipHelper.getSourceRect().centerY()
+                        - clipHelper.getTargetRect().centerY();
+                Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY, fromScale, 1);
+                Animator translateY = ObjectAnimator.ofFloat(recentsView, TRANSLATION_Y,
+                        fromTranslationY, 0);
+                scale.setInterpolator(LINEAR);
+                translateY.setInterpolator(LINEAR);
+                anim.playTogether(scale, translateY);
+            }
         }
 
         @Override
