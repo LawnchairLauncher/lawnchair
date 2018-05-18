@@ -334,7 +334,7 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onQuickStep(float eventX, float eventY, long eventTime) {
+        public void onQuickStep(MotionEvent ev) {
             if (mInvalidated) {
                 return;
             }
