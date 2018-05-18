@@ -54,7 +54,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/LauncherTheme"
             android:screenOrientation="unspecified"
-            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:taskAffinity="" />
