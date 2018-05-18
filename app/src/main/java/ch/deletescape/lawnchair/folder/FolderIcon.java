@@ -21,16 +21,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.Region;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Property;
@@ -44,35 +39,19 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.Alarm;
-import ch.deletescape.lawnchair.AppInfo;
-import ch.deletescape.lawnchair.BubbleTextView;
-import ch.deletescape.lawnchair.CellLayout;
-import ch.deletescape.lawnchair.CheckLongPressHelper;
-import ch.deletescape.lawnchair.DeviceProfile;
+import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.DropTarget.DragObject;
-import ch.deletescape.lawnchair.FastBitmapDrawable;
-import ch.deletescape.lawnchair.FolderInfo;
 import ch.deletescape.lawnchair.FolderInfo.FolderListener;
-import ch.deletescape.lawnchair.ItemInfo;
-import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.LauncherAnimUtils;
-import ch.deletescape.lawnchair.LauncherSettings;
-import ch.deletescape.lawnchair.OnAlarmListener;
-import ch.deletescape.lawnchair.PreloadIconDrawable;
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.ShortcutInfo;
-import ch.deletescape.lawnchair.SimpleOnStylusPressListener;
-import ch.deletescape.lawnchair.StylusEventHelper;
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
 import ch.deletescape.lawnchair.badge.FolderBadgeInfo;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragView;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.util.Thunk;
 
 /**
@@ -529,6 +508,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         ValueAnimator mScaleAnimator;
 
+        private static float MASK_SIZE = 100f;
+        private static Path sMask;
+
+        private static Method methodCreatePathFromPathData;
+
+        private final Matrix mMaskMatrix = new Matrix();
+        private boolean mAdaptive = false;
+        private Path mMask;
+
         public void setup(Context context, DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                           int availableSpace, int topPadding) {
             BG_INTENSITY = Utilities.resolveAttributeData(
@@ -547,7 +535,52 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             mStrokeWidth = Utilities.pxFromDp(1, dm);
 
+            initAdaptive();
+
             invalidate();
+        }
+
+        private void setMaskRadius(float radius) {
+            setMaskSize(radius * 2);
+        }
+
+        private void setMaskSize(float size) {
+            mMaskMatrix.setScale(size / MASK_SIZE, size / MASK_SIZE);
+            sMask.transform(mMaskMatrix, mMask);
+        }
+
+        @SuppressLint("PrivateApi")
+        private void initAdaptive() {
+            Class<?> pathParser;
+            try {
+                if (methodCreatePathFromPathData == null) {
+                    pathParser = getClass().getClassLoader().loadClass("android.util.PathParser");
+                    methodCreatePathFromPathData = pathParser.getDeclaredMethod("createPathFromPathData", String.class);
+                }
+                if (sMask == null) {
+                    sMask = (Path) methodCreatePathFromPathData.invoke(null, getMaskPath());
+                }
+                mMask = (Path) methodCreatePathFromPathData.invoke(null, getMaskPath());
+                mAdaptive = true;
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @SuppressWarnings("Duplicates")
+        private String getMaskPath() {
+            String mask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
+            MASK_SIZE = 100f;
+            try {
+                IconShapeOverride.ShapeInfo override = IconShapeOverride.Companion.getAppliedValue(LauncherAppState.getInstance().getContext());
+                if (!TextUtils.isEmpty(override.getMaskPath())) {
+                    mask = override.getMaskPath();
+                    MASK_SIZE = (float) override.getSize();
+                }
+            } catch (Exception ignored) {
+
+            }
+            return mask;
         }
 
         float getScaleProgress() {
@@ -573,7 +606,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         void invalidate() {
             int radius = getScaledRadius();
             mClipPath.reset();
-            mClipPath.addCircle(radius, radius, radius, Path.Direction.CW);
+            if (mAdaptive) {
+                setMaskRadius(radius - 1);
+                mClipPath.addPath(mMask);
+            } else {
+                mClipPath.addCircle(radius, radius, radius, Path.Direction.CW);
+            }
 
             if (mInvalidateDelegate != null) {
                 mInvalidateDelegate.invalidate();
@@ -603,13 +641,22 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             float radius = getScaledRadius();
 
-            canvas.drawCircle(radius, radius, radius, paint);
+            if (mAdaptive) {
+                setMaskRadius(radius);
+                canvas.drawPath(mMask, paint);
+            } else {
+                canvas.drawCircle(radius, radius, radius, paint);
+            }
             canvas.clipPath(mClipPath, Region.Op.DIFFERENCE);
 
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.TRANSPARENT);
             paint.setShadowLayer(mStrokeWidth, 0, mStrokeWidth, Color.argb(SHADOW_OPACITY, 0, 0, 0));
-            canvas.drawCircle(radius, radius, radius, paint);
+            if (mAdaptive) {
+                canvas.drawPath(mMask, paint);
+            } else {
+                canvas.drawCircle(radius, radius, radius, paint);
+            }
 
             canvas.restore();
         }
@@ -625,7 +672,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             paint.setStrokeWidth(mStrokeWidth);
 
             float radius = getScaledRadius();
-            canvas.drawCircle(radius, radius, radius - 1, paint);
+            if (mAdaptive) {
+                setMaskRadius(radius - 1);
+                canvas.drawPath(mMask, paint);
+            } else {
+                canvas.drawCircle(radius, radius, radius - 1, paint);
+            }
 
             canvas.restore();
         }

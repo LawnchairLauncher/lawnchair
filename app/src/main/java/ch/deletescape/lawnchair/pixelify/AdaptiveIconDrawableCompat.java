@@ -196,6 +196,7 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private String getMaskPath() {
         //return "M50,0L100,0 100,100 0,100 0,0z";
         String mask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
