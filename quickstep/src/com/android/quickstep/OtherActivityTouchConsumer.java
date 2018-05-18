@@ -84,8 +84,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private boolean mPassedInitialSlop;
     // Used for non-deferred gestures to determine when to start dragging
     private int mQuickStepDragSlop;
-    // Used for deferred gestures to determine both start of animation and dragging
-    private int mQuickStepTouchSlop;
     private float mStartDisplacement;
     private WindowTransformSwipeHandler mInteractionHandler;
     private int mDisplayRotation;
@@ -131,7 +129,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mLastPos.set(mDownPos);
                 mPassedInitialSlop = false;
                 mQuickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
-                mQuickStepTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -165,15 +162,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
                 if (!mPassedInitialSlop) {
-                    if (mIsDeferredDownTarget) {
-                        // Deferred gesture, start the animation and gesture tracking once we pass
-                        // the touch slop
-                        if (Math.abs(displacement) > mQuickStepTouchSlop) {
-                            startTouchTrackingForWindowAnimation(ev.getEventTime());
-                            mPassedInitialSlop = true;
-                            mStartDisplacement = displacement;
-                        }
-                    } else {
+                    if (!mIsDeferredDownTarget) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
                         // the gesture
                         if (Math.abs(displacement) > mQuickStepDragSlop) {
@@ -364,7 +353,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
-    public void onQuickStep(float eventX, float eventY, long eventTime) {
+    public void onQuickStep(MotionEvent ev) {
+        if (mIsDeferredDownTarget) {
+            // Deferred gesture, start the animation and gesture tracking once we pass the actual
+            // touch slop
+            startTouchTrackingForWindowAnimation(ev.getEventTime());
+            mPassedInitialSlop = true;
+            mStartDisplacement = getDisplacement(ev);
+        }
         notifyGestureStarted();
     }
 
