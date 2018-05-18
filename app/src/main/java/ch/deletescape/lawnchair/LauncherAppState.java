@@ -170,6 +170,10 @@ public class LauncherAppState {
         return mInvariantDeviceProfile;
     }
 
+    public static InvariantDeviceProfile getIDP() {
+        return getInstance().mInvariantDeviceProfile;
+    }
+
     public Launcher getLauncher() {
         return mLauncher;
     }

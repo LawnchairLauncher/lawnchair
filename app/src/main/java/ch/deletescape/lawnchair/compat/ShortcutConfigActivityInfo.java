@@ -102,10 +102,6 @@ public abstract class ShortcutConfigActivityInfo {
         return 1;
     }
 
-    public ShortcutInfo createShortcutInfo() {
-        return null;
-    }
-
     public boolean startConfigActivity(Activity activity, int i) {
         Intent component = new Intent("android.intent.action.CREATE_SHORTCUT").setComponent(getComponent());
         try {

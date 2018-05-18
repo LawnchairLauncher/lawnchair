@@ -2,16 +2,16 @@ package ch.deletescape.lawnchair.model;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-
-import java.text.Collator;
 
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.ShortcutConfigActivityInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
+
+import java.text.Collator;
 
 /**
  * An wrapper over various items displayed in a widget picker,
@@ -29,29 +29,31 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public final String label;
     public final int spanX, spanY;
 
-    public WidgetItem(LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo, PackageManager packageManager, InvariantDeviceProfile invariantDeviceProfile) {
-        super(launcherAppWidgetProviderInfo.provider, launcherAppWidgetProviderInfo.getProfile());
-        this.label = Utilities.trim(launcherAppWidgetProviderInfo.getLabel(packageManager));
-        this.widgetInfo = launcherAppWidgetProviderInfo;
-        this.activityInfo = null;
-        this.spanX = Math.min(launcherAppWidgetProviderInfo.spanX, invariantDeviceProfile.numColumns);
-        this.spanY = Math.min(launcherAppWidgetProviderInfo.spanY, invariantDeviceProfile.numRows);
+    public WidgetItem(LauncherAppWidgetProviderInfo info, PackageManager pm,
+                      InvariantDeviceProfile idp) {
+        super(info.provider, info.getProfile());
+
+        label = Utilities.trim(info.getLabel(pm));
+        widgetInfo = info;
+        activityInfo = null;
+
+        spanX = Math.min(info.spanX, idp.numColumns);
+        spanY = Math.min(info.spanY, idp.numRows);
     }
 
-    public WidgetItem(ShortcutConfigActivityInfo shortcutConfigActivityInfo) {
-        super(shortcutConfigActivityInfo.getComponent(), shortcutConfigActivityInfo.getUser());
-        this.label = Utilities.trim(shortcutConfigActivityInfo.getLabel());
-        this.widgetInfo = null;
-        this.activityInfo = shortcutConfigActivityInfo;
-        this.spanY = 1;
-        this.spanX = 1;
+    public WidgetItem(ShortcutConfigActivityInfo info) {
+        super(info.getComponent(), info.getUser());
+        label = Utilities.trim(info.getLabel());
+        widgetInfo = null;
+        activityInfo = info;
+        spanX = spanY = 1;
     }
 
     @Override
-    public int compareTo(@NonNull WidgetItem another) {
+    public int compareTo(WidgetItem another) {
         if (sMyUserHandle == null) {
             // Delay these object creation until required.
-            sMyUserHandle = Utilities.myUserHandle();
+            sMyUserHandle = Process.myUserHandle();
             sCollator = Collator.getInstance();
         }
 

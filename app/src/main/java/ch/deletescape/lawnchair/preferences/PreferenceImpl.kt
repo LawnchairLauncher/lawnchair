@@ -410,14 +410,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     fun getSharedPrefs() : SharedPreferences {
-        val dir = context.cacheDir.parent
-        val oldFile = File(dir, "shared_prefs/" + LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")
-        val newFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
-        if (oldFile.exists() && !newFile.exists()) {
-            oldFile.renameTo(newFile)
-            oldFile.delete()
-        }
-        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        return PreferenceImpl.getSharedPrefs(context)
     }
 
     private abstract inner class PrefDelegate<T>(val key: String?, val defaultValue: T) {
@@ -429,6 +422,19 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
             body(editor)
             if (!bulkEditing)
                 commitOrApply(editor, blockingEditing)
+        }
+    }
+
+    companion object {
+        fun getSharedPrefs(context: Context) : SharedPreferences {
+            val dir = context.cacheDir.parent
+            val oldFile = File(dir, "shared_prefs/" + LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")
+            val newFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+            if (oldFile.exists() && !newFile.exists()) {
+                oldFile.renameTo(newFile)
+                oldFile.delete()
+            }
+            return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
         }
     }
 
