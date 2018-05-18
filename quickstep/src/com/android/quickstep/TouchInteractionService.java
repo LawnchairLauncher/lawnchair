@@ -349,12 +349,20 @@ public class TouchInteractionService extends Service {
                 return;
             }
             if (interactionType == INTERACTION_QUICK_SCRUB) {
+                if (!mQuickScrubController.prepareQuickScrub(TAG)) {
+                    mInvalidated = true;
+                    return;
+                }
                 OverviewCallbacks.get(mActivity).closeAllWindows();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
                 mStartPending = true;
                 Runnable action = () -> {
+                    if (!mQuickScrubController.prepareQuickScrub(TAG)) {
+                        mInvalidated = true;
+                        return;
+                    }
                     mActivityHelper.onQuickInteractionStart(mActivity, null, true);
                     mQuickScrubController.onQuickScrubProgress(mLastProgress);
                     mStartPending = false;
@@ -384,7 +392,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubProgress(float progress) {
             mLastProgress = progress;
-            if (mInvalidated || mEndPending) {
+            if (mInvalidated || mStartPending) {
                 return;
             }
             mQuickScrubController.onQuickScrubProgress(progress);
