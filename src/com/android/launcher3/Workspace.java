@@ -2961,25 +2961,29 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public void scrollLeft() {
+    public boolean scrollLeft() {
+        boolean result = false;
         if (!workspaceInModalState() && !mIsSwitchingState) {
-            super.scrollLeft();
+            result = super.scrollLeft();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
+        return result;
     }
 
     @Override
-    public void scrollRight() {
+    public boolean scrollRight() {
+        boolean result = false;
         if (!workspaceInModalState() && !mIsSwitchingState) {
-            super.scrollRight();
+            result = super.scrollRight();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
+        return result;
     }
 
     /**
