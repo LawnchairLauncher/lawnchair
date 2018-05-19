@@ -1303,8 +1303,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void onChildViewsChanged() {
         final int childCount = getChildCount();
-        mClearAllButton.setAccessibilityTraversalAfter(
-                childCount == 0 ? NO_ID : getChildAt(childCount - 1).getId());
         mClearAllButton.setVisibility(childCount == 0 ? INVISIBLE : VISIBLE);
     }
 
