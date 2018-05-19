@@ -22,7 +22,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 
 public class ClearAllButton extends Button {
@@ -34,14 +33,6 @@ public class ClearAllButton extends Button {
 
     public void setRecentsView(RecentsView recentsView) {
         mRecentsView = recentsView;
-    }
-
-    @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfo(info);
-        // Should be visible to accessibility even when completely covered by the task.
-        // Otherwise, we won't be able to scroll to it.
-        info.setVisibleToUser(true);
     }
 
     @Override
