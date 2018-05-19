@@ -1311,4 +1311,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void revealClearAllButton() {
         scrollTo(mIsRtl ? 0 : computeMaxScrollX(), 0);
     }
+
+    @Override
+    public void addChildrenForAccessibility(ArrayList<View> outChildren) {
+        if (FLIP_RECENTS) {
+            for (int i = getChildCount() - 1; i >= 0; --i) {
+                outChildren.add(getChildAt(i));
+            }
+        } else {
+            super.addChildrenForAccessibility(outChildren);
+        }
+    }
+
+    @Override
+    protected boolean isPageOrderFlipped() {
+        return FLIP_RECENTS;
+    }
 }
