@@ -154,12 +154,11 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun setInsets(insets: Rect) {
         mInsets.set(insets)
         if (mDeviceProfile.isVerticalBarLayout) {
-            mPadding.set(mDeviceProfile.getWorkspacePadding(null))
+            mPadding.set(mDeviceProfile.getWorkspacePadding(null, insets))
             mPadding.bottom = 0
-            val rect = mPadding
-            rect.left += mInsets.left
+            mPadding.left += mInsets.left
             mPadding.top = mInsets.top
-            rect.right += mInsets.right
+            mPadding.right += mInsets.right
             mDrawHeight = 0f
         } else {
             mPadding.setEmpty()

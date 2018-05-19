@@ -534,9 +534,13 @@ public class DeviceProfile {
      * Returns the workspace padding in the specified orientation.
      */
     public Rect getWorkspacePadding(Rect recycle) {
+        return getWorkspacePadding(recycle, mInsets);
+    }
+
+    public Rect getWorkspacePadding(Rect recycle, Rect insets) {
         Rect padding = recycle == null ? new Rect() : recycle;
         if (isVerticalBarLayout()) {
-            if (mInsets.left > 0) {
+            if (insets.left > 0) {
                 padding.set(mInsets.left + pageIndicatorLandLeftNavBarGutterPx,
                         0,
                         hotseatBarSizePx + hotseatBarLeftNavBarRightPaddingPx
