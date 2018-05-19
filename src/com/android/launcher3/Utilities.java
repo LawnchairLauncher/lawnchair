@@ -39,7 +39,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
-import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -83,7 +82,8 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
-    public static final boolean ATLEAST_P = BuildCompat.isAtLeastP();
+    public static final boolean ATLEAST_P =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     public static final boolean ATLEAST_OREO_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
@@ -492,7 +492,11 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverOn(Context context) {
+    public static boolean isPowerSaverPreventingAnimation(Context context) {
+        if (ATLEAST_P) {
+            // Battery saver mode no longer prevents animations.
+            return false;
+        }
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
     }
