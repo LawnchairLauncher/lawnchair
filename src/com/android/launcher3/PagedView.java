@@ -1495,12 +1495,20 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return Math.abs(delta) > 0;
     }
 
-    public void scrollLeft() {
-        if (getNextPage() > 0) snapToPage(getNextPage() - 1);
+    public boolean scrollLeft() {
+        if (getNextPage() > 0) {
+            snapToPage(getNextPage() - 1);
+            return true;
+        }
+        return false;
     }
 
-    public void scrollRight() {
-        if (getNextPage() < getChildCount() -1) snapToPage(getNextPage() + 1);
+    public boolean scrollRight() {
+        if (getNextPage() < getChildCount() - 1) {
+            snapToPage(getNextPage() + 1);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -1551,22 +1559,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         event.setScrollable(getPageCount() > 1);
     }
 
-    private boolean accessibilityScrollLeft() {
-        if (getCurrentPage() > 0) {
-            scrollLeft();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean accessibilityScrollRight() {
-        if (getCurrentPage() < getPageCount() - 1) {
-            scrollRight();
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (super.performAccessibilityAction(action, arguments)) {
@@ -1575,12 +1567,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final boolean pagesFlipped = isPageOrderFlipped();
         switch (action) {
             case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
-                if (pagesFlipped ? accessibilityScrollLeft() : accessibilityScrollRight()) {
+                if (pagesFlipped ? scrollLeft() : scrollRight()) {
                     return true;
                 }
             } break;
             case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
-                if (pagesFlipped ? accessibilityScrollRight() : accessibilityScrollLeft()) {
+                if (pagesFlipped ? scrollRight() : scrollLeft()) {
                     return true;
                 }
             }
