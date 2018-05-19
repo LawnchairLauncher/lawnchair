@@ -678,7 +678,7 @@ public class DeviceProfile {
     }
 
     public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx * Utilities.getNumberOfHotseatRows(mContext);
+        return (hotseatBarHeightPx - hotseatBarTopPaddingPx) * Utilities.getNumberOfHotseatRows(mContext) + hotseatBarTopPaddingPx;
     }
 
     public interface LauncherLayoutChangeListener {
