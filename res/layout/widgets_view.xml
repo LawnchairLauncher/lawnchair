@@ -35,7 +35,7 @@
         android:focusable="false"
         android:visibility="invisible" />
 
-    <FrameLayout
+    <ch.deletescape.lawnchair.views.TopRoundedCornerView
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,8 +66,9 @@
             android:layout_width="@dimen/fastscroll_width"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+            android:layout_marginEnd="@dimen/fastscroll_end_margin"
+            android:layout_marginTop="@dimen/bg_round_rect_radius" />
 
-    </FrameLayout>
+    </ch.deletescape.lawnchair.views.TopRoundedCornerView>
 
 </com.android.launcher3.widget.WidgetsContainerView>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.WidgetsFullSheet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/top_round_rect_primary"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:layout_gravity="bottom"
+    android:theme="?attr/widgetsTheme">
+
+    <ch.deletescape.lawnchair.views.TopRoundedCornerView
+        android:id="@+id/topRoundedCornerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <View
+        android:id="@+id/nav_bar_bg"
+        android:background="?attr/bottomSheetNavBarColor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:focusable="false" />
+</ch.deletescape.lawnchair.WidgetsFullSheet>

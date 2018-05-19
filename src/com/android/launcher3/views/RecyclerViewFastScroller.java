@@ -316,7 +316,7 @@ public class RecyclerViewFastScroller extends View {
     /**
      * Returns whether the specified point is inside the thumb bounds.
      */
-    private boolean isNearThumb(int x, int y) {
+    public boolean isNearThumb(int x, int y) {
         int offset = y - mRv.getPaddingTop() - mThumbOffsetY;
 
         return x >= 0 && x < getWidth() && offset >= 0 && offset <= mThumbHeight;

@@ -21,9 +21,9 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
@@ -190,4 +190,10 @@ public abstract class BaseRecyclerView extends RecyclerView
      * <p>Override in each subclass of this base class.
      */
     public void onFastScrollCompleted() {}
+
+    public final boolean shouldContainerScroll(MotionEvent motionEvent, View view) {
+        int[] iArr = new int[]{(int) motionEvent.getX(), (int) motionEvent.getY()};
+        Utilities.mapCoordInSelfToDescendant(this.mScrollbar, view, iArr);
+        return !mScrollbar.isNearThumb(iArr[0], iArr[1]) && getCurrentScrollY() == 0;
+    }
 }

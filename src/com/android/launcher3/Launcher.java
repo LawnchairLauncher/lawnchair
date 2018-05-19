@@ -50,6 +50,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
+import ch.deletescape.lawnchair.WidgetsFullSheet;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.theme.ThemeManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
@@ -1289,6 +1290,7 @@ public class Launcher extends BaseActivity
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
+        mDragLayer.removeView(mWidgetsView);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
@@ -2923,7 +2925,8 @@ public class Launcher extends BaseActivity
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
         }
-        showAppsOrWidgets(State.WIDGETS, animated);
+
+        WidgetsFullSheet.Companion.show(this);
 
         mWidgetsView.post(new Runnable() {
             @Override

@@ -17,12 +17,11 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.R;
 
 /**
  * The widgets recycler view.
@@ -30,6 +29,7 @@ import com.android.launcher3.BaseRecyclerView;
 public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private static final String TAG = "WidgetsRecyclerView";
+    private final int mScrollbarTopMargin;
     private WidgetsListAdapter mAdapter;
 
     public WidgetsRecyclerView(Context context) {
@@ -43,6 +43,8 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         // API 21 and below only support 3 parameter ctor.
         super(context, attrs, defStyleAttr);
+
+        mScrollbarTopMargin = getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
     }
 
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
@@ -138,5 +140,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private boolean isModelNotReady() {
         return mAdapter.getItemCount() == 0;
+    }
+
+    @Override
+    public int getScrollbarTrackHeight() {
+        return super.getScrollbarTrackHeight() - mScrollbarTopMargin;
     }
 }

@@ -74,6 +74,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private SwipeDetector mSwipeDetector;
     private GradientView mGradientBackground;
 
+    public boolean mNoIntercept;
+
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -102,8 +104,10 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
-        ((TextView) findViewById(R.id.title)).setText(getContext().getString(
-                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+        if (itemInfo != null) {
+            ((TextView) findViewById(R.id.title)).setText(getContext().getString(
+                    R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+        }
 
         onWidgetsBound();
 
@@ -228,7 +232,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         }
     }
 
-    private void onCloseComplete() {
+    protected void onCloseComplete() {
         mIsOpen = false;
         mLauncher.getDragLayer().removeView(mGradientBackground);
         mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
@@ -317,6 +321,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (mNoIntercept) return false;
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
                 SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(

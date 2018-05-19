@@ -17,8 +17,8 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.content.pm.LauncherApps;
 import android.graphics.Point;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,16 +26,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.android.launcher3.BaseContainerView;
-import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DragSource;
+import ch.deletescape.lawnchair.views.SpringFrameLayout;
+import com.android.launcher3.*;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
@@ -96,9 +89,12 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        SpringFrameLayout springFrameLayout = (SpringFrameLayout) getContentView();
         mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setEdgeEffectFactory(springFrameLayout.createEdgeEffectFactory());
+        springFrameLayout.addSpringView(mRecyclerView);
     }
 
     //
@@ -115,9 +111,8 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public void onClick(View v) {
-        // When we have exited widget tray or are in transition, disregard clicks
-        if (!mLauncher.isWidgetsViewVisible()
-                || mLauncher.getWorkspace().isSwitchingState()
+        // When we are in transition, disregard clicks
+        if (mLauncher.getWorkspace().isSwitchingState()
                 || !(v instanceof WidgetCell)) return;
 
         handleClick();
@@ -138,8 +133,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public boolean onLongClick(View v) {
-        // When we have exited the widget tray, disregard long clicks
-        if (!mLauncher.isWidgetsViewVisible()) return false;
         return handleLongClick(v);
     }
 
@@ -258,5 +251,11 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         targetParent.containerType = ContainerType.WIDGETS;
+    }
+
+    @Override
+    protected void updateBackground(int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
+        getRevealView().setBackground(new InsetDrawable(mBaseDrawable,
+                paddingLeft, paddingTop, paddingRight, paddingBottom));
     }
 }
