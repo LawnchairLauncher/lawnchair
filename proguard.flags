@@ -116,3 +116,9 @@
 -keep class com.google.android.apps.nexuslauncher.CustomAppPredictor { *; }
 
 -keep class ch.deletescape.lawnchair.preferences.HiddenAppsFragment
+
+-keep class android.support.animation.DynamicAnimation {
+  float mVelocity;
+  float mValue;
+  boolean mStartValueIsSet;
+}

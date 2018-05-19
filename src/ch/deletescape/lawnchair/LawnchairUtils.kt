@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
+import java.lang.reflect.Field
+import kotlin.reflect.KProperty
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -101,5 +103,19 @@ inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
     val count = childCount
     for (i in (0 until count)) {
         action(getChildAt(i))
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class JavaField<T>(private val targetObject: Any, fieldName: String, targetClass: Class<*> = targetObject::class.java) {
+
+    private val field: Field = targetClass.getDeclaredField(fieldName).apply { isAccessible = true }
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return field.get(targetObject) as T
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        field.set(targetObject, value)
     }
 }

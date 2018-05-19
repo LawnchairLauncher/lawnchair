@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.settings
 
+import ch.deletescape.lawnchair.JavaField
 import ch.deletescape.lawnchair.LawnchairPreferences
 
 class GridSize2D(

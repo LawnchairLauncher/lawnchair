@@ -21,11 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -39,20 +35,19 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.TwoStatePreference;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherFiles;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.R;
-import com.android.launcher3.SessionCommitReceiver;
-import com.android.launcher3.Utilities;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.views.SpringFrameLayout;
+import com.android.launcher3.*;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.LooperExecutor;
@@ -60,8 +55,6 @@ import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
-
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 import static com.android.launcher3.Utilities.restartLauncher;
 
@@ -158,6 +151,21 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     }
 
     private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            RecyclerView recyclerView = getListView();
+            ViewGroup listContainer = (ViewGroup) recyclerView.getParent();
+            listContainer.removeView(recyclerView);
+            SpringFrameLayout springLayout = (SpringFrameLayout) LayoutInflater.from(container.getContext())
+                    .inflate(R.layout.preference_spring_layout, listContainer, false);
+            springLayout.addSpringView(recyclerView);
+            springLayout.addView(recyclerView);
+            listContainer.addView(springLayout);
+            recyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
+            return view;
+        }
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

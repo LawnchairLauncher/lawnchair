@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import ch.deletescape.lawnchair.HiddenAppsAdapter
+import ch.deletescape.lawnchair.views.SpringFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -25,18 +26,21 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return RecyclerView(container!!.context)
+        return LayoutInflater.from(container!!.context).inflate(R.layout.hidden_apps_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = view.context
-        val recyclerView = view as RecyclerView
+        val springLayout = view as SpringFrameLayout
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         installedApps = getAppsList(context).apply { sortBy { it.label.toString().toLowerCase() } }
         adapter = HiddenAppsAdapter(view.context, installedApps, this)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
+        recyclerView.edgeEffectFactory = springLayout.createEdgeEffectFactory()
+        springLayout.addSpringView(recyclerView)
     }
 
     override fun onAttach(context: Context) {

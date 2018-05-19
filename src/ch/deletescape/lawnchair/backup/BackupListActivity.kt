@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.views.SpringFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -59,8 +60,11 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
         adapter.callbacks = this
         loadLocalBackups()
+        val springFrameLayout = findViewById<SpringFrameLayout>(R.id.springFrameLayout)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+        recyclerView.edgeEffectFactory = springFrameLayout.createEdgeEffectFactory()
+        springFrameLayout.addSpringView(recyclerView)
 
         Utilities.checkRestoreSuccess(this)
     }

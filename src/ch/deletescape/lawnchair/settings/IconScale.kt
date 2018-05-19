@@ -1,9 +1,8 @@
 package ch.deletescape.lawnchair.settings
 
+import ch.deletescape.lawnchair.JavaField
 import ch.deletescape.lawnchair.LawnchairPreferences
 import com.android.launcher3.Utilities
-import java.lang.reflect.Field
-import kotlin.reflect.KProperty
 
 class IconScale @JvmOverloads constructor(
         prefs: LawnchairPreferences,
@@ -35,18 +34,4 @@ class IconScale @JvmOverloads constructor(
     }
 
     fun fromPref(value: Float, default: Float) = value * default
-
-    @Suppress("UNCHECKED_CAST")
-    class JavaField<T>(private val targetObject: Any, fieldName: String) {
-
-        private val field: Field = targetObject.javaClass.getField(fieldName)
-
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-            return field.get(targetObject) as T
-        }
-
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            field.set(targetObject, value)
-        }
-    }
 }
