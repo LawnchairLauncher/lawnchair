@@ -53,7 +53,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -1264,10 +1263,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
-        View currChild = getChildAt(mCurrentPage);
-        if (currChild != null) {
-            currChild.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-        }
         loadVisibleTaskData();
     }
 
