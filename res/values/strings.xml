@@ -452,4 +452,5 @@
     <string name="summary_all_apps_google_search">Show Google Search instead of normal apps search</string>
     <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="icon_scale_pref_title">Icon scale</string>
+    <string name="add_settings_shortcut_title">Add settings shortcut to home screen</string>
 </resources>

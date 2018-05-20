@@ -67,6 +67,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.INSTALL_SHORTCUT"/>
 
     <application
         android:backupAgent=".LauncherBackupAgent"

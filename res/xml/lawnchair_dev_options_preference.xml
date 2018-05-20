@@ -11,4 +11,9 @@
         android:title="@string/show_debug_info_pref_title"
         android:defaultValue="false"
         android:persistent="true" />
+
+    <Preference
+        android:key="addSettingsShortcut"
+        android:title="@string/add_settings_shortcut_title"
+        android:defaultValue="false"/>
 </PreferenceScreen>

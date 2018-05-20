@@ -34,6 +34,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.support.annotation.NonNull;
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.drawable.IconCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -47,6 +50,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
@@ -756,5 +760,15 @@ public final class Utilities {
 
     public static String upperCaseFirstLetter(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    public static void pinSettingsShortcut(Context context) {
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) return;
+        ShortcutManagerCompat.requestPinShortcut(context, new ShortcutInfoCompat.Builder(context, "settings")
+                .setIntent(new Intent(context, SettingsActivity.class).setAction(Intent.ACTION_MAIN))
+                .setIcon(IconCompat.createWithResource(context, R.drawable.ic_setting))
+                .setShortLabel(context.getString(R.string.settings_button_text))
+                .setAlwaysBadged()
+                .build(), null);
     }
 }

@@ -27,10 +27,10 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.*;
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.drawable.IconCompat;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -306,6 +306,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
                 findPreference("kill").setOnPreferenceClickListener(this);
+                findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
             }
         }
 
@@ -437,6 +438,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 return true;
             } else if ("kill".equals(preference.getKey())) {
                 Utilities.killLauncher();
+            } else if ("addSettingsShortcut".equals(preference.getKey())) {
+                Utilities.pinSettingsShortcut(getActivity());
             }
             return false;
         }
