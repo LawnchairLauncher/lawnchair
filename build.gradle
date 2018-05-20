@@ -83,7 +83,7 @@ android {
         ci {
             dimension "build"
             applicationIdSuffix ".ci"
-            versionNameSuffix "-ci"
+            versionNameSuffix "-ci-" + System.getenv("DRONE_BRANCH")
         }
 
         plah {

@@ -38,7 +38,3 @@ pipeline:
         {{else}}
         Build {{build.number}} failed. Fix me please sir!
         {{/success}}"
-
-branches:
-  include: alpha
-  exclude: [ l10n_alpha2, v2-alpha ]
