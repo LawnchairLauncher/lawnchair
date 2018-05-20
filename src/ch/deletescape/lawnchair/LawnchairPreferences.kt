@@ -145,7 +145,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             onChangeListeners[key] = HashSet()
         }
         onChangeListeners[key]?.add(listener)
-        listener.onValueChanged(key, this)
+        listener.onValueChanged(key, this, true)
     }
 
     fun removeOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
@@ -425,7 +425,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
-        onChangeListeners[key]?.forEach { it.onValueChanged(key, this) }
+        onChangeListeners[key]?.forEach { it.onValueChanged(key, this, false) }
     }
 
     fun registerCallback(callback: LawnchairPreferencesChangeCallback) {
@@ -457,7 +457,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     interface OnPreferenceChangeListener {
 
-        fun onValueChanged(key: String, prefs: LawnchairPreferences)
+        fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean)
     }
 
     companion object {

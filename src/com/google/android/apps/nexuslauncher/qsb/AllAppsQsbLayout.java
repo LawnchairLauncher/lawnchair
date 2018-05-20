@@ -224,9 +224,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs) {
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
         boolean allAppsGoogleSearch = prefs.getAllAppsGoogleSearch();
-        if (mAllAppsGoogleSearch != allAppsGoogleSearch) {
+        if (mAllAppsGoogleSearch != allAppsGoogleSearch || force) {
             mAllAppsGoogleSearch = allAppsGoogleSearch;
             ((ImageView) findViewById(R.id.g_icon)).setImageResource(mAllAppsGoogleSearch ?
                     R.drawable.ic_super_g_color : R.drawable.ic_allapps_search);
