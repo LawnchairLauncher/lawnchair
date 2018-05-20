@@ -203,6 +203,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void reset() {
         useAlpha(0);
         if (mFallback != null) {
+            mFallback.setText(null);
             mFallback.clearSearchResult();
             if (mAllAppsGoogleSearch) {
                 removeFallbackView();
