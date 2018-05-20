@@ -1,15 +1,13 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.view.View;
-
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.popup.SystemShortcut;
-
-import ch.deletescape.lawnchair.EditableItemInfo;
 
 public class CustomEditShortcut extends SystemShortcut {
     public CustomEditShortcut() {
@@ -24,7 +22,7 @@ public class CustomEditShortcut extends SystemShortcut {
             factory.ensureInitialLoadComplete();
             enabled = true;
         }
-        if (itemInfo instanceof EditableItemInfo) {
+        if (CustomInfoProvider.Companion.isEditable(itemInfo)) {
             enabled = true;
         }
         return enabled ? new View.OnClickListener() {

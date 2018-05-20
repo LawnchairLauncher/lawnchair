@@ -27,7 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
@@ -35,8 +35,6 @@ import com.android.launcher3.Utilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import ch.deletescape.lawnchair.EditableItemInfo;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
@@ -79,7 +77,7 @@ public class DeepShortcutManager {
     }
 
     public static boolean supportsEdit(ItemInfo info) {
-        return info instanceof EditableItemInfo || supportsShortcuts(info);
+        return CustomInfoProvider.Companion.isEditable(info) || supportsShortcuts(info);
     }
 
     public boolean wasLastCallSuccess() {

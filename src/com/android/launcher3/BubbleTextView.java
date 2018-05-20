@@ -40,6 +40,7 @@ import android.view.ViewDebug;
 import android.view.ViewParent;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
@@ -226,11 +227,19 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         if (!mHideText)
-            setText(info.title);
+            setText(getTitle(info));
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
+        }
+    }
+
+    private CharSequence getTitle(ItemInfo info) {
+        if (info instanceof ShortcutInfo) {
+            return CustomInfoProvider.Companion.forItem(getContext(), info).getTitle(info);
+        } else {
+            return info.title;
         }
     }
 

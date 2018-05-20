@@ -10,7 +10,7 @@ pipeline:
     image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ store_password, key_password ]
     environment:
-      - MAJOR_MINOR=alpha
+      - MAJOR_MINOR=${DRONE_BRANCH}
       - TRAVIS=true
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}

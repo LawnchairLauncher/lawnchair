@@ -34,25 +34,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ItemInfoWithIcon;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import com.android.launcher3.*;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
-
-import ch.deletescape.lawnchair.EditableItemInfo;
 
 public class CustomBottomSheet extends WidgetsBottomSheet {
     private FragmentManager mFragmentManager;
     private EditText mEditTitle;
     private String mPreviousTitle;
     private ItemInfo mItemInfo;
+    private CustomInfoProvider<ItemInfo> mInfoProvider;
 
     public CustomBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -67,6 +60,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     public void populateAndShow(ItemInfo itemInfo) {
         super.populateAndShow(itemInfo);
         mItemInfo = itemInfo;
+
+        mInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), mItemInfo);
 
         TextView title = findViewById(R.id.title);
         title.setText(itemInfo.title);
@@ -83,12 +78,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         if (itemInfo instanceof ItemInfoWithIcon) {
             ((ImageView) findViewById(R.id.icon)).setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
         }
-        if (itemInfo instanceof EditableItemInfo) {
-            mPreviousTitle = ((EditableItemInfo) itemInfo).getTitle(getContext());
+        if (CustomInfoProvider.Companion.isEditable(mItemInfo)) {
+            mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
             if (mPreviousTitle == null)
                 mPreviousTitle = "";
             mEditTitle = findViewById(R.id.edit_title);
-            mEditTitle.setHint(((EditableItemInfo) itemInfo).getDefaultTitle(getContext()));
+            mEditTitle.setHint(mInfoProvider.getDefaultTitle(mItemInfo));
             mEditTitle.setText(mPreviousTitle);
             mEditTitle.setVisibility(VISIBLE);
             title.setVisibility(View.GONE);
@@ -106,7 +101,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (!newTitle.equals(mPreviousTitle)) {
                 if (newTitle.equals(""))
                     newTitle = null;
-                ((EditableItemInfo) mItemInfo).setTitle(getContext(), newTitle);
+                mInfoProvider.setTitle(mItemInfo, newTitle);
             }
         }
         super.onDetachedFromWindow();

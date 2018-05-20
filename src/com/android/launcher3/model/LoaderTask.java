@@ -515,7 +515,7 @@ public class LoaderTask implements Runnable {
                             if (info != null) {
                                 c.applyCommonProperties(info);
 
-                                info.onLoadTitleAlias(context, titleAlias);
+                                info.onLoadTitleAlias(titleAlias);
                                 info.intent = intent;
                                 info.rank = c.getInt(rankIndex);
                                 info.spanX = 1;

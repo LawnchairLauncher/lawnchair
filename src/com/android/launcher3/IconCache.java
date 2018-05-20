@@ -20,11 +20,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.pm.*;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -33,34 +29,20 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Handler;
+import android.os.*;
 import android.os.Process;
-import android.os.SystemClock;
-import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import ch.deletescape.lawnchair.override.AppInfoProvider;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.InstantAppResolver;
-import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Provider;
-import com.android.launcher3.util.SQLiteCacheHelper;
-import com.android.launcher3.util.Thunk;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import com.android.launcher3.util.*;
 
-import ch.deletescape.lawnchair.EditableItemInfo;
-import ch.deletescape.lawnchair.LawnchairPreferences;
+import java.util.*;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -95,6 +77,7 @@ public class IconCache {
     private final Context mContext;
     private final PackageManager mPackageManager;
     private final IconProvider mIconProvider;
+    private final AppInfoProvider mInfoProvider;
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
@@ -118,6 +101,7 @@ public class IconCache {
 
         mIconProvider = Utilities.getOverrideObject(
                 IconProvider.class, context, R.string.icon_provider_class);
+        mInfoProvider = AppInfoProvider.Companion.getInstance(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mLowResOptions = new BitmapFactory.Options();
@@ -372,7 +356,7 @@ public class IconCache {
             entry.icon = LauncherIcons.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
                     mContext,  app.getApplicationInfo().targetSdkVersion);
         }
-        entry.title = app.getLabel();
+        entry.title = mInfoProvider.getTitle(app);
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(key, entry);
 
@@ -486,13 +470,6 @@ public class IconCache {
 
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
-        if (info instanceof EditableItemInfo) {
-            if (((EditableItemInfo) info).getOriginalTitle() == null)
-                ((EditableItemInfo) info).setOriginalTitle(info.title);
-            String newTitle = ((EditableItemInfo) info).getTitle(mContext);
-            if (newTitle != null)
-                info.title = newTitle;
-        }
         info.contentDescription = entry.contentDescription;
         info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
         info.usingLowResIcon = entry.isLowResIcon;
