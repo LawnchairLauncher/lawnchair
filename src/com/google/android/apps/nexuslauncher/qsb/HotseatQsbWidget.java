@@ -25,14 +25,18 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragLayer;
+import org.jetbrains.annotations.NotNull;
 
-public class HotseatQsbWidget extends AbstractQsbLayout {
+public class HotseatQsbWidget extends AbstractQsbLayout implements LawnchairPreferences.OnPreferenceChangeListener {
+    public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
+
     private boolean mIsGoogleColored;
     private boolean mGoogleHasFocus;
     private AnimatorSet mAnimatorSet;
@@ -228,6 +232,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getContext().registerReceiver(mBroadcastReceiver, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
+        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
     }
 
     public void onClick(View view) {
@@ -240,6 +245,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         getContext().unregisterReceiver(mBroadcastReceiver);
+        Utilities.getLawnchairPrefs(getContext()).removeOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
     }
 
     public void onWindowFocusChanged(boolean hasWindowFocus) {
@@ -254,5 +260,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         closeQSB(false);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+        setGoogleColored();
     }
 }

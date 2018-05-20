@@ -72,7 +72,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
 
     // Dock
-    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, recreate)
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
     val dockDefaultOpacity = 100
     val dockCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, resetAllApps)
