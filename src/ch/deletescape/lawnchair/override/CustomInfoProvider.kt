@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.override
 
 import android.content.Context
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.AppInfo
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.ShortcutInfo
@@ -14,6 +15,8 @@ abstract class CustomInfoProvider<in T : ItemInfo> {
     abstract fun getCustomTitle(info: T): String?
 
     abstract fun setTitle(info: T, title: String?)
+
+    abstract fun setIcon(info: T, entry: IconPackManager.CustomIconEntry?)
 
     companion object {
 

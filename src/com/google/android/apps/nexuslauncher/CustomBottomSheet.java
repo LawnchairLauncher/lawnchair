@@ -22,7 +22,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -34,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.*;
 import com.android.launcher3.graphics.DrawableFactory;
@@ -76,7 +76,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         if (itemInfo instanceof ItemInfoWithIcon) {
-            ((ImageView) findViewById(R.id.icon)).setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+            ImageView icon = findViewById(R.id.icon);
+            icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+            if (itemInfo instanceof AppInfo) {
+                icon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LawnchairLauncher.Companion.getLauncher(getContext()).startEditIcon((ItemInfoWithIcon) mItemInfo);
+                    }
+                });
+            }
         }
         if (CustomInfoProvider.Companion.isEditable(mItemInfo)) {
             mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
@@ -112,9 +121,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     }
 
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
-        private final static String PREF_PACK = "pref_app_icon_pack";
         private final static String PREF_HIDE = "pref_app_hide";
-        private SwitchPreference mPrefPack;
         private SwitchPreference mPrefHide;
 
         private ComponentKey mKey;
@@ -134,7 +141,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         public void loadForApp(ItemInfo itemInfo) {
             mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
-            mPrefPack = (SwitchPreference) findPreference(PREF_PACK);
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
 
             Context context = getActivity();
@@ -142,20 +148,9 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             ComponentName componentName = itemInfo.getTargetComponent();
             boolean enable = factory.packCalendars.containsKey(componentName) || factory.packComponents.containsKey(componentName);
-            mPrefPack.setEnabled(enable);
-            mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mKey));
-            if (enable) {
-                PackageManager pm = context.getPackageManager();
-                try {
-                    mPrefPack.setSummary(pm.getPackageInfo(factory.iconPack, 0).applicationInfo.loadLabel(pm));
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
 
             mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
 
-            mPrefPack.setOnPreferenceChangeListener(this);
             mPrefHide.setOnPreferenceChangeListener(this);
 
             if (Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
@@ -168,10 +163,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             boolean enabled = (boolean) newValue;
             Launcher launcher = Launcher.getLauncher(getActivity());
             switch (preference.getKey()) {
-                case PREF_PACK:
-                    CustomIconProvider.setAppState(launcher, mKey, enabled);
-                    CustomIconUtils.reloadIconByKey(launcher, mKey);
-                    break;
                 case PREF_HIDE:
                     CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
                     break;

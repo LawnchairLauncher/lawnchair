@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair.override
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
@@ -33,7 +34,7 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
     }
 
     override fun setTitle(info: AppInfo, title: String?) {
-        setTitle(ComponentKey(info.componentName, info.user), title)
+        setTitle(info.toComponentKey(), title)
     }
 
     fun setTitle(key: ComponentKey, title: String?) {
@@ -41,9 +42,26 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
         LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(key.componentName.packageName, key.user)
     }
 
+    override fun setIcon(info: AppInfo, entry: IconPackManager.CustomIconEntry?) {
+        setIcon(info.toComponentKey(), entry)
+    }
+
+    fun setIcon(key: ComponentKey, entry: IconPackManager.CustomIconEntry?) {
+        prefs.customAppIcon[key] = entry
+        LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(key.componentName.packageName, key.user)
+    }
+
     fun getLauncherActivityInfo(info: AppInfo): LauncherActivityInfo? {
         return launcherApps.getActivityList(info.componentName.packageName, info.user)
                 .firstOrNull { it.componentName == info.componentName }
+    }
+
+    fun getCustomIconEntry(app: LauncherActivityInfo): IconPackManager.CustomIconEntry? {
+        return getCustomIconEntry(getComponentKey(app))
+    }
+
+    fun getCustomIconEntry(key: ComponentKey): IconPackManager.CustomIconEntry? {
+        return prefs.customAppIcon[key]
     }
 
     private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName, app.user)
@@ -55,7 +73,7 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
 
         fun getInstance(context: Context): AppInfoProvider {
             if (INSTANCE == null) {
-                INSTANCE = AppInfoProvider(context)
+                INSTANCE = AppInfoProvider(context.applicationContext)
             }
             return INSTANCE!!
         }

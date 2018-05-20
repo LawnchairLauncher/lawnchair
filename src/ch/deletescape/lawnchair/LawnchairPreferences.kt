@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.theme.ThemeManager
@@ -106,6 +107,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun unflattenKey(key: String) = ComponentKey(context, key)
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
+    }
+    val customAppIcon = object : MutableMapPref<ComponentKey, IconPackManager.CustomIconEntry>("pref_appIconMap", reloadAll) {
+        override fun flattenKey(key: ComponentKey) = key.toString()
+        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun flattenValue(value: IconPackManager.CustomIconEntry) = value.toString()
+        override fun unflattenValue(value: String) = IconPackManager.CustomIconEntry.fromString(value)
     }
     val recentBackups = object : MutableListPref<Uri>(
             Utilities.getDevicePrefs(context), "pref_recentBackups") {

@@ -16,26 +16,46 @@ import ch.deletescape.lawnchair.JavaField
 
 open class SpringFrameLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    private var dampedScrollShift = 0f
+    private var dampedScrollShiftX = 0f
         set(value) {
             if (field != value) {
                 field = value
                 invalidate()
             }
         }
-    private val dampedScrollProperty = object : FloatPropertyCompat<SpringFrameLayout>("value") {
-        override fun getValue(obj: SpringFrameLayout) = obj.dampedScrollShift
+    private var dampedScrollShiftY = 0f
+        set(value) {
+            if (field != value) {
+                field = value
+                invalidate()
+            }
+        }
+    private val dampedScrollPropertyX = object : FloatPropertyCompat<SpringFrameLayout>("value") {
+        override fun getValue(obj: SpringFrameLayout) = obj.dampedScrollShiftX
 
         override fun setValue(obj: SpringFrameLayout, value: Float) {
-            obj.dampedScrollShift = value
+            obj.dampedScrollShiftX = value
         }
     }
-    private val spring = SpringAnimation(this, dampedScrollProperty, 0f).apply {
+    private val dampedScrollPropertyY = object : FloatPropertyCompat<SpringFrameLayout>("value") {
+        override fun getValue(obj: SpringFrameLayout) = obj.dampedScrollShiftY
+
+        override fun setValue(obj: SpringFrameLayout, value: Float) {
+            obj.dampedScrollShiftY = value
+        }
+    }
+    private val springX = SpringAnimation(this, dampedScrollPropertyX, 0f).apply {
         spring = SpringForce(0f).setStiffness(850f).setDampingRatio(0.5f)
     }
-    private var springVelocity by JavaField<Float>(spring, "mVelocity", DynamicAnimation::class.java)
-    private var springValue by JavaField<Float>(spring, "mValue", DynamicAnimation::class.java)
-    private var springStartValueIsSet by JavaField<Boolean>(spring, "mStartValueIsSet", DynamicAnimation::class.java)
+    private var springVelocityX by JavaField<Float>(springX, "mVelocity", DynamicAnimation::class.java)
+    private var springValueX by JavaField<Float>(springX, "mValue", DynamicAnimation::class.java)
+    private var springStartValueIsSetX by JavaField<Boolean>(springX, "mStartValueIsSet", DynamicAnimation::class.java)
+    private val springY = SpringAnimation(this, dampedScrollPropertyY, 0f).apply {
+        spring = SpringForce(0f).setStiffness(850f).setDampingRatio(0.5f)
+    }
+    private var springVelocityY by JavaField<Float>(springY, "mVelocity", DynamicAnimation::class.java)
+    private var springValueY by JavaField<Float>(springY, "mValue", DynamicAnimation::class.java)
+    private var springStartValueIsSetY by JavaField<Boolean>(springY, "mStartValueIsSet", DynamicAnimation::class.java)
 
     private val springViews = SparseBooleanArray()
 
@@ -43,51 +63,81 @@ open class SpringFrameLayout(context: Context, attrs: AttributeSet?) : FrameLayo
         springViews.put(view.id, true)
     }
 
-    private fun releaseSpring(velocity: Float) {
-        springVelocity = velocity
-        springValue = dampedScrollShift
-        springStartValueIsSet = true
-        spring.start()
+    private fun releaseSpringX(velocity: Float) {
+        springVelocityX = velocity
+        springValueX = dampedScrollShiftX
+        springStartValueIsSetX = true
+        springX.start()
+    }
+
+    private fun releaseSpringY(velocity: Float) {
+        springVelocityY = velocity
+        springValueY = dampedScrollShiftY
+        springStartValueIsSetY = true
+        springY.start()
     }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
-        if (dampedScrollShift == 0f || !springViews.get(child.id)) {
+        if ((dampedScrollShiftX == 0f && dampedScrollShiftY == 0f) || !springViews.get(child.id)) {
             return super.drawChild(canvas, child, drawingTime)
         }
-        canvas.translate(0f, dampedScrollShift)
+        canvas.translate(dampedScrollShiftX, dampedScrollShiftY)
         val result = super.drawChild(canvas, child, drawingTime)
-        canvas.translate(0f, -dampedScrollShift)
+        canvas.translate(-dampedScrollShiftX, -dampedScrollShiftY)
         return result
     }
 
     fun createEdgeEffectFactory() = SpringEdgeEffectFactory()
 
-    inner class SpringEdgeEffect(context: Context, private val velocityMultiplier: Float) : EdgeEffect(context) {
+    inner class SpringEdgeEffectX(context: Context, private val velocityMultiplier: Float) : EdgeEffect(context) {
 
-        private var distance = 0f
+        private var distanceX = 0f
 
         override fun draw(canvas: Canvas) = false
 
         override fun onAbsorb(velocity: Int) {
-            releaseSpring(velocityMultiplier * velocity)
+            releaseSpringX(velocityMultiplier * velocity)
         }
 
         override fun onPull(deltaDistance: Float, displacement: Float) {
-            distance += deltaDistance * (velocityMultiplier / 3)
-            dampedScrollShift = distance * height
+            distanceX += deltaDistance * (velocityMultiplier / 3)
+            dampedScrollShiftX = distanceX * height
         }
 
         override fun onRelease() {
-            distance = 0f
-            releaseSpring(0f)
+            distanceX = 0f
+            releaseSpringX(0f)
+        }
+    }
+
+    inner class SpringEdgeEffectY(context: Context, private val velocityMultiplier: Float) : EdgeEffect(context) {
+
+        private var distanceY = 0f
+
+        override fun draw(canvas: Canvas) = false
+
+        override fun onAbsorb(velocity: Int) {
+            releaseSpringY(velocityMultiplier * velocity)
+        }
+
+        override fun onPull(deltaDistance: Float, displacement: Float) {
+            distanceY += deltaDistance * (velocityMultiplier / 3)
+            dampedScrollShiftY = distanceY * height
+        }
+
+        override fun onRelease() {
+            distanceY= 0f
+            releaseSpringY(0f)
         }
     }
 
     inner class SpringEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
         override fun createEdgeEffect(view: RecyclerView?, direction: Int) = when (direction) {
-            DIRECTION_TOP -> SpringEdgeEffect(context, 0.3f)
-            DIRECTION_BOTTOM -> SpringEdgeEffect(context, -0.3f)
+            DIRECTION_LEFT -> SpringEdgeEffectX(context, 0.3f)
+            DIRECTION_TOP -> SpringEdgeEffectY(context, 0.3f)
+            DIRECTION_RIGHT -> SpringEdgeEffectX(context, -0.3f)
+            DIRECTION_BOTTOM -> SpringEdgeEffectY(context, -0.3f)
             else -> super.createEdgeEffect(view, direction)
         }
     }

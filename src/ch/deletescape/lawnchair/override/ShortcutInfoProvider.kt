@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.override
 
 import android.annotation.SuppressLint
 import android.content.Context
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.ShortcutInfo
 
 class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<ShortcutInfo>() {
@@ -22,6 +23,10 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
         info.setTitle(context, title)
     }
 
+    override fun setIcon(info: ShortcutInfo, entry: IconPackManager.CustomIconEntry?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     companion object {
 
         @SuppressLint("StaticFieldLeak")
@@ -29,7 +34,7 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
 
         fun getInstance(context: Context): ShortcutInfoProvider {
             if (INSTANCE == null) {
-                INSTANCE = ShortcutInfoProvider(context)
+                INSTANCE = ShortcutInfoProvider(context.applicationContext)
             }
             return INSTANCE!!
         }

@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair
 
 import android.content.Context
+import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -10,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
+import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.util.ComponentKey
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 
@@ -104,6 +107,11 @@ inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
     for (i in (0 until count)) {
         action(getChildAt(i))
     }
+}
+
+fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
+    return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
+            .firstOrNull { it.componentName == componentName }
 }
 
 @Suppress("UNCHECKED_CAST")

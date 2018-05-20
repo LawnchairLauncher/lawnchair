@@ -66,8 +66,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
-    <uses-permission android:name="android.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.INSTALL_SHORTCUT" />
 
     <application
         android:backupAgent=".LauncherBackupAgent"
@@ -87,7 +87,7 @@
         attributes and intent filters the same
         -->
         <activity
-            android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
+            android:name="ch.deletescape.lawnchair.LawnchairLauncher"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:enabled="true"
@@ -149,7 +149,10 @@
                     android:scheme="content" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver" android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+
+        <receiver
+            android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
+            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
             <intent-filter>
                 <action android:name="com.google.android.systemui.OPA_ENABLED" />
             </intent-filter>
@@ -228,7 +231,7 @@
             android:name="ch.deletescape.lawnchair.backup.RestoreBackupActivity"
             android:label="@string/restore_backup"
             android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.V2" >
+            android:theme="@style/SettingsTheme.V2">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -261,13 +264,41 @@
                     the path unless it's explicitly matched.
                 -->
                 <data android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\.shed" android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\.shed" android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:mimeType="*/*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -281,13 +312,34 @@
                     the path unless it's explicitly matched.
                 -->
                 <data android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\.shed" android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\.shed" android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\..*\\.shed" android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\.shed" android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
-                <data android:host="*" android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"  android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.shed"
+                    android:scheme="file" />
             </intent-filter>
         </activity>
         <activity
@@ -295,6 +347,7 @@
             android:label="@string/about"
             android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
             android:theme="@style/SettingsTheme.V2" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -302,8 +355,15 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity
+            android:name="ch.deletescape.lawnchair.iconpack.EditIconActivity"
+            android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
+            android:theme="@style/SettingsTheme.V2" />
     </application>
 
 </manifest>

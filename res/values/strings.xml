@@ -453,4 +453,6 @@
     <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="add_settings_shortcut_title">Add settings shortcut to home screen</string>
+    <string name="icon_pack_default">System icons</string>
+    <string name="loading">Loading…</string>
 </resources>

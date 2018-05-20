@@ -28,10 +28,10 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
     private final BroadcastReceiver mAutoUpdatePack;
     private boolean mRegistered = false;
 
-    String iconPack;
-    final Map<ComponentName, Integer> packComponents = new HashMap<>();
-    final Map<ComponentName, String> packCalendars = new HashMap<>();
-    final Map<Integer, CustomClock.Metadata> packClocks = new HashMap<>();
+    public String iconPack;
+    public final Map<ComponentName, Integer> packComponents = new HashMap<>();
+    public final Map<ComponentName, String> packCalendars = new HashMap<>();
+    public final Map<Integer, CustomClock.Metadata> packClocks = new HashMap<>();
 
     private CustomClock mCustomClockDrawer;
     private Semaphore waiter = new Semaphore(0);
@@ -84,7 +84,7 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
         }
     }
 
-    synchronized void ensureInitialLoadComplete() {
+    public synchronized void ensureInitialLoadComplete() {
         if (waiter != null) {
             waiter.acquireUninterruptibly();
             waiter.release();

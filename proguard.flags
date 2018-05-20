@@ -122,3 +122,5 @@
   float mValue;
   boolean mStartValueIsSet;
 }
+
+-keep class ch.deletescape.lawnchair.iconpack.LawnchairIconProvider { *; }

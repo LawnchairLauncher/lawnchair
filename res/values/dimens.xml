@@ -264,4 +264,5 @@
     <dimen name="large_title_vertical_padding">24dp</dimen>
     <dimen name="large_title_height">84dp</dimen>
     <dimen name="dialog_corner_radius">8dp</dimen>
+    <dimen name="icon_preview_size">48dp</dimen>
 </resources>

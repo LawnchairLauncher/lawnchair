@@ -3,14 +3,12 @@ package com.google.android.apps.nexuslauncher;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.UserHandle;
-
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
@@ -23,7 +21,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 import com.google.android.apps.nexuslauncher.clock.CustomClock;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -31,7 +28,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 public class CustomIconUtils {
     private final static String[] ICON_INTENTS = new String[] {
@@ -75,7 +71,7 @@ public class CustomIconUtils {
         Utilities.getLawnchairPrefs(context).setIconPack(pack);
     }
 
-    static boolean usingValidPack(Context context) {
+    public static boolean usingValidPack(Context context) {
         return isPackProvider(context, getCurrentPack(context));
     }
 
@@ -119,7 +115,7 @@ public class CustomIconUtils {
         reloadIcon(shortcutManager, model, key.user, key.componentName.getPackageName());
     }
 
-    static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
+    public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
         model.onPackageChanged(pkg, user);
         List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
         if (!shortcuts.isEmpty()) {

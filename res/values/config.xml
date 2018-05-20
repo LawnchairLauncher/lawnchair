@@ -107,7 +107,7 @@
     <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.CustomIconProvider</string>
+    <string name="icon_provider_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairIconProvider</string>
 
     <!-- Name of a drawable factory class. -->
     <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
