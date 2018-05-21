@@ -1583,8 +1583,8 @@ public class Launcher extends BaseDraggingActivity
         // by using if-else statements.
         UserEventDispatcher ued = getUserEventDispatcher();
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView != null) {
-            topView.onBackPressed();
+        if (topView != null && topView.onBackPressed()) {
+            // Handled by the floating view.
         } else if (!isInState(NORMAL)) {
             LauncherState lastState = mStateManager.getLastState();
             ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType,

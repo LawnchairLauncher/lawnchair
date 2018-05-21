@@ -121,9 +121,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected abstract boolean isOfType(@FloatingViewType int type);
 
-    public void onBackPressed() {
+    /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */
+    public boolean onBackPressed() {
         logActionCommand(Action.Command.BACK);
         close(true);
+        return true;
     }
 
     @Override
