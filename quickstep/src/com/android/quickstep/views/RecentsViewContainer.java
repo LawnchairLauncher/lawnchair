@@ -25,9 +25,12 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
+
+import java.util.ArrayList;
 
 public class RecentsViewContainer extends InsettableFrameLayout {
     public static final FloatProperty<RecentsViewContainer> CONTENT_ALPHA =
@@ -103,5 +106,12 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         }
         mRecentsView.setContentAlpha(alpha);
         setVisibility(alpha > 0 ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+        // Carousel is first in tab order.
+        views.add(mRecentsView);
+        views.add(mClearAllButton);
     }
 }

@@ -13,9 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.TaskView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.quickstep.views.TaskView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="false"
     android:elevation="4dp">
 
     <com.android.quickstep.views.TaskThumbnailView
@@ -29,5 +31,6 @@
         android:layout_width="@dimen/task_thumbnail_icon_size"
         android:layout_height="@dimen/task_thumbnail_icon_size"
         android:importantForAccessibility="no"
+        android:focusable="false"
         android:layout_gravity="top|center_horizontal" />
 </com.android.quickstep.views.TaskView>

@@ -118,6 +118,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
 
         mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
+        setFocusable(false);
     }
 
     @NonNull
