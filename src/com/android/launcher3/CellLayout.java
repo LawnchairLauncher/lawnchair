@@ -1980,7 +1980,7 @@ public class CellLayout extends ViewGroup {
             // Animations are disabled in power save mode, causing the repeated animation to jump
             // spastically between beginning and end states. Since this looks bad, we don't repeat
             // the animation in power save mode.
-            if (!Utilities.isPowerSaverOn(getContext())) {
+            if (!Utilities.isPowerSaverPreventingAnimation(getContext())) {
                 va.setRepeatMode(ValueAnimator.REVERSE);
                 va.setRepeatCount(ValueAnimator.INFINITE);
             }
