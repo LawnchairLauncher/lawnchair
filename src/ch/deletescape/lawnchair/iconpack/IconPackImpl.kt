@@ -5,10 +5,11 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Looper
 import android.util.Log
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -31,7 +32,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override val entries get() = packComponents.values.toList()
 
     init {
+        Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper().thread.name}")
         executeLoadPack()
+        Log.d(TAG, "init pack $packPackageName complete")
     }
 
     private val applicationInfo by lazy { context.packageManager.getApplicationInfo(packPackageName, PackageManager.GET_META_DATA) }
@@ -117,7 +120,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 
     override fun getEntryForComponent(key: ComponentKey) = packComponents[key.componentName]
@@ -128,32 +130,51 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         ensureInitialLoadComplete()
 
         val component = launcherActivityInfo.componentName
-        var drawable: Drawable? = null
+        var drawableId = 0
         if (customIconEntry?.icon != null) {
-            drawable = getDrawable(customIconEntry.icon, iconDpi)
-        }
-        if (drawable == null && packCalendars.containsKey(component)) {
-            drawable = getDrawable(packCalendars[component] + Calendar.getInstance().get(Calendar.DAY_OF_MONTH), iconDpi)
-        }
-        if (drawable == null && packComponents.containsKey(component)) {
+            drawableId = getDrawableId(customIconEntry.icon)
+        } else if (packCalendars.containsKey(component)) {
+            drawableId = getDrawableId(packCalendars[component] + Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+        } else if (packComponents.containsKey(component)) {
             val entry = packComponents[component]!!
-            try {
-                drawable = packResources.getDrawableForDensity(entry.drawableId, iconDpi)
-                if (Utilities.ATLEAST_OREO && packClocks.containsKey(entry.drawableId)) {
-                    drawable = CustomClock.getClock(context, drawable, packClocks[entry.drawableId], iconDpi)
-                }
-            } catch (e: Resources.NotFoundException) {
-                Log.e(TAG, "Can't get drawable for $component (entry ${entry.identifierName} : " +
-                        "${entry.drawableId} : ${getDrawableId(entry.identifierName)})", e)
-            }
+            drawableId = entry.drawableId
         }
 
-        if (drawable != null) {
-            return drawable.mutate()
+        if (drawableId != 0) {
+            try {
+                var drawable = packResources.getDrawable(drawableId)
+                if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
+                    drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
+                }
+                return drawable.mutate()
+            } catch (e: Resources.NotFoundException) {
+                Log.e(TAG, "Can't get drawable for $component ($drawableId)", e)
+            }
         }
 
         return basePack.getIcon(launcherActivityInfo, iconDpi,
                 flattenDrawable, null, IconPackManager.getInstance(context).defaultPack, iconProvider)
+    }
+
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
+                         basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+        ensureInitialLoadComplete()
+
+        if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            val component = itemInfo.targetComponent
+            var drawableId = 0
+            if (customIconEntry?.icon != null) {
+                drawableId = getDrawableId(customIconEntry.icon)
+            } else if (packComponents.containsKey(component)) {
+                drawableId = packComponents[component]!!.drawableId
+            }
+            if (packClocks.containsKey(drawableId)) {
+                val drawable = packResources.getDrawable(drawableId)
+                return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
+            }
+        }
+        return basePack.newIcon(icon, itemInfo, null,
+                IconPackManager.getInstance(context).defaultPack, drawableFactory)
     }
 
     fun getDrawable(name: String, density: Int): Drawable? {

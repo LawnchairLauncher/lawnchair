@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import ch.deletescape.lawnchair.getLauncherActivityInfo
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.R
+import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -22,6 +22,7 @@ import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
+    private val dynamicClockDrawer = DynamicClock(context)
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
@@ -78,6 +79,24 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             }
         }
         return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: info.getIcon(iconDpi)
+    }
+
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
+                         basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+        ensureInitialLoadComplete()
+
+        if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            val component = if (customIconEntry?.icon != null) {
+                ComponentKey(context, customIconEntry.icon).componentName
+            } else {
+                itemInfo.targetComponent
+            }
+            if (DynamicClock.DESK_CLOCK == component) {
+                return dynamicClockDrawer.drawIcon(icon)
+            }
+        }
+
+        return FastBitmapDrawable(icon)
     }
 
     private fun getRoundIcon(component: ComponentName, iconDpi: Int): Drawable? {

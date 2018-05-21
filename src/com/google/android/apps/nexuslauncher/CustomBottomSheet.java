@@ -20,7 +20,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -36,7 +35,6 @@ import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.*;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
@@ -141,16 +139,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         public void loadForApp(ItemInfo itemInfo) {
             mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
-            mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
-
             Context context = getActivity();
-            CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(context);
 
-            ComponentName componentName = itemInfo.getTargetComponent();
-            boolean enable = factory.packCalendars.containsKey(componentName) || factory.packComponents.containsKey(componentName);
-
+            mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
             mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
-
             mPrefHide.setOnPreferenceChangeListener(this);
 
             if (Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {

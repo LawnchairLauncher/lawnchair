@@ -7,15 +7,22 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.os.UserHandle
 import android.text.TextUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
+import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LooperExecutor
+import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 import java.util.*
+import kotlin.collections.HashMap
 
 class IconPackManager(private val context: Context) {
 
@@ -23,6 +30,7 @@ class IconPackManager(private val context: Context) {
     val appInfoProvider = AppInfoProvider.getInstance(context)
     val defaultPack = DefaultPack(context)
     val iconPacks = HashMap<String, IconPack>().apply { put("", defaultPack) }
+    val updateReceivers = HashMap<IconPack, BroadcastReceiver>()
     var currentPack = getIconPack(prefs.iconPack)
     var dayOfMonth = 0
         set(value) {
@@ -56,12 +64,24 @@ class IconPackManager(private val context: Context) {
         iconPacks.values.forEach { it.onDateChanged() }
     }
 
+    fun onPackChanged() {
+        currentPack = getIconPack(prefs.iconPack)
+        iconPacks.values.forEach { context.unregisterReceiver(updateReceivers[it]) }
+        iconPacks.clear()
+        updateReceivers.clear()
+        if (currentPack != defaultPack) {
+            iconPacks[currentPack.packPackageName] = currentPack
+            registerReceiverForPack(currentPack)
+        }
+    }
+
     fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack {
+        if (name == defaultPack.packPackageName) return defaultPack
         return if (isPackProvider(context, name)) {
             if (put)
-                iconPacks.getOrPut(name, { IconPackImpl(context, name) })
+                iconPacks.getOrPut(name, { createPack(name) })
             else
-                iconPacks.getOrElse(name, { IconPackImpl(context, name) })
+                iconPacks.getOrElse(name, { createPack(name, false) })
         } else {
             iconPacks.remove(name)
             defaultPack
@@ -72,12 +92,37 @@ class IconPackManager(private val context: Context) {
         }
     }
 
+    private fun createPack(name: String, register: Boolean = true)
+            = IconPackImpl(context, name).also { if (register) registerReceiverForPack(it) }
+
+    private fun registerReceiverForPack(iconPack: IconPack) {
+        updateReceivers.getOrPut(iconPack, {
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent?) {
+                    onPackUpdated()
+                }
+            }.also {
+                context.registerReceiver(it, ActionIntentFilter.newInstance(iconPack.packPackageName,
+                        Intent.ACTION_PACKAGE_CHANGED,
+                        Intent.ACTION_PACKAGE_REPLACED,
+                        Intent.ACTION_PACKAGE_FULLY_REMOVED))
+            }
+        })
+    }
+
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                 iconDpi: Int, flattenDrawable: Boolean,
                 iconProvider: LawnchairIconProvider?): Drawable {
         val customEntry = appInfoProvider.getCustomIconEntry(launcherActivityInfo)
         val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
         return pack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, customEntry, currentPack, iconProvider)
+    }
+
+    fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+        val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
+        val customEntry = key?.let { appInfoProvider.getCustomIconEntry(it) }
+        val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
+        return pack.newIcon(icon, itemInfo, customEntry, currentPack, drawableFactory)
     }
 
     fun getEntryForComponent(component: ComponentKey): IconPack.Entry {
@@ -91,6 +136,33 @@ class IconPackManager(private val context: Context) {
             packs.add(it.activityInfo.packageName)
         } }
         return packs
+    }
+
+    fun onPackUpdated() {
+        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+            val userManagerCompat = UserManagerCompat.getInstance(context)
+            val model = LauncherAppState.getInstance(context).model
+
+            for (user in userManagerCompat.userProfiles) {
+                model.onPackagesReload(user)
+            }
+
+            IconPackManager.getInstance(context).onPackChanged()
+
+            val shortcutManager = DeepShortcutManager.getInstance(context)
+            val launcherApps = LauncherAppsCompat.getInstance(context)
+            userManagerCompat.userProfiles.forEach { user ->
+                launcherApps.getActivityList(null, user).forEach { reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
+            }
+        }
+    }
+
+    private fun reloadIcon(shortcutManager: DeepShortcutManager, model: LauncherModel, user: UserHandle, pkg: String) {
+        model.onPackageChanged(pkg, user)
+        val shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user)
+        if (!shortcuts.isEmpty()) {
+            model.updatePinnedShortcuts(pkg, shortcuts, user)
+        }
     }
 
     data class CustomIconEntry(val packPackageName: String, val icon: String? = null) {

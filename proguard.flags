@@ -109,10 +109,6 @@
 
 -keep class com.google.android.apps.nexuslauncher.CustomAppFilter { *; }
 
--keep class com.google.android.apps.nexuslauncher.CustomIconProvider { *; }
-
--keep class com.google.android.apps.nexuslauncher.CustomDrawableFactory { *; }
-
 -keep class com.google.android.apps.nexuslauncher.CustomAppPredictor { *; }
 
 -keep class ch.deletescape.lawnchair.preferences.HiddenAppsFragment
@@ -124,3 +120,5 @@
 }
 
 -keep class ch.deletescape.lawnchair.iconpack.LawnchairIconProvider { *; }
+
+-keep class ch.deletescape.lawnchair.iconpack.LawnchairDrawableFactory { *; }

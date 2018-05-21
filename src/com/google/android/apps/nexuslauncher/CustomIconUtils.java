@@ -1,30 +1,22 @@
 package com.google.android.apps.nexuslauncher;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.os.UserHandle;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
-import com.google.android.apps.nexuslauncher.clock.CustomClock;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +83,7 @@ public class CustomIconUtils {
                     model.onPackagesReload(user);
                 }
 
-                CustomIconProvider.clearDisabledApps(context);
-                ((CustomDrawableFactory) DrawableFactory.get(context)).reloadIconPack();
+                IconPackManager.Companion.getInstance(context).onPackChanged();
 
                 DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
                 LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
@@ -109,72 +100,11 @@ public class CustomIconUtils {
         });
     }
 
-    static void reloadIconByKey(Context context, ComponentKey key) {
-        LauncherModel model = LauncherAppState.getInstance(context).getModel();
-        DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
-        reloadIcon(shortcutManager, model, key.user, key.componentName.getPackageName());
-    }
-
     public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
         model.onPackageChanged(pkg, user);
         List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
         if (!shortcuts.isEmpty()) {
             model.updatePinnedShortcuts(pkg, shortcuts, user);
-        }
-    }
-
-    static void parsePack(CustomDrawableFactory factory, PackageManager pm, String iconPack) {
-        try {
-            Resources res = pm.getResourcesForApplication(iconPack);
-            int resId = res.getIdentifier("appfilter", "xml", iconPack);
-            if (resId != 0) {
-                String compStart = "ComponentInfo{";
-                int compStartlength = compStart.length();
-                String compEnd = "}";
-                int compEndLength = compEnd.length();
-
-                XmlResourceParser parseXml = pm.getXml(iconPack, resId, null);
-                while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
-                    if (parseXml.getEventType() == XmlPullParser.START_TAG) {
-                        String name = parseXml.getName();
-                        boolean isCalendar = name.equals("calendar");
-                        if (isCalendar || name.equals("item")) {
-                            String componentName = parseXml.getAttributeValue(null, "component");
-                            String drawableName = parseXml.getAttributeValue(null, isCalendar ? "prefix" : "drawable");
-                            if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
-                                componentName = componentName.substring(compStartlength, componentName.length() - compEndLength);
-                                ComponentName parsed = ComponentName.unflattenFromString(componentName);
-                                if (parsed != null) {
-                                    if (isCalendar) {
-                                        factory.packCalendars.put(parsed, drawableName);
-                                    } else {
-                                        int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
-                                        if (drawableId != 0) {
-                                            factory.packComponents.put(parsed, drawableId);
-                                        }
-                                    }
-                                }
-                            }
-                        } else if (name.equals("dynamic-clock")) {
-                            String drawableName = parseXml.getAttributeValue(null, "drawable");
-                            if (drawableName != null) {
-                                int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
-                                if (drawableId != 0) {
-                                    factory.packClocks.put(drawableId, new CustomClock.Metadata(
-                                            parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "defaultHour", 0),
-                                            parseXml.getAttributeIntValue(null, "defaultMinute", 0),
-                                            parseXml.getAttributeIntValue(null, "defaultSecond", 0)));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (PackageManager.NameNotFoundException | XmlPullParserException | IOException e) {
-            e.printStackTrace();
         }
     }
 }

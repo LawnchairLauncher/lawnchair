@@ -6,7 +6,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.popup.SystemShortcut;
 
 public class CustomEditShortcut extends SystemShortcut {
@@ -18,8 +17,6 @@ public class CustomEditShortcut extends SystemShortcut {
     public View.OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
         boolean enabled = false;
         if (CustomIconUtils.usingValidPack(launcher)) {
-            CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(launcher);
-            factory.ensureInitialLoadComplete();
             enabled = true;
         }
         if (CustomInfoProvider.Companion.isEditable(itemInfo)) {

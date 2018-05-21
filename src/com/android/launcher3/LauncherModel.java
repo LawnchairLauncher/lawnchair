@@ -92,10 +92,13 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk boolean mIsLoaderTaskRunning;
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    @Thunk static final HandlerThread sIconPackThread = new HandlerThread("launcher-icon-pack");
     static {
         sWorkerThread.start();
+        sIconPackThread.start();
     }
     @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk static final Handler sIconPack = new Handler(sIconPackThread.getLooper());
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -689,6 +692,13 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
+    }
+
+    /**
+     * @return the looper for the icon pack thread which can be used to load icon packs.
+     */
+    public static Looper getIconPackLooper() {
+        return sIconPackThread.getLooper();
     }
 
     public static void setWorkerPriority(final int priority) {

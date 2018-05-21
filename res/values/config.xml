@@ -110,7 +110,7 @@
     <string name="icon_provider_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairIconProvider</string>
 
     <!-- Name of a drawable factory class. -->
-    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
+    <string name="drawable_factory_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairDrawableFactory</string>
 
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
