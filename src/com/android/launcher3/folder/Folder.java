@@ -1437,12 +1437,13 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if (isEditingName()) {
             mFolderName.dispatchBackKey();
         } else {
             super.onBackPressed();
         }
+        return true;
     }
 
     @Override

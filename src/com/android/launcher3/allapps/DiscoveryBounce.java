@@ -84,6 +84,14 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     @Override
+    public boolean onBackPressed() {
+        super.onBackPressed();
+        // Go back to the previous state (from a user's perspective this floating view isn't
+        // something to go back from).
+        return false;
+    }
+
+    @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         handleClose(false);
         return false;
