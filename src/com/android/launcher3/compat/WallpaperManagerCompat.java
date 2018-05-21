@@ -31,7 +31,7 @@ public abstract class WallpaperManagerCompat {
             if (sInstance == null) {
                 context = context.getApplicationContext();
 
-                if (Utilities.ATLEAST_OREO) {
+                if (Utilities.ATLEAST_OREO_MR1) {
                     try {
                         sInstance = new WallpaperManagerCompatVOMR1(context);
                     } catch (Throwable e) {
