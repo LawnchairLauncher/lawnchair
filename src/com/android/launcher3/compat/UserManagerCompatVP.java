@@ -15,41 +15,20 @@
  */
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.UserHandle;
-import android.os.UserManager;
-import android.util.Log;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
+@TargetApi(Build.VERSION_CODES.P)
 public class UserManagerCompatVP extends UserManagerCompatVNMr1 {
-    private static final String TAG = "UserManagerCompatVP";
-
-    private Method mRequestQuietModeEnabled;
 
     UserManagerCompatVP(Context context) {
         super(context);
-        // TODO: Replace it with proper API call once SDK is ready.
-        try {
-            mRequestQuietModeEnabled = UserManager.class.getDeclaredMethod(
-                    "requestQuietModeEnabled", boolean.class, UserHandle.class);
-        } catch (NoSuchMethodException e) {
-            Log.e(TAG, "requestQuietModeEnabled is not available", e);
-        }
     }
 
     @Override
     public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
-        if (mRequestQuietModeEnabled == null) {
-            return false;
-        }
-        try {
-            return (boolean)
-                    mRequestQuietModeEnabled.invoke(mUserManager, enableQuietMode, user);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            Log.e(TAG, "Failed to invoke mRequestQuietModeEnabled", e);
-        }
-        return false;
+        return mUserManager.requestQuietModeEnabled(enableQuietMode, user);
     }
 }
