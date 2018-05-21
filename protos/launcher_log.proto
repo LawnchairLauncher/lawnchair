@@ -155,6 +155,7 @@ message Action {
     CONFIRM = 4;        // Indicates thata confirmation screen was accepted
     STOP = 5;           // Indicates onStop() was called (screen time out, power off)
     RECENTS_BUTTON = 6; // Indicates that Recents button was pressed
+    RESUME = 7;         // Indicates onResume() was called
   }
 
   optional Type type = 1;

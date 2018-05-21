@@ -102,9 +102,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     public final void close(boolean animate) {
         animate &= !Utilities.isPowerSaverPreventingAnimation(getContext());
+        if (mIsOpen) {
+            BaseActivity.fromContext(getContext()).getUserEventDispatcher()
+                    .resetElapsedContainerMillis("container closed");
+        }
         handleClose(animate);
-        BaseActivity.fromContext(getContext()).getUserEventDispatcher()
-                .resetElapsedContainerMillis("container closed");
         mIsOpen = false;
     }
 

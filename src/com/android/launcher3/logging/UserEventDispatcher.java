@@ -125,6 +125,7 @@ public class UserEventDispatcher {
         return null;
     }
 
+    private boolean mSessionStarted;
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
@@ -216,9 +217,11 @@ public class UserEventDispatcher {
 
     public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command), srcTarget);
-        if (command == Action.Command.STOP && mAppOrTaskLaunch) {
-            // Prevent double logging by skipping STOP when app or task has been launched.
-            return;
+        if (command == Action.Command.STOP) {
+            if (mAppOrTaskLaunch || !mSessionStarted) {
+                mSessionStarted = false;
+                return;
+            }
         }
 
         if (dstTarget != null) {
@@ -405,7 +408,8 @@ public class UserEventDispatcher {
 
     }
 
-    public final void resetElapsedSessionMillis() {
+    public final void startSession() {
+        mSessionStarted = true;
         mElapsedSessionMillis = SystemClock.uptimeMillis();
         mElapsedContainerMillis = SystemClock.uptimeMillis();
     }
