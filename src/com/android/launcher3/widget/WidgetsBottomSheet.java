@@ -20,6 +20,7 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +73,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         mLauncher.getDragLayer().addView(this);
         mIsOpen = false;
-        open(true);
+        animateOpen();
     }
 
     @Override
@@ -129,20 +130,16 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         return widget;
     }
 
-    private void open(boolean animate) {
+    private void animateOpen() {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
         mIsOpen = true;
         setupNavBarColor();
-        if (animate) {
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-            mOpenCloseAnimator.start();
-        } else {
-            setTranslationShift(TRANSLATION_SHIFT_OPENED);
-        }
+        mOpenCloseAnimator.setValues(
+                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+        mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        mOpenCloseAnimator.start();
     }
 
     @Override
@@ -169,5 +166,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     @Override
     protected int getElementsRowCount() {
         return 1;
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(findViewById(R.id.title),  getContext().getString(
+                mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 }

@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.ViewConfiguration.getLongPressTimeout;
 
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
@@ -71,8 +73,7 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             // Check if we can handle long press.
-            boolean handleLongPress = AbstractFloatingView.getTopOpenView(mLauncher) == null
-                    && mLauncher.isInState(NORMAL);
+            boolean handleLongPress = canHandleLongPress();
 
             if (handleLongPress) {
                 // Check if the event is not near the edges
@@ -122,10 +123,26 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
             // We don't want to handle touch, let workspace handle it as usual.
             result = false;
         }
+
+        if (action == ACTION_UP || action == ACTION_POINTER_UP) {
+            if (!mWorkspace.isTouchActive()) {
+                final CellLayout currentPage =
+                        (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+                if (currentPage != null) {
+                    mWorkspace.onWallpaperTap(ev);
+                }
+            }
+        }
+
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             cancelLongPress();
         }
         return result;
+    }
+
+    private boolean canHandleLongPress() {
+        return AbstractFloatingView.getTopOpenView(mLauncher) == null
+                && mLauncher.isInState(NORMAL);
     }
 
     private void cancelLongPress() {
@@ -136,15 +153,19 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
     @Override
     public void run() {
         if (mLongPressState == STATE_REQUESTED) {
-            mLongPressState = STATE_PENDING_PARENT_INFORM;
-            mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
+            if (canHandleLongPress()) {
+                mLongPressState = STATE_PENDING_PARENT_INFORM;
+                mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
 
-            mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                    Action.Direction.NONE, ContainerType.WORKSPACE,
-                    mWorkspace.getCurrentPage());
-            OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                        Action.Direction.NONE, ContainerType.WORKSPACE,
+                        mWorkspace.getCurrentPage());
+                OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+            } else {
+                cancelLongPress();
+            }
         }
     }
 }

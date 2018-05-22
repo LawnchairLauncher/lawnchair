@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -28,12 +30,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
+import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.SystemUiController;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -45,6 +50,19 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 public class TaskThumbnailView extends View {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
+
+    public static final Property<TaskThumbnailView, Float> DIM_ALPHA_MULTIPLIER =
+            new FloatProperty<TaskThumbnailView>("dimAlphaMultiplier") {
+                @Override
+                public void setValue(TaskThumbnailView thumbnail, float dimAlphaMultiplier) {
+                    thumbnail.setDimAlphaMultipler(dimAlphaMultiplier);
+                }
+
+                @Override
+                public Float get(TaskThumbnailView thumbnailView) {
+                    return thumbnailView.mDimAlphaMultiplier;
+                }
+            };
 
     private final float mCornerRadius;
 
@@ -62,6 +80,7 @@ public class TaskThumbnailView extends View {
     protected BitmapShader mBitmapShader;
 
     private float mDimAlpha = 1f;
+    private float mDimAlphaMultiplier = 1f;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -109,8 +128,15 @@ public class TaskThumbnailView extends View {
         updateThumbnailPaintFilter();
     }
 
+    public void setDimAlphaMultipler(float dimAlphaMultipler) {
+        mDimAlphaMultiplier = dimAlphaMultipler;
+        setDimAlpha(mDimAlpha);
+    }
+
     /**
      * Sets the alpha of the dim layer on top of this view.
+     *
+     * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be black.
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
@@ -124,32 +150,53 @@ public class TaskThumbnailView extends View {
         return new Rect();
     }
 
+    public int getSysUiStatusNavFlags() {
+        if (mThumbnailData != null) {
+            int flags = 0;
+            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0
+                    ? SystemUiController.FLAG_LIGHT_STATUS
+                    : SystemUiController.FLAG_DARK_STATUS;
+            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
+                    ? SystemUiController.FLAG_LIGHT_NAV
+                    : SystemUiController.FLAG_DARK_NAV;
+            return flags;
+        }
+        return 0;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mTask == null) {
-            return;
-        }
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        if (mClipBottom > 0 && !mTask.isLocked) {
-            canvas.save();
-            canvas.clipRect(0, 0, width, mClipBottom);
+        drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
+    }
 
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius, mPaint);
-            canvas.restore();
+    public float getCornerRadius() {
+        return mCornerRadius;
+    }
+
+    public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
+            float cornerRadius) {
+        // Draw the background in all cases, except when the thumbnail data is opaque
+        final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
+                || mThumbnailData == null;
+        if (drawBackgroundOnly || mClipBottom > 0 || mThumbnailData.isTranslucent) {
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
+            if (drawBackgroundOnly) {
+                return;
+            }
+        }
+
+        if (mClipBottom > 0) {
             canvas.save();
-            canvas.clipRect(0, mClipBottom, width, height);
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius, mCornerRadius,
-                    mBackgroundPaint);
+            canvas.clipRect(x, y, width, mClipBottom);
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
             canvas.restore();
         } else {
-            canvas.drawRoundRect(0, 0, width, height, mCornerRadius,
-                    mCornerRadius, mTask.isLocked ? mBackgroundPaint : mPaint);
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
         }
     }
 
     private void updateThumbnailPaintFilter() {
-        int mul = (int) (mDimAlpha * 255);
+        int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
         if (mBitmapShader != null) {
             LightingColorFilter filter = getLightingColorFilter(mul);
             mPaint.setColorFilter(filter);
@@ -167,9 +214,9 @@ public class TaskThumbnailView extends View {
         if (mBitmapShader != null && mThumbnailData != null) {
             float scale = mThumbnailData.scale;
             Rect thumbnailInsets  = mThumbnailData.insets;
-            float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
+            final float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
                     (thumbnailInsets.left + thumbnailInsets.right) * scale;
-            float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
+            final float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
                     (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
 
             final float thumbnailScale;
@@ -185,7 +232,8 @@ public class TaskThumbnailView extends View {
                 // Rotate the screenshot if not in multi-window mode
                 rotate = FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION &&
                         configuration.orientation != mThumbnailData.orientation &&
-                        !mActivity.isInMultiWindowModeCompat();
+                        !mActivity.isInMultiWindowModeCompat() &&
+                        mThumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
                 // Scale the screenshot to always fit the width of the card.
                 thumbnailScale = rotate
                         ? getMeasuredWidth() / thumbnailHeight
@@ -216,7 +264,8 @@ public class TaskThumbnailView extends View {
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
 
-            float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
+            float bitmapHeight = Math.max((rotate ? thumbnailWidth : thumbnailHeight)
+                    * thumbnailScale, 0);
             if (Math.round(bitmapHeight) < getMeasuredHeight()) {
                 mClipBottom = bitmapHeight;
             }

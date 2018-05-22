@@ -31,25 +31,34 @@ public interface RemoteAnimationProvider {
     AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targets);
 
     default ActivityOptions toActivityOptions(Handler handler, long duration) {
-        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler) {
+        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler,
+                false /* startAtFrontOfQueue */) {
+
             @Override
-            public AnimatorSet getAnimator(RemoteAnimationTargetCompat[] targetCompats) {
-                return createWindowAnimation(targetCompats);
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                    AnimationResult result) {
+                result.setAnimation(createWindowAnimation(targetCompats));
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(
                 new RemoteAnimationAdapterCompat(runner, duration, 0));
     }
 
-    static void showOpeningTarget(RemoteAnimationTargetCompat[] targetCompats) {
-        TransactionCompat t = new TransactionCompat();
-        for (RemoteAnimationTargetCompat target : targetCompats) {
-            int layer = target.mode == RemoteAnimationTargetCompat.MODE_CLOSING
+    /**
+     * Prepares the given {@param targets} for a remote animation, and should be called with the
+     * transaction from the first frame of animation.
+     *
+     * @param boostModeTargets The mode indicating which targets to boost in z-order above other
+     *                         targets.
+     */
+    static void prepareTargetsForFirstFrame(RemoteAnimationTargetCompat[] targets,
+            TransactionCompat t, int boostModeTargets) {
+        for (RemoteAnimationTargetCompat target : targets) {
+            int layer = target.mode == boostModeTargets
                     ? Integer.MAX_VALUE
                     : target.prefixOrderIndex;
             t.setLayer(target.leash, layer);
             t.show(target.leash);
         }
-        t.apply();
     }
 }

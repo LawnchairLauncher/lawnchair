@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"सूचना बिंदु"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"चालू"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"बंद"</string>
@@ -89,7 +91,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="icon_badging_service_title" msgid="2309733118428242174">"नए नोटिफ़िकेशन बताने वाला गोल निशान दिखाएं"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकॉन जोड़ें"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप के लिए"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकॉन का आकार बदलें"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"होम स्‍क्रीन पर"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"सिस्टम डिफ़ॉल्ट का उपयोग करें"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ऊंचाई घटाएं"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेट का आकार बदलकर उसकी चौड़ाई <xliff:g id="NUMBER_0">%1$s</xliff:g> और ऊंचाई <xliff:g id="NUMBER_1">%2$s</xliff:g> कर दी गई"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट और <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाएं हैं"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>

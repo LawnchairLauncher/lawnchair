@@ -38,6 +38,7 @@ public class Interpolators {
 
     public static final Interpolator DEACCEL = new DecelerateInterpolator();
     public static final Interpolator DEACCEL_1_5 = new DecelerateInterpolator(1.5f);
+    public static final Interpolator DEACCEL_1_7 = new DecelerateInterpolator(1.7f);
     public static final Interpolator DEACCEL_2 = new DecelerateInterpolator(2);
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
@@ -57,9 +58,7 @@ public class Interpolators {
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
 
-    public static final Interpolator APP_CLOSE_ALPHA = new PathInterpolator(0.4f, 0, 1f, 1f);
-
-    public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
+    public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
@@ -115,5 +114,25 @@ public class Interpolators {
 
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {
         return Math.abs(velocity) > FAST_FLING_PX_MS ? SCROLL : SCROLL_CUBIC;
+    }
+
+    /**
+     * Runs the given interpolator such that the entire progress is set between the given bounds.
+     * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
+     */
+    public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
+            float upperBound) {
+        if (upperBound <= lowerBound) {
+            throw new IllegalArgumentException("lowerBound must be less than upperBound");
+        }
+        return t -> {
+            if (t < lowerBound) {
+                return 0;
+            }
+            if (t > upperBound) {
+                return 1;
+            }
+            return interpolator.getInterpolation((t - lowerBound) / (upperBound - lowerBound));
+        };
     }
 }
