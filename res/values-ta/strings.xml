@@ -40,10 +40,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் பயன்பாடுகள் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
-    <!-- no translation found for long_press_shortcut_to_add (4524750017792716791) -->
-    <skip />
-    <!-- no translation found for long_accessible_way_to_add_shortcut (3327314059613154633) -->
-    <skip />
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ஷார்ட்கட்டைச் சேர்க்க, தொட்டு பிடித்திருக்கவும்."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"பயன்பாடுகளின் பட்டியல்"</string>
@@ -52,7 +50,7 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"முகப்பு"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"அகற்று"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"பயன்பாட்டுத் தகவல்"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"குறுக்குவழிகளை நிறுவுதல்"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் பயன்பாட்டை அனுமதிக்கிறது."</string>
@@ -83,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"மொபைலைச் சுழற்றும் போது"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"அறிவிப்புப் புள்ளிகள்"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ஆன்"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"முடக்கப்பட்டுள்ளது"</string>
@@ -130,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"உயரத்தைக் குறை"</string>
     <string name="widget_resized" msgid="9130327887929620">"அகலம் <xliff:g id="NUMBER_0">%1$s</xliff:g> மற்றும் உயரம் <xliff:g id="NUMBER_1">%2$s</xliff:g>க்கு விட்ஜெட் அளவு மாற்றப்பட்டது"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"குறுக்குவழிகள்"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g>க்கான <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> குறுக்குவழிகள்"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> பயன்பாட்டிற்கான <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> குறுக்குவழிகளும் <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> அறிவிப்புகளும் உள்ளன"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"நிராகரி"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"அறிவிப்பு நிராகரிக்கப்பட்டது"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>

@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -169,8 +170,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     public void setMarkersCount(int numMarkers) { }
 
     @Override
-    public void setPageDescription(CharSequence description) {
-        // We don't want custom page description as the tab-bar already has two tabs with their
-        // own descriptions.
+    public boolean hasOverlappingRendering() {
+        return false;
     }
 }

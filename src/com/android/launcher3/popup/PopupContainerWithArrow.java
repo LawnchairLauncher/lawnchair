@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -213,6 +214,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.P)
     private void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         mNumNotifications = notificationKeys.size();
@@ -261,14 +263,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         reorderAndShow(viewsToFlip);
 
         ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
-        int numShortcuts = mShortcuts.size() + systemShortcuts.size();
-        if (mNumNotifications == 0) {
-            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                    numShortcuts, originalIcon.getContentDescription().toString()));
-        } else {
-            setContentDescription(getContext().getString(
-                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
-                    mNumNotifications, originalIcon.getContentDescription().toString()));
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            setAccessibilityPaneTitle(getTitleForAccessibility());
         }
 
         mLauncher.getDragController().addDragListener(this);
@@ -282,6 +278,17 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, mShortcuts, notificationKeys));
+    }
+
+    private String getTitleForAccessibility() {
+        return getContext().getString(mNumNotifications == 0 ?
+                R.string.action_deep_shortcut :
+                R.string.shortcuts_menu_with_notifications_description);
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(this, "");
     }
 
     @Override

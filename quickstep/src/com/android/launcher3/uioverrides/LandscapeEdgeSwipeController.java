@@ -9,15 +9,19 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.quickstep.util.SysuiEventLogger;
+import com.android.quickstep.RecentsModel;
 
 /**
  * Touch controller for handling edge swipes in landscape/seascape UI
  */
 public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchController {
+
+    private static final String TAG = "LandscapeEdgeSwipeCtrl";
 
     public LandscapeEdgeSwipeController(Launcher l) {
         super(l, SwipeDetector.HORIZONTAL);
@@ -36,14 +40,14 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected int getSwipeDirection(MotionEvent ev) {
-        return SwipeDetector.DIRECTION_BOTH;
-    }
-
-    @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() != isDragTowardPositive;
         return draggingFromNav ? OVERVIEW : NORMAL;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState() {
+        return LauncherLogProto.ContainerType.NAVBAR;
     }
 
     @Override
@@ -52,11 +56,11 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected float initCurrentAnimation() {
+    protected float initCurrentAnimation(@AnimationComponents int animComponent) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
-        mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, maxAccuracy);
+        mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
+                maxAccuracy, animComponent);
         return (mLauncher.getDeviceProfile().isSeascape() ? 2 : -2) / range;
     }
 
@@ -69,7 +73,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mFromState == NORMAL && targetState == OVERVIEW) {
-            SysuiEventLogger.writeDummyRecentsTransition(0);
+            RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
         }
     }
 }

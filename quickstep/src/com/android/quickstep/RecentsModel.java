@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
@@ -26,8 +28,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
@@ -85,7 +89,8 @@ public class RecentsModel extends TaskStackChangeListener {
     private int mTaskChangeId;
     private ISystemUiProxy mSystemUiProxy;
     private boolean mClearAssistCacheOnStackChange = true;
-    private final boolean mPreloadTasksInBackground;
+    private final boolean mIsLowRamDevice;
+    private boolean mPreloadTasksInBackground;
     private final AccessibilityManager mAccessibilityManager;
 
     private RecentsModel(Context context) {
@@ -93,7 +98,7 @@ public class RecentsModel extends TaskStackChangeListener {
 
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        mPreloadTasksInBackground = !activityManager.isLowRamDevice();
+        mIsLowRamDevice = activityManager.isLowRamDevice();
         mMainThreadExecutor = new MainThreadExecutor();
 
         Resources res = context.getResources();
@@ -158,6 +163,10 @@ public class RecentsModel extends TaskStackChangeListener {
         return requestId;
     }
 
+    public void setPreloadTasksInBackground(boolean preloadTasksInBackground) {
+        mPreloadTasksInBackground = preloadTasksInBackground && !mIsLowRamDevice;
+    }
+
     @Override
     public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
         mTaskChangeId++;
@@ -183,7 +192,7 @@ public class RecentsModel extends TaskStackChangeListener {
     @Override
     public void onTaskStackChangedBackground() {
         int userId = UserHandle.myUserId();
-        if (!mPreloadTasksInBackground || !checkCurrentUserId(userId, false /* debug */)) {
+        if (!mPreloadTasksInBackground || !checkCurrentOrManagedUserId(userId, mContext)) {
             // TODO: Only register this for the current user
             return;
         }
@@ -232,6 +241,19 @@ public class RecentsModel extends TaskStackChangeListener {
             mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
         }
         mRecentsTaskLoader.onTrimMemory(level);
+    }
+
+    public void onOverviewShown(boolean fromHome, String tag) {
+        if (mSystemUiProxy == null) {
+            return;
+        }
+        try {
+            mSystemUiProxy.onOverviewShown(fromHome);
+        } catch (RemoteException e) {
+            Log.w(tag,
+                    "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
+                            + ": ", e);
+        }
     }
 
     @WorkerThread

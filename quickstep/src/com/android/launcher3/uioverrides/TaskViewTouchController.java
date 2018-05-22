@@ -15,25 +15,27 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -44,9 +46,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         extends AnimatorListenerAdapter implements TouchController, SwipeDetector.Listener {
 
     private static final String TAG = "OverviewSwipeController";
-
-    private static final float ALLOWED_FLING_DIRECTION_CHANGE_PROGRESS = 0.1f;
-    private static final int SINGLE_FRAME_MS = 16;
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
@@ -65,6 +64,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private float mDisplacementShift;
     private float mProgressMultiplier;
     private float mEndDisplacement;
+    private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
     private TaskView mTaskBeingDragged;
 
@@ -87,12 +87,13 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     protected abstract boolean isRecentsInteractive();
 
+    protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
+    }
+
     @Override
     public void onAnimationCancel(Animator animation) {
         if (mCurrentAnimation != null && animation == mCurrentAnimation.getTarget()) {
-            Log.e(TAG, "Who dare cancel the animation when I am in control", new Exception());
-            mDetector.finishedScrolling();
-            mCurrentAnimation = null;
+            clearState();
         }
     }
 
@@ -106,7 +107,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
             // Now figure out which direction scroll events the controller will start
             // calling the callbacks.
-            final int directionsToDetectScroll;
+            int directionsToDetectScroll = 0;
             boolean ignoreSlopWhenSettling = false;
             if (mCurrentAnimation != null) {
                 directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
@@ -114,12 +115,26 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             } else {
                 mTaskBeingDragged = null;
 
-                View view = mRecentsView.getChildAt(mRecentsView.getCurrentPage());
-                if (view instanceof TaskView && mActivity.getDragLayer().isEventOverView(view, ev)) {
-                    // The tile can be dragged down to open the task.
-                    mTaskBeingDragged = (TaskView) view;
-                    directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
-                } else {
+                for (int i = 0; i < mRecentsView.getChildCount(); i++) {
+                    TaskView view = mRecentsView.getPageAt(i);
+                    if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
+                            .isEventOverView(view, ev)) {
+                        mTaskBeingDragged = view;
+                        if (!OverviewInteractionState.getInstance(mActivity)
+                                .isSwipeUpGestureEnabled()) {
+                            // Don't allow swipe down to open if we don't support swipe up
+                            // to enter overview.
+                            directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
+                        } else {
+                            // The task can be dragged up to dismiss it,
+                            // and down to open if it's the current page.
+                            directionsToDetectScroll = i == mRecentsView.getCurrentPage()
+                                    ? SwipeDetector.DIRECTION_BOTH : SwipeDetector.DIRECTION_POSITIVE;
+                        }
+                        break;
+                    }
+                }
+                if (mTaskBeingDragged == null) {
                     mNoIntercept = true;
                     return false;
                 }
@@ -145,6 +160,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private void reInitAnimationController(boolean goingUp) {
         if (mCurrentAnimation != null && mCurrentAnimationIsGoingUp == goingUp) {
             // No need to init
+            return;
+        }
+        int scrollDirections = mDetector.getScrollDirections();
+        if (goingUp && ((scrollDirections & SwipeDetector.DIRECTION_POSITIVE) == 0)
+                || !goingUp && ((scrollDirections & SwipeDetector.DIRECTION_NEGATIVE) == 0)) {
+            // Trying to re-init in an unsupported direction.
             return;
         }
         if (mCurrentAnimation != null) {
@@ -174,8 +195,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mEndDisplacement = dl.getHeight() - mTempCords[1];
         }
 
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.setOnCancelRunnable(null);
+        }
         mCurrentAnimation = AnimatorPlaybackController
-                .wrap(mPendingAnimation.anim, maxDuration);
+                .wrap(mPendingAnimation.anim, maxDuration, this::clearState);
+        onUserControlledAnimationCreated(mCurrentAnimation);
         mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();
         mProgressMultiplier = 1 / mEndDisplacement;
@@ -190,6 +215,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mDisplacementShift = mCurrentAnimation.getProgressFraction() / mProgressMultiplier;
             mCurrentAnimation.pause();
         }
+        mFlingBlockCheck.unblockFling();
     }
 
     @Override
@@ -199,6 +225,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                 totalDisplacement == 0 ? mCurrentAnimationIsGoingUp : totalDisplacement < 0;
         if (isGoingUp != mCurrentAnimationIsGoingUp) {
             reInitAnimationController(isGoingUp);
+            mFlingBlockCheck.blockFling();
+        } else {
+            mFlingBlockCheck.onEvent();
         }
         mCurrentAnimation.setPlayFraction(totalDisplacement * mProgressMultiplier);
         return true;
@@ -208,23 +237,14 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     public void onDragEnd(float velocity, boolean fling) {
         final boolean goingToEnd;
         final int logAction;
+        boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
+        if (blockedFling) {
+            fling = false;
+        }
         if (fling) {
             logAction = Touch.FLING;
             boolean goingUp = velocity < 0;
-            if (goingUp != mCurrentAnimationIsGoingUp) {
-                // In case the fling is in opposite direction, make sure if is close enough
-                // from the start position
-                if (mCurrentAnimation.getProgressFraction()
-                        >= ALLOWED_FLING_DIRECTION_CHANGE_PROGRESS) {
-                    // Not allowed
-                    goingToEnd = false;
-                } else {
-                    reInitAnimationController(goingUp);
-                    goingToEnd = true;
-                }
-            } else {
-                goingToEnd = true;
-            }
+            goingToEnd = goingUp == mCurrentAnimationIsGoingUp;
         } else {
             logAction = Touch.SWIPE;
             goingToEnd = mCurrentAnimation.getProgressFraction() > SUCCESS_TRANSITION_PROGRESS;
@@ -233,6 +253,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         float progress = mCurrentAnimation.getProgressFraction();
         long animationDuration = SwipeDetector.calculateDuration(
                 velocity, goingToEnd ? (1 - progress) : progress);
+        if (blockedFling && !goingToEnd) {
+            animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
+        }
 
         float nextFrameProgress = Utilities.boundToRange(
                 progress + velocity * SINGLE_FRAME_MS / Math.abs(mEndDisplacement), 0f, 1f);
@@ -251,8 +274,17 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mPendingAnimation.finish(wasSuccess, logAction);
             mPendingAnimation = null;
         }
+        clearState();
+    }
+
+    private void clearState() {
         mDetector.finishedScrolling();
+        mDetector.setDetectableScrollConditions(0, false);
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation = null;
+        }
     }
 }

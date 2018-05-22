@@ -16,28 +16,34 @@
 
 package com.android.quickstep.views;
 
+import static android.widget.Toast.LENGTH_SHORT;
+import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA_MULTIPLIER;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
+import android.util.Log;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.RecentsAnimationInterpolator;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -54,6 +60,8 @@ import java.util.function.Consumer;
  */
 public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
 
+    private static final String TAG = TaskView.class.getSimpleName();
+
     /** A curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
     private static final TimeInterpolator CURVE_INTERPOLATOR
             = x -> (float) -Math.cos(x * Math.PI) / 2f + .5f;
@@ -69,12 +77,28 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
      */
     private static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
 
-    private static final long SCALE_ICON_DURATION = 120;
+    public static final long SCALE_ICON_DURATION = 120;
+    private static final long DIM_ANIM_DURATION = 700;
+
+    public static final Property<TaskView, Float> ZOOM_SCALE =
+            new FloatProperty<TaskView>("zoomScale") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setZoomScale(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mZoomScale;
+                }
+            };
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
-    private ImageView mIconView;
+    private IconView mIconView;
     private float mCurveScale;
+    private float mZoomScale;
+    private Animator mDimAlphaAnim;
 
     public TaskView(Context context) {
         this(context, null);
@@ -87,11 +111,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOnClickListener((view) -> {
-            if (mTask != null) {
-                launchTask(true /* animate */);
-                BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
-                        Touch.TAP, Direction.NONE, TaskUtils.getComponentKeyForTask(mTask.key));
+            if (getTask() == null) {
+                return;
             }
+            launchTask(true /* animate */);
+            BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+                    Touch.TAP, Direction.NONE, ((RecentsView) getParent()).indexOfChild(this),
+                    TaskUtils.getComponentKeyForTask(getTask().key));
         });
         setOutlineProvider(new TaskOutlineProvider(getResources()));
     }
@@ -124,8 +150,16 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return mSnapshotView;
     }
 
+    public IconView getIconView() {
+        return mIconView;
+    }
+
     public void launchTask(boolean animate) {
-        launchTask(animate, null, null);
+        launchTask(animate, (result) -> {
+            if (!result) {
+                notifyTaskLaunchFailed(TAG);
+            }
+        }, getHandler());
     }
 
     public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
@@ -146,7 +180,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
-        mIconView.setImageDrawable(task.icon);
+        mIconView.setDrawable(task.icon);
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
@@ -157,7 +191,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataUnloaded() {
         mSnapshotView.setThumbnail(null, null);
-        mIconView.setImageDrawable(null);
+        mIconView.setDrawable(null);
         mIconView.setOnLongClickListener(null);
     }
 
@@ -166,23 +200,37 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         // Do nothing
     }
 
-    public void animateIconToScale(float scale) {
+    public void animateIconToScaleAndDim(float scale) {
         mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
+        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA_MULTIPLIER, 1 - scale,
+                scale);
+        mDimAlphaAnim.setDuration(DIM_ANIM_DURATION);
+        mDimAlphaAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mDimAlphaAnim = null;
+            }
+        });
+        mDimAlphaAnim.start();
     }
 
-    protected void setIconScale(float iconScale) {
+    protected void setIconScaleAndDim(float iconScale) {
         mIconView.animate().cancel();
         mIconView.setScaleX(iconScale);
         mIconView.setScaleY(iconScale);
+        if (mDimAlphaAnim != null) {
+            mDimAlphaAnim.cancel();
+        }
+        mSnapshotView.setDimAlphaMultipler(iconScale);
     }
 
     public void resetVisualProperties() {
-        setScaleX(1f);
-        setScaleY(1f);
+        setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
         setAlpha(1f);
+        setIconScaleAndDim(1);
     }
 
     @Override
@@ -190,38 +238,50 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
 
-        mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+        mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+        setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
+    }
 
-        mCurveScale = 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
-        setScaleX(mCurveScale);
-        setScaleY(mCurveScale);
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        setPivotX((right - left) * 0.5f);
+        setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
+    }
+
+    public float getCurveScaleForInterpolation(float linearInterpolation) {
+        float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
+        return getCurveScaleForCurveInterpolation(curveInterpolation);
+    }
+
+    private float getCurveScaleForCurveInterpolation(float curveInterpolation) {
+        return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
+    }
+
+    private void setCurveScale(float curveScale) {
+        mCurveScale = curveScale;
+        onScaleChanged();
     }
 
     public float getCurveScale() {
         return mCurveScale;
     }
 
+    public void setZoomScale(float adjacentScale) {
+        mZoomScale = adjacentScale;
+        onScaleChanged();
+    }
+
+    private void onScaleChanged() {
+        float scale = mCurveScale * mZoomScale;
+        setScaleX(scale);
+        setScaleY(scale);
+    }
+
     @Override
     public boolean hasOverlappingRendering() {
         // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
         return false;
-    }
-
-    public RecentsAnimationInterpolator getRecentsInterpolator() {
-        Rect taskViewBounds = new Rect();
-        BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
-        DeviceProfile dp = activity.getDeviceProfile();
-        activity.getDragLayer().getDescendantRectRelativeToSelf(this, taskViewBounds);
-
-        // TODO: Use the actual target insets instead of the current thumbnail insets in case the
-        // device state has changed
-        return new RecentsAnimationInterpolator(
-                new Rect(0, 0, dp.widthPx, dp.heightPx),
-                getThumbnail().getInsets(),
-                taskViewBounds,
-                new Rect(0, getThumbnail().getTop(), 0, 0),
-                getScaleX(),
-                getTranslationX());
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
@@ -280,5 +340,14 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
 
         return super.performAccessibilityAction(action, arguments);
+    }
+
+    public void notifyTaskLaunchFailed(String tag) {
+        String msg = "Failed to launch task";
+        if (mTask != null) {
+            msg += " (task=" + mTask.key.baseIntent + " userId=" + mTask.key.userId + ")";
+        }
+        Log.w(tag, msg);
+        Toast.makeText(getContext(), R.string.activity_not_available, LENGTH_SHORT).show();
     }
 }

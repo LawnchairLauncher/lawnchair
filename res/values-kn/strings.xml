@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ನಿಮ್ಮ ನಿರ್ವಾಹಕರು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ್ದಾರೆ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ಆನ್"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ಆಫ್"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ಎತ್ತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ"</string>
     <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ಗೆ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ಗಾಗಿ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳು"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ವೈಯಕ್ತಿಕ"</string>

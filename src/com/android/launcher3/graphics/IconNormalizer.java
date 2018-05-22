@@ -24,6 +24,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -66,12 +67,10 @@ public class IconNormalizer {
 
     private final int mMaxSize;
     private final Bitmap mBitmap;
-    private final Bitmap mBitmapARGB;
     private final Canvas mCanvas;
     private final Paint mPaintMaskShape;
     private final Paint mPaintMaskShapeOutline;
     private final byte[] mPixels;
-    private final int[] mPixelsARGB;
 
     private final Rect mAdaptiveIconBounds;
     private float mAdaptiveIconScale;
@@ -80,10 +79,8 @@ public class IconNormalizer {
     private final float[] mLeftBorder;
     private final float[] mRightBorder;
     private final Rect mBounds;
+    private final Path mShapePath;
     private final Matrix mMatrix;
-
-    private final Paint mPaintIcon;
-    private final Canvas mCanvasARGB;
 
     /** package private **/
     IconNormalizer(Context context) {
@@ -92,18 +89,10 @@ public class IconNormalizer {
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
         mCanvas = new Canvas(mBitmap);
         mPixels = new byte[mMaxSize * mMaxSize];
-        mPixelsARGB = new int[mMaxSize * mMaxSize];
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
         mAdaptiveIconBounds = new Rect();
-
-        // Needed for isShape() method
-        mBitmapARGB = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ARGB_8888);
-        mCanvasARGB = new Canvas(mBitmapARGB);
-
-        mPaintIcon = new Paint();
-        mPaintIcon.setColor(Color.WHITE);
 
         mPaintMaskShape = new Paint();
         mPaintMaskShape.setColor(Color.RED);
@@ -114,8 +103,9 @@ public class IconNormalizer {
         mPaintMaskShapeOutline.setStrokeWidth(2 * context.getResources().getDisplayMetrics().density);
         mPaintMaskShapeOutline.setStyle(Paint.Style.STROKE);
         mPaintMaskShapeOutline.setColor(Color.BLACK);
-        mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
+        mShapePath = new Path();
         mMatrix = new Matrix();
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
     }
@@ -139,41 +129,49 @@ public class IconNormalizer {
         // Condition 2:
         // Actual icon (white) and the fitted shape (e.g., circle)(red) XOR operation
         // should generate transparent image, if the actual icon is equivalent to the shape.
-        mBitmapARGB.eraseColor(Color.TRANSPARENT);
-        mCanvasARGB.drawBitmap(mBitmap, 0, 0, mPaintIcon);
 
         // Fit the shape within the icon's bounding box
         mMatrix.reset();
         mMatrix.setScale(mBounds.width(), mBounds.height());
         mMatrix.postTranslate(mBounds.left, mBounds.top);
-        maskPath.transform(mMatrix);
+        maskPath.transform(mMatrix, mShapePath);
 
         // XOR operation
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShape);
+        mCanvas.drawPath(mShapePath, mPaintMaskShape);
 
         // DST_OUT operation around the mask path outline
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShapeOutline);
+        mCanvas.drawPath(mShapePath, mPaintMaskShapeOutline);
 
         // Check if the result is almost transparent
-        return isTransparentBitmap(mBitmapARGB);
+        return isTransparentBitmap();
     }
 
     /**
      * Used to determine if certain the bitmap is transparent.
      */
-    private boolean isTransparentBitmap(Bitmap bitmap) {
-        int w = mBounds.width();
-        int h = mBounds.height();
-        bitmap.getPixels(mPixelsARGB, 0 /* the first index to write into the array */,
-                w /* stride */,
-                mBounds.left, mBounds.top,
-                w, h);
+    private boolean isTransparentBitmap() {
+        ByteBuffer buffer = ByteBuffer.wrap(mPixels);
+        buffer.rewind();
+        mBitmap.copyPixelsToBuffer(buffer);
+
+        int y = mBounds.top;
+        // buffer position
+        int index = y * mMaxSize;
+        // buffer shift after every row, width of buffer = mMaxSize
+        int rowSizeDiff = mMaxSize - mBounds.right;
+
         int sum = 0;
-        for (int i = w * h - 1; i >= 0; i--) {
-            if(Color.alpha(mPixelsARGB[i]) > MIN_VISIBLE_ALPHA) {
+        for (; y < mBounds.bottom; y++) {
+            index += mBounds.left;
+            for (int x = mBounds.left; x < mBounds.right; x++) {
+                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
                     sum++;
+                }
+                index++;
             }
+            index += rowSizeDiff;
         }
+
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
         return percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
     }
@@ -304,7 +302,7 @@ public class IconNormalizer {
         mBounds.bottom = bottomY;
 
         if (outBounds != null) {
-            outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top),
+            outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top) / height,
                     1 - ((float) mBounds.right) / width,
                     1 - ((float) mBounds.bottom) / height);
         }

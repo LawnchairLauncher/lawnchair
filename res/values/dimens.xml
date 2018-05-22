@@ -20,7 +20,6 @@
 
     <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
-    <dimen name="dynamic_grid_min_page_indicator_size">24dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
@@ -42,6 +41,7 @@
     <dimen name="all_apps_scrim_radius">8dp</dimen>
     <dimen name="all_apps_scrim_margin">8dp</dimen>
     <dimen name="all_apps_scrim_blur">4dp</dimen>
+    <dimen name="vertical_drag_handle_size">24dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>

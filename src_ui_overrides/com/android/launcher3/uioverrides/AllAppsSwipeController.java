@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -17,12 +18,17 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
+    private MotionEvent mTouchDownEvent;
+
     public AllAppsSwipeController(Launcher l) {
         super(l, SwipeDetector.VERTICAL);
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mTouchDownEvent = ev;
+        }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
@@ -41,18 +47,6 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected int getSwipeDirection(MotionEvent ev) {
-        if (mLauncher.isInState(ALL_APPS)) {
-            mStartContainerType = ContainerType.ALLAPPS;
-            return SwipeDetector.DIRECTION_NEGATIVE;
-        } else {
-            mStartContainerType = mLauncher.getDragLayer().isEventOverHotseat(ev) ?
-                    ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-            return SwipeDetector.DIRECTION_POSITIVE;
-        }
-    }
-
-    @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == NORMAL && isDragTowardPositive) {
             return ALL_APPS;
@@ -63,11 +57,17 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected float initCurrentAnimation() {
+    protected int getLogContainerTypeForNormalState() {
+        return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent) ?
+                ContainerType.HOTSEAT : ContainerType.WORKSPACE;
+    }
+
+    @Override
+    protected float initCurrentAnimation(@AnimationComponents int animComponents) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, maxAccuracy);
+                .createAnimationToNewWorkspace(mToState, maxAccuracy, animComponents);
         float startVerticalShift = mFromState.getVerticalProgress(mLauncher) * range;
         float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
         float totalShift = endVerticalShift - startVerticalShift;

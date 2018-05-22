@@ -76,4 +76,9 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
             super.determineScrollingStart(ev);
         }
     }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
 }

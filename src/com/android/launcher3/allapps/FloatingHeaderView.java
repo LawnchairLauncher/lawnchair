@@ -74,6 +74,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     protected boolean mTabsHidden;
     protected int mMaxTranslation;
+    private boolean mMainRVActive = true;
 
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
@@ -95,7 +96,7 @@ public class FloatingHeaderView extends LinearLayout implements
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
-        setMainActive(true);
+        setMainActive(mMainRVActive || mWorkRV == null);
         reset(false);
     }
 
@@ -108,6 +109,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     public void setMainActive(boolean active) {
         mCurrentRV = active ? mMainRV : mWorkRV;
+        mMainRVActive = active;
     }
 
     public int getMaxTranslation() {
@@ -235,6 +237,11 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public boolean hasVisibleContent() {
+        return false;
+    }
+
+    @Override
+    public boolean hasOverlappingRendering() {
         return false;
     }
 }

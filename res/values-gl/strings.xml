@@ -79,8 +79,10 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Cartafol: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de inicio"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración da pantalla de Inicio"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Función desactivada polo administrador"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir xirar a pantalla de inicio"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Ao xirar o teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Puntos de notificacións"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activado"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desactivado"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Reducir altura"</string>
     <string name="widget_resized" msgid="9130327887929620">"Cambiouse o tamaño do widget polo ancho <xliff:g id="NUMBER_0">%1$s</xliff:g> e a altura <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Atallos"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atallos para <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atallos e <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificacións para a aplicación <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Ignorouse a notificación"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persoal"</string>

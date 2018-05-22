@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าแรก"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"อนุญาตให้หมุนหน้าจอหลัก"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"เมื่อหมุนโทรศัพท์"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"จุดแจ้งเตือน"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"เปิด"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ปิด"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ลดความสูง"</string>
     <string name="widget_resized" msgid="9130327887929620">"ปรับขนาดของวิดเจ็ตเป็นกว้าง <xliff:g id="NUMBER_0">%1$s</xliff:g> สูง <xliff:g id="NUMBER_1">%2$s</xliff:g> แล้ว"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ทางลัด"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ทางลัดสำหรับ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ทางลัด <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> รายการและการแจ้งเตือน <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> รายการสำหรับ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ปิด"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ปิดการแจ้งเตือนแล้ว"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ส่วนตัว"</string>
