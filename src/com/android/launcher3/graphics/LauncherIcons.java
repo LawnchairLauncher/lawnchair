@@ -360,16 +360,18 @@ public class LauncherIcons implements AutoCloseable {
                 .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
 
-        Bitmap unbadgedBitmap = null;
+        final Bitmap unbadgedBitmap;
         if (unbadgedDrawable != null) {
             unbadgedBitmap = createScaledBitmapWithoutShadow(unbadgedDrawable, 0);
         } else {
             if (fallbackIconProvider != null) {
-                unbadgedBitmap = fallbackIconProvider.get();
+                // Fallback icons are already badged and with appropriate shadow
+                Bitmap fullIcon = fallbackIconProvider.get();
+                if (fullIcon != null) {
+                    return createIconBitmap(fullIcon);
+                }
             }
-            if (unbadgedBitmap == null) {
-                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
-            }
+            unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
         }
 
         BitmapInfo result = new BitmapInfo();
