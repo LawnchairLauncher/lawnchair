@@ -53,6 +53,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -1320,5 +1321,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected boolean isPageOrderFlipped() {
         return FLIP_RECENTS;
+    }
+
+    public void addTaskAccessibilityActionsExtra(AccessibilityNodeInfo info) {
+    }
+
+    public boolean performTaskAccessibilityActionExtra(int action) {
+        return false;
     }
 }
