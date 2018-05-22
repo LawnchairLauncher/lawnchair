@@ -41,6 +41,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -973,6 +974,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_TAB:
+                    if (!event.isAltPressed() &&
+                            getNextPage() ==
+                                    (event.isShiftPressed() ? 0 : getChildCount() - 1)) {
+                        // If not Alt-Tab navigation, don't loop forever in the carousel and leave
+                        // it once we reached the end.
+                        return false;
+                    }
                     snapToPageRelative(event.isShiftPressed() ? -1 : 1);
                     return true;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -996,6 +1004,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction,
+            @Nullable Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if (gainFocus && getChildCount() > 0) {
+            switch (direction) {
+                case FOCUS_FORWARD:
+                    setCurrentPage(0);
+                    break;
+                case FOCUS_BACKWARD:
+                    setCurrentPage(getChildCount() - 1);
+                    break;
+            }
+        }
     }
 
     public void snapToTaskAfterNext() {
@@ -1309,6 +1333,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void revealClearAllButton() {
+        setCurrentPage(getChildCount() - 1); // Loads tasks info if needed.
         scrollTo(mIsRtl ? 0 : computeMaxScrollX(), 0);
     }
 
