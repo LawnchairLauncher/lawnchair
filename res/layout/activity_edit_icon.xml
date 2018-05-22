@@ -12,6 +12,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_view"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -23,6 +24,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:scaleType="fitCenter"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@mipmap/ic_launcher" />
