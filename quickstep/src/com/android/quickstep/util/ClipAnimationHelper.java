@@ -80,6 +80,7 @@ public class ClipAnimationHelper {
     private final RectF mTmpRectF = new RectF();
 
     private float mTargetScale = 1f;
+    private float mOffsetScale = 1f;
     private Interpolator mInterpolator = LINEAR;
     // We translate y slightly faster than the rest of the animation for quick scrub.
     private Interpolator mOffsetYInterpolator = LINEAR;
@@ -106,11 +107,13 @@ public class ClipAnimationHelper {
         updateSourceStack(target);
     }
 
-    public void updateTargetRect(Rect targetRect) {
+    public void updateTargetRect(TransformedRect targetRect) {
+        mOffsetScale = targetRect.scale;
         mSourceRect.set(mSourceInsets.left, mSourceInsets.top,
                 mSourceStackBounds.width() - mSourceInsets.right,
                 mSourceStackBounds.height() - mSourceInsets.bottom);
-        mTargetRect.set(targetRect);
+        mTargetRect.set(targetRect.rect);
+        Utilities.scaleRectFAboutCenter(mTargetRect, targetRect.scale);
         mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
                 mHomeStackBounds.top - mSourceStackBounds.top);
 
@@ -145,7 +148,8 @@ public class ClipAnimationHelper {
 
         synchronized (mTargetOffset) {
             // Stay lined up with the center of the target, since it moves for quick scrub.
-            currentRect.offset(mTargetOffset.x * progress, mTargetOffset.y  * offsetYProgress);
+            currentRect.offset(mTargetOffset.x * mOffsetScale * progress,
+                    mTargetOffset.y  * offsetYProgress);
         }
 
         mClipRect.left = (int) (mSourceWindowClipInsets.left * progress);
@@ -219,8 +223,8 @@ public class ClipAnimationHelper {
             mSourceInsets.set(activity.getDeviceProfile().getInsets());
         }
 
-        Rect targetRect = new Rect();
-        dl.getDescendantRectRelativeToSelf(ttv, targetRect);
+        TransformedRect targetRect = new TransformedRect();
+        dl.getDescendantRectRelativeToSelf(ttv, targetRect.rect);
         updateTargetRect(targetRect);
 
         // Transform the clip relative to the target rect.
