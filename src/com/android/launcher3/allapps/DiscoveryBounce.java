@@ -24,14 +24,9 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerTyp
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.Keyframe;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.os.Handler;
 import android.view.MotionEvent;
-import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -52,21 +47,21 @@ public class DiscoveryBounce extends AbstractFloatingView {
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
 
-    public DiscoveryBounce(Launcher launcher, Animator animator) {
+    public DiscoveryBounce(Launcher launcher, float delta) {
         super(launcher, null);
         mLauncher = launcher;
-
-        mDiscoBounceAnimation = animator;
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
-        mDiscoBounceAnimation.setTarget(controller);
-        mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
 
+        mDiscoBounceAnimation =
+                AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce);
+        mDiscoBounceAnimation.setTarget(new VerticalProgressWrapper(controller, delta));
         mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 handleClose(false);
             }
         });
+        mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
     }
 
     @Override
@@ -102,6 +97,9 @@ public class DiscoveryBounce extends AbstractFloatingView {
         if (mIsOpen) {
             mIsOpen = false;
             mLauncher.getDragLayer().removeView(this);
+            // Reset the all-apps progress to what ever it was previously.
+            mLauncher.getAllAppsController().setProgress(mLauncher.getStateManager()
+                    .getState().getVerticalProgress(mLauncher));
         }
     }
 
@@ -113,6 +111,12 @@ public class DiscoveryBounce extends AbstractFloatingView {
     @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ON_BOARD_POPUP) != 0;
+    }
+
+    private void show(int containerType) {
+        mIsOpen = true;
+        mLauncher.getDragLayer().addView(this);
+        mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
     }
 
     public static void showForHomeIfNeeded(Launcher launcher) {
@@ -133,11 +137,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             return;
         }
 
-        DiscoveryBounce view = new DiscoveryBounce(launcher,
-                AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce));
-        view.mIsOpen = true;
-        launcher.getDragLayer().addView(view);
-        launcher.getUserEventDispatcher().logActionBounceTip(HOTSEAT);
+        new DiscoveryBounce(launcher, 0).show(HOTSEAT);
     }
 
     public static void showForOverviewIfNeeded(Launcher launcher) {
@@ -164,26 +164,29 @@ public class DiscoveryBounce extends AbstractFloatingView {
             return;
         }
 
-        float verticalProgress = OVERVIEW.getVerticalProgress(launcher);
+        new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
+                .show(PREDICTION);
+    }
 
-        TimeInterpolator pathInterpolator = new PathInterpolator(0.35f, 0, 0.5f, 1);
-        Keyframe keyframe3 = Keyframe.ofFloat(0.423f, verticalProgress - (1 - 0.9738f));
-        keyframe3.setInterpolator(pathInterpolator);
-        Keyframe keyframe4 = Keyframe.ofFloat(0.754f, verticalProgress);
-        keyframe4.setInterpolator(pathInterpolator);
+    /**
+     * A wrapper around {@link AllAppsTransitionController} allowing a fixed shift in the value.
+     */
+    public static class VerticalProgressWrapper {
 
-        PropertyValuesHolder propertyValuesHolder = PropertyValuesHolder.ofKeyframe("progress",
-                Keyframe.ofFloat(0, verticalProgress),
-                Keyframe.ofFloat(0.246f, verticalProgress), keyframe3, keyframe4,
-                Keyframe.ofFloat(1f, verticalProgress));
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(null,
-                new PropertyValuesHolder[]{propertyValuesHolder});
-        animator.setDuration(2166);
-        animator.setRepeatCount(5);
+        private final float mDelta;
+        private final AllAppsTransitionController mController;
 
-        DiscoveryBounce view = new DiscoveryBounce(launcher, animator);
-        view.mIsOpen = true;
-        launcher.getDragLayer().addView(view);
-        launcher.getUserEventDispatcher().logActionBounceTip(PREDICTION);
+        private VerticalProgressWrapper(AllAppsTransitionController controller, float delta) {
+            mController = controller;
+            mDelta = delta;
+        }
+
+        public float getProgress() {
+            return mController.getProgress() + mDelta;
+        }
+
+        public void setProgress(float progress) {
+            mController.setProgress(progress - mDelta);
+        }
     }
 }
