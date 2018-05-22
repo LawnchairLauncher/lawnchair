@@ -174,10 +174,6 @@ public class FastBitmapDrawable extends Drawable {
         return getBounds().height();
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
-
     @Override
     public boolean isStateful() {
         return true;

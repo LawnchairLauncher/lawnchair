@@ -81,8 +81,10 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Folda: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Wijeti"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Mandhari"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Mipangilio ya ukurasa wa mwanzo"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Mipangilio ya mwanzo"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Imezimwa na msimamizi wako"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Ruhusu kuzungusha skrini ya Kwanza"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Simu inapozungushwa"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Vitone vya arifa"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Imewashwa"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Imezimwa"</string>
@@ -94,7 +96,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwa ajili ya programu mpya"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Badilisha umbo la aikoni"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"kwenye Skrini ya mwanzo"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Tumia umbo chaguo-msingi la mfumo"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Tumia umbo chaguomsingi la mfumo"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Mraba"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Mstatili wenye pembe duara"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Mduara"</string>
@@ -130,8 +132,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Punguza urefu"</string>
     <string name="widget_resized" msgid="9130327887929620">"Wijeti imepunguzwa hadi upana <xliff:g id="NUMBER_0">%1$s</xliff:g> urefu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Njia za mkato"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"Njia <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> za mkato za <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Njia <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> za mkato na arifa <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> za <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ondoa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Arifa imeondolewa"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Binafsi"</string>

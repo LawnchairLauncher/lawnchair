@@ -39,6 +39,9 @@ public class LauncherAnimUtils {
     public static final int SPRING_LOADED_TRANSITION_MS = 150;
     public static final int SPRING_LOADED_EXIT_DELAY = 500;
 
+    // The progress of an animation to all apps must be at least this far along to snap to all apps.
+    public static final float MIN_PROGRESS_TO_ALL_APPS = 0.5f;
+
     static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
@@ -165,16 +168,8 @@ public class LauncherAnimUtils {
                 }
             };
 
-    public static final Property<View, Float> ELEVATION =
-            new Property<View, Float>(Float.class, "elevation") {
-                @Override
-                public Float get(View view) {
-                    return view.getElevation();
-                }
-
-                @Override
-                public void set(View view, Float elevation) {
-                    view.setElevation(elevation);
-                }
-            };
+    /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
+    public static int blockedFlingDurationFactor(float velocity) {
+        return (int) Utilities.boundToRange(Math.abs(velocity) / 2, 2f, 6f);
+    }
 }

@@ -21,9 +21,10 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
-import static com.android.systemui.shared.system.NavigationBarCompat.QUICK_STEP_DRAG_SLOP_PX;
+
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -46,16 +47,17 @@ import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -66,8 +68,6 @@ import java.util.concurrent.TimeUnit;
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
-    private static final int[] DEFERRED_HIT_TARGETS = false
-            ? new int[] {HIT_TARGET_BACK, HIT_TARGET_OVERVIEW} : new int[] {HIT_TARGET_BACK};
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
@@ -75,12 +75,15 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final ActivityControlHelper mActivityControlHelper;
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
+    private final OverviewCallbacks mOverviewCallbacks;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
     private boolean mPassedInitialSlop;
+    // Used for non-deferred gestures to determine when to start dragging
+    private int mQuickStepDragSlop;
     private float mStartDisplacement;
     private WindowTransformSwipeHandler mInteractionHandler;
     private int mDisplayRotation;
@@ -93,8 +96,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
-            @HitTarget int downHitTarget, VelocityTracker velocityTracker) {
+            @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
+            VelocityTracker velocityTracker) {
         super(base);
+
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
@@ -102,7 +107,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-        mIsDeferredDownTarget = Arrays.binarySearch(DEFERRED_HIT_TARGETS, downHitTarget) >= 0;
+        mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
+        mOverviewCallbacks = overviewCallbacks;
     }
 
     @Override
@@ -122,6 +128,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mPassedInitialSlop = false;
+                mQuickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -154,14 +161,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
-                if (!mPassedInitialSlop && Math.abs(displacement) > QUICK_STEP_DRAG_SLOP_PX) {
-                    mPassedInitialSlop = true;
-                    mStartDisplacement = displacement;
-
-                    // If we deferred starting the window animation on touch down, then
-                    // start tracking now
-                    if (mIsDeferredDownTarget) {
-                        startTouchTrackingForWindowAnimation(ev.getEventTime());
+                if (!mPassedInitialSlop) {
+                    if (!mIsDeferredDownTarget) {
+                        // Normal gesture, ensure we pass the drag slop before we start tracking
+                        // the gesture
+                        if (Math.abs(displacement) > mQuickStepDragSlop) {
+                            mPassedInitialSlop = true;
+                            mStartDisplacement = displacement;
+                        }
                     }
                 }
 
@@ -186,6 +193,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler == null) {
             return;
         }
+
+        mOverviewCallbacks.closeAllWindows();
+        ActivityManagerWrapper.getInstance().closeSystemWindows(
+                CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted();
     }
@@ -218,7 +230,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
-        Runnable startActivity = () -> mActivityControlHelper.startRecentsFromSwipe(mHomeIntent,
+        Runnable startActivity = () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                mHomeIntent,
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {
@@ -232,8 +245,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             Rect minimizedHomeBounds) {
                         if (mInteractionHandler == handler) {
                             TraceHelper.partitionSection("RecentsController", "Received");
-                            handler.onRecentsAnimationStart(controller, apps, homeContentInsets,
-                                    minimizedHomeBounds);
+                            handler.onRecentsAnimationStart(controller,
+                                    new RemoteAnimationTargetSet(apps, MODE_CLOSING),
+                                    homeContentInsets, minimizedHomeBounds);
                         } else {
                             TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);
@@ -247,7 +261,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             handler.onRecentsAnimationCanceled();
                         }
                     }
-                });
+                }, null, null);
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
@@ -305,6 +319,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void updateTouchTracking(int interactionType) {
+        if (!mPassedInitialSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
+            // If we deferred starting the window animation on touch down, then
+            // start tracking now
+            startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
+            mPassedInitialSlop = true;
+        }
+
         notifyGestureStarted();
         if (mInteractionHandler != null) {
             mInteractionHandler.updateInteractionType(interactionType);
@@ -332,7 +353,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
-    public void onQuickStep(float eventX, float eventY, long eventTime) {
+    public void onQuickStep(MotionEvent ev) {
+        if (mIsDeferredDownTarget) {
+            // Deferred gesture, start the animation and gesture tracking once we pass the actual
+            // touch slop
+            startTouchTrackingForWindowAnimation(ev.getEventTime());
+            mPassedInitialSlop = true;
+            mStartDisplacement = getDisplacement(ev);
+        }
         notifyGestureStarted();
     }
 

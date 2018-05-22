@@ -24,13 +24,13 @@
     <string name="work_folder_name" msgid="3753320833950115786">"العمل"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"لم يتم تثبيت التطبيق."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"التطبيق ليس متاحًا"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"تم تعطيل التطبيق الذي تم تنزيله في الوضع الآمن"</string>
-    <string name="safemode_widget_error" msgid="4863470563535682004">"الأدوات معطلة في الوضع الآمن"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"تم إيقاف التطبيق الذي تم تنزيله في الوضع الآمن"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"الأدوات غير مفعّلة في الوضع الآمن"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"الاختصار غير متاح"</string>
     <string name="home_screen" msgid="806512411299847073">"الشاشة الرئيسية"</string>
     <string name="custom_actions" msgid="3747508247759093328">"الإجراءات المخصّصة"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"المس مع الاستمرار لاختيار إحدى الأدوات."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"انقر نقرًا مزدوجًا مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"انقر مرّتين مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏العرض %1$d الطول %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"انقر مع الاستمرار لإضافة العنصر يدويًا"</string>
@@ -41,7 +41,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"البحث عن مزيد من التطبيقات"</string>
     <string name="notifications_header" msgid="1404149926117359025">"الإشعارات"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"انقر مع الاستمرار لاختيار اختصار."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"يمكنك النقر نقرًا مزدوجًا مع الاستمرار لاختيار اختصار أو استخدام الإجراءات المخصصة."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"يمكنك النقر مرّتين مع الاستمرار لاختيار اختصار أو استخدام الإجراءات المخصصة."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"لا يوجد المزيد من الحقول في علبة المفضلة"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"قائمة التطبيقات"</string>
@@ -63,7 +63,7 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"الإعداد"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
-    <string name="disabled_app_label" msgid="6673129024321402780">"تم تعطيل <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"تم إيقاف <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="zero"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار</item>
       <item quantity="two"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به إشعاران (<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>)</item>
@@ -84,11 +84,13 @@
     <string name="widget_button_text" msgid="2880537293434387943">"الأدوات"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"الخلفيات"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"إعدادات الصفحة الرئيسية"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"عطَّل المشرف هذه الميزة"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"أوقف المشرف هذه الميزة"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"السماح بتدوير الشاشة الرئيسية"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"عند تدوير الهاتف"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"نقاط الإشعارات"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"قيد التشغيل"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"قيد الإيقاف"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"غير مفعّل"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تفعيل الوصول إلى الإشعارات"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>
     <string name="icon_badging_service_title" msgid="2309733118428242174">"عرض نقاط الإشعارات"</string>
@@ -96,7 +98,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"للتطبيقات الجديدة"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"تغيير شكل الرمز"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"على الشاشة الرئيسية"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"استخدام الإعداد الافتراضي للنظام"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"استخدام الإعداد التلقائي للنظام"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"مربّع"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"رمز دائري مربّع"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"دائرة"</string>
@@ -132,8 +134,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"تقليل الارتفاع"</string>
     <string name="widget_resized" msgid="9130327887929620">"تم تغيير حجم الأداة إلى العرض <xliff:g id="NUMBER_0">%1$s</xliff:g> والارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"الاختصارات"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار لتطبيق <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"هناك <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار و<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> إشعار عن <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"تجاهل"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"تم تجاهل الإشعار"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصية"</string>

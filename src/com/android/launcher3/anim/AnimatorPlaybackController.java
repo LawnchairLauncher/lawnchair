@@ -17,6 +17,7 @@ package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -34,61 +35,76 @@ import java.util.List;
  */
 public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
+    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
+        return wrap(anim, duration, null);
+    }
+
     /**
      * Creates an animation controller for the provided animation.
      * The actual duration does not matter as the animation is manually controlled. It just
      * needs to be larger than the total number of pixels so that we don't have jittering due
      * to float (animation-fraction * total duration) to int conversion.
      */
-    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
+    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration,
+            Runnable onCancelRunnable) {
 
         /**
          * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
          */
-        return new AnimatorPlaybackControllerVL(anim, duration);
+        return new AnimatorPlaybackControllerVL(anim, duration, onCancelRunnable);
     }
 
     private final ValueAnimator mAnimationPlayer;
     private final long mDuration;
 
     protected final AnimatorSet mAnim;
-    private AnimatorSet mOriginalTarget;
 
     protected float mCurrentFraction;
     private Runnable mEndAction;
 
-    protected AnimatorPlaybackController(AnimatorSet anim, long duration) {
+    protected boolean mTargetCancelled = false;
+    protected Runnable mOnCancelRunnable;
+
+    protected AnimatorPlaybackController(AnimatorSet anim, long duration,
+            Runnable onCancelRunnable) {
         mAnim = anim;
-        mOriginalTarget = mAnim;
         mDuration = duration;
+        mOnCancelRunnable = onCancelRunnable;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
         mAnimationPlayer.setInterpolator(Interpolators.LINEAR);
         mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.addUpdateListener(this);
+
+        mAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mTargetCancelled = true;
+                if (mOnCancelRunnable != null) {
+                    mOnCancelRunnable.run();
+                    mOnCancelRunnable = null;
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mTargetCancelled = false;
+                mOnCancelRunnable = null;
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mTargetCancelled = false;
+            }
+        });
     }
 
     public AnimatorSet getTarget() {
         return mAnim;
     }
 
-    public void setOriginalTarget(AnimatorSet anim) {
-        mOriginalTarget = anim;
-    }
-
-    public AnimatorSet getOriginalTarget() {
-        return mOriginalTarget;
-    }
-
     public long getDuration() {
         return mDuration;
-    }
-
-    public AnimatorPlaybackController cloneFor(AnimatorSet anim) {
-        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(anim, mDuration);
-        controller.setOriginalTarget(mOriginalTarget);
-        controller.setPlayFraction(mCurrentFraction);
-        return controller;
     }
 
     /**
@@ -170,12 +186,37 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
+    public void dispatchOnCancel() {
+        dispatchOnCancelRecursively(mAnim);
+    }
+
+    private void dispatchOnCancelRecursively(Animator animator) {
+        for (AnimatorListener l : nonNullList(animator.getListeners())) {
+            l.onAnimationCancel(animator);
+        }
+
+        if (animator instanceof AnimatorSet) {
+            for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
+                dispatchOnCancelRecursively(anim);
+            }
+        }
+    }
+
+    public void setOnCancelRunnable(Runnable runnable) {
+        mOnCancelRunnable = runnable;
+    }
+
+    public Runnable getOnCancelRunnable() {
+        return mOnCancelRunnable;
+    }
+
     public static class AnimatorPlaybackControllerVL extends AnimatorPlaybackController {
 
         private final ValueAnimator[] mChildAnimations;
 
-        private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration) {
-            super(anim, duration);
+        private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration,
+                Runnable onCancelRunnable) {
+            super(anim, duration, onCancelRunnable);
 
             // Build animation list
             ArrayList<ValueAnimator> childAnims = new ArrayList<>();
@@ -206,6 +247,11 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         @Override
         public void setPlayFraction(float fraction) {
             mCurrentFraction = fraction;
+            // Let the animator report the progress but don't apply the progress to child
+            // animations if it has been cancelled.
+            if (mTargetCancelled) {
+                return;
+            }
             long playPos = clampDuration(fraction);
             for (ValueAnimator anim : mChildAnimations) {
                 anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));

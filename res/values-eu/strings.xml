@@ -81,13 +81,15 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Horma-paperak"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Hasierako pantailaren ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Jakinarazteko biribiltxoak"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Baimendu hasierako pantaila biratzea"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzen denean"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Jakinarazpen-biribiltxoak"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktibatuta"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desaktibatuta"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Jakinarazpenetarako sarbidea behar da"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazteko biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazpen-biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Aldatu ezarpenak"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Erakutsi jakinarazteko biribiltxoak"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Erakutsi jakinarazpen-biribiltxoak"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Gehitu ikonoa hasierako pantailan"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Aplikazio berrietan"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Aldatu ikonoaren forma"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Txikitu altuera"</string>
     <string name="widget_resized" msgid="9130327887929620">"Aldatu da widgetaren tamaina. Zabalera: <xliff:g id="NUMBER_0">%1$s</xliff:g>. Altuera: <xliff:g id="NUMBER_1">%2$s</xliff:g>."</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Lasterbideak"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> aplikazioaren <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> lasterbide"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> aplikazioaren <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> lasterbide eta <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> jakinarazpen"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Baztertu"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Baztertu egin da jakinarazpena"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pertsonalak"</string>

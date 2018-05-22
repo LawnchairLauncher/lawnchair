@@ -415,4 +415,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 y + mEmptySearchBackground.getIntrinsicHeight());
     }
 
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
 }

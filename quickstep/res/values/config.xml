@@ -16,4 +16,7 @@
 <resources>
     <string name="task_overlay_factory_class" translatable="false"></string>
 
+    <string name="overview_callbacks_class" translatable="false"></string>
+
+    <string name="user_event_dispatcher_class" translatable="false">com.google.quickstep.logging.UserEventDispatcherExtension</string>
 </resources>

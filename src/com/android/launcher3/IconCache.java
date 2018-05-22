@@ -107,6 +107,8 @@ public class IconCache {
     private final BitmapFactory.Options mLowResOptions;
     private final BitmapFactory.Options mHighResOptions;
 
+    private int mPendingIconRequestCount = 0;
+
     public IconCache(Context context, InvariantDeviceProfile inv) {
         mContext = context;
         mPackageManager = context.getPackageManager();
@@ -411,8 +413,13 @@ public class IconCache {
      */
     public IconLoadRequest updateIconInBackground(final ItemInfoUpdateReceiver caller,
             final ItemInfoWithIcon info) {
-        Runnable request = new Runnable() {
+        Preconditions.assertUIThread();
+        if (mPendingIconRequestCount <= 0) {
+            LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_FOREGROUND);
+        }
+        mPendingIconRequestCount ++;
 
+        IconLoadRequest request = new IconLoadRequest(mWorkerHandler, this::onIconRequestEnd) {
             @Override
             public void run() {
                 if (info instanceof AppInfo || info instanceof ShortcutInfo) {
@@ -420,17 +427,21 @@ public class IconCache {
                 } else if (info instanceof PackageItemInfo) {
                     getTitleAndIconForApp((PackageItemInfo) info, false);
                 }
-                mMainThreadExecutor.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        caller.reapplyItemInfo(info);
-                    }
+                mMainThreadExecutor.execute(() -> {
+                    caller.reapplyItemInfo(info);
+                    onEnd();
                 });
             }
         };
-        mWorkerHandler.post(request);
-        return new IconLoadRequest(request, mWorkerHandler);
+        Utilities.postAsyncCallback(mWorkerHandler, request);
+        return request;
+    }
+
+    private void onIconRequestEnd() {
+        mPendingIconRequestCount --;
+        if (mPendingIconRequestCount <= 0) {
+            LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        }
     }
 
     /**
@@ -707,17 +718,27 @@ public class IconCache {
         return false;
     }
 
-    public static class IconLoadRequest {
-        private final Runnable mRunnable;
+    public static abstract class IconLoadRequest implements Runnable {
         private final Handler mHandler;
+        private final Runnable mEndRunnable;
 
-        IconLoadRequest(Runnable runnable, Handler handler) {
-            mRunnable = runnable;
+        private boolean mEnded = false;
+
+        IconLoadRequest(Handler handler, Runnable endRunnable) {
             mHandler = handler;
+            mEndRunnable = endRunnable;
         }
 
         public void cancel() {
-            mHandler.removeCallbacks(mRunnable);
+            mHandler.removeCallbacks(this);
+            onEnd();
+        }
+
+        public void onEnd() {
+            if (!mEnded) {
+                mEnded = true;
+                mEndRunnable.run();
+            }
         }
     }
 
@@ -780,7 +801,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int RELEASE_VERSION = 21;
+        private final static int RELEASE_VERSION = 22;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";

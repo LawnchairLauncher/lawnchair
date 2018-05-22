@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"홈 설정"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"관리자가 사용 중지함"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"홈 화면 회전 허용"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"휴대전화 회전 시"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"알림 표시 점"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"사용"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"사용 안함"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"높이 줄이기"</string>
     <string name="widget_resized" msgid="9130327887929620">"폭 <xliff:g id="NUMBER_0">%1$s</xliff:g>, 높이 <xliff:g id="NUMBER_1">%2$s</xliff:g>로 위젯 크기 조정됨"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"바로가기"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g>에 사용 가능한 단축키 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"바로가기 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개 및 <xliff:g id="APP_NAME">%3$s</xliff:g> 알림 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>개"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>

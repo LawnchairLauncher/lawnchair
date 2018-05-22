@@ -1,5 +1,8 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -11,22 +14,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
-import com.android.launcher3.util.Themes;
-
-import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
-
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Launcher mLauncher;
 
     private final Paint mOpaquePaint;
+
     @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mDrawSideInsetBar;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mLeftInsetBarWidth;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mRightInsetBarWidth;
+    private final Rect mConsumedInsets = new Rect();
 
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
@@ -54,18 +49,26 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
+        mConsumedInsets.setEmpty();
+        boolean drawInsetBar = false;
+        if (mLauncher.isInMultiWindowModeCompat()
+                && (insets.left > 0 || insets.right > 0 || insets.bottom > 0)) {
+            mConsumedInsets.left = insets.left;
+            mConsumedInsets.right = insets.right;
+            mConsumedInsets.bottom = insets.bottom;
+            insets = new Rect(0, insets.top, 0, 0);
+            drawInsetBar = true;
+        } else  if ((insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
-                        getContext().getSystemService(ActivityManager.class).isLowRamDevice());
-        if (mDrawSideInsetBar) {
-            mLeftInsetBarWidth = insets.left;
-            mRightInsetBarWidth = insets.right;
+                        getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
+            mConsumedInsets.left = insets.left;
+            mConsumedInsets.right = insets.right;
             insets = new Rect(0, insets.top, 0, insets.bottom);
-        } else {
-            mLeftInsetBarWidth = mRightInsetBarWidth = 0;
+            drawInsetBar = true;
         }
+
         mLauncher.getSystemUiController().updateUiState(
-                UI_STATE_ROOT_VIEW, mDrawSideInsetBar ? FLAG_DARK_NAV : 0);
+                UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
         // Update device profile before notifying th children.
         mLauncher.getDeviceProfile().updateInsets(insets);
@@ -73,16 +76,19 @@ public class LauncherRootView extends InsettableFrameLayout {
         setInsets(insets);
 
         if (mAlignedView != null) {
-            // Apply margins on aligned view to handle left/right insets.
+            // Apply margins on aligned view to handle consumed insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-            if (lp.leftMargin != mLeftInsetBarWidth || lp.rightMargin != mRightInsetBarWidth) {
-                lp.leftMargin = mLeftInsetBarWidth;
-                lp.rightMargin = mRightInsetBarWidth;
+            if (lp.leftMargin != mConsumedInsets.left || lp.rightMargin != mConsumedInsets.right ||
+                    lp.bottomMargin != mConsumedInsets.bottom) {
+                lp.leftMargin = mConsumedInsets.left;
+                lp.rightMargin = mConsumedInsets.right;
+                lp.topMargin = mConsumedInsets.top;
+                lp.bottomMargin = mConsumedInsets.bottom;
                 mAlignedView.setLayoutParams(lp);
             }
         }
         if (resetState) {
-            mLauncher.getStateManager().reapplyState();
+            mLauncher.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
         }
 
         return true; // I'll take it from here
@@ -95,11 +101,10 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
         }
-        setBackground(insets.top == 0 ? null
-                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     public void dispatchInsets() {
+        mLauncher.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 
@@ -108,14 +113,16 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.dispatchDraw(canvas);
 
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
-        if (mDrawSideInsetBar) {
-            if (mRightInsetBarWidth > 0) {
-                int width = getWidth();
-                canvas.drawRect(width - mRightInsetBarWidth, 0, width, getHeight(), mOpaquePaint);
-            }
-            if (mLeftInsetBarWidth > 0) {
-                canvas.drawRect(0, 0, mLeftInsetBarWidth, getHeight(), mOpaquePaint);
-            }
+        if (mConsumedInsets.right > 0) {
+            int width = getWidth();
+            canvas.drawRect(width - mConsumedInsets.right, 0, width, getHeight(), mOpaquePaint);
+        }
+        if (mConsumedInsets.left > 0) {
+            canvas.drawRect(0, 0, mConsumedInsets.left, getHeight(), mOpaquePaint);
+        }
+        if (mConsumedInsets.bottom > 0) {
+            int height = getHeight();
+            canvas.drawRect(0, height - mConsumedInsets.bottom, getWidth(), height, mOpaquePaint);
         }
     }
 

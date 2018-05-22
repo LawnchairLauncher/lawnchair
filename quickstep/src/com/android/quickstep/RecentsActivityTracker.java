@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.android.launcher3.MainThreadExecutor;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
@@ -34,9 +35,8 @@ import java.util.function.BiPredicate;
 @TargetApi(Build.VERSION_CODES.P)
 public class RecentsActivityTracker implements ActivityInitListener {
 
-    private static final Object LOCK = new Object();
-    private static WeakReference<RecentsActivityTracker> sTracker = new WeakReference<>(null);
     private static WeakReference<RecentsActivity> sCurrentActivity = new WeakReference<>(null);
+    private static final Scheduler sScheduler = new Scheduler();
 
     private final BiPredicate<RecentsActivity, Boolean> mOnInitListener;
 
@@ -46,42 +46,20 @@ public class RecentsActivityTracker implements ActivityInitListener {
 
     @Override
     public void register() {
-        synchronized (LOCK) {
-            sTracker = new WeakReference<>(this);
-        }
+        sScheduler.schedule(this);
     }
 
     @Override
     public void unregister() {
-        synchronized (LOCK) {
-            if (sTracker.get() == this) {
-                sTracker.clear();
-            }
-        }
+        sScheduler.clearReference(this);
     }
 
-    public static void onRecentsActivityCreate(RecentsActivity activity) {
-        synchronized (LOCK) {
-            RecentsActivityTracker tracker = sTracker.get();
-            if (tracker != null && tracker.mOnInitListener.test(activity, false)) {
-                sTracker.clear();
-            }
-            sCurrentActivity = new WeakReference<>(activity);
-        }
-    }
-
-    public static void onRecentsActivityDestroy(RecentsActivity activity) {
-        synchronized (LOCK) {
-            if (sCurrentActivity.get() == activity) {
-                sCurrentActivity.clear();
-            }
-        }
+    private boolean init(RecentsActivity activity, boolean visible) {
+        return mOnInitListener.test(activity, visible);
     }
 
     public static RecentsActivity getCurrentActivity() {
-        synchronized (LOCK) {
-            return sCurrentActivity.get();
-        }
+        return sCurrentActivity.get();
     }
 
     @Override
@@ -91,5 +69,63 @@ public class RecentsActivityTracker implements ActivityInitListener {
 
         Bundle options = animProvider.toActivityOptions(handler, duration).toBundle();
         context.startActivity(intent, options);
+    }
+
+    public static void onRecentsActivityCreate(RecentsActivity activity) {
+        sCurrentActivity = new WeakReference<>(activity);
+        sScheduler.initIfPending(activity, false);
+    }
+
+
+    public static void onRecentsActivityNewIntent(RecentsActivity activity) {
+        sScheduler.initIfPending(activity, activity.isStarted());
+    }
+
+    public static void onRecentsActivityDestroy(RecentsActivity activity) {
+        if (sCurrentActivity.get() == activity) {
+            sCurrentActivity.clear();
+        }
+    }
+
+
+    private static class Scheduler implements Runnable {
+
+        private WeakReference<RecentsActivityTracker> mPendingTracker = new WeakReference<>(null);
+        private MainThreadExecutor mMainThreadExecutor;
+
+        public synchronized void schedule(RecentsActivityTracker tracker) {
+            mPendingTracker = new WeakReference<>(tracker);
+            if (mMainThreadExecutor == null) {
+                mMainThreadExecutor = new MainThreadExecutor();
+            }
+            mMainThreadExecutor.execute(this);
+        }
+
+        @Override
+        public void run() {
+            RecentsActivity activity = sCurrentActivity.get();
+            if (activity != null) {
+                initIfPending(activity, activity.isStarted());
+            }
+        }
+
+        public synchronized boolean initIfPending(RecentsActivity activity, boolean alreadyOnHome) {
+            RecentsActivityTracker tracker = mPendingTracker.get();
+            if (tracker != null) {
+                if (!tracker.init(activity, alreadyOnHome)) {
+                    mPendingTracker.clear();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public synchronized boolean clearReference(RecentsActivityTracker tracker) {
+            if (mPendingTracker.get() == tracker) {
+                mPendingTracker.clear();
+                return true;
+            }
+            return false;
+        }
     }
 }
