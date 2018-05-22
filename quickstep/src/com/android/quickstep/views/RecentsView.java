@@ -1001,6 +1001,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setContentAlpha(float alpha) {
+        alpha = Utilities.boundToRange(alpha, 0, 1);
         mContentAlpha = alpha;
         for (int i = getChildCount() - 1; i >= 0; i--) {
             TaskView child = getPageAt(i);
