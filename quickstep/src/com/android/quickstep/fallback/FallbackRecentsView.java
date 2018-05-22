@@ -20,8 +20,10 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -69,6 +71,23 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
         // Just use the activity task size for multi-window as well.
+        return false;
+    }
+
+    @Override
+    public void addTaskAccessibilityActionsExtra(AccessibilityNodeInfo info) {
+        info.addAction(
+                new AccessibilityNodeInfo.AccessibilityAction(
+                        R.string.recents_clear_all,
+                        getContext().getText(R.string.recents_clear_all)));
+    }
+
+    @Override
+    public boolean performTaskAccessibilityActionExtra(int action) {
+        if (action == R.string.recents_clear_all) {
+            dismissAllTasks();
+            return true;
+        }
         return false;
     }
 }
