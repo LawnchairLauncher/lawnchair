@@ -78,11 +78,13 @@ public class UiFactory {
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
-        return new StateHandler[] {
-                launcher.getAllAppsController(), launcher.getWorkspace(),
-                new RecentsViewStateController(launcher)};
+        return new StateHandler[] {launcher.getAllAppsController(), launcher.getWorkspace(),
+                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher)};
     }
 
+    /**
+     * Sets the back button visibility based on the current state/window focus.
+     */
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
         boolean shouldBackButtonBeHidden = launcher != null
                 && launcher.getStateManager().getState().hideBackButton
@@ -94,10 +96,6 @@ public class UiFactory {
         }
         OverviewInteractionState.getInstance(launcher)
                 .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
-    }
-
-    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) {
-         OverviewInteractionState.getInstance(launcher).setBackButtonAlpha(alpha,animate);
     }
 
     public static void resetOverview(Launcher launcher) {
