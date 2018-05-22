@@ -582,6 +582,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * and unloads the associated task data for tasks that are no longer visible.
      */
     public void loadVisibleTaskData() {
+        if (!mOverviewStateEnabled) {
+            // Skip loading visible task data if we've already left the overview state
+            return;
+        }
+
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         int centerPageIndex = getPageNearestToCenterOfScreen();
         int lower = Math.max(0, centerPageIndex - 2);
