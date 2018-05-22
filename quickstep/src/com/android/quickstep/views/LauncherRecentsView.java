@@ -35,6 +35,9 @@ import android.view.ViewDebug;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
@@ -136,6 +139,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         }
         anim.play(ObjectAnimator.ofFloat(
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
+
+        ObjectAnimator dragHandleAnim = ObjectAnimator.ofInt(
+                mActivity.findViewById(R.id.scrim_view), ScrimView.DRAG_HANDLE_ALPHA, 0);
+        dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
+        anim.play(dragHandleAnim);
+
         return anim;
     }
 
@@ -150,7 +159,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             mActivity.getStateManager().goToState(NORMAL, false /* animate */);
         } else {
             LauncherState state = mActivity.getStateManager().getState();
-            mActivity.getAllAppsController().setProgress(state.getVerticalProgress(mActivity));
+            mActivity.getAllAppsController().setState(state);
         }
         super.onTaskLaunched(success);
     }

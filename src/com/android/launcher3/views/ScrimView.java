@@ -45,6 +45,7 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,6 +74,19 @@ import java.util.List;
 public class ScrimView extends View implements Insettable, OnChangeListener,
         AccessibilityStateChangeListener, StateListener {
 
+    public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
+            new Property<ScrimView, Integer>(Integer.TYPE, "dragHandleAlpha") {
+
+                @Override
+                public Integer get(ScrimView scrimView) {
+                    return scrimView.mDragHandleAlpha;
+                }
+
+                @Override
+                public void set(ScrimView scrimView, Integer value) {
+                    scrimView.setDragHandleAlpha(value);
+                }
+            };
     private static final int WALLPAPERS = R.string.wallpaper_button_text;
     private static final int WIDGETS = R.string.widget_button_text;
     private static final int SETTINGS = R.string.settings_button_text;
@@ -101,6 +115,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     private final AccessibilityHelper mAccessibilityHelper;
     @Nullable
     protected Drawable mDragHandle;
+
+    private int mDragHandleAlpha = 255;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -187,7 +203,17 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     protected void updateDragHandleAlpha() {
         if (mDragHandle != null) {
-            mDragHandle.setAlpha(Math.round(255 * Utilities.boundToRange(mProgress, 0, 1)));
+            mDragHandle.setAlpha(mDragHandleAlpha);
+        }
+    }
+
+    private void setDragHandleAlpha(int alpha) {
+        if (alpha != mDragHandleAlpha) {
+            mDragHandleAlpha = alpha;
+            if (mDragHandle != null) {
+                mDragHandle.setAlpha(mDragHandleAlpha);
+                invalidate();
+            }
         }
     }
 
