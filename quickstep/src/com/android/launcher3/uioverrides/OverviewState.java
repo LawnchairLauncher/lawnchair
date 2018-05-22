@@ -100,9 +100,9 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return 0;
+            return VERTICAL_SWIPE_INDICATOR;
         } else {
-            return HOTSEAT_SEARCH_BOX |
+            return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR |
                     (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
                             ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
