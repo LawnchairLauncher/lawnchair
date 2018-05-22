@@ -18,15 +18,17 @@ abstract class CustomInfoProvider<in T : ItemInfo> {
 
     abstract fun setIcon(info: T, entry: IconPackManager.CustomIconEntry?)
 
+    abstract fun getIcon(info: T): IconPackManager.CustomIconEntry?
+
     companion object {
 
         @Suppress("UNCHECKED_CAST")
-        fun <T : ItemInfo> forItem(context: Context, info: ItemInfo): CustomInfoProvider<T> {
-            return if (info is AppInfo) {
-                AppInfoProvider.getInstance(context)
-            } else {
-                ShortcutInfoProvider.getInstance(context)
-            } as CustomInfoProvider<T>
+        fun <T : ItemInfo> forItem(context: Context, info: ItemInfo?): CustomInfoProvider<T>? {
+            return when (info) {
+                is AppInfo -> AppInfoProvider.getInstance(context)
+                is ShortcutInfo -> ShortcutInfoProvider.getInstance(context)
+                else -> null
+            } as CustomInfoProvider<T>?
         }
 
         fun isEditable(info: ItemInfo): Boolean {

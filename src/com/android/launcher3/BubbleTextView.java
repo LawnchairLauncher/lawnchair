@@ -223,6 +223,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
+        if (info instanceof ShortcutInfo && ((ShortcutInfo) info).customIcon != null) {
+            icon = ((ShortcutInfo) info).customIcon;
+        }
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(icon, info);
         iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
@@ -236,8 +239,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     private CharSequence getTitle(ItemInfo info) {
-        if (info instanceof ShortcutInfo) {
-            return CustomInfoProvider.Companion.forItem(getContext(), info).getTitle(info);
+        CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
+        if (customInfoProvider != null) {
+            return customInfoProvider.getTitle(info);
         } else {
             return info.title;
         }

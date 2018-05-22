@@ -75,6 +75,7 @@ public class LoaderCursor extends CursorWrapper {
     private final int iconPackageIndex;
     private final int iconResourceIndex;
     private final int iconIndex;
+    private final int customIconIndex;
     public final int titleIndex;
 
     private final int idIndex;
@@ -104,6 +105,7 @@ public class LoaderCursor extends CursorWrapper {
 
         // Init column indices
         iconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+        customIconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CUSTOM_ICON);
         iconPackageIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
         titleIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
@@ -192,6 +194,21 @@ public class LoaderCursor extends CursorWrapper {
             Log.e(TAG, "Failed to load icon for info " + info);
         }
         return icon;
+    }
+
+    public Bitmap loadCustomIcon(ShortcutInfo info) {
+        byte[] data = getBlob(customIconIndex);
+        try {
+            if (data != null) {
+                return LauncherIcons.createIconBitmap(
+                        BitmapFactory.decodeByteArray(data, 0, data.length), mContext);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load custom icon for info " + info, e);
+            return null;
+        }
     }
 
     /**

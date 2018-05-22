@@ -51,17 +51,20 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
         LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(key.componentName.packageName, key.user)
     }
 
-    fun getLauncherActivityInfo(info: AppInfo): LauncherActivityInfo? {
-        return launcherApps.getActivityList(info.componentName.packageName, info.user)
-                .firstOrNull { it.componentName == info.componentName }
+    private fun getLauncherActivityInfo(info: AppInfo): LauncherActivityInfo? {
+        return launcherApps.resolveActivity(info.getIntent(), info.user)
     }
 
     fun getCustomIconEntry(app: LauncherActivityInfo): IconPackManager.CustomIconEntry? {
         return getCustomIconEntry(getComponentKey(app))
     }
 
-    fun getCustomIconEntry(key: ComponentKey): IconPackManager.CustomIconEntry? {
+    private fun getCustomIconEntry(key: ComponentKey): IconPackManager.CustomIconEntry? {
         return prefs.customAppIcon[key]
+    }
+
+    override fun getIcon(info: AppInfo): IconPackManager.CustomIconEntry? {
+        return getCustomIconEntry(info.toComponentKey())
     }
 
     private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName, app.user)

@@ -14,6 +14,7 @@ import android.os.UserHandle
 import android.text.TextUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
+import ch.deletescape.lawnchair.override.CustomInfoProvider
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -111,16 +112,16 @@ class IconPackManager(private val context: Context) {
     }
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                iconDpi: Int, flattenDrawable: Boolean,
+                iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
                 iconProvider: LawnchairIconProvider?): Drawable {
-        val customEntry = appInfoProvider.getCustomIconEntry(launcherActivityInfo)
+        val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
+                ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
         val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
         return pack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, customEntry, currentPack, iconProvider)
     }
 
     fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
-        val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
-        val customEntry = key?.let { appInfoProvider.getCustomIconEntry(it) }
+        val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
         val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
         return pack.newIcon(icon, itemInfo, customEntry, currentPack, drawableFactory)
     }
@@ -177,6 +178,11 @@ class IconPackManager(private val context: Context) {
 
         companion object {
             fun fromString(string: String): CustomIconEntry {
+                return fromNullableString(string)!!
+            }
+
+            fun fromNullableString(string: String?): CustomIconEntry? {
+                if (string == null) return null
                 val parts = string.split("/")
                 val icon = TextUtils.join("/", parts.subList(1, parts.size))
                 return CustomIconEntry(parts[0], if (TextUtils.isEmpty(icon)) null else icon)

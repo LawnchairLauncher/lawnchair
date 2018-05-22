@@ -45,15 +45,8 @@ import android.support.animation.SpringForce;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
@@ -314,12 +307,14 @@ public class DragView extends View {
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
      */
     private Drawable getFullDrawable(ItemInfo info, LauncherAppState appState, Object[] outObj) {
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        IconPackManager.CustomIconEntry customIconEntry = (info instanceof ShortcutInfo) ?
+                ((ShortcutInfo) info).customIconEntry : null;
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION || customIconEntry != null) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo, false) : null;
+                    .getFullResIcon(activityInfo, info, false) : null;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =

@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.ModelWriter;
@@ -137,6 +138,10 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     private int mInstallProgress;
 
     public CharSequence customTitle;
+
+    public Bitmap customIcon;
+
+    public IconPackManager.CustomIconEntry customIconEntry;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -258,16 +263,31 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return cn;
     }
 
-    private void updateDatabase(Context context, String title, Bitmap icon, boolean updateIcon) {
-        ModelWriter.modifyItemInDatabase(context, this, title, icon, updateIcon);
+    private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
+        if (updateIcon)
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, customIconEntry, customIcon, true, reload);
+        else
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, null, null, false, reload);
     }
 
-    public void onLoadTitleAlias(String titleAlias) {
+    public void onLoadCustomizations(String titleAlias, IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
         customTitle = titleAlias;
+        customIconEntry = customIcon;
+        this.customIcon = icon;
     }
 
     public void setTitle(@NotNull Context context, @Nullable String title) {
         customTitle = title;
-        updateDatabase(context, title, null, false);
+        updateDatabase(context, false, true);
+    }
+
+    public void setIconEntry(@NotNull Context context, @Nullable IconPackManager.CustomIconEntry iconEntry) {
+        customIconEntry = iconEntry;
+        updateDatabase(context, true, false);
+    }
+
+    public void setIcon(@NotNull Context context, @Nullable Bitmap icon) {
+        customIcon = icon;
+        updateDatabase(context, true, true);
     }
 }

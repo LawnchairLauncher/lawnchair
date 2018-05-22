@@ -86,6 +86,8 @@ public class LauncherSettings {
         public static final String ICON = "icon";
 
         public static final String CUSTOM_ICON = "customIcon";
+
+        public static final String CUSTOM_ICON_ENTRY = "customIconEntry";
     }
 
     /**
@@ -279,6 +281,7 @@ public class LauncherSettings {
                     "iconResource TEXT," +
                     "icon BLOB," +
                     "customIcon BLOB," +
+                    "customIconEntry TEXT," +
                     "titleAlias TEXT," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +

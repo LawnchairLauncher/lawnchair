@@ -30,7 +30,7 @@ class LawnchairLauncher : NexusLauncherActivity() {
             else -> null
         }
         currentEditInfo = itemInfo
-        val infoProvider = CustomInfoProvider.forItem<ItemInfo>(this, itemInfo)
+        val infoProvider = CustomInfoProvider.forItem<ItemInfo>(this, itemInfo) ?: return
         startActivityForResult(EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component), CODE_EDIT_ICON)
     }
 
@@ -39,7 +39,7 @@ class LawnchairLauncher : NexusLauncherActivity() {
             val itemInfo = currentEditInfo ?: return
             val entryString = data?.getStringExtra(EditIconActivity.EXTRA_ENTRY)
             val customIconEntry = entryString?.let { IconPackManager.CustomIconEntry.fromString(it) }
-            CustomInfoProvider.forItem<ItemInfo>(this, itemInfo).setIcon(itemInfo, customIconEntry)
+            CustomInfoProvider.forItem<ItemInfo>(this, itemInfo)?.setIcon(itemInfo, customIconEntry)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

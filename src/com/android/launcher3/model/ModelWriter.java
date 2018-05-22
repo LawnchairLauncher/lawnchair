@@ -23,23 +23,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
-
-import com.android.launcher3.FolderInfo;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.LauncherSettings;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import com.android.launcher3.*;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
@@ -196,14 +187,20 @@ public class ModelWriter {
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
 
-    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias, Bitmap bitmap, boolean updateIcon) {
+    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
+                                            IconPackManager.CustomIconEntry iconEntry, Bitmap icon,
+                                            boolean updateIcon, boolean reload) {
         final ContentWriter writer = new ContentWriter(context);
         writer.put(Favorites.TITLE_ALIAS, alias);
-        if (updateIcon)
-            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, Utilities.flattenBitmap(bitmap));
+        if (updateIcon) {
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
+            writer.put(Favorites.CUSTOM_ICON_ENTRY, iconEntry != null ? iconEntry.toString() : null);
+        }
 
-        LauncherAppState.getInstance(context).getLauncher().getModelWriter().executeUpdateItem(item, writer);
-        LauncherAppState.getInstance(context).getModel().forceReload();
+        if (reload) {
+            LauncherAppState.getInstance(context).getLauncher().getModelWriter().executeUpdateItem(item, writer);
+            LauncherAppState.getInstance(context).getModel().forceReload();
+        }
     }
 
     /**

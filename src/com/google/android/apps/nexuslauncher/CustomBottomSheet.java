@@ -75,8 +75,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         if (itemInfo instanceof ItemInfoWithIcon) {
             ImageView icon = findViewById(R.id.icon);
-            icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
-            if (itemInfo instanceof AppInfo) {
+            if (itemInfo instanceof ShortcutInfo && ((ShortcutInfo) itemInfo).customIcon != null) {
+                icon.setImageBitmap(((ShortcutInfo) itemInfo).customIcon);
+            } else {
+                icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+            }
+            if (mInfoProvider != null) {
                 icon.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -85,7 +89,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 });
             }
         }
-        if (CustomInfoProvider.Companion.isEditable(mItemInfo)) {
+        if (mInfoProvider != null) {
             mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
             if (mPreviousTitle == null)
                 mPreviousTitle = "";

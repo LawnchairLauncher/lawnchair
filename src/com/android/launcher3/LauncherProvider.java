@@ -85,7 +85,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
-    public static final int SCHEMA_VERSION = 29;
+    public static final int SCHEMA_VERSION = 30;
 
     public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
 
@@ -828,6 +828,8 @@ public class LauncherProvider extends ContentProvider {
                 case 27:
                     db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
                     db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                case 29:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON_ENTRY + " TEXT;");
                     return;
             }
 

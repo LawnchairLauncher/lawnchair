@@ -34,6 +34,7 @@ import android.os.Process;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import ch.deletescape.lawnchair.override.AppInfoProvider;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -164,6 +165,12 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
+        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
+
+    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
+        if (mIconProvider instanceof LawnchairIconProvider)
+            return ((LawnchairIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
