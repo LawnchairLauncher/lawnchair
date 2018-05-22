@@ -15,8 +15,10 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.views.SpringFrameLayout
+import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LooperExecutor
 
 class EditIconActivity : SettingsBaseActivity() {
 
@@ -45,6 +47,15 @@ class EditIconActivity : SettingsBaseActivity() {
         setContentView(R.layout.activity_edit_icon)
 
         title = intent.getStringExtra(EXTRA_TITLE)
+
+        LooperExecutor(LauncherModel.getWorkerLooper()).execute {
+            iconPacks
+            if (component != null) icons
+            runOnUiThread { bindViews() }
+        }
+    }
+
+    fun bindViews() {
         originalIcon.setImageDrawable(LawnchairLauncher.currentEditIcon)
         originalIcon.setOnClickListener { onSelectIcon(null) }
 
@@ -62,6 +73,9 @@ class EditIconActivity : SettingsBaseActivity() {
         iconPackRecyclerView.layoutManager = LinearLayoutManager(this)
         iconPackRecyclerView.edgeEffectFactory = iconPackContainer.createEdgeEffectFactory()
         iconPackContainer.addSpringView(iconPackRecyclerView)
+
+        findViewById<View>(R.id.loading).visibility = View.GONE
+        findViewById<View>(R.id.main_view).visibility = View.VISIBLE
     }
 
     fun onSelectIcon(entry: IconPack.Entry?) {

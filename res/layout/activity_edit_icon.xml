@@ -1,82 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ch.deletescape.lawnchair.iconpack.EditIconActivity">
 
-    <ImageView
-        android:id="@+id/originalIcon"
-        android:layout_width="@dimen/icon_preview_size"
-        android:layout_height="@dimen/icon_preview_size"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher" />
+    <include
+        android:id="@+id/loading"
+        layout="@layout/icon_grid_loading" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="1dp"
-        android:layout_height="@dimen/icon_preview_size"
-        android:layout_marginStart="32dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
-        app:layout_constraintStart_toEndOf="@+id/originalIcon"
-        app:layout_constraintTop_toTopOf="@+id/originalIcon"
-        app:layout_constraintVertical_bias="1.0" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-    <ch.deletescape.lawnchair.views.SpringFrameLayout
-        android:id="@+id/iconRecyclerViewContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/divider"
-        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/originalIcon"
+            android:layout_width="@dimen/icon_preview_size"
+            android:layout_height="@dimen/icon_preview_size"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@mipmap/ic_launcher" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/iconRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            tools:listitem="@layout/icon_item" />
-    </ch.deletescape.lawnchair.views.SpringFrameLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/icon_preview_size"
+            android:layout_marginStart="32dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
+            app:layout_constraintStart_toEndOf="@+id/originalIcon"
+            app:layout_constraintTop_toTopOf="@+id/originalIcon"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <View
-        android:id="@+id/horizontalDivider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/originalIcon" />
+        <ch.deletescape.lawnchair.views.SpringFrameLayout
+            android:id="@+id/iconRecyclerViewContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <ch.deletescape.lawnchair.views.SpringFrameLayout
-        android:id="@+id/iconPackRecyclerViewContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalDivider">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/iconRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                tools:listitem="@layout/icon_item" />
+        </ch.deletescape.lawnchair.views.SpringFrameLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/iconPackRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            tools:listitem="@layout/icon_pack_item" />
-    </ch.deletescape.lawnchair.views.SpringFrameLayout>
-</android.support.constraint.ConstraintLayout>
+        <View
+            android:id="@+id/horizontalDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/originalIcon" />
+
+        <ch.deletescape.lawnchair.views.SpringFrameLayout
+            android:id="@+id/iconPackRecyclerViewContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalDivider">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/iconPackRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                tools:listitem="@layout/icon_pack_item" />
+        </ch.deletescape.lawnchair.views.SpringFrameLayout>
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>
