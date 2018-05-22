@@ -73,6 +73,7 @@ public abstract class AbstractStateChangeTouchController
     private boolean mNoIntercept;
     protected int mStartContainerType;
 
+    protected LauncherState mStartState;
     protected LauncherState mFromState;
     protected LauncherState mToState;
     protected AnimatorPlaybackController mCurrentAnimation;
@@ -238,8 +239,10 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragStart(boolean start) {
+        mStartState = mLauncher.getStateManager().getState();
         if (mCurrentAnimation == null) {
-            mFromState = mToState = null;
+            mFromState = mStartState;
+            mToState = null;
             mAtomicComponentsController = null;
             reinitCurrentAnimation(false, mDetector.wasInitialTouchPositive());
             mDisplacementShift = 0;
