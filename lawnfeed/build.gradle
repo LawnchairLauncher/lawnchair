@@ -12,6 +12,7 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
+
     defaultConfig {
         applicationId "ch.deletescape.lawnchair.lawnfeed"
         minSdkVersion 21
@@ -28,6 +29,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -36,6 +38,7 @@ android {
                 signingConfig signingConfigs.travis
             }
         }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
