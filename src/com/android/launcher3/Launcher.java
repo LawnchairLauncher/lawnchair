@@ -24,6 +24,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -91,6 +92,7 @@ import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -100,6 +102,7 @@ import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -140,8 +143,8 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseDraggingActivity
-        implements LauncherExterns, LauncherModel.Callbacks, LauncherProviderChangeListener {
+public class Launcher extends BaseDraggingActivity implements LauncherExterns,
+        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate{
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -1642,6 +1645,24 @@ public class Launcher extends BaseDraggingActivity
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
+        if (event.srcTarget != null && event.srcTarget.length > 0 &&
+                event.srcTarget[1].containerType == ContainerType.PREDICTION) {
+            Target[] targets = new Target[3];
+            targets[0] = event.srcTarget[0];
+            targets[1] = event.srcTarget[1];
+            targets[2] = newTarget(Target.Type.CONTAINER);
+            event.srcTarget = targets;
+            LauncherState state = mStateManager.getState();
+            if (state == LauncherState.ALL_APPS) {
+                event.srcTarget[2].containerType = ContainerType.ALLAPPS;
+            } else if (state == LauncherState.OVERVIEW) {
+                event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
+            }
         }
     }
 
