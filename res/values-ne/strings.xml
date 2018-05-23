@@ -108,6 +108,10 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेटहरू"</string>
+    <!-- no translation found for widgets_list (796804551140113767) -->
+    <skip />
+    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
+    <skip />
     <string name="action_add_to_workspace" msgid="8902165848117513641">"गृह स्क्रिनमा थप्नुहोस्"</string>
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>
@@ -130,8 +134,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"उँचाइ घटाउनुहोस्"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेट चौडाइ <xliff:g id="NUMBER_0">%1$s</xliff:g> उचाइ <xliff:g id="NUMBER_1">%2$s</xliff:g> मा पुनः आकार मिलाइयो"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"सर्टकटहरू"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"सर्टकट तथा सूचनाहरू"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>

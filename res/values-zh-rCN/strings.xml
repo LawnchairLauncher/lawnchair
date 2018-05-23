@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下载<xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>正在等待安装"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>微件"</string>
+    <string name="widgets_list" msgid="796804551140113767">"微件列表"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"微件列表已关闭"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"添加到主屏幕"</string>
     <string name="action_move_here" msgid="2170188780612570250">"将项目移至此处"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"已将项目添加到主屏幕"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"减小高度"</string>
     <string name="widget_resized" msgid="9130327887929620">"微件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"快捷方式"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"快捷方式和通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"关闭"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"已关闭通知"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"个人"</string>
