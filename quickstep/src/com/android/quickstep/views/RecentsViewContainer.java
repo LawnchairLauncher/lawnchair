@@ -23,7 +23,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -67,10 +66,6 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         });
 
         mRecentsView = findViewById(R.id.overview_panel);
-        final InsettableFrameLayout.LayoutParams params =
-                (InsettableFrameLayout.LayoutParams) mClearAllButton.getLayoutParams();
-        params.gravity = Gravity.TOP | (RecentsView.FLIP_RECENTS ? Gravity.START : Gravity.END);
-        mClearAllButton.setLayoutParams(params);
         mClearAllButton.forceHasOverlappingRendering(false);
 
         mRecentsView.setClearAllButton(mClearAllButton);
