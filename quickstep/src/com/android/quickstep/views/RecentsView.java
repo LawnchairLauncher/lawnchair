@@ -930,11 +930,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         set.play(anim);
     }
 
-    private void snapToPageRelative(int delta) {
+    private boolean snapToPageRelative(int delta, boolean cycle) {
         if (getPageCount() == 0) {
-            return;
+            return false;
         }
-        snapToPage((getNextPage() + getPageCount() + delta) % getPageCount());
+        final int newPageUnbound = getNextPage() + delta;
+        if (!cycle && (newPageUnbound < 0 || newPageUnbound >= getChildCount())) {
+            return false;
+        }
+        snapToPage((newPageUnbound + getPageCount()) % getPageCount());
+        return true;
     }
 
     @Override
@@ -970,21 +975,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_TAB:
-                    if (!event.isAltPressed() &&
-                            getNextPage() ==
-                                    (event.isShiftPressed() ? 0 : getChildCount() - 1)) {
-                        // If not Alt-Tab navigation, don't loop forever in the carousel and leave
-                        // it once we reached the end.
-                        return false;
-                    }
-                    snapToPageRelative(event.isShiftPressed() ? -1 : 1);
-                    return true;
+                    return snapToPageRelative(event.isShiftPressed() ? -1 : 1,
+                            event.isAltPressed() /* cycle */);
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    snapToPageRelative(mIsRtl ? -1 : 1);
-                    return true;
+                    return snapToPageRelative(mIsRtl ? -1 : 1, false /* cycle */);
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    snapToPageRelative(mIsRtl ? 1 : -1);
-                    return true;
+                    return snapToPageRelative(mIsRtl ? 1 : -1, false /* cycle */);
                 case KeyEvent.KEYCODE_DEL:
                 case KeyEvent.KEYCODE_FORWARD_DEL:
                     dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
@@ -1012,14 +1008,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     setCurrentPage(0);
                     break;
                 case FOCUS_BACKWARD:
+                case FOCUS_RIGHT:
+                case FOCUS_LEFT:
                     setCurrentPage(getChildCount() - 1);
                     break;
             }
         }
-    }
-
-    public void snapToTaskAfterNext() {
-        snapToPageRelative(1);
     }
 
     public float getContentAlpha() {

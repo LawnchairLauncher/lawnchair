@@ -70,6 +70,14 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
         mRecentsView.setClearAllButton(mClearAllButton);
         mClearAllButton.setRecentsView(mRecentsView);
+
+        if (mRecentsView.isRtl()) {
+            mClearAllButton.setNextFocusRightId(mRecentsView.getId());
+            mRecentsView.setNextFocusLeftId(mClearAllButton.getId());
+        } else {
+            mClearAllButton.setNextFocusLeftId(mRecentsView.getId());
+            mRecentsView.setNextFocusRightId(mClearAllButton.getId());
+        }
     }
 
     @Override
