@@ -83,11 +83,6 @@ public class OverviewState extends LauncherState {
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
     }
 
-    @Override
-    public View getFinalFocus(Launcher launcher) {
-        return launcher.getOverviewPanel();
-    }
-
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return new PageAlphaProvider(DEACCEL_2) {
             @Override

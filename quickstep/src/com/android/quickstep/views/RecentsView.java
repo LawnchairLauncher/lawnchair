@@ -271,6 +271,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
         updateEmptyMessage();
+        setFocusable(false);
     }
 
     public boolean isRtl() {
@@ -931,16 +932,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    @Override
-    public void onVisibilityAggregated(boolean isVisible) {
-        super.onVisibilityAggregated(isVisible);
-        if (isVisible && !isFocused()) {
-            // Having focus, even in touch mode, keeps us from losing [Alt+]Tab by preventing
-            // switching to keyboard mode.
-            requestFocus();
-        }
-    }
-
     private void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
                 pendingAnim.anim, DISMISS_TASK_DURATION);
@@ -1285,6 +1276,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void onChildViewsChanged() {
         final int childCount = getChildCount();
         mClearAllButton.setVisibility(childCount == 0 ? INVISIBLE : VISIBLE);
+        setFocusable(childCount != 0);
     }
 
     public void revealClearAllButton() {
