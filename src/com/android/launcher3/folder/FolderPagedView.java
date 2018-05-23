@@ -31,7 +31,6 @@ import android.view.ViewDebug;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -88,7 +87,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     private int mGridCountY;
 
     private Folder mFolder;
-    private PagedFolderKeyEventListener mKeyListener;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -108,7 +106,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     public void setFolder(Folder folder) {
         mFolder = folder;
-        mKeyListener = new PagedFolderKeyEventListener(folder);
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
         initParentViews(folder);
     }
@@ -241,7 +238,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         textView.setOnClickListener(ItemClickHandler.INSTANCE);
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
-        textView.setOnKeyListener(mKeyListener);
 
         textView.setLayoutParams(new CellLayout.LayoutParams(
                 item.cellX, item.cellY, item.spanX, item.spanY));

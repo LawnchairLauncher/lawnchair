@@ -112,7 +112,6 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             allAppsButton.setCompoundDrawables(null, d, null, null);
 
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
-            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             if (mLauncher != null) {
                 allAppsButton.setOnClickListener((v) -> {
                     if (!mLauncher.isInState(ALL_APPS)) {
