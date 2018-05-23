@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"درحال بارگیری <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="PROGRESS">%2$s</xliff:g> کامل شد"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> درانتظار نصب"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"ابزارک‌های <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"فهرست ابزارک‌ها"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"فهرست ابزارک‌ها بسته شد"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"افزودن به صفحه اصلی"</string>
     <string name="action_move_here" msgid="2170188780612570250">"انتقال مورد به اینجا"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"مورد به صفحه اصلی اضافه شد"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"کاهش ارتفاع"</string>
     <string name="widget_resized" msgid="9130327887929620">"اندازه ابزارک به عرض <xliff:g id="NUMBER_0">%1$s</xliff:g> ارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g> تغییر کرد"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"میان‌برها"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"میان‌برها و اعلان‌ها"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"رد کردن"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>

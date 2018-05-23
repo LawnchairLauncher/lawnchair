@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> yuklab olinmoqda, <xliff:g id="PROGRESS">%2$s</xliff:g> bajarildi"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ilovasi o‘rnatilishi kutilmoqda"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> vidjetlari"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Vidjetlar ro‘yxati"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Vidjetlar ro‘yxati yopildi"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Bosh ekranga qo‘shish"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Obyektni bu yerga ko‘chirish"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Obyekt bosh ekranga qo‘shildi"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Bo‘yini kichraytirish"</string>
     <string name="widget_resized" msgid="9130327887929620">"Vidjetning eni <xliff:g id="NUMBER_0">%1$s</xliff:g>, bo‘yi <xliff:g id="NUMBER_1">%2$s</xliff:g> qilib o‘zgartirildi"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Tezkor tugmalar"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Yorliqlar va bildirishnomalar"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Yopish"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirishnoma yopildi"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Shaxsiy"</string>
