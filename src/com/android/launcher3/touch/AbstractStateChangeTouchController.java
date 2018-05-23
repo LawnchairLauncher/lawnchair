@@ -396,6 +396,9 @@ public abstract class AbstractStateChangeTouchController
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
+        if (fling && targetState == LauncherState.ALL_APPS) {
+            mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
+        }
         anim.start();
         if (mAtomicAnim == null) {
             startAtomicComponentsAnim(endProgress, anim.getDuration());
