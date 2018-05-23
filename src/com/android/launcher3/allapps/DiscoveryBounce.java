@@ -110,7 +110,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
 
     @Override
     protected boolean isOfType(int type) {
-        return (type & TYPE_ON_BOARD_POPUP) != 0;
+        return (type & TYPE_DISCOVERY_BOUNCE) != 0;
     }
 
     private void show(int containerType) {
