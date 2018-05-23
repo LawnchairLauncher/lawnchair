@@ -42,9 +42,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
@@ -181,17 +181,6 @@ public abstract class AbstractStateChangeTouchController
             return false;
         }
 
-        if (reachedToState) {
-            logReachedState(Touch.SWIPE);
-        }
-        if (newFromState == ALL_APPS) {
-            mStartContainerType = ContainerType.ALLAPPS;
-        } else if (newFromState == NORMAL) {
-            mStartContainerType = getLogContainerTypeForNormalState();
-        } else if (newFromState == OVERVIEW){
-            mStartContainerType = ContainerType.TASKSWITCHER;
-        }
-
         mFromState = newFromState;
         mToState = newToState;
 
@@ -237,6 +226,13 @@ public abstract class AbstractStateChangeTouchController
     @Override
     public void onDragStart(boolean start) {
         mStartState = mLauncher.getStateManager().getState();
+        if (mStartState == ALL_APPS) {
+            mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
+        } else if (mStartState == NORMAL) {
+            mStartContainerType = getLogContainerTypeForNormalState();
+        } else if (mStartState   == OVERVIEW){
+            mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+        }
         if (mCurrentAnimation == null) {
             mFromState = mStartState;
             mToState = null;
@@ -332,23 +328,21 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        final int logAction;
-        final LauncherState targetState;
-        final float progress = mCurrentAnimation.getProgressFraction();
+        final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
         if (blockedFling) {
             fling = false;
         }
 
+        final LauncherState targetState;
+        final float progress = mCurrentAnimation.getProgressFraction();
         if (fling) {
-            logAction = Touch.FLING;
             targetState =
                     Float.compare(Math.signum(velocity), Math.signum(mProgressMultiplier)) == 0
                             ? mToState : mFromState;
             // snap to top or bottom using the release velocity
         } else {
-            logAction = Touch.SWIPE;
             float successProgress = mToState == ALL_APPS
                     ? MIN_PROGRESS_TO_ALL_APPS : SUCCESS_TRANSITION_PROGRESS;
             targetState = (progress > successProgress) ? mToState : mFromState;
@@ -472,20 +466,20 @@ public abstract class AbstractStateChangeTouchController
             shouldGoToTargetState = !reachedTarget;
         }
         if (shouldGoToTargetState) {
-            if (targetState != mFromState) {
-                logReachedState(logAction);
+            if (targetState != mStartState) {
+                logReachedState(logAction, targetState);
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
         }
     }
 
-    private void logReachedState(int logAction) {
+    private void logReachedState(int logAction, LauncherState targetState) {
         // Transition complete. log the action
         mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
                 getDirectionForLog(),
                 mStartContainerType,
-                mFromState.containerType,
-                mToState.containerType,
+                mStartState.containerType,
+                targetState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
     }
 
