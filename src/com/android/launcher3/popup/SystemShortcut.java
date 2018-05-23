@@ -76,7 +76,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                 BaseDraggingActivity activity, ItemInfo itemInfo) {
             return (view) -> {
                 Rect sourceBounds = activity.getViewBounds(view);
-                Bundle opts = activity.getActivityLaunchOptionsAsBundle(view, false);
+                Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 new PackageManagerHelper(activity).startDetailsActivityForInfo(
                         itemInfo, sourceBounds, opts);
                 activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,

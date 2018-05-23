@@ -1614,10 +1614,8 @@ public class Launcher extends BaseDraggingActivity
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
-        return useDefaultLaunchOptions
-                ? mAppTransitionManager.getDefaultActivityLaunchOptions(this, v)
-                : mAppTransitionManager.getActivityLaunchOptions(this, v);
+    public ActivityOptions getActivityLaunchOptions(View v) {
+        return mAppTransitionManager.getActivityLaunchOptions(this, v);
     }
 
     public LauncherAppTransitionManager getAppTransitionManager() {

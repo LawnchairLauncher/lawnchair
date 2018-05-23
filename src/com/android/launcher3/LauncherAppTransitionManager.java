@@ -33,7 +33,7 @@ public class LauncherAppTransitionManager {
                 context, R.string.app_transition_manager_class);
     }
 
-    public ActivityOptions getDefaultActivityLaunchOptions(Launcher launcher, View v) {
+    public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
@@ -57,9 +57,5 @@ public class LauncherAppTransitionManager {
                     R.anim.no_anim);
         }
         return null;
-    }
-
-    public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
-        return getDefaultActivityLaunchOptions(launcher, v);
     }
 }

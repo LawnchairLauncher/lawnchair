@@ -169,7 +169,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             final ActivityOptions opts;
             if (animate) {
                 opts = BaseDraggingActivity.fromContext(getContext())
-                        .getActivityLaunchOptions(this, false);
+                        .getActivityLaunchOptions(this);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }

@@ -184,7 +184,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         // before our internal listeners.
                         mLauncher.getStateManager().setCurrentAnimation(anim);
 
-                        anim.play(getIconAnimator(v));
+                        Rect windowTargetBounds = getWindowTargetBounds(targetCompats);
+                        anim.play(getIconAnimator(v, windowTargetBounds));
                         if (launcherClosing) {
                             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                                     getLauncherContentAnimator(true /* isAppOpening */);
@@ -196,7 +197,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                 }
                             });
                         }
-                        anim.play(getOpeningWindowAnimators(v, targetCompats));
+                        anim.play(getOpeningWindowAnimators(v, targetCompats, windowTargetBounds));
                     }
 
                     if (launcherClosing) {
@@ -213,7 +214,26 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
                     runner, duration, statusBarTransitionDelay));
         }
-        return getDefaultActivityLaunchOptions(launcher, v);
+        return super.getActivityLaunchOptions(launcher, v);
+    }
+
+    /**
+     * Return the window bounds of the opening target.
+     * In multiwindow mode, we need to get the final size of the opening app window target to help
+     * figure out where the floating view should animate to.
+     */
+    private Rect getWindowTargetBounds(RemoteAnimationTargetCompat[] targets) {
+        Rect bounds = new Rect(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx);
+        if (mLauncher.isInMultiWindowModeCompat()) {
+            for (RemoteAnimationTargetCompat target : targets) {
+                if (target.mode == MODE_OPENING) {
+                    bounds.set(target.sourceContainerBounds);
+                    bounds.offsetTo(target.position.x, target.position.y);
+                    return bounds;
+                }
+            }
+        }
+        return bounds;
     }
 
     public void setRemoteAnimationProvider(RemoteAnimationProvider animationProvider) {
@@ -382,7 +402,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * @return Animator that controls the icon used to launch the target.
      */
-    private AnimatorSet getIconAnimator(View v) {
+    private AnimatorSet getIconAnimator(View v, Rect windowTargetBounds) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
@@ -418,7 +438,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         viewLocationLeft += rect.left;
         viewLocationTop += rect.top;
         int viewLocationStart = mIsRtl
-                ? mDeviceProfile.widthPx - rect.right
+                ? windowTargetBounds.width() - rect.right
                 : viewLocationLeft;
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
@@ -438,12 +458,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         v.setVisibility(View.INVISIBLE);
 
         AnimatorSet appIconAnimatorSet = new AnimatorSet();
-        // Animate the app icon to the center
-        float centerX = mDeviceProfile.widthPx / 2;
-        float centerY = mDeviceProfile.heightPx / 2;
+        int[] dragLayerBounds = new int[2];
+        mDragLayer.getLocationOnScreen(dragLayerBounds);
+
+        // Animate the app icon to the center of the window bounds in screen coordinates.
+        float centerX = windowTargetBounds.centerX() - dragLayerBounds[0];
+        float centerY = windowTargetBounds.centerY() - dragLayerBounds[1];
 
         float xPosition = mIsRtl
-                ? mDeviceProfile.widthPx - lp.getMarginStart() - rect.width()
+                ? windowTargetBounds.width() - lp.getMarginStart() - rect.width()
                 : lp.getMarginStart();
         float dX = centerX - xPosition - (lp.width / 2);
         float dY = centerY - lp.topMargin - (lp.height / 2);
@@ -469,8 +492,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
-        float maxScaleX = mDeviceProfile.widthPx / (float) rect.width();
-        float maxScaleY = mDeviceProfile.heightPx / (float) rect.height();
+        float maxScaleX = windowTargetBounds.width() / (float) rect.width();
+        float maxScaleY = windowTargetBounds.height() / (float) rect.height();
         float scale = Math.max(maxScaleX, maxScaleY);
         ObjectAnimator scaleAnim = ObjectAnimator
                 .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
@@ -505,7 +528,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * @return Animator that controls the window of the opening targets.
      */
-    private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
+    private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
+            Rect windowTargetBounds) {
         Rect bounds = new Rect();
         if (v.getParent() instanceof DeepShortcutView) {
             // Deep shortcut views have their icon drawn in a separate view.
@@ -544,31 +568,35 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 float iconHeight = bounds.height() * mFloatingView.getScaleY();
 
                 // Scale the app window to match the icon size.
-                float scaleX = iconWidth / mDeviceProfile.widthPx;
-                float scaleY = iconHeight / mDeviceProfile.heightPx;
+                float scaleX = iconWidth / windowTargetBounds.width();
+                float scaleY = iconHeight / windowTargetBounds.height();
                 float scale = Math.min(1f, Math.min(scaleX, scaleY));
                 matrix.setScale(scale, scale);
 
                 // Position the scaled window on top of the icon
-                int deviceWidth = mDeviceProfile.widthPx;
-                int deviceHeight = mDeviceProfile.heightPx;
-                float scaledWindowWidth = deviceWidth * scale;
-                float scaledWindowHeight = deviceHeight * scale;
+                int windowWidth = windowTargetBounds.width();
+                int windowHeight = windowTargetBounds.height();
+                float scaledWindowWidth = windowWidth * scale;
+                float scaledWindowHeight = windowHeight * scale;
 
                 float offsetX = (scaledWindowWidth - iconWidth) / 2;
                 float offsetY = (scaledWindowHeight - iconHeight) / 2;
-                mFloatingView.getLocationInWindow(floatingViewBounds);
+                if (mLauncher.isInMultiWindowModeCompat()) {
+                    mFloatingView.getLocationOnScreen(floatingViewBounds);
+                } else {
+                    mFloatingView.getLocationInWindow(floatingViewBounds);
+                }
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
                 matrix.postTranslate(transX0, transY0);
 
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
-                float cropHeight = deviceHeight * easePercent + deviceWidth * (1 - easePercent);
-                float initialTop = (deviceHeight - deviceWidth) / 2f;
+                float cropHeight = windowHeight * easePercent + windowWidth * (1 - easePercent);
+                float initialTop = (windowHeight - windowWidth) / 2f;
                 crop.left = 0;
                 crop.top = (int) (initialTop * (1 - easePercent));
-                crop.right = deviceWidth;
+                crop.right = windowWidth;
                 crop.bottom = (int) (crop.top + cropHeight);
 
                 TransactionCompat t = new TransactionCompat();
@@ -579,10 +607,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 for (RemoteAnimationTargetCompat target : targets) {
                     if (target.mode == MODE_OPENING) {
                         t.setAlpha(target.leash, mAlpha.value);
-
-                        // TODO: This isn't correct at the beginning of the animation, but better
-                        // than nothing.
-                        matrix.postTranslate(target.position.x, target.position.y);
                         t.setMatrix(target.leash, matrix);
                         t.setWindowCrop(target.leash, crop);
                         t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
