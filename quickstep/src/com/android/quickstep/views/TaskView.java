@@ -320,7 +320,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             }
         }
 
-        getRecentsView().addTaskAccessibilityActionsExtra(info);
+        final RecentsView recentsView = getRecentsView();
+        recentsView.addTaskAccessibilityActionsExtra(info);
+
+        final AccessibilityNodeInfo.CollectionItemInfo itemInfo =
+                AccessibilityNodeInfo.CollectionItemInfo.obtain(
+                        0, 1, recentsView.indexOfChild(this), 1, false);
+        info.setCollectionItemInfo(itemInfo);
     }
 
     @Override

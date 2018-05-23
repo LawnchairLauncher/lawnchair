@@ -54,7 +54,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ListView;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -1332,6 +1334,34 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = getChildCount() - 1; i >= 0; --i) {
             outChildren.add(getChildAt(i));
         }
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+
+        final AccessibilityNodeInfo.CollectionInfo
+                collectionInfo = AccessibilityNodeInfo.CollectionInfo.obtain(
+                1, getChildCount(), false,
+                AccessibilityNodeInfo.CollectionInfo.SELECTION_MODE_NONE);
+        info.setCollectionInfo(collectionInfo);
+    }
+
+    @Override
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
+
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            event.setFromIndex(getCurrentPage());
+            event.setToIndex(getCurrentPage());
+            event.setItemCount(getChildCount());
+        }
+    }
+
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        // To hear position-in-list related feedback from Talkback.
+        return ListView.class.getName();
     }
 
     @Override
