@@ -59,7 +59,7 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
         return getCustomIconEntry(getComponentKey(app))
     }
 
-    private fun getCustomIconEntry(key: ComponentKey): IconPackManager.CustomIconEntry? {
+    fun getCustomIconEntry(key: ComponentKey): IconPackManager.CustomIconEntry? {
         return prefs.customAppIcon[key]
     }
 

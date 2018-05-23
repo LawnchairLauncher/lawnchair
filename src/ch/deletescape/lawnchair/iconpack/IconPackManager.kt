@@ -121,7 +121,9 @@ class IconPackManager(private val context: Context) {
     }
 
     fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+        val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
+                ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
         val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
         return pack.newIcon(icon, itemInfo, customEntry, currentPack, drawableFactory)
     }
