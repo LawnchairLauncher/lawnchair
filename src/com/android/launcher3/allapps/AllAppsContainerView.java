@@ -15,12 +15,14 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Process;
+import android.support.animation.DynamicAnimation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -60,6 +62,10 @@ import com.android.launcher3.views.SpringRelativeLayout;
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener {
+
+    private static final float FLING_VELOCITY_MULTIPLIER = 135f;
+    // Starts the springs after at least 55% of the animation has passed.
+    private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -453,6 +459,32 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mUsingTabs) {
             ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).highlightWorkTabIfNecessary();
         }
+    }
+
+    /**
+     * Adds an update listener to {@param animator} that adds springs to the animation.
+     */
+    public void addSpringFromFlingUpdateListener(ValueAnimator animator, float velocity) {
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                if (valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
+                    int searchViewId = getSearchView().getId();
+                    addSpringView(searchViewId);
+
+                    finishWithShiftAndVelocity(1, velocity * FLING_VELOCITY_MULTIPLIER,
+                            new DynamicAnimation.OnAnimationEndListener() {
+                                @Override
+                                public void onAnimationEnd(DynamicAnimation animation,
+                                        boolean canceled, float value, float velocity) {
+                                    removeSpringView(searchViewId);
+                                }
+                            });
+
+                    animator.removeUpdateListener(this);
+                }
+            }
+        });
     }
 
     public class AdapterHolder {
