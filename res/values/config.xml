@@ -41,9 +41,6 @@
     <item type="id" name="drag_event_parity" />
 
 <!-- AllApps & Launcher transitions -->
-    <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
-    <integer name="config_workspaceScrimAlpha">76</integer>
-
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
@@ -139,6 +136,7 @@
     <item type="id" name="action_move_screen_forwards" />
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
+    <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
 
 <!-- QSB IDs. DO not change -->
@@ -147,6 +145,7 @@
     <item type="id" name="search_container_all_apps" />
 
 <!-- Recents -->
+    <item type="id" name="overview_panel"/>
     <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
     <integer name="config_recentsMaxIconCacheSize">12</integer>
 

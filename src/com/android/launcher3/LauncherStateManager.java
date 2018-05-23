@@ -16,7 +16,17 @@
 
 package com.android.launcher3;
 
+import static android.view.View.VISIBLE;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.animation.Animator;
@@ -24,6 +34,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IntDef;
 import android.view.View;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -33,6 +44,8 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.uioverrides.UiFactory;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 /**
@@ -80,6 +93,21 @@ public class LauncherStateManager {
 
     public static final String TAG = "StateManager";
 
+    // We separate the state animations into "atomic" and "non-atomic" components. The atomic
+    // components may be run atomically - that is, all at once, instead of user-controlled. However,
+    // atomic components are not restricted to this purpose; they can be user-controlled alongside
+    // non atomic components as well.
+    @IntDef(flag = true, value = {
+            NON_ATOMIC_COMPONENT,
+            ATOMIC_COMPONENT
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AnimationComponents {}
+    public static final int NON_ATOMIC_COMPONENT = 1 << 0;
+    public static final int ATOMIC_COMPONENT = 1 << 1;
+
+    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_COMPONENT;
+
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
     private final Launcher mLauncher;
@@ -121,7 +149,7 @@ public class LauncherStateManager {
      * @see #goToState(LauncherState, boolean, Runnable)
      */
     public void goToState(LauncherState state) {
-        goToState(state, mLauncher.isStarted() /* animated */, 0, null);
+        goToState(state, !mLauncher.isForceInvisible() && mLauncher.isStarted() /* animated */);
     }
 
     /**
@@ -157,6 +185,13 @@ public class LauncherStateManager {
     }
 
     public void reapplyState() {
+        reapplyState(false);
+    }
+
+    public void reapplyState(boolean cancelCurrentAnimation) {
+        if (cancelCurrentAnimation) {
+            cancelAnimation();
+        }
         if (mConfig.mCurrentAnimation == null) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(mState);
@@ -173,7 +208,7 @@ public class LauncherStateManager {
                     onCompleteRunnable.run();
                 }
                 return;
-            } else if (!mConfig.userControlled && animated) {
+            } else if (!mConfig.userControlled && animated && mConfig.mTargetState == state) {
                 // We are running the same animation as requested
                 if (onCompleteRunnable != null) {
                     mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
@@ -212,13 +247,52 @@ public class LauncherStateManager {
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
 
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        prepareForAtomicAnimation(mState, state, builder);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
-                state, new AnimatorSetBuilder(), onCompleteRunnable);
+                state, builder, onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
         } else {
             mUiHandler.post(runnable);
+        }
+    }
+
+    /**
+     * Prepares for a non-user controlled animation from fromState to toState. Preparations include:
+     * - Setting interpolators for various animations included in the state transition.
+     * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
+     */
+    public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
+            AnimatorSetBuilder builder) {
+        if (fromState == NORMAL && toState.overviewUi) {
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
+
+            // Start from a higher overview scale, but only if we're invisible so we don't jump.
+            UiFactory.prepareToShowOverview(mLauncher);
+        } else if (fromState.overviewUi && toState == NORMAL) {
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+            Workspace workspace = mLauncher.getWorkspace();
+
+            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
+            boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
+            if (isWorkspaceVisible) {
+                CellLayout currentChild = (CellLayout) workspace.getChildAt(
+                        workspace.getCurrentPage());
+                isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
+                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
+            }
+            if (!isWorkspaceVisible) {
+                workspace.setScaleX(0.92f);
+                workspace.setScaleY(0.92f);
+            }
         }
     }
 
@@ -231,16 +305,26 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
-        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration);
+        return createAnimationToNewWorkspace(state, duration, LauncherStateManager.ANIM_ALL);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState state, AnimatorSetBuilder builder, long duration) {
+            LauncherState state, long duration, @AnimationComponents int animComponents) {
+        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null,
+                animComponents);
+    }
+
+    public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
+            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
+            @AnimationComponents int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
+        mConfig.animComponents = animComponents;
         mConfig.duration = duration;
-        return AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, builder, null), duration);
+        mConfig.playbackController = AnimatorPlaybackController.wrap(
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration,
+                onCancelRunnable);
+        return mConfig.playbackController;
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
@@ -280,7 +364,7 @@ public class LauncherStateManager {
                 onStateTransitionEnd(state);
             }
         });
-        mConfig.setAnimation(animation);
+        mConfig.setAnimation(animation, state);
         return mConfig.mCurrentAnimation;
     }
 
@@ -351,17 +435,47 @@ public class LauncherStateManager {
         mConfig.reset();
     }
 
+    public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        clearCurrentAnimation();
+        setCurrentAnimation(controller.getTarget());
+        mConfig.userControlled = true;
+        mConfig.playbackController = controller;
+    }
+
     /**
      * Sets the animation as the current state animation, i.e., canceled when
      * starting another animation and may block some launcher interactions while running.
+     *
+     * @param childAnimations Set of animations with the new target is controlling.
      */
-    public void setCurrentAnimation(AnimatorSet anim) {
+    public void setCurrentAnimation(AnimatorSet anim, Animator... childAnimations) {
+        for (Animator childAnim : childAnimations) {
+            if (childAnim == null) {
+                continue;
+            }
+            if (mConfig.playbackController != null
+                    && mConfig.playbackController.getTarget() == childAnim) {
+                clearCurrentAnimation();
+                break;
+            } else if (mConfig.mCurrentAnimation == childAnim) {
+                clearCurrentAnimation();
+                break;
+            }
+        }
         boolean reapplyNeeded = mConfig.mCurrentAnimation != null;
         cancelAnimation();
         if (reapplyNeeded) {
             reapplyState();
         }
-        mConfig.setAnimation(anim);
+        mConfig.setAnimation(anim, null);
+    }
+
+    private void clearCurrentAnimation() {
+        if (mConfig.mCurrentAnimation != null) {
+            mConfig.mCurrentAnimation.removeListener(mConfig);
+            mConfig.mCurrentAnimation = null;
+        }
+        mConfig.playbackController = null;
     }
 
     private class StartAnimRunnable implements Runnable {
@@ -389,28 +503,41 @@ public class LauncherStateManager {
     public static class AnimationConfig extends AnimatorListenerAdapter {
         public long duration;
         public boolean userControlled;
-        private PropertySetter mProperSetter;
+        public AnimatorPlaybackController playbackController;
+        public @AnimationComponents int animComponents = ANIM_ALL;
+        private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
+        private LauncherState mTargetState;
 
+        /**
+         * Cancels the current animation and resets config variables.
+         */
         public void reset() {
             duration = 0;
             userControlled = false;
-            mProperSetter = null;
+            animComponents = ANIM_ALL;
+            mPropertySetter = null;
+            mTargetState = null;
 
-            if (mCurrentAnimation != null) {
+            if (playbackController != null) {
+                playbackController.getAnimationPlayer().cancel();
+                playbackController.dispatchOnCancel();
+            } else if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);
                 mCurrentAnimation.cancel();
-                mCurrentAnimation = null;
             }
+
+            mCurrentAnimation = null;
+            playbackController = null;
         }
 
-        public PropertySetter getProperSetter(AnimatorSetBuilder builder) {
-            if (mProperSetter == null) {
-                mProperSetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
+        public PropertySetter getPropertySetter(AnimatorSetBuilder builder) {
+            if (mPropertySetter == null) {
+                mPropertySetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
                         : new AnimatedPropertySetter(duration, builder);
             }
-            return mProperSetter;
+            return mPropertySetter;
         }
 
         @Override
@@ -420,9 +547,18 @@ public class LauncherStateManager {
             }
         }
 
-        public void setAnimation(AnimatorSet animation) {
+        public void setAnimation(AnimatorSet animation, LauncherState targetState) {
             mCurrentAnimation = animation;
+            mTargetState = targetState;
             mCurrentAnimation.addListener(this);
+        }
+
+        public boolean playAtomicComponent() {
+            return (animComponents & ATOMIC_COMPONENT) != 0;
+        }
+
+        public boolean playNonAtomicComponent() {
+            return (animComponents & NON_ATOMIC_COMPONENT) != 0;
         }
     }
 

@@ -81,6 +81,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ્સ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"બંધ"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ઊંચાઈ ઘટાડો"</string>
     <string name="widget_resized" msgid="9130327887929620">"વિજેટનો આકાર બદલીને <xliff:g id="NUMBER_0">%1$s</xliff:g> પહોળાઈ <xliff:g id="NUMBER_1">%2$s</xliff:g> ઊંચાઈ કર્યો"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"શૉર્ટકટ્સ"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> માટે <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> શૉર્ટકટ"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> માટે <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> શૉર્ટકટ અને <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> સૂચનાઓ"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>

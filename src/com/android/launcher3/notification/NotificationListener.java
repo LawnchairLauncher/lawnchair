@@ -150,22 +150,12 @@ public class NotificationListener extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         sIsCreated = true;
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         sIsCreated = false;
-        mNotificationBadgingObserver.unregister();
     }
 
     public static @Nullable NotificationListener getInstanceIfConnected() {
@@ -203,6 +193,17 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerConnected() {
         super.onListenerConnected();
         sIsConnected = true;
+
+        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
+            @Override
+            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled) {
+                    requestUnbind();
+                }
+            }
+        };
+        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+
         onNotificationFullRefresh();
     }
 
@@ -214,11 +215,16 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
+        mNotificationBadgingObserver.unregister();
     }
 
     @Override
     public void onNotificationPosted(final StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
             .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
@@ -244,6 +250,10 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(final StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
             = new Pair<>(PackageUserKey.fromNotification(sbn),
             NotificationKeyData.fromNotification(sbn));

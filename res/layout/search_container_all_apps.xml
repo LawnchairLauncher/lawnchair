@@ -20,7 +20,6 @@
     android:layout_height="@dimen/all_apps_search_bar_field_height"
     android:layout_centerHorizontal="true"
     android:layout_gravity="top|center_horizontal"
-    android:layout_marginTop="8dp"
     android:background="@drawable/bg_all_apps_searchbox"
     android:elevation="1dp"
     android:focusableInTouchMode="true"

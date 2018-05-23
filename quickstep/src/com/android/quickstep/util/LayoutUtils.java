@@ -15,39 +15,68 @@
  */
 package com.android.quickstep.util;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.graphics.RectF;
+import android.support.annotation.AnyThread;
+import android.support.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 
+import java.lang.annotation.Retention;
+
 public class LayoutUtils {
 
+    private static final int MULTI_WINDOW_STRATEGY_HALF_SCREEN = 1;
+    private static final int MULTI_WINDOW_STRATEGY_DEVICE_PROFILE = 2;
+
+    @Retention(SOURCE)
+    @IntDef({MULTI_WINDOW_STRATEGY_HALF_SCREEN, MULTI_WINDOW_STRATEGY_DEVICE_PROFILE})
+    private @interface MultiWindowStrategy {}
+
     public static void calculateLauncherTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        float extraSpace = dp.isVerticalBarLayout() ? 0 : dp.hotseatBarSizePx;
-        calculateTaskSize(context, dp, extraSpace, outRect);
+        float extraSpace;
+        if (dp.isVerticalBarLayout()) {
+            extraSpace = 0;
+        } else {
+            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
+        }
+        calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
 
+    public static void calculateFallbackTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+        calculateTaskSize(context, dp, 0, MULTI_WINDOW_STRATEGY_DEVICE_PROFILE, outRect);
+    }
+
+    @AnyThread
     public static void calculateTaskSize(Context context, DeviceProfile dp,
-            float extraVerticalSpace, Rect outRect) {
+            float extraVerticalSpace, @MultiWindowStrategy int multiWindowStrategy, Rect outRect) {
         float taskWidth, taskHeight, paddingHorz;
         Resources res = context.getResources();
         Rect insets = dp.getInsets();
 
         if (dp.isMultiWindowMode) {
-            DeviceProfile fullDp = dp.getFullScreenProfile();
-            // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
-            // account for system insets
-            taskWidth = fullDp.availableWidthPx;
-            taskHeight = fullDp.availableHeightPx;
-            float halfDividerSize = res.getDimension(R.dimen.multi_window_task_divider_size) / 2;
+            if (multiWindowStrategy == MULTI_WINDOW_STRATEGY_HALF_SCREEN) {
+                DeviceProfile fullDp = dp.getFullScreenProfile();
+                // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
+                // account for system insets
+                taskWidth = fullDp.availableWidthPx;
+                taskHeight = fullDp.availableHeightPx;
+                float halfDividerSize = res.getDimension(R.dimen.multi_window_task_divider_size)
+                        / 2;
 
-            if (fullDp.isLandscape) {
-                taskWidth = taskWidth / 2 - halfDividerSize;
+                if (fullDp.isLandscape) {
+                    taskWidth = taskWidth / 2 - halfDividerSize;
+                } else {
+                    taskHeight = taskHeight / 2 - halfDividerSize;
+                }
             } else {
-                taskHeight = taskHeight / 2 - halfDividerSize;
+                // multiWindowStrategy == MULTI_WINDOW_STRATEGY_DEVICE_PROFILE
+                taskWidth = dp.widthPx;
+                taskHeight = dp.heightPx;
             }
             paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
         } else {
@@ -75,7 +104,7 @@ public class LayoutUtils {
         float outHeight = scale * taskHeight;
 
         // Center in the visible space
-        float x = insets.left + (taskWidth - outWidth) / 2;
+        float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
         float y = insets.top + Math.max(topIconMargin,
                 (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
         outRect.set(Math.round(x), Math.round(y),

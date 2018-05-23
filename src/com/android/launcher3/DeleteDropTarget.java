@@ -24,9 +24,13 @@ import android.view.View;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class DeleteDropTarget extends ButtonDropTarget {
+
+    private int mControlType = ControlType.DEFAULT_CONTROLTYPE;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -49,6 +53,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         super.onDragStart(dragObject, options);
         setTextBasedOnDragSource(dragObject.dragInfo);
+        setControlTypeBasedOnDragSource(dragObject.dragInfo);
     }
 
     /**
@@ -83,6 +88,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
     }
 
+    /**
+     * Set mControlType depending on the drag item.
+     */
+    private void setControlTypeBasedOnDragSource(ItemInfo item) {
+        mControlType = item.id != ItemInfo.NO_ID ? ControlType.REMOVE_TARGET
+                : ControlType.CANCEL_TARGET;
+    }
+
     @Override
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
@@ -106,7 +119,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    public int getControlTypeForLogging() {
-        return ControlType.REMOVE_TARGET;
+    public Target getDropTargetForLogging() {
+        Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
+        t.controlType = mControlType;
+        return t;
     }
 }

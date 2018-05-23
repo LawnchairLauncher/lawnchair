@@ -8,8 +8,6 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.SETTINGS_BUTTON;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.UNINSTALL_TARGET;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -33,6 +31,8 @@ import android.widget.Toast;
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 
@@ -52,7 +52,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     private final Alarm mCacheExpireAlarm;
 
-    private int mCurrentAccessibilityAction = -1;
+    protected int mCurrentAccessibilityAction = -1;
     public SecondaryDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -70,7 +70,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         setupUi(UNINSTALL);
     }
 
-    private void setupUi(int action) {
+    protected void setupUi(int action) {
         if (action == mCurrentAccessibilityAction) {
             return;
         }
@@ -98,8 +98,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
-    public int getControlTypeForLogging() {
-        return mCurrentAccessibilityAction == UNINSTALL ? UNINSTALL_TARGET : SETTINGS_BUTTON;
+    public Target getDropTargetForLogging() {
+        Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
+        t.controlType = mCurrentAccessibilityAction == UNINSTALL ? ControlType.UNINSTALL_TARGET
+                : ControlType.SETTINGS_BUTTON;
+        return t;
     }
 
     @Override

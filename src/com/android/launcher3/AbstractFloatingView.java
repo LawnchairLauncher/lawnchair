@@ -16,10 +16,18 @@
 
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -70,6 +78,9 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
 
+    // Usually we show the back button when a floating view is open. Instead, hide for these types.
+    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {
@@ -90,10 +101,13 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public final void close(boolean animate) {
-        animate &= !Utilities.isPowerSaverOn(getContext());
+        animate &= !Utilities.isPowerSaverPreventingAnimation(getContext());
+        if (mIsOpen) {
+            BaseActivity.fromContext(getContext()).getUserEventDispatcher()
+                    .resetElapsedContainerMillis("container closed");
+        }
         handleClose(animate);
-        BaseActivity.fromContext(getContext()).getUserEventDispatcher()
-                .resetElapsedContainerMillis("container closed");
+        mIsOpen = false;
     }
 
     protected abstract void handleClose(boolean animate);
@@ -109,14 +123,35 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected abstract boolean isOfType(@FloatingViewType int type);
 
-    public void onBackPressed() {
+    /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */
+    public boolean onBackPressed() {
         logActionCommand(Action.Command.BACK);
         close(true);
+        return true;
     }
 
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         return false;
+    }
+
+    protected void announceAccessibilityChanges() {
+        Pair<View, String> targetInfo = getAccessibilityTarget();
+        if (targetInfo == null || !isAccessibilityEnabled(getContext())) {
+            return;
+        }
+        sendCustomAccessibilityEvent(
+                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
+
+        if (mIsOpen) {
+            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+        }
+        BaseDraggingActivity.fromContext(getContext()).getDragLayer()
+                .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+    }
+
+    protected Pair<View, String> getAccessibilityTarget() {
+        return null;
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
@@ -170,6 +205,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenView(BaseDraggingActivity activity) {
-        return getOpenView(activity, TYPE_ALL);
+        return getTopOpenViewWithType(activity, TYPE_ALL);
+    }
+
+    public static AbstractFloatingView getTopOpenViewWithType(BaseDraggingActivity activity,
+            @FloatingViewType int type) {
+        return getOpenView(activity, type);
     }
 }

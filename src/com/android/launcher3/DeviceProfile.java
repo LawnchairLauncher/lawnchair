@@ -25,6 +25,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
@@ -68,8 +70,8 @@ public class DeviceProfile {
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
 
-    // Page indicator
-    public final int pageIndicatorSizePx;
+    // Drag handle
+    public final int verticalDragHandleSizePx;
 
     // Workspace icons
     public int iconSizePx;
@@ -118,6 +120,7 @@ public class DeviceProfile {
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
     private final Rect mHotseatPadding = new Rect();
+    private boolean mIsSeascape;
 
     // Icon badges
     public BadgeRenderer mBadgeRenderer;
@@ -157,8 +160,8 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
-        pageIndicatorSizePx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_min_page_indicator_size);
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =
@@ -205,7 +208,7 @@ public class DeviceProfile {
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
             int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
-            hotseatBarSizePx += extraSpace - pageIndicatorSizePx;
+            hotseatBarSizePx += extraSpace - verticalDragHandleSizePx;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
@@ -329,7 +332,7 @@ public class DeviceProfile {
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
-                    - pageIndicatorSizePx - topWorkspacePadding;
+                    - verticalDragHandleSizePx - topWorkspacePadding;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -426,13 +429,13 @@ public class DeviceProfile {
             padding.right = hotseatBarSidePaddingPx;
             if (isSeascape()) {
                 padding.left += hotseatBarSizePx;
-                padding.right += pageIndicatorSizePx;
+                padding.right += verticalDragHandleSizePx;
             } else {
-                padding.left += pageIndicatorSizePx;
+                padding.left += verticalDragHandleSizePx;
                 padding.right += hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = hotseatBarSizePx + pageIndicatorSizePx;
+            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
@@ -499,7 +502,7 @@ public class DeviceProfile {
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.left + availableWidthPx - edgeMarginPx,
                     mInsets.top + availableHeightPx - hotseatBarSizePx
-                            - pageIndicatorSizePx - edgeMarginPx);
+                            - verticalDragHandleSizePx - edgeMarginPx);
         }
     }
 
@@ -519,9 +522,22 @@ public class DeviceProfile {
         return isLandscape && transposeLayoutWithOrientation;
     }
 
+    /**
+     * Updates orientation information and returns true if it has changed from the previous value.
+     */
+    public boolean updateIsSeascape(WindowManager wm) {
+        if (isVerticalBarLayout()) {
+            boolean isSeascape = wm.getDefaultDisplay().getRotation() == Surface.ROTATION_270;
+            if (mIsSeascape != isSeascape) {
+                mIsSeascape = isSeascape;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isSeascape() {
-        // TODO: This might not hold true for multi window mode, use configuration insead.
-        return isVerticalBarLayout() && mInsets.left > mInsets.right;
+        return isVerticalBarLayout() && mIsSeascape;
     }
 
     public boolean shouldFadeAdjacentWorkspaceScreens() {

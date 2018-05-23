@@ -65,27 +65,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
-    private final BaseDraggingActivity mActivity;
-    private Drawable mIcon;
-    private final boolean mCenterVertically;
-
-    private final CheckLongPressHelper mLongPressHelper;
-    private final StylusEventHelper mStylusEventHelper;
-    private final float mSlop;
-
-    private final boolean mLayoutHorizontal;
-    private final int mIconSize;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mTextColor;
-    private boolean mIsIconVisible = true;
-
-    private BadgeInfo mBadgeInfo;
-    private BadgeRenderer mBadgeRenderer;
-    private int mBadgeColor;
-    private float mBadgeScale;
-    private boolean mForceHideBadge;
-    private Point mTempSpaceForBadgeOffset = new Point();
-    private Rect mTempIconBounds = new Rect();
 
     private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
@@ -101,18 +80,44 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     };
 
-    public static final Property<BubbleTextView, Integer> TEXT_ALPHA_PROPERTY
-            = new Property<BubbleTextView, Integer>(Integer.class, "textAlpha") {
+    public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY
+            = new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
         @Override
-        public Integer get(BubbleTextView bubbleTextView) {
-            return bubbleTextView.getTextAlpha();
+        public Float get(BubbleTextView bubbleTextView) {
+            return bubbleTextView.mTextAlpha;
         }
 
         @Override
-        public void set(BubbleTextView bubbleTextView, Integer alpha) {
+        public void set(BubbleTextView bubbleTextView, Float alpha) {
             bubbleTextView.setTextAlpha(alpha);
         }
     };
+
+    private final BaseDraggingActivity mActivity;
+    private Drawable mIcon;
+    private final boolean mCenterVertically;
+
+    private final CheckLongPressHelper mLongPressHelper;
+    private final StylusEventHelper mStylusEventHelper;
+    private final float mSlop;
+
+    private final boolean mLayoutHorizontal;
+    private final int mIconSize;
+
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mIsIconVisible = true;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private int mTextColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private float mTextAlpha = 1;
+
+    private BadgeInfo mBadgeInfo;
+    private BadgeRenderer mBadgeRenderer;
+    private int mBadgeColor;
+    private float mBadgeScale;
+    private boolean mForceHideBadge;
+    private Point mTempSpaceForBadgeOffset = new Point();
+    private Rect mTempIconBounds = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
@@ -166,7 +171,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
-
+        setTextAlpha(1f);
     }
 
     @Override
@@ -404,13 +409,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     @Override
     public void setTextColor(int color) {
         mTextColor = color;
-        super.setTextColor(color);
+        super.setTextColor(getModifiedColor());
     }
 
     @Override
     public void setTextColor(ColorStateList colors) {
         mTextColor = colors.getDefaultColor();
-        super.setTextColor(colors);
+        if (Float.compare(mTextAlpha, 1) == 0) {
+            super.setTextColor(colors);
+        } else {
+            super.setTextColor(getModifiedColor());
+        }
     }
 
     public boolean shouldTextBeVisible() {
@@ -421,19 +430,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void setTextVisibility(boolean visible) {
-        if (visible) {
-            super.setTextColor(mTextColor);
-        } else {
-            setTextAlpha(0);
+        setTextAlpha(visible ? 1 : 0);
+    }
+
+    private void setTextAlpha(float alpha) {
+        mTextAlpha = alpha;
+        super.setTextColor(getModifiedColor());
+    }
+
+    private int getModifiedColor() {
+        if (mTextAlpha == 0) {
+            // Special case to prevent text shadows in high contrast mode
+            return Color.TRANSPARENT;
         }
-    }
-
-    public void setTextAlpha(int alpha) {
-        super.setTextColor(ColorUtils.setAlphaComponent(mTextColor, alpha));
-    }
-
-    private int getTextAlpha() {
-        return Color.alpha(getCurrentTextColor());
+        return ColorUtils.setAlphaComponent(
+                mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
     }
 
     /**
@@ -441,8 +452,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * @param fadeIn Whether the text should fade in or fade out.
      */
     public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
-        int toAlpha = shouldTextBeVisible() && fadeIn ? Color.alpha(mTextColor) : 0;
-        return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, toAlpha);
+        float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
+        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
     }
 
     @Override

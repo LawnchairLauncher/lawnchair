@@ -24,7 +24,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages
@@ -41,8 +41,9 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private static final int LINE_ALPHA_ANIMATOR_INDEX = 0;
     private static final int NUM_PAGES_ANIMATOR_INDEX = 1;
     private static final int TOTAL_SCROLL_ANIMATOR_INDEX = 2;
+    private static final int ANIMATOR_COUNT = 3;
 
-    private ValueAnimator[] mAnimators = new ValueAnimator[3];
+    private ValueAnimator[] mAnimators = new ValueAnimator[ANIMATOR_COUNT];
 
     private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
     private final Launcher mLauncher;
@@ -186,11 +187,6 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
     }
 
-    @Override
-    public void setPageDescription(CharSequence description) {
-        setContentDescription(description);
-    }
-
     public void setShouldAutoHide(boolean shouldAutoHide) {
         mShouldAutoHide = shouldAutoHide;
         if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
@@ -235,6 +231,28 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         });
         mAnimators[animatorIndex].setDuration(LINE_ANIMATE_DURATION);
         mAnimators[animatorIndex].start();
+    }
+
+    /**
+     * Pauses all currently running animations.
+     */
+    public void pauseAnimations() {
+        for (int i = 0; i < ANIMATOR_COUNT; i++) {
+            if (mAnimators[i] != null) {
+                mAnimators[i].pause();
+            }
+        }
+    }
+
+    /**
+     * Force-ends all currently running or paused animations.
+     */
+    public void skipAnimationsToEnd() {
+        for (int i = 0; i < ANIMATOR_COUNT; i++) {
+            if (mAnimators[i] != null) {
+                mAnimators[i].end();
+            }
+        }
     }
 
     @Override

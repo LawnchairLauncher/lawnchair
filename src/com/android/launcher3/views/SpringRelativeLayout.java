@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.EdgeEffectFactory;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.EdgeEffect;
@@ -58,6 +57,7 @@ public class SpringRelativeLayout extends RelativeLayout {
     private final SpringAnimation mSpring;
 
     private float mDampedScrollShift = 0;
+    private SpringEdgeEffect mActiveEdge;
 
     public SpringRelativeLayout(Context context) {
         this(context, null);
@@ -90,7 +90,14 @@ public class SpringRelativeLayout extends RelativeLayout {
         return super.drawChild(canvas, child, drawingTime);
     }
 
-    private void setDampedScrollShift(float shift) {
+    private void setActiveEdge(SpringEdgeEffect edge) {
+        if (mActiveEdge != edge && mActiveEdge != null) {
+            mActiveEdge.mDistance = 0;
+        }
+        mActiveEdge = edge;
+    }
+
+    protected void setDampedScrollShift(float shift) {
         if (shift != mDampedScrollShift) {
             mDampedScrollShift = shift;
             invalidate();
@@ -144,6 +151,7 @@ public class SpringRelativeLayout extends RelativeLayout {
 
         @Override
         public void onPull(float deltaDistance, float displacement) {
+            setActiveEdge(this);
             mDistance += deltaDistance * (mVelocityMultiplier / 3f);
             setDampedScrollShift(mDistance * getHeight());
         }

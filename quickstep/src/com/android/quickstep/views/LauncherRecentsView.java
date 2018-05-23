@@ -27,7 +27,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.AnyThread;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
@@ -36,6 +35,8 @@ import android.view.ViewDebug;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 
 /**
@@ -87,7 +88,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
-        setTranslationY(mTranslationYFactor * (getPaddingBottom() - getPaddingTop()));
+        setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
+    }
+
+    public float computeTranslationYForFactor(float translationYFactor) {
+        return translationYFactor * (getPaddingBottom() - getPaddingTop());
     }
 
     @Override
@@ -112,8 +117,15 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
      * Animates adjacent tasks and translate hotseat off screen as well.
      */
     @Override
-    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
-        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv);
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv,
+            ClipAnimationHelper helper) {
+        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
+
+        if (!OverviewInteractionState.getInstance(mActivity).isSwipeUpGestureEnabled()) {
+            // Hotseat doesn't move when opening recents with the button,
+            // so don't animate it here either.
+            return anim;
+        }
 
         float allAppsProgressOffscreen = ALL_APPS_PROGRESS_OFF_SCREEN;
         LauncherState state = mActivity.getStateManager().getState();
@@ -132,8 +144,19 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
     }
 
-    @AnyThread
-    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
-        LayoutUtils.calculateLauncherTaskSize(context, grid, outRect);
+    @Override
+    protected void onTaskLaunched(boolean success) {
+        if (success) {
+            mActivity.getStateManager().goToState(NORMAL, false /* animate */);
+        } else {
+            LauncherState state = mActivity.getStateManager().getState();
+            mActivity.getAllAppsController().setProgress(state.getVerticalProgress(mActivity));
+        }
+        super.onTaskLaunched(success);
+    }
+
+    @Override
+    public boolean shouldUseMultiWindowTaskSizeStrategy() {
+        return mActivity.isInMultiWindowModeCompat();
     }
 }

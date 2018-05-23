@@ -18,7 +18,6 @@
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/workspaceStatusBarScrim"
     android:fitsSystemWindows="true">
 
     <com.android.launcher3.dragndrop.DragLayer
@@ -40,7 +39,7 @@
             launcher:pageIndicator="@+id/page_indicator" />
 
         <include
-            android:id="@+id/overview_panel"
+            android:id="@+id/overview_panel_container"
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
@@ -57,15 +56,15 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
+        <include android:id="@+id/scrim_view"
+            layout="@layout/scrim_view" />
+
         <include
             android:id="@+id/apps_view"
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-
-        <include android:id="@+id/drag_indicator"
-            layout="@layout/drag_handle_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include
