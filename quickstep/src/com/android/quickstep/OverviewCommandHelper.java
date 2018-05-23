@@ -21,6 +21,7 @@ import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.PackageManagerWrapper
@@ -59,6 +60,7 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
 import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -282,7 +284,7 @@ public class OverviewCommandHelper {
                 });
             factory.onRemoteAnimationReceived(null);
             if (wasVisible) {
-                factory.createActivityController(RECENTS_LAUNCH_DURATION);
+                factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
             }
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
@@ -342,9 +344,9 @@ public class OverviewCommandHelper {
                     loc[0] + rootView.getWidth(), loc[1] + rootView.getHeight());
             clipHelper.updateSource(homeBounds, runningTaskTarget);
 
-            Rect targetRect = new Rect();
-            mHelper.getSwipeUpDestinationAndLength(
-                    mActivity.getDeviceProfile(), mActivity, targetRect);
+            TransformedRect targetRect = new TransformedRect();
+            mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity,
+                    INTERACTION_NORMAL, targetRect);
             clipHelper.updateTargetRect(targetRect);
             clipHelper.prepareAnimation(false /* isOpening */);
 

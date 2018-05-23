@@ -20,6 +20,8 @@ import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
@@ -48,9 +50,12 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.LauncherLayoutListener;
@@ -83,7 +88,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
-    int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
+    int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+            @InteractionType int interactionType, TransformedRect outRect);
 
     void onSwipeUpComplete(T activity);
 
@@ -157,14 +163,18 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
+        public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+                @InteractionType int interactionType, TransformedRect outRect) {
+            LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
+            if (interactionType == INTERACTION_QUICK_SCRUB) {
+                outRect.scale = FastOverviewState.getOverviewScale(dp);
+            }
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
             } else {
-                return dp.heightPx - outRect.bottom;
+                return dp.heightPx - outRect.rect.bottom;
             }
         }
 
@@ -204,9 +214,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             return new AnimationFactory() {
                 @Override
-                public void createActivityController(long transitionLength) {
+                public void createActivityController(long transitionLength,
+                        @InteractionType int interactionType) {
                     createActivityControllerInternal(activity, activityVisible, startState,
-                            transitionLength, callback);
+                            transitionLength, interactionType, callback);
                 }
 
                 @Override
@@ -218,13 +229,16 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
                 LauncherState startState, long transitionLength,
+                @InteractionType int interactionType,
                 Consumer<AnimatorPlaybackController> callback) {
+            LauncherState endState = interactionType == INTERACTION_QUICK_SCRUB
+                    ? FAST_OVERVIEW : OVERVIEW;
             if (wasVisible) {
                 DeviceProfile dp = activity.getDeviceProfile();
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
                 activity.getStateManager().goToState(startState, false);
                 callback.accept(activity.getStateManager()
-                        .createAnimationToNewWorkspace(OVERVIEW, accuracy));
+                        .createAnimationToNewWorkspace(endState, accuracy));
                 return;
             }
 
@@ -238,7 +252,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             float scrollRange = Math.max(controller.getShiftRange(), 1);
             float progressDelta = (transitionLength / scrollRange);
 
-            float endProgress = OVERVIEW.getVerticalProgress(activity);
+            float endProgress = endState.getVerticalProgress(activity);
             float startProgress = endProgress + progressDelta;
             ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
                     controller, ALL_APPS_PROGRESS, startProgress, endProgress);
@@ -381,14 +395,15 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-            LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
+        public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+                @InteractionType int interactionType, TransformedRect outRect) {
+            LayoutUtils.calculateFallbackTaskSize(context, dp, outRect.rect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
             } else {
-                return dp.heightPx - outRect.bottom;
+                return dp.heightPx - outRect.rect.bottom;
             }
         }
 
@@ -401,7 +416,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
                 Consumer<AnimatorPlaybackController> callback) {
             if (activityVisible) {
-                return (transitionLength) -> { };
+                return (transitionLength, interactionType) -> { };
             }
 
             RecentsViewContainer rv = activity.getOverviewPanelContainer();
@@ -418,11 +433,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         rv.setContentAlpha(1);
                     }
                     createActivityController(getSwipeUpDestinationAndLength(
-                            activity.getDeviceProfile(), activity, new Rect()));
+                            activity.getDeviceProfile(), activity, INTERACTION_NORMAL,
+                            new TransformedRect()), INTERACTION_NORMAL);
                 }
 
                 @Override
-                public void createActivityController(long transitionLength) {
+                public void createActivityController(long transitionLength, int interactionType) {
                     if (!isAnimatingHome) {
                         return;
                     }
@@ -543,7 +559,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
-        void createActivityController(long transitionLength);
+        void createActivityController(long transitionLength, @InteractionType int interactionType);
 
         default void onTransitionCancelled() { }
     }

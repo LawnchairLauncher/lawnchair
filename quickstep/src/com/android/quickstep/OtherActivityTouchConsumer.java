@@ -326,10 +326,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             mPassedInitialSlop = true;
         }
 
-        notifyGestureStarted();
         if (mInteractionHandler != null) {
             mInteractionHandler.updateInteractionType(interactionType);
         }
+        notifyGestureStarted();
     }
 
     @Override

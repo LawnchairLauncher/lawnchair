@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.views.RecentsView;
@@ -45,6 +46,15 @@ public class FastOverviewState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {1f, 0.5f};
+        return new float[] {getOverviewScale(launcher.getDeviceProfile()), 0.5f};
+    }
+
+    public static float getOverviewScale(DeviceProfile dp) {
+        if (dp.isMultiWindowMode || dp.isVerticalBarLayout()) {
+            return 1f;
+        }
+
+        // TODO: Calculate it dynamically based on available space
+        return 1.3f;
     }
 }

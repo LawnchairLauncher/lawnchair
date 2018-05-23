@@ -65,6 +65,7 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -181,7 +182,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
     private QuickScrubController mQuickScrubController;
-    private AnimationFactory mAnimationFactory = (t) -> { };
+    private AnimationFactory mAnimationFactory = (t, i) -> { };
 
     private Runnable mLauncherDrawnCallback;
 
@@ -302,9 +303,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
-        Rect tempRect = new Rect();
+        TransformedRect tempRect = new TransformedRect();
         mTransitionDragLength = mActivityControlHelper
-                .getSwipeUpDestinationAndLength(dp, mContext, tempRect);
+                .getSwipeUpDestinationAndLength(dp, mContext, mInteractionType, tempRect);
         mClipAnimationHelper.updateTargetRect(tempRect);
     }
 
@@ -488,7 +489,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
      */
     public void buildAnimationController() {
         initTransitionEndpoints(mActivity.getDeviceProfile());
-        mAnimationFactory.createActivityController(mTransitionDragLength);
+        mAnimationFactory.createActivityController(mTransitionDragLength, mInteractionType);
     }
 
     private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
@@ -793,13 +794,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             int scrollForFirstTask = mRecentsView.getScrollForPage(0);
             int scrollForSecondTask = mRecentsView.getChildCount() > 1
                     ? mRecentsView.getScrollForPage(1) : scrollForFirstTask;
-            int offsetFromFirstTask = scrollForFirstTask - scrollForSecondTask;
-            final float interpolation;
-            if (mRecentsView.getWidth() == 0) {
-                interpolation = scrollForSecondTask == scrollForFirstTask ? 0 : 1;
-            } else {
-                interpolation = (float) offsetFromFirstTask / (mRecentsView.getWidth() / 2);
-            }
+            float offsetFromFirstTask = scrollForFirstTask - scrollForSecondTask;
+
+            TransformedRect tempRect = new TransformedRect();
+            mActivityControlHelper
+                    .getSwipeUpDestinationAndLength(mDp, mContext, mInteractionType, tempRect);
+            float distanceToReachEdge = mDp.widthPx / 2 + tempRect.rect.width() / 2 +
+                    mContext.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+            float interpolation = Math.min(1,
+                    Math.abs(offsetFromFirstTask) / distanceToReachEdge);
+
             mClipAnimationHelper.offsetTarget(
                     firstTask.getCurveScaleForInterpolation(interpolation), offsetFromFirstTask,
                     mActivityControlHelper.getTranslationYForQuickScrub(mActivity),

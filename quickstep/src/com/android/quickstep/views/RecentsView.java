@@ -47,7 +47,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.ArraySet;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -100,18 +99,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private final Rect mTempRect = new Rect();
 
-    public static final FloatProperty<RecentsView> ADJACENT_SCALE =
-            new FloatProperty<RecentsView>("adjacentScale") {
-        @Override
-        public void setValue(RecentsView recentsView, float v) {
-            recentsView.setAdjacentScale(v);
-        }
-
-        @Override
-        public Float get(RecentsView recentsView) {
-            return recentsView.mAdjacentScale;
-        }
-    };
     private static final int DISMISS_TASK_DURATION = 300;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.6f;
@@ -122,6 +109,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final QuickScrubController mQuickScrubController;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
+    private final int mTaskTopMargin;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -232,8 +220,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mAdjacentScale = 1;
 
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
@@ -271,6 +257,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         mIsRtl = !Utilities.isRtl(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
+        mTaskTopMargin = getResources()
+                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
         mEmptyIcon.setCallback(this);
@@ -518,8 +506,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(dp, mTempRect);
 
-        mTempRect.top -= getResources()
-                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.availableWidthPx + mInsets.left - mTempRect.right,
                 dp.availableHeightPx + mInsets.top - mTempRect.bottom);
@@ -1038,36 +1025,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateClearAllButtonAlpha();
     }
 
-    public void setAdjacentScale(float adjacentScale) {
-        if (mAdjacentScale == adjacentScale) {
-            return;
-        }
-        mAdjacentScale = adjacentScale;
-        TaskView currTask = getPageAt(mCurrentPage);
-        if (currTask == null) {
-            return;
-        }
-        currTask.setZoomScale(mAdjacentScale);
-
-        if (mCurrentPage - 1 >= 0) {
-            TaskView adjacentTask = getPageAt(mCurrentPage - 1);
-            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
-                    mAdjacentScale, 0);
-            adjacentTask.setZoomScale(scaleAndTranslation[0]);
-            adjacentTask.setTranslationX(-scaleAndTranslation[1]);
-            adjacentTask.setTranslationY(scaleAndTranslation[2]);
-        }
-        if (mCurrentPage + 1 < getChildCount()) {
-            TaskView adjacentTask = getPageAt(mCurrentPage + 1);
-            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
-                    mAdjacentScale, 0);
-            adjacentTask.setZoomScale(scaleAndTranslation[0]);
-            adjacentTask.setTranslationX(scaleAndTranslation[1]);
-            adjacentTask.setTranslationY(scaleAndTranslation[2]);
-        }
-    }
-
-    private float[] getAdjacentScaleAndTranslation(TaskView currTask, TaskView adjacentTask,
+    private float[] getAdjacentScaleAndTranslation(TaskView currTask,
             float currTaskToScale, float currTaskToTranslationY) {
         float displacement = currTask.getWidth() * (currTaskToScale - currTask.getCurveScale());
         sTempFloatArray[0] = currTaskToScale;
@@ -1080,7 +1038,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         child.setAlpha(mContentAlpha);
-        setAdjacentScale(mAdjacentScale);
         onChildViewsChanged();
     }
 
@@ -1106,6 +1063,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         updateEmptyStateUi(changed);
+
+        // Set the pivot points to match the task preview center
+        setPivotY(((mInsets.top + getPaddingTop() + mTaskTopMargin)
+                + (getHeight() - mInsets.bottom - getPaddingBottom())) / 2);
+        setPivotX(((mInsets.left + getPaddingLeft())
+                + (getWidth() - mInsets.right - getPaddingRight())) / 2);
     }
 
     private void updateEmptyStateUi(boolean sizeChanged) {
@@ -1176,14 +1139,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (taskIndex - 1 >= 0) {
                 TaskView adjacentTask = getPageAt(taskIndex - 1);
                 float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
-                        adjacentTask, toScale, toTranslationY);
+                        toScale, toTranslationY);
                 scaleAndTranslation[1] = -scaleAndTranslation[1];
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
             if (taskIndex + 1 < getPageCount()) {
                 TaskView adjacentTask = getPageAt(taskIndex + 1);
                 float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
-                        adjacentTask, toScale, toTranslationY);
+                        toScale, toTranslationY);
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
         } else {
