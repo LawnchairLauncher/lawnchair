@@ -110,7 +110,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return recentsView.mAdjacentScale;
         }
     };
-    public static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.6f;
@@ -268,10 +267,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.getInstance(context);
 
-        mIsRtl = Utilities.isRtl(getResources());
-        if (FLIP_RECENTS) {
-            mIsRtl = !mIsRtl;
-        }
+        mIsRtl = !Utilities.isRtl(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -1339,18 +1335,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> outChildren) {
-        if (FLIP_RECENTS) {
-            for (int i = getChildCount() - 1; i >= 0; --i) {
-                outChildren.add(getChildAt(i));
-            }
-        } else {
-            super.addChildrenForAccessibility(outChildren);
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            outChildren.add(getChildAt(i));
         }
     }
 
     @Override
     protected boolean isPageOrderFlipped() {
-        return FLIP_RECENTS;
+        return true;
     }
 
     public void addTaskAccessibilityActionsExtra(AccessibilityNodeInfo info) {
