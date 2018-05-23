@@ -71,7 +71,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityCompat;
@@ -80,8 +79,6 @@ import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -548,13 +545,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
-        RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(targets,
-                MODE_OPENING);
-        RemoteAnimationTargetSet closingTargets = new RemoteAnimationTargetSet(targets,
-                MODE_CLOSING);
-        SyncRtSurfaceTransactionApplier surfaceApplier = new SyncRtSurfaceTransactionApplier(
-                mFloatingView);
-
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -564,6 +554,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
             @Override
             public void onUpdate(float percent) {
+                final Surface surface = getSurface(mFloatingView);
+                final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
+                if (frameNumber == -1) {
+                    // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
+                    Log.w(TAG, "Failed to animate, surface got destroyed.");
+                    return;
+                }
                 final float easePercent = AGGRESSIVE_EASE.getInterpolation(percent);
 
                 // Calculate app icon size.
@@ -574,6 +571,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 float scaleX = iconWidth / windowTargetBounds.width();
                 float scaleY = iconHeight / windowTargetBounds.height();
                 float scale = Math.min(1f, Math.min(scaleX, scaleY));
+                matrix.setScale(scale, scale);
 
                 // Position the scaled window on top of the icon
                 int windowWidth = windowTargetBounds.width();
@@ -590,6 +588,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 }
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
+                matrix.postTranslate(transX0, transY0);
 
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
@@ -600,24 +599,22 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 crop.right = windowWidth;
                 crop.bottom = (int) (crop.top + cropHeight);
 
+                TransactionCompat t = new TransactionCompat();
                 if (isFirstFrame) {
-                    TransactionCompat t = new TransactionCompat();
-                    RemoteAnimationProvider.prepareTargetsForFirstFrame(closingTargets.apps, t,
-                            MODE_OPENING);
-                    t.setEarlyWakeup();
-                    t.apply();
+                    RemoteAnimationProvider.prepareTargetsForFirstFrame(targets, t, MODE_OPENING);
                     isFirstFrame = false;
                 }
-                SurfaceParams[] params = new SurfaceParams[openingTargets.apps.length];
-                for (int i = openingTargets.apps.length - 1; i >= 0; i--) {
-                    RemoteAnimationTargetCompat target = openingTargets.apps[i];
-                    matrix.setScale(scale, scale);
-                    matrix.postTranslate(transX0, transY0);
-
-                    params[i] = new SurfaceParams(target.leash, mAlpha.value, matrix, crop,
-                            RemoteAnimationProvider.getLayer(target, MODE_OPENING));
+                for (RemoteAnimationTargetCompat target : targets) {
+                    if (target.mode == MODE_OPENING) {
+                        t.setAlpha(target.leash, mAlpha.value);
+                        t.setMatrix(target.leash, matrix);
+                        t.setWindowCrop(target.leash, crop);
+                        t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
+                    }
                 }
-                surfaceApplier.scheduleApply(params);
+                t.setEarlyWakeup();
+                t.apply();
+
                 matrix.reset();
             }
         });
