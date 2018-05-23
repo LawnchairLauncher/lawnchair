@@ -65,6 +65,9 @@ class FullscreenKeyEventListener implements View.OnKeyListener {
     }
 }
 
+/**
+ * TODO: Reevaluate if this is still required
+ */
 public class FocusHelper {
 
     private static final String TAG = "FocusHelper";
