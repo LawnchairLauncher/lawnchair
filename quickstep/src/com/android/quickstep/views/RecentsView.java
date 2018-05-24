@@ -1315,8 +1315,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onInitializeAccessibilityEvent(event);
 
         if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            event.setFromIndex(getCurrentPage());
-            event.setToIndex(getCurrentPage());
+            final int visiblePageNumber = getChildCount() - getCurrentPage() - 1;
+            event.setFromIndex(visiblePageNumber);
+            event.setToIndex(visiblePageNumber);
             event.setItemCount(getChildCount());
         }
     }
