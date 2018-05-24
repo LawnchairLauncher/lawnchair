@@ -273,8 +273,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 | STATE_SCALED_CONTROLLER_APP,
                 this::notifyTransitionCancelled);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START,
-                this::onQuickScrubStart);
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START
+                        | STATE_APP_CONTROLLER_RECEIVED, this::onQuickScrubStart);
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_QUICK_SCRUB_START
                 | STATE_SCALED_CONTROLLER_RECENTS, this::onFinishedTransitionToQuickScrub);
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_CURRENT_TASK_FINISHED
