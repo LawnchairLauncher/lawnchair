@@ -218,7 +218,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
+        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
+                AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             addAccessibleChildToList(topView, childrenForAccessibility);
             if (isInAccessibleDrag()) {
