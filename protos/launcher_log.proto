@@ -110,6 +110,8 @@ enum ControlType {
   QUICK_SCRUB_BUTTON = 12;
   CLEAR_ALL_BUTTON = 13;
   CANCEL_TARGET = 14;
+  TASK_PREVIEW = 15;
+  SPLIT_SCREEN_TARGET = 16;
 }
 
 enum TipType {
