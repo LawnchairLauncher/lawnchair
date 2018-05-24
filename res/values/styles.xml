@@ -45,7 +45,7 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
 
-    <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
+    <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
@@ -68,6 +68,15 @@
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
+    </style>
+
+    <style name="LauncherThemeDark.DarKText" parent="@style/LauncherThemeDark">
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
     <!--
