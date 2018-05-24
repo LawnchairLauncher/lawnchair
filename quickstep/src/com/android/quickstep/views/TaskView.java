@@ -325,7 +325,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         final AccessibilityNodeInfo.CollectionItemInfo itemInfo =
                 AccessibilityNodeInfo.CollectionItemInfo.obtain(
-                        0, 1, recentsView.indexOfChild(this), 1, false);
+                        0, 1, recentsView.getChildCount() - recentsView.indexOfChild(this) - 1, 1,
+                        false);
         info.setCollectionItemInfo(itemInfo);
     }
 
