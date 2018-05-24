@@ -113,8 +113,15 @@ public class RecentsViewContainer extends InsettableFrameLayout {
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        // Carousel is first in tab order.
-        views.add(mRecentsView);
-        views.add(mClearAllButton);
+        if (mRecentsView.getChildCount() > 0) {
+            // Carousel is first in tab order.
+            views.add(mRecentsView);
+            views.add(mClearAllButton);
+        }
+    }
+
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        return mRecentsView.requestFocus(direction, previouslyFocusedRect) ||
+                super.requestFocus(direction, previouslyFocusedRect);
     }
 }
