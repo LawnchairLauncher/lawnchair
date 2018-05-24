@@ -90,11 +90,11 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
         if (wallpaperColorInfo.isDark()) {
-            return R.style.LauncherThemeDark;
-        } else if (wallpaperColorInfo.supportsDarkText()) {
-            return R.style.LauncherThemeDarkText;
+            return wallpaperColorInfo.supportsDarkText() ?
+                    R.style.LauncherThemeDark_DarKText : R.style.LauncherThemeDark;
         } else {
-            return R.style.LauncherTheme;
+            return wallpaperColorInfo.supportsDarkText() ?
+                    R.style.LauncherTheme_DarkText : R.style.LauncherTheme;
         }
     }
 
