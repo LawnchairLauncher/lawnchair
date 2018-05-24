@@ -152,6 +152,11 @@
             android:exported="true"
             android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider" />
 
+        <!--
+        Custom
+        -->
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
+
         <!-- ENABLE_FOR_TESTING
 
         <activity
