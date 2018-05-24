@@ -227,12 +227,16 @@ public class ClipAnimationHelper {
         dl.getDescendantRectRelativeToSelf(ttv, targetRect.rect);
         updateTargetRect(targetRect);
 
-        // Transform the clip relative to the target rect.
-        float scale = mTargetRect.width() / mSourceRect.width();
-        mSourceWindowClipInsets.left = mSourceWindowClipInsets.left * scale;
-        mSourceWindowClipInsets.top = mSourceWindowClipInsets.top * scale;
-        mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
-        mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
+        if (target == null) {
+            // Transform the clip relative to the target rect. Only do this in the case where we
+            // aren't applying the insets to the app windows (where the clip should be in target app
+            // space)
+            float scale = mTargetRect.width() / mSourceRect.width();
+            mSourceWindowClipInsets.left = mSourceWindowClipInsets.left * scale;
+            mSourceWindowClipInsets.top = mSourceWindowClipInsets.top * scale;
+            mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
+            mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
+        }
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
