@@ -19,8 +19,6 @@ import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
-import android.view.View;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -65,11 +63,6 @@ public class AllAppsState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         return ALL_APPS_HEADER | ALL_APPS_CONTENT;
-    }
-
-    @Override
-    public View getFinalFocus(Launcher launcher) {
-        return launcher.getAppsView();
     }
 
     @Override

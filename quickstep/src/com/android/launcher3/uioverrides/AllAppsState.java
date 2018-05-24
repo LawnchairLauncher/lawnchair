@@ -18,8 +18,6 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
-import android.view.View;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -59,11 +57,6 @@ public class AllAppsState extends LauncherState {
     @Override
     public float getVerticalProgress(Launcher launcher) {
         return 0f;
-    }
-
-    @Override
-    public View getFinalFocus(Launcher launcher) {
-        return launcher.getAppsView();
     }
 
     @Override

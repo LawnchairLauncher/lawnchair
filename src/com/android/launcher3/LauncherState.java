@@ -18,11 +18,11 @@ package com.android.launcher3;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Rect;
-import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.states.SpringLoadedState;
@@ -195,10 +195,6 @@ public class LauncherState {
     }
 
     public void onStateDisabled(Launcher launcher) { }
-
-    public View getFinalFocus(Launcher launcher) {
-        return launcher.getWorkspace();
-    }
 
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
