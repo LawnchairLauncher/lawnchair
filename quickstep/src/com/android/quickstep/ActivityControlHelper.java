@@ -153,8 +153,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public float getTranslationYForQuickScrub(Launcher activity) {
             LauncherRecentsView recentsView = activity.getOverviewPanel();
-            float transYFactor = FAST_OVERVIEW.getOverviewScaleAndTranslationYFactor(activity)[1];
-            return recentsView.computeTranslationYForFactor(transYFactor);
+            return recentsView.computeTranslationYForFactor(
+                    FastOverviewState.OVERVIEW_TRANSLATION_FACTOR);
         }
 
         @Override
@@ -167,7 +167,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 @InteractionType int interactionType, TransformedRect outRect) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
             if (interactionType == INTERACTION_QUICK_SCRUB) {
-                outRect.scale = FastOverviewState.getOverviewScale(dp);
+                outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context);
             }
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
