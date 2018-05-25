@@ -700,6 +700,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.setRunningTaskHidden(false);
         mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
+        mQuickScrubController.cancelActiveQuickscrub();
     }
 
     private void notifyTransitionCancelled() {
