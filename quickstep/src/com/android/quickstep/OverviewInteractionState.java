@@ -91,6 +91,7 @@ public class OverviewInteractionState {
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
     private boolean mSwipeUpEnabled = true;
+    private float mBackButtonAlpha = 1;
 
     private Runnable mOnSwipeUpSettingChangedListener;
 
@@ -117,7 +118,14 @@ public class OverviewInteractionState {
         return mSwipeUpEnabled;
     }
 
+    public float getBackButtonAlpha() {
+        return mBackButtonAlpha;
+    }
+
     public void setBackButtonAlpha(float alpha, boolean animate) {
+        if (!mSwipeUpEnabled) {
+            alpha = 1;
+        }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
         mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)
                 .sendToTarget();
@@ -128,6 +136,9 @@ public class OverviewInteractionState {
     }
 
     private boolean handleUiMessage(Message msg) {
+        if (msg.what == MSG_SET_BACK_BUTTON_ALPHA) {
+            mBackButtonAlpha = (float) msg.obj;
+        }
         mBgHandler.obtainMessage(msg.what, msg.arg1, msg.arg2, msg.obj).sendToTarget();
         return true;
     }

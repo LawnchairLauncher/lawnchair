@@ -83,11 +83,6 @@ public class OverviewState extends LauncherState {
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
     }
 
-    @Override
-    public View getFinalFocus(Launcher launcher) {
-        return launcher.getOverviewPanel();
-    }
-
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return new PageAlphaProvider(DEACCEL_2) {
             @Override
@@ -100,9 +95,9 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return 0;
+            return VERTICAL_SWIPE_INDICATOR;
         } else {
-            return HOTSEAT_SEARCH_BOX |
+            return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR |
                     (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
                             ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }

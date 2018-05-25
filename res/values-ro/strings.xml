@@ -109,6 +109,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se descarcă (finalizat <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> așteaptă instalarea"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgeturi <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Listă de widgeturi"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Lista de widgeturi este închisă"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Adăugați pe ecranul de pornire"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mutați elementul aici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element adăugat pe ecranul de pornire"</string>
@@ -131,8 +133,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Reduceți înălțimea"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widgetul a fost redimensionat la lățimea <xliff:g id="NUMBER_0">%1$s</xliff:g> și înălțimea <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Comenzi rapide"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> comenzi rapide pentru <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> comenzi rapide și <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificări pentru <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Comenzi rapide și notificări"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Închideți"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificare închisă"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personale"</string>

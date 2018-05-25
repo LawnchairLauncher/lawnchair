@@ -881,7 +881,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             layout = mLauncher.getHotseat().getLayout();
-            child.setOnKeyListener(new HotseatIconKeyEventListener());
 
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
@@ -893,7 +892,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 ((FolderIcon) child).setTextVisible(true);
             }
             layout = getScreenWithId(screenId);
-            child.setOnKeyListener(new IconKeyEventListener());
         }
 
         ViewGroup.LayoutParams genericLp = child.getLayoutParams();
@@ -1554,6 +1552,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
+        float iconScale = 1f;
+        if (child instanceof BubbleTextView) {
+            Drawable icon = ((BubbleTextView) child).getIcon();
+            if (icon instanceof FastBitmapDrawable) {
+                iconScale = ((FastBitmapDrawable) icon).getAnimatedScale();
+            }
+        }
+
         child.clearFocus();
         child.setPressed(false);
         mOutlineProvider = previewProvider;
@@ -1605,7 +1611,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
+                dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
