@@ -152,6 +152,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     // Similar to the platform implementation of isLayoutValid();
     protected boolean mIsLayoutValid;
 
+    private int[] mTmpIntPair = new int[2];
+
     public PagedView(Context context) {
         this(context, null);
     }
@@ -1599,5 +1601,34 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected interface ComputePageScrollsLogic {
 
         boolean shouldIncludeView(View view);
+    }
+
+    public int[] getVisibleChildrenRange() {
+        float visibleLeft = 0;
+        float visibleRight = visibleLeft + getMeasuredWidth();
+        float scaleX = getScaleX();
+        if (scaleX < 1 && scaleX > 0) {
+            float mid = getMeasuredWidth() / 2;
+            visibleLeft = mid - ((mid - visibleLeft) / scaleX);
+            visibleRight = mid + ((visibleRight - mid) / scaleX);
+        }
+
+        int leftChild = -1;
+        int rightChild = -1;
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = getPageAt(i);
+
+            float left = child.getLeft() + child.getTranslationX() - getScrollX();
+            if (left <= visibleRight && (left + child.getMeasuredWidth()) >= visibleLeft) {
+                if (leftChild == -1) {
+                    leftChild = i;
+                }
+                rightChild = i;
+            }
+        }
+        mTmpIntPair[0] = leftChild;
+        mTmpIntPair[1] = rightChild;
+        return mTmpIntPair;
     }
 }
