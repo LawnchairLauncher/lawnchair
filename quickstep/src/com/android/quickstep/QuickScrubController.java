@@ -132,6 +132,17 @@ public class QuickScrubController implements OnAlarmListener {
         }
     }
 
+    public void cancelActiveQuickscrub() {
+        if (!mInQuickScrub) {
+            return;
+        }
+        Log.d(TAG, "Quickscrub was active, cancelling");
+        mInQuickScrub = false;
+        mActivityControlHelper = null;
+        mOnFinishedTransitionToQuickScrubRunnable = null;
+        mRecentsView.setNextPageSwitchRunnable(null);
+    }
+
     /**
      * Initializes the UI for quick scrub, returns true if success.
      */

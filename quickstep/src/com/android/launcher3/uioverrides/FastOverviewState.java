@@ -76,4 +76,10 @@ public class FastOverviewState extends OverviewState {
         return Math.min(Math.min(dp.availableHeightPx / usedHeight,
                 dp.availableWidthPx / usedWidth), MAX_PREVIEW_SCALE_UP);
     }
+
+    @Override
+    public void onStateDisabled(Launcher launcher) {
+        super.onStateDisabled(launcher);
+        launcher.<RecentsView>getOverviewPanel().getQuickScrubController().cancelActiveQuickscrub();
+    }
 }
