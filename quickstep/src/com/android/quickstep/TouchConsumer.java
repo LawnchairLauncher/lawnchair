@@ -48,6 +48,8 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default void onQuickStep(MotionEvent ev) { }
 
+    default void onCommand(int command) { }
+
     /**
      * Called on the binder thread to allow the consumer to process the motion event before it is
      * posted on a handler thread.
