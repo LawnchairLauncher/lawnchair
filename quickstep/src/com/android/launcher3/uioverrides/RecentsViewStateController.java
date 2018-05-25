@@ -76,15 +76,16 @@ public class RecentsViewStateController implements StateHandler {
         }
         PropertySetter setter = config.getPropertySetter(builder);
         float[] scaleTranslationYFactor = toState.getOverviewScaleAndTranslationYFactor(mLauncher);
-        Interpolator scaleInterpolator = builder.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
-        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleTranslationYFactor[0], scaleInterpolator);
-        Interpolator transYInterpolator = scaleInterpolator;
+        Interpolator scaleAndTransYInterpolator = builder.getInterpolator(
+                ANIM_OVERVIEW_SCALE, LINEAR);
         if (mLauncher.getStateManager().getState() == OVERVIEW && toState == FAST_OVERVIEW) {
-            transYInterpolator = Interpolators.clampToProgress(QUICK_SCRUB_START_INTERPOLATOR, 0,
-                    QUICK_SCRUB_TRANSLATION_Y_FACTOR);
+            scaleAndTransYInterpolator = Interpolators.clampToProgress(
+                    QUICK_SCRUB_START_INTERPOLATOR, 0, QUICK_SCRUB_TRANSLATION_Y_FACTOR);
         }
+        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleTranslationYFactor[0],
+                scaleAndTransYInterpolator);
         setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1],
-                transYInterpolator);
+                scaleAndTransYInterpolator);
         setter.setFloat(mRecentsViewContainer, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
 
