@@ -31,6 +31,7 @@ import android.text.InputType;
 import android.text.Selection;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -39,6 +40,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -507,32 +509,21 @@ public class Folder extends AbstractFloatingView implements DragSource,
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
-        final Runnable onCompleteRunnable;
         centerAboutIcon();
 
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
-        onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
-            }
-        };
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mFolderIcon.setBackgroundVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
-
-                sendCustomAccessibilityEvent(
-                        Folder.this,
-                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        mContent.getAccessibilityDescription());
             }
             @Override
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
+                announceAccessibilityChanges();
 
-                onCompleteRunnable.run();
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
                 mContent.setFocusOnFirstChild();
             }
         });
@@ -580,11 +571,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
 
         mContent.verifyVisibleHighResIcons(mContent.getNextPage());
-
-        // Notify the accessibility manager that this folder "window" has appeared and occluded
-        // the workspace items
-        sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-        dragLayer.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED);
     }
 
     public void beginExternalDrag() {
@@ -614,18 +600,17 @@ public class Folder extends AbstractFloatingView implements DragSource,
             mFolderIcon.clearLeaveBehindIfExists();
         }
 
-        if (!(getParent() instanceof DragLayer)) return;
-        DragLayer parent = (DragLayer) getParent();
-
         if (animate) {
             animateClosed();
         } else {
             closeComplete(false);
+            post(this::announceAccessibilityChanges);
         }
 
         // Notify the accessibility manager that this folder "window" has disappeared and no
         // longer occludes the workspace items
-        parent.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        mLauncher.getDragLayer().sendAccessibilityEvent(
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     private void animateClosed() {
@@ -634,16 +619,16 @@ public class Folder extends AbstractFloatingView implements DragSource,
             @Override
             public void onAnimationEnd(Animator animation) {
                 closeComplete(true);
-            }
-            @Override
-            public void onAnimationStart(Animator animation) {
-                sendCustomAccessibilityEvent(
-                        Folder.this,
-                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        getContext().getString(R.string.folder_closed));
+                announceAccessibilityChanges();
             }
         });
         startAnimation(a);
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(mContent, mIsOpen ? mContent.getAccessibilityDescription()
+                : getContext().getString(R.string.folder_closed));
     }
 
     private void closeComplete(boolean wasAnimated) {
@@ -1452,12 +1437,13 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if (isEditingName()) {
             mFolderName.dispatchBackKey();
         } else {
             super.onBackPressed();
         }
+        return true;
     }
 
     @Override

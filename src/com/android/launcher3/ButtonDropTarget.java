@@ -45,6 +45,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
@@ -192,8 +193,10 @@ public abstract class ButtonDropTarget extends TextView
             mCurrentFilter = new ColorMatrix();
         }
 
-        Themes.setColorScaleOnMatrix(getTextColor(), mSrcFilter);
-        Themes.setColorScaleOnMatrix(targetColor, mDstFilter);
+        int defaultTextColor = mOriginalTextColor.getDefaultColor();
+        Themes.setColorChangeOnMatrix(defaultTextColor, getTextColor(), mSrcFilter);
+        Themes.setColorChangeOnMatrix(defaultTextColor, targetColor, mDstFilter);
+
         ValueAnimator anim1 = ValueAnimator.ofObject(
                 new FloatArrayEvaluator(mCurrentFilter.getArray()),
                 mSrcFilter.getArray(), mDstFilter.getArray());
@@ -373,5 +376,5 @@ public abstract class ButtonDropTarget extends TextView
         return !mText.equals(displayedText);
     }
 
-    public abstract int getControlTypeForLogging();
+    public abstract Target getDropTargetForLogging();
 }

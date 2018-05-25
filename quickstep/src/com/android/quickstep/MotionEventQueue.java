@@ -163,7 +163,7 @@ public class MotionEventQueue {
                             mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
                             break;
                         case ACTION_QUICK_STEP:
-                            mConsumer.onQuickStep(event.getX(), event.getY(), event.getEventTime());
+                            mConsumer.onQuickStep(event);
                             break;
                         default:
                             Log.e(TAG, "Invalid virtual event: " + event.getAction());

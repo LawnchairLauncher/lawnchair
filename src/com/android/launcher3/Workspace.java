@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_M
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
+import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -75,14 +76,11 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.graphics.ViewScrim;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.touch.WorkspaceTouchListener;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -195,7 +193,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
-    public static final int REORDER_TIMEOUT = 350;
+    public static final int REORDER_TIMEOUT = 650;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
@@ -280,9 +278,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
-
-        // Attach a scrim
-        new WorkspaceAndHotseatScrim(this).attach();
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
     }
 
@@ -476,7 +471,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onViewAdded(child);
     }
 
-    boolean isTouchActive() {
+    public boolean isTouchActive() {
         return mTouchState != TOUCH_STATE_REST;
     }
 
@@ -517,6 +512,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         // Remove the pages and clear the screen models
+        removeFolderListeners();
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
@@ -973,19 +969,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-        case MotionEvent.ACTION_DOWN:
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             mXDown = ev.getX();
             mYDown = ev.getY();
-            break;
-        case MotionEvent.ACTION_POINTER_UP:
-        case MotionEvent.ACTION_UP:
-            if (mTouchState == TOUCH_STATE_REST) {
-                final CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
-                if (currentPage != null) {
-                    onWallpaperTap(ev);
-                }
-            }
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -1189,7 +1175,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
         mLauncher.getDragLayer().setTranslationX(transX);
-        mLauncher.getDragLayer().setAlpha(alpha);
+        mLauncher.getDragLayer().getAlphaProperty(ALPHA_INDEX_OVERLAY).setValue(alpha);
     }
 
     /**
@@ -1311,7 +1297,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void updatePageAlphaValues() {
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        // We need to check the isDragging case because updatePageAlphaValues is called between
+        // goToState(SPRING_LOADED) and onStartStateTransition.
+        if (!workspaceInModalState() && !mIsSwitchingState && !mDragController.isDragging()) {
             int screenCenter = getScrollX() + getMeasuredWidth() / 2;
             for (int i = 0; i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
@@ -1442,7 +1430,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    protected void onWallpaperTap(MotionEvent ev) {
+    public void onWallpaperTap(MotionEvent ev) {
         final int[] position = mTempXY;
         getLocationOnScreen(position);
 
@@ -2162,7 +2150,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         // Invalidating the scrim will also force this CellLayout
         // to be invalidated so that it is highlighted if necessary.
-        ViewScrim.get(this).invalidate();
+        mLauncher.getDragLayer().getScrim().invalidate();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {
@@ -2973,25 +2961,29 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public void scrollLeft() {
+    public boolean scrollLeft() {
+        boolean result = false;
         if (!workspaceInModalState() && !mIsSwitchingState) {
-            super.scrollLeft();
+            result = super.scrollLeft();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
+        return result;
     }
 
     @Override
-    public void scrollRight() {
+    public boolean scrollRight() {
+        boolean result = false;
         if (!workspaceInModalState() && !mIsSwitchingState) {
-            super.scrollRight();
+            result = super.scrollRight();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
+        return result;
     }
 
     /**

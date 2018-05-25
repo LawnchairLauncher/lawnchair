@@ -23,7 +23,7 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * Simple scrim which draws a color

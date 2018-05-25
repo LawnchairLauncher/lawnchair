@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -42,10 +43,12 @@ import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.ViewScrim;
+import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
@@ -57,6 +60,12 @@ import java.util.ArrayList;
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends BaseDragLayer<Launcher> {
+
+    public static final int ALPHA_INDEX_OVERLAY = 0;
+    public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
+    public static final int ALPHA_INDEX_TRANSITIONS = 2;
+    public static final int ALPHA_INDEX_SWIPE_UP = 3;
+    private static final int ALPHA_CHANNEL_COUNT = 4;
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
@@ -77,6 +86,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
+    private final WorkspaceAndHotseatScrim mScrim;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -85,17 +95,23 @@ public class DragLayer extends BaseDragLayer<Launcher> {
      * @param attrs The attributes set containing the Workspace's customization values.
      */
     public DragLayer(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, ALPHA_CHANNEL_COUNT);
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+        mScrim = new WorkspaceAndHotseatScrim(this);
     }
 
-    public void setup(DragController dragController) {
+    public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
+        mScrim.setWorkspace(workspace);
+        recreateControllers();
+    }
+
+    public void recreateControllers() {
         mControllers = UiFactory.createTouchControllers(mActivity);
     }
 
@@ -106,18 +122,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
-
-    public boolean isEventOverHotseat(MotionEvent ev) {
-        return isEventOverView(mActivity.getHotseat(), ev);
-    }
-
-    private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
-        return isEventOverView(folder, ev);
-    }
-
-    private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        return isEventOverView(mActivity.getDropTargetBar(), ev);
     }
 
     @Override
@@ -139,24 +143,29 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         return super.findActiveController(ev);
     }
 
+    private boolean isEventOverAccessibleDropTargetBar(MotionEvent ev) {
+        return isInAccessibleDrag() && isEventOverView(mActivity.getDropTargetBar(), ev);
+    }
+
     @Override
     public boolean onInterceptHoverEvent(MotionEvent ev) {
         if (mActivity == null || mActivity.getWorkspace() == null) {
             return false;
         }
-        Folder currentFolder = Folder.getOpen(mActivity);
-        if (currentFolder == null) {
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+        if (!(topView instanceof Folder)) {
             return false;
         } else {
             AccessibilityManager accessibilityManager = (AccessibilityManager)
                     getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             if (accessibilityManager.isTouchExplorationEnabled()) {
+                Folder currentFolder = (Folder) topView;
                 final int action = ev.getAction();
                 boolean isOverFolderOrSearchBar;
                 switch (action) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                isEventOverAccessibleDropTargetBar(ev);
                         if (!isOverFolderOrSearchBar) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -165,8 +174,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                         mHoverPointClosesFolder = false;
                         break;
                     case MotionEvent.ACTION_HOVER_MOVE:
-                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
-                                (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                isEventOverAccessibleDropTargetBar(ev);
                         if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
@@ -201,18 +210,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
-        // Shortcuts can appear above folder
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (topView != null) {
-            if (child == topView) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
-            if (isInAccessibleDrag() && child instanceof DropTargetBar) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
-            // Skip propagating onRequestSendAccessibilityEvent for all other children
-            // which are not topView
-            return false;
+        if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+            return true;
         }
         return super.onRequestSendAccessibilityEvent(child, event);
     }
@@ -221,11 +220,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
-            // Only add the top view as a child for accessibility when it is open
-            childrenForAccessibility.add(topView);
-
+            addAccessibleChildToList(topView, childrenForAccessibility);
             if (isInAccessibleDrag()) {
-                childrenForAccessibility.add(mActivity.getDropTargetBar());
+                addAccessibleChildToList(mActivity.getDropTargetBar(), childrenForAccessibility);
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
@@ -462,6 +459,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 case ANIMATION_END_REMAIN_VISIBLE:
                     break;
                 }
+                mDropAnim = null;
             }
         });
         mDropAnim.start();
@@ -471,6 +469,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         if (mDropAnim != null) {
             mDropAnim.cancel();
         }
+        mDropAnim = null;
         if (mDropView != null) {
             mDragController.onDeferredEndDrag(mDropView);
         }
@@ -542,7 +541,24 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
+        mScrim.draw(canvas);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mScrim.setSize(w, h);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        mScrim.onInsetsChanged(insets);
+    }
+
+    public WorkspaceAndHotseatScrim getScrim() {
+        return mScrim;
     }
 }

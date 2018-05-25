@@ -194,6 +194,10 @@ public class SwipeDetector {
         mIgnoreSlopWhenSettling = ignoreSlop;
     }
 
+    public int getScrollDirections() {
+        return mScrollConditions;
+    }
+
     private boolean shouldScrollStart(MotionEvent ev, int pointerIndex) {
         // reject cases where the angle or slop condition is not met.
         if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos), mTouchSlop)

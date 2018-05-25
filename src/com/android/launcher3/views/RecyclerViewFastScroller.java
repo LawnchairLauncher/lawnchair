@@ -372,4 +372,11 @@ public class RecyclerViewFastScroller extends View {
         }
         return sTempRect.contains((int) x, (int) y);
     }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        // There is actually some overlap between the track and the thumb. But since the track
+        // alpha is so low, it does not matter.
+        return false;
+    }
 }

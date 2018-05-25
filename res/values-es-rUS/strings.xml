@@ -79,8 +79,10 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de Home"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de página principal"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"El administrador inhabilitó esta función"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir la rotación de la pantalla principal"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Puntos de notificación"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activada"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desactivada"</string>
@@ -92,7 +94,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para nuevas apps"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Cambiar forma de los íconos"</string>
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"en la pantalla principal"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar el sistema predeterminado"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar valores predeterminados del sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Cuadrado"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Cuadrado con esquinas redondeadas"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Círculo"</string>
@@ -128,8 +130,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Reducir la altura"</string>
     <string name="widget_resized" msgid="9130327887929620">"Se cambió la dimensión del widget a <xliff:g id="NUMBER_0">%1$s</xliff:g> de ancho y <xliff:g id="NUMBER_1">%2$s</xliff:g> de alto."</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Accesos directos"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos para <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos y <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificaciones de <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
+    <skip />
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Descartar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Se descartó la notificación"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>

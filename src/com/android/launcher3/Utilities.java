@@ -35,9 +35,10 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
-import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -81,7 +82,8 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
-    public static final boolean ATLEAST_P = BuildCompat.isAtLeastP();
+    public static final boolean ATLEAST_P =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     public static final boolean ATLEAST_OREO_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
@@ -101,11 +103,14 @@ public final class Utilities {
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
 
+    public static final int SINGLE_FRAME_MS = 16;
+
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
      */
-    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug");
+    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug")
+            || Build.TYPE.toLowerCase().equals("eng");
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
@@ -487,7 +492,11 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverOn(Context context) {
+    public static boolean isPowerSaverPreventingAnimation(Context context) {
+        if (ATLEAST_P) {
+            // Battery saver mode no longer prevents animations.
+            return false;
+        }
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
     }
@@ -574,4 +583,12 @@ public final class Utilities {
         return hashSet;
     }
 
+    /**
+     * Utility method to post a runnable on the handler, skipping the synchronization barriers.
+     */
+    public static void postAsyncCallback(Handler handler, Runnable callback) {
+        Message msg = Message.obtain(handler, callback);
+        msg.setAsynchronous(true);
+        handler.sendMessage(msg);
+    }
 }
