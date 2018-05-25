@@ -138,7 +138,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale, DragOptions options) {
+            float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -169,7 +169,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, initialDragViewScale, scaleDps);
+                registrationY, initialDragViewScale, dragViewScaleOnDrop, scaleDps);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
         if (mOptions.isAccessibleDrag) {

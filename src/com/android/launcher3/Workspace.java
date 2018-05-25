@@ -1552,6 +1552,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
+        float iconScale = 1f;
+        if (child instanceof BubbleTextView) {
+            Drawable icon = ((BubbleTextView) child).getIcon();
+            if (icon instanceof FastBitmapDrawable) {
+                iconScale = ((FastBitmapDrawable) icon).getAnimatedScale();
+            }
+        }
+
         child.clearFocus();
         child.setPressed(false);
         mOutlineProvider = previewProvider;
@@ -1603,7 +1611,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
+                dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }

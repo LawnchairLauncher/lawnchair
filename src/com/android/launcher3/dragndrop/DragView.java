@@ -89,6 +89,7 @@ public class DragView extends View {
     private final int mRegistrationX;
     private final int mRegistrationY;
     private final float mInitialScale;
+    private final float mScaleOnDrop;
     private final int[] mTempLoc = new int[2];
 
     private Point mDragVisualizeOffset = null;
@@ -131,7 +132,7 @@ public class DragView extends View {
      * @param registrationY The y coordinate of the registration point.
      */
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-                    final float initialScale, final float finalScaleDps) {
+                    final float initialScale, final float scaleOnDrop, final float finalScaleDps) {
         super(launcher);
         mLauncher = launcher;
         mDragLayer = launcher.getDragLayer();
@@ -180,6 +181,7 @@ public class DragView extends View {
         mRegistrationY = registrationY;
 
         mInitialScale = initialScale;
+        mScaleOnDrop = scaleOnDrop;
 
         // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -596,7 +598,7 @@ public class DragView extends View {
     public void animateTo(int toTouchX, int toTouchY, Runnable onCompleteRunnable, int duration) {
         mTempLoc[0] = toTouchX - mRegistrationX;
         mTempLoc[1] = toTouchY - mRegistrationY;
-        mDragLayer.animateViewIntoPosition(this, mTempLoc, 1f, mInitialScale, mInitialScale,
+        mDragLayer.animateViewIntoPosition(this, mTempLoc, 1f, mScaleOnDrop, mScaleOnDrop,
                 DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
     }
 
