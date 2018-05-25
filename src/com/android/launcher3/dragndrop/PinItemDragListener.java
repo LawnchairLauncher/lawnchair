@@ -22,14 +22,17 @@ import android.content.pm.LauncherApps.PinItemRequest;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -44,11 +47,13 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 public class PinItemDragListener extends BaseItemDragListener {
 
     private final PinItemRequest mRequest;
+    private final CancellationSignal mCancelSignal;
 
     public PinItemDragListener(PinItemRequest request, Rect previewRect,
             int previewBitmapWidth, int previewViewWidth) {
         super(previewRect, previewBitmapWidth, previewViewWidth);
         mRequest = request;
+        mCancelSignal = new CancellationSignal();
     }
 
     @Override
@@ -57,6 +62,15 @@ public class PinItemDragListener extends BaseItemDragListener {
             return false;
         }
         return super.onDragStart(event);
+    }
+
+    @Override
+    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+        super.init(launcher, alreadyOnHome);
+        if (!alreadyOnHome) {
+            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
+        }
+        return false;
     }
 
     @Override
@@ -93,6 +107,12 @@ public class PinItemDragListener extends BaseItemDragListener {
     public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
             LauncherLogProto.Target targetParent) {
         targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
+    }
+
+    @Override
+    protected void postCleanup() {
+        super.postCleanup();
+        mCancelSignal.cancel();
     }
 
     public static RemoteViews getPreview(PinItemRequest request) {
