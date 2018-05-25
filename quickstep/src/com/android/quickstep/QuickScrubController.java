@@ -40,7 +40,7 @@ import com.android.quickstep.views.TaskView;
 public class QuickScrubController implements OnAlarmListener {
 
     public static final int QUICK_SCRUB_FROM_APP_START_DURATION = 240;
-    public static final int QUICK_SCRUB_FROM_HOME_START_DURATION = 150;
+    public static final int QUICK_SCRUB_FROM_HOME_START_DURATION = 200;
     // We want the translation y to finish faster than the rest of the animation.
     public static final float QUICK_SCRUB_TRANSLATION_Y_FACTOR = 5f / 6;
     public static final Interpolator QUICK_SCRUB_START_INTERPOLATOR = FAST_OUT_SLOW_IN;
@@ -154,6 +154,10 @@ public class QuickScrubController implements OnAlarmListener {
         mOnFinishedTransitionToQuickScrubRunnable = null;
         mRecentsView.setNextPageSwitchRunnable(null);
         return true;
+    }
+
+    public boolean isWaitingForTaskLaunch() {
+        return mWaitingForTaskLaunch;
     }
 
     /**
