@@ -25,14 +25,19 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.os.CancellationSignal;
 import android.util.Base64;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -41,6 +46,8 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -177,6 +184,23 @@ public class UiFactory {
         if (model != null) {
             model.onTrimMemory(level);
         }
+    }
+
+    public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
+            CancellationSignal cancellationSignal) {
+        LauncherAppTransitionManagerImpl appTransitionManager =
+                (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+        appTransitionManager.setRemoteAnimationProvider((targets) -> {
+
+            // On the first call clear the reference.
+            cancellationSignal.cancel();
+
+            ValueAnimator fadeAnimation = ValueAnimator.ofFloat(1, 0);
+            fadeAnimation.addUpdateListener(new RemoteFadeOutAnimationListener(targets));
+            AnimatorSet anim = new AnimatorSet();
+            anim.play(fadeAnimation);
+            return anim;
+        }, cancellationSignal);
     }
 
     public static boolean dumpActivity(Activity activity, PrintWriter writer) {
