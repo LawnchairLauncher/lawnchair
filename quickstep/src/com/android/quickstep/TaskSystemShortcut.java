@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,6 +37,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -166,7 +169,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         Log.w(TAG, "Failed to notify SysUI of split screen: ", e);
                         return;
                     }
-
+                    activity.getUserEventDispatcher().logActionOnControl(TAP,
+                            LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
                     // Add a device profile change listener to kick off animating the side tasks
                     // once we enter multiwindow mode and relayout
                     activity.addOnDeviceProfileChangeListener(onDeviceProfileChangeListener);
