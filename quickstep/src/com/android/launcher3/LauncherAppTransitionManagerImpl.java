@@ -50,6 +50,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -236,8 +237,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         return bounds;
     }
 
-    public void setRemoteAnimationProvider(RemoteAnimationProvider animationProvider) {
+    public void setRemoteAnimationProvider(final RemoteAnimationProvider animationProvider,
+            CancellationSignal cancellationSignal) {
         mRemoteAnimationProvider = animationProvider;
+        cancellationSignal.setOnCancelListener(() -> {
+            if (animationProvider == mRemoteAnimationProvider) {
+                mRemoteAnimationProvider = null;
+            }
+        });
     }
 
     /**

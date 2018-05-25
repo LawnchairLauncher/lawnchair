@@ -159,7 +159,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         postCleanup();
     }
 
-    private void postCleanup() {
+    protected void postCleanup() {
         clearReference();
         if (mLauncher != null) {
             // Remove any drag params from the launcher intent since the drag operation is complete.
