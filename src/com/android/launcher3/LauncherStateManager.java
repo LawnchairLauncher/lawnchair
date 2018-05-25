@@ -348,20 +348,15 @@ public class LauncherStateManager {
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                for (int i = mListeners.size() - 1; i >= 0; i--) {
-                    mListeners.get(i).onStateTransitionComplete(state);
-                }
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
                 onStateTransitionEnd(state);
+                for (int i = mListeners.size() - 1; i >= 0; i--) {
+                    mListeners.get(i).onStateTransitionComplete(state);
+                }
             }
         });
         mConfig.setAnimation(animation, state);
