@@ -1381,28 +1381,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mChildrenLayersEnabled) {
             final int screenCount = getChildCount();
 
-            float visibleLeft = 0;
-            float visibleRight = visibleLeft + getMeasuredWidth();
-            float scaleX = getScaleX();
-            if (scaleX < 1 && scaleX > 0) {
-                float mid = getMeasuredWidth() / 2;
-                visibleLeft = mid - ((mid - visibleLeft) / scaleX);
-                visibleRight = mid + ((visibleRight - mid) / scaleX);
-            }
-
-            int leftScreen = -1;
-            int rightScreen = -1;
-            for (int i = 0; i < screenCount; i++) {
-                final View child = getPageAt(i);
-
-                float left = child.getLeft() + child.getTranslationX() - getScrollX();
-                if (left <= visibleRight && (left + child.getMeasuredWidth()) >= visibleLeft) {
-                    if (leftScreen == -1) {
-                        leftScreen = i;
-                    }
-                    rightScreen = i;
-                }
-            }
+            final int[] visibleScreens = getVisibleChildrenRange();
+            int leftScreen = visibleScreens[0];
+            int rightScreen = visibleScreens[1];
             if (mForceDrawAdjacentPages) {
                 // In overview mode, make sure that the two side pages are visible.
                 leftScreen = Utilities.boundToRange(getCurrentPage() - 1, 0, rightScreen);
