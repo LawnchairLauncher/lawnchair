@@ -265,12 +265,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
-            if (!mIsDeferredDownTarget) {
-                try {
-                    drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-                } catch (Exception e) {
-                    // We have waited long enough for launcher to draw
-                }
+            try {
+                drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                // We have waited long enough for launcher to draw
             }
         } else {
             // We should almost always get touch-town on background thread. This is an edge case
@@ -326,10 +324,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             mPassedInitialSlop = true;
         }
 
-        notifyGestureStarted();
         if (mInteractionHandler != null) {
             mInteractionHandler.updateInteractionType(interactionType);
         }
+        notifyGestureStarted();
     }
 
     @Override

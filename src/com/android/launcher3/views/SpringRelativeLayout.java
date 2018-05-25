@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.animation.DynamicAnimation;
 import android.support.animation.FloatPropertyCompat;
 import android.support.animation.SpringAnimation;
 import android.support.animation.SpringForce;
@@ -79,6 +80,11 @@ public class SpringRelativeLayout extends RelativeLayout {
         mSpringViews.put(id, true);
     }
 
+    public void removeSpringView(int id) {
+        mSpringViews.delete(id);
+        invalidate();
+    }
+
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
         if (mDampedScrollShift != 0 && mSpringViews.get(child.getId())) {
@@ -108,6 +114,13 @@ public class SpringRelativeLayout extends RelativeLayout {
         mSpring.setStartVelocity(velocity);
         mSpring.setStartValue(mDampedScrollShift);
         mSpring.start();
+    }
+
+    protected void finishWithShiftAndVelocity(float shift, float velocity,
+            DynamicAnimation.OnAnimationEndListener listener) {
+        setDampedScrollShift(shift);
+        mSpring.addEndListener(listener);
+        finishScrollWithVelocity(velocity);
     }
 
     public EdgeEffectFactory createEdgeEffectFactory() {

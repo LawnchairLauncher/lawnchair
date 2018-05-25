@@ -23,11 +23,13 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
+
+import java.util.ArrayList;
 
 public class RecentsViewContainer extends InsettableFrameLayout {
     public static final FloatProperty<RecentsViewContainer> CONTENT_ALPHA =
@@ -64,14 +66,18 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         });
 
         mRecentsView = findViewById(R.id.overview_panel);
-        final InsettableFrameLayout.LayoutParams params =
-                (InsettableFrameLayout.LayoutParams) mClearAllButton.getLayoutParams();
-        params.gravity = Gravity.TOP | (RecentsView.FLIP_RECENTS ? Gravity.START : Gravity.END);
-        mClearAllButton.setLayoutParams(params);
         mClearAllButton.forceHasOverlappingRendering(false);
 
         mRecentsView.setClearAllButton(mClearAllButton);
         mClearAllButton.setRecentsView(mRecentsView);
+
+        if (mRecentsView.isRtl()) {
+            mClearAllButton.setNextFocusRightId(mRecentsView.getId());
+            mRecentsView.setNextFocusLeftId(mClearAllButton.getId());
+        } else {
+            mClearAllButton.setNextFocusLeftId(mRecentsView.getId());
+            mRecentsView.setNextFocusRightId(mClearAllButton.getId());
+        }
     }
 
     @Override
@@ -103,5 +109,19 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         }
         mRecentsView.setContentAlpha(alpha);
         setVisibility(alpha > 0 ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+        if (mRecentsView.getChildCount() > 0) {
+            // Carousel is first in tab order.
+            views.add(mRecentsView);
+            views.add(mClearAllButton);
+        }
+    }
+
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        return mRecentsView.requestFocus(direction, previouslyFocusedRect) ||
+                super.requestFocus(direction, previouslyFocusedRect);
     }
 }

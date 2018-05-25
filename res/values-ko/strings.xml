@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> 위젯"</string>
+    <string name="widgets_list" msgid="796804551140113767">"위젯 목록"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"위젯 목록 닫힘"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"홈 화면에 추가"</string>
     <string name="action_move_here" msgid="2170188780612570250">"여기에 항목을 이동"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"홈 화면에 항목 추가됨"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"높이 줄이기"</string>
     <string name="widget_resized" msgid="9130327887929620">"폭 <xliff:g id="NUMBER_0">%1$s</xliff:g>, 높이 <xliff:g id="NUMBER_1">%2$s</xliff:g>로 위젯 크기 조정됨"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"바로가기"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"바로가기 및 알림"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>

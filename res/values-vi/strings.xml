@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"Đang tải xuống <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> hoàn tất"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Đang chờ cài đặt <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Tiện ích của <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Danh sách tiện ích"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Đã đóng danh sách tiện ích"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Thêm vào màn hình chính"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Di chuyển mục vào đây"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Đã thêm mục vào màn hình chính"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Giảm chiều cao"</string>
     <string name="widget_resized" msgid="9130327887929620">"Đã đổi kích thước tiện ích thành chiều rộng <xliff:g id="NUMBER_0">%1$s</xliff:g> chiều cao <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Lối tắt"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Phím tắt và thông báo"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Loại bỏ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Đã loại bỏ thông báo"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Cá nhân"</string>
