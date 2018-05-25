@@ -108,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड होत आहे , <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करण्याची प्रतिक्षा करत आहे"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>
+    <string name="widgets_list" msgid="796804551140113767">"विजेट सूची"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"विजेट सूची बंद केली"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्क्रीनवर जोडा"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आयटम येथे हलवा"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"आयटम मुख्य स्क्रीनवर जोडला"</string>
@@ -130,8 +132,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"उंची कमी करा"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेटचा आकार रुंदी <xliff:g id="NUMBER_0">%1$s</xliff:g> उंची <xliff:g id="NUMBER_1">%2$s</xliff:g> मध्ये बदलला"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट आणि सूचना"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"डिसमिस करा"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना डिसमिस केली"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>

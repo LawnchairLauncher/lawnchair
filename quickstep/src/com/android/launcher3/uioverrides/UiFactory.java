@@ -19,6 +19,7 @@ package com.android.launcher3.uioverrides;
 import static android.view.View.VISIBLE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -78,11 +79,13 @@ public class UiFactory {
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
-        return new StateHandler[] {
-                launcher.getAllAppsController(), launcher.getWorkspace(),
-                new RecentsViewStateController(launcher)};
+        return new StateHandler[] {launcher.getAllAppsController(), launcher.getWorkspace(),
+                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher)};
     }
 
+    /**
+     * Sets the back button visibility based on the current state/window focus.
+     */
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
         boolean shouldBackButtonBeHidden = launcher != null
                 && launcher.getStateManager().getState().hideBackButton
@@ -94,10 +97,6 @@ public class UiFactory {
         }
         OverviewInteractionState.getInstance(launcher)
                 .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
-    }
-
-    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) {
-         OverviewInteractionState.getInstance(launcher).setBackButtonAlpha(alpha,animate);
     }
 
     public static void resetOverview(Launcher launcher) {
@@ -209,7 +208,7 @@ public class UiFactory {
     public static void prepareToShowOverview(Launcher launcher) {
         RecentsView overview = launcher.getOverviewPanel();
         if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-            overview.setAdjacentScale(1.33f);
+            SCALE_PROPERTY.set(overview, 1.33f);
         }
     }
 

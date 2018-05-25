@@ -154,15 +154,6 @@ public class ShelfScrimView extends ScrimView {
     }
 
     @Override
-    protected void updateDragHandleAlpha() {
-        if (mDrawingFlatColor) {
-            super.updateDragHandleAlpha();
-        } else if (mDragHandle != null) {
-            mDragHandle.setAlpha(255);
-        }
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         float translate = drawBackground(canvas);
 

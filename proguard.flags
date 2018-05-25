@@ -120,6 +120,12 @@
   *;
 }
 
+# Discovery bounce animation
+-keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
+  public void setProgress(float);
+  public float getProgress();
+}
+
 # BUG(70852369): Surpress additional warnings after changing from Proguard to R8
 -dontwarn android.app.**
 -dontwarn android.view.**

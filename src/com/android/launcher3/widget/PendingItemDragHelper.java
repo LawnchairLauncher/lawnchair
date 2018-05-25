@@ -149,7 +149,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
         // Start the drag
         launcher.getDragController().startDrag(preview, dragLayerX, dragLayerY, source, mAddInfo,
-                dragOffset, dragRegion, scale, options);
+                dragOffset, dragRegion, scale, scale, options);
     }
 
     @Override
