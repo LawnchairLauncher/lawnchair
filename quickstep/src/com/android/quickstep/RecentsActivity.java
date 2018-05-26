@@ -176,8 +176,8 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     @Override
-    public ActivityOptions getActivityLaunchOptions(final View v, boolean useDefaultLaunchOptions) {
-        if (useDefaultLaunchOptions || !(v instanceof TaskView)) {
+    public ActivityOptions getActivityLaunchOptions(final View v) {
+        if (!(v instanceof TaskView)) {
             return null;
         }
 

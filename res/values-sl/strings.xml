@@ -110,6 +110,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"Prenašanje aplikacije <xliff:g id="NAME">%1$s</xliff:g>; preneseno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Aplikacija <xliff:g id="NAME">%1$s</xliff:g> čaka na namestitev"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Pripomočki za <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Seznam pripomočkov"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Seznam pripomočkov se je zaprl"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodajanje na začetni zaslon"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premik elementa sem"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element je bil dodan na začetni zaslon"</string>
@@ -132,8 +134,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Zmanjšanje višine"</string>
     <string name="widget_resized" msgid="9130327887929620">"Velikost pripomočka je bila spremenjena na <xliff:g id="NUMBER_0">%1$s</xliff:g> širine in <xliff:g id="NUMBER_1">%2$s</xliff:g> višine"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Bližnjice"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (2676582286544232849) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Bližnjice in obvestila"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Opusti"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Obvestilo je bilo opuščeno"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osebno"</string>

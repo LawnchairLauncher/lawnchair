@@ -70,7 +70,8 @@ public class UserEventDispatcher {
             FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
-    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp) {
+    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp,
+            UserEventDelegate delegate) {
         SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
         String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
         if (uuidStr == null) {
@@ -79,11 +80,20 @@ public class UserEventDispatcher {
         }
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
+        ued.mDelegate = delegate;
         ued.mIsInLandscapeMode = dp.isVerticalBarLayout();
         ued.mIsInMultiWindowMode = dp.isMultiWindowMode;
         ued.mUuidStr = uuidStr;
         ued.mInstantAppResolver = InstantAppResolver.newInstance(context);
         return ued;
+    }
+
+    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp) {
+        return newInstance(context, dp, null);
+    }
+
+    public interface UserEventDelegate {
+        void modifyUserEvent(LauncherEvent event);
     }
 
     /**
@@ -134,6 +144,7 @@ public class UserEventDispatcher {
     private String mUuidStr;
     protected InstantAppResolver mInstantAppResolver;
     private boolean mAppOrTaskLaunch;
+    private UserEventDelegate mDelegate;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -162,6 +173,9 @@ public class UserEventDispatcher {
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, v)) {
+            if (mDelegate != null) {
+                mDelegate.modifyUserEvent(event);
+            }
             fillIntentInfo(event.srcTarget[0], intent);
         }
         dispatchUserEvent(event, intent);

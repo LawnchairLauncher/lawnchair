@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
+
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA_MULTIPLIER;
 
 import android.animation.Animator;
@@ -116,7 +117,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             }
             launchTask(true /* animate */);
             BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    Touch.TAP, Direction.NONE, ((RecentsView) getParent()).indexOfChild(this),
+                    Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getComponentKeyForTask(getTask().key));
         });
         setOutlineProvider(new TaskOutlineProvider(getResources()));
@@ -168,7 +169,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             final ActivityOptions opts;
             if (animate) {
                 opts = BaseDraggingActivity.fromContext(getContext())
-                        .getActivityLaunchOptions(this, false);
+                        .getActivityLaunchOptions(this);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }
@@ -318,12 +319,21 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                         context.getText(menuOption.labelResId)));
             }
         }
+
+        final RecentsView recentsView = getRecentsView();
+        recentsView.addTaskAccessibilityActionsExtra(info);
+
+        final AccessibilityNodeInfo.CollectionItemInfo itemInfo =
+                AccessibilityNodeInfo.CollectionItemInfo.obtain(
+                        0, 1, recentsView.getChildCount() - recentsView.indexOfChild(this) - 1, 1,
+                        false);
+        info.setCollectionItemInfo(itemInfo);
     }
 
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (action == R.string.accessibility_close_task) {
-            ((RecentsView) getParent()).dismissTask(this, true /*animateTaskView*/,
+            getRecentsView().dismissTask(this, true /*animateTaskView*/,
                     true /*removeTask*/);
             return true;
         }
@@ -339,7 +349,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             }
         }
 
+        if (getRecentsView().performTaskAccessibilityActionExtra(action)) return true;
+
         return super.performAccessibilityAction(action, arguments);
+    }
+
+    private RecentsView getRecentsView() {
+        return (RecentsView) getParent();
     }
 
     public void notifyTaskLaunchFailed(String tag) {

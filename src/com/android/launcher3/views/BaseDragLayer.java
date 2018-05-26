@@ -16,6 +16,8 @@
 
 package com.android.launcher3.views;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -35,8 +37,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
-
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
@@ -100,7 +100,8 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
+        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
+                AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             if (child == topView) {
                 return super.onRequestSendAccessibilityEvent(child, event);
@@ -114,7 +115,8 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
+        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
+                AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
             addAccessibleChildToList(topView, childrenForAccessibility);

@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -35,7 +36,6 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntDef;
-import android.view.View;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -251,7 +251,7 @@ public class LauncherStateManager {
         prepareForAtomicAnimation(mState, state, builder);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
                 state, builder, onCompleteRunnable);
-        Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
+        Runnable runnable = new StartAnimRunnable(animation);
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
         } else {
@@ -348,20 +348,15 @@ public class LauncherStateManager {
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                for (int i = mListeners.size() - 1; i >= 0; i--) {
-                    mListeners.get(i).onStateTransitionComplete(state);
-                }
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
                 onStateTransitionEnd(state);
+                for (int i = mListeners.size() - 1; i >= 0; i--) {
+                    mListeners.get(i).onStateTransitionComplete(state);
+                }
             }
         });
         mConfig.setAnimation(animation, state);
@@ -396,8 +391,9 @@ public class LauncherStateManager {
             setRestState(null);
         }
 
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
         UiFactory.onLauncherStateOrResumeChanged(mLauncher);
+
+        mLauncher.getDragLayer().requestFocus();
     }
 
     public void onWindowFocusChanged() {
@@ -481,20 +477,15 @@ public class LauncherStateManager {
     private class StartAnimRunnable implements Runnable {
 
         private final AnimatorSet mAnim;
-        private final View mViewToFocus;
 
-        public StartAnimRunnable(AnimatorSet anim, View viewToFocus) {
+        public StartAnimRunnable(AnimatorSet anim) {
             mAnim = anim;
-            mViewToFocus = viewToFocus;
         }
 
         @Override
         public void run() {
             if (mConfig.mCurrentAnimation != mAnim) {
                 return;
-            }
-            if (mViewToFocus != null) {
-                mViewToFocus.requestFocus();
             }
             mAnim.start();
         }
