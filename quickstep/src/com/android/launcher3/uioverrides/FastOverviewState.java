@@ -15,7 +15,13 @@
  */
 package com.android.launcher3.uioverrides;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
+
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.views.RecentsView;
 
@@ -23,6 +29,12 @@ import com.android.quickstep.views.RecentsView;
  * Extension of overview state used for QuickScrub
  */
 public class FastOverviewState extends OverviewState {
+
+    private static final float MAX_PREVIEW_SCALE_UP = 1.3f;
+    /**
+     * Vertical transition of the task previews relative to the full container.
+     */
+    public static final float OVERVIEW_TRANSLATION_FACTOR = 0.5f;
 
     private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_DISABLE_INTERACTION
             | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON | FLAG_DISABLE_ACCESSIBILITY;
@@ -45,6 +57,23 @@ public class FastOverviewState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {1f, 0.5f};
+        RecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.getTaskSize(sTempRect);
+
+        return new float[] {getOverviewScale(launcher.getDeviceProfile(), sTempRect, launcher),
+                OVERVIEW_TRANSLATION_FACTOR};
+    }
+
+    public static float getOverviewScale(DeviceProfile dp, Rect taskRect, Context context) {
+        if (dp.isVerticalBarLayout()) {
+            return 1f;
+        }
+
+        Resources res = context.getResources();
+        float usedHeight = taskRect.height() + res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float usedWidth = taskRect.width() + 2 * (res.getDimension(R.dimen.recents_page_spacing)
+                + res.getDimension(R.dimen.quickscrub_adjacent_visible_width));
+        return Math.min(Math.min(dp.availableHeightPx / usedHeight,
+                dp.availableWidthPx / usedWidth), MAX_PREVIEW_SCALE_UP);
     }
 }

@@ -51,6 +51,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_WIDGET_RESIZE_FRAME,
             TYPE_WIDGETS_FULL_SHEET,
             TYPE_ON_BOARD_POPUP,
+            TYPE_DISCOVERY_BOUNCE,
 
             TYPE_QUICKSTEP_PREVIEW,
             TYPE_TASK_MENU,
@@ -64,6 +65,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
     public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
     public static final int TYPE_ON_BOARD_POPUP = 1 << 5;
+    public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
 
     // Popups related to quickstep UI
     public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 6;
@@ -72,14 +74,17 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
-            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_TASK_MENU | TYPE_OPTIONS_POPUP;
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
+            | TYPE_OPTIONS_POPUP;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
-            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
-    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP;
+    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+
+    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
 
     protected boolean mIsOpen;
 

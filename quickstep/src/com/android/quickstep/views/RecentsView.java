@@ -41,18 +41,21 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.ArraySet;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ListView;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -96,19 +99,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private final Rect mTempRect = new Rect();
 
-    public static final FloatProperty<RecentsView> ADJACENT_SCALE =
-            new FloatProperty<RecentsView>("adjacentScale") {
-        @Override
-        public void setValue(RecentsView recentsView, float v) {
-            recentsView.setAdjacentScale(v);
-        }
-
-        @Override
-        public Float get(RecentsView recentsView) {
-            return recentsView.mAdjacentScale;
-        }
-    };
-    public static final boolean FLIP_RECENTS = true;
     private static final int DISMISS_TASK_DURATION = 300;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.6f;
@@ -119,6 +109,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final QuickScrubController mQuickScrubController;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
+    private final int mTaskTopMargin;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -229,8 +220,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mAdjacentScale = 1;
 
     // Keeps track of task views whose visual state should not be reset
     private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
@@ -266,11 +255,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.getInstance(context);
 
-        mIsRtl = Utilities.isRtl(getResources());
-        if (FLIP_RECENTS) {
-            mIsRtl = !mIsRtl;
-        }
+        mIsRtl = !Utilities.isRtl(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
+        mTaskTopMargin = getResources()
+                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
         mEmptyIcon.setCallback(this);
@@ -283,6 +271,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
         updateEmptyMessage();
+        setFocusable(false);
     }
 
     public boolean isRtl() {
@@ -518,8 +507,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(dp, mTempRect);
 
-        mTempRect.top -= getResources()
-                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.availableWidthPx + mInsets.left - mTempRect.right,
                 dp.availableHeightPx + mInsets.top - mTempRect.bottom);
@@ -581,6 +569,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * and unloads the associated task data for tasks that are no longer visible.
      */
     public void loadVisibleTaskData() {
+        if (!mOverviewStateEnabled) {
+            // Skip loading visible task data if we've already left the overview state
+            return;
+        }
+
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         int centerPageIndex = getPageNearestToCenterOfScreen();
         int lower = Math.max(0, centerPageIndex - 2);
@@ -927,21 +920,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         set.play(anim);
     }
 
-    private void snapToPageRelative(int delta) {
+    private boolean snapToPageRelative(int delta, boolean cycle) {
         if (getPageCount() == 0) {
-            return;
+            return false;
         }
-        snapToPage((getNextPage() + getPageCount() + delta) % getPageCount());
-    }
-
-    @Override
-    public void onVisibilityAggregated(boolean isVisible) {
-        super.onVisibilityAggregated(isVisible);
-        if (isVisible && !isFocused()) {
-            // Having focus, even in touch mode, keeps us from losing [Alt+]Tab by preventing
-            // switching to keyboard mode.
-            requestFocus();
+        final int newPageUnbound = getNextPage() + delta;
+        if (!cycle && (newPageUnbound < 0 || newPageUnbound >= getChildCount())) {
+            return false;
         }
+        snapToPage((newPageUnbound + getPageCount()) % getPageCount());
+        return true;
     }
 
     private void runDismissAnimation(PendingAnimation pendingAnim) {
@@ -967,14 +955,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_TAB:
-                    snapToPageRelative(event.isShiftPressed() ? -1 : 1);
-                    return true;
+                    return snapToPageRelative(event.isShiftPressed() ? -1 : 1,
+                            event.isAltPressed() /* cycle */);
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    snapToPageRelative(mIsRtl ? -1 : 1);
-                    return true;
+                    return snapToPageRelative(mIsRtl ? -1 : 1, false /* cycle */);
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    snapToPageRelative(mIsRtl ? 1 : -1);
-                    return true;
+                    return snapToPageRelative(mIsRtl ? 1 : -1, false /* cycle */);
                 case KeyEvent.KEYCODE_DEL:
                 case KeyEvent.KEYCODE_FORWARD_DEL:
                     dismissTask((TaskView) getChildAt(getNextPage()), true /*animateTaskView*/,
@@ -992,8 +978,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return super.dispatchKeyEvent(event);
     }
 
-    public void snapToTaskAfterNext() {
-        snapToPageRelative(1);
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction,
+            @Nullable Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if (gainFocus && getChildCount() > 0) {
+            switch (direction) {
+                case FOCUS_FORWARD:
+                    setCurrentPage(0);
+                    break;
+                case FOCUS_BACKWARD:
+                case FOCUS_RIGHT:
+                case FOCUS_LEFT:
+                    setCurrentPage(getChildCount() - 1);
+                    break;
+            }
+        }
     }
 
     public float getContentAlpha() {
@@ -1016,36 +1016,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateClearAllButtonAlpha();
     }
 
-    public void setAdjacentScale(float adjacentScale) {
-        if (mAdjacentScale == adjacentScale) {
-            return;
-        }
-        mAdjacentScale = adjacentScale;
-        TaskView currTask = getPageAt(mCurrentPage);
-        if (currTask == null) {
-            return;
-        }
-        currTask.setZoomScale(mAdjacentScale);
-
-        if (mCurrentPage - 1 >= 0) {
-            TaskView adjacentTask = getPageAt(mCurrentPage - 1);
-            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
-                    mAdjacentScale, 0);
-            adjacentTask.setZoomScale(scaleAndTranslation[0]);
-            adjacentTask.setTranslationX(-scaleAndTranslation[1]);
-            adjacentTask.setTranslationY(scaleAndTranslation[2]);
-        }
-        if (mCurrentPage + 1 < getChildCount()) {
-            TaskView adjacentTask = getPageAt(mCurrentPage + 1);
-            float[] scaleAndTranslation = getAdjacentScaleAndTranslation(currTask, adjacentTask,
-                    mAdjacentScale, 0);
-            adjacentTask.setZoomScale(scaleAndTranslation[0]);
-            adjacentTask.setTranslationX(scaleAndTranslation[1]);
-            adjacentTask.setTranslationY(scaleAndTranslation[2]);
-        }
-    }
-
-    private float[] getAdjacentScaleAndTranslation(TaskView currTask, TaskView adjacentTask,
+    private float[] getAdjacentScaleAndTranslation(TaskView currTask,
             float currTaskToScale, float currTaskToTranslationY) {
         float displacement = currTask.getWidth() * (currTaskToScale - currTask.getCurveScale());
         sTempFloatArray[0] = currTaskToScale;
@@ -1058,7 +1029,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         child.setAlpha(mContentAlpha);
-        setAdjacentScale(mAdjacentScale);
         onChildViewsChanged();
     }
 
@@ -1084,6 +1054,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         updateEmptyStateUi(changed);
+
+        // Set the pivot points to match the task preview center
+        setPivotY(((mInsets.top + getPaddingTop() + mTaskTopMargin)
+                + (getHeight() - mInsets.bottom - getPaddingBottom())) / 2);
+        setPivotX(((mInsets.left + getPaddingLeft())
+                + (getWidth() - mInsets.right - getPaddingRight())) / 2);
     }
 
     private void updateEmptyStateUi(boolean sizeChanged) {
@@ -1154,14 +1130,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (taskIndex - 1 >= 0) {
                 TaskView adjacentTask = getPageAt(taskIndex - 1);
                 float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
-                        adjacentTask, toScale, toTranslationY);
+                        toScale, toTranslationY);
                 scaleAndTranslation[1] = -scaleAndTranslation[1];
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
             if (taskIndex + 1 < getPageCount()) {
                 TaskView adjacentTask = getPageAt(taskIndex + 1);
                 float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
-                        adjacentTask, toScale, toTranslationY);
+                        toScale, toTranslationY);
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
             }
         } else {
@@ -1300,25 +1276,59 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void onChildViewsChanged() {
         final int childCount = getChildCount();
         mClearAllButton.setVisibility(childCount == 0 ? INVISIBLE : VISIBLE);
+        setFocusable(childCount != 0);
     }
 
     public void revealClearAllButton() {
+        setCurrentPage(getChildCount() - 1); // Loads tasks info if needed.
         scrollTo(mIsRtl ? 0 : computeMaxScrollX(), 0);
     }
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> outChildren) {
-        if (FLIP_RECENTS) {
-            for (int i = getChildCount() - 1; i >= 0; --i) {
-                outChildren.add(getChildAt(i));
-            }
-        } else {
-            super.addChildrenForAccessibility(outChildren);
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            outChildren.add(getChildAt(i));
         }
     }
 
     @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+
+        final AccessibilityNodeInfo.CollectionInfo
+                collectionInfo = AccessibilityNodeInfo.CollectionInfo.obtain(
+                1, getChildCount(), false,
+                AccessibilityNodeInfo.CollectionInfo.SELECTION_MODE_NONE);
+        info.setCollectionInfo(collectionInfo);
+    }
+
+    @Override
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
+
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            final int visiblePageNumber = getChildCount() - getCurrentPage() - 1;
+            event.setFromIndex(visiblePageNumber);
+            event.setToIndex(visiblePageNumber);
+            event.setItemCount(getChildCount());
+        }
+    }
+
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        // To hear position-in-list related feedback from Talkback.
+        return ListView.class.getName();
+    }
+
+    @Override
     protected boolean isPageOrderFlipped() {
-        return FLIP_RECENTS;
+        return true;
+    }
+
+    public void addTaskAccessibilityActionsExtra(AccessibilityNodeInfo info) {
+    }
+
+    public boolean performTaskAccessibilityActionExtra(int action) {
+        return false;
     }
 }

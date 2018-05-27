@@ -440,9 +440,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             if (getUnboundedScrollX() != mScroller.getCurrX()
                     || getScrollY() != mScroller.getCurrY()
                     || mOverScrollX != mScroller.getCurrX()) {
-                float scaleX = mFreeScroll ? getScaleX() : 1f;
-                int scrollX = (int) (mScroller.getCurrX() * (1 / scaleX));
-                scrollTo(scrollX, mScroller.getCurrY());
+                scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             }
             if (shouldInvalidate) {
                 invalidate();

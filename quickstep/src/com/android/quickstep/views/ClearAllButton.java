@@ -19,6 +19,7 @@ package com.android.quickstep.views;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -42,5 +43,13 @@ public class ClearAllButton extends Button {
             mRecentsView.revealClearAllButton();
         }
         return res;
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if (focused) {
+            mRecentsView.revealClearAllButton();
+        }
     }
 }
