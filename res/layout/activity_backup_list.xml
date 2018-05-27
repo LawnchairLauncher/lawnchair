@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.deletescape.lawnchair.views.SpringFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.views.SpringRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/springFrameLayout"
+    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="ch.deletescape.lawnchair.backup.BackupListActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
-</ch.deletescape.lawnchair.views.SpringFrameLayout>
+    android:clipToPadding="false"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    tools:context="ch.deletescape.lawnchair.backup.BackupListActivity" />

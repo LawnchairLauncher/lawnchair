@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
-import ch.deletescape.lawnchair.views.SpringFrameLayout
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
@@ -23,10 +22,8 @@ import com.android.launcher3.util.LooperExecutor
 class EditIconActivity : SettingsBaseActivity() {
 
     private val originalIcon by lazy { findViewById<ImageView>(R.id.originalIcon) }
-    private val divider by lazy { findViewById<SpringFrameLayout>(R.id.divider) }
-    private val iconContainer by lazy { findViewById<SpringFrameLayout>(R.id.iconRecyclerViewContainer) }
+    private val divider by lazy { findViewById<View>(R.id.divider) }
     private val iconRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconRecyclerView) }
-    private val iconPackContainer by lazy { findViewById<SpringFrameLayout>(R.id.iconPackRecyclerViewContainer) }
     private val iconPackRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconPackRecyclerView) }
     private val iconPackManager = IconPackManager.getInstance(this)
     private val component by lazy {
@@ -62,17 +59,13 @@ class EditIconActivity : SettingsBaseActivity() {
         if (component != null) {
             iconRecyclerView.adapter = IconAdapter()
             iconRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            iconRecyclerView.edgeEffectFactory = iconContainer.createEdgeEffectFactory()
-            iconContainer.addSpringView(iconRecyclerView)
         } else {
             divider.visibility = View.GONE
-            iconContainer.visibility = View.GONE
+            iconRecyclerView.visibility = View.GONE
         }
 
         iconPackRecyclerView.adapter = IconPackAdapter()
         iconPackRecyclerView.layoutManager = LinearLayoutManager(this)
-        iconPackRecyclerView.edgeEffectFactory = iconPackContainer.createEdgeEffectFactory()
-        iconPackContainer.addSpringView(iconPackRecyclerView)
 
         findViewById<View>(R.id.loading).visibility = View.GONE
         findViewById<View>(R.id.main_view).visibility = View.VISIBLE

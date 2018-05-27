@@ -15,13 +15,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
-import ch.deletescape.lawnchair.views.SpringFrameLayout
 import com.android.launcher3.R
 
 class IconPickerActivity : SettingsBaseActivity() {
 
     private val iconPackManager = IconPackManager.getInstance(this)
-    private val iconGridContainer by lazy { findViewById<SpringFrameLayout>(R.id.iconGridContainer) }
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
     private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
     private val icons = ArrayList<CachedIconEntry>()
@@ -38,8 +36,6 @@ class IconPickerActivity : SettingsBaseActivity() {
         iconGrid.layoutManager = GridLayoutManager(this, 4).apply { spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) = if (icons.size == 0) 4 else 1
         } }
-        iconGrid.edgeEffectFactory = iconGridContainer.createEdgeEffectFactory()
-        iconGridContainer.addSpringView(iconGrid)
 
         supportActionBar?.run {
             setDisplayShowHomeEnabled(true)

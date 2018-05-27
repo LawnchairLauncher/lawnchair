@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.deletescape.lawnchair.views.SpringFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.views.SpringRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/iconGridContainer"
+    android:id="@+id/iconGrid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ch.deletescape.lawnchair.iconpack.IconPickerActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/iconGrid"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        tools:listitem="@layout/icon_item" />
-</ch.deletescape.lawnchair.views.SpringFrameLayout>
+    android:background="@android:color/transparent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:listitem="@layout/icon_item"
+    tools:context="ch.deletescape.lawnchair.iconpack.IconPickerActivity" />

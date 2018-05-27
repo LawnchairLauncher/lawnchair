@@ -27,14 +27,11 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.*;
-import android.support.v4.content.pm.ShortcutInfoCompat;
-import android.support.v4.content.pm.ShortcutManagerCompat;
-import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.TwoStatePreference;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.preference.*;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,8 +43,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.views.SpringFrameLayout;
 import com.android.launcher3.*;
+import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.LooperExecutor;
@@ -152,19 +149,16 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = super.onCreateView(inflater, container, savedInstanceState);
-            RecyclerView recyclerView = getListView();
-            ViewGroup listContainer = (ViewGroup) recyclerView.getParent();
-            listContainer.removeView(recyclerView);
-            SpringFrameLayout springLayout = (SpringFrameLayout) LayoutInflater.from(container.getContext())
-                    .inflate(R.layout.preference_spring_layout, listContainer, false);
-            springLayout.addSpringView(recyclerView);
-            springLayout.addView(recyclerView);
-            listContainer.addView(springLayout);
-            recyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
-            return view;
+        public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
+                                                 Bundle savedInstanceState) {
+            RecyclerView recyclerView = (RecyclerView) inflater
+                    .inflate(R.layout.preference_spring_recyclerview, parent, false);
+
+            recyclerView.setLayoutManager(onCreateLayoutManager());
+            recyclerView.setAccessibilityDelegateCompat(
+                    new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
+
+            return recyclerView;
         }
 
         @Override

@@ -5,6 +5,7 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -14,6 +15,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
 import java.lang.reflect.Field
+import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
 /*
@@ -125,5 +127,14 @@ class JavaField<T>(private val targetObject: Any, fieldName: String, targetClass
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         field.set(targetObject, value)
+    }
+}
+
+class KFloatPropertyCompat(private val property: KMutableProperty0<Float>, name: String) : FloatPropertyCompat<Any>(name) {
+
+    override fun getValue(`object`: Any) = property.get()
+
+    override fun setValue(`object`: Any, value: Float) {
+        property.set(value)
     }
 }
