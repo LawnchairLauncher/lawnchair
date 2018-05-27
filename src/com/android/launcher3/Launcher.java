@@ -297,7 +297,7 @@ public class Launcher extends BaseActivity
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
     public LawnchairPreferencesChangeCallback mPrefCallback;
-    private boolean mRestart = false;
+    private static boolean sRestart = false;
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
     private boolean mUpdateWallpaper = true;
@@ -1021,7 +1021,7 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onResume();
         }
 
-        if (mRestart) {
+        if (sRestart) {
             Utilities.restartLauncher(this);
         }
 
@@ -4008,7 +4008,7 @@ public class Launcher extends BaseActivity
 
     public void scheduleRestart() {
         if (mPaused) {
-            mRestart = true;
+            sRestart = true;
         } else {
             Utilities.restartLauncher(this);
         }
