@@ -581,11 +581,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 float offsetX = (scaledWindowWidth - iconWidth) / 2;
                 float offsetY = (scaledWindowHeight - iconHeight) / 2;
-                if (mLauncher.isInMultiWindowModeCompat()) {
-                    mFloatingView.getLocationOnScreen(floatingViewBounds);
-                } else {
-                    mFloatingView.getLocationInWindow(floatingViewBounds);
-                }
+                mFloatingView.getLocationOnScreen(floatingViewBounds);
+
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
                 matrix.postTranslate(transX0, transY0);
