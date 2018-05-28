@@ -28,13 +28,16 @@ pipeline:
       event: push
       status: success
   telegram:
-      image: appleboy/drone-telegram:latest
-      secrets: [ telegram_token ]
-      to: "-1001092684628"
-      format: html
-      message: "<b>{{repo.owner}}/{{repo.name}}</b>
-        {{#success build.status}}
-        Build {{build.number}} succeeded. Good job mate!
-        {{else}}
-        Build {{build.number}} failed. Fix me please sir!
-        {{/success}}"
+    image: appleboy/drone-telegram:latest
+    secrets: [ telegram_token ]
+    to: "-1001092684628"
+    format: html
+    message: "<b>{{repo.owner}}/{{repo.name}}</b>
+      {{#success build.status}}
+      Build {{build.number}} succeeded. Good job mate!
+      {{else}
+      Build {{build.number}} failed. Fix me please sir!
+      {{/success}}"
+    when:
+      event: [ push, tag, deployment ]
+      status: [ failure, success ]
