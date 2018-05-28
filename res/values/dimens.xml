@@ -240,6 +240,7 @@
 <!-- Other -->
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
+    <dimen name="all_apps_qsb_top_margin">-20dp</dimen>
 
 <!-- Backports -->
     <item name="disabled_alpha_material_dark" format="float" type="dimen">0.30</item>

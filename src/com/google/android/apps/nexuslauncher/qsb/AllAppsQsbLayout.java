@@ -148,14 +148,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mRecyclerView = recyclerView;
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        int statusBarHeightId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin += getResources().getDimensionPixelSize(statusBarHeightId > 0 ?
-                statusBarHeightId :
-                R.dimen.status_bar_height);
+    public void setTopMargin(int topMargin) {
+        ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin = topMargin + getResources().getDimensionPixelSize(R.dimen.all_apps_qsb_top_margin);
     }
 
     protected void onAttachedToWindow() {

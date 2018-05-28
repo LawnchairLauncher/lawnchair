@@ -28,20 +28,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.BaseContainerView;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DragSource;
-import com.android.launcher3.DropTarget;
-import com.android.launcher3.Insettable;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.*;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
@@ -49,9 +36,9 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.PackageUserKey;
+import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import java.util.List;
 import java.util.Set;
@@ -338,6 +325,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setPadding(
                 mAppsRecyclerView.getPaddingLeft(), mAppsRecyclerView.getPaddingTop(),
                 mAppsRecyclerView.getPaddingRight(), insets.bottom);
+
+        if (mSearchContainer instanceof AllAppsQsbLayout) {
+            ((AllAppsQsbLayout) mSearchContainer).setTopMargin(insets.top);
+        }
 
         if (grid.isVerticalBarLayout()) {
             ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
