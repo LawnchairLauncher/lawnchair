@@ -185,7 +185,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             case ACTION_UP: {
                 TraceHelper.endSection("TouchInt");
 
-                finishTouchTracking();
+                finishTouchTracking(ev);
                 break;
             }
         }
@@ -268,8 +268,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * Called when the gesture has ended. Does not correlate to the completion of the interaction as
      * the animation can still be running.
      */
-    private void finishTouchTracking() {
+    private void finishTouchTracking(MotionEvent ev) {
         if (mPassedInitialSlop && mInteractionHandler != null) {
+            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
+
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
