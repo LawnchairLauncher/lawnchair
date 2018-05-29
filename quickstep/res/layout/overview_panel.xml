@@ -18,6 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     android:visibility="invisible"
 >
     <include layout="@layout/overview_clear_all_button"/>
@@ -28,6 +29,7 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:outlineProvider="none"
         android:focusableInTouchMode="true"
         android:accessibilityPaneTitle="@string/accessibility_recent_apps"
         android:theme="@style/HomeScreenElementTheme"
