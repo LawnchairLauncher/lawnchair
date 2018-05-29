@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -470,7 +471,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         setStateOnUiThread(STATE_QUICK_SCRUB_START | STATE_GESTURE_COMPLETED);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR);
+        animateToProgress(mCurrentShift.value, 1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR);
     }
 
     private void shiftAnimationDestinationForQuickscrub() {
@@ -647,11 +648,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void handleNormalGestureEnd(float endVelocity, boolean isFling) {
         long duration = MAX_SWIPE_DURATION;
         final float endShift;
+        final float startShift;
         if (!isFling) {
             endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW && mGestureStarted ? 1 : 0;
             long expectedDuration = Math.abs(Math.round((endShift - mCurrentShift.value)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
+            startShift = mCurrentShift.value;
         } else {
             endShift = endVelocity < 0 ? 1 : 0;
             float minFlingVelocity = mContext.getResources()
@@ -665,9 +668,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 long baseDuration = Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
                 duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
+            startShift = Utilities.boundToRange(mCurrentShift.value - endVelocity * SINGLE_FRAME_MS
+                            / (mTransitionDragLength * 1000), 0, 1);
         }
 
-        animateToProgress(endShift, duration, DEACCEL);
+        animateToProgress(startShift, endShift, duration, DEACCEL);
     }
 
     private void doLogGesture(boolean toLauncher) {
@@ -687,9 +692,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
-    private void animateToProgress(float progress, long duration, Interpolator interpolator) {
-        mIsGoingToHome = Float.compare(progress, 1) == 0;
-        ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
+    private void animateToProgress(float start, float end, long duration,
+            Interpolator interpolator) {
+        mIsGoingToHome = Float.compare(end, 1) == 0;
+        ObjectAnimator anim = mCurrentShift.animateToValue(start, end).setDuration(duration);
         anim.setInterpolator(interpolator);
         anim.addListener(new AnimationSuccessListener() {
             @Override
