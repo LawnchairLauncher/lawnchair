@@ -124,4 +124,9 @@ public class RecentsViewContainer extends InsettableFrameLayout {
         return mRecentsView.requestFocus(direction, previouslyFocusedRect) ||
                 super.requestFocus(direction, previouslyFocusedRect);
     }
+
+    @Override
+    public void addChildrenForAccessibility(ArrayList<View> outChildren) {
+        outChildren.add(mRecentsView);
+    }
 }
