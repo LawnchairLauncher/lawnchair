@@ -30,6 +30,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.view.Surface;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -44,10 +45,13 @@ import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 /**
  * Utility class to handle window clip animation
@@ -90,8 +94,8 @@ public class ClipAnimationHelper {
     // Wether or not applyTransform has been called yet since prepareAnimation()
     private boolean mIsFirstFrame = true;
 
-    private BiConsumer<TransactionCompat, RemoteAnimationTargetCompat> mTaskTransformCallback =
-            (t, a) -> { };
+    private BiFunction<RemoteAnimationTargetCompat, Float, Float> mTaskAlphaCallback =
+            (t, a1) -> a1;
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
@@ -134,11 +138,11 @@ public class ClipAnimationHelper {
     }
 
     public void prepareAnimation(boolean isOpening) {
-        mIsFirstFrame = true;
         mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
     }
 
-    public RectF applyTransform(RemoteAnimationTargetSet targetSet, float progress) {
+    public RectF applyTransform(RemoteAnimationTargetSet targetSet, float progress,
+            @Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier) {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
         Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
@@ -159,35 +163,51 @@ public class ClipAnimationHelper {
         mClipRect.bottom = (int)
                 (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress));
 
-        TransactionCompat transaction = new TransactionCompat();
-        if (mIsFirstFrame) {
-            RemoteAnimationProvider.prepareTargetsForFirstFrame(targetSet.unfilteredApps,
-                    transaction, mBoostModeTargetLayers);
-            mIsFirstFrame = false;
-        }
-        for (RemoteAnimationTargetCompat app : targetSet.apps) {
-            if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
-                mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                transaction.setMatrix(app.leash, mTmpMatrix)
-                        .setWindowCrop(app.leash, mClipRect);
+        SurfaceParams[] params = new SurfaceParams[targetSet.unfilteredApps.length];
+        for (int i = 0; i < targetSet.unfilteredApps.length; i++) {
+            RemoteAnimationTargetCompat app = targetSet.unfilteredApps[i];
+            mTmpMatrix.setTranslate(app.position.x, app.position.y);
+            Rect crop = app.sourceContainerBounds;
+            float alpha = 1f;
+            if (app.mode == targetSet.targetMode) {
+                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                    mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
+                    mTmpMatrix.postTranslate(app.position.x, app.position.y);
+                    crop = mClipRect;
+                }
+
+                if (app.isNotInRecents
+                        || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                    alpha = 1 - progress;
+                }
+
+                alpha = mTaskAlphaCallback.apply(app, alpha);
             }
 
-            if (app.isNotInRecents
-                    || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                transaction.setAlpha(app.leash, 1 - progress);
-            }
-
-            mTaskTransformCallback.accept(transaction, app);
+            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop,
+                    RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers));
         }
-        transaction.setEarlyWakeup();
-        transaction.apply();
+        applyParams(syncTransactionApplier, params);
         return currentRect;
     }
 
-    public void setTaskTransformCallback
-            (BiConsumer<TransactionCompat, RemoteAnimationTargetCompat> callback) {
-        mTaskTransformCallback = callback;
+    private void applyParams(@Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier,
+            SurfaceParams[] params) {
+        if (syncTransactionApplier != null) {
+            syncTransactionApplier.scheduleApply(params);
+        } else {
+            TransactionCompat t = new TransactionCompat();
+            for (SurfaceParams param : params) {
+                SyncRtSurfaceTransactionApplier.applyParams(t, param);
+            }
+            t.setEarlyWakeup();
+            t.apply();
+        }
+    }
+
+    public void setTaskAlphaCallback(
+            BiFunction<RemoteAnimationTargetCompat, Float, Float> callback) {
+        mTaskAlphaCallback = callback;
     }
 
     public void offsetTarget(float scale, float offsetX, float offsetY, Interpolator interpolator) {
