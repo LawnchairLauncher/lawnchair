@@ -21,6 +21,9 @@ LOCAL_PATH := $(call my-dir)
 #
 include $(CLEAR_VARS)
 
+# TODO(b/80404630): Remove when Launcher3 works with AAPT2
+LOCAL_USE_AAPT2 := false
+
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
@@ -66,6 +69,9 @@ include $(BUILD_PACKAGE)
 # Build rule for Launcher3 Go app for Android Go devices.
 #
 include $(CLEAR_VARS)
+
+# TODO(b/80404630): Remove when Launcher3 works with AAPT2
+LOCAL_USE_AAPT2 := false
 
 LOCAL_MODULE_TAGS := optional
 
