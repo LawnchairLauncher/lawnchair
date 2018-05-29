@@ -507,6 +507,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(dp, mTempRect);
 
+        // Keep this logic in sync with ActivityControlHelper.getTranslationYForQuickScrub.
         mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.availableWidthPx + mInsets.left - mTempRect.right,
