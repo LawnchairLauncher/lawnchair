@@ -73,6 +73,7 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -180,6 +181,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private T mActivity;
     private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
+    private SyncRtSurfaceTransactionApplier mSyncTransactionApplier;
     private QuickScrubController mQuickScrubController;
     private AnimationFactory mAnimationFactory = (t) -> { };
 
@@ -346,6 +348,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mRecentsView = activity.getOverviewPanel();
+        mSyncTransactionApplier = new SyncRtSurfaceTransactionApplier(mRecentsView);
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mLayoutListener = mActivityControlHelper.createLayoutListener(mActivity);
 
@@ -503,7 +506,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
-            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift);
+
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift,
+                    Looper.myLooper() == mMainThreadHandler.getLooper()
+                            ? mSyncTransactionApplier
+                            : null);
 
             // TODO: This logic is spartanic!
             boolean passedThreshold = shift > 0.12f;

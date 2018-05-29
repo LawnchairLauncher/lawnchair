@@ -49,6 +49,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.ChoreographerCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 /**
@@ -406,6 +407,6 @@ public class TouchInteractionService extends Service {
             sRemoteUiThread.start();
         }
         new Handler(sRemoteUiThread.getLooper()).post(() ->
-                mBackgroundThreadChoreographer = Choreographer.getInstance());
+                mBackgroundThreadChoreographer = ChoreographerCompat.getSfInstance());
     }
 }
