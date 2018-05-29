@@ -20,12 +20,18 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
+
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
  */
 public class RecentsAnimationWrapper {
+
+    // A list of callbacks to run when we receive the recents animation target. There are different
+    // than the state callbacks as these run on the current worker thread.
+    private final ArrayList<Runnable> mCallbacks = new ArrayList<>();
 
     public RemoteAnimationTargetSet targetSet;
 
@@ -45,6 +51,21 @@ public class RecentsAnimationWrapper {
 
         if (mInputConsumerEnabled) {
             enableInputConsumer();
+        }
+
+        if (!mCallbacks.isEmpty()) {
+            for (Runnable action : new ArrayList<>(mCallbacks)) {
+                action.run();
+            }
+            mCallbacks.clear();
+        }
+    }
+
+    public synchronized void runOnInit(Runnable action) {
+        if (targetSet == null) {
+            mCallbacks.add(action);
+        } else {
+            action.run();
         }
     }
 
