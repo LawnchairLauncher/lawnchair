@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
@@ -386,7 +387,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void updateClearAllButtonAlpha() {
         if (mClearAllButton != null) {
             final float alpha = calculateClearAllButtonAlpha();
-            mIsClearAllButtonFullyRevealed = alpha == 1;
+            final boolean revealed = alpha == 1;
+            if (mIsClearAllButtonFullyRevealed != revealed) {
+                mIsClearAllButtonFullyRevealed = revealed;
+                mClearAllButton.setImportantForAccessibility(revealed ?
+                        IMPORTANT_FOR_ACCESSIBILITY_YES :
+                        IMPORTANT_FOR_ACCESSIBILITY_NO);
+            }
             mClearAllButton.setAlpha(alpha * mContentAlpha);
         }
     }
@@ -1286,7 +1293,30 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Override
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (getChildCount() > 0) {
+            switch (action) {
+                case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
+                    if (!mIsClearAllButtonFullyRevealed && getCurrentPage() == getPageCount() - 1) {
+                        revealClearAllButton();
+                        return true;
+                    }
+                }
+                case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
+                    if (mIsClearAllButtonFullyRevealed) {
+                        setCurrentPage(getChildCount() - 1);
+                        return true;
+                    }
+                }
+                break;
+            }
+        }
+        return super.performAccessibilityAction(action, arguments);
+    }
+
+    @Override
     public void addChildrenForAccessibility(ArrayList<View> outChildren) {
+        outChildren.add(mClearAllButton);
         for (int i = getChildCount() - 1; i >= 0; --i) {
             outChildren.add(getChildAt(i));
         }
@@ -1295,6 +1325,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
+
+        if (getChildCount() > 0) {
+            info.addAction(mIsClearAllButtonFullyRevealed ?
+                    AccessibilityNodeInfo.ACTION_SCROLL_FORWARD :
+                    AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            info.setScrollable(true);
+        }
 
         final AccessibilityNodeInfo.CollectionInfo
                 collectionInfo = AccessibilityNodeInfo.CollectionInfo.obtain(
@@ -1307,7 +1344,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
 
-        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+        event.setScrollable(getPageCount() > 0);
+
+        if (!mIsClearAllButtonFullyRevealed
+                && event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
             final int childCount = getChildCount();
             final int[] visibleTasks = getVisibleChildrenRange();
             event.setFromIndex(childCount - visibleTasks[1] - 1);
