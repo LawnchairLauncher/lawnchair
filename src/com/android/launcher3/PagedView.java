@@ -1450,6 +1450,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected boolean snapToPage(int whichPage, int delta, int duration, boolean immediate,
             TimeInterpolator interpolator) {
+        if (mFirstLayout) {
+            setCurrentPage(whichPage);
+            return false;
+        }
 
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
             duration *= Settings.System.getFloat(getContext().getContentResolver(),

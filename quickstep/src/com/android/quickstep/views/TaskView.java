@@ -250,12 +250,12 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
     }
 
-    public float getCurveScaleForInterpolation(float linearInterpolation) {
+    public static float getCurveScaleForInterpolation(float linearInterpolation) {
         float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
         return getCurveScaleForCurveInterpolation(curveInterpolation);
     }
 
-    private float getCurveScaleForCurveInterpolation(float curveInterpolation) {
+    private static float getCurveScaleForCurveInterpolation(float curveInterpolation) {
         return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
