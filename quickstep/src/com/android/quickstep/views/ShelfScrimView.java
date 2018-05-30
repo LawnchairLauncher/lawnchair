@@ -45,10 +45,6 @@ import com.android.launcher3.views.ScrimView;
  */
 public class ShelfScrimView extends ScrimView {
 
-    private static final int THRESHOLD_ALPHA_DARK = 102;
-    private static final int THRESHOLD_ALPHA_LIGHT = 46;
-    private static final int THRESHOLD_ALPHA_SUPER_LIGHT = 128;
-
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
 
@@ -77,13 +73,7 @@ public class ShelfScrimView extends ScrimView {
         mMaxScrimAlpha = OVERVIEW.getWorkspaceScrimAlpha(mLauncher);
 
         mEndAlpha = Color.alpha(mEndScrim);
-        if (Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark)) {
-            mThresholdAlpha = THRESHOLD_ALPHA_DARK;
-        } else if (Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
-            mThresholdAlpha = THRESHOLD_ALPHA_SUPER_LIGHT;
-        } else {
-            mThresholdAlpha = THRESHOLD_ALPHA_LIGHT;
-        }
+        mThresholdAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
