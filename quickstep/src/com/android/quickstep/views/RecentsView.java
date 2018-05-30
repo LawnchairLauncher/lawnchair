@@ -1367,9 +1367,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    public void addTaskAccessibilityActionsExtra(AccessibilityNodeInfo info) {
-    }
-
     public boolean performTaskAccessibilityActionExtra(int action) {
         return false;
     }
