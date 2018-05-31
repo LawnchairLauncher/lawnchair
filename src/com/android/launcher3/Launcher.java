@@ -1986,7 +1986,7 @@ public class Launcher extends BaseActivity
         return mWorkspaceLoading;
     }
 
-    private void setWorkspaceLoading(boolean value) {
+    protected void setWorkspaceLoading(boolean value) {
         boolean isLocked = isWorkspaceLocked();
         mWorkspaceLoading = value;
         if (isLocked != isWorkspaceLocked()) {

@@ -34,6 +34,7 @@ public class NexusLauncherActivity extends Launcher {
             prefs.edit().remove(PREF_IS_RELOAD).apply();
             getWorkspace().setCurrentPage(0);
             showOverviewMode(false);
+            setWorkspaceLoading(false);
         }
     }
 
