@@ -16,13 +16,11 @@
 
 package com.android.quickstep.views;
 
-import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
-
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 
 public class ClearAllButton extends Button {
@@ -37,12 +35,9 @@ public class ClearAllButton extends Button {
     }
 
     @Override
-    public boolean performAccessibilityAction(int action, Bundle arguments) {
-        final boolean res = super.performAccessibilityAction(action, arguments);
-        if (action == ACTION_ACCESSIBILITY_FOCUS) {
-            mRecentsView.revealClearAllButton();
-        }
-        return res;
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.setParent(mRecentsView); // Pretend we are a part of the task carousel.
     }
 
     @Override

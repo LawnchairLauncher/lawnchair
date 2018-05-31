@@ -112,6 +112,11 @@
     public <init>(...);
 }
 
+# UserEventDispatcherExtension
+-keep class com.android.quickstep.logging.UserEventDispatcherExtension {
+    public <init>(...);
+}
+
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }

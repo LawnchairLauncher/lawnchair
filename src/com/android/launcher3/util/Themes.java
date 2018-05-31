@@ -52,6 +52,13 @@ public class Themes {
         return value;
     }
 
+    public static int getAttrInteger(Context context, int attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        int value = ta.getInteger(0, 0);
+        ta.recycle();
+        return value;
+    }
+
     /**
      * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
      */
