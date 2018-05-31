@@ -29,6 +29,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
@@ -37,8 +38,10 @@ import android.view.View;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -50,6 +53,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 public class TaskThumbnailView extends View {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
+    private static final LightingColorFilter[] sHighlightFilterCache = new LightingColorFilter[256];
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA_MULTIPLIER =
             new FloatProperty<TaskThumbnailView>("dimAlphaMultiplier") {
@@ -68,6 +72,7 @@ public class TaskThumbnailView extends View {
 
     private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
+    private final boolean mIsDarkTextTheme;
     private final Paint mPaint = new Paint();
     private final Paint mBackgroundPaint = new Paint();
 
@@ -97,6 +102,7 @@ public class TaskThumbnailView extends View {
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
         mActivity = BaseActivity.fromContext(context);
+        mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
     }
 
     public void bind() {
@@ -198,7 +204,7 @@ public class TaskThumbnailView extends View {
     private void updateThumbnailPaintFilter() {
         int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
         if (mBitmapShader != null) {
-            LightingColorFilter filter = getLightingColorFilter(mul);
+            LightingColorFilter filter = getDimmingColorFilter(mul, mIsDarkTextTheme);
             mPaint.setColorFilter(filter);
             mBackgroundPaint.setColorFilter(filter);
         } else {
@@ -287,16 +293,25 @@ public class TaskThumbnailView extends View {
         updateThumbnailMatrix();
     }
 
-    private static LightingColorFilter getLightingColorFilter(int dimColor) {
-        if (dimColor < 0) {
-            dimColor = 0;
-        } else if (dimColor > 255) {
-            dimColor = 255;
+    private static LightingColorFilter getDimmingColorFilter(int intensity, boolean shouldLighten) {
+        intensity = Utilities.boundToRange(intensity, 0, 255);
+        if (intensity == 255) {
+            return null;
         }
-        if (sDimFilterCache[dimColor] == null) {
-            sDimFilterCache[dimColor] =
-                    new LightingColorFilter(Color.argb(255, dimColor, dimColor, dimColor), 0);
+        if (shouldLighten) {
+            if (sHighlightFilterCache[intensity] == null) {
+                int colorAdd = 255 - intensity;
+                sHighlightFilterCache[intensity] = new LightingColorFilter(
+                        Color.argb(255, intensity, intensity, intensity),
+                        Color.argb(255, colorAdd, colorAdd, colorAdd));
+            }
+            return sHighlightFilterCache[intensity];
+        } else {
+            if (sDimFilterCache[intensity] == null) {
+                sDimFilterCache[intensity] = new LightingColorFilter(
+                        Color.argb(255, intensity, intensity, intensity), 0);
+            }
+            return sDimFilterCache[intensity];
         }
-        return sDimFilterCache[dimColor];
     }
 }

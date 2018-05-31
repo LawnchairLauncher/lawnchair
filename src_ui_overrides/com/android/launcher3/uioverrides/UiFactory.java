@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.CancellationSignal;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -50,6 +51,9 @@ public class UiFactory {
     public static void onLauncherStateOrResumeChanged(Launcher launcher) { }
 
     public static void onTrimMemory(Launcher launcher, int level) { }
+
+    public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
+            CancellationSignal cancellationSignal) { }
 
     public static boolean dumpActivity(Activity activity, PrintWriter writer) {
         return false;

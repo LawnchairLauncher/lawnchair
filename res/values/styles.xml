@@ -29,6 +29,7 @@
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#EAFFFFFF</item>
+        <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
@@ -47,6 +48,7 @@
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>
+        <item name="allAppsInterimScrimAlpha">128</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
@@ -62,6 +64,7 @@
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
         <item name="allAppsScrimColor">#EA212121</item>
+        <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">?android:attr/colorPrimary</item>
         <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
@@ -71,6 +74,7 @@
     </style>
 
     <style name="LauncherThemeDark.DarKText" parent="@style/LauncherThemeDark">
+        <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>

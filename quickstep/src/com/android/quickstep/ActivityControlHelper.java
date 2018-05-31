@@ -46,6 +46,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -82,7 +83,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     void onQuickInteractionStart(T activity, @Nullable RunningTaskInfo taskInfo,
             boolean activityVisible);
 
-    float getTranslationYForQuickScrub(T activity);
+    float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
+            Context context);
 
     void executeOnWindowAvailable(T activity, Runnable action);
 
@@ -151,10 +153,15 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public float getTranslationYForQuickScrub(Launcher activity) {
-            LauncherRecentsView recentsView = activity.getOverviewPanel();
-            return recentsView.computeTranslationYForFactor(
-                    FastOverviewState.OVERVIEW_TRANSLATION_FACTOR);
+        public float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
+                Context context) {
+            // The padding calculations are exactly same as that of RecentsView.setInsets
+            int topMargin = context.getResources()
+                    .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+            int paddingTop = targetRect.rect.top - topMargin - dp.getInsets().top;
+            int paddingBottom = dp.availableHeightPx + dp.getInsets().top - targetRect.rect.bottom;
+
+            return FastOverviewState.OVERVIEW_TRANSLATION_FACTOR * (paddingBottom - paddingTop);
         }
 
         @Override
@@ -380,7 +387,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public float getTranslationYForQuickScrub(RecentsActivity activity) {
+        public float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
+                Context context) {
             return 0;
         }
 
