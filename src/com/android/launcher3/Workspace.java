@@ -54,6 +54,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -549,7 +550,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
-        newScreen.getShortcutsAndWidgets().setId(R.id.workspace_page_container);
         int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
         int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
@@ -1493,6 +1493,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
             setImportantForAccessibility(accessibilityFlag);
         }
+    }
+
+    @Override
+    public AccessibilityNodeInfo createAccessibilityNodeInfo() {
+        if (getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS) {
+            // TAPL tests verify that workspace is not present in Overview and AllApps states.
+            // TAPL can work only if UIDevice is set up as setCompressedLayoutHeirarchy(false).
+            // Hiding workspace from the tests when it's
+            // IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS.
+            return null;
+        }
+        return super.createAccessibilityNodeInfo();
     }
 
     private void updateAccessibilityFlags(int accessibilityFlag, CellLayout page) {

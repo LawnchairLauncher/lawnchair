@@ -134,12 +134,14 @@ public final class LauncherInstrumentation {
                 return waitForLauncherObject(WIDGETS_RES_ID);
             }
             case ALL_APPS: {
+                waitUntilGone(WORKSPACE_RES_ID);
                 waitUntilGone(OVERVIEW_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(APPS_RES_ID);
             }
             case OVERVIEW: {
                 waitForLauncherObject(APPS_RES_ID);
+                waitUntilGone(WORKSPACE_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(OVERVIEW_RES_ID);
             }
