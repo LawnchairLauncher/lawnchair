@@ -527,6 +527,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     protected void closeComplete() {
         super.closeComplete();
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+        mOriginalIcon.forceHideBadge(false);
     }
 
     @Override

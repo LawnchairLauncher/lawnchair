@@ -37,6 +37,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -69,6 +70,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
 
+    private final SparseArray<RecentsAnimationState> mAnimationStates = new SparseArray<>();
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
     private final Intent mHomeIntent;
@@ -183,7 +185,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             case ACTION_UP: {
                 TraceHelper.endSection("TouchInt");
 
-                finishTouchTracking();
+                finishTouchTracking(ev);
                 break;
             }
         }
@@ -212,8 +214,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         // Create the shared handler
+        RecentsAnimationState animationState = new RecentsAnimationState();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
-                mRunningTask, this, touchTimeMs, mActivityControlHelper);
+                animationState.id, mRunningTask, this, touchTimeMs, mActivityControlHelper);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
@@ -237,31 +240,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     public void onHandleAssistData(Bundle bundle) {
                         mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
                     }
-                },
-                new RecentsAnimationListener() {
-                    public void onAnimationStart(
-                            RecentsAnimationControllerCompat controller,
-                            RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
-                            Rect minimizedHomeBounds) {
-                        if (mInteractionHandler == handler) {
-                            TraceHelper.partitionSection("RecentsController", "Received");
-                            handler.onRecentsAnimationStart(controller,
-                                    new RemoteAnimationTargetSet(apps, MODE_CLOSING),
-                                    homeContentInsets, minimizedHomeBounds);
-                        } else {
-                            TraceHelper.endSection("RecentsController", "Finishing no handler");
-                            controller.finish(false /* toHome */);
-                        }
-                    }
-
-                    public void onAnimationCanceled() {
-                        TraceHelper.endSection("RecentsController",
-                                "Cancelled: " + mInteractionHandler);
-                        if (mInteractionHandler == handler) {
-                            handler.onRecentsAnimationCanceled();
-                        }
-                    }
-                }, null, null);
+                }, animationState, null, null);
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();
@@ -277,12 +256,22 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
     }
 
+    @Override
+    public void onCommand(int command) {
+        RecentsAnimationState state = mAnimationStates.get(command);
+        if (state != null) {
+            state.execute();
+        }
+    }
+
     /**
      * Called when the gesture has ended. Does not correlate to the completion of the interaction as
      * the animation can still be running.
      */
-    private void finishTouchTracking() {
+    private void finishTouchTracking(MotionEvent ev) {
         if (mPassedInitialSlop && mInteractionHandler != null) {
+            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
+
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
@@ -397,5 +386,56 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public boolean deferNextEventToMainThread() {
         // TODO: Consider also check if the eventQueue is using mainThread of not.
         return mInteractionHandler != null;
+    }
+
+    private class RecentsAnimationState implements RecentsAnimationListener {
+
+        private final int id;
+
+        private RecentsAnimationControllerCompat mController;
+        private RemoteAnimationTargetSet mTargets;
+        private Rect mHomeContentInsets;
+        private Rect mMinimizedHomeBounds;
+        private boolean mCancelled;
+
+        public RecentsAnimationState() {
+            id = mAnimationStates.size();
+            mAnimationStates.put(id, this);
+        }
+
+        @Override
+        public void onAnimationStart(
+                RecentsAnimationControllerCompat controller,
+                RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
+                Rect minimizedHomeBounds) {
+            mController = controller;
+            mTargets = new RemoteAnimationTargetSet(apps, MODE_CLOSING);
+            mHomeContentInsets = homeContentInsets;
+            mMinimizedHomeBounds = minimizedHomeBounds;
+            mEventQueue.onCommand(id);
+        }
+
+        @Override
+        public void onAnimationCanceled() {
+            mCancelled = true;
+            mEventQueue.onCommand(id);
+        }
+
+        public void execute() {
+            if (mInteractionHandler == null || mInteractionHandler.id != id) {
+                if (!mCancelled && mController != null) {
+                    TraceHelper.endSection("RecentsController", "Finishing no handler");
+                    mController.finish(false /* toHome */);
+                }
+            } else if (mCancelled) {
+                TraceHelper.endSection("RecentsController",
+                        "Cancelled: " + mInteractionHandler);
+                mInteractionHandler.onRecentsAnimationCanceled();
+            } else {
+                TraceHelper.partitionSection("RecentsController", "Received");
+                mInteractionHandler.onRecentsAnimationStart(mController, mTargets,
+                        mHomeContentInsets, mMinimizedHomeBounds);
+            }
+        }
     }
 }
