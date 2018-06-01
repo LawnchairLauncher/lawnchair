@@ -28,6 +28,8 @@ import com.android.systemui.shared.system.TransactionCompat;
 @FunctionalInterface
 public interface RemoteAnimationProvider {
 
+    static final int Z_BOOST_BASE = 800570000;
+
     AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targets);
 
     default ActivityOptions toActivityOptions(Handler handler, long duration) {
@@ -54,11 +56,14 @@ public interface RemoteAnimationProvider {
     static void prepareTargetsForFirstFrame(RemoteAnimationTargetCompat[] targets,
             TransactionCompat t, int boostModeTargets) {
         for (RemoteAnimationTargetCompat target : targets) {
-            int layer = target.mode == boostModeTargets
-                    ? Integer.MAX_VALUE
-                    : target.prefixOrderIndex;
-            t.setLayer(target.leash, layer);
+            t.setLayer(target.leash, getLayer(target, boostModeTargets));
             t.show(target.leash);
         }
+    }
+
+    static int getLayer(RemoteAnimationTargetCompat target, int boostModeTarget) {
+        return target.mode == boostModeTarget
+                ? Z_BOOST_BASE + target.prefixOrderIndex
+                : target.prefixOrderIndex;
     }
 }
