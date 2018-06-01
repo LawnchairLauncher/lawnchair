@@ -683,15 +683,20 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void doLogGesture(boolean toLauncher) {
+        DeviceProfile dp = mDp;
+        if (dp == null) {
+            // We probably never received an animation controller, skip logging.
+            return;
+        }
         final int direction;
-        if (mDp.isVerticalBarLayout()) {
-            direction = (mDp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
+        if (dp.isVerticalBarLayout()) {
+            direction = (dp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
         } else {
             direction = toLauncher ? Direction.UP : Direction.DOWN;
         }
 
         int dstContainerType = toLauncher ? ContainerType.TASKSWITCHER : ContainerType.APP;
-        UserEventDispatcher.newInstance(mContext, mDp).logStateChangeAction(
+        UserEventDispatcher.newInstance(mContext, dp).logStateChangeAction(
                 mLogAction, direction,
                 ContainerType.NAVBAR, ContainerType.APP,
                 dstContainerType,
