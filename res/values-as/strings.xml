@@ -108,10 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনল\'ড কৰি থকা হৈছে, <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পূৰ্ণ হ\'ল"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনষ্টল হোৱালৈ অপেক্ষা কৰি থকা হৈছে"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> ৱিজেট"</string>
-    <!-- no translation found for widgets_list (796804551140113767) -->
-    <skip />
-    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
-    <skip />
+    <string name="widgets_list" msgid="796804551140113767">"ৱিজেটৰ তালিকা"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"ৱিজেটৰ তালিকা বন্ধ কৰা হ\'ল"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"গৃহ স্ক্ৰীণত যোগ কৰক"</string>
     <string name="action_move_here" msgid="2170188780612570250">"বস্তুটো ইয়ালৈ স্থানান্তৰ কৰক"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"বস্তুটো গৃহ স্ক্ৰীণত যোগ কৰা হ\'ল"</string>

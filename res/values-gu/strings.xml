@@ -108,10 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ડાઉનલોડ કરી રહ્યાં છે, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>, ઇન્સ્ટૉલ થવાની રાહ જોઈ રહ્યું છે"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> વિજેટ"</string>
-    <!-- no translation found for widgets_list (796804551140113767) -->
-    <skip />
-    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
-    <skip />
+    <string name="widgets_list" msgid="796804551140113767">"વિજેટની સૂચિ"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"વિજેટની સૂચિ બંધ કરવામાં આવી છે"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <string name="action_move_here" msgid="2170188780612570250">"આઇટમ અહીં ખસેડો"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"હોમ સ્ક્રીનમાં આઇટમ ઉમેરી"</string>
