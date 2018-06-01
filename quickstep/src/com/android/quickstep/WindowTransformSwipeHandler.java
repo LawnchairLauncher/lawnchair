@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -29,6 +30,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -36,6 +38,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.support.annotation.AnyThread;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
@@ -51,6 +54,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -65,11 +69,12 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -167,6 +172,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 
+    // An increasing identifier per single instance of OtherActivityTouchConsumer. Generally one
+    // instance of OtherActivityTouchConsumer will only have one swipe handle, but sometimes we can
+    // end up with multiple handlers if we get recents command in the middle of a swipe gesture.
+    // This is used to match the corresponding activity manager callbacks in
+    // OtherActivityTouchConsumer
+    public final int id;
     private final Context mContext;
     private final ActivityControlHelper<T> mActivityControlHelper;
     private final ActivityInitListener mActivityInitListener;
@@ -199,6 +210,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             InputConsumerController.getRecentsAnimationInputConsumer();
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
+
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
@@ -207,8 +219,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private float mLongSwipeDisplacement = 0;
     private LongSwipeHelper mLongSwipeController;
 
-    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
-            ActivityControlHelper<T> controller) {
+    WindowTransformSwipeHandler(int id, RunningTaskInfo runningTaskInfo, Context context,
+            long touchTimeMs, ActivityControlHelper<T> controller) {
+        this.id = id;
         mContext = context;
         mRunningTaskInfo = runningTaskInfo;
         mRunningTaskId = runningTaskInfo.id;
@@ -453,11 +466,40 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     "Can't change interaction type to " + interactionType);
         }
         mInteractionType = interactionType;
+        mRecentsAnimationWrapper.runOnInit(this::shiftAnimationDestinationForQuickscrub);
 
         setStateOnUiThread(STATE_QUICK_SCRUB_START | STATE_GESTURE_COMPLETED);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR);
+        animateToProgress(mCurrentShift.value, 1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR);
+    }
+
+    private void shiftAnimationDestinationForQuickscrub() {
+        TransformedRect tempRect = new TransformedRect();
+        mActivityControlHelper
+                .getSwipeUpDestinationAndLength(mDp, mContext, mInteractionType, tempRect);
+        mClipAnimationHelper.updateTargetRect(tempRect);
+
+        float offsetY =
+                mActivityControlHelper.getTranslationYForQuickScrub(tempRect, mDp, mContext);
+        float scale, offsetX;
+        Resources res = mContext.getResources();
+
+        if (ActivityManagerWrapper.getInstance().getRecentTasks(2, UserHandle.myUserId()).size()
+                < 2) {
+            // There are not enough tasks, we don't need to shift
+            offsetX = 0;
+            scale = 1;
+        } else {
+            offsetX = res.getDimensionPixelSize(R.dimen.recents_page_spacing)
+                    + tempRect.rect.width();
+            float distanceToReachEdge = mDp.widthPx / 2 + tempRect.rect.width() / 2 +
+                    res.getDimensionPixelSize(R.dimen.recents_page_spacing);
+            float interpolation = Math.min(1, offsetX / distanceToReachEdge);
+            scale = TaskView.getCurveScaleForInterpolation(interpolation);
+        }
+        mClipAnimationHelper.offsetTarget(scale, Utilities.isRtl(res) ? -offsetX : offsetX, offsetY,
+                QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR);
     }
 
     @WorkerThread
@@ -606,11 +648,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void handleNormalGestureEnd(float endVelocity, boolean isFling) {
         long duration = MAX_SWIPE_DURATION;
         final float endShift;
+        final float startShift;
         if (!isFling) {
             endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW && mGestureStarted ? 1 : 0;
             long expectedDuration = Math.abs(Math.round((endShift - mCurrentShift.value)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
+            startShift = mCurrentShift.value;
         } else {
             endShift = endVelocity < 0 ? 1 : 0;
             float minFlingVelocity = mContext.getResources()
@@ -624,9 +668,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 long baseDuration = Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
                 duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
+            startShift = Utilities.boundToRange(mCurrentShift.value - endVelocity * SINGLE_FRAME_MS
+                            / (mTransitionDragLength * 1000), 0, 1);
         }
 
-        animateToProgress(endShift, duration, DEACCEL);
+        animateToProgress(startShift, endShift, duration, DEACCEL);
     }
 
     private void doLogGesture(boolean toLauncher) {
@@ -646,9 +692,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
-    private void animateToProgress(float progress, long duration, Interpolator interpolator) {
-        mIsGoingToHome = Float.compare(progress, 1) == 0;
-        ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
+    private void animateToProgress(float start, float end, long duration,
+            Interpolator interpolator) {
+        mIsGoingToHome = Float.compare(end, 1) == 0;
+        ObjectAnimator anim = mCurrentShift.animateToValue(start, end).setDuration(duration);
         anim.setInterpolator(interpolator);
         anim.addListener(new AnimationSuccessListener() {
             @Override
@@ -658,7 +705,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         : STATE_SCALED_CONTROLLER_APP);
             }
         });
-        anim.start();
+        mRecentsAnimationWrapper.runOnInit(anim::start);
     }
 
     @UiThread
@@ -700,6 +747,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.setRunningTaskHidden(false);
         mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
+        mQuickScrubController.cancelActiveQuickscrub();
     }
 
     private void notifyTransitionCancelled() {
@@ -785,30 +833,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         // Inform the last progress in case we skipped before.
         mQuickScrubController.onQuickScrubProgress(mCurrentQuickScrubProgress);
-
-        // Make sure the window follows the first task if it moves, e.g. during quick scrub.
-        TaskView firstTask = mRecentsView.getPageAt(0);
-        // The first task may be null if we are swiping up from a task that does not
-        // appear in the list (i.e. the assistant)
-        if (firstTask != null) {
-            int scrollForFirstTask = mRecentsView.getScrollForPage(0);
-            int scrollForSecondTask = mRecentsView.getChildCount() > 1
-                    ? mRecentsView.getScrollForPage(1) : scrollForFirstTask;
-            float offsetFromFirstTask = scrollForFirstTask - scrollForSecondTask;
-
-            TransformedRect tempRect = new TransformedRect();
-            mActivityControlHelper
-                    .getSwipeUpDestinationAndLength(mDp, mContext, mInteractionType, tempRect);
-            float distanceToReachEdge = mDp.widthPx / 2 + tempRect.rect.width() / 2 +
-                    mContext.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
-            float interpolation = Math.min(1,
-                    Math.abs(offsetFromFirstTask) / distanceToReachEdge);
-
-            mClipAnimationHelper.offsetTarget(
-                    firstTask.getCurveScaleForInterpolation(interpolation), offsetFromFirstTask,
-                    mActivityControlHelper.getTranslationYForQuickScrub(mActivity),
-                    QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR);
-        }
     }
 
     private void onFinishedTransitionToQuickScrub() {

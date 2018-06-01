@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Handler;
 
 import com.android.launcher3.states.InternalStateHandler;
@@ -48,10 +49,11 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
 
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.
+            CancellationSignal cancellationSignal = new CancellationSignal();
             appTransitionManager.setRemoteAnimationProvider((targets) -> {
 
                 // On the first call clear the reference.
-                appTransitionManager.setRemoteAnimationProvider(null);
+                cancellationSignal.cancel();
                 RemoteAnimationProvider provider = mRemoteAnimationProvider;
                 mRemoteAnimationProvider = null;
 
@@ -59,7 +61,7 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
                     return provider.createWindowAnimation(targets);
                 }
                 return null;
-            });
+            }, cancellationSignal);
         }
         OverviewCallbacks.get(launcher).onInitOverviewTransition();
         return mOnInitListener.test(launcher, alreadyOnHome);

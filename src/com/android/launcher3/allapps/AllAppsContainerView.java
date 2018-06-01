@@ -466,9 +466,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
      */
     public void addSpringFromFlingUpdateListener(ValueAnimator animator, float velocity) {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            boolean shouldSpring = true;
+
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                if (valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
+                if (shouldSpring
+                        && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
                     int searchViewId = getSearchView().getId();
                     addSpringView(searchViewId);
 
@@ -481,7 +484,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                                 }
                             });
 
-                    animator.removeUpdateListener(this);
+                    shouldSpring = false;
                 }
             }
         });
