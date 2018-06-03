@@ -233,7 +233,6 @@ public class DeviceProfile {
         hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
         hotseatBarSizePx = getHotseatSize(inv, res, dm);
-        originalHotseatBarSizePx = getHotseatSize(inv, res, dm);
 
         mBottomMarginHw = res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw);
 
@@ -265,6 +264,8 @@ public class DeviceProfile {
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
+
+        originalHotseatBarSizePx = hotseatBarSizePx;
 
         computeAllAppsButtonSize(context);
 
