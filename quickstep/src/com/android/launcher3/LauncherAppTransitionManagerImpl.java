@@ -50,6 +50,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -105,6 +106,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private static final int APP_LAUNCH_ALPHA_DURATION = 50;
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
+    public static final int RECENTS_QUICKSCRUB_LAUNCH_DURATION = 300;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
@@ -236,8 +238,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         return bounds;
     }
 
-    public void setRemoteAnimationProvider(RemoteAnimationProvider animationProvider) {
+    public void setRemoteAnimationProvider(final RemoteAnimationProvider animationProvider,
+            CancellationSignal cancellationSignal) {
         mRemoteAnimationProvider = animationProvider;
+        cancellationSignal.setOnCancelListener(() -> {
+            if (animationProvider == mRemoteAnimationProvider) {
+                mRemoteAnimationProvider = null;
+            }
+        });
     }
 
     /**
@@ -253,15 +261,21 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         RecentsView recentsView = mLauncher.getOverviewPanel();
         boolean launcherClosing = launcherIsATargetWithMode(targets, MODE_CLOSING);
         boolean skipLauncherChanges = !launcherClosing;
+        boolean isLaunchingFromQuickscrub =
+                recentsView.getQuickScrubController().isWaitingForTaskLaunch();
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, targets);
         if (taskView == null) {
             return false;
         }
 
+        int duration = isLaunchingFromQuickscrub
+                ? RECENTS_QUICKSCRUB_LAUNCH_DURATION
+                : RECENTS_LAUNCH_DURATION;
+
         ClipAnimationHelper helper = new ClipAnimationHelper();
         target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
-                .setDuration(RECENTS_LAUNCH_DURATION));
+                .setDuration(duration));
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -270,7 +284,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         if (launcherClosing) {
             launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView, helper);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
-            launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
+            launcherAnim.setDuration(duration);
 
             // Make sure recents gets fixed up by resetting task alphas and scales, etc.
             windowAnimEndListener = new AnimatorListenerAdapter() {
@@ -282,11 +296,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             };
         } else {
             AnimatorPlaybackController controller =
-                    mLauncher.getStateManager()
-                            .createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
+                    mLauncher.getStateManager().createAnimationToNewWorkspace(NORMAL, duration);
             controller.dispatchOnStart();
             childStateAnimation = controller.getTarget();
-            launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
+            launcherAnim = controller.getAnimationPlayer().setDuration(duration);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -581,11 +594,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 float offsetX = (scaledWindowWidth - iconWidth) / 2;
                 float offsetY = (scaledWindowHeight - iconHeight) / 2;
-                if (mLauncher.isInMultiWindowModeCompat()) {
-                    mFloatingView.getLocationOnScreen(floatingViewBounds);
-                } else {
-                    mFloatingView.getLocationInWindow(floatingViewBounds);
-                }
+                mFloatingView.getLocationOnScreen(floatingViewBounds);
+
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
                 matrix.postTranslate(transX0, transY0);

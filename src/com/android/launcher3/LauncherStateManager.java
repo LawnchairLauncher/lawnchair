@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -222,7 +221,8 @@ public class LauncherStateManager {
             }
         }
 
-        // Cancel the current animation
+        // Cancel the current animation. This will reset mState to mCurrentStableState, so store it.
+        LauncherState fromState = mState;
         mConfig.reset();
 
         if (!animated) {
@@ -245,10 +245,10 @@ public class LauncherStateManager {
 
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
-        mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
+        mConfig.duration = state == NORMAL ? fromState.transitionDuration : state.transitionDuration;
 
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
-        prepareForAtomicAnimation(mState, state, builder);
+        prepareForAtomicAnimation(fromState, state, builder);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
                 state, builder, onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation);
@@ -348,6 +348,12 @@ public class LauncherStateManager {
             }
 
             @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                mState = mCurrentStableState;
+            }
+
+            @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
@@ -432,7 +438,6 @@ public class LauncherStateManager {
     }
 
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
-        clearCurrentAnimation();
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;

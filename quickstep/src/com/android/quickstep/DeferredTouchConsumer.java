@@ -64,6 +64,16 @@ public class DeferredTouchConsumer implements TouchConsumer {
     }
 
     @Override
+    public void onQuickStep(MotionEvent ev) {
+        mTarget.onQuickStep(ev);
+    }
+
+    @Override
+    public void onCommand(int command) {
+        mTarget.onCommand(command);
+    }
+
+    @Override
     public void preProcessMotionEvent(MotionEvent ev) {
         mVelocityTracker.addMovement(ev);
     }
@@ -90,6 +100,11 @@ public class DeferredTouchConsumer implements TouchConsumer {
         // If our target is still null, defer the next target as well
         TouchConsumer target = mTarget;
         return target == null ? true : target.deferNextEventToMainThread();
+    }
+
+    @Override
+    public void onShowOverviewFromAltTab() {
+        mTarget.onShowOverviewFromAltTab();
     }
 
     public interface DeferredTouchProvider {

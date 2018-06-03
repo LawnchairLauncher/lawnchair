@@ -34,7 +34,7 @@ public class FastOverviewState extends OverviewState {
     /**
      * Vertical transition of the task previews relative to the full container.
      */
-    public static final float OVERVIEW_TRANSLATION_FACTOR = 0.5f;
+    public static final float OVERVIEW_TRANSLATION_FACTOR = 0.4f;
 
     private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_DISABLE_INTERACTION
             | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON | FLAG_DISABLE_ACCESSIBILITY;
@@ -75,5 +75,11 @@ public class FastOverviewState extends OverviewState {
                 + res.getDimension(R.dimen.quickscrub_adjacent_visible_width));
         return Math.min(Math.min(dp.availableHeightPx / usedHeight,
                 dp.availableWidthPx / usedWidth), MAX_PREVIEW_SCALE_UP);
+    }
+
+    @Override
+    public void onStateDisabled(Launcher launcher) {
+        super.onStateDisabled(launcher);
+        launcher.<RecentsView>getOverviewPanel().getQuickScrubController().cancelActiveQuickscrub();
     }
 }
