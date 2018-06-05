@@ -589,7 +589,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
             dp.updateInsets(homeContentInsets);
         } else {
-            overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
+            if (mActivity != null) {
+                int loc[] = new int[2];
+                View rootView = mActivity.getRootView();
+                rootView.getLocationOnScreen(loc);
+                overviewStackBounds = new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
+                        loc[1] + rootView.getHeight());
+            } else {
+                overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
+            }
             // If we are not in multi-window mode, home insets should be same as system insets.
             Rect insets = new Rect();
             WindowManagerWrapper.getInstance().getStableInsets(insets);
