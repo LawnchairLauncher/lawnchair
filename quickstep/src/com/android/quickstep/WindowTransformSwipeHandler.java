@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
+import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -356,9 +357,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         // Override the visibility of the activity until the gesture actually starts and we swipe
         // up, or until we transition home and the home animation is composed
         if (alreadyOnHome) {
-            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
         } else {
-            mActivity.addForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+            mActivity.addForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
         }
 
         mRecentsView = activity.getOverviewPanel();
@@ -632,7 +633,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (curActivity != null) {
             // Once the gesture starts, we can no longer transition home through the button, so
             // reset the force override of the activity visibility
-            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
         }
     }
 
@@ -769,6 +770,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityControlHelper.onTransitionCancelled(mActivity, wasVisible);
+
+        // Leave the pending invisible flag, as it may be used by wallpaper open animation.
+        mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
     }
 
     public void layoutListenerClosed() {
