@@ -556,6 +556,9 @@ public class LauncherStateManager {
 
         @Override
         public void onAnimationEnd(Animator animation) {
+            if (playbackController != null && playbackController.getTarget() == animation) {
+                playbackController = null;
+            }
             if (mCurrentAnimation == animation) {
                 mCurrentAnimation = null;
             }
