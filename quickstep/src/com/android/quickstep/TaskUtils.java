@@ -75,8 +75,11 @@ public class TaskUtils {
             applicationInfo.loadLabel(packageManager), user);
     }
 
-    public static ComponentKey getComponentKeyForTask(Task.TaskKey taskKey) {
-        return new ComponentKey(taskKey.getComponent(), UserHandle.of(taskKey.userId));
+    public static ComponentKey getLaunchComponentKeyForTask(Task.TaskKey taskKey) {
+        final ComponentName cn = taskKey.sourceComponent != null
+                ? taskKey.sourceComponent
+                : taskKey.getComponent();
+        return new ComponentKey(cn, UserHandle.of(taskKey.userId));
     }
 
 
