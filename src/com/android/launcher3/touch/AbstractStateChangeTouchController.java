@@ -86,6 +86,9 @@ public abstract class AbstractStateChangeTouchController
     private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
     private AnimatorSet mAtomicAnim;
+    // True if we want to resume playing atomic components when mAtomicAnim completes.
+    private boolean mScheduleResumeAtomicComponent;
+
     private boolean mPassedOverviewAtomicThreshold;
     // mAtomicAnim plays the atomic components of the state animations when we pass the threshold.
     // However, if we reinit to transition to a new state (e.g. OVERVIEW -> ALL_APPS) before the
@@ -93,6 +96,8 @@ public abstract class AbstractStateChangeTouchController
     // interfere with the atomic animation. When the atomic animation ends, we start controlling
     // the atomic components as well, using this controller.
     private AnimatorPlaybackController mAtomicComponentsController;
+    private LauncherState mAtomicComponentsTargetState = NORMAL;
+
     private float mAtomicComponentsStartProgress;
 
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
@@ -191,26 +196,20 @@ public abstract class AbstractStateChangeTouchController
         }
         int animComponents = goingBetweenNormalAndOverview(mFromState, mToState)
                 ? NON_ATOMIC_COMPONENT : ANIM_ALL;
+        mScheduleResumeAtomicComponent = false;
         if (mAtomicAnim != null) {
+            animComponents = NON_ATOMIC_COMPONENT;
             // Control the non-atomic components until the atomic animation finishes, then control
             // the atomic components as well.
-            animComponents = NON_ATOMIC_COMPONENT;
-            mAtomicAnim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animation) {
-                    cancelAtomicComponentsController();
-                    if (mCurrentAnimation != null) {
-                        mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
-                        long duration = (long) (getShiftRange() * 2);
-                        mAtomicComponentsController = AnimatorPlaybackController.wrap(
-                                createAtomicAnimForState(mFromState, mToState, duration), duration);
-                        mAtomicComponentsController.dispatchOnStart();
-                    }
-                }
-            });
+            mScheduleResumeAtomicComponent = true;
         }
-        if (goingBetweenNormalAndOverview(mFromState, mToState)) {
+        if (goingBetweenNormalAndOverview(mFromState, mToState)
+                || mAtomicComponentsTargetState != mToState) {
             cancelAtomicComponentsController();
+        }
+
+        if (mAtomicComponentsController != null) {
+            animComponents &= ~ATOMIC_COMPONENT;
         }
         mProgressMultiplier = initCurrentAnimation(animComponents);
         mCurrentAnimation.dispatchOnStart();
@@ -302,10 +301,28 @@ public abstract class AbstractStateChangeTouchController
                 mAtomicAnim.cancel();
             }
             mAtomicAnim = createAtomicAnimForState(atomicFromState, atomicToState, ATOMIC_DURATION);
-            mAtomicAnim.addListener(new AnimatorListenerAdapter() {
+            mAtomicAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
                     mAtomicAnim = null;
+                    mScheduleResumeAtomicComponent = false;
+                }
+
+                @Override
+                public void onAnimationSuccess(Animator animator) {
+                    if (!mScheduleResumeAtomicComponent) {
+                        return;
+                    }
+                    cancelAtomicComponentsController();
+                    if (mCurrentAnimation != null) {
+                        mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
+                        long duration = (long) (getShiftRange() * 2);
+                        mAtomicComponentsController = AnimatorPlaybackController.wrap(
+                                createAtomicAnimForState(mFromState, mToState, duration), duration);
+                        mAtomicComponentsController.dispatchOnStart();
+                        mAtomicComponentsTargetState = mToState;
+                    }
                 }
             });
             mAtomicAnim.start();
@@ -457,7 +474,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        clearState();
+        cancelAnimationControllers();
         boolean shouldGoToTargetState = true;
         if (mPendingAnimation != null) {
             boolean reachedTarget = mToState == targetState;
@@ -484,6 +501,15 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void clearState() {
+        cancelAnimationControllers();
+        if (mAtomicAnim != null) {
+            mAtomicAnim.cancel();
+            mAtomicAnim = null;
+        }
+        mScheduleResumeAtomicComponent = false;
+    }
+
+    private void cancelAnimationControllers() {
         mCurrentAnimation = null;
         cancelAtomicComponentsController();
         mDetector.finishedScrolling();
