@@ -243,9 +243,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             if (wasVisible) {
                 DeviceProfile dp = activity.getDeviceProfile();
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                activity.getStateManager().goToState(startState, false);
                 callback.accept(activity.getStateManager()
-                        .createAnimationToNewWorkspace(endState, accuracy));
+                        .createAnimationToNewWorkspace(startState, endState, accuracy));
                 return;
             }
 
