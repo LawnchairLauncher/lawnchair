@@ -16,7 +16,7 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
+import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -199,7 +199,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         public void onPinnedStackAnimationStarted() {
             // Needed for activities that auto-enter PiP, which will not trigger a remote
             // animation to be created
-            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
         }
     };
 
