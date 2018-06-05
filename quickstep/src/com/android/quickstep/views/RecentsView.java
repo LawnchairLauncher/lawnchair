@@ -667,9 +667,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
-            mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(), 0, 0), null,
-                    null, "", "", 0, 0, false, true, false, false,
-                    new ActivityManager.TaskDescription(), 0, new ComponentName("", ""), false);
+            mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(),
+                    new ComponentName(getContext(), getClass()), 0, 0), null, null, "", "", 0, 0,
+                    false, true, false, false, new ActivityManager.TaskDescription(), 0,
+                    new ComponentName("", ""), false);
             taskView.bind(mTmpRunningTask);
         }
         setCurrentTask(runningTaskId);
@@ -792,7 +793,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (shouldLog) {
                 mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                         onEndListener.logAction, Direction.UP, index,
-                        TaskUtils.getComponentKeyForTask(task.key));
+                        TaskUtils.getLaunchComponentKeyForTask(task.key));
             }
         }
     }
@@ -1229,7 +1230,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 if (task != null) {
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                             onEndListener.logAction, Direction.DOWN, indexOfChild(tv),
-                            TaskUtils.getComponentKeyForTask(task.key));
+                            TaskUtils.getLaunchComponentKeyForTask(task.key));
                 }
             } else {
                 onTaskLaunchFinish.accept(false);

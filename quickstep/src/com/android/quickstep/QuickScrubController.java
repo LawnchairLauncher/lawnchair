@@ -108,7 +108,7 @@ public class QuickScrubController implements OnAlarmListener {
                     } else {
                         mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(Touch.DRAGDROP,
                                 LauncherLogProto.Action.Direction.NONE, page,
-                                TaskUtils.getComponentKeyForTask(taskView.getTask().key));
+                                TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key));
                     }
                     mWaitingForTaskLaunch = false;
                 }, taskView.getHandler());
