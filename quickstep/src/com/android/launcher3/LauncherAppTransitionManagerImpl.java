@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
+import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
+import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -31,8 +33,6 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.quickstep.TaskUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
-import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
-import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -53,9 +53,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.util.Pair;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -670,6 +668,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                             postAsyncCallback(mHandler, () ->
                                     onCreateAnimation(targetCompats, result)));
                     return;
+                }
+
+                if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
+                    mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
                 }
 
                 AnimatorSet anim = null;
