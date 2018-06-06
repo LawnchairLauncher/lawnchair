@@ -244,7 +244,6 @@
   <string name="notifications_header">सूचनाएँ</string>
   <string name="widgets_bottom_sheet_title">%1$s विजेट</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair एक लांचर ऐप है, जिसे Till Kottmann (उर्फ deletescape) द्वारा बनाया गया था। यह AOSP से लॉन्चर3 पर आधारित है।</string>
   <string name="about_title">हमारे बारे में</string>
   <string name="about_pref_summary">लॉनचेयर टीम के बारे में जानिए</string>
   <string name="changelog_title">#%d इस बिल्डमें किये गए बदलाव</string>
@@ -296,6 +295,8 @@
   <string name="debug_pref_summary">पुनरारंभ करें या चिह्न डेटाबेस का पुन: निर्माण</string>
   <string name="show_pixel_bar_pref_title">पिक्सेल बार दिखाएँ</string>
   <string name="use_wide_searchbar_pref_title">विस्तृत सर्च बार का उपयोग करें</string>
+  <string name="show_search_pill_title">गूगल का खोज पिल दिखाए</string>
+  <string name="show_date_or_weather_title">तारीख/मौसम दाहिने तरफ दीखाऐ</string>
   <string name="show_mic_pref_title">गूगल असिस्टंट बटन दिखाएँ</string>
   <string name="use_round_searhbar">गोल ऐप सर्च बार का उपयोग करें</string>
   <string name="pixel_style_icons_pref_title">पिक्सेल आइकोंसका उपयोग करें</string>
@@ -339,6 +340,7 @@
   <string name="pull_down_search">खोज करें</string>
   <string name="pull_down_apps_search">ऐप्स खोजें</string>
   <string name="enable_screen_rotation">स्क्रीन रोटेशन सक्षम करें</string>
+  <string name="use_system_fonts_title">लेबल्स के लिए सीसटम फोंट्स का उपयोग करें</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">पुनर्स्थापित करें</string>
   <string name="backup_export_title">निर्यात</string>
@@ -380,10 +382,6 @@
   <string name="animated_clock_icon_title">एनिमेटेड घड़ी आइकोन</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">वैकल्पिक घड़ी ऐप्स को सजीव करना</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">इसे सक्षम करें यदि आप Google घड़ी का उपयोग अपने डिफ़ॉल्ट घड़ी एप्लिकेशन के रूप में नहीं करते हैं</string>
-  <string name="about_summary_title">सारांश</string>
-  <string name="about_version">संस्करण</string>
-  <string name="about_icon_designer">एप्लिकेशन आइकन डिजाइनर</string>
-  <string name="about_contributors_title">योगदान कर्ता</string>
   <string name="location_permission_warn">दूसरे प्रदाता पर स्विच करने के लिए स्थान अनुमति आवश्यक है!</string>
   <string name="num_cols_drawer_pref_title">ड्रोवर में स्तंभों की संख्या</string>
   <string name="shortcut_backport_warning">यह धीमा हो सकता है, अपने जोखिम पर उपयोग करें</string>
@@ -395,11 +393,11 @@
   <string name="pref_all_apps_label_color">दराज में आइकन लेबल का रंग</string>
   <string name="pref_num_rows_drawer">ड्रोवर में पंक्तियों की संख्या</string>
   <string name="center_wallpaper_pref_title">जब केवल एक ही पृष्ठ हो तब वॉलपेपर केंद्रित करे</string>
+  <string name="center_wallpaper_pref_summary">केवल कार्य करता है अगर होमस्क्रीन मे एक पैज हों</string>
   <string name="vertical_drawer_layout_pref_title">अनुलंब सूची के रूप में प्रदर्शित करें</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">अनुवादक</string>
   <string name="lock_desktop">डेस्कटॉप बंद करे</string>
   <string name="lawnfeed_not_found">Lawnfeed स्थापित नहीं</string>
   <string name="google_app_not_found">Google app स्थापित नहीं</string>
@@ -418,10 +416,41 @@
   <string name="reset_alternative_icons">आपके पास वैकल्पिक आइकन के साथ%1$d ऐप्स हैं, क्या आप उन्हें रीसेट करना चाहते हैं?</string>
   <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed स्थापित नहीं</string>
   <string name="lawnfeed_not_enabled">ऐसा लगता है कि आप Google Now पृष्ठ को खोलने का प्रयास कर रहे हैं, लेकिन आपने व्यवहार सेटिंग में विकल्प सक्षम नहीं किया है.\n\nआप इसे अभी सक्षम करना चाहते हैं?</string>
   <string name="lawnfeed_outdated_title">लॉनफीड के अपडेट की आवश्यकता है</string>
   <string name="lawnfeed_outdated">लॉनचेयर के इस संस्करण के साथ काम करने के लिए लॉनफीड का एक नया संस्करण आवश्यक है।\n\nअपडेट को स्थापित करने से पहले आपको लॉनफीड के वर्तमान संस्करण को अनइंस्टॉल करने की आवश्यकता होगी।\n\nक्या आप इसे अभी डाउनलोड करना चाहते हैं?</string>
+  <string name="title_storage_permission_required">स‌्टोरेज अनुमति की आवश्यकता</string>
+  <string name="content_storage_permission_required">Android 8.1 और ऊपर में स्टोरेज अनुमति की आवश्यक है वोलपेपर के पहुंच के लिए। बिना अनुमति के, लॉनचेर के क्रैश या अजीब व्यवहार की संभावना है।</string>
   <string name="disable_popup">फिर से न दिखाएँ</string>
+  <string name="backups">बैकअप</string>
+  <string name="new_backup">बनाएँ</string>
+  <string name="restore_backup">पुनर्स्थापित करें</string>
+  <string name="backup_name">नाम</string>
+  <string name="backup_location">स्थान</string>
+  <string name="choose_backup_path">ब्राउज़ करें</string>
+  <string name="backup_homescreen">होमस्क्रीन</string>
+  <string name="backup_contents">बैकअप सामग्री</string>
+  <string name="backup_settings">सेटिंग्स</string>
+  <string name="backup_wallpaper">वॉलपेपर</string>
+  <string name="backup_error_blank_name">नाम रिक्त नहीं होना चाहिए</string>
+  <string name="backup_error_blank_location">स्थान रिक्त नहीं होना चाहिए</string>
+  <string name="backup_error_blank_contents">सामग्री रिक्त नहीं होनी चाहिए</string>
+  <string name="backup_creating">बैकअप बन रहा है</string>
+  <string name="no_recent_backups">कोई हालिया बैकअप नहीं</string>
+  <string name="backup_loading">लोड हो रहा है...</string>
+  <string name="backup_invalid">अनुपलब्ध</string>
+  <string name="backup_remove_from_recents">लिस्ट से निकाले</string>
+  <string name="backup_share">शेयर करें</string>
+  <string name="backup_timestamp">बनाया गया</string>
+  <string name="backup_restoring">बैकअप रिस्टोर हों रहा है</string>
+  <string name="backup_restarting">पुनः आरंभ करें</string>
+  <string name="restore_contents">सामग्री रीस्टोर करें</string>
+  <string name="restore_success">रीस्टोर कामयाब</string>
+  <string name="backup_failed">बैकअप नाकामयाब</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <!-- About screen -->
 </resources>
