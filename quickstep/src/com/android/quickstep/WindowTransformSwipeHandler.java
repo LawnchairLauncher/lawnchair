@@ -58,6 +58,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -569,7 +570,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void updateFinalShiftUi() {
-        if (mLauncherTransitionController == null) {
+        if (mLauncherTransitionController == null || mLauncherTransitionController
+                .getAnimationPlayer().isStarted()) {
             return;
         }
         mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
@@ -663,17 +665,23 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void handleNormalGestureEnd(float endVelocity, boolean isFling) {
+        float velocityPxPerMs = endVelocity / 1000;
         long duration = MAX_SWIPE_DURATION;
         final float endShift;
         final float startShift;
+        final Interpolator interpolator;
         if (!isFling) {
             endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW && mGestureStarted ? 1 : 0;
             long expectedDuration = Math.abs(Math.round((endShift - mCurrentShift.value)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
             startShift = mCurrentShift.value;
+            interpolator = DEACCEL;
         } else {
             endShift = endVelocity < 0 ? 1 : 0;
+            interpolator = endVelocity < 0
+                    ? Interpolators.overshootInterpolatorForVelocity(velocityPxPerMs, 2f)
+                    : DEACCEL;
             float minFlingVelocity = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
@@ -682,14 +690,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 // we want the page's snap velocity to approximately match the velocity at
                 // which the user flings, so we scale the duration by a value near to the
                 // derivative of the scroll interpolator at zero, ie. 2.
-                long baseDuration = Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
+                long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs));
                 duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
-            startShift = Utilities.boundToRange(mCurrentShift.value - endVelocity * SINGLE_FRAME_MS
-                            / (mTransitionDragLength * 1000), 0, 1);
+            startShift = Utilities.boundToRange(mCurrentShift.value - velocityPxPerMs
+                    * SINGLE_FRAME_MS / (mTransitionDragLength), 0, 1);
         }
-
-        animateToProgress(startShift, endShift, duration, DEACCEL);
+        animateToProgress(startShift, endShift, duration, interpolator);
     }
 
     private void doLogGesture(boolean toLauncher) {
@@ -716,6 +723,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
     private void animateToProgress(float start, float end, long duration,
             Interpolator interpolator) {
+        mRecentsAnimationWrapper.runOnInit(() -> animateToProgressInternal(start, end, duration,
+                interpolator));
+    }
+
+    private void animateToProgressInternal(float start, float end, long duration,
+            Interpolator interpolator) {
         mIsGoingToHome = Float.compare(end, 1) == 0;
         ObjectAnimator anim = mCurrentShift.animateToValue(start, end).setDuration(duration);
         anim.setInterpolator(interpolator);
@@ -727,7 +740,26 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         : STATE_SCALED_CONTROLLER_APP);
             }
         });
-        mRecentsAnimationWrapper.runOnInit(anim::start);
+        anim.start();
+        long startMillis = SystemClock.uptimeMillis();
+        executeOnUiThread(() -> {
+            // Animate the launcher components at the same time as the window, always on UI thread.
+            if (mLauncherTransitionController != null && !mWasLauncherAlreadyVisible
+                    && start != end && duration > 0) {
+                // Adjust start progress and duration in case we are on a different thread.
+                long elapsedMillis = SystemClock.uptimeMillis() - startMillis;
+                elapsedMillis = Utilities.boundToRange(elapsedMillis, 0, duration);
+                float elapsedProgress = (float) elapsedMillis / duration;
+                float adjustedStart = Utilities.mapRange(elapsedProgress, start, end);
+                long adjustedDuration = duration - elapsedMillis;
+                // We want to use the same interpolator as the window, but need to adjust it to
+                // interpolate over the remaining progress (end - start).
+                mLauncherTransitionController.dispatchSetInterpolator(Interpolators.mapToProgress(
+                        interpolator, adjustedStart, end));
+                mLauncherTransitionController.getAnimationPlayer().setDuration(adjustedDuration);
+                mLauncherTransitionController.getAnimationPlayer().start();
+            }
+        });
     }
 
     @UiThread
