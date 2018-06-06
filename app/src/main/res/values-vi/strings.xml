@@ -243,7 +243,6 @@
   <string name="notifications_header">Thông báo</string>
   <string name="widgets_bottom_sheet_title">%1$s tiện ích con</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair là một trình khởi chạy tạo bởi Till Kottmann (aka deletescape). Nó được dựa trên Launcher3 từ AOSP.</string>
   <string name="about_title">Thông tin</string>
   <string name="about_pref_summary">Tìm hiểu về đội ngũ Lawnchair</string>
   <string name="changelog_title">Những thay đổi của bản xây dựng #%d</string>
@@ -379,10 +378,6 @@
   <string name="animated_clock_icon_title">Biểu tượng đồng hồ động</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Hiệu ứng cho ứng dụng đồng hồ khác</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Kích hoạt nếu bạn không sử dụng Google Clock làm ứng dụng đồng hồ mặc định</string>
-  <string name="about_summary_title">Sơ lược</string>
-  <string name="about_version">Phiên bản</string>
-  <string name="about_icon_designer">Người thiết kế biểu tượng</string>
-  <string name="about_contributors_title">Người đóng góp</string>
   <string name="location_permission_warn">Cần quyền truy cập vị trí để đổi nhà cung cấp</string>
   <string name="num_cols_drawer_pref_title">Số cột trong ngăn chứa</string>
   <string name="shortcut_backport_warning">Tính năng này có thể khiến máy bạn chậm lại, hãy cân nhắc trước khi kích hoạt</string>
@@ -398,7 +393,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">Dịch giả</string>
   <string name="lock_desktop">Khóa màn hình chính</string>
   <string name="lawnfeed_not_found">Chưa cài đặt Lawnfeed</string>
   <string name="google_app_not_found">Ứng dụng Google không được cài đặt</string>
@@ -424,5 +418,8 @@
   <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép Lawnchair có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
   <string name="disable_popup">Không hiển thị lại</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <!-- About screen -->
 </resources>
