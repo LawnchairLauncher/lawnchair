@@ -244,7 +244,6 @@
   <string name="notifications_header">Notificações</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair é um Launcher criado por Till Kottmann (deletescape). Baseado no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
   <string name="about_pref_summary">Conheça a equipe por trás do Lawnchair</string>
   <string name="changelog_title">Novidades da versão #%d</string>
@@ -384,10 +383,6 @@
   <string name="animated_clock_icon_title">Ícone do relógio animado</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Ativar animação para apps de relógio alternativos</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Ative isso se você não usa o relógio da Google como relógio padrão</string>
-  <string name="about_summary_title">Resumo</string>
-  <string name="about_version">Versão</string>
-  <string name="about_icon_designer">Criador do Ícone</string>
-  <string name="about_contributors_title">Colaboradores</string>
   <string name="location_permission_warn">Permissão de localização necessária para mudar de provedor!</string>
   <string name="num_cols_drawer_pref_title">Número de colunas na exibição na gaveta de aplicativos</string>
   <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
@@ -404,7 +399,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Tradutores</string>
   <string name="lock_desktop">Impedir mudanças</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicativo do Google não instalado</string>
@@ -465,6 +459,11 @@
   <string name="backup_location_documents_storage">Armazenamento de documentos</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra de pesquisa de Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Diversos</string>
+  <string name="blur_oom">Lawnchair ficou sem memória tentando desfocar seu papel de parede! Reduzir a resolução do papel de parede poderia resolver isso.</string>
+  <string name="legacy_backup">Arquivo de backup legado</string>
+  <!-- About screen -->
 </resources>
