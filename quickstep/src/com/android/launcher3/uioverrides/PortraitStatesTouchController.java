@@ -25,7 +25,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -192,7 +191,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 // Update all apps interpolator to add a bit of overshoot starting from currFraction
                 final float currFraction = mCurrentAnimation.getProgressFraction();
                 mAllAppsInterpolatorWrapper.baseInterpolator = Interpolators.clampToProgress(
-                        new OvershootInterpolator(Math.min(Math.abs(velocity), 3f)), currFraction, 1);
+                        Interpolators.overshootInterpolatorForVelocity(velocity), currFraction, 1);
                 animator.setDuration(Math.min(expectedDuration, ATOMIC_DURATION))
                         .setInterpolator(LINEAR);
             }

@@ -202,6 +202,19 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
+    public void dispatchSetInterpolator(TimeInterpolator interpolator) {
+        dispatchSetInterpolatorRecursively(mAnim, interpolator);
+    }
+
+    private void dispatchSetInterpolatorRecursively(Animator anim, TimeInterpolator interpolator) {
+        anim.setInterpolator(interpolator);
+        if (anim instanceof AnimatorSet) {
+            for (Animator child : nonNullList(((AnimatorSet) anim).getChildAnimations())) {
+                dispatchSetInterpolatorRecursively(child, interpolator);
+            }
+        }
+    }
+
     public void setOnCancelRunnable(Runnable runnable) {
         mOnCancelRunnable = runnable;
     }
