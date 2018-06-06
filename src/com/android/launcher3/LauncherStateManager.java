@@ -348,12 +348,6 @@ public class LauncherStateManager {
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                mState = mCurrentStableState;
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
@@ -438,6 +432,7 @@ public class LauncherStateManager {
     }
 
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        clearCurrentAnimation();
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;
