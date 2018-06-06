@@ -246,7 +246,6 @@
   <string name="notifications_header">Уведомления</string>
   <string name="widgets_bottom_sheet_title">%1$s виджетов</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Он основан на Launcher3 из AOSP.</string>
   <string name="about_title">О программе</string>
   <string name="about_pref_summary">Узнайте о команде Lawnchair</string>
   <string name="changelog_title">Изменения в сборке #%d</string>
@@ -386,10 +385,6 @@
   <string name="animated_clock_icon_title">Анимированный значок часов</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Анимировать альтернативное приложение часов</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Включите если Вы не используете Google Часы как приложение часов по умолчанию</string>
-  <string name="about_summary_title">Описание</string>
-  <string name="about_version">Версия</string>
-  <string name="about_icon_designer">Дизайнер значка приложения</string>
-  <string name="about_contributors_title">Участники</string>
   <string name="location_permission_warn">Предоставьте доступ к местоположению, чтобы переключиться на другого поставщика!</string>
   <string name="num_cols_drawer_pref_title">Количество столбцов в меню приложений</string>
   <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
@@ -400,20 +395,19 @@
   <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
   <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
   <string name="pref_num_rows_drawer">Количество строк в меню приложений</string>
-  <string name="center_wallpaper_pref_title">Центрировать обои, если имеется только один экран</string>
+  <string name="center_wallpaper_pref_title">Центрировать обои</string>
   <string name="center_wallpaper_pref_summary">Работает, если на рабочем столе используется только одна страница</string>
   <string name="vertical_drawer_layout_pref_title">Отображать в виде вертикального списка</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Переводчики</string>
   <string name="lock_desktop">Заблокировать рабочий стол</string>
   <string name="lawnfeed_not_found">Lawnfeed не установлен</string>
   <string name="google_app_not_found">Приложение Google не установлено</string>
   <string name="lawnfeed_incompatible">Установленная версия Lawnfeed несовместима</string>
   <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
   <string name="enable_spring_pref_title">Включить эффект отскока</string>
-  <string name="hide_app">Скрыть приложение</string>
+  <string name="hide_app">Скрытые приложения</string>
   <string name="hide_app_sum">Скрыть приложение из меню</string>
   <string name="hide_app_selected">&#160;выбрано</string>
   <string name="hidden_app">Скрытое приложение</string>
@@ -448,7 +442,7 @@
   <string name="backup_creating">Создание резервной записи</string>
   <string name="no_recent_backups">Нет недавних резервных копий</string>
   <string name="backup_loading">Загрузка...</string>
-  <string name="backup_invalid">Операция невозможна</string>
+  <string name="backup_invalid">Недоступно</string>
   <string name="backup_remove_from_recents">Удалить из списка</string>
   <string name="backup_share">Поделиться</string>
   <string name="backup_timestamp">Создано</string>
@@ -467,6 +461,11 @@
   <string name="backup_location_documents_storage">Документы</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Строка поиска Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Разное</string>
+  <string name="blur_oom">Произошла ошибка при попытке Lawnchair размыть ваши обои! Уменьшение разрешения обоев могло бы исправить это.</string>
+  <string name="legacy_backup">Устаревший файл резервной копии</string>
+  <!-- About screen -->
 </resources>

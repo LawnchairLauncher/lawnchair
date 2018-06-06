@@ -244,7 +244,6 @@
   <string name="notifications_header">اعلانات</string>
   <string name="widgets_bottom_sheet_title">%1$s ابزارک</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair یک لانچر است که توسط Till Kottmann(aka deletescape) و براساس Launcher3 از رام‌های AOSP نوشته شده است.</string>
   <string name="about_title">درباره</string>
   <string name="about_pref_summary">درمورد تیم Lawnchair بدانید</string>
   <string name="changelog_title">تغییرات بیلد #%d</string>
@@ -278,8 +277,6 @@
   <string name="folder">پوشه</string>
   <string name="loading">در حال بارگذاری...</string>
   <string name="icon_shape_none">هیچ‌کدام</string>
-  <string name="about_version">نسخه</string>
-  <string name="about_contributors_title">شرکاء</string>
   <string name="about_changelog">تغییرات ایجاد شده</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -287,5 +284,8 @@
   <string name="hide_app_reset">بازنشانی</string>
   <!-- Strings for popup dialogs -->
   <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <!-- About screen -->
 </resources>

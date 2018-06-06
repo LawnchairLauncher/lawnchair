@@ -246,7 +246,6 @@
   <string name="notifications_header">התראות</string>
   <string name="widgets_bottom_sheet_title">%1$s ווידג\'טים</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair הוא יישום משגר שנוצרו על-ידי עד Kottmann (ידוע כ- deletescape). מבוסס על Launcher3 מ- AOSP.</string>
   <string name="about_title">אודות</string>
   <string name="about_pref_summary">הכר את צוות Lawnchair</string>
   <string name="changelog_title">רשימת שינויים לגירסא #%d</string>
@@ -386,10 +385,6 @@
   <string name="animated_clock_icon_title">אייקון שעון מונפש</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">הנפש אפליקציות שעון חלופיות</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">הפעל אפשרות זו אם אינך משתמש בשעון של Google בתור אפליקציית השעון המוגדרת כברירת מחדל</string>
-  <string name="about_summary_title">סיכום</string>
-  <string name="about_version">גרסה</string>
-  <string name="about_icon_designer">מעצב סמל האפליקציה</string>
-  <string name="about_contributors_title">תורמים</string>
   <string name="location_permission_warn">הרשאת המיקום נדרשת על מנת להחליף מקור נתונים!</string>
   <string name="num_cols_drawer_pref_title">מספר העמודות במגירת היישומים</string>
   <string name="shortcut_backport_warning">זו יכולה להיות פעולה איטית, השימוש על אחריותכם בלבד</string>
@@ -406,7 +401,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">מתרגמים</string>
   <string name="lock_desktop">נעל את מסך הבית</string>
   <string name="lawnfeed_not_found">Lawnfeed אינו מותקן</string>
   <string name="google_app_not_found">היישום של Google אינו מותקן</string>
@@ -467,6 +461,11 @@
   <string name="backup_location_documents_storage">אחסון מסמכים</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">סרגל חיפוש בסגנון Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">שונות</string>
+  <string name="blur_oom">ל-Lawnchair נגמר הזיכרון בניסיון לטשטש את הטפט שלך! הורדת הרזולוציה של הטפט יכולה לתקן את זה.</string>
+  <string name="legacy_backup">קובץ גיבוי מדור קודם</string>
+  <!-- About screen -->
 </resources>

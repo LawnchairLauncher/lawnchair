@@ -57,7 +57,7 @@
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Ikke mer plass i favoritter-skuffen.</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">App-liste</string>
+  <string name="all_apps_button_label">Appliste</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Hjem</string>
@@ -77,29 +77,29 @@
   <!-- Permission description -->
   <string name="permdesc_read_settings">Tillater appen å lese innstillingene og snarveiene i hjem.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">skriv hjem-instillinger og snarveier</string>
+  <string name="permlab_write_settings">skriv hjem-innstillinger og snarveier</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">Tillater appen å endre innstillingene og snarveiene i hjem.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s </xliff:g> er ikke tillatt å starte telefonsamtaler</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Problem med lasting av modul</string>
+  <string name="gadget_error_text">Feil ved lasting av modul</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Oppsett</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
   <string name="uninstall_system_app_text">Dette er en system-app, og kan ikke avinstalleres.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Navnløs mappe</string>
+  <string name="folder_hint_text">Mappe uten navn</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">Deaktiverte <xliff:g example="Messenger" id="app_name">%1$s </xliff:g></string>
+  <string name="disabled_app_label">Deaktivert <xliff:g example="Messenger" id="app_name">%1$s </xliff:g></string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Side %1$d av %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Hjemskjerm %1$d av %2$d</string>
+  <string name="workspace_scroll_format">Startskjerm %1$d av %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Ny hjemskjerm-side</string>
+  <string name="workspace_new_page">Ny Startskjermside</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Mappe åpnet, <xliff:g example="5" id="width">%1$d </xliff:g> bredde og <xliff:g example="3" id="height">%2$d </xliff:g> høyde</string>
@@ -142,24 +142,24 @@
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> laster ned, <xliff:g example="30%" id="progress">%2$s </xliff:g> fullført</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> venter med å installere</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> venter på å installere</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Legg til på hjemskjerm</string>
+  <string name="action_add_to_workspace">Legg til på startskjerm</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Flytt element hit</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Element lagt til på hjemskjerm</string>
+  <string name="item_added_to_workspace">Element lagt til på startskjerm</string>
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">Element fjernet</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Flytt element</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Flytt til rad <xliff:g example="1" id="number">%1$d</xliff:g> kolonne <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_position">Flytt til posisjon <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Flytt til posisjon <xliff:g example="1" id="number">%1$d</xliff:g> i Favoritter</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element flyttet</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -173,7 +173,7 @@
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Mappe opprettet</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Flytt til hjemskjerm</string>
+  <string name="action_move_to_workspace">Flytt til startskjerm</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Flytt skjerm til venstre</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
@@ -187,11 +187,11 @@
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_increase_height">Øk høyde</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_width">Redusér bredde</string>
+  <string name="action_decrease_width">Reduser bredde</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_height">Redusér høyde</string>
+  <string name="action_decrease_height">Reduser høyde</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="widget_resized">Modul endret bredde <xliff:g example="2" id="number">%1$d</xliff:g> høyde <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Snarveier</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -209,7 +209,7 @@
   <string name="wallpaper_load_fail">Kunne ikke laste inn bilde som bakgrunn</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
-  <string name="wallpaper_set_fail">Kunne angi bilde som bakgrunn</string>
+  <string name="wallpaper_set_fail">Kunne ikke angi bilde som bakgrunn</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
@@ -221,7 +221,7 @@
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">Bakgrunn %1$d av %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">Valgte <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
+  <string name="announce_selection"><xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g> valgt</string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Slett</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -231,11 +231,11 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Beskjær bakgrunn</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Hjemskjerm</string>
+  <string name="which_wallpaper_option_home_screen">Startskjerm</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Låseskjerm</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Hjemskjerm og låseskjerm</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Startskjerm og låseskjerm</string>
   <string name="title_show_google_app">Vis %1$s</string>
   <string name="title_show_google_app_default">Vis Google-app</string>
   <string name="label_search">Søk</string>
@@ -244,56 +244,58 @@
   <string name="notifications_header">Varsler</string>
   <string name="widgets_bottom_sheet_title">%1$s moduler</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair er en startside-app laget av Till Kottmann (aka deletescape). Den er basert på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
-  <string name="about_pref_summary">Få vite om de Lawnchair</string>
+  <string name="about_pref_summary">Bli kjent med Lawnchair teamet</string>
   <string name="changelog_title">Endringslogg for versjon #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon-pakke</string>
   <string name="icon_pack_preference_summary">Velg en ikon-pakke</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock bruker farger fra bakgrunn</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dokk bruker farger fra bakgrunnen</string>
   <string name="hotseat_show_arrow">Vise pil</string>
-  <string name="hotseat_show_page_indicator">Vis siden indikator</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock-en farges med en farge fra bakgrunnsbildet</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock-en vil være farget grå, men justert av bakgrunnslysstyrken</string>
+  <string name="hotseat_show_page_indicator">Vis sideindikator</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dokken farges med en farge hentet fra bakgrunnsbildet</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dokken vil være farget grå, men justert av lysstyrken til bakgrunnen</string>
   <string name="transparent_hotseat_pref_title">Gjennomsiktig dock</string>
   <string name="dynamic_ui_pref_title">Hent aksentfarge fra bakgrunn</string>
   <string name="blur_pref_title">Aktiver uskarphet</string>
-  <string name="blur_pref_summary">Anvend uskarphet på deler av grensesnittet\nIkke kompatibelt med direkte-bakgrunner</string>
+  <string name="blur_pref_summary">Bruk uskarphet på deler av grensesnittet\nIkke kompatibelt med animerte bakgrunner</string>
   <string name="blur_radius_pref_title">Uskarphetsradius</string>
-  <string name="pref_iconLabelsInTwoLines">Ikonet etiketter på to linjer</string>
+  <string name="pref_iconLabelsInTwoLines">Ikonetiketter på to linjer</string>
   <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Skjul ikon-etiketter i skuff</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Skjul ikonetiketter i Alle apper</string>
   <string name="workspace_label_color_hue_pref_title">Farge på ikon-etiketter på hjemskjerm</string>
-  <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
+  <string name="all_apps_opacity_pref_title">Alle apper gjennomsiktighet</string>
   <string name="num_cols_pref_title">Antall kolonner</string>
   <string name="num_rows_pref_title">Antall rader</string>
-  <string name="num_hotseat_icons_pref_title">Antall ikoner i dock</string>
-  <string name="icon_scale_pref_title">Ikon-størrelse</string>
-  <string name="hotseat_height_scale">Høyde skala</string>
-  <string name="icon_text_scale_pref_title">Ikon-tekst-størrelse</string>
-  <string name="icon_text_padding_scale_pref_title">Ikonet polstring skala</string>
-  <string name="full_width_width_widgets_pref_title">Full bredde på moduler</string>
-  <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
-  <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
-  <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
+  <string name="num_hotseat_icons_pref_title">Antall ikoner i dokk</string>
+  <string name="icon_scale_pref_title">Ikonstørrelse</string>
+  <string name="hotseat_height_scale">Høydeskala</string>
+  <string name="hotseat_custom_opacity">Dokkugjennomsiktighet</string>
+  <string name="icon_text_scale_pref_title">Ikontekstskalering</string>
+  <string name="icon_text_padding_scale_pref_title">Ikonutfyllingskalering</string>
+  <string name="full_width_width_widgets_pref_title">Full bredde moduler</string>
+  <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten utfylling</string>
+  <string name="notification_access_pref_title">Varselsmerker og forhåndsvisning</string>
+  <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslene dine for å aktivere denne funksjonen</string>
   <string name="general_pref_title">Skrivebord</string>
-  <string name="dock_pref_title">Dock</string>
-  <string name="app_drawer_pref_title">App drawer</string>
+  <string name="dock_pref_title">Dokk</string>
+  <string name="app_drawer_pref_title">Alle apper</string>
   <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Oppførsel</string>
   <string name="debug_pref_title">Feilsøk</string>
-  <string name="general_pref_summary">Tilpass nettbutikken</string>
-  <string name="dock_pref_summary">Tilpass siden din</string>
-  <string name="app_drawer_pref_summary">Tilpasse ditt app skuff</string>
+  <string name="general_pref_summary">Tilpass skrivebordet</string>
+  <string name="dock_pref_summary">Tilpass dokken</string>
+  <string name="app_drawer_pref_summary">Tilpass Alle apper</string>
   <string name="pixel_ui_pref_summary">Forskjellige temaelementer</string>
   <string name="backup_pref_title">Sikkerhetskopiering</string>
-  <string name="behavior_pref_summary">Endre Lawnchair</string>
-  <string name="backup_pref_summary">Sikkerhetskopiere databasen og innstillinger</string>
-  <string name="debug_pref_summary">Hvile eller bygge ikonet database</string>
-  <string name="show_pixel_bar_pref_title">Vis Pixel-topplinje</string>
-  <string name="use_wide_searchbar_pref_title">Bruk bred søkelinje</string>
+  <string name="behavior_pref_summary">Endre oppførselen til Lawnchair</string>
+  <string name="backup_pref_summary">Sikkerhetskopier innstillinger og database</string>
+  <string name="debug_pref_summary">Start om og bygg opp ikondatabasen på nytt</string>
+  <string name="show_pixel_bar_pref_title">Vis Pixel søkefelt</string>
+  <string name="use_wide_searchbar_pref_title">Bruk bredt søkefelt</string>
+  <string name="show_search_pill_title">Vis Google Søk \"pille\"</string>
+  <string name="show_date_or_weather_title">Vis dato/vær på høyre side</string>
   <string name="show_mic_pref_title">Vis Google Assistant-knapp</string>
   <string name="use_round_searhbar">Bruk rund søkelinje</string>
   <string name="pixel_style_icons_pref_title">Bruk Pixel-ikoner</string>
@@ -304,21 +306,21 @@
   <string name="rebuild_icondb_pref_title">Gjenoppbygg ikon-database</string>
   <string name="pinch_to_overview_pref_title">Knip for oversikt</string>
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
-  <string name="light_statusbar_pref_title">Lys statuslinje</string>
-  <string name="light_statusbar_pref_force">Statuslinjen vil vise mørke ikoner</string>
-  <string name="light_statusbar_pref_off">Statuslinjen vil alltid vise lyse ikoner</string>
+  <string name="light_statusbar_pref_title">Lyst statusfelt</string>
+  <string name="light_statusbar_pref_force">Statusfeltet vil vise mørke ikoner</string>
+  <string name="light_statusbar_pref_off">Statusfeltet vil vise lyse ikoner</string>
   <string name="keep_scroll_state_pref_title">Lagre bla-posisjon</string>
-  <string name="keep_scroll_state_pref_summary">Lagrer bla-posisjonen i skuffen</string>
-  <string name="home_opens_drawer_pref_title">Hjemknapp åpner skuff</string>
+  <string name="keep_scroll_state_pref_summary">Lagrer bla-posisjonen i Alle apper</string>
+  <string name="home_opens_drawer_pref_title">Hjemknapp åpner Alle apper</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
   <string name="show_hidden_pref_title">Vis skjulte apper</string>
-  <string name="show_hidden_pref_on">Skjulte apper vil bli synlige til synlighetsinnstillinger endres</string>
+  <string name="show_hidden_pref_on">Skjulte apper vil vises for å endre synlighetsinnstillingene</string>
   <string name="show_hidden_pref_off">Skjulte apper vil ikke være synlige</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - varslingmerker</string>
+  <string name="export_db_title">Database</string>
+  <string name="import_db_title">Database</string>
+  <string name="export_prefs_title">Innstillinger</string>
+  <string name="import_prefs_title">Innstillinger</string>
+  <string name="notification_listener_label">Lawnchair - varselsmerker</string>
   <string name="color_extraction_label">Lawnchair - fargeuthenting</string>
   <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
@@ -326,23 +328,30 @@
   <string name="edit_icon_reset">Tilbakestill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
   <string name="theme_pref_title">Tema</string>
-  <string name="theme_light">Lyst</string>
-  <string name="theme_dark">Mørkt</string>
+  <string name="theme_light">Lys</string>
+  <string name="theme_dark">Mørk</string>
   <string name="theme_black">Svart</string>
   <string name="hide_hotseat_pref_title">Skjul dock</string>
   <string name="all_icons">Alle ikoner</string>
   <string name="pull_down_action_pref_title">Nedtrekkshandling</string>
-  <string name="pull_down_do_nothing">Gjør ingenting</string>
+  <string name="pull_down_do_nothing">Ikke gjør noe</string>
   <string name="pull_down_notis">Vis varsler</string>
   <string name="pull_down_search">Åpne søk</string>
-  <string name="pull_down_apps_search">App-søk</string>
+  <string name="pull_down_apps_search">Appsøk</string>
   <string name="enable_screen_rotation">Aktiver skjermrotering</string>
+  <string name="use_system_fonts_title">Bruk systemskrifter for etiketter</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Import</string>
-  <string name="backup_export_title">Eksporter</string>
+  <string name="backup_import_title">Gjenopprett</string>
+  <string name="backup_export_title">Sikkerhetskopier</string>
+  <string name="settings_export_success">Innstillinger sikkerhetskopiert</string>
+  <string name="db_export_success">Database sikkerhetskopiert</string>
+  <string name="settings_import_success">Innstillinger gjenopprettet</string>
+  <string name="db_import_success">Database gjenopprettet</string>
+  <string name="export_error">Sikkerhetskopiering feilet</string>
+  <string name="import_error">Gjenoppretting feilet</string>
   <string name="imexport_no_backup_found">Ingen sikkerhetskopi funnet</string>
-  <string name="imexport_external_storage_unreadable">Ekstern lagring er ikke lesbar (gi tillatelse i innstillinger)</string>
-  <string name="imexport_external_storage_unwritable">Ekstern lagring er ikke skrivbar (gi tillatelse i innstillinger)</string>
+  <string name="imexport_external_storage_unreadable">Gi tillatelse til å lese ekstern lagring i Innstillinger</string>
+  <string name="imexport_external_storage_unwritable">Gi tillatelse til å skrive til ekstern lagring i Innstillinger</string>
   <string name="units_metric">Metrisk</string>
   <string name="units_imperial">Amerikansk</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -352,16 +361,16 @@
   <string name="pref_weather_city_summary">Inkluder landskode for beste resultat</string>
   <string name="pref_weather_city_title">Poststed</string>
   <string name="none">Ingen</string>
-  <string name="pref_applyTheme">Anvend tema på</string>
-  <string name="pref_applyBlur">Anvend uskarphet på</string>
-  <string name="search_bar">Søkelinje</string>
+  <string name="pref_applyTheme">Bruk tema på</string>
+  <string name="pref_applyBlur">Bruk uskarphet på</string>
+  <string name="search_bar">Søkefelt</string>
   <string name="folder">Mappe</string>
-  <string name="dock_allapps"><![CDATA[Dock & alle apper]]></string>
+  <string name="dock_allapps"><![CDATA[Dokk & Alle apper]]></string>
   <string name="app_shortcuts">App-snarveier</string>
   <string name="blur_effect">Uskarphetseffekt</string>
-  <string name="pref_weather_provider">Værleverandør</string>
+  <string name="pref_weather_provider">Værvarselsleverandør</string>
   <string name="loading">Laster inn …</string>
-  <string name="icon_shape_override_label">Endre ikon-form</string>
+  <string name="icon_shape_override_label">Endre ikonform</string>
   <string name="icon_shape_system_default">Ikke endre</string>
   <string name="icon_shape_none">Ingen</string>
   <string name="icon_shape_square">Kvadrat</string>
@@ -369,38 +378,89 @@
   <string name="icon_shape_squircle">Kvadrat-sirkel</string>
   <string name="icon_shape_circle">Sirkel</string>
   <string name="icon_shape_teardrop">Dråpe</string>
-  <string name="animated_clock_icon_title">Animert klokke-ikon</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">Animere alternativ klokke apps</string>
-  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktivere dette hvis du ikke bruker Google klokke som standard klokke app</string>
-  <string name="about_summary_title">Sammendrag</string>
-  <string name="about_version">Versjon</string>
-  <string name="about_icon_designer">App-ikon-designer</string>
-  <string name="about_contributors_title">Bidragsytere</string>
-  <string name="location_permission_warn">Posisjonstillatelse er nødvendig for å kunne bytte til en annen leverandør!</string>
-  <string name="num_cols_drawer_pref_title">Antall kolonner i skuff</string>
+  <string name="animated_clock_icon_title">Animert klokkeikon</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animer alternative klokkeapper</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktiver hvis du ikke bruker Google klokke som standard klokkeapp</string>
+  <string name="location_permission_warn">Posisjonstillatelse kreves for å kunne bytte til en annen leverandør</string>
+  <string name="num_cols_drawer_pref_title">Antall kolonner i Alle apper</string>
   <string name="shortcut_backport_warning">Dette kan gå tregt, bruk på eget ansvar</string>
   <string name="pref_backport_shortcuts">Backport-snarveier</string>
   <string name="weather_api_key_not_set">API-nøkkel ikke satt</string>
   <string name="pref_weather_api_key_title">API-nøkkel</string>
   <string name="about_changelog">Endringslogg</string>
   <string name="pref_all_apps_custom_label_color">Bruk egendefinert etikettfarge</string>
-  <string name="pref_all_apps_label_color">Farge på ikon-etiketter i skuff</string>
-  <string name="pref_num_rows_drawer">Antall rader i skuff</string>
-  <string name="center_wallpaper_pref_title">Sentrer bakgrunn når det bare er én side</string>
+  <string name="pref_all_apps_label_color">Farge på ikonetiketter i Alle apper</string>
+  <string name="pref_num_rows_drawer">Antall rader i Alle apper</string>
+  <string name="center_wallpaper_pref_title">Angi bakgrunn</string>
+  <string name="center_wallpaper_pref_summary">Virker bare hvis startsiden bruker én side</string>
   <string name="vertical_drawer_layout_pref_title">Vis som vertikal liste</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
-  <string name="about_translators">Oversettere</string>
   <string name="lock_desktop">Lås skrivebordet</string>
   <string name="lawnfeed_not_found">Lawnfeed ikke installert</string>
   <string name="google_app_not_found">Google app ikke installert</string>
-  <string name="set_default_launcher">Angi standard bærerakett</string>
-  <string name="hide_app">Skjule app</string>
-  <string name="hide_app_sum">Skjul app fra app-skuff</string>
+  <string name="lawnfeed_incompatible">Ikke kompatibel versjon av Lawnfeed installert</string>
+  <string name="set_default_launcher">Angi standard startskjerm</string>
+  <string name="hide_app">Skjulte apper</string>
+  <string name="hide_app_sum">Skjul apper i Alle apper</string>
+  <string name="hide_app_selected">&#160;valgt</string>
   <string name="hidden_app">Skjult app</string>
+  <string name="hide_app_apply">Bruk</string>
+  <string name="unauthorized_device">Enheten har piratkopieringsverktøy installert. Avinstaller dem for å fortsette.</string>
   <string name="hide_app_reset">Tilbakestill</string>
+  <string name="two_row_dock">To raders dokk</string>
+  <string name="reset_alternative_icons_title">Nullstill alternative appikoner?</string>
+  <string name="reset_alternative_icons">Du har %1$d apper med alternative ikoner, vil du nullstille dem?</string>
+  <string name="error_no_browser">Ingen aktivitet for håndtering av URL-er funnet</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed ikke aktivert</string>
+  <string name="lawnfeed_not_enabled">Det ser ut som om du prøver å åpne Google Now siden, men du har ikke aktivert valget i innstillingene under Oppførsel.\n\nAktivere nå?</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed oppdatering kreves</string>
+  <string name="lawnfeed_outdated">En nyere versjon av Lawnfeed kreves for å brukes med denne versjonen av Lawnchair.\n\nFør installasjon av den nyere versjonen vil du trolig måtte avinstallere gjeldene versjon.\n\nLaste ned nå?</string>
+  <string name="title_storage_permission_required">Lagringstillatelse kreves</string>
+  <string name="content_storage_permission_required">På Android 8.1 og nyere er lagringstillatelsen påkrevd for at apper skal kunne ha tilgang til bakgrunner. Uten denne tillatelsen kan Lawnchair krasje eller vise uventet oppførsel.</string>
+  <string name="disable_popup">Ikke vis igjen</string>
+  <string name="backups">Sikkerhetskopier</string>
+  <string name="new_backup">Opprett</string>
+  <string name="restore_backup">Gjenopprett</string>
+  <string name="backup_name">Navn</string>
+  <string name="backup_location">Plassering</string>
+  <string name="choose_backup_path">Bla gjennom</string>
+  <string name="backup_homescreen">Startskjerm</string>
+  <string name="backup_contents">Sikkerhetskopiinnhold</string>
+  <string name="backup_settings">Innstillinger</string>
+  <string name="backup_wallpaper">Bakgrunn</string>
+  <string name="backup_error_blank_name">Navnetiketten kan ikke være tom</string>
+  <string name="backup_error_blank_location">Plassering kan ikke være tom</string>
+  <string name="backup_error_blank_contents">Innholdsetiketten kan ikke være tom</string>
+  <string name="backup_creating">Lager sikkerhetskopi</string>
+  <string name="no_recent_backups">Ingen nylige sikkerhetskopier</string>
+  <string name="backup_loading">Laster...</string>
+  <string name="backup_invalid">Utilgjengelig</string>
+  <string name="backup_remove_from_recents">Fjern fra listen</string>
+  <string name="backup_share">Del</string>
+  <string name="backup_timestamp">Opprettet</string>
+  <string name="backup_restoring">Gjenoppretter sikkerhetskopi</string>
+  <string name="backup_restarting">Starter på nytt</string>
+  <string name="restore_contents">Gjenoppretter innhold</string>
+  <string name="restore_success">Gjenoppretting vellykket</string>
+  <string name="backup_failed">Sikkerhetskopiering mislyktes</string>
+  <string name="restore_failed">Gjenoppretting mislyktes</string>
+  <string name="restore_read_meta_fail">Ugyldig sikkerhetskopifil</string>
+  <string name="backup_share_title">Del sikkerhetskopi</string>
+  <string name="backup_share_text">Lawnchair sikkerhetskopifil</string>
+  <string name="read_external_storage_required">Lagringstillatelse kreves for å opprette sikkerhetskopi</string>
+  <string name="local_backups">Lokale sikkerhetskopier</string>
+  <string name="backup_location_device_storage">Enhetslagring</string>
+  <string name="backup_location_documents_storage">Dokumentlagring</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel søkefelt</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Diverse</string>
+  <string name="blur_oom">Lawnchair gikk tom for minne ved å gjøre bakgrunnen uskarp! Å redusere oppløsningen på bakgrunnsbildet kan hjelpe.</string>
+  <string name="legacy_backup">Foreldet sikkerhetskopifil</string>
+  <!-- About screen -->
 </resources>

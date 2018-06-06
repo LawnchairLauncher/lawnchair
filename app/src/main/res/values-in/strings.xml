@@ -248,7 +248,6 @@
   <string name="notifications_header">Notifikasi</string>
   <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair adalah sebuah peluncur aplikasi yang dibuat oleh Till Kottmann (aka deletescape), dimodifikasi untuk Rom MoKee. Dibuat berdasarkan Launcher3 dari AOSP.</string>
   <string name="about_title">Tentang</string>
   <string name="about_pref_summary">Mengenal tim Lawnchair</string>
   <string name="changelog_title">Catatan perubahan pada tubuh #%d</string>
@@ -388,10 +387,6 @@
   <string name="animated_clock_icon_title">Ikon jam animasi</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Animasikan aplikasi jam alternatif</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Hidupkan ini bila anda tidak menggunakan Google Clock sebagai aplikasi jam bawaan anda</string>
-  <string name="about_summary_title">Ringkasan</string>
-  <string name="about_version">Versi</string>
-  <string name="about_icon_designer">Perancang Ikon App</string>
-  <string name="about_contributors_title">Kontributor</string>
   <string name="location_permission_warn">Membutuhkan izin lokasi untuk beralih ke penyedia lain!</string>
   <string name="num_cols_drawer_pref_title">Jumlah kolom di laci aplikasi</string>
   <string name="shortcut_backport_warning">Ini bisa memperlambat, gunakan dengan resiko anda sendiri</string>
@@ -408,7 +403,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">d MMMM, EEEE</string>
-  <string name="about_translators">Penerjemah</string>
   <string name="lock_desktop">Kunci desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed tidak terpasang</string>
   <string name="google_app_not_found">Aplikasi Google tidak terpasang</string>
@@ -469,6 +463,11 @@
   <string name="backup_location_documents_storage">Dokumen penyimpanan</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Lain-lain</string>
+  <string name="blur_oom">Lawnchair kehabisan memori saat berusaha memburamkan wallpaper anda! Menurunkan resolusi wallpaper mungkin bisa memperbaiki ini.</string>
+  <string name="legacy_backup">Berkas cadangan lawas</string>
+  <!-- About screen -->
 </resources>

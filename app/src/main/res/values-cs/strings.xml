@@ -246,7 +246,6 @@
   <string name="notifications_header">Oznámení</string>
   <string name="widgets_bottom_sheet_title">%1$s widgety</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair je aplikace spouštěče, kterou vytvořil Till Kottmann (aka deletescape). Je založena na spouštěči Launcher3 z AOSP.</string>
   <string name="about_title">O aplikaci</string>
   <string name="about_pref_summary">Seznamte se s týmem Lawnchair</string>
   <string name="changelog_title">Seznam změn pro sestavení #%d</string>
@@ -386,10 +385,6 @@
   <string name="animated_clock_icon_title">Ikona animovaných hodin</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Animace aplikace alternativních hodin</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Povolte, pokud nepoužíváte hodiny Google jako výchozí aplikaci pro hodiny</string>
-  <string name="about_summary_title">Shrnutí</string>
-  <string name="about_version">Verze</string>
-  <string name="about_icon_designer">Návrhář ikon aplikací</string>
-  <string name="about_contributors_title">Přispěvatelé</string>
   <string name="location_permission_warn">Při přepnutí na jiného poskytovatele je třeba udělit oprávnění k zjišťování polohy!</string>
   <string name="num_cols_drawer_pref_title">Počet sloupců v zobrazení seznamu aplikací</string>
   <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
@@ -406,7 +401,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">Překladatelé</string>
   <string name="lock_desktop">Uzamčení pracovní plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed není nainstalován</string>
   <string name="google_app_not_found">Aplikace Google není nainstalována</string>
@@ -467,6 +461,11 @@
   <string name="backup_location_documents_storage">Ukládání dokumentů</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Různé</string>
+  <string name="blur_oom">Lawnchair vyčerpal paměť při pokusu rozmazat tapetu! Snížení rozlišení tabety by tento problém mohlo vyřešit.</string>
+  <string name="legacy_backup">Starší soubor zálohy</string>
+  <!-- About screen -->
 </resources>

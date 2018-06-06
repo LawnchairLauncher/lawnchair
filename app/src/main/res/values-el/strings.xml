@@ -245,7 +245,6 @@
   <string name="notifications_header">Ειδοποιήσεις</string>
   <string name="widgets_bottom_sheet_title">Γραφικό στοιχείο %1$s.</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
   <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του Lawnchair</string>
   <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
@@ -385,10 +384,6 @@
   <string name="animated_clock_icon_title">Ζωντανό εικονίδιο ρολογιού</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Κινούμενα γραφικά για εναλλακτικές εφαρμογές ρολογιού</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Ενεργοποιήστε αυτό εάν δεν χρησιμοποιείται το ρολόι Google ως προεπιλεγμένη εφαρμογή ρολογιού</string>
-  <string name="about_summary_title">Σύνοψη</string>
-  <string name="about_version">Αριθμός έκδοσης</string>
-  <string name="about_icon_designer">Σχεδιαστής Εικονιδίου Lawnchair</string>
-  <string name="about_contributors_title">Συντελεστές</string>
   <string name="location_permission_warn">Απαιτείται η παραχώρηση άδειας ανάγνωσης τοποθεσίας για αλλαγή παρόχου καιρού!</string>
   <string name="num_cols_drawer_pref_title">Αριθμός στηλών στο συρτάρι εφαρμογών</string>
   <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
@@ -405,7 +400,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Μεταφραστές</string>
   <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
   <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
@@ -466,6 +460,11 @@
   <string name="backup_location_documents_storage">Αποθηκευτικός χώρος εγγράφων</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Μπάρα αναζήτησης Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Διάφορα</string>
+  <string name="blur_oom">Ο Lawnchair εξάντλησε τη μνήμη του τηλεφώνου προσπαθώντας να θολώσει την ταπετσαρία σας! Χαμηλώνοντας την ανάλυση της ταπετσαρίας ενδεχομένως να διορθώσει αυτό το πρόβλημα.</string>
+  <string name="legacy_backup">Αρχείο αντιγράφων ασφαλείας παλαιού τύπου</string>
+  <!-- About screen -->
 </resources>

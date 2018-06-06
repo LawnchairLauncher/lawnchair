@@ -244,7 +244,6 @@
   <string name="notifications_header">Notificacions</string>
   <string name="widgets_bottom_sheet_title">%1$s ginys</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair és una aplicació llançador creada per Kottmann (àlies deletescape). Es basa en Launcher3 d\'AOSP.</string>
   <string name="about_title">Quant a</string>
   <string name="about_pref_summary">Coneixeu l\'equip de Lawnchair</string>
   <string name="changelog_title">Registre de canvis per a la compilació #%d</string>
@@ -384,10 +383,6 @@
   <string name="animated_clock_icon_title">Icona del rellotge animada</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Anima les aplicacions de rellotge alternatives</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Activeu-ho si no feu servir Rellotge de Google com l\'aplicació de rellotge predeterminada</string>
-  <string name="about_summary_title">Resum</string>
-  <string name="about_version">Versió</string>
-  <string name="about_icon_designer">Dissenyador/a de la icona de l\'aplicació</string>
-  <string name="about_contributors_title">Col·laboradors</string>
   <string name="location_permission_warn">El permís d\'ubicació és obligatori per canviar a un altre proveïdor!</string>
   <string name="num_cols_drawer_pref_title">Número de columnes en el calaix</string>
   <string name="shortcut_backport_warning">Això podria ser lent, utilitzeu-ho sota el vostre propi risc</string>
@@ -404,7 +399,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Traductors</string>
   <string name="lock_desktop">Bloqueja l\'escriptori</string>
   <string name="lawnfeed_not_found">No s\'han instal·lat els paquets</string>
   <string name="google_app_not_found">Aplicació de Google no instal·lada</string>
@@ -465,6 +459,11 @@
   <string name="backup_location_documents_storage">Emmagatzematge de documents</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra de cerca Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Miscel·lània</string>
+  <string name="blur_oom">El Lawnchair s\'ha quedat sense memòria intentant el desenfocament del fons de pantalla! La baixada de la resolució del fons de pantalla podria solucionar-ho.</string>
+  <string name="legacy_backup">Fitxer de còpia de seguretat heretat</string>
+  <!-- About screen -->
 </resources>
