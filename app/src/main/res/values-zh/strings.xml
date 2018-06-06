@@ -243,7 +243,6 @@
   <string name="notifications_header">通知</string>
   <string name="widgets_bottom_sheet_title">%1$s 微件</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair 是 Till Kottmann（又名deletescape）基于 AOSP 的 Launcher3 所开发的启动器应用程序。</string>
   <string name="about_title">关于</string>
   <string name="about_pref_summary">了解 Lawnchair 团队</string>
   <string name="changelog_title">#%d 版的更新日志</string>
@@ -383,10 +382,6 @@
   <string name="animated_clock_icon_title">动态时钟图标</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">为其他时钟应用显示动态图标</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">当谷歌时钟并非你的默认时钟应用时启用此选项</string>
-  <string name="about_summary_title">概述</string>
-  <string name="about_version">版本</string>
-  <string name="about_icon_designer">图标设计者</string>
-  <string name="about_contributors_title">贡献者</string>
   <string name="location_permission_warn">切换到另一个提供商需要获得位置权限 ！</string>
   <string name="num_cols_drawer_pref_title">抽屉中的网格列数</string>
   <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果</string>
@@ -403,7 +398,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
-  <string name="about_translators">翻译人员</string>
   <string name="lock_desktop">锁定桌面</string>
   <string name="lawnfeed_not_found">未安装 Lawnfeed</string>
   <string name="google_app_not_found">未安装 Google 应用</string>
@@ -464,6 +458,11 @@
   <string name="backup_location_documents_storage">文档存储</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">显示 Pixel 顶栏</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">杂项</string>
+  <string name="blur_oom">Lawnchair 在尝试模糊壁纸时耗尽内存啦! 降低壁纸分辨率可能修复该问题。</string>
+  <string name="legacy_backup">旧备份文件</string>
+  <!-- About screen -->
 </resources>
