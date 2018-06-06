@@ -369,8 +369,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
                     allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
 
-            View overview = mLauncher.getOverviewPanelContainer();
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(overview, View.ALPHA, alphas);
+            RecentsView overview = mLauncher.getOverviewPanel();
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,
+                    RecentsView.CONTENT_ALPHA, alphas);
             alpha.setDuration(217);
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
@@ -380,14 +381,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             transY.setDuration(350);
             launcherAnimator.play(transY);
 
-            overview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-            endListener = () -> {
-                overview.setLayerType(View.LAYER_TYPE_NONE, null);
-                overview.setAlpha(1f);
-                overview.setTranslationY(0f);
-                mLauncher.getStateManager().reapplyState();
-            };
+            endListener = mLauncher.getStateManager()::reapplyState;
         } else {
             mDragLayerAlpha.setValue(alphas[0]);
             ObjectAnimator alpha =

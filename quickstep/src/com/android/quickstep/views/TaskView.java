@@ -121,6 +121,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
         });
         setOutlineProvider(new TaskOutlineProvider(getResources()));
+        setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
     }
 
     @Override
@@ -346,8 +347,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 return true;
             }
         }
-
-        if (getRecentsView().performTaskAccessibilityActionExtra(action)) return true;
 
         return super.performAccessibilityAction(action, arguments);
     }

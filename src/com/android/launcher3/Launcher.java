@@ -214,8 +214,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // UI and state for the overview panel
     private View mOverviewPanel;
 
-    private View mOverviewPanelContainer;
-
     @Thunk boolean mWorkspaceLoading = true;
 
     private OnResumeCallback mOnResumeCallback;
@@ -913,7 +911,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
-        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
         mHotseat = findViewById(R.id.hotseat);
         mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
@@ -1172,10 +1169,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
-    }
-
-    public <T extends View> T getOverviewPanelContainer() {
-        return (T) mOverviewPanelContainer;
     }
 
     public DropTargetBar getDropTargetBar() {

@@ -122,6 +122,7 @@
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:importantForAccessibility">no</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->

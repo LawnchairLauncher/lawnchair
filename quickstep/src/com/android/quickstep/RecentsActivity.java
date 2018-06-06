@@ -52,7 +52,6 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -70,7 +69,6 @@ public class RecentsActivity extends BaseDraggingActivity {
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private RecentsRootView mRecentsRootView;
     private FallbackRecentsView mFallbackRecentsView;
-    private RecentsViewContainer mOverviewPanelContainer;
 
     private Configuration mOldConfig;
 
@@ -84,7 +82,6 @@ public class RecentsActivity extends BaseDraggingActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
-        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
 
         mRecentsRootView.setup();
 
@@ -164,10 +161,6 @@ public class RecentsActivity extends BaseDraggingActivity {
     @Override
     public <T extends View> T getOverviewPanel() {
         return (T) mFallbackRecentsView;
-    }
-
-    public RecentsViewContainer getOverviewPanelContainer() {
-        return mOverviewPanelContainer;
     }
 
     @Override

@@ -39,7 +39,7 @@
             launcher:pageIndicator="@+id/page_indicator" />
 
         <include
-            android:id="@+id/overview_panel_container"
+            android:id="@+id/overview_panel"
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
