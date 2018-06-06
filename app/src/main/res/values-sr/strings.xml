@@ -245,7 +245,6 @@
   <string name="notifications_header">Обавештења</string>
   <string name="widgets_bottom_sheet_title">%1$s виџета</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair је покретач ког је креирао Till Kottmann (deletescape). Заснован је на апликацији Launcher3 из AOSP-а.</string>
   <string name="about_title">О апликацији</string>
   <string name="about_pref_summary">Упознајте Lawnchair тим</string>
   <string name="changelog_title">Промене за изградњу #%d</string>
@@ -385,10 +384,6 @@
   <string name="animated_clock_icon_title">Анимирана икона сата</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Анимирај алтернативне апликације сата</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Омогућите ово ако не користите Google Clock апликацију</string>
-  <string name="about_summary_title">Резиме</string>
-  <string name="about_version">Верзија</string>
-  <string name="about_icon_designer">Дизајнер икона</string>
-  <string name="about_contributors_title">Сарадници</string>
   <string name="location_permission_warn">Дозвола за локацију је неопходна за пребацивање на другог провајдера!</string>
   <string name="num_cols_drawer_pref_title">Број колона у drawer-у</string>
   <string name="shortcut_backport_warning">Ово би могло бити споро, користити на сопствени ризик</string>
@@ -405,7 +400,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
-  <string name="about_translators">Преводиоци</string>
   <string name="lock_desktop">Закључај радну површину</string>
   <string name="lawnfeed_not_found">Lawnfeed није инсталиран</string>
   <string name="google_app_not_found">Апликација Google није инсталирана</string>
@@ -466,6 +460,11 @@
   <string name="backup_location_documents_storage">За складиштење докумената</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel трака за претрагу</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Разно</string>
+  <string name="blur_oom">Lawnchair је остао без меморије покушавајући да замути позадину! Смањивање резолуције позадине могло би да реши ово.</string>
+  <string name="legacy_backup">Наслеђене датотеке резервне копије</string>
+  <!-- About screen -->
 </resources>
