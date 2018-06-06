@@ -143,6 +143,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         TaskView taskView = (TaskView) recentsView.getChildAt(recentsView.getNextPage());
         if (recentsView.shouldSwipeDownLaunchApp() && mFromState == OVERVIEW && mToState == NORMAL
                 && taskView != null) {
+            // Reset the state manager, when changing the interaction mode
+            mLauncher.getStateManager().goToState(OVERVIEW, false /* animate */);
             mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
             mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
 
