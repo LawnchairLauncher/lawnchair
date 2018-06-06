@@ -246,7 +246,6 @@ Waitin\' t\' install</string>
   <string name="notifications_header">Ravens</string>
   <string name="widgets_bottom_sheet_title">%1$s flags</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is madet by th\' captain deletescape. Stolen from AOSPirates.</string>
   <string name="about_title">\'Bout</string>
   <string name="about_pref_summary">Explore \'bout th\' crew</string>
   <string name="changelog_title">Log o\' changes for build #%d</string>
@@ -345,6 +344,7 @@ Waitin\' t\' install</string>
   <string name="pull_down_search">the seven seas are ours mate</string>
   <string name="pull_down_apps_search">Find yee swords</string>
   <string name="enable_screen_rotation">Yo spin me right round baby right round</string>
+  <string name="use_system_fonts_title">Use ye own pen to write</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restor\'</string>
   <string name="backup_export_title">Burry this chest</string>
@@ -386,10 +386,6 @@ Waitin\' t\' install</string>
   <string name="animated_clock_icon_title">Movin flag o\' time</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Move other time apps</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if yo dar\' to not use Google Clock as clock o\' default</string>
-  <string name="about_summary_title">Summary</string>
-  <string name="about_version">Vershun</string>
-  <string name="about_icon_designer">Designer o\' th\' flag</string>
-  <string name="about_contributors_title">Captain\'s contributors</string>
   <string name="location_permission_warn">Permission o\' location is need\'d so we can spy you!</string>
   <string name="num_cols_drawer_pref_title">Treasure room columns</string>
   <string name="shortcut_backport_warning">Enable this, pirates take risks</string>
@@ -401,11 +397,11 @@ Waitin\' t\' install</string>
   <string name="pref_all_apps_label_color">Color of labels o\' treasures in treasure room</string>
   <string name="pref_num_rows_drawer">Treasure room rows</string>
   <string name="center_wallpaper_pref_title">Keep wallpaper straight and true</string>
+  <string name="center_wallpaper_pref_summary">Only work if boat has 1 story</string>
   <string name="vertical_drawer_layout_pref_title">Display as vertical list</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">Th\' fellow mateys</string>
   <string name="lock_desktop">Drop the anchor</string>
   <string name="lawnfeed_not_found">Lawnfeed ain\'t here me hearty</string>
   <string name="google_app_not_found">Captain Google ain\'t not here matey</string>
@@ -431,6 +427,7 @@ Waitin\' t\' install</string>
   <string name="content_storage_permission_required">On Android 8.1 and up th\' storage permis\'n be a must fer\' apps to touch ye, paint. Without said permis\'n ye may crash into isles.</string>
   <string name="disable_popup">Go away you scurvy dog</string>
   <string name="backups">Buried chests</string>
+  <string name="restore_backup">Restor\'</string>
   <string name="backup_name">Title on yer forhead</string>
   <string name="backup_location">Ya place on th\' map</string>
   <string name="choose_backup_path">Navigate</string>
@@ -438,6 +435,7 @@ Waitin\' t\' install</string>
   <string name="backup_contents">Backup yee great barrels</string>
   <string name="backup_settings">Talk T\' Th\' Crew</string>
   <string name="backup_wallpaper">Treasure map</string>
+  <string name="backup_error_blank_name">Ye must have a name</string>
   <string name="backup_error_blank_location">Your map just must not be blank</string>
   <string name="backup_creating">Burying chest</string>
   <string name="no_recent_backups">Thar ain\'t no recent chests</string>
@@ -451,6 +449,9 @@ Waitin\' t\' install</string>
   <string name="backup_failed">Sh*t, barrel broke</string>
   <string name="backup_location_device_storage">Storage room</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Otha</string>
+  <!-- About screen -->
 </resources>
