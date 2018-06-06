@@ -246,7 +246,6 @@
   <string name="notifications_header">Сповіщення</string>
   <string name="widgets_bottom_sheet_title">%1$s віджетів</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair - це лаунчер створений Till Kotmann (aka deletescape). Він оснований на Launcher3 з AOSP</string>
   <string name="about_title">Про додаток</string>
   <string name="about_pref_summary">Дізнатися про команду Lawnchair</string>
   <string name="changelog_title">Зміни в додатку #%d</string>
@@ -274,17 +273,20 @@
   <string name="num_hotseat_icons_pref_title">Кількість іконок в нижній панелі</string>
   <string name="icon_scale_pref_title">Масштаб значков</string>
   <string name="hotseat_height_scale">Масштаб висоти</string>
+  <string name="hotseat_custom_opacity">Прозрачность док-станции</string>
   <string name="icon_text_scale_pref_title">Масштаб найменування значков</string>
   <string name="icon_text_padding_scale_pref_title">Масштаб ореолу іконок</string>
   <string name="full_width_width_widgets_pref_title">Широкоформатні віджети</string>
   <string name="full_width_widgets_pref_summary">Дозволити віджетам розтягуватися по всій ширині без заповнення</string>
   <string name="notification_access_pref_title">Бейджі сповіщень і попередній їх перегляд</string>
   <string name="notification_access_pref_summary">Дозволити Lawnchair доступ до ваших сповіщень, щоб увімкнути цю функцію</string>
+  <string name="general_pref_title">Робочий стіл</string>
   <string name="dock_pref_title">Док-панель</string>
   <string name="app_drawer_pref_title">Список програм</string>
   <string name="pixel_ui_pref_title">Теми</string>
   <string name="behavior_pref_title">Поведінка</string>
   <string name="debug_pref_title">Відладка</string>
+  <string name="general_pref_summary">Налаштування робочого столу</string>
   <string name="dock_pref_summary">Налаштувати док-бар</string>
   <string name="app_drawer_pref_summary">Налаштувати меню програм</string>
   <string name="pixel_ui_pref_summary">Налаштування елементів теми</string>
@@ -294,6 +296,8 @@
   <string name="debug_pref_summary">Перезавантаження або відновлення бази даних іконок</string>
   <string name="show_pixel_bar_pref_title">Показати верхню панель як у пікселів</string>
   <string name="use_wide_searchbar_pref_title">Використовувати широку пошукову панель</string>
+  <string name="show_search_pill_title">Показать таблетку Google Search</string>
+  <string name="show_date_or_weather_title">Показать дату / погоду с правой стороны</string>
   <string name="show_mic_pref_title">Відображати кнопку Google Асистента</string>
   <string name="use_round_searhbar">Використовуйте заокруглений пошуковий рядок</string>
   <string name="pixel_style_icons_pref_title">Використовивати значки Pixel</string>
@@ -337,6 +341,7 @@
   <string name="pull_down_search">Відкрити пошук</string>
   <string name="pull_down_apps_search">Пошук додатків</string>
   <string name="enable_screen_rotation">Увімкнути обертання екрана</string>
+  <string name="use_system_fonts_title">Использовать системные шрифты для меток</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Відновити</string>
   <string name="backup_export_title">Резервна копія</string>
@@ -373,10 +378,6 @@
   <string name="animated_clock_icon_title">Анімований значок годинника</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Анімувати альтернативні додатки годинника</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Увімкнути цю функцію, якщо ви не використовуєте Google годинник, як ваш годинник за промовчанням</string>
-  <string name="about_summary_title">Зміст</string>
-  <string name="about_version">Версія додатку</string>
-  <string name="about_icon_designer">Дизайн іконок додатка</string>
-  <string name="about_contributors_title">Учасники</string>
   <string name="location_permission_warn">Потрібно дозвіл на розатшування, щоби переключитися на іншого постачальника!</string>
   <string name="num_cols_drawer_pref_title">Кількість колонок у меню додатків</string>
   <string name="shortcut_backport_warning">Це може бути повільно, використовуйте на свій страх і ризик</string>
@@ -392,7 +393,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">Перекладачі</string>
   <string name="lock_desktop">Блокування робочого стола</string>
   <string name="lawnfeed_not_found">Lawnfeed не встановлено</string>
   <string name="google_app_not_found">Додаток Google не встановлено</string>
@@ -403,5 +403,8 @@
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated_title">Необхідне оновлення Lawnfeed</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <!-- About screen -->
 </resources>
