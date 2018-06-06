@@ -244,7 +244,6 @@
   <string name="notifications_header">Értesítések</string>
   <string name="widgets_bottom_sheet_title">%1$s modul</string>
   <!-- About Lawnchair -->
-  <string name="about_text">A Lawnchair egy kezdőképernyő-alkalmazás, melyet Till Kottmann (aka deletescape) készített. Az AOSP-ben található Launcher3 adja az alapját.</string>
   <string name="about_title">Névjegy</string>
   <string name="about_pref_summary">Ismerje meg a Lawnchair csapatát</string>
   <string name="changelog_title">Változások a #%d verzióban</string>
@@ -296,6 +295,8 @@
   <string name="debug_pref_summary">Újraindítás vagy ikon adatbázis újraépítése</string>
   <string name="show_pixel_bar_pref_title">Pixel felső sáv</string>
   <string name="use_wide_searchbar_pref_title">Széles keresősáv</string>
+  <string name="show_search_pill_title">Google keresés megjelenítése</string>
+  <string name="show_date_or_weather_title">Dátum és időjárás megjelenítése a jobb oldalon</string>
   <string name="show_mic_pref_title">Google Segéd gomb</string>
   <string name="use_round_searhbar">Kerek alkalmazáskereső sáv</string>
   <string name="pixel_style_icons_pref_title">Pixel ikonok használata</string>
@@ -339,6 +340,7 @@
   <string name="pull_down_search">Keresés megnyitása</string>
   <string name="pull_down_apps_search">Alkalmazások keresése</string>
   <string name="enable_screen_rotation">Képernyőforgatás engedélyezése</string>
+  <string name="use_system_fonts_title">A rendszer-betűtípus használata a feliratokhoz</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Visszaállítás</string>
   <string name="backup_export_title">Biztonsági mentés</string>
@@ -380,10 +382,6 @@
   <string name="animated_clock_icon_title">Animált óra ikon</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Egyéb óra alkalmazások animálása</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Engedélyezze, ha nem a Google Órát használja alapértelmezett óra alkalmazásként</string>
-  <string name="about_summary_title">Összegzés</string>
-  <string name="about_version">Verzió</string>
-  <string name="about_icon_designer">Alkalmazásikon tervező</string>
-  <string name="about_contributors_title">Közreműködők</string>
   <string name="location_permission_warn">Tartózkodási hely hozzáférés szükséges másik kiszolgálóra váltáshoz!</string>
   <string name="num_cols_drawer_pref_title">Oszlopok száma az alkalmazásfiókban</string>
   <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
@@ -395,11 +393,11 @@
   <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
   <string name="pref_num_rows_drawer">Sorok száma az alkalmazásfiókban</string>
   <string name="center_wallpaper_pref_title">Háttérkép középre igazítása, ha csak egy lap van</string>
+  <string name="center_wallpaper_pref_summary">Csak akkor működik ha a kezdőképernyő egyoldalas</string>
   <string name="vertical_drawer_layout_pref_title">Megjelenítés függőleges listaként</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">MMMM d., EEEE</string>
-  <string name="about_translators">Fordítók</string>
   <string name="lock_desktop">Asztal zárolása</string>
   <string name="lawnfeed_not_found">Lawnfeed nincs telepítve</string>
   <string name="google_app_not_found">Google alkalmazás nincs telepítve</string>
@@ -418,10 +416,53 @@
   <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
   <string name="error_no_browser">Nem található URL-eket kezelni képes alkalmazás</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">A Lawnfeed nincs engedélyezve</string>
   <string name="lawnfeed_not_enabled">Úgy tűnik, a Google Now oldalat próbálja megnyitni, de még nem engedélyezte az opciót a viselkedési beállításokban.\n\nEngedélyezi most?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed-frissítés szükséges</string>
   <string name="lawnfeed_outdated">A Lawnfeed egy újabb verziója szükséges a Lawnchair ezen verziójával való működéshez.\n\nA frissítés telepítése előtt valószínűleg el kell távolítania a Lawnfeed jelenlegi verzióját.\n\nLetölti most?</string>
+  <string name="title_storage_permission_required">Tárhelyengedély szükséges</string>
+  <string name="content_storage_permission_required">Android 8.1-en (és felette) tárhelyhozzáférés szükséges az alkalmazásoknak, hogy elérhessék a háttérképeket. Az említett engedély nélkül a Lawnchair indító összeomolhat vagy váratlan hibákat produkálhat.</string>
   <string name="disable_popup">Ne jelenjen meg többször</string>
+  <string name="backups">Mentések</string>
+  <string name="new_backup">Új létrehozása</string>
+  <string name="restore_backup">Visszaállítás</string>
+  <string name="backup_name">A mentés neve</string>
+  <string name="backup_location">A mentés helye</string>
+  <string name="choose_backup_path">Tallózás</string>
+  <string name="backup_homescreen">Kezdőképernyő</string>
+  <string name="backup_contents">A Mentés tartalma</string>
+  <string name="backup_settings">Beállítások</string>
+  <string name="backup_wallpaper">Háttérképek</string>
+  <string name="backup_error_blank_name">A névmező nem lehet üres</string>
+  <string name="backup_error_blank_location">A helyinformáció nem lehet üres</string>
+  <string name="backup_error_blank_contents">A tartalommező nem lehet üres</string>
+  <string name="backup_creating">Biztonsági másolat létrehozása</string>
+  <string name="no_recent_backups">Nincsenek korábbi mentések</string>
+  <string name="backup_loading">Betöltés...</string>
+  <string name="backup_invalid">Nem érhető el</string>
+  <string name="backup_remove_from_recents">Eltávolítás a listáról</string>
+  <string name="backup_share">Megosztás</string>
+  <string name="backup_timestamp">Készítés dátuma</string>
+  <string name="backup_restoring">Mentés visszaállítása</string>
+  <string name="backup_restarting">Újraindítás</string>
+  <string name="restore_contents">Tartalom visszaállítása</string>
+  <string name="restore_success">Sikeres visszaállítás</string>
+  <string name="backup_failed">A mentés meghiúsult</string>
+  <string name="restore_failed">A visszaállítás meghiúsult</string>
+  <string name="restore_read_meta_fail">Érvénytelen mentési fájl</string>
+  <string name="backup_share_title">Mentés megosztása</string>
+  <string name="backup_share_text">Lawnchair mentési fájl</string>
+  <string name="read_external_storage_required">Mentés készítéséhez tárhelyhozzáférési-engedély szükséges</string>
+  <string name="local_backups">Helyi mentések</string>
+  <string name="backup_location_device_storage">A készülék tárhelye</string>
+  <string name="backup_location_documents_storage">A dokumentumok tárhelye</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel keresősáv</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Egyebek</string>
+  <string name="blur_oom">A Lawnchair memóriája elfogyott a háttérkép életlenítése közben! A háttérkép felbontásának csökkentése megoldhatja ezt a problémát.</string>
+  <string name="legacy_backup">Örökölt mentési fájl</string>
+  <!-- About screen -->
 </resources>
