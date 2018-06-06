@@ -243,7 +243,6 @@
   <string name="notifications_header">通知</string>
   <string name="widgets_bottom_sheet_title">%1$s 小工具</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
   <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
   <string name="changelog_title">更新日誌 #%d</string>
@@ -383,10 +382,6 @@
   <string name="animated_clock_icon_title">動態時鐘圖示</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">為其他時鐘應用顯示動態圖標</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">如果您不使用 Google 時鐘作為默認時鐘，請啟用此功能</string>
-  <string name="about_summary_title">概要</string>
-  <string name="about_version">版本</string>
-  <string name="about_icon_designer">應用程式圖示的設計者</string>
-  <string name="about_contributors_title">貢獻者</string>
   <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供商</string>
   <string name="num_cols_drawer_pref_title">應用程式抽屜的欄數</string>
   <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
@@ -403,7 +398,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
-  <string name="about_translators">翻譯者</string>
   <string name="lock_desktop">鎖定桌面</string>
   <string name="lawnfeed_not_found">未安裝 Lawnfeed</string>
   <string name="google_app_not_found">未安裝 Google 應用</string>
@@ -465,6 +459,11 @@
   <string name="backup_location_documents_storage">文件儲存</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel 搜索欄</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">其他設定</string>
+  <string name="blur_oom">在記憶體用盡時，Lawnchair　將會試著模糊你的桌布！降低桌布的解析度有可能解決這個問題</string>
+  <string name="legacy_backup">遺留的備份檔案</string>
+  <!-- About screen -->
 </resources>
