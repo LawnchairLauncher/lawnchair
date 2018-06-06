@@ -246,9 +246,8 @@
   <string name="notifications_header">Powiadomienia</string>
   <string name="widgets_bottom_sheet_title">%1$s widżetów</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair to launcher stworzony przez Till Kottmann\'a (aka deletescape). Oparty o Launcher3 z AOSP (Android Open Source Project).</string>
   <string name="about_title">О aplikacji</string>
-  <string name="about_pref_summary">Poznaj twórców</string>
+  <string name="about_pref_summary">Poznaj zespół Lawnchaira</string>
   <string name="changelog_title">Lista zmian dla wersji #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Zestaw ikon</string>
@@ -298,6 +297,7 @@
   <string name="debug_pref_summary">Zrestartuj lub przebuduj bazę ikon</string>
   <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
+  <string name="show_search_pill_title">Pokaż pigułkę wyszukiwania Google</string>
   <string name="show_date_or_weather_title">Pokaż datę/pogodę po prawej stronie</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
   <string name="use_round_searhbar">Użyj zaokrąglonego paska wyszukiwania aplikacji</string>
@@ -385,15 +385,11 @@
   <string name="animated_clock_icon_title">Animowana ikona zegara</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Animuj alternatywne aplikacje zegara</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Włącz to, jeśli nie używasz Zegara Google jako domyślnej aplikacji zegara</string>
-  <string name="about_summary_title">Podsumowanie</string>
-  <string name="about_version">Wersja</string>
-  <string name="about_icon_designer">Projekt ikony aplikacji</string>
-  <string name="about_contributors_title">Współtwórcy</string>
   <string name="location_permission_warn">Aby zmienić dostawcę pogodowego wymagane jest uprawienie do lokalizacji!</string>
   <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
   <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
   <string name="pref_backport_shortcuts">Skróty</string>
-  <string name="weather_api_key_not_set">Nie ustawiony klucz API</string>
+  <string name="weather_api_key_not_set">Nie ustawiono klucza API</string>
   <string name="pref_weather_api_key_title">Klucz API</string>
   <string name="about_changelog">Dziennik zmian</string>
   <string name="pref_all_apps_custom_label_color">Użyj niestandardowego koloru etykiety</string>
@@ -405,10 +401,9 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Tłumacze</string>
   <string name="lock_desktop">Blokada pulpitu</string>
-  <string name="lawnfeed_not_found">Lawnfeed nie jest zainstalowany</string>
-  <string name="google_app_not_found">Aplikacja Google nie jest zainstalowana</string>
+  <string name="lawnfeed_not_found">Nie zainstalowano Lawnfeed</string>
+  <string name="google_app_not_found">Nie zainstalowano aplikacji Google</string>
   <string name="lawnfeed_incompatible">Zainstalowano niezgodną wersję Lawnfeed</string>
   <string name="set_default_launcher">Ustaw jako domyślną aplikację ekranu głównego</string>
   <string name="enable_spring_pref_title">Włącz efekt sprężyny</string>
@@ -463,7 +458,14 @@
   <string name="read_external_storage_required">Aby utworzyć kopię zapasową wymagany jest dostęp do plików</string>
   <string name="local_backups">Lokalne kopie zapasowe</string>
   <string name="backup_location_device_storage">Pamięć urządzenia</string>
+  <string name="backup_location_documents_storage">Lokalizacja dokumentów</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pasek wyszukiwania Pixela</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Pozostałe</string>
+  <string name="blur_oom">Lawnchairowi skończyła się pamięć podczas próby rozmycia tapety. Zmniejszenie rozdzielczości tapety może rozwiązać ten problem.</string>
+  <string name="legacy_backup">Plik starszej wersji kopii zapasowej</string>
+  <!-- About screen -->
 </resources>
