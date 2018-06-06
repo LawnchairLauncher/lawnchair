@@ -85,6 +85,7 @@ import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.StringJoiner;
+import java.util.function.BiFunction;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
@@ -927,6 +928,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         if (mLongSwipeController != null) {
             mLongSwipeController.destroy();
+            setTargetAlphaProvider((t, a1) -> a1);
 
             // Rebuild animations
             buildAnimationController();
@@ -968,6 +970,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLongSwipeController = mActivityControlHelper.getLongSwipeController(
                 mActivity, mRecentsAnimationWrapper.targetSet);
         onLongSwipeDisplacementUpdated();
+        setTargetAlphaProvider(mLongSwipeController::getTargetAlpha);
     }
 
     private void onLongSwipeGestureFinishUi(float velocity, boolean isFling) {
@@ -981,5 +984,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLongSwipeController.end(velocity, isFling,
                 () -> setStateOnUiThread(STATE_HANDLER_INVALIDATED));
 
+    }
+
+    private void setTargetAlphaProvider(
+            BiFunction<RemoteAnimationTargetCompat, Float, Float> provider) {
+        mClipAnimationHelper.setTaskAlphaCallback(provider);
+        // TODO: For some reason, when calling updateFinalShift multiple times on the same frame,
+        // only the first callback is executed.
+        Utilities.postAsyncCallback(mMainThreadHandler, this::updateFinalShift);
     }
 }
