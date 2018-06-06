@@ -21,6 +21,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -37,7 +39,8 @@ import java.util.ArrayList;
  * An interface to a search box that AllApps can command.
  */
 public class AllAppsSearchBarController
-        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
+        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
+        OnFocusChangeListener {
 
     protected Launcher mLauncher;
     protected Callbacks mCb;
@@ -62,6 +65,7 @@ public class AllAppsSearchBarController
         mInput.addTextChangedListener(this);
         mInput.setOnEditorActionListener(this);
         mInput.setOnBackKeyListener(this);
+        mInput.setOnFocusChangeListener(this);
         mSearchAlgorithm = searchAlgorithm;
     }
 
@@ -121,6 +125,13 @@ public class AllAppsSearchBarController
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if (!hasFocus) {
+            mInput.hideKeyboard();
+        }
     }
 
     /**
