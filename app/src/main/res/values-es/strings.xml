@@ -244,7 +244,6 @@
   <string name="notifications_header">Notificaciones</string>
   <string name="widgets_bottom_sheet_title">Widgets de %1$s</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape). Basado en Launcher3 de AOSP.</string>
   <string name="about_title">Acerca de</string>
   <string name="about_pref_summary">Conoce acerca del equipo de Lawnchair</string>
   <string name="changelog_title">Registro de cambios de la build #%d</string>
@@ -287,9 +286,9 @@
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="general_pref_summary">Personaliza tu escritorio</string>
-  <string name="dock_pref_summary">Personaliza tú dock</string>
+  <string name="dock_pref_summary">Personalizar el dock</string>
   <string name="app_drawer_pref_summary">Personaliza tu cajón de aplicaciones</string>
-  <string name="pixel_ui_pref_summary">Tema de diferentes elementos</string>
+  <string name="pixel_ui_pref_summary">Aplicar temas a elementos varios</string>
   <string name="backup_pref_title">Copia de seguridad</string>
   <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
   <string name="backup_pref_summary">Copia de seguridad de tu base de datos y ajustes</string>
@@ -371,7 +370,7 @@
   <string name="dock_allapps"><![CDATA[Dock y cajón de aplicaciones]]></string>
   <string name="app_shortcuts">Accesos directos</string>
   <string name="blur_effect">Efecto de desenfoque</string>
-  <string name="pref_weather_provider">Proveedor de información climática</string>
+  <string name="pref_weather_provider">Proveedor de información sobre el clima</string>
   <string name="loading">Cargando…</string>
   <string name="icon_shape_override_label">Forma de los iconos</string>
   <string name="icon_shape_system_default">No aplicar cambios</string>
@@ -384,10 +383,6 @@
   <string name="animated_clock_icon_title">Icono de reloj animado</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Animar aplicaciones de reloj alternativas</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Activar esta opción si no se usa el Reloj de Google como aplicación de reloj predeterminada</string>
-  <string name="about_summary_title">Resumen</string>
-  <string name="about_version">Versión</string>
-  <string name="about_icon_designer">Diseñador del icono de la aplicación</string>
-  <string name="about_contributors_title">Colaboradores</string>
   <string name="location_permission_warn">¡Se necesitan permisos de ubicación para cambiar a otro proveedor!</string>
   <string name="num_cols_drawer_pref_title">Número de columnas en el cajón de aplicaciones</string>
   <string name="shortcut_backport_warning">Esto podría causar ralentización, usar bajo su propio riesgo</string>
@@ -398,21 +393,20 @@
   <string name="pref_all_apps_custom_label_color">Usar color de etiqueta personalizado</string>
   <string name="pref_all_apps_label_color">Color de las etiquetas de los iconos en el cajón de aplicaciones</string>
   <string name="pref_num_rows_drawer">Número de filas en el cajón</string>
-  <string name="center_wallpaper_pref_title">Centrar el fondo de pantalla cuando sólo hay una página</string>
-  <string name="center_wallpaper_pref_summary">Sólo funciona si la pantalla de inicio utiliza una página</string>
+  <string name="center_wallpaper_pref_title">Centrar el fondo de pantalla</string>
+  <string name="center_wallpaper_pref_summary">Sólo funciona si la pantalla de inicio utiliza una sola página</string>
   <string name="vertical_drawer_layout_pref_title">Mostrar como una lista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Traductores</string>
   <string name="lock_desktop">Bloquear escritorio</string>
   <string name="lawnfeed_not_found">Lawnfeed no instalado</string>
   <string name="google_app_not_found">Aplicación de Google no instalada</string>
   <string name="lawnfeed_incompatible">Versión incompatible de Lawnfeed instalada</string>
   <string name="set_default_launcher">Establecer launcher por defecto</string>
   <string name="enable_spring_pref_title">Habilitar efecto de rebote</string>
-  <string name="hide_app">Ocultar aplicación</string>
-  <string name="hide_app_sum">Ocultar aplicación del cajón de aplicaciones</string>
+  <string name="hide_app">Aplicaciones ocultas</string>
+  <string name="hide_app_sum">Ocultar aplicaciones del cajón de aplicaciones</string>
   <string name="hide_app_selected">&#160;seleccionado</string>
   <string name="hidden_app">Aplicación oculta</string>
   <string name="hide_app_apply">Aplicar</string>
@@ -424,7 +418,7 @@
   <string name="error_no_browser">No se encontró ninguna actividad para manejar las URLs</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed no está habilitado</string>
-  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en ajustes.\n\n ¿Quieres activarla ahora?</string>
+  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en Ajustes/Comportamiento.\n\n¿Quieres activarla ahora?</string>
   <string name="lawnfeed_outdated_title">Actualización de Lawnfeed requerida</string>
   <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de Lawnchair.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
   <string name="title_storage_permission_required">Permiso de almacenamiento requerido</string>
@@ -459,12 +453,17 @@
   <string name="restore_read_meta_fail">Copia de seguridad no válida</string>
   <string name="backup_share_title">Compartir copia de seguridad</string>
   <string name="backup_share_text">Archivo de copia de seguridad de Lawnchair</string>
-  <string name="read_external_storage_required">Permiso de almacenamiento requerido para crear la copia de seguridad</string>
+  <string name="read_external_storage_required">Se requiere permiso de almacenamiento para crear la copia de seguridad</string>
   <string name="local_backups">Copias de seguridad locales</string>
   <string name="backup_location_device_storage">Almacenamiento del dispositivo</string>
   <string name="backup_location_documents_storage">Almacenamiento de documentos</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra De Búsqueda Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Varios</string>
+  <string name="blur_oom">¡Lawnchair agotó la memoria intentando desenfocar tu fondo de pantalla! Bajar la resolución del fondo de pantalla podría solucionar este problema.</string>
+  <string name="legacy_backup">Copia de seguridad Legacy</string>
+  <!-- About screen -->
 </resources>
