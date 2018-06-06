@@ -244,7 +244,6 @@
   <string name="notifications_header">Notificaties</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (ook bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
   <string name="about_pref_summary">Leer het Lawnchair-team kennen</string>
   <string name="changelog_title">Changelog voor build #%d</string>
@@ -384,10 +383,6 @@
   <string name="animated_clock_icon_title">Geanimeerd klok icoon</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Alternatieve klok apps animeren</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Schakel dit in als de Google Klok niet je standaard klok app is</string>
-  <string name="about_summary_title">Samenvatting</string>
-  <string name="about_version">Versie</string>
-  <string name="about_icon_designer">App Icoon Designer</string>
-  <string name="about_contributors_title">Bijdragers</string>
   <string name="location_permission_warn">Locatie toestemming is vereist om naar een andere provider over te schakelen!</string>
   <string name="num_cols_drawer_pref_title">Aantal kolommen in het app-overzicht</string>
   <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
@@ -404,7 +399,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
-  <string name="about_translators">Vertalers</string>
   <string name="lock_desktop">Bureaublad vergrendelen</string>
   <string name="lawnfeed_not_found">Lawnfeed niet geïnstalleerd</string>
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
@@ -465,6 +459,11 @@
   <string name="backup_location_documents_storage">Documenten opslag</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel Zoekbalk</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Diverse</string>
+  <string name="blur_oom">Lawnchair had geen geheugen meer over tijdens het vervagen van uw achtergrond. U kunt proberen de resolutie van de achtergrond verlagen om dit probleem te verhelpen.</string>
+  <string name="legacy_backup">Oudere back-up bestand</string>
+  <!-- About screen -->
 </resources>
