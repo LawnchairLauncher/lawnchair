@@ -248,7 +248,6 @@
   <string name="notifications_header">الإشعارات</string>
   <string name="widgets_bottom_sheet_title">الأدوات %1$s</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair هو تطبيق واجهة مستخدم تم إنشاؤه بواسطة Till Kottmann الملقب ب deletescape. هذا التطبيق يستند على Launcher3 من AOSP.</string>
   <string name="about_title">حول</string>
   <string name="about_pref_summary">تعرف عن فريق lawnchair</string>
   <string name="changelog_title">تغييرات البنية #%d</string>
@@ -388,10 +387,6 @@
   <string name="animated_clock_icon_title">أيقونة الساعة المتحركة</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">تحريك أيقونة التطبيق البديل للساعة</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">تمكين هذا الخيار إذا كنت تستعمل تطبيقا بديلا لتطبيق الساعة Google</string>
-  <string name="about_summary_title">الملخص</string>
-  <string name="about_version">الإصدار</string>
-  <string name="about_icon_designer">مصمم أيقونة التطبيق</string>
-  <string name="about_contributors_title">المساهمون</string>
   <string name="location_permission_warn">إذن الموقع مطلوب للتبديل إلى مزود آخر!</string>
   <string name="num_cols_drawer_pref_title">عدد أعمدة قائمة التطبيقات</string>
   <string name="shortcut_backport_warning">يمكن أن تكون العملية بطيئة. استخدمها على مسؤوليتك الخاصة</string>
@@ -408,7 +403,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">المترجمون</string>
   <string name="lock_desktop">قفل سطح المكتب</string>
   <string name="lawnfeed_not_found">تطبيق Lawnfeed غير مثبّت</string>
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
@@ -469,6 +463,11 @@
   <string name="backup_location_documents_storage">تخزين الوثائق</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">شريط بحث بكسل</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">متفرقات</string>
+  <string name="blur_oom">Lawnchair يعمل خارج نطاق الذاكرة حاول تضبيب الخلفية! تقليل دقة الخلفية يمكن ان يصلح هذا.</string>
+  <string name="legacy_backup">ملف النسخة الاحتياطية القديمة</string>
+  <!-- About screen -->
 </resources>
