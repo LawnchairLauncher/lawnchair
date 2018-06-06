@@ -244,7 +244,6 @@
   <string name="notifications_header">Notifiche</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
   <string name="about_title">Informazioni</string>
   <string name="about_pref_summary">Conosci il Team di Lawnchair</string>
   <string name="changelog_title">Cambiamenti nella versione #%d</string>
@@ -296,6 +295,8 @@
   <string name="debug_pref_summary">Resetta i cambiamenti delle icone</string>
   <string name="show_pixel_bar_pref_title">Mostra la barra Pixel in alto</string>
   <string name="use_wide_searchbar_pref_title">Usa la barra di ricerca estesa</string>
+  <string name="show_search_pill_title">Mostra pillola Ricerca Google</string>
+  <string name="show_date_or_weather_title">Mostra data/meteo in alto a destra</string>
   <string name="show_mic_pref_title">Mostra il pulsante di Google Assistant</string>
   <string name="use_round_searhbar">Utilizza la barra di ricerca delle app arrotondata</string>
   <string name="pixel_style_icons_pref_title">Usa le icone Pixel</string>
@@ -339,6 +340,7 @@
   <string name="pull_down_search">Apri ricerca</string>
   <string name="pull_down_apps_search">Ricerca app</string>
   <string name="enable_screen_rotation">Abilita rotazione schermo</string>
+  <string name="use_system_fonts_title">Usa il font di sistema per le etichette</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importa</string>
   <string name="backup_export_title">Esporta</string>
@@ -380,10 +382,6 @@
   <string name="animated_clock_icon_title">Icona dell\'orologio animata</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Icona animata per app alternative per l\'orologio</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Abilita quest\'opzione se non usi l\'orologio Google come app predefinita per l\'orologio</string>
-  <string name="about_summary_title">Sommario</string>
-  <string name="about_version">Versione</string>
-  <string name="about_icon_designer">Designer delle icone</string>
-  <string name="about_contributors_title">Collaboratori</string>
   <string name="location_permission_warn">È richiesta la posizione per passare ad un altro provider!</string>
   <string name="num_cols_drawer_pref_title">Numero di colonne</string>
   <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzalo a tuo rischio</string>
@@ -400,7 +398,6 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-  <string name="about_translators">Traduttori</string>
   <string name="lock_desktop">Blocca la schermata home</string>
   <string name="lawnfeed_not_found">Lawnfeed non installato</string>
   <string name="google_app_not_found">App Google non installata</string>
@@ -419,19 +416,53 @@
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
   <string name="error_no_browser">Nessuna attività trovata per gestire gli URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed non abilitato</string>
   <string name="lawnfeed_not_enabled">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai attivato l\'opzione dalle impostazioni.\n\nVuoi attivarla ora?</string>
   <string name="lawnfeed_outdated_title">Richiesto aggiornamento Lawnfeed</string>
   <string name="lawnfeed_outdated">Una nuova versione di Lawnfeed è richiesta in modo da funzionare con questa versione di Lawnchair.\n\nPrima di installare l\'aggiornamento dovrai probabilmente disinstallare l\'attuale versione di Lawnfeed.\n\nVuoi scaricarla ora?</string>
   <string name="title_storage_permission_required">Richiesta autorizzazione di archiviazione</string>
   <string name="content_storage_permission_required">Su Android 8.1 e versioni successive viene richiesta l\'autorizzazione di archiviazione per consentire alle app di accedere allo sfondo. Senza il permesso, Lawnchair potrebbe bloccarsi o mostrare comportamenti imprevisti.</string>
   <string name="disable_popup">Non visualizzare di nuovo</string>
+  <string name="backups">Backup</string>
+  <string name="new_backup">Crea</string>
+  <string name="restore_backup">Ripristina</string>
+  <string name="backup_name">Nome</string>
+  <string name="backup_location">Posizione</string>
+  <string name="choose_backup_path">Sfoglia</string>
+  <string name="backup_homescreen">Schermata home</string>
+  <string name="backup_contents">Contenuti backup</string>
   <string name="backup_settings">Impostazioni</string>
+  <string name="backup_wallpaper">Sfondo</string>
+  <string name="backup_error_blank_name">Il nome non deve essere vuoto</string>
+  <string name="backup_error_blank_location">La posizione non deve essere vuota</string>
+  <string name="backup_error_blank_contents">I contenuti non devono essere vuoti</string>
+  <string name="backup_creating">Creazione backup...</string>
+  <string name="no_recent_backups">Nessun backup recente</string>
   <string name="backup_loading">Caricamento...</string>
+  <string name="backup_invalid">Non disponibile</string>
+  <string name="backup_remove_from_recents">Rimuovi dalla lista</string>
+  <string name="backup_share">Condividi</string>
+  <string name="backup_timestamp">Creato il</string>
+  <string name="backup_restoring">Ripristino backup…</string>
+  <string name="backup_restarting">Riavvio...</string>
+  <string name="restore_contents">Ripristina contenuti</string>
   <string name="restore_success">Ripristino eseguito</string>
   <string name="backup_failed">Backup fallito</string>
   <string name="restore_failed">Ripristino fallito</string>
+  <string name="restore_read_meta_fail">File di backup non valido</string>
   <string name="backup_share_title">Coondividi backup</string>
+  <string name="backup_share_text">File di backup Lawnchair</string>
+  <string name="read_external_storage_required">L\'autorizzazione di archiviazione è richiesta per creare il backup</string>
   <string name="local_backups">Backup locali</string>
+  <string name="backup_location_device_storage">Archiviazione dispositivo</string>
+  <string name="backup_location_documents_storage">Archiviazione documenti</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Barra di ricerca Pixel</string>
+  <!-- Preference Category Icons Title -->
+  <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Varie</string>
+  <string name="blur_oom">Lawnchair ha esaurito la memoria cercando di sfocare lo sfondo! Abbassare la risoluzione dello sfondo potrebbe risolvere il problema.</string>
+  <string name="legacy_backup">Crea file di backup</string>
+  <!-- About screen -->
 </resources>
