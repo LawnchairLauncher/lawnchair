@@ -672,6 +672,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
                     mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
+                    mLauncher.getStateManager().moveToRestState();
                 }
 
                 AnimatorSet anim = null;

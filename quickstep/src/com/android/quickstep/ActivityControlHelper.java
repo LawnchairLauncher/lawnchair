@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
+
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
@@ -52,6 +53,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.FastOverviewState;
@@ -265,6 +267,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         controller, ALL_APPS_PROGRESS, startProgress, endProgress);
                 shiftAnim.setInterpolator(LINEAR);
                 anim.play(shiftAnim);
+
+                // Since we are changing the start position of the UI, reapply the state, at the end
+                anim.addListener(new AnimationSuccessListener() {
+                    @Override
+                    public void onAnimationSuccess(Animator animator) {
+                        activity.getStateManager().reapplyState();
+                    }
+                });
             }
 
             if (interactionType == INTERACTION_NORMAL) {
