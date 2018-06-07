@@ -1021,8 +1021,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void setTargetAlphaProvider(
             BiFunction<RemoteAnimationTargetCompat, Float, Float> provider) {
         mClipAnimationHelper.setTaskAlphaCallback(provider);
-        // TODO: For some reason, when calling updateFinalShift multiple times on the same frame,
-        // only the first callback is executed.
-        Utilities.postAsyncCallback(mMainThreadHandler, this::updateFinalShift);
+        updateFinalShift();
     }
 }
