@@ -38,9 +38,10 @@ public class PackageManagerHelper {
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
      * guarantee that the app is on SD card.
+     * Currently, this always returns true as a previous approach did not work properly.
      */
     public static boolean isAppOnSdcard(PackageManager pm, String packageName) {
-        return isAppEnabled(pm, packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+        return true;
     }
 
     public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
