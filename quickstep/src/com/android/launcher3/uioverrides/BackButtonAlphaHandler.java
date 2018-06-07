@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 
 import com.android.launcher3.Launcher;
@@ -55,6 +57,13 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
             anim.addUpdateListener(valueAnimator -> {
                 final float alpha = (float) valueAnimator.getAnimatedValue();
                 mOverviewInteractionState.setBackButtonAlpha(alpha, false);
+            });
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Reapply the final alpha in case some state (e.g. window focus) changed.
+                    UiFactory.onLauncherStateOrFocusChanged(mLauncher);
+                }
             });
             builder.play(anim);
         }
