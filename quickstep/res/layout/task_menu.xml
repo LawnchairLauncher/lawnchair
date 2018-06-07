@@ -16,21 +16,31 @@
 -->
 <com.android.quickstep.views.TaskMenuView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bg_popup_item_width"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="invisible"
-    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/task_menu_bg"
+    android:paddingBottom="@dimen/task_card_menu_shadow_height"
     android:orientation="vertical"
-    android:background="?attr/popupColorPrimary"
-    android:divider="@drawable/all_apps_divider"
-    android:showDividers="middle"
-    android:animateLayoutChanges="true">
-        <TextView
-            android:id="@+id/task_icon_and_name"
-            android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:textSize="14sp"
-            android:paddingTop="18dp"
-            android:drawablePadding="8dp"
-            android:gravity="center_horizontal"/>
+    android:visibility="invisible">
+
+    <TextView
+        android:id="@+id/task_icon_and_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:textSize="12sp"/>
+
+    <LinearLayout
+        android:id="@+id/menu_option_layout"
+        style="@style/TaskMenu"
+        android:divider="@drawable/all_apps_divider"
+        android:showDividers="beginning"
+        android:paddingStart="@dimen/task_card_menu_horizontal_padding"
+        android:paddingEnd="@dimen/task_card_menu_horizontal_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </com.android.quickstep.views.TaskMenuView>
