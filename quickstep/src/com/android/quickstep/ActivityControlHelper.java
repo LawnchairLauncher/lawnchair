@@ -187,7 +187,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
             } else {
-                return dp.heightPx - outRect.rect.bottom;
+                int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+                // Track slightly below the top of the shelf (between top and content).
+                return shelfHeight - dp.edgeMarginPx * 2;
             }
         }
 
