@@ -48,6 +48,11 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
     private final SwipeDetector.ScrollInterpolator mScrollInterpolator
             = new SwipeDetector.ScrollInterpolator();
+    private final Interpolator mZoomOutInterpolator = new Interpolator() {
+        public float getInterpolation(float f) {
+            return (1f - (0.35f / (f + 0.35f))) / 0.7407408f;
+        }
+    };
 
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final int SINGLE_FRAME_MS = 16;
@@ -388,6 +393,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
         float alpha = 1 - workspaceHotseatAlpha;
         float workspaceAlpha = mWorkspaceAccelnterpolator.getInterpolation(workspaceHotseatAlpha);
+        float workspaceScale = mZoomOutInterpolator.getInterpolation(workspaceHotseatAlpha);
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
@@ -416,8 +422,12 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (mIsTranslateWithoutWorkspace) {
             return;
         }
-        mWorkspace.setWorkspaceYTranslationAndAlpha(
-                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
+        if (FeatureFlags.LAUNCHER3_P_ALL_APPS) {
+            mWorkspace.setWorkspaceTranslationAndAlpha(Workspace.Direction.SCALE, workspaceScale, workspaceAlpha);
+        } else {
+            mWorkspace.setWorkspaceYTranslationAndAlpha(
+                    PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
+        }
 
         if (!mDetector.isDraggingState()) {
             mContainerVelocity = mDetector.computeVelocity(shiftCurrent - shiftPrevious,

@@ -53,6 +53,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
@@ -214,7 +215,8 @@ public class Workspace extends PagedView
     // Direction used for moving the workspace and hotseat UI
     public enum Direction {
         X  (TRANSLATION_X),
-        Y  (TRANSLATION_Y);
+        Y  (TRANSLATION_Y),
+        SCALE  (LawnchairUtilsKt.getSCALE_XY());
 
         private final Property<View, Float> viewProperty;
 
@@ -228,7 +230,7 @@ public class Workspace extends PagedView
     /**
      * These values correspond to {@link Direction#X} & {@link Direction#Y}
      */
-    private final float[] mPageAlpha = new float[] {1, 1};
+    private final float[] mPageAlpha = new float[] {1, 1, 1};
     /**
      * Hotseat alpha can be changed when moving horizontally, vertically, changing states.
      * The values correspond to {@link Direction#X}, {@link Direction#Y} &
@@ -1469,10 +1471,10 @@ public class Workspace extends PagedView
      * @param translation the amount of shift.
      * @param alpha the alpha for the workspace page
      */
-    private void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
+    public void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         mPageAlpha[direction.ordinal()] = alpha;
-        float finalAlpha = mPageAlpha[0] * mPageAlpha[1];
+        float finalAlpha = mPageAlpha[0] * mPageAlpha[1] * mPageAlpha[2];
 
         View currentChild = getChildAt(getCurrentPage());
         if (currentChild != null) {

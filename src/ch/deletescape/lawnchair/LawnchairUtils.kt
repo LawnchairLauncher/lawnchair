@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.util.Property
 import android.view.View
 import android.view.ViewGroup
 import com.android.launcher3.LauncherAppState
@@ -136,5 +137,16 @@ class KFloatPropertyCompat(private val property: KMutableProperty0<Float>, name:
 
     override fun setValue(`object`: Any, value: Float) {
         property.set(value)
+    }
+}
+
+val SCALE_XY: Property<View, Float> = object : Property<View, Float>(Float::class.java, "scaleXY") {
+    override fun set(view: View, value: Float) {
+        view.scaleX = value
+        view.scaleY = value
+    }
+
+    override fun get(view: View): Float {
+        return view.scaleX
     }
 }
