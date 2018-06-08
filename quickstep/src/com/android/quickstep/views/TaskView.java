@@ -71,7 +71,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
      * The alpha of a black scrim on a page in the carousel as it leaves the screen.
      * In the resting position of the carousel, the adjacent pages have about half this scrim.
      */
-    private static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
+    public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
     /**
      * How much to scale down pages near the edge of the screen.

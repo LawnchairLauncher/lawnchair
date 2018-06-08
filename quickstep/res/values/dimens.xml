@@ -18,7 +18,6 @@
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
-    <dimen name="task_menu_background_radius">12dp</dimen>
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
     <dimen name="quickscrub_adjacent_visible_width">20dp</dimen>
@@ -41,6 +40,9 @@
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
     <dimen name="task_card_vert_space">40dp</dimen>
+    <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_menu_shadow_height">3dp</dimen>
+    <dimen name="task_card_menu_horizontal_padding">0dp</dimen>
     <dimen name="portrait_task_card_horz_space">136dp</dimen>
     <dimen name="landscape_task_card_horz_space">200dp</dimen>
     <dimen name="multi_window_task_card_horz_space">100dp</dimen>
