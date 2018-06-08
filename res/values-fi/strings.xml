@@ -33,20 +33,25 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Valitse widget tai käytä muokattuja toimintoja kaksoisnapauttamalla ja painamalla kohdetta pitkään."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Leveys: %1$d, korkeus: %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Sijoita manuaalisesti koskettamalla pitkään."</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Sijoita manuaalisesti koskettamalla pitkään"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Lisää automaattisesti"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Hae sovelluksia"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Ladataan sovelluksia…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"<xliff:g id="QUERY">%1$s</xliff:g> ei palauttanut sovelluksia."</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Hae lisää sovelluksia"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Ilmoitukset"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Valitse pikakuvake painamalla sitä pitkään."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Valitse pikakuvake tai käytä muokattuja toimintoja kaksoisnapauttamalla ja painamalla pitkään."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Tässä aloitusruudussa ei ole enää tilaa."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Suosikit-valikossa ei ole enää tilaa"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Sovellusluettelo"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Omat sovellukset ‑luettelo"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Työsovellusluettelo"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Aloitusruutu"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Poista"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Poista asennus"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Sovelluksen tiedot"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Asenna"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"asenna pikakuvakkeita"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Antaa sovelluksen lisätä pikakuvakkeita itsenäisesti ilman käyttäjän valintaa."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lue aloitusruudun asetuksia ja pikakuvakkeita"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Tämä on järjestelmäsovellus, eikä sitä voi poistaa."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Nimetön kansio"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> poistettiin käytöstä"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>: <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ilmoitusta</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>: <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> ilmoitus</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Sivu %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Aloitusruutu %1$d/%2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Uusi aloitusnäytön sivu"</string>
@@ -72,19 +81,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Taustakuvat"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Kotiasetukset"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Järjestelmänvalvoja on poistanut toiminnon käytöstä."</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Yleiskatsaus"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Salli aloitusnäytön kiertäminen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kun puhelinta kierretään"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Nykyiset näyttöasetukset eivät salli näytön kiertämistä."</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Pistemerkit"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Käytössä"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Pois käytöstä"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Ilmoituksien käyttöoikeus tarvitaan"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"<xliff:g id="NAME">%1$s</xliff:g> tarvitsee ilmoitusten käyttöoikeuden, jotta pistemerkkejä voidaan näyttää."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Muuta asetuksia"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Näytä ilmoituksista kertovat pistemerkit"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Lisää kuvake aloitusruutuun"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Uusille sovelluksille"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Muuta kuvakkeen muotoa"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"aloitusnäytöllä"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Käytä järjestelmän oletusarvoa"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Neliö"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Ympyräneliö"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> latautuu, valmiina <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> odottaa asennusta"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgetit: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Widget-luettelo"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Widget-luettelo suljettu"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Lisää aloitusnäytölle"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Siirrä kohde tänne"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Kohde lisättiin aloitusnäytölle."</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Luo kansio, jossa on <xliff:g id="NAME">%1$s</xliff:g>."</string>
     <string name="folder_created" msgid="6409794597405184510">"Kansio on luotu."</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Siirrä aloitusnäytölle"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Siirrä näyttöä vasemmalle"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Siirrä näyttöä oikealle"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Näyttö siirrettiin."</string>
     <string name="action_resize" msgid="1802976324781771067">"Muuta kokoa"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Lisää leveyttä"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Lisää korkeutta"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Vähennä korkeutta"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widgetin kokoa muutettiin. Sen leveys on nyt <xliff:g id="NUMBER_0">%1$s</xliff:g> ja korkeus <xliff:g id="NUMBER_1">%2$s</xliff:g>."</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Pikakuvakkeet"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"Sovelluksella <xliff:g id="APP_NAME">%2$s</xliff:g> on <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pikakuvaketta."</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g>: <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pikakuvaketta ja <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ilmoitusta"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Pikakuvakkeet ja ilmoitukset"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Hylkää"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Ilmoitus hylätty"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Henkilökohtaiset"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Työsovellukset"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Työprofiili"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Etsi työsovelluksia tästä"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Kaikki työsovellukset on merkitty, ja organisaatiosi vastaa niiden suojaamisesta. Voit siirtää työsovelluksia aloitusnäytölle käytön helpottamiseksi."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Organisaatiosi hallinnoima"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Ilmoitukset ja sovellukset ovat poissa käytöstä"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Sulje"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Suljettu"</string>
 </resources>

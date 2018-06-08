@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2017 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+<resources>
+
+    <!-- Application name -->
+    <string name="derived_app_name" translatable="false">Quickstep</string>
+
+    <!-- Options for recent tasks -->
+    <!-- Title for an option to enter split screen mode for a given app -->
+    <string name="recent_task_option_split_screen">Split screen</string>
+    <!-- Title for an option to keep an app pinned to the screen until it is unpinned -->
+    <string name="recent_task_option_pin">Pin</string>
+
+    <!-- Content description for the recent apps panel (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_desc_recent_apps">Overview</string>
+
+    <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
+    <string name="recents_empty_message">No recent items</string>
+
+    <!-- Content description for the recent apps's accessibility option that closes it. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_close_task">Close</string>
+
+    <!-- Recents: Title of a button that clears the task list, i.e. closes all tasks. [CHAR LIMIT=30] -->
+    <string name="recents_clear_all">Clear all</string>
+
+    <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
+    <string name="accessibility_recent_apps">Recent apps</string>
+</resources>

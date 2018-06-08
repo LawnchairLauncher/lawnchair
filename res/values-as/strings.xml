@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"কৰ্মস্থান"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"এপটো ইনষ্টল কৰা নহ\'ল।"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"এপটো নাই"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনল\'ড কৰা এপটোক সুৰক্ষিত ম\'ডত অক্ষম কৰা হ\'ল"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"ৱিজেটবোৰক সুৰক্ষিত ম\'ডত অক্ষম কৰা হ\'ল"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"শ্বৰ্টকাট নাই"</string>
+    <string name="home_screen" msgid="806512411299847073">"গৃহ স্ক্ৰীণ"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"উপযোগিতা অনুসৰি কৰা কাৰ্যবিলাক"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"কোনো ৱিজেট বাছনি কৰিবলৈ স্পৰ্শ কৰি থাকক।"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"কোনো ৱিজেট বাছনি কৰিবলৈ অথবা উপযোগিতা অনুসৰি কাৰ্যবিলাক ব্য়ৱহাৰ কৰিবলৈ দুবাৰ টিপি থাকক।"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d বহল x %2$d ওখ"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"মেনুৱেলভাৱে ৰাখিবলৈ স্পৰ্শ কৰি থাকক"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"স্বয়ংক্ৰিয়ভাবে যোগ কৰক"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"এপসমূহ সন্ধান কৰক"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"এপসমূহ ল’ড কৰি থকা হৈছে…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"ৰ সৈতে মিলা কোনো এপ্ বিচাৰি পোৱা নগ\'ল"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"আৰু অধিক এপবোৰ সন্ধান কৰক"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"জাননীসমূহ"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"কোনো শ্বৰ্টকাট বাছনি কৰিবলৈ স্পৰ্শ কৰি হেঁচি ধৰক।"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"কোনো শ্বৰ্টকাট বাছনি কৰিবলৈ দুবাৰ টিপি হেঁচি ধৰক, বা নিজৰ উপযোগিতা অনুসৰি সৃষ্টি কৰা কাৰ্যসমূহ ব্যৱহাৰ কৰক।"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"এই গৃহ স্ক্ৰীণত আৰু বেছি ঠাই নাই।"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দৰ ট্ৰে\'ত আৰু বেছি ঠাই নাই"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"এপৰ সূচী"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত এপৰ তালিকা"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"কৰ্মস্থানৰ এপৰ তালিকা"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"গৃহপৃষ্ঠা"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"আঁতৰাওক"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"আনইনষ্টল কৰক"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"এপ সম্পৰ্কীয় তথ্য"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"ইনষ্টল কৰক"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"শ্বৰ্টকাট ইনষ্টল কৰিব পাৰে"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ব্য়ৱহাৰকাৰীৰ হস্তক্ষেপ অবিহনেই কোনো এপক শ্বৰ্টকাটবোৰ যোগ কৰাৰ অনুমতি দিয়ে।"</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ পঢ়িব পাৰে"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"এপটোক গৃহ পৃষ্ঠাত ছেটিং আৰু শ্বৰ্টকাটসমূহ পঢ়াৰ অনুমতি দিয়ে।"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ লিখিব পাৰে"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"এপটোক গৃহ পৃষ্ঠাত ছেটিং আৰু শ্বৰ্টকাটসমূহ সলনি কৰাৰ অনুমতি দিয়ে।"</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক ফ\'ন কলবোৰ কৰাৰ অনুমতি দিয়া হোৱা নাই"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"ৱিজেট ল\'ড কৰাত সমস্য়া"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ছেটআপ কৰক"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"এইটো এটা ছিষ্টেম এপ আৰু ইয়াক আনইনষ্টল কৰিব নোৱৰি"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"নামবিহীন ফ\'ল্ডাৰ"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম কৰা হ\'ল"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ৰ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>টা জাননী আছে</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ৰ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>টা জাননী আছে</item>
+    </plurals>
+    <string name="default_scroll_format" msgid="7475544710230993317">"%2$dৰ %1$d পৃষ্ঠা"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"গৃহ স্ক্ৰীণ %2$dৰ %1$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"গৃহ স্ক্ৰীণৰ নতুন পৃষ্ঠা"</string>
+    <string name="folder_opened" msgid="94695026776264709">"ফ’ল্ডাৰ খোলা হ\'ল, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"ফ\'ল্ডাৰ বন্ধ কৰিবলৈ টিপক"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"সলনি কৰা নাম ছেভ কৰিবলৈ টিপক"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"ফ\'ল্ডাৰ বন্ধ কৰা হ\'ল"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"ফ\'ল্ডাৰৰ নাম সলনি কৰি <xliff:g id="NAME">%1$s</xliff:g> কৰা হৈছে"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ৱিজেটসমূহ"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"ৱালপেপাৰসমূহ"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"গৃহ ছেটিংসমূহ"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপোনাৰ প্ৰশাসকে অক্ষম কৰি ৰাখিছে"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"গৃহ স্ক্ৰীণ ঘূৰোৱাৰ অনুমতি দিয়ক"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"ফ\'নটো যেতিয়া ঘূৰোৱা হয়"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"জাননী সম্পৰ্কীয় বিন্দুবোৰ"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"অন অৱস্থাত আছে"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"অফ অৱস্থাত আছে"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"জাননী চাবলৈ অনুমতিৰ প্ৰয়োজন"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"জাননী সম্পৰ্কীয় বিন্দুবোৰ দেখুৱাবলৈ <xliff:g id="NAME">%1$s</xliff:g>ৰ বাবে এপৰ জাননীসমূহ অন কৰক"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ছেটিংসমূহ সলনি কৰক"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"জাননী বিন্দুসমূহ দেখুৱাওক"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"গৃহ স্ক্ৰীণত আইকনটো যোগ কৰক"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন এপসমূহৰ বাবে"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"আইকনৰ আকৃতি সলনি কৰক"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"গৃহ স্ক্ৰীণত"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"ছিষ্টেম ডিফ\'ল্ট ব্য়ৱহাৰ কৰক"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"বৰ্গাকাৰ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"বৰ্গবৃত্তাকাৰ"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"পৰিচিত মানুহৰ গোট"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"চকুপানীৰ টোপাল"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"আইকনৰ আকৃতিত কৰা পৰিবৰ্তনবোৰ প্ৰয়োগ কৰি থকা হৈছে"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"অজ্ঞাত"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"আঁতৰাওক"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"সন্ধান কৰক"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"এই এপটো ইনষ্টল কৰা হোৱা নাই"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনৰ এপটো ইনষ্টল কৰা হোৱা নাই। আপুনি এইটো আঁতৰাব পাৰে অথবা এপটো বিচাৰি মেনুৱেলভাৱে ইনষ্টল কৰিব পাৰে।"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনল\'ড কৰি থকা হৈছে, <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পূৰ্ণ হ\'ল"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনষ্টল হোৱালৈ অপেক্ষা কৰি থকা হৈছে"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> ৱিজেট"</string>
+    <!-- no translation found for widgets_list (796804551140113767) -->
+    <skip />
+    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
+    <skip />
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"গৃহ স্ক্ৰীণত যোগ কৰক"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"বস্তুটো ইয়ালৈ স্থানান্তৰ কৰক"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"বস্তুটো গৃহ স্ক্ৰীণত যোগ কৰা হ\'ল"</string>
+    <string name="item_removed" msgid="851119963877842327">"বস্তুটো আঁতৰোৱা হ\'ল"</string>
+    <string name="action_move" msgid="4339390619886385032">"বস্তু স্থানান্তৰ কৰক"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"শাৰী <xliff:g id="NUMBER_0">%1$s</xliff:g> স্তম্ভ <xliff:g id="NUMBER_1">%2$s</xliff:g>লৈ স্থানান্তৰিত কৰক"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"পছন্দৰ অৱস্থান <xliff:g id="NUMBER">%1$s</xliff:g>লৈ স্থানান্তৰিত কৰক"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"পছন্দৰ অৱস্থান <xliff:g id="NUMBER">%1$s</xliff:g>লৈ স্থানান্তৰিত কৰক"</string>
+    <string name="item_moved" msgid="4606538322571412879">"বস্তুটো স্থানান্তৰ কৰা হ\'ল"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ফ\'ল্ডাৰত যোগ কৰক: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g>সহ ফ\'ল্ডাৰত যোগ কৰক"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"বস্তুটো ফ\'ল্ডাৰত যোগ কৰা হ\'ল"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"<xliff:g id="NAME">%1$s</xliff:g>: ৰ জৰিয়তে ফ\'ল্ডাৰ সৃষ্টি কৰক"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ফ\'ল্ডাৰ সৃষ্টি কৰা হ\'ল"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"হ\'ম স্ক্ৰীণলৈ স্থানান্তৰ কৰক"</string>
+    <string name="action_resize" msgid="1802976324781771067">"আকাৰ সলনি কৰক"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"প্ৰস্থ বৃদ্ধি কৰক"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"উচ্চতা বৃদ্ধি কৰক"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"প্ৰস্থ হ্ৰাস কৰক"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"উচ্চতা হ্ৰাস কৰক"</string>
+    <string name="widget_resized" msgid="9130327887929620">"ৱিজেটৰ আকাৰ সলনি কৰি প্ৰস্থ <xliff:g id="NUMBER_0">%1$s</xliff:g> আৰু উচ্চতা <xliff:g id="NUMBER_1">%2$s</xliff:g> কৰা হ\'ল"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"শ্বৰ্টকাটসমূহ"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"শ্বৰ্টকাট আৰু জাননীসমূহ"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"অগ্ৰাহ্য কৰক"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"জাননী অগ্ৰাহ্য কৰা হৈছে"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"কৰ্মস্থান"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"কৰ্মস্থানৰ প্ৰ\'ফাইল"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ইয়াত কৰ্মস্থানৰ এপ্ বিচাৰি পাওক"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"কৰ্মস্থানৰ প্ৰতিটো এপৰে একোটা প্ৰতীক আছে আৰু তাক আপোনাৰ প্ৰতিষ্ঠানে সুৰক্ষিত কৰি ৰাখে। ব্যৱহাৰ কৰাত সুবিধা হ\'বলৈ এপসমূহ আপোনাৰ গৃহ স্ক্ৰীণলৈ স্থানান্তৰ কৰক।"</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"আপোনাৰ প্ৰতিষ্ঠানৰ দ্বাৰা পৰিচালিত"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"জাননী আৰু এপসমূহ অফ হৈ আছে"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"বন্ধ কৰক"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"বন্ধ"</string>
+</resources>

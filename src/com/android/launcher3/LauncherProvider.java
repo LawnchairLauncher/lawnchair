@@ -34,7 +34,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
@@ -44,7 +43,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -55,15 +53,12 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.ManagedProfileHeuristic;
-import com.android.launcher3.util.NoLocaleSqliteContext;
+import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
@@ -87,7 +82,7 @@ public class LauncherProvider extends ContentProvider {
      */
     public static final int SCHEMA_VERSION = 27;
 
-    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
+    public static final String AUTHORITY = FeatureFlags.AUTHORITY;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -118,11 +113,8 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler = new Handler(mListenerWrapper);
 
         // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created. Initializing FileLog here ensures that it's
-        // always available in the main process.
-        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(getContext());
-        SessionCommitReceiver.applyDefaultUserPrefs(getContext());
+        // is the first component to get created.
+        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }
 
@@ -149,9 +141,6 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.beginSection("Opening workspace DB");
-            }
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
@@ -161,10 +150,6 @@ public class LauncherProvider extends ContentProvider {
                 // Set is pending to false irrespective of the result, so that it doesn't get
                 // executed again.
                 RestoreDbTask.setPending(getContext(), false);
-            }
-
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.endSection();
             }
         }
     }
@@ -372,19 +357,6 @@ public class LauncherProvider extends ContentProvider {
         createDbIfNotExists();
 
         switch (method) {
-            case LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID: {
-                String extractedColors = extras.getString(
-                        LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
-                int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
-                Utilities.getPrefs(getContext()).edit()
-                        .putString(ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, extractedColors)
-                        .putInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, wallpaperId)
-                        .apply();
-                mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
-                Bundle result = new Bundle();
-                result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
-                return result;
-            }
             case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
                 clearFlagEmptyDbCreated();
                 return null;
@@ -567,7 +539,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    public static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private long mMaxItemId = -1;
@@ -593,7 +565,7 @@ public class LauncherProvider extends ContentProvider {
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, SCHEMA_VERSION);
+            super(context, tableName, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
         }
@@ -649,10 +621,6 @@ public class LauncherProvider extends ContentProvider {
 
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
-
-            // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
-                    mContext);
         }
 
         public long getDefaultUserSerial() {
@@ -816,7 +784,7 @@ public class LauncherProvider extends ContentProvider {
                 case 23:
                     // No-op
                 case 24:
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
+                    // No-op
                 case 25:
                     convertShortcutsToLauncherActivities(db);
                 case 26:
@@ -1160,8 +1128,7 @@ public class LauncherProvider extends ContentProvider {
     private static class ChangeListenerWrapper implements Handler.Callback {
 
         private static final int MSG_LAUNCHER_PROVIDER_CHANGED = 1;
-        private static final int MSG_EXTRACTED_COLORS_CHANGED = 2;
-        private static final int MSG_APP_WIDGET_HOST_RESET = 3;
+        private static final int MSG_APP_WIDGET_HOST_RESET = 2;
 
         private LauncherProviderChangeListener mListener;
 
@@ -1171,9 +1138,6 @@ public class LauncherProvider extends ContentProvider {
                 switch (msg.what) {
                     case MSG_LAUNCHER_PROVIDER_CHANGED:
                         mListener.onLauncherProviderChanged();
-                        break;
-                    case MSG_EXTRACTED_COLORS_CHANGED:
-                        mListener.onExtractedColorsChanged();
                         break;
                     case MSG_APP_WIDGET_HOST_RESET:
                         mListener.onAppWidgetHostReset();

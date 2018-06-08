@@ -18,60 +18,21 @@
      will bake the left/right padding into that view's background itself. -->
 <com.android.launcher3.allapps.AllAppsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    launcher:revealBackground="@drawable/round_rect_primary">
+    android:clipChildren="true"
+    android:clipToPadding="false"
+    android:focusable="false"
+    android:saveEnabled="false" >
 
-    <View
-        android:id="@+id/reveal_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:focusable="false"
-        android:visibility="invisible" />
+    <include layout="@layout/all_apps_rv_layout" />
 
+    <include layout="@layout/all_apps_floating_header" />
 
-    <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:focusable="true"
-        android:clipToPadding="false"
-        android:clipChildren="true"
-        android:focusableInTouchMode="true"
-        android:saveEnabled="false"
-        android:visibility="gone">
+    <include
+        android:id="@id/search_container_all_apps"
+        layout="@layout/search_container_all_apps"/>
 
-        <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.allapps.AllAppsRecyclerView
-            android:id="@+id/apps_list_view"
-            android:layout_below="@id/search_container_all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|top"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:descendantFocusability="afterDescendants"
-            android:focusable="true" />
-
-        <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
-         platform bug, which prevents using custom attributes in <include> tag -->
-        <include
-            layout="?android:attr/keyboardLayout"
-            android:id="@id/search_container_all_apps" />
-
-        <include layout="@layout/all_apps_fast_scroller" />
-
-    </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
-    <View
-        android:id="@+id/nav_bar_bg"
-        android:background="?attr/allAppsNavBarScrimColor"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom"
-        android:focusable="false"  />
+    <include layout="@layout/all_apps_fast_scroller" />
 </com.android.launcher3.allapps.AllAppsContainerView>

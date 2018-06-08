@@ -17,10 +17,7 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
-import android.os.Process;
 import android.os.UserHandle;
-import android.util.ArrayMap;
 import android.util.LongSparseArray;
 import android.util.Pair;
 import com.android.launcher3.AllAppsList;
@@ -37,8 +34,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
-import com.android.launcher3.util.ManagedProfileHeuristic.UserFolderInfo;
-import com.android.launcher3.util.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,26 +42,24 @@ import java.util.List;
  */
 public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
-    private final Provider<List<Pair<ItemInfo, Object>>> mAppsProvider;
+    private final List<Pair<ItemInfo, Object>> mItemList;
 
     /**
-     * @param appsProvider items to add on the workspace
+     * @param itemList items to add on the workspace
      */
-    public AddWorkspaceItemsTask(Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        mAppsProvider = appsProvider;
+    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList) {
+        mItemList = itemList;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        List<Pair<ItemInfo, Object>> workspaceApps = mAppsProvider.get();
-        if (workspaceApps.isEmpty()) {
+        if (mItemList.isEmpty()) {
             return;
         }
         Context context = app.getContext();
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
-        ArrayMap<UserHandle, UserFolderInfo> userFolderMap = new ArrayMap<>();
 
         // Get the list of workspace screens.  We need to append to this list and
         // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -75,7 +68,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         synchronized(dataModel) {
 
             List<ItemInfo> filteredItems = new ArrayList<>();
-            for (Pair<ItemInfo, Object> entry : workspaceApps) {
+            for (Pair<ItemInfo, Object> entry : mItemList) {
                 ItemInfo item = entry.first;
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                         item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -88,21 +81,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     if (item instanceof AppInfo) {
                         item = ((AppInfo) item).makeShortcut();
-                    }
-
-                    if (!Process.myUserHandle().equals(item.user)) {
-                        // Check if this belongs to a work folder.
-                        if (!(entry.second instanceof LauncherActivityInfo)) {
-                            continue;
-                        }
-
-                        UserFolderInfo userFolderInfo = userFolderMap.get(item.user);
-                        if (userFolderInfo == null) {
-                            userFolderInfo = new UserFolderInfo(context, item.user, dataModel);
-                            userFolderMap.put(item.user, userFolderInfo);
-                        }
-                        item = userFolderInfo.convertToWorkspaceItem(
-                                (ShortcutInfo) item, (LauncherActivityInfo) entry.second);
                     }
                 }
                 if (item != null) {
@@ -161,10 +139,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             addNotAnimated, addAnimated);
                 }
             });
-        }
-
-        for (UserFolderInfo userFolderInfo : userFolderMap.values()) {
-            userFolderInfo.applyPendingState(getModelWriter());
         }
     }
 

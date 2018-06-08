@@ -52,6 +52,13 @@ public class Themes {
         return value;
     }
 
+    public static int getAttrInteger(Context context, int attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        int value = ta.getInteger(0, 0);
+        ta.recycle();
+        return value;
+    }
+
     /**
      * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
      */
@@ -77,5 +84,24 @@ public class Themes {
     public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
                 Color.blue(color) / 255f, Color.alpha(color) / 255f);
+    }
+
+    /**
+     * Changes a color matrix such that, when applied to srcColor, it produces dstColor.
+     *
+     * Note that values on the last column of target ColorMatrix can be negative, and may result in
+     * negative values when applied on a color. Such negative values will be automatically shifted
+     * up to 0 by the framework.
+     *
+     * @param srcColor The color to start from
+     * @param dstColor The color to create by applying target on srcColor
+     * @param target The ColorMatrix to transform the color
+     */
+    public static void setColorChangeOnMatrix(int srcColor, int dstColor, ColorMatrix target) {
+        target.reset();
+        target.getArray()[4] = Color.red(dstColor) - Color.red(srcColor);
+        target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);
+        target.getArray()[14] = Color.blue(dstColor) - Color.blue(srcColor);
+        target.getArray()[19] = Color.alpha(dstColor) - Color.alpha(srcColor);
     }
 }

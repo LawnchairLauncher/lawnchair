@@ -16,13 +16,17 @@
 
 package com.android.launcher3;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "ShortcutAndWidgetContainer";
@@ -108,28 +112,21 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        if (!lp.isFullscreen) {
-            final DeviceProfile profile = mLauncher.getDeviceProfile();
+        final DeviceProfile profile = mLauncher.getDeviceProfile();
 
-            if (child instanceof LauncherAppWidgetHostView) {
-                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
-                        profile.appWidgetScale.x, profile.appWidgetScale.y);
-                // Widgets have their own padding
-            } else {
-                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
-                // Center the icon/folder
-                int cHeight = getCellContentHeight();
-                int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                int cellPaddingX = mContainerType == CellLayout.WORKSPACE
-                        ? profile.workspaceCellPaddingXPx
-                        : (int) (profile.edgeMarginPx / 2f);
-                child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
-            }
+        if (child instanceof LauncherAppWidgetHostView) {
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
+                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+            // Widgets have their own padding
         } else {
-            lp.x = 0;
-            lp.y = 0;
-            lp.width = getMeasuredWidth();
-            lp.height = getMeasuredHeight();
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+            // Center the icon/folder
+            int cHeight = getCellContentHeight();
+            int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
+            int cellPaddingX = mContainerType == CellLayout.WORKSPACE
+                    ? profile.workspaceCellPaddingXPx
+                    : (int) (profile.edgeMarginPx / 2f);
+            child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
         }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
@@ -177,6 +174,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == ACTION_DOWN && getAlpha() == 0) {
+            // Dont let children handle touch, if we are not visible.
+            return true;
+        }
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override

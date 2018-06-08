@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ile eşleşen uygulama bulunamadı"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Başka uygulamalar ara"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Bildirimler"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Kısayol seçmek için dokunun ve basılı tutun."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Bir kısayolu seçmek veya özel işlemleri kullanmak için iki kez dokunun ve basılı tutun."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Bu Ana ekranda yer kalmadı."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoriler tepsisinde başka yer kalmadı"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Uygulamalar listesi"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Kişisel uygulamalar listesi"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"İş uygulamaları listesi"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Ana ekran"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Kaldır"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Yüklemeyi kaldır"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Uygulama bilgileri"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Yükle"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"kısayolları yükle"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Uygulamaya, kullanıcı müdahalesi olmadan kısayol ekleme izni verir."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Ana ekran ayarlarını ve kısayollarını oku"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Bu bir sistem uygulamasıdır ve yüklemesi kaldırılamaz."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Adsız Klasör"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> devre dışı"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> uygulamasının <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> bildirimi var</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> uygulamasının <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> bildirimi var</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Sayfa %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ana ekran %1$d / %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Yeni ana ekran sayfası"</string>
@@ -72,19 +81,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Duvar Kağıtları"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ana ekran ayarları"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Yöneticiniz tarafından devre dışı bırakıldı"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Genel bakış"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Ana ekranı döndürmeye izin ver"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefon döndürüldüğünde"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Mevcut Ekran ayarı, döndürmeye izin vermiyor"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Bildirim noktaları"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Açık"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Kapalı"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Bildirim erişimi gerekli"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Bildirim Noktaları\'nı göstermek için <xliff:g id="NAME">%1$s</xliff:g> uygulamasının bildirimlerini açın"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ayarları değiştir"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Bildirim noktalarını göster"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ana ekrana simge ekle"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Yeni uygulamalar için"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Simge şeklini değiştir"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"Ana ekranda"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Sistem varsayılanını kullan"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kare"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kare-daire"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> indiriliyor, <xliff:g id="PROGRESS">%2$s</xliff:g> tamamlandı"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> uygulaması yüklenmek için bekliyor"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> widget\'ları"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Widget listesi"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Widget listesi kapalı"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Ana ekrana ekle"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Öğeyi buraya taşı"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Öğe ana ekrana eklendi"</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Şu öğeyle klasör oluştur: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Klasör oluşturuldu"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Ana ekrana taşı"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Ekranı sola taşı"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Ekranı sağa taşı"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Ekran taşındı"</string>
     <string name="action_resize" msgid="1802976324781771067">"Yeniden boyutlandır"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Genişliği artır"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Yüksekliği artır"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Yüksekliği azalt"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widget, <xliff:g id="NUMBER_0">%1$s</xliff:g> genişlik ve <xliff:g id="NUMBER_1">%2$s</xliff:g> yükseklik değerine yeniden boyutlandırıldı"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Kısayollar"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol ve <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> bildirim"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Kısayollar ve bildirimler"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Kapat"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirim kapatıldı"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Kişisel"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"İş"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"İş profili"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"İş uygulamalarını burada bulabilirsiniz"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Her iş uygulamasında, uygulama güvenliğinin kuruluşunuz tarafından sağlandığını gösteren bir rozet bulunur. Daha kolay erişim için uygulamaları Ana ekranınıza taşıyın."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Kuruluşunuz tarafından yönetiliyor"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Bildirimler ve uygulamalar kapalı"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Kapat"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Kapalı"</string>
 </resources>

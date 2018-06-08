@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ekki fundust forrit sem samsvara „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Leita að fleiri forritum"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Haltu fingri á flýtileið til að grípa hana."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Ýttu tvisvar og haltu fingri á flýtileið til að grípa hana eða notaðu sérsniðnar aðgerðir."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ekki meira pláss á þessum heimaskjá."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Listi yfir vinnuforrit"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Heim"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Fjarlægja"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Fjarlægja"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Forritsupplýsingar"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Setja upp"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"setja upp flýtileiðir"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Leyfir forriti að bæta við flýtileiðum án íhlutunar notanda."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lesa stillingar og flýtileiðir heimaskjás"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Þetta er kerfisforrit sem ekki er hægt að fjarlægja."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Ónefnd mappa"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Óvirkt <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, er með <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> tilkynningu</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, er með <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> tilkynningar</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Síða %1$d af %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Heimaskjár %1$d af %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ný síða á heimaskjá"</string>
@@ -72,19 +81,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Veggfóður"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Heimastillingar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Gert óvirkt af kerfisstjóra"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Yfirlit"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Leyfa snúning fyrir heimaskjá"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Þegar símanum er snúið"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Núverandi skjástilling leyfir ekki snúning"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Tilkynningapunktar"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Kveikt"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Slökkt"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Aðgangs að tilkynningum er krafist"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Til að sýna tilkynningarpunkta skaltu kveikja á forritstilkynningum fyrir <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Breyta stillingum"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Sýna tilkynningapunkta"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Bæta tákni á heimaskjáinn"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Fyrir ný forrit"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Breyta formi tákns"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"á heimaskjá"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Nota sjálfgildi kerfis"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Ferningur"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Ferhringur"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> í niðurhali, <xliff:g id="PROGRESS">%2$s</xliff:g> lokið"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> bíður uppsetningar"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>-græjur"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Græjulisti"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Græjulista lokað"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Bæta á heimaskjá"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Færa atriði hingað"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Atriði bætt á heimaskjáinn"</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Búa til möppu með: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Mappa búin til"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Færa á heimaskjá"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Færa skjá til vinstri"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Færa skjá til hægri"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Skjár færður"</string>
     <string name="action_resize" msgid="1802976324781771067">"Breyta stærð"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Auka breidd"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Auka hæð"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Minnka hæð"</string>
     <string name="widget_resized" msgid="9130327887929620">"Stærð græju breytt í <xliff:g id="NUMBER_0">%1$s</xliff:g> á breidd og <xliff:g id="NUMBER_1">%2$s</xliff:g> á hæð"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Flýtileiðir"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> flýtileiðir fyrir <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> flýtileiðir og <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> tilkynningar fyrir <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Flýtileiðir og tilkynningar"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Hunsa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Tilkynningu lokað"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persónulegt"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Vinna"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Vinnusnið"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Hér finnurðu vinnuforrit"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Öll vinnuforrit eru með merki og fyrirtækið þitt tryggir öryggi þeirra. Færðu forrit yfir á heimaskjáinn til að fá auðveldari aðgang að þeim."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Stjórnað af fyrirtækinu þínu"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Slökkt er á tilkynningum og forritum"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Loka"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Lokað"</string>
 </resources>

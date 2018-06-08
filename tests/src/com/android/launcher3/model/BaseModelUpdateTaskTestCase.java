@@ -1,17 +1,26 @@
 package com.android.launcher3.model;
 
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
-import android.test.ProviderTestCase2;
+import android.support.test.rule.provider.ProviderTestRule;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
@@ -21,13 +30,16 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherProvider;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -37,16 +49,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 /**
  * Base class for writing tests for Model update tasks.
  */
-public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherProvider> {
+public class BaseModelUpdateTaskTestCase {
+
+    @Rule
+    public ProviderTestRule mProviderRule =
+            new ProviderTestRule.Builder(TestLauncherProvider.class, LauncherProvider.AUTHORITY)
+                    .build();
 
     public final HashMap<Class, HashMap<String, Field>> fieldCache = new HashMap<>();
 
@@ -63,27 +74,26 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     public AllAppsList allAppsList;
     public Callbacks callbacks;
 
-    public BaseModelUpdateTaskTestCase() {
-        super(TestLauncherProvider.class, LauncherProvider.AUTHORITY);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);
         model = mock(LauncherModel.class);
         modelWriter = mock(ModelWriter.class);
 
         when(appState.getModel()).thenReturn(model);
-        when(model.getWriter(anyBoolean())).thenReturn(modelWriter);
+        when(model.getWriter(anyBoolean(), anyBoolean())).thenReturn(modelWriter);
         when(model.getCallback()).thenReturn(callbacks);
 
         myUser = Process.myUserHandle();
 
         bgDataModel = new BgDataModel();
-        targetContext = InstrumentationRegistry.getTargetContext();
+        targetContext = new ContextWrapper(InstrumentationRegistry.getTargetContext()) {
+            @Override
+            public ContentResolver getContentResolver() {
+                return mProviderRule.getResolver();
+            }
+        };
         idp = new InvariantDeviceProfile();
         iconCache = new MyIconCache(targetContext, idp);
 
@@ -91,6 +101,8 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         when(appState.getIconCache()).thenReturn(iconCache);
         when(appState.getInvariantDeviceProfile()).thenReturn(idp);
+        when(appState.getContext()).thenReturn(targetContext);
+
     }
 
     /**
@@ -197,7 +209,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
                 entry = new CacheEntry();
-                entry.icon = getDefaultIcon(user);
+                getDefaultIcon(user).applyTo(entry);
             }
             return entry;
         }
@@ -205,6 +217,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         public void addCache(ComponentName key, String title) {
             CacheEntry entry = new CacheEntry();
             entry.icon = newIcon();
+            entry.color = Color.RED;
             entry.title = title;
             mCache.put(new ComponentKey(key, Process.myUserHandle()), entry);
         }
@@ -214,8 +227,8 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         }
 
         @Override
-        protected Bitmap makeDefaultIcon(UserHandle user) {
-            return newIcon();
+        protected BitmapInfo makeDefaultIcon(UserHandle user) {
+            return BitmapInfo.fromBitmap(newIcon());
         }
     }
 }

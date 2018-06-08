@@ -24,20 +24,21 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 public class IconNormalizer {
 
@@ -61,17 +62,15 @@ public class IconNormalizer {
     private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.005f;
     private static final float SCALE_NOT_INITIALIZED = 0;
 
-    private static final Object LOCK = new Object();
-    private static IconNormalizer sIconNormalizer;
+    // Ratio of the diameter of an normalized circular icon to the actual icon size.
+    public static final float ICON_VISIBLE_AREA_FACTOR = 0.92f;
 
     private final int mMaxSize;
     private final Bitmap mBitmap;
-    private final Bitmap mBitmapARGB;
     private final Canvas mCanvas;
     private final Paint mPaintMaskShape;
     private final Paint mPaintMaskShapeOutline;
     private final byte[] mPixels;
-    private final int[] mPixelsARGB;
 
     private final Rect mAdaptiveIconBounds;
     private float mAdaptiveIconScale;
@@ -80,33 +79,20 @@ public class IconNormalizer {
     private final float[] mLeftBorder;
     private final float[] mRightBorder;
     private final Rect mBounds;
+    private final Path mShapePath;
     private final Matrix mMatrix;
 
-    private final Paint mPaintIcon;
-    private final Canvas mCanvasARGB;
-
-    private final File mDir;
-    private int mFileId;
-    private final Random mRandom;
-
-    private IconNormalizer(Context context) {
+    /** package private **/
+    IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
         mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
         mCanvas = new Canvas(mBitmap);
         mPixels = new byte[mMaxSize * mMaxSize];
-        mPixelsARGB = new int[mMaxSize * mMaxSize];
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
         mAdaptiveIconBounds = new Rect();
-
-        // Needed for isShape() method
-        mBitmapARGB = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ARGB_8888);
-        mCanvasARGB = new Canvas(mBitmapARGB);
-
-        mPaintIcon = new Paint();
-        mPaintIcon.setColor(Color.WHITE);
 
         mPaintMaskShape = new Paint();
         mPaintMaskShape.setColor(Color.RED);
@@ -117,13 +103,11 @@ public class IconNormalizer {
         mPaintMaskShapeOutline.setStrokeWidth(2 * context.getResources().getDisplayMetrics().density);
         mPaintMaskShapeOutline.setStyle(Paint.Style.STROKE);
         mPaintMaskShapeOutline.setColor(Color.BLACK);
-        mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
+        mShapePath = new Path();
         mMatrix = new Matrix();
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
-
-        mDir = context.getExternalFilesDir(null);
-        mRandom = new Random();
     }
 
     /**
@@ -145,74 +129,51 @@ public class IconNormalizer {
         // Condition 2:
         // Actual icon (white) and the fitted shape (e.g., circle)(red) XOR operation
         // should generate transparent image, if the actual icon is equivalent to the shape.
-        mFileId = mRandom.nextInt();
-        mBitmapARGB.eraseColor(Color.TRANSPARENT);
-        mCanvasARGB.drawBitmap(mBitmap, 0, 0, mPaintIcon);
-
-        if (DEBUG) {
-            final File beforeFile = new File(mDir, "isShape" + mFileId + "_before.png");
-            try {
-                mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
-                        new FileOutputStream(beforeFile));
-            } catch (Exception e) {}
-        }
 
         // Fit the shape within the icon's bounding box
         mMatrix.reset();
         mMatrix.setScale(mBounds.width(), mBounds.height());
         mMatrix.postTranslate(mBounds.left, mBounds.top);
-        maskPath.transform(mMatrix);
+        maskPath.transform(mMatrix, mShapePath);
 
         // XOR operation
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShape);
+        mCanvas.drawPath(mShapePath, mPaintMaskShape);
 
         // DST_OUT operation around the mask path outline
-        mCanvasARGB.drawPath(maskPath, mPaintMaskShapeOutline);
-
-        boolean isTrans = isTransparentBitmap(mBitmapARGB);
-        if (DEBUG) {
-            final File afterFile = new File(mDir,
-                    "isShape" + mFileId + "_after_" + isTrans + ".png");
-            try {
-                mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
-                        new FileOutputStream(afterFile));
-            } catch (Exception e) {}
-        }
+        mCanvas.drawPath(mShapePath, mPaintMaskShapeOutline);
 
         // Check if the result is almost transparent
-        if (!isTrans) {
-            if (DEBUG) {
-                Log.d(TAG, "Not same as mask shape");
-            }
-            return false;
-        }
-        return true;
+        return isTransparentBitmap();
     }
 
     /**
      * Used to determine if certain the bitmap is transparent.
      */
-    private boolean isTransparentBitmap(Bitmap bitmap) {
-        int w = mBounds.width();
-        int h = mBounds.height();
-        bitmap.getPixels(mPixelsARGB, 0 /* the first index to write into the array */,
-                w /* stride */,
-                mBounds.left, mBounds.top,
-                w, h);
+    private boolean isTransparentBitmap() {
+        ByteBuffer buffer = ByteBuffer.wrap(mPixels);
+        buffer.rewind();
+        mBitmap.copyPixelsToBuffer(buffer);
+
+        int y = mBounds.top;
+        // buffer position
+        int index = y * mMaxSize;
+        // buffer shift after every row, width of buffer = mMaxSize
+        int rowSizeDiff = mMaxSize - mBounds.right;
+
         int sum = 0;
-        for (int i = 0; i < w * h; i++) {
-            if(Color.alpha(mPixelsARGB[i]) > MIN_VISIBLE_ALPHA) {
+        for (; y < mBounds.bottom; y++) {
+            index += mBounds.left;
+            for (int x = mBounds.left; x < mBounds.right; x++) {
+                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
                     sum++;
+                }
+                index++;
             }
+            index += rowSizeDiff;
         }
+
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
-        boolean transparentImage = percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
-        if (DEBUG) {
-            Log.d(TAG,
-                    "Total # pixel that is different (id=" + mFileId + "):" + percentageDiffPixels
-                            + "=" + sum + "/" + mBounds.width() * mBounds.height());
-        }
-        return transparentImage;
+        return percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
     }
 
     /**
@@ -231,12 +192,17 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
             @Nullable Path path, @Nullable boolean[] outMaskShape) {
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
-                mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
-            if (outBounds != null) {
-                outBounds.set(mAdaptiveIconBounds);
+        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
+            if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
+                if (outBounds != null) {
+                    outBounds.set(mAdaptiveIconBounds);
+                }
+                return mAdaptiveIconScale;
             }
-            return mAdaptiveIconScale;
+            if (d instanceof FolderAdaptiveIcon) {
+                // Since we just want the scale, avoid heavy drawing operations
+                d = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
+            }
         }
         int width = d.getIntrinsicWidth();
         int height = d.getIntrinsicHeight();
@@ -336,7 +302,7 @@ public class IconNormalizer {
         mBounds.bottom = bottomY;
 
         if (outBounds != null) {
-            outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top),
+            outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top) / height,
                     1 - ((float) mBounds.right) / width,
                     1 - ((float) mBounds.bottom) / height);
         }
@@ -409,12 +375,11 @@ public class IconNormalizer {
         }
     }
 
-    public static IconNormalizer getInstance(Context context) {
-        synchronized (LOCK) {
-            if (sIconNormalizer == null) {
-                sIconNormalizer = new IconNormalizer(context);
-            }
-        }
-        return sIconNormalizer;
+    /**
+     * @return The diameter of the normalized circle that fits inside of the square (size x size).
+     */
+    public static int getNormalizedCircleSize(int size) {
+        float area = size * size * MAX_CIRCLE_AREA_FACTOR;
+        return (int) Math.round(Math.sqrt((4 * area) / Math.PI));
     }
 }

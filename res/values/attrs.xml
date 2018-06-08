@@ -20,6 +20,7 @@
 
     <!-- Attributes used for launcher theme -->
     <attr name="allAppsScrimColor" format="color" />
+    <attr name="allAppsInterimScrimAlpha" format="integer" />
     <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
@@ -44,7 +45,6 @@
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
         </attr>
-        <attr name="deferShadowGeneration" format="boolean" />
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
 
@@ -61,13 +61,6 @@
     <declare-styleable name="PagedView">
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
-    </declare-styleable>
-
-    <!-- BaseContainerView specific attributes. These attributes are used to customize
-         AllApps view and WidgetsView in xml. -->
-    <declare-styleable name="BaseContainerView">
-        <!-- Drawable to use for the reveal animation -->
-        <attr name="revealBackground" format="reference" />
     </declare-styleable>
 
     <!-- XML attributes used by default_workspace.xml -->
@@ -98,10 +91,6 @@
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ButtonDropTarget">
-        <attr name="hideParentOnDisable" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="InvariantDeviceProfile">
         <attr name="name" format="string" />
         <attr name="minWidthDps" format="float" />
@@ -112,8 +101,6 @@
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
-        <!-- minAllAppsPredictionColumns defaults to numColumns, if not specified -->
-        <attr name="minAllAppsPredictionColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
 
@@ -143,5 +130,20 @@
 
     <declare-styleable name="RecyclerViewFastScroller">
         <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomAppWidgetProviderInfo">
+        <attr name="providerId" format="integer" />
+
+        <attr name="android:label" />
+        <attr name="android:initialLayout" />
+        <attr name="android:icon" />
+        <attr name="android:previewImage" />
+        <attr name="android:resizeMode" />
+
+        <attr name="numRows" />
+        <attr name="numColumns" />
+        <attr name="numMinRows" format="integer" />
+        <attr name="numMinColumns" format="integer" />
     </declare-styleable>
 </resources>

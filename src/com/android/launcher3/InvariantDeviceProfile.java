@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.support.annotation.VisibleForTesting;
 import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.Display;
@@ -65,12 +66,6 @@ public class InvariantDeviceProfile {
     public int numColumns;
 
     /**
-     * The minimum number of predicted apps in all apps.
-     */
-    @Deprecated
-    int minAllAppsPredictionColumns;
-
-    /**
      * Number of icons per row and column in the folder.
      */
     public int numFolderRows;
@@ -94,17 +89,18 @@ public class InvariantDeviceProfile {
 
     public Point defaultWallpaperSize;
 
+    @VisibleForTesting
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(InvariantDeviceProfile p) {
+    private InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
-                p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
+                p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
                 p.defaultLayoutId, p.demoModeLayoutId);
     }
 
-    InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
+    private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
             float is, float lis, float its, int hs, int dlId, int dmlId) {
         name = n;
         minWidthDps = w;
@@ -113,7 +109,6 @@ public class InvariantDeviceProfile {
         numColumns = c;
         numFolderRows = fr;
         numFolderColumns = fc;
-        minAllAppsPredictionColumns = maapc;
         iconSize = is;
         landscapeIconSize = lis;
         iconTextSize = its;
@@ -123,7 +118,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    InvariantDeviceProfile(Context context) {
+    public InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -150,7 +145,6 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
-        minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
@@ -170,9 +164,9 @@ public class InvariantDeviceProfile {
         int largeSide = Math.max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */);
+                largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */);
+                smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects
@@ -207,7 +201,6 @@ public class InvariantDeviceProfile {
                             numColumns,
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
                             iconSize,
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),

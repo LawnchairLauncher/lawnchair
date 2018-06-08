@@ -2,15 +2,11 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
-import android.os.Process;
-import android.os.UserHandle;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -20,7 +16,7 @@ import android.os.UserHandle;
  */
 public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
-    public boolean isCustomWidget = false;
+    public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
     public int spanX;
     public int spanY;
@@ -48,20 +44,10 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return launcherInfo;
     }
 
-    private LauncherAppWidgetProviderInfo(Parcel in) {
+    protected LauncherAppWidgetProviderInfo() {}
+
+    protected LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
-    }
-
-    public LauncherAppWidgetProviderInfo(Context context, CustomAppWidget widget) {
-        isCustomWidget = true;
-
-        provider = new ComponentName(context, widget.getClass().getName());
-        icon = widget.getIcon();
-        label = widget.getLabel();
-        previewImage = widget.getPreviewImage();
-        initialLayout = widget.getWidgetLayout();
-        resizeMode = widget.getResizeMode();
-        initSpans(context);
     }
 
     public void initSpans(Context context) {
@@ -97,34 +83,23 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     }
 
     public String getLabel(PackageManager packageManager) {
-        if (isCustomWidget) {
-            return Utilities.trim(label);
-        }
         return super.loadLabel(packageManager);
     }
 
-    public Drawable getIcon(Context context, IconCache cache) {
-        if (isCustomWidget) {
-            return cache.getFullResIcon(provider.getPackageName(), icon);
+    public Point getMinSpans() {
+        return new Point((resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
+                (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
+    }
+
+    public boolean isCustomWidget() {
+        return provider.getClassName().startsWith(CLS_CUSTOM_WIDGET_PREFIX);
+    }
+
+    public int getWidgetFeatures() {
+        if (Utilities.ATLEAST_P) {
+            return widgetFeatures;
+        } else {
+            return 0;
         }
-        return super.loadIcon(context, LauncherAppState.getIDP(context).fillResIconDpi);
-    }
-
-    public String toString(PackageManager pm) {
-        if (isCustomWidget) {
-            return "WidgetProviderInfo(" + provider + ")";
-        }
-        return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s",
-                provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
-    }
-
-    public Point getMinSpans(InvariantDeviceProfile idp, Context context) {
-        return new Point(
-                (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
-                        (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
-    }
-
-    public UserHandle getUser() {
-        return isCustomWidget ? Process.myUserHandle() : getProfile();
     }
  }

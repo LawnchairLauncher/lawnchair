@@ -18,7 +18,10 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -36,6 +39,21 @@ public class InstantAppResolver {
     }
 
     public boolean isInstantApp(ApplicationInfo info) {
+        return false;
+    }
+
+    public boolean isInstantApp(AppInfo info) {
+        return false;
+    }
+
+    public boolean isInstantApp(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            return isInstantApp(packageManager.getPackageInfo(packageName, 0).applicationInfo);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("InstantAppResolver", "Failed to determine whether package is instant app "
+                    + packageName, e);
+        }
         return false;
     }
 

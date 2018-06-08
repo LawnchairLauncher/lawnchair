@@ -17,6 +17,18 @@
 LOCAL_PATH := $(call my-dir)
 
 #
+# Prebuilt Java Libraries
+#
+include $(CLEAR_VARS)
+LOCAL_MODULE := libSharedSystemUI
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := quickstep/libs/sysui_shared.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := current
+include $(BUILD_PREBUILT)
+
+#
 # Build rule for Launcher3 app.
 #
 include $(CLEAR_VARS)
@@ -24,21 +36,26 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    android-support-v4 \
+    android-support-annotations
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
     android-support-v7-recyclerview \
-    android-support-v7-palette \
     android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
-    $(call all-java-files-under, src_config) \
+    $(call all-java-files-under, src_ui_overrides) \
     $(call all-java-files-under, src_flags) \
     $(call all-proto-files-under, protos) \
     $(call all-proto-files-under, proto_overrides)
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res \
+
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
@@ -46,9 +63,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview \
+LOCAL_USE_AAPT2 := true
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
@@ -70,14 +85,20 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    android-support-v4 \
+    android-support-annotations
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
     android-support-v7-recyclerview \
-    android-support-v7-palette \
     android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
-    $(call all-java-files-under, src_config) \
+    $(call all-java-files-under, src_ui_overrides) \
     $(call all-java-files-under, go/src_flags) \
     $(call all-proto-files-under, protos) \
     $(call all-proto-files-under, proto_overrides)
@@ -85,7 +106,6 @@ LOCAL_SRC_FILES := \
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/go/res \
     $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res \
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
@@ -93,9 +113,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview \
+LOCAL_USE_AAPT2 := true
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
@@ -114,22 +132,111 @@ LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 include $(BUILD_PACKAGE)
 
 #
-# Launcher proto buffer jar used for development
+# Build rule for Quickstep app.
 #
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := $(call all-proto-files-under, protos) $(call all-proto-files-under, proto_overrides)
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    android-support-annotations \
+    libSharedSystemUI
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
+    android-support-v7-recyclerview \
+    android-support-dynamic-animation
+
+LOCAL_SRC_FILES := \
+    $(call all-java-files-under, src) \
+    $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, src_flags) \
+    $(call all-proto-files-under, protos) \
+    $(call all-proto-files-under, proto_overrides)
+
+LOCAL_RESOURCE_DIR := \
+    $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/res \
+
+LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := launcher_proto_lib
-LOCAL_IS_HOST_MODULE := true
-LOCAL_STATIC_JAVA_LIBRARIES := host-libprotobuf-java-nano
+LOCAL_USE_AAPT2 := true
 
-include $(BUILD_HOST_JAVA_LIBRARY)
+LOCAL_SDK_VERSION := system_current
+LOCAL_MIN_SDK_VERSION := 26
+LOCAL_PACKAGE_NAME := Launcher3QuickStep
+LOCAL_PRIVILEGED_MODULE := true
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
+
+LOCAL_FULL_LIBS_MANIFEST_FILES := \
+    $(LOCAL_PATH)/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest-common.xml
+
+LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml
+LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
+
+include $(BUILD_PACKAGE)
+
+#
+# Build rule for Launcher3 Go app with quickstep for Android Go devices.
+#
+include $(CLEAR_VARS)
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    android-support-v4 \
+    android-support-v7-recyclerview \
+    android-support-dynamic-animation \
+    libSharedSystemUI
+
+LOCAL_SRC_FILES := \
+    $(call all-java-files-under, src) \
+    $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, go/src_flags) \
+    $(call all-proto-files-under, protos) \
+    $(call all-proto-files-under, proto_overrides)
+
+LOCAL_RESOURCE_DIR := \
+    $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/go/res \
+    $(LOCAL_PATH)/res \
+    prebuilts/sdk/current/support/v7/recyclerview/res \
+
+LOCAL_PROGUARD_ENABLED := disabled
+
+LOCAL_PROTOC_OPTIMIZE_TYPE := nano
+LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
+LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
+
+LOCAL_AAPT_FLAGS := \
+    --auto-add-overlay \
+    --extra-packages android.support.v7.recyclerview \
+
+LOCAL_SDK_VERSION := system_current
+LOCAL_MIN_SDK_VERSION := 26
+LOCAL_PACKAGE_NAME := Launcher3QuickStepGo
+LOCAL_PRIVILEGED_MODULE := true
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
+
+LOCAL_FULL_LIBS_MANIFEST_FILES := \
+    $(LOCAL_PATH)/go/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest-common.xml
+
+LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml
+LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
+
+include $(BUILD_PACKAGE)
+
 
 # ==================================================
 include $(call all-makefiles-under,$(LOCAL_PATH))

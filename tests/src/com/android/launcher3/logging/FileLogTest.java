@@ -1,41 +1,51 @@
 package com.android.launcher3.logging;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Calendar;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests for {@link FileLog}
  */
 @SmallTest
-public class FileLogTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class FileLogTest {
 
     private File mTempDir;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         int count = 0;
         do {
-            mTempDir = new File(getContext().getCacheDir(), "log-test-" + (count++));
+            mTempDir = new File(InstrumentationRegistry.getTargetContext().getCacheDir(),
+                    "log-test-" + (count++));
         } while(!mTempDir.mkdir());
 
         FileLog.setDir(mTempDir);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // Clear existing logs
         new File(mTempDir, "log-0").delete();
         new File(mTempDir, "log-1").delete();
         mTempDir.delete();
-        super.tearDown();
     }
 
+    @Test
     public void testPrintLog() throws Exception {
         if (!FileLog.ENABLED) {
             return;
@@ -56,6 +66,7 @@ public class FileLogTest extends AndroidTestCase {
         assertTrue(writer.toString().contains("hoolalala"));
     }
 
+    @Test
     public void testOldFileTruncated() throws Exception {
         if (!FileLog.ENABLED) {
             return;

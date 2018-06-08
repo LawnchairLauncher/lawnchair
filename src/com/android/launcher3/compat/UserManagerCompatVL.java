@@ -23,7 +23,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +82,16 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
+    public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+        return false;
+    }
+
+    @Override
+    public boolean isAnyProfileQuietModeEnabled() {
+        return false;
+    }
+
+    @Override
     public void enableAndResetCache() {
         synchronized (this) {
             mUsers = new LongArrayMap<>();
@@ -116,16 +125,6 @@ public class UserManagerCompatVL extends UserManagerCompat {
             return label;
         }
         return mPm.getUserBadgedLabel(label, user);
-    }
-
-    @Override
-    public long getUserCreationTime(UserHandle user) {
-        SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
-        String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
-        if (!prefs.contains(key)) {
-            prefs.edit().putLong(key, System.currentTimeMillis()).apply();
-        }
-        return prefs.getLong(key, 0);
     }
 }
 

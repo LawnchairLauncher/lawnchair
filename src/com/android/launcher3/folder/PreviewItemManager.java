@@ -29,11 +29,13 @@ import android.widget.TextView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 
 /**
@@ -108,7 +110,7 @@ public class PreviewItemManager {
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
 
-            updateItemDrawingParams(false);
+            updatePreviewItems(false);
         }
     }
 
@@ -166,7 +168,7 @@ public class PreviewItemManager {
     }
 
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.save();
         canvas.translate(params.transX, params.transY);
         canvas.scale(params.scale, params.scale);
         Drawable d = params.drawable;
@@ -183,6 +185,11 @@ public class PreviewItemManager {
     }
 
     public void hidePreviewItem(int index, boolean hidden) {
+        // If there are more params than visible in the preview, they are used for enter/exit
+        // animation purposes and they were added to the front of the list.
+        // To index the params properly, we need to skip these params.
+        index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
+
         PreviewItemDrawingParams params = index < mFirstPageParams.size() ?
                 mFirstPageParams.get(index) : null;
         if (params != null) {
@@ -202,7 +209,7 @@ public class PreviewItemManager {
             params.add(new PreviewItemDrawingParams(0, 0, 0, 0));
         }
 
-        int numItemsInFirstPagePreview = page == 0 ? items.size() : FolderIcon.NUM_ITEMS_IN_PREVIEW;
+        int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
         for (int i = 0; i < params.size(); i++) {
             PreviewItemDrawingParams p = params.get(i);
             p.drawable = items.get(i).getCompoundDrawables()[1];
@@ -213,7 +220,7 @@ public class PreviewItemManager {
                 p.drawable.setCallback(mIcon);
             }
 
-            if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
+            if (!animate) {
                 computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
@@ -264,7 +271,7 @@ public class PreviewItemManager {
         }
     }
 
-    void updateItemDrawingParams(boolean animate) {
+    void updatePreviewItems(boolean animate) {
         buildParamsForPage(0, mFirstPageParams, animate);
     }
 
@@ -308,8 +315,8 @@ public class PreviewItemManager {
             int prevIndex = newParams.indexOf(moveIn.get(i));
             PreviewItemDrawingParams p = params.get(prevIndex);
             computePreviewItemDrawingParams(prevIndex, numItems, p);
-            updateTransitionParam(p, moveIn.get(i), mIcon.mPreviewLayoutRule.getEnterIndex(),
-                    newParams.indexOf(moveIn.get(i)));
+            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX, newParams.indexOf(moveIn.get(i)),
+                    numItems);
         }
 
         // Items that are moving into new positions within the preview.
@@ -317,7 +324,7 @@ public class PreviewItemManager {
             int oldIndex = oldParams.indexOf(newParams.get(newIndex));
             if (oldIndex >= 0 && newIndex != oldIndex) {
                 PreviewItemDrawingParams p = params.get(newIndex);
-                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex);
+                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex, numItems);
             }
         }
 
@@ -328,7 +335,7 @@ public class PreviewItemManager {
             BubbleTextView item = moveOut.get(i);
             int oldIndex = oldParams.indexOf(item);
             PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
-            updateTransitionParam(p, item, oldIndex, mIcon.mPreviewLayoutRule.getExitIndex());
+            updateTransitionParam(p, item, oldIndex, EXIT_INDEX, numItems);
             params.add(0, p); // We want these items first so that they are on drawn last.
         }
 
@@ -340,7 +347,7 @@ public class PreviewItemManager {
     }
 
     private void updateTransitionParam(final PreviewItemDrawingParams p, BubbleTextView btv,
-            int prevIndex, int newIndex) {
+            int prevIndex, int newIndex, int numItems) {
         p.drawable = btv.getCompoundDrawables()[1];
         if (!mIcon.mFolder.isOpen()) {
             // Set the callback to FolderIcon as it is responsible to drawing the icon. The
@@ -348,9 +355,8 @@ public class PreviewItemManager {
             p.drawable.setCallback(mIcon);
         }
 
-        FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex,
-                FolderIcon.NUM_ITEMS_IN_PREVIEW, newIndex, FolderIcon.NUM_ITEMS_IN_PREVIEW,
-                DROP_IN_ANIMATION_DURATION, null);
+        FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex, numItems,
+                newIndex, numItems, DROP_IN_ANIMATION_DURATION, null);
         if (p.anim != null && !p.anim.hasEqualFinalState(anim)) {
             p.anim.cancel();
         }

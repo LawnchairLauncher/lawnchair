@@ -25,11 +25,11 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
-        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
-        <item name="allAppsScrimColor">#CCFFFFFF</item>
+        <item name="allAppsScrimColor">#EAFFFFFF</item>
+        <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
@@ -46,8 +46,9 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
 
-    <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
+    <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>
+        <item name="allAppsInterimScrimAlpha">128</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
@@ -61,14 +62,25 @@
         <item name="android:textColorTertiary">#CCFFFFFF</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
-        <item name="android:colorPrimary">#FF333333</item>
-        <item name="allAppsScrimColor">#7A212121</item>
+        <item name="android:colorPrimary">#FF212121</item>
+        <item name="allAppsScrimColor">#EA212121</item>
+        <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">?android:attr/colorPrimary</item>
         <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
+    </style>
+
+    <style name="LauncherThemeDark.DarKText" parent="@style/LauncherThemeDark">
+        <item name="allAppsInterimScrimAlpha">25</item>
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
     <!--
@@ -113,9 +125,9 @@
         <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">marquee</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
 
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
@@ -135,13 +147,6 @@
     <!-- Theme for the popup container -->
     <style name="PopupItem">
         <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
-    </style>
-    <style name="PopupGutter">
-        <item name="android:backgroundTintMode">multiply</item>
-        <item name="android:backgroundTint">?attr/popupColorSecondary</item>
-        <item name="android:background">@drawable/gutter_horizontal</item>
-        <item name="android:elevation">@dimen/notification_elevation</item>
-        <item name="android:outlineProvider">none</item>
     </style>
 
     <!-- Drop targets -->

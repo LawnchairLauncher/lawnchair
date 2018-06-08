@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.views.WorkFooterContainer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:paddingBottom="@dimen/all_apps_work_profile_tab_footer_bottom_padding"
+    android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
+    android:paddingRight="@dimen/dynamic_grid_cell_padding_x"
+    android:paddingTop="@dimen/all_apps_work_profile_tab_footer_top_padding">
+
+    <ImageView
+        android:id="@+id/work_footer_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
+        android:paddingTop="@dimen/all_apps_divider_margin_vertical"
+        android:scaleType="fitXY"
+        android:src="@drawable/all_apps_divider"/>
+
+    <com.android.launcher3.allapps.WorkModeSwitch
+        android:id="@+id/work_mode_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/work_footer_divider"/>
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/work_mode_toggle"
+        android:layout_alignParentStart="true"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/work_profile_toggle_label"
+        android:textColor="?android:attr/textColorTertiary"
+        android:textSize="16sp"/>
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_below="@android:id/title"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_corp"/>
+
+    <TextView
+        android:id="@+id/managed_by_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/title"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@android:id/icon"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:minHeight="24dp"
+        android:paddingStart="12dp"
+        android:textColor="?android:attr/textColorHint"
+        android:textSize="13sp"/>
+
+</com.android.launcher3.views.WorkFooterContainer>

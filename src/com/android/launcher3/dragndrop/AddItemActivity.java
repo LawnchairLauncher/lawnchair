@@ -16,6 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
@@ -23,7 +28,6 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.pm.LauncherApps.PinItemRequest;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -43,22 +47,17 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
-
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
@@ -84,6 +83,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private Bundle mWidgetOptions;
 
     private boolean mFinishOnPause = false;
+    private InstantAppResolver mInstantAppResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +97,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         mApp = LauncherAppState.getInstance(this);
         mIdp = mApp.getInvariantDeviceProfile();
+        mInstantAppResolver = InstantAppResolver.newInstance(this);
 
         // Use the application context to get the device profile, as in multiwindow-mode, the
         // confirmation activity might be rotated.
@@ -147,21 +148,14 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         // Start home and pass the draw request params
         PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
                 img.getBitmap().getWidth(), img.getWidth());
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(getPackageName())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(PinItemDragListener.EXTRA_PIN_ITEM_DRAG_LISTENER, listener);
 
-        if (!getResources().getBoolean(R.bool.allow_rotation) &&
-                !Utilities.isAllowRotationPrefEnabled(this) &&
-                (getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_LANDSCAPE && !isInMultiWindowMode())) {
-            // If we are starting the drag in landscape even though home is locked in portrait,
-            // restart the home activity to temporarily allow rotation.
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
+        Intent homeIntent = listener.addToIntent(
+                new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_HOME)
+                        .setPackage(getPackageName())
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
+        listener.initWhenReady();
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
         mFinishOnPause = true;
@@ -307,7 +301,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private void logCommand(int command) {
         getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
                 newCommandAction(command),
-                newItemTarget(mWidgetCell.getWidgetView()),
+                newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
                 newContainerTarget(ContainerType.PINITEM)), null);
     }
 }

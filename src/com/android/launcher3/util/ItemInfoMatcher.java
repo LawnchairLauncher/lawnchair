@@ -93,6 +93,19 @@ public abstract class ItemInfoMatcher {
         };
     }
 
+    /**
+     * Returns a new matcher which returns the opposite boolean value of the provided
+     * {@param matcher}.
+     */
+    public static ItemInfoMatcher not(final ItemInfoMatcher matcher) {
+        return new ItemInfoMatcher() {
+            @Override
+            public boolean matches(ItemInfo info, ComponentName cn) {
+                return !matcher.matches(info, cn);
+            }
+        };
+    }
+
     public static ItemInfoMatcher ofUser(final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override

@@ -34,6 +34,9 @@ public class DragOptions {
     /** Determines when a pre-drag should transition to a drag. By default, this is immediate. */
     public PreDragCondition preDragCondition = null;
 
+    /** Scale of the icons over the workspace icon size. */
+    public float intrinsicIconScaleFactor = 1f;
+
     /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
      * By default, there is no condition and onDragStart() is called immediately following

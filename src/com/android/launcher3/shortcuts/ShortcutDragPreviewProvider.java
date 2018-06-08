@@ -26,7 +26,6 @@ import android.view.View;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.graphics.HolographicOutlineHelper;
 
 /**
  * Extension of {@link DragPreviewProvider} which generates bitmaps scaled to the default icon size.
@@ -40,41 +39,21 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         mPositionShift = shift;
     }
 
-    @Override
-    public Bitmap createDragOutline(Canvas canvas) {
-        Bitmap b = drawScaledPreview(canvas, Bitmap.Config.ALPHA_8);
-
-        HolographicOutlineHelper.getInstance(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas);
-        canvas.setBitmap(null);
-        return b;
-    }
-
-    @Override
-    public Bitmap createDragBitmap(Canvas canvas) {
-        Bitmap b = drawScaledPreview(canvas, Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(null);
-        return b;
-    }
-
-    private Bitmap drawScaledPreview(Canvas canvas, Bitmap.Config config) {
+    public Bitmap createDragBitmap() {
         Drawable d = mView.getBackground();
         Rect bounds = getDrawableBounds(d);
 
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
-
         final Bitmap b = Bitmap.createBitmap(
                 size + blurSizeOutline,
                 size + blurSizeOutline,
-                config);
+                Bitmap.Config.ARGB_8888);
 
-        canvas.setBitmap(b);
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        Canvas canvas = new Canvas(b);
         canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
         canvas.scale(((float) size) / bounds.width(), ((float) size) / bounds.height(), 0, 0);
         canvas.translate(bounds.left, bounds.top);
         d.draw(canvas);
-        canvas.restore();
         return b;
     }
 

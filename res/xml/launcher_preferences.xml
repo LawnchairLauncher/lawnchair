@@ -34,15 +34,14 @@
         android:title="@string/auto_add_shortcuts_label"
         android:summary="@string/auto_add_shortcuts_description"
         android:defaultValue="true"
-        android:persistent="true"
-        />
+        android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_allowRotation"
         android:title="@string/allow_rotation_title"
+        android:summary="@string/allow_rotation_desc"
         android:defaultValue="@bool/allow_rotation"
-        android:persistent="true"
-        />
+        android:persistent="true" />
 
     <ListPreference
         android:key="pref_override_icon_shape"

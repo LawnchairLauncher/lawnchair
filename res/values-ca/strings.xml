@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No s\'ha trobat cap aplicació que coincideixi amb \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cerca més aplicacions"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificacions"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Mantén premuda una drecera per seleccionar-la."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Fes doble toc i mantén premut per seleccionar una drecera o per utilitzar accions personalitzades."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Llista d\'aplicacions personals"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Llista d\'aplicacions per a la feina"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Inici"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Suprimeix"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstal·la"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Dades de l\'aplicació"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Informació de l\'aplicació"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Instal·la"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instal·la dreceres"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet que una aplicació afegeixi dreceres sense la intervenció de l\'usuari."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"llegeix la configuració i les dreceres de la pantalla d\'inici"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aquesta aplicació és una aplicació del sistema i no es pot desinstal·lar."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sense nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"S\'ha desactivat <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> té <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificacions</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> té <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notificació</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pàgina %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla d\'inici %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Pàgina de la pantalla d\'inici nova"</string>
@@ -70,21 +79,21 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fons de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuració de la pantalla d\'inici"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuració de pantalla d\'inici"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desactivada per l\'administrador"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Visió general"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permet la rotació de la pantalla d\'inici"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"En girar el telèfon"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"La configuració actual de la pantalla no permet la rotació"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Punts de notificació"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activat"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desactivat"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Cal que tingui accés a les notificacions"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Per veure els punts de notificació, activa les notificacions de l\'aplicació <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Canvia la configuració"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Mostra els punts de notificació"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Afegeix la icona a la pantalla d\'inici"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Per a les aplicacions noves"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Canvia la forma de les icones"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"a la pantalla d\'inici"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Utilitza l\'opció predeterminada del sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Quadrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Quadrat arrodonit"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"S\'està baixant <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completat"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"S\'està esperant per instal·lar <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets de: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Llista de widgets"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"S\'ha tancat la llista de widgets"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Afegeix a la pantalla d\'inici"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mou l\'element aquí"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"S\'ha afegit l\'element a la pantalla d\'inici"</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Crea una carpeta amb: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Carpeta creada"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Desplaça a la pantalla d\'inici"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Desplaça pantalla a l\'esquerra"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Desplaça pantalla a la dreta"</string>
-    <string name="screen_moved" msgid="266230079505650577">"S\'ha desplaçat la pantalla"</string>
     <string name="action_resize" msgid="1802976324781771067">"Canvia la mida"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Augmenta l\'amplada"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Augmenta l\'alçada"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Redueix l\'alçada"</string>
     <string name="widget_resized" msgid="9130327887929620">"S\'ha canviat la mida del widget a l\'amplada <xliff:g id="NUMBER_0">%1$s</xliff:g> i l\'alçada <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Dreceres"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> dreceres per a l\'aplicació <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> dreceres i <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificacions per a <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Dreceres i notificacions"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"S\'ha ignorat la notificació"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Feina"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil professional"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Cerca aplicacions per a la feina aquí"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Totes les aplicacions per a la feina tenen una insígnia que indica que estan protegides per la teva organització. Mou les aplicacions a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat per la teva organització"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Les notificacions i les aplicacions estan desactivades"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tanca"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"S\'ha tancat"</string>
 </resources>

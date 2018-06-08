@@ -40,6 +40,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -191,9 +192,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         // Update shortcuts which use iconResource.
                         if ((si.iconResource != null)
                                 && packageSet.contains(si.iconResource.packageName)) {
-                            Bitmap icon = LauncherIcons.createIconBitmap(si.iconResource, context);
-                            if (icon != null) {
-                                si.iconBitmap = icon;
+                            LauncherIcons li = LauncherIcons.obtain(context);
+                            BitmapInfo iconInfo = li.createIconBitmap(si.iconResource);
+                            li.recycle();
+                            if (iconInfo != null) {
+                                iconInfo.applyTo(si);
                                 infoUpdated = true;
                             }
                         }
@@ -244,9 +247,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 infoUpdated = true;
                             }
 
-                            int oldDisabledFlags = si.isDisabled;
-                            si.isDisabled = flagOp.apply(si.isDisabled);
-                            if (si.isDisabled != oldDisabledFlags) {
+                            int oldRuntimeFlags = si.runtimeStatusFlags;
+                            si.runtimeStatusFlags = flagOp.apply(si.runtimeStatusFlags);
+                            if (si.runtimeStatusFlags != oldRuntimeFlags) {
                                 shortcutUpdated = true;
                             }
                         }
@@ -336,17 +339,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             });
         }
 
-        // Notify launcher of widget update. From marshmallow onwards we use AppWidgetHost to
-        // get widget update signals.
-        if (!Utilities.ATLEAST_MARSHMALLOW &&
-                (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE)) {
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.notifyWidgetProvidersChanged();
-                }
-            });
-        } else if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
+        if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
             // Load widgets for the new package. Changes due to app updates are handled through
             // AppWidgetHost events, this is just to initialize the long-press options.
             for (int i = 0; i < N; i++) {

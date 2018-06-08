@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
@@ -33,7 +34,9 @@ import com.android.launcher3.Utilities;
 public class DeepShortcutTextView extends BubbleTextView {
     private final Rect mDragHandleBounds = new Rect();
     private final int mDragHandleWidth;
-    private boolean mShouldPerformClick = true;
+    private boolean mShowInstructionToast = false;
+
+    private Toast mInstructionToast;
 
     public DeepShortcutTextView(Context context) {
         this(context, null, 0);
@@ -70,14 +73,29 @@ public class DeepShortcutTextView extends BubbleTextView {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // Ignore clicks on the drag handle (long clicks still start the drag).
-            mShouldPerformClick = !mDragHandleBounds.contains((int) ev.getX(), (int) ev.getY());
+            // Show toast if user touches the drag handle (long clicks still start the drag).
+            mShowInstructionToast = mDragHandleBounds.contains((int) ev.getX(), (int) ev.getY());
         }
         return super.onTouchEvent(ev);
     }
 
     @Override
     public boolean performClick() {
-        return mShouldPerformClick && super.performClick();
+        if (mShowInstructionToast) {
+            showToast();
+            return true;
+        }
+        return super.performClick();
+    }
+
+    private void showToast() {
+        if (mInstructionToast != null) {
+            mInstructionToast.cancel();
+        }
+        CharSequence msg = Utilities.wrapForTts(
+                getContext().getText(R.string.long_press_shortcut_to_add),
+                getContext().getString(R.string.long_accessible_way_to_add_shortcut));
+        mInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
+        mInstructionToast.show();
     }
 }

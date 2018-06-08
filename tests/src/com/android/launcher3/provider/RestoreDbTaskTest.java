@@ -3,23 +3,32 @@ package com.android.launcher3.provider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link RestoreDbTask}
  */
 @MediumTest
-public class RestoreDbTaskTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class RestoreDbTaskTest {
 
+    @Test
     public void testGetProfileId() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(23).getWritableDatabase();
         assertEquals(23, new RestoreDbTask().getDefaultProfileId(db));
     }
 
+    @Test
     public void testMigrateProfileId() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
         // Add some dummy data
@@ -57,7 +66,7 @@ public class RestoreDbTaskTest extends AndroidTestCase {
         private final long mProfileId;
 
         MyDatabaseHelper(long profileId) {
-            super(getContext(), null, null);
+            super(InstrumentationRegistry.getContext(), null, null);
             mProfileId = profileId;
         }
 
@@ -65,6 +74,9 @@ public class RestoreDbTaskTest extends AndroidTestCase {
         public long getDefaultUserSerial() {
             return mProfileId;
         }
+
+        @Override
+        protected void handleOneTimeDataUpgrade(SQLiteDatabase db) { }
 
         protected void onEmptyDbCreated() { }
     }
