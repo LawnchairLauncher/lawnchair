@@ -42,7 +42,9 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
-        listeners[themeOverride.activity] = themeOverride
+        synchronized(listeners) {
+            listeners[themeOverride.activity] = themeOverride
+        }
         themeOverride.overrideTheme(themeFlags)
     }
 
@@ -62,11 +64,15 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
         if (supportsDarkText) themeFlags = themeFlags or THEME_DARK_TEXT
         if (isDark) themeFlags = themeFlags or THEME_DARK
         if (isBlack) themeFlags = themeFlags or THEME_USE_BLACK
-        listeners.values.forEach { it.onThemeChanged(themeFlags) }
+        synchronized(listeners) {
+            listeners.values.forEach { it.onThemeChanged(themeFlags) }
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
-        listeners.remove(activity)
+        synchronized(listeners) {
+            listeners.remove(activity)
+        }
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
