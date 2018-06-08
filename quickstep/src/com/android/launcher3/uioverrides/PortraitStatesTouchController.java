@@ -31,6 +31,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -68,8 +69,18 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 mCurrentAnimation.getAnimationPlayer().end();
             }
 
-            // If we are already animating from a previous state, we can intercept.
-            return true;
+            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+            if (ev.getY() >= allAppsController.getShiftRange() * allAppsController.getProgress()) {
+                // If we are already animating from a previous state, we can intercept as long as
+                // the touch is below the current all apps progress (to allow for double swipe).
+                return true;
+            }
+            // Otherwise, make sure everything is settled and don't intercept so they can scroll
+            // recents, dismiss a task, etc.
+            if (mAtomicAnim != null) {
+                mAtomicAnim.end();
+            }
+            return false;
         }
         if (mLauncher.isInState(ALL_APPS)) {
             // In all-apps only listen if the container cannot scroll itself

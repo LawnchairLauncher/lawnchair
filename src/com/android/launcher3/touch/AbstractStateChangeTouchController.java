@@ -85,7 +85,7 @@ public abstract class AbstractStateChangeTouchController
     private boolean mCanBlockFling;
     private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
-    private AnimatorSet mAtomicAnim;
+    protected AnimatorSet mAtomicAnim;
     // True if we want to resume playing atomic components when mAtomicAnim completes.
     private boolean mScheduleResumeAtomicComponent;
 
