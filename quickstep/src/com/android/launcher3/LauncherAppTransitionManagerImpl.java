@@ -618,7 +618,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         targetCrop = crop;
                         alpha = mAlpha.value;
                     } else {
-                        matrix.reset();
+                        matrix.setTranslate(target.position.x, target.position.y);
                         alpha = 1f;
                         targetCrop = target.sourceContainerBounds;
                     }
@@ -736,7 +736,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         matrix.postTranslate(target.position.x, target.position.y);
                         alpha = mAlpha.value;
                     } else {
-                        matrix.reset();
+                        matrix.setTranslate(target.position.x, target.position.y);
                         alpha = 1f;
                     }
                     params[i] = new SurfaceParams(target.leash, alpha, matrix,
