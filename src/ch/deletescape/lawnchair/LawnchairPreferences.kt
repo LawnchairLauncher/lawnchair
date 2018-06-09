@@ -94,7 +94,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)
     val allAppsStartAlpha get() = if (dockCustomOpacity) dockOpacity else dockDefaultOpacity
     val allAppsEndAlpha get() = if (allAppsCustomOpacity) allAppsOpacity else allAppsDefaultOpacity
-    val allAppsAlphaRange get() = allAppsEndAlpha - allAppsStartAlpha
     val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
 
     // Dev

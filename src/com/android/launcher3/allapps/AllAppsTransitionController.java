@@ -347,10 +347,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private void updateLightStatusBar(float shift) {
         // Do not modify status bar on landscape as all apps is not full bleed.
         boolean verticalBarLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                && verticalBarLayout) {
-            return;
-        }
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
         boolean forceChange;
@@ -413,10 +409,12 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
                     hotseatAlpha);
-        } else {
+        } else if (!FeatureFlags.LAUNCHER3_P_ALL_APPS) {
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
                     PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
                     hotseatAlpha);
+        } else {
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, 0, hotseatAlpha);
         }
 
         if (mIsTranslateWithoutWorkspace) {

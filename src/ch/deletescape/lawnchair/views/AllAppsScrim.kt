@@ -1,11 +1,9 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
 import ch.deletescape.lawnchair.LawnchairPreferences
@@ -14,6 +12,7 @@ import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
 import com.android.launcher3.*
 import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.dynamicui.WallpaperColorInfo
 import com.android.launcher3.graphics.GradientView
 import com.android.launcher3.graphics.ShadowGenerator
 
@@ -37,8 +36,6 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     : GradientView(context, attrs), Insettable {
     private val pStyle = FeatureFlags.LAUNCHER3_P_ALL_APPS
     private val prefs by lazy { LawnchairPreferences.getInstance(context) }
-    private val normalMinAlpha get() = prefs.allAppsStartAlpha
-    private val allAppsAlpha get() = prefs.allAppsStartAlpha
 
     private val mFillPaint = Paint(1)
     private val mDrawRect = Rect()
@@ -50,8 +47,6 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private val mShadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
     private val mDrawMargin by lazy { mRadius + mShadowBlur }
     private val mDeviceProfile by lazy { Launcher.getLauncher(context).deviceProfile }
-    private val mMinAlpha get() = if (mDeviceProfile.isVerticalBarLayout) allAppsAlpha else normalMinAlpha
-    private val mAlphaRange get() = prefs.allAppsAlphaRange
     private val mFillAlpha by lazy { mMinAlpha }
     private val mShadowBitmap by lazy {
         val tmp = mRadius + mShadowBlur
@@ -69,6 +64,18 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private var mDrawHeight = 0f
     private val mAccelerator by lazy { AccelerateInterpolator() }
 
+    private val drawingFlatColor = pStyle && mDeviceProfile.isVerticalBarLayout
+    private val mMinAlpha get() = if (drawingFlatColor) 0 else prefs.allAppsStartAlpha
+    private val mAlphaRange get() = prefs.allAppsEndAlpha - mMinAlpha
+    private val maxScrimAlpha = 0.5f
+    private var scrimColor = 0
+    private var remainingScreenColor = 0
+    private var remainingScreenPathValid = false
+    private val tempPath = Path()
+    private val remainingScreenPath = Path()
+    private val remainingScreenPaint = Paint()
+    private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)
+
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
             override fun unscheduleDrawable(who: Drawable?, what: Runnable?) {
@@ -85,7 +92,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         }
     }
 
-    private val blurRadius = if (pStyle) mRadius else 0f
+    private val blurRadius = if (pStyle && !drawingFlatColor) mRadius else 0f
     private val blurDrawable = if (BlurWallpaperProvider.isEnabled) {
         context.blurWallpaperProvider.createDrawable(blurRadius, false).apply { callback = blurDrawableCallback }
     } else {
@@ -109,15 +116,38 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     }
 
     fun getTop(progress: Float, shiftRange: Float): Float {
-        if (height == 0) return shiftRange
-        val offsetY = -shiftRange * (1 - progress)
-        return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat()
+        if (interpolateAlpha(1 - progress) > 176) {
+            if (drawingFlatColor) return 0f
+            if (height != 0) {
+                val offsetY = -shiftRange * (1 - progress)
+                return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat()
+            }
+        }
+        return shiftRange
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (pStyle) {
+        if (drawingFlatColor) {
+            blurDrawable?.draw(canvas)
+            canvas.drawPaint(mFillPaint)
+        } else if (pStyle) {
             val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat()
             val width = (width - mPadding.right).toFloat()
+            if (remainingScreenColor != 0) {
+                if (!remainingScreenPathValid) {
+                    tempPath.reset()
+                    tempPath.addRoundRect(0f, getHeight().toFloat() - mRadius, getWidth().toFloat(), 10f + (getHeight().toFloat() + mRadius), mRadius, mRadius, Path.Direction.CW)
+                    remainingScreenPath.reset()
+                    remainingScreenPath.addRect(0f, 0f, getWidth().toFloat(), getHeight().toFloat(), Path.Direction.CW)
+                    remainingScreenPath.op(tempPath, Path.Op.DIFFERENCE)
+                    remainingScreenPathValid = true
+                }
+                remainingScreenPaint.color = remainingScreenColor
+                val scrimTranslation = getHeight() - height - mRadius
+                canvas.translate(0f, -scrimTranslation)
+                canvas.drawPath(remainingScreenPath, remainingScreenPaint)
+                canvas.translate(0f, scrimTranslation)
+            }
             blurDrawable?.run {
                 setBounds(mPadding.left, height.toInt(), width.toInt(), (getHeight().toFloat() + mRadius).toInt())
                 draw(canvas)
@@ -190,15 +220,22 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
 
     override fun setProgress(progress: Float, shiftRange: Float) {
         if (pStyle) {
-            val interpolatedAlpha = mAlphaRange * mAccelerator.getInterpolation(progress)
-            mFillPaint.alpha = (mMinAlpha + interpolatedAlpha).toInt()
-            mDrawOffsetY = -shiftRange * progress
-            invalidateDrawRect()
+            mFillPaint.alpha = interpolateAlpha(progress).toInt()
+            if (drawingFlatColor) {
+                blurDrawable?.alpha = (progress * 255).toInt()
+                invalidate()
+            } else {
+                remainingScreenColor = ColorUtils.setAlphaComponent(scrimColor, (progress * maxScrimAlpha * 255).toInt())
+                mDrawOffsetY = -shiftRange * progress
+                invalidateDrawRect()
+            }
         } else {
             super.setProgress(progress, shiftRange)
             blurDrawable?.alpha = (progress * 255).toInt()
         }
     }
+
+    private fun interpolateAlpha(progress: Float) = mMinAlpha + mAlphaRange * mAccelerator.getInterpolation(progress)
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
@@ -215,17 +252,30 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         super.onAttachedToWindow()
 
         blurDrawable?.startListening()
+        wallpaperColorInfo.addOnChangeListener(this)
+        onExtractedColorsChanged(wallpaperColorInfo)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
         blurDrawable?.stopListening()
+        wallpaperColorInfo.removeOnChangeListener(this)
     }
 
     override fun setTranslationX(translationX: Float) {
         super.setTranslationX(translationX)
 
         if (pStyle) blurDrawable?.setPotitionX(translationX)
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        remainingScreenPathValid = false
+    }
+
+    override fun onExtractedColorsChanged(info: WallpaperColorInfo) {
+        super.onExtractedColorsChanged(info)
+        scrimColor = info.mainColor
     }
 }
