@@ -272,7 +272,7 @@
   <string name="icon_scale_pref_title">Icon-Größe</string>
   <string name="hotseat_height_scale">Höhen-Skalierung</string>
   <string name="hotseat_custom_opacity">Dock Transparenz</string>
-  <string name="hotseat_uses_custom_opacity">Benutzerdefinierte Dock Transparenz aktivieren</string>
+  <string name="hotseat_uses_custom_opacity">Benutzerdefinierte Dock-Transparenz aktivieren</string>
   <string name="icon_text_scale_pref_title">Größe Icon-Text</string>
   <string name="icon_text_padding_scale_pref_title">Skalierung des Padding für Icons</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
@@ -460,10 +460,37 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel Suchleiste</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Icons</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Ordner</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Verschiedenes</string>
   <string name="blur_oom">Lawnchair hat wegen der Unschärfe deine Hintergrundbildes nicht mehr genug freien Speicher! Möglichweise kannst du durch eine Reduzierung der Auflösung das Problem beheben.</string>
   <string name="legacy_backup">Sicherungsdatei (alt)</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Open Source-Lizenzen</string>
+  <string name="title_attribouter_email">E-Mail</string>
+  <string name="title_attribouter_website">Webseite</string>
+  <string name="title_attribouter_rate">Bewerten</string>
+  <string name="title_attribouter_version">Version %1$s</string>
+  <string name="title_attribouter_license">Lizenz</string>
+  <string name="title_attribouter_license_permissions">Berechtigungen</string>
+  <string name="title_attribouter_license_conditions">Bedingungen</string>
+  <string name="title_attribouter_license_limitations">Einschränkungen</string>
+  <string name="title_attribouter_more_info">Weitere Infos</string>
+  <string name="title_attribouter_translators">Übersetzer</string>
+  <string name="about_our_team">Unser Team</string>
+  <string name="about_our_contributors">Unsere wichtigsten Mitwirkenden</string>
+  <string name="about_our_family">Unsere weiteren Familienmitglieder</string>
+  <string name="about_role_lead">Führender Entwickler</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Entwickler</string>
+  <string name="about_role_dev_mod">Entwickler / Moderator</string>
+  <string name="about_role_designer">Designer</string>
+  <string name="about_role_special_snowflake">PR-Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Support</string>
+  <string name="about_role_family_member">Familienmitglied</string>
+  <string name="about_bio_recoded">Programmierer und Grafikdesigner</string>
+  <string name="about_bio_josh">Freiberuflicher Grafikdesigner</string>
+  <string name="about_bio_msfjarvis">Chef-Entwickler bei halogenOS und App-Entwickler bei subtratum.</string>
 </resources>
