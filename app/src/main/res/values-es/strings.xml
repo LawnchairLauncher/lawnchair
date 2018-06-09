@@ -460,10 +460,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra De Búsqueda Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Íconos</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Cajón de Aplicaciones</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Varios</string>
   <string name="blur_oom">¡Lawnchair agotó la memoria intentando desenfocar tu fondo de pantalla! Bajar la resolución del fondo de pantalla podría solucionar este problema.</string>
   <string name="legacy_backup">Copia de seguridad Legacy</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Licencias de código abierto</string>
+  <string name="title_attribouter_email">Correo electrónico</string>
+  <string name="title_attribouter_website">Sitio Web</string>
+  <string name="title_attribouter_rate">Puntuar</string>
+  <string name="title_attribouter_version">Versión %1$s</string>
+  <string name="title_attribouter_license">Licencia</string>
+  <string name="title_attribouter_license_permissions">Permisos</string>
+  <string name="title_attribouter_license_conditions">Condiciones</string>
+  <string name="title_attribouter_license_limitations">Restricciones</string>
+  <string name="title_attribouter_more_info">Más Información</string>
+  <string name="title_attribouter_translators">Traductores</string>
+  <string name="about_our_team">Nuestro equipo</string>
+  <string name="about_our_contributors">Nuestros principales contribuyentes</string>
+  <string name="about_our_family">Otros miembros de nuestra familia</string>
+  <string name="about_role_lead">Desarrollador líder</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Desarrollador</string>
+  <string name="about_role_dev_mod">Desarrollador / Moderador</string>
+  <string name="about_role_designer">Diseñador</string>
+  <string name="about_role_special_snowflake">Gerente de Relaciones Públicas / Moderador</string>
+  <string name="about_role_mod_support">Moderador / Soporte</string>
+  <string name="about_role_family_member">Familiar</string>
+  <string name="about_bio_deletescape">Desarrollador Android &amp; entusiasta, ama los memes (demasiado en realidad). Fundador del proyecto Lawnchair.</string>
+  <string name="about_bio_divadsn">18 años de edad, convierten pizza y cafeína en código. Anteriormente también conocido como Codebucket.</string>
+  <string name="about_bio_recoded">Programador y diseñador.</string>
+  <string name="about_bio_josh">Diseñador gráfico independiente.</string>
+  <string name="about_bio_chris">Mente Creativa, influenciador &amp; Creador de Contenido. Gerente de Relaciones Públicas y Medios de Comunicación.</string>
+  <string name="about_bio_msfjarvis">Desarrollador central en halogenOS y Desarrollador de aplicación en substratum.</string>
 </resources>
