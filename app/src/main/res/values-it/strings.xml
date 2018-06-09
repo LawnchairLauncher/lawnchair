@@ -328,6 +328,7 @@
   <string name="default_text">Predefinito</string>
   <string name="edit_icon_reset">Ripristina</string>
   <string name="show_top_shadow_title">Mostra l\'ombra superiore</string>
+  <string name="pref_category_homescreen">Schermata home</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Chiaro</string>
   <string name="theme_dark">Scuro</string>
@@ -459,10 +460,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra di ricerca Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Icone</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Menù delle applicazioni</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Varie</string>
   <string name="blur_oom">Lawnchair ha esaurito la memoria cercando di sfocare lo sfondo! Abbassare la risoluzione dello sfondo potrebbe risolvere il problema.</string>
   <string name="legacy_backup">Crea file di backup</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Licenze Open Source</string>
+  <string name="title_attribouter_email">Email</string>
+  <string name="title_attribouter_website">Sito Web</string>
+  <string name="title_attribouter_rate">Vota</string>
+  <string name="title_attribouter_version">Versione %1$s</string>
+  <string name="title_attribouter_license">Licenza</string>
+  <string name="title_attribouter_license_permissions">Permessi</string>
+  <string name="title_attribouter_license_conditions">Condizioni</string>
+  <string name="title_attribouter_license_limitations">Limitazioni</string>
+  <string name="title_attribouter_more_info">Altre informazioni</string>
+  <string name="title_attribouter_translators">Traduttori</string>
+  <string name="about_our_team">Il nostro team</string>
+  <string name="about_our_contributors">I nostri principali collaboratori</string>
+  <string name="about_our_family">Gli altri membri della nostra famiglia</string>
+  <string name="about_role_lead">Sviluppatore principale</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Sviluppatore</string>
+  <string name="about_role_dev_mod">Sviluppatore/Moderatore</string>
+  <string name="about_role_designer">Designer</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderatore</string>
+  <string name="about_role_mod_support">Moderatore / Sostenitore</string>
+  <string name="about_role_family_member">Familiare</string>
+  <string name="about_bio_deletescape">Sviluppatore Android &amp; entusiasta, adora i meme (un po\' troppo effettivamente). Fondatore della Lawnchair project.</string>
+  <string name="about_bio_divadsn">18enne, trasforma caffeina e pizza in codifica. Precedentemente noto anche come Codebucket.</string>
+  <string name="about_bio_recoded">Mite programmatore e designer grafico.</string>
+  <string name="about_bio_josh">Designer grafico indipendente.</string>
+  <string name="about_bio_chris">Mente Creativa, Influencer &amp; Creatore di Contenuti. Social Media e PR Manager.</string>
+  <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
 </resources>
