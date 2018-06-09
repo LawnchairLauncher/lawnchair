@@ -464,10 +464,36 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">شريط بحث بكسل</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">الأيقونات</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">قائمة التطبيقات</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">متفرقات</string>
   <string name="blur_oom">Lawnchair يعمل خارج نطاق الذاكرة حاول تضبيب الخلفية! تقليل دقة الخلفية يمكن ان يصلح هذا.</string>
   <string name="legacy_backup">ملف النسخة الاحتياطية القديمة</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">ترخيص مفتوح المصدر</string>
+  <string name="title_attribouter_email">البريد الإلكتروني</string>
+  <string name="title_attribouter_website">الموقع</string>
+  <string name="title_attribouter_rate">تقييم</string>
+  <string name="title_attribouter_version">الإصدار % 1$ s</string>
+  <string name="title_attribouter_license">الترخيص</string>
+  <string name="title_attribouter_license_permissions">أذونات</string>
+  <string name="title_attribouter_license_conditions">الشروط</string>
+  <string name="title_attribouter_license_limitations">| القيود |</string>
+  <string name="title_attribouter_more_info">مزيد من المعلومات</string>
+  <string name="title_attribouter_translators">المترجمون</string>
+  <string name="about_our_team">فريقنا</string>
+  <string name="about_our_contributors">مساهمينا الرئيسيين</string>
+  <string name="about_our_family">فرد اخر من الاسرة</string>
+  <string name="about_role_lead">المطور الرئيسي</string>
+  <string name="about_role_dev">المطور</string>
+  <string name="about_role_designer">المصمم</string>
+  <string name="about_role_family_member">فرد من الاسرة</string>
+  <string name="about_bio_deletescape">مطور الاندرويد و الهواة ، يحب الميمات (قليلا جدا في الواقع). مؤسس مشروع Lawnchair.</string>
+  <string name="about_bio_divadsn">18 عاماً، يحول الكافيين والبيتزا إلى التعليمات البرمجية. أيضا تعرف سابقا باسم كوديبوكيت.</string>
+  <string name="about_bio_recoded">مصمم البرامج والرسومات الخفيفة.</string>
+  <string name="about_bio_josh">مصمم جرافيك حر.</string>
+  <string name="about_bio_chris">المبدع، المؤثر منشئ المحتوى. مدير العلاقات العامة والإعلام الاجتماعي.</string>
+  <string name="about_bio_msfjarvis">المطور الأساسي في halogenOS و مطور التطبيق في substratum.</string>
 </resources>
