@@ -459,10 +459,36 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel検索バー</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">アイコン</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">ドロワー</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">その他</string>
   <string name="blur_oom">Lawnchairはメモリー不足の為のため壁紙にぼかしを適用出来ません！　壁紙の解像度を下げると解決される可能性があります。</string>
   <string name="legacy_backup">旧バージョン式バックアップ ファイル</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">オープンソース・ライセンス</string>
+  <string name="title_attribouter_email">メール</string>
+  <string name="title_attribouter_website">ウェブサイト</string>
+  <string name="title_attribouter_rate">評価</string>
+  <string name="title_attribouter_version">バージョン %1$s</string>
+  <string name="title_attribouter_license">ライセンス</string>
+  <string name="title_attribouter_license_permissions">アクセス権</string>
+  <string name="title_attribouter_license_conditions">条件</string>
+  <string name="title_attribouter_license_limitations">制限事項</string>
+  <string name="title_attribouter_more_info">詳細</string>
+  <string name="title_attribouter_translators">翻訳者</string>
+  <string name="about_our_team">開発者</string>
+  <string name="about_our_contributors">主なメンバー</string>
+  <string name="about_our_family">その他の仲間たち</string>
+  <string name="about_role_lead">メイン開発者</string>
+  <string name="about_role_devops">開発者</string>
+  <string name="about_role_dev">開発者</string>
+  <string name="about_role_dev_mod">開発者 / 仲介者</string>
+  <string name="about_role_designer">デザイナー</string>
+  <string name="about_role_special_snowflake">PRマネージャー / 仲介者</string>
+  <string name="about_role_mod_support">仲介者 / サポート</string>
+  <string name="about_role_family_member">仲間たち</string>
+  <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
+Lawnchairプロジェクトの創始者です。</string>
 </resources>
