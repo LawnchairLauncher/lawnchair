@@ -1,9 +1,9 @@
 buildscript {
     ext.kotlin_version = '1.2.21'
     repositories {
+        google()
         mavenCentral()
         jcenter()
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
@@ -133,9 +133,9 @@ afterEvaluate {
 }
 
 repositories {
+    google()
     mavenCentral()
     jcenter()
-    google()
 }
 
 final String SUPPORT_LIBS_VERSION = '27.1.0'
