@@ -18,24 +18,30 @@ package com.android.launcher3;
 
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.Property;
 import android.util.SparseArray;
-
+import android.view.animation.AccelerateInterpolator;
 import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
 
+    private static final Property<FastBitmapDrawable, Float> SCALE =
+            new Property<FastBitmapDrawable, Float>(Float.TYPE, "scale") {
+        @Override
+        public Float get(FastBitmapDrawable object) {
+            return object.mScale;
+        }
+
+        @Override
+        public void set(FastBitmapDrawable object, Float value) {
+            object.mScale = value;
+            object.invalidateSelf();
+        }
+    };
+    private static final android.view.animation.Interpolator SCALE_INTERPOLATOR = new AccelerateInterpolator();
     private static final float PRESSED_BRIGHTNESS = 100f / 255f;
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
@@ -98,14 +104,29 @@ public class FastBitmapDrawable extends Drawable {
     // Animators for the fast bitmap drawable's brightness
     private ObjectAnimator mBrightnessAnimator;
 
+    private float mScale = 1f;
+    private ObjectAnimator mScaleAnimation;
+
     public FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
         setFilterBitmap(true);
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+    public void draw(@NonNull Canvas canvas) {
+        if (mScaleAnimation != null) {
+            int count = canvas.save();
+            Rect bounds = getBounds();
+            canvas.scale(mScale, mScale, bounds.exactCenterX(), bounds.exactCenterY());
+            drawInternal(canvas, bounds);
+            canvas.restoreToCount(count);
+        } else {
+            drawInternal(canvas, getBounds());
+        }
+    }
+
+    public void drawInternal(Canvas canvas, Rect bounds) {
+        canvas.drawBitmap(mBitmap, null, bounds, mPaint);
     }
 
     public IconPalette getIconPalette() {
@@ -188,19 +209,19 @@ public class FastBitmapDrawable extends Drawable {
         if (mIsPressed != isPressed) {
             mIsPressed = isPressed;
 
-            if (mBrightnessAnimator != null) {
-                mBrightnessAnimator.cancel();
+            if (mScaleAnimation != null) {
+                mScaleAnimation.cancel();
+                mScaleAnimation = null;
             }
 
             if (mIsPressed) {
-                // Animate when going to pressed state
-                mBrightnessAnimator = ObjectAnimator.ofFloat(
-                        this, BRIGHTNESS, getExpectedBrightness());
-                mBrightnessAnimator.setDuration(CLICK_FEEDBACK_DURATION);
-                mBrightnessAnimator.setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
-                mBrightnessAnimator.start();
+                mScaleAnimation = ObjectAnimator.ofFloat(this, SCALE, 1.1f);
+                mScaleAnimation.setDuration(200);
+                mScaleAnimation.setInterpolator(SCALE_INTERPOLATOR);
+                mScaleAnimation.start();
             } else {
-                setBrightness(getExpectedBrightness());
+                mScale = 1f;
+                invalidateSelf();
             }
             return true;
         }
