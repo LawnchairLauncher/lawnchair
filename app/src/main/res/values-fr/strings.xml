@@ -480,4 +480,16 @@
   <string name="title_attribouter_translators">Traducteurs</string>
   <string name="about_our_team">Notre équipe</string>
   <string name="about_our_contributors">Nos principaux contributeurs</string>
+  <string name="about_our_family">Nos autres membres de la famille</string>
+  <string name="about_role_lead">Développeur en chef</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Développeur</string>
+  <string name="about_role_dev_mod">Développeur / Modérateur</string>
+  <string name="about_role_designer">Concepteur</string>
+  <string name="about_role_special_snowflake">Administrateurs des relations publiques / Modérateur</string>
+  <string name="about_role_mod_support">Modérateur / Soutien</string>
+  <string name="about_role_family_member">Membre de la famille</string>
+  <string name="about_bio_divadsn">18 ans, transforme la caféine et la pizza en code. Aussi anciennement connu sous le nom de Codebucket.</string>
+  <string name="about_bio_chris">Esprit créatif, influenceur et créateur de contenu. Responsable des médias sociaux et des relations publiques.</string>
+  <string name="about_bio_msfjarvis">Développeur principal pour halogenOS et développeur d\'application pour Substratum.</string>
 </resources>
