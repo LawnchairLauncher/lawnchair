@@ -460,10 +460,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Barra de cerca Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Icones</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Calaix d\'aplicacions</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Miscel·lània</string>
   <string name="blur_oom">El Lawnchair s\'ha quedat sense memòria intentant el desenfocament del fons de pantalla! La baixada de la resolució del fons de pantalla podria solucionar-ho.</string>
   <string name="legacy_backup">Fitxer de còpia de seguretat heretat</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Llicències de codi obert</string>
+  <string name="title_attribouter_email">Correu</string>
+  <string name="title_attribouter_website">Lloc web</string>
+  <string name="title_attribouter_rate">Valoració</string>
+  <string name="title_attribouter_version">Versió %1$s</string>
+  <string name="title_attribouter_license">Llicècia</string>
+  <string name="title_attribouter_license_permissions">Permisos</string>
+  <string name="title_attribouter_license_conditions">Condicions</string>
+  <string name="title_attribouter_license_limitations">Limitacions</string>
+  <string name="title_attribouter_more_info">Més informació</string>
+  <string name="title_attribouter_translators">Traductors</string>
+  <string name="about_our_team">El nostre equip</string>
+  <string name="about_our_contributors">Els nostres principals contribuïdors</string>
+  <string name="about_our_family">Els altres membres de la família</string>
+  <string name="about_role_lead">Desenvolupador principal</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Desenvolupador</string>
+  <string name="about_role_dev_mod">Desenvolupador / Moderador</string>
+  <string name="about_role_designer">Dissenyador</string>
+  <string name="about_role_special_snowflake">Administrador de relacions públiques / Moderador</string>
+  <string name="about_role_mod_support">Moderador / Suport</string>
+  <string name="about_role_family_member">Membre de la família</string>
+  <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, estima els memes (una mica massa en realitat). Fundador del projecte Lawnchair.</string>
+  <string name="about_bio_divadsn">18 anys, converteixo la cafeïna i la pizza en codi. També conegut anteriorment com Codebucket.</string>
+  <string name="about_bio_recoded">Programador i dissenyador.</string>
+  <string name="about_bio_josh">Dissenyador autònom.</string>
+  <string name="about_bio_chris">Ment creativa, influent i creador de contingut. Social media i administrador de relacions públiques.</string>
+  <string name="about_bio_msfjarvis">Desenvolupador principal en halogenOS i desenvolupador d\'aplicacions en substratum.</string>
 </resources>
