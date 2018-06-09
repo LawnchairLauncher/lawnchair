@@ -459,10 +459,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">显示 Pixel 顶栏</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">图标</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">应用抽屉</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">杂项</string>
   <string name="blur_oom">Lawnchair 在尝试模糊壁纸时耗尽内存啦! 降低壁纸分辨率可能修复该问题。</string>
   <string name="legacy_backup">旧备份文件</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">开放源代码许可</string>
+  <string name="title_attribouter_email">邮件</string>
+  <string name="title_attribouter_website">网站</string>
+  <string name="title_attribouter_rate">评分</string>
+  <string name="title_attribouter_version">版本号 %1$s</string>
+  <string name="title_attribouter_license">许可</string>
+  <string name="title_attribouter_license_permissions">权限</string>
+  <string name="title_attribouter_license_conditions">许可状态</string>
+  <string name="title_attribouter_license_limitations">许可限制</string>
+  <string name="title_attribouter_more_info">更多信息</string>
+  <string name="title_attribouter_translators">翻译人员</string>
+  <string name="about_our_team">团队信息</string>
+  <string name="about_our_contributors">主要贡献者</string>
+  <string name="about_our_family">其他团队成员</string>
+  <string name="about_role_lead">首席开发者</string>
+  <string name="about_role_devops">调试</string>
+  <string name="about_role_dev">开发者</string>
+  <string name="about_role_dev_mod">开发者 / 主席</string>
+  <string name="about_role_designer">设计者</string>
+  <string name="about_role_special_snowflake">公关经理 / 主席</string>
+  <string name="about_role_mod_support">其他管理和支持</string>
+  <string name="about_role_family_member">团队成员</string>
+  <string name="about_bio_deletescape">安卓开发者 &amp; 爱好者, 喜欢玩梗(玩得有点过火了)。Lawnchair 项目的创始人。</string>
+  <string name="about_bio_divadsn">18岁, 把咖啡因和披萨变成代码。以前也被称为 Codebucket。</string>
+  <string name="about_bio_recoded">温和的程序员和图形设计师。</string>
+  <string name="about_bio_josh">自由的图像设计师。</string>
+  <string name="about_bio_chris">创造性思维、影响者和内容创造者。社交媒体和公关经理。</string>
+  <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 substratum 的应用程序开发者。</string>
 </resources>
