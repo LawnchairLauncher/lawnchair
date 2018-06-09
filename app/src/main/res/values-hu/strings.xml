@@ -328,6 +328,7 @@
   <string name="default_text">Alapértelmezett</string>
   <string name="edit_icon_reset">Alaphelyzetbe állítás</string>
   <string name="show_top_shadow_title">Felső árnyék megjelenítése</string>
+  <string name="pref_category_homescreen">Asztal</string>
   <string name="theme_pref_title">Téma</string>
   <string name="theme_light">Világos</string>
   <string name="theme_dark">Sötét</string>
@@ -459,10 +460,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel keresősáv</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikonok</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Alkalmazásfiók</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Egyebek</string>
   <string name="blur_oom">A Lawnchair memóriája elfogyott a háttérkép életlenítése közben! A háttérkép felbontásának csökkentése megoldhatja ezt a problémát.</string>
   <string name="legacy_backup">Örökölt mentési fájl</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Nyílt forráskódú licenszek</string>
+  <string name="title_attribouter_email">E-mail</string>
+  <string name="title_attribouter_website">Weboldal</string>
+  <string name="title_attribouter_rate">Értékelés</string>
+  <string name="title_attribouter_version">%1$s verzió</string>
+  <string name="title_attribouter_license">Licensz</string>
+  <string name="title_attribouter_license_permissions">Jogosultságok</string>
+  <string name="title_attribouter_license_conditions">Feltételek</string>
+  <string name="title_attribouter_license_limitations">Korlátozások</string>
+  <string name="title_attribouter_more_info">További Információ</string>
+  <string name="title_attribouter_translators">Fordítók</string>
+  <string name="about_our_team">Alkotógárdánk</string>
+  <string name="about_our_contributors">Legfőbb közreműködőink</string>
+  <string name="about_our_family">Alkotógárdánk további tagjai</string>
+  <string name="about_role_lead">Vezető fejlesztő</string>
+  <string name="about_role_devops">Műveleti fejlesztők</string>
+  <string name="about_role_dev">Fejlesztő</string>
+  <string name="about_role_dev_mod">Fejlesztő / Moderátor</string>
+  <string name="about_role_designer">Dizájner</string>
+  <string name="about_role_special_snowflake">PR menedzser / Moderátor</string>
+  <string name="about_role_mod_support">Moderátor / Támogatás</string>
+  <string name="about_role_family_member">Alkotógárda-tag</string>
+  <string name="about_bio_deletescape">Az Android fejlesztők és rajongók (egy kicsit túlságosan is) szeretik a mémeket . A Lawnchair projekt alapítója.</string>
+  <string name="about_bio_divadsn">18 éves, még a koffeint és a pizzát is kódra fordítja. Korábban Codebucket néven volt ismert.</string>
+  <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
+  <string name="about_bio_josh">Független grafikai dizájner.</string>
+  <string name="about_bio_chris">Kreatív elme, Ötletadó és Tartalomkészítő. Közösségi média és PR menedzser.</string>
+  <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
 </resources>
