@@ -462,10 +462,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikony</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Seznam aplikací</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Různé</string>
   <string name="blur_oom">Lawnchair vyčerpal paměť při pokusu rozmazat tapetu! Snížení rozlišení tabety by tento problém mohlo vyřešit.</string>
   <string name="legacy_backup">Starší soubor zálohy</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Open Source licence</string>
+  <string name="title_attribouter_email">E-mail</string>
+  <string name="title_attribouter_website">Webová stránka</string>
+  <string name="title_attribouter_rate">Ohodnotit</string>
+  <string name="title_attribouter_version">Verze %1$s</string>
+  <string name="title_attribouter_license">Licence</string>
+  <string name="title_attribouter_license_permissions">Oprávnění</string>
+  <string name="title_attribouter_license_conditions">Podmínky</string>
+  <string name="title_attribouter_license_limitations">Omezení</string>
+  <string name="title_attribouter_more_info">Další informace</string>
+  <string name="title_attribouter_translators">Překladatelé</string>
+  <string name="about_our_team">Náš tým</string>
+  <string name="about_our_contributors">Naši hlavní přispěvatelé</string>
+  <string name="about_our_family">Naši další členové rodiny</string>
+  <string name="about_role_lead">Hlavní vývojář</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Vývojář</string>
+  <string name="about_role_dev_mod">Vývojář / moderátor</string>
+  <string name="about_role_designer">Návrhář</string>
+  <string name="about_role_special_snowflake">PR manažerr / moderátor</string>
+  <string name="about_role_mod_support">Moderátor / podpora</string>
+  <string name="about_role_family_member">Člen rodiny</string>
+  <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (příliš mnoho). Zakladatel projektu Lawnchair.</string>
+  <string name="about_bio_divadsn">18 let starý, mění kafe a pizzu v kódy. Dříve známý také jako Codebucket.</string>
+  <string name="about_bio_recoded">Kodér a grafický designér.</string>
+  <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
+  <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
+  <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
 </resources>
