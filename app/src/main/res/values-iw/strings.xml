@@ -462,10 +462,30 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">סרגל חיפוש בסגנון Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">סמלים</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">מגירה</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">שונות</string>
   <string name="blur_oom">ל-Lawnchair נגמר הזיכרון בניסיון לטשטש את הטפט שלך! הורדת הרזולוציה של הטפט יכולה לתקן את זה.</string>
   <string name="legacy_backup">קובץ גיבוי מדור קודם</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">רישיונות קוד פתוח</string>
+  <string name="title_attribouter_email">דוא\"ל</string>
+  <string name="title_attribouter_website">אתר</string>
+  <string name="title_attribouter_rate">דירוג</string>
+  <string name="title_attribouter_version">גרסה %1$s</string>
+  <string name="title_attribouter_license">רישיון</string>
+  <string name="title_attribouter_license_permissions">הרשאות</string>
+  <string name="title_attribouter_license_conditions">תנאים</string>
+  <string name="title_attribouter_license_limitations">מגבלות</string>
+  <string name="title_attribouter_more_info">מידע נוסף</string>
+  <string name="title_attribouter_translators">מתרגמים</string>
+  <string name="about_our_team">הצוות שלנו</string>
+  <string name="about_our_contributors">התורמים הראשיים שלנו</string>
+  <string name="about_our_family">בני המשפחה האחרים שלנו</string>
+  <string name="about_role_lead">מפתח ראשי</string>
+  <string name="about_role_dev">מפתח</string>
+  <string name="about_role_designer">מעצב</string>
+  <string name="about_role_family_member">בן משפחה</string>
 </resources>
