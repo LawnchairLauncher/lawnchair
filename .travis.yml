@@ -1,0 +1,18 @@
+language: android
+dist: trusty
+jdk: oraclejdk8
+android:
+  components:
+  - tools
+  - tools
+  - platform-tools
+  - build-tools-27.0.3
+  - android-27
+  - extra-google-m2repository
+script:
+- bash gradlew assembleAospDevDebug
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
