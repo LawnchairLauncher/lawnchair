@@ -150,3 +150,9 @@ val SCALE_XY: Property<View, Float> = object : Property<View, Float>(Float::clas
         return view.scaleX
     }
 }
+
+fun Float.clamp(min: Float, max: Float): Float {
+    if (this <= min) return min
+    if (this >= max) return max
+    return this
+}

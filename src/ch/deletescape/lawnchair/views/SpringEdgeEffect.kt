@@ -9,11 +9,13 @@ import android.view.View
 import android.widget.EdgeEffect
 import ch.deletescape.lawnchair.JavaField
 import ch.deletescape.lawnchair.KFloatPropertyCompat
+import ch.deletescape.lawnchair.clamp
 import kotlin.reflect.KMutableProperty0
 
 class SpringEdgeEffect(
         private val view: View,
         private val target: KMutableProperty0<Float>,
+        private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
         private val velocityMultiplier: Float) : EdgeEffect(view.context) {
 
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {
@@ -31,6 +33,7 @@ class SpringEdgeEffect(
     }
 
     override fun onPull(deltaDistance: Float, displacement: Float) {
+        activeEdge.set(this)
         distance += deltaDistance * (velocityMultiplier / 3)
         target.set(distance * view.height)
     }
@@ -50,18 +53,39 @@ class SpringEdgeEffect(
     class Manager(val view: View) {
 
         var shiftX = 0f
-            set(value) {
+            set(rawValue) {
+                val value = clampShift(rawValue, view.width / 15f)
                 if (field != value) {
                     field = value
                     view.invalidate()
                 }
             }
         var shiftY = 0f
-            set(value) {
+            set(rawValue) {
+                val value = clampShift(rawValue, view.height / 15f)
                 if (field != value) {
                     field = value
                     view.invalidate()
                 }
+            }
+
+        private fun clampShift(value: Float, max: Float): Float {
+            return value.clamp(-max, max)
+        }
+
+        var activeEdgeX: SpringEdgeEffect? = null
+            set(value) {
+                if (field != value) {
+                    field?.run { value?.distance = distance }
+                }
+                field = value
+            }
+        var activeEdgeY: SpringEdgeEffect? = null
+            set(value) {
+                if (field != value) {
+                    field?.run { value?.distance = distance }
+                }
+                field = value
             }
 
         inline fun withSpring(canvas: Canvas, body: () -> Boolean): Boolean {
@@ -82,10 +106,10 @@ class SpringEdgeEffect(
 
             override fun createEdgeEffect(recyclerView: RecyclerView?, direction: Int): EdgeEffect {
                 return when (direction) {
-                    DIRECTION_LEFT -> SpringEdgeEffect(view, ::shiftX, 0.3f)
-                    DIRECTION_TOP -> SpringEdgeEffect(view, ::shiftY, 0.3f)
-                    DIRECTION_RIGHT -> SpringEdgeEffect(view, ::shiftX, -0.3f)
-                    DIRECTION_BOTTOM -> SpringEdgeEffect(view, ::shiftY, -0.3f)
+                    DIRECTION_LEFT -> SpringEdgeEffect(view, ::shiftX, ::activeEdgeX, 0.3f)
+                    DIRECTION_TOP -> SpringEdgeEffect(view, ::shiftY, ::activeEdgeY, 0.3f)
+                    DIRECTION_RIGHT -> SpringEdgeEffect(view, ::shiftX, ::activeEdgeX, -0.3f)
+                    DIRECTION_BOTTOM -> SpringEdgeEffect(view, ::shiftY, ::activeEdgeY, -0.3f)
                     else -> super.createEdgeEffect(recyclerView, direction)
                 }
             }
