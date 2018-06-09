@@ -462,10 +462,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pasek wyszukiwania Pixela</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikony</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Szuflada</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Pozostałe</string>
   <string name="blur_oom">Lawnchairowi skończyła się pamięć podczas próby rozmycia tapety. Zmniejszenie rozdzielczości tapety może rozwiązać ten problem.</string>
   <string name="legacy_backup">Plik starszej wersji kopii zapasowej</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Licencje Open Source</string>
+  <string name="title_attribouter_email">Adres e-mail</string>
+  <string name="title_attribouter_website">Strona internetowa</string>
+  <string name="title_attribouter_rate">Oceń</string>
+  <string name="title_attribouter_version">Wersja %1$s</string>
+  <string name="title_attribouter_license">Licencja</string>
+  <string name="title_attribouter_license_permissions">Uprawnienia</string>
+  <string name="title_attribouter_license_conditions">Warunki</string>
+  <string name="title_attribouter_license_limitations">Ograniczenia</string>
+  <string name="title_attribouter_more_info">Więcej informacji</string>
+  <string name="title_attribouter_translators">Tłumacze</string>
+  <string name="about_our_team">Nasz Zespół</string>
+  <string name="about_our_contributors">Nasi główni współtwórcy</string>
+  <string name="about_our_family">Pozostali członkowie rodziny</string>
+  <string name="about_role_lead">Główny programista</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Programista</string>
+  <string name="about_role_dev_mod">Programista / Moderator</string>
+  <string name="about_role_designer">Projektant</string>
+  <string name="about_role_special_snowflake">Zarządca PR / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Wsparcie</string>
+  <string name="about_role_family_member">Członek rodziny</string>
+  <string name="about_bio_deletescape">Entuzjasta Androida oraz twórca aplikacji na niego, uwielbia memy (nawet za bardzo). Założyciel projektu Lawnchair.</string>
+  <string name="about_bio_divadsn">Osiemnastolatek, zamienia kofeinę i pizzę w kod. Znany poprzednio jako Codebucket.</string>
+  <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
+  <string name="about_bio_josh">Niezależny grafik.</string>
+  <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR.</string>
+  <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w Substratum.</string>
 </resources>

@@ -262,9 +262,9 @@
   <string name="blur_radius_pref_title">Uskarphetsradius</string>
   <string name="pref_iconLabelsInTwoLines">Ikonetiketter på to linjer</string>
   <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">Skjul ikonetiketter på startskjermen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skjul ikonetiketter i Alle apper</string>
-  <string name="workspace_label_color_hue_pref_title">Farge på ikon-etiketter på hjemskjerm</string>
+  <string name="workspace_label_color_hue_pref_title">Farge på ikonetiketter på startskjerm</string>
   <string name="all_apps_opacity_pref_title">Alle apper gjennomsiktighet</string>
   <string name="num_cols_pref_title">Antall kolonner</string>
   <string name="num_rows_pref_title">Antall rader</string>
@@ -272,13 +272,14 @@
   <string name="icon_scale_pref_title">Ikonstørrelse</string>
   <string name="hotseat_height_scale">Høydeskala</string>
   <string name="hotseat_custom_opacity">Dokkugjennomsiktighet</string>
+  <string name="hotseat_uses_custom_opacity">Egendefinert dokkgjennomsiktighet</string>
   <string name="icon_text_scale_pref_title">Ikontekstskalering</string>
   <string name="icon_text_padding_scale_pref_title">Ikonutfyllingskalering</string>
   <string name="full_width_width_widgets_pref_title">Full bredde moduler</string>
   <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten utfylling</string>
   <string name="notification_access_pref_title">Varselsmerker og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslene dine for å aktivere denne funksjonen</string>
-  <string name="general_pref_title">Skrivebord</string>
+  <string name="general_pref_title">Startskjerm</string>
   <string name="dock_pref_title">Dokk</string>
   <string name="app_drawer_pref_title">Alle apper</string>
   <string name="pixel_ui_pref_title">Tema</string>
@@ -305,14 +306,14 @@
   <string name="restart_lawnchair_pref_summary">Kan være nyttig dersom noen innstillinger ikke settes riktig</string>
   <string name="rebuild_icondb_pref_title">Gjenoppbygg ikon-database</string>
   <string name="pinch_to_overview_pref_title">Knip for oversikt</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Knip på startskjermen for å åpne oversikt</string>
   <string name="light_statusbar_pref_title">Lyst statusfelt</string>
   <string name="light_statusbar_pref_force">Statusfeltet vil vise mørke ikoner</string>
   <string name="light_statusbar_pref_off">Statusfeltet vil vise lyse ikoner</string>
   <string name="keep_scroll_state_pref_title">Lagre bla-posisjon</string>
   <string name="keep_scroll_state_pref_summary">Lagrer bla-posisjonen i Alle apper</string>
   <string name="home_opens_drawer_pref_title">Hjemknapp åpner Alle apper</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Trykk Hjem-knappen på startskjermen for å åpne Alle apper</string>
   <string name="show_hidden_pref_title">Vis skjulte apper</string>
   <string name="show_hidden_pref_on">Skjulte apper vil vises for å endre synlighetsinnstillingene</string>
   <string name="show_hidden_pref_off">Skjulte apper vil ikke være synlige</string>
@@ -327,6 +328,7 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Tilbakestill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
+  <string name="pref_category_homescreen">Startskjerm</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Lys</string>
   <string name="theme_dark">Mørk</string>
@@ -397,11 +399,12 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
-  <string name="lock_desktop">Lås skrivebordet</string>
+  <string name="lock_desktop">Lås startskjermen</string>
   <string name="lawnfeed_not_found">Lawnfeed ikke installert</string>
   <string name="google_app_not_found">Google app ikke installert</string>
   <string name="lawnfeed_incompatible">Ikke kompatibel versjon av Lawnfeed installert</string>
   <string name="set_default_launcher">Angi standard startskjerm</string>
+  <string name="enable_spring_pref_title">Springfjæreffekt</string>
   <string name="hide_app">Skjulte apper</string>
   <string name="hide_app_sum">Skjul apper i Alle apper</string>
   <string name="hide_app_selected">&#160;valgt</string>
@@ -457,10 +460,39 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel søkefelt</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikoner</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Alle apper</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Diverse</string>
   <string name="blur_oom">Lawnchair gikk tom for minne ved å gjøre bakgrunnen uskarp! Å redusere oppløsningen på bakgrunnsbildet kan hjelpe.</string>
   <string name="legacy_backup">Foreldet sikkerhetskopifil</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Åpen kildekode-lisenser</string>
+  <string name="title_attribouter_email">E-post</string>
+  <string name="title_attribouter_website">Nettsted</string>
+  <string name="title_attribouter_version">Versjon %1$s</string>
+  <string name="title_attribouter_license">Lisens</string>
+  <string name="title_attribouter_license_permissions">Tillatelser</string>
+  <string name="title_attribouter_license_conditions">Betingelser</string>
+  <string name="title_attribouter_license_limitations">Begrensninger</string>
+  <string name="title_attribouter_more_info">Mer informasjon</string>
+  <string name="title_attribouter_translators">Oversettere</string>
+  <string name="about_our_team">Om teamet</string>
+  <string name="about_our_contributors">Våre hovedbidragsytere</string>
+  <string name="about_our_family">Våre andre familiemedlemmer</string>
+  <string name="about_role_lead">Lead Developer</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Utvikler</string>
+  <string name="about_role_dev_mod">Utvikler / Moderator</string>
+  <string name="about_role_designer">Designer</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Støtte</string>
+  <string name="about_role_family_member">Familiemedlem</string>
+  <string name="about_bio_deletescape">Android utvikler &amp; entusiast, elsker memer (litt for mye faktisk). Grunnlegger av Lawnchair prosjektet.</string>
+  <string name="about_bio_divadsn">18 år gammel, forvandler koffein og pizza til kode. Tidligere kjent som Codebucket.</string>
+  <string name="about_bio_recoded">Programmerer og grafisk designer.</string>
+  <string name="about_bio_josh">Frilans grafisk designer.</string>
+  <string name="about_bio_chris">Kreativt sinn, Influenser &amp; Innholdsskaper. Sosiale media og PR Manager.</string>
+  <string name="about_bio_msfjarvis">Kjerneutvikler hos halogenOS og applikasjonsutvikler hos Substratum.</string>
 </resources>

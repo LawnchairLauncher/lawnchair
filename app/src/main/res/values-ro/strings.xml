@@ -329,6 +329,7 @@
   <string name="default_text">Implicit</string>
   <string name="edit_icon_reset">Resetare</string>
   <string name="show_top_shadow_title">Afişare umbră de sus</string>
+  <string name="pref_category_homescreen">Desktop</string>
   <string name="theme_pref_title">Temă</string>
   <string name="theme_light">Luminoasă</string>
   <string name="theme_dark">Întunecată</string>
@@ -460,10 +461,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Bară de căutare Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Pictograme</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Listă aplicaţii</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Diverse</string>
   <string name="blur_oom">Lawnchair a rămas fără memorie încercând să blureze imaginea de fundal! Scăderea rezoluției imaginii de fundal ar putea remedia acest lucru.</string>
   <string name="legacy_backup">Fișier vechi copie de rezervă</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Licențe Open Source</string>
+  <string name="title_attribouter_email">E-mail</string>
+  <string name="title_attribouter_website">Site web</string>
+  <string name="title_attribouter_rate">Evaluare</string>
+  <string name="title_attribouter_version">Versiunea %1$s</string>
+  <string name="title_attribouter_license">Licenţă</string>
+  <string name="title_attribouter_license_permissions">Permisiuni</string>
+  <string name="title_attribouter_license_conditions">Condiții</string>
+  <string name="title_attribouter_license_limitations">Limitări</string>
+  <string name="title_attribouter_more_info">Informații suplimentare</string>
+  <string name="title_attribouter_translators">Traducători</string>
+  <string name="about_our_team">Echipa noastră</string>
+  <string name="about_our_contributors">Principalii noștri contribuitori</string>
+  <string name="about_our_family">Ceilalți membri ai familiei noastre</string>
+  <string name="about_role_lead">Dezvoltator principal</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Dezvoltator</string>
+  <string name="about_role_dev_mod">Dezvoltator / Moderator</string>
+  <string name="about_role_designer">Designer</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Suport</string>
+  <string name="about_role_family_member">Membru al familiei</string>
+  <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului Lawnchair.</string>
+  <string name="about_bio_divadsn">Are 18 ani, transformă cofeina și pizza în cod. De asemenea, anterior cunoscut sub numele de Codebucket.</string>
+  <string name="about_bio_recoded">Coder mediu și designer grafic.</string>
+  <string name="about_bio_josh">Freelance graphic designer.</string>
+  <string name="about_bio_chris">Minte creativă, Influențator și Creator de conținut. Social Media și PR Manager.</string>
+  <string name="about_bio_msfjarvis">Dezvoltator principal al halogenOS și dezvoltator al substratum.</string>
 </resources>

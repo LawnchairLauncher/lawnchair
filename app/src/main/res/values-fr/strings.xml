@@ -455,9 +455,29 @@
   <string name="backup_share_text">Fichier de sauvegarde Lawnchair</string>
   <string name="read_external_storage_required">L\'autorisation d\'accès au stockage est nécessaire pour créer une sauvegarde</string>
   <string name="local_backups">Sauvegardes locales</string>
+  <string name="backup_location_device_storage">Mémoire de l\'appareil</string>
+  <string name="backup_location_documents_storage">Stockage des documents</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Barre de recherche Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Icônes</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Tiroir des applications</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Divers</string>
+  <string name="blur_oom">Lawnchair a manqué de mémoire en essayant de rendre votre arrière-plan flou. Abaisser la résolution de votre arrière-plan pourrait résoudre ce problème.</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Licences Open Source</string>
+  <string name="title_attribouter_email">E-mail</string>
+  <string name="title_attribouter_website">Site internet</string>
+  <string name="title_attribouter_rate">Évaluer</string>
+  <string name="title_attribouter_version">Version %1$s</string>
+  <string name="title_attribouter_license">Licence</string>
+  <string name="title_attribouter_license_permissions">Autorisations</string>
+  <string name="title_attribouter_license_conditions">Conditions</string>
+  <string name="title_attribouter_license_limitations">Limites</string>
+  <string name="title_attribouter_more_info">Plus d\'Infos</string>
+  <string name="title_attribouter_translators">Traducteurs</string>
+  <string name="about_our_team">Notre équipe</string>
+  <string name="about_our_contributors">Nos principaux contributeurs</string>
 </resources>

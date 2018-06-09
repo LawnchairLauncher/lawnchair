@@ -464,10 +464,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikon</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Laci</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Lain-lain</string>
   <string name="blur_oom">Lawnchair kehabisan memori saat berusaha memburamkan wallpaper anda! Menurunkan resolusi wallpaper mungkin bisa memperbaiki ini.</string>
   <string name="legacy_backup">Berkas cadangan lawas</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Lisensi sumber terbuka</string>
+  <string name="title_attribouter_email">Email</string>
+  <string name="title_attribouter_website">Situs web</string>
+  <string name="title_attribouter_rate">Beri nilai</string>
+  <string name="title_attribouter_version">Versi%1$s</string>
+  <string name="title_attribouter_license">Lisensi</string>
+  <string name="title_attribouter_license_permissions">Perizinan</string>
+  <string name="title_attribouter_license_conditions">Kondisi</string>
+  <string name="title_attribouter_license_limitations">Pembatasan</string>
+  <string name="title_attribouter_more_info">Info lebih lanjut</string>
+  <string name="title_attribouter_translators">Penerjemah</string>
+  <string name="about_our_team">Tim Kami</string>
+  <string name="about_our_contributors">Kontributor utama kami</string>
+  <string name="about_our_family">Anggota keluarga kami lainnya</string>
+  <string name="about_role_lead">Pengembang utama</string>
+  <string name="about_role_devops">Opsi pengembang</string>
+  <string name="about_role_dev">Pengembang</string>
+  <string name="about_role_dev_mod">Pengembang / moderator</string>
+  <string name="about_role_designer">Desainer</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Pendukung</string>
+  <string name="about_role_family_member">Anggota Keluarga</string>
+  <string name="about_bio_deletescape">Pengembang Android &amp; entusias, pecinta memes (sebenarnya sedikit terlalu berlebihan). Penggagas Lawnchair project.</string>
+  <string name="about_bio_divadsn">18 tahun, mengubah kafein dan pizza menjadi kode. Juga sebelumnya dikenal sebagai Codebucket.</string>
+  <string name="about_bio_recoded">Desainer grafis dan coder ringan.</string>
+  <string name="about_bio_josh">Desainer grafis freelance.</string>
+  <string name="about_bio_chris">Pemikir kreatif, pemberi masukan &amp; pengisi konten. Sosial Media and PR Manager.</string>
+  <string name="about_bio_msfjarvis">Pengembang inti di halogenOS dan pengembang aplikasi di substratum.</string>
 </resources>

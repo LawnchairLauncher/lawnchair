@@ -461,10 +461,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel трака за претрагу</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Иконе</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Фиока</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Разно</string>
   <string name="blur_oom">Lawnchair је остао без меморије покушавајући да замути позадину! Смањивање резолуције позадине могло би да реши ово.</string>
   <string name="legacy_backup">Наслеђене датотеке резервне копије</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Лиценца отвореног кода</string>
+  <string name="title_attribouter_email">Е-пошта</string>
+  <string name="title_attribouter_website">Веб страница</string>
+  <string name="title_attribouter_rate">Оцијени</string>
+  <string name="title_attribouter_version">Верзија %1$s</string>
+  <string name="title_attribouter_license">Лиценце</string>
+  <string name="title_attribouter_license_permissions">Дозволе</string>
+  <string name="title_attribouter_license_conditions">Стање</string>
+  <string name="title_attribouter_license_limitations">Ограничења</string>
+  <string name="title_attribouter_more_info">Више Информација</string>
+  <string name="title_attribouter_translators">Преводиоци</string>
+  <string name="about_our_team">Наш тим</string>
+  <string name="about_our_contributors">Наши главни доприносиоци</string>
+  <string name="about_our_family">Наши други чланови породице</string>
+  <string name="about_role_lead">Главни програмер</string>
+  <string name="about_role_devops">ДевОпс</string>
+  <string name="about_role_dev">Програмер</string>
+  <string name="about_role_dev_mod">Пројектант / модератора</string>
+  <string name="about_role_designer">Дизајнер</string>
+  <string name="about_role_special_snowflake">ПР менаџер / модератор</string>
+  <string name="about_role_mod_support">Модератор / Подршка</string>
+  <string name="about_role_family_member">Члан породице</string>
+  <string name="about_bio_deletescape">Програмер за Андроид &amp; ентузијасти, воле меме (мало превише). Оснивач пројекта Lawnchair.</string>
+  <string name="about_bio_divadsn">18 година, претвара кофеин и пицу у код. Такође раније познат као Codebucket.</string>
+  <string name="about_bio_recoded">Благи кодер и графички дизајнер.</string>
+  <string name="about_bio_josh">Самостални графички дизајнер.</string>
+  <string name="about_bio_chris">Креативни ум, саветник за продају &amp; Креатор садржаја. Друштвени медији и ПР менаџер.</string>
+  <string name="about_bio_msfjarvis">Основни програмер на halogenOS-у и апликације на субстратуму.</string>
 </resources>

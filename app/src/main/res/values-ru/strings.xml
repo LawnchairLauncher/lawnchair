@@ -462,10 +462,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Строка поиска Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Иконки</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Меню приложений</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Разное</string>
   <string name="blur_oom">Произошла ошибка при попытке Lawnchair размыть ваши обои! Уменьшение разрешения обоев могло бы исправить это.</string>
   <string name="legacy_backup">Устаревший файл резервной копии</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Open Source лицензии</string>
+  <string name="title_attribouter_email">Адрес электронной почты</string>
+  <string name="title_attribouter_website">Сайт</string>
+  <string name="title_attribouter_rate">Оценить</string>
+  <string name="title_attribouter_version">Версия %1$s</string>
+  <string name="title_attribouter_license">Лицензия</string>
+  <string name="title_attribouter_license_permissions">Разрешения</string>
+  <string name="title_attribouter_license_conditions">Условия</string>
+  <string name="title_attribouter_license_limitations">Ограничения</string>
+  <string name="title_attribouter_more_info">Больше информации</string>
+  <string name="title_attribouter_translators">Переводчики</string>
+  <string name="about_our_team">Наша команда</string>
+  <string name="about_our_contributors">Наши главные помощники</string>
+  <string name="about_our_family">Другие члены нашей семьи</string>
+  <string name="about_role_lead">Ведущий разработчик</string>
+  <string name="about_role_devops">Операционные разработки</string>
+  <string name="about_role_dev">Разработчик</string>
+  <string name="about_role_dev_mod">Разработчик / Модератор</string>
+  <string name="about_role_designer">Дизайнер</string>
+  <string name="about_role_special_snowflake">PR-менеджер / Модератор</string>
+  <string name="about_role_mod_support">Модератор / Поддержка</string>
+  <string name="about_role_family_member">Член семьи</string>
+  <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта Lawnchair.</string>
+  <string name="about_bio_divadsn">18 лет, превращает кофеин и пиццу в код. Также ранее известный, как Codebucket.</string>
+  <string name="about_bio_recoded">Немного кодер и графичский дизайнер.</string>
+  <string name="about_bio_josh">Внештатный графический дизайнер.</string>
+  <string name="about_bio_chris">Творческий разум и контент-менеджер. Менеджер по соцсетям и PR-менеджер.</string>
+  <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
 </resources>

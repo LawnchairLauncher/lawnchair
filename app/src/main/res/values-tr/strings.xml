@@ -248,16 +248,16 @@
   <string name="about_pref_summary">Lawnchair ekibi hakkında bilgi sahibi olun</string>
   <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Simge Paketi</string>
+  <string name="icon_pack_preference_title">Simge paketi</string>
   <string name="icon_pack_preference_summary">Simge paketini seçin</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Alt panelde duvar kağıdı renklerini kullan</string>
   <string name="hotseat_show_arrow">Oku göster</string>
   <string name="hotseat_show_page_indicator">Sayfa göstergesini göster</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Alt panel duvar kağıdından alınan bir renkle renklendirilir</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Alt panel gri renkte olacak, ancak duvar kağıdı parlaklığıyla ayarlanacaktır</string>
-  <string name="transparent_hotseat_pref_title">Şeffaf Alt Panel</string>
+  <string name="transparent_hotseat_pref_title">Şeffaf alt panel</string>
   <string name="dynamic_ui_pref_title">Vurgu rengini duvar kağıdından al</string>
-  <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
+  <string name="blur_pref_title">Bulanıklık</string>
   <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
   <string name="blur_radius_pref_title">Bulanıklık miktarı</string>
   <string name="pref_iconLabelsInTwoLines">İki satırda simge etiketleri</string>
@@ -272,7 +272,7 @@
   <string name="icon_scale_pref_title">Simge boyutu</string>
   <string name="hotseat_height_scale">Yükseklik ölçeği</string>
   <string name="hotseat_custom_opacity">Alt panel saydamlığı</string>
-  <string name="hotseat_uses_custom_opacity">Özel alt panel saydamlığını etkinleştir</string>
+  <string name="hotseat_uses_custom_opacity">Özel alt panel saydamlığı</string>
   <string name="icon_text_scale_pref_title">Simge yazı boyutu</string>
   <string name="icon_text_padding_scale_pref_title">Simge boşluğu ölçeği</string>
   <string name="full_width_width_widgets_pref_title">Widget\'lara tam genişlik</string>
@@ -304,9 +304,9 @@
   <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>
   <string name="restart_lawnchair_pref_title">Lawnchair\'ı Yeniden Başlat</string>
   <string name="restart_lawnchair_pref_summary">Bazı ayarlar doğru uygulanmadığında yardımcı olabilir</string>
-  <string name="rebuild_icondb_pref_title">Simge Veritabanını Yeniden Oluştur</string>
+  <string name="rebuild_icondb_pref_title">Simge veritabanını yeniden oluştur</string>
   <string name="pinch_to_overview_pref_title">Gözden geçirmek için sıkıştır</string>
-  <string name="pinch_to_overview_pref_summary">Gözden geçirmeyi açmak için ana ekranı sıkıştırın</string>
+  <string name="pinch_to_overview_pref_summary">Son kullanılanları açmak için ana ekranı sıkıştırın</string>
   <string name="light_statusbar_pref_title">Aydınlık durum çubuğu</string>
   <string name="light_statusbar_pref_force">Durum çubuğu koyu renkli simgeler gösterecektir</string>
   <string name="light_statusbar_pref_off">Durum çubuğu açık renkli simgeler gösterecektir</string>
@@ -333,14 +333,14 @@
   <string name="theme_light">Açık</string>
   <string name="theme_dark">Koyu</string>
   <string name="theme_black">Siyah</string>
-  <string name="hide_hotseat_pref_title">Alt Paneli Gizle</string>
-  <string name="all_icons">Tüm Simgeler</string>
+  <string name="hide_hotseat_pref_title">Alt paneli gizle</string>
+  <string name="all_icons">Tüm simgeler</string>
   <string name="pull_down_action_pref_title">Aşağı çekme eylemi</string>
   <string name="pull_down_do_nothing">Hiçbir şey yapma</string>
   <string name="pull_down_notis">Bildirimleri göster</string>
   <string name="pull_down_search">Aramayı aç</string>
   <string name="pull_down_apps_search">Uygulama ara</string>
-  <string name="enable_screen_rotation">Ekran döndürmeyi etkinleştir</string>
+  <string name="enable_screen_rotation">Ekran döndürme</string>
   <string name="use_system_fonts_title">Etiketler için sistem yazı tiplerini kullan</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Geri yükle</string>
@@ -358,7 +358,7 @@
   <string name="units_imperial">Fahrenayt</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Hava durumu</string>
-  <string name="pref_weather_title">Hava durumunu etkinleştir</string>
+  <string name="pref_weather_title">Hava durumu</string>
   <string name="pref_weather_units">Hava durumu birimi</string>
   <string name="pref_weather_city_summary">En iyi sonucu almak için ülke kodunu ekleyin</string>
   <string name="pref_weather_city_title">Şehir</string>
@@ -404,7 +404,7 @@
   <string name="google_app_not_found">Google uygulaması yüklü değil</string>
   <string name="lawnfeed_incompatible">Uyumsuz Lawnfeed sürümü yüklü</string>
   <string name="set_default_launcher">Varsayılan başlatıcı olarak ayarla</string>
-  <string name="enable_spring_pref_title">Yay efektini etkinleştir</string>
+  <string name="enable_spring_pref_title">Yay efekti</string>
   <string name="hide_app">Uygulamaları gizle</string>
   <string name="hide_app_sum">Uygulamaları uygulama çekmecesinden gizleyin</string>
   <string name="hide_app_selected">&#160;seçildi</string>
@@ -460,10 +460,40 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel arama çubuğu</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Simgeler</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Uygulama çekmecesi</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Çeşitli</string>
   <string name="blur_oom">Lawnchair, duvar kağıdınızı bulanıklaştırmaya çalışan bellek bitti! Duvar kağıdı çözünürlüğünü düşürmek bunu düzeltebilir.</string>
   <string name="legacy_backup">Eski yedekleme dosyası</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Açık Kaynak Lisansları</string>
+  <string name="title_attribouter_email">E-Posta</string>
+  <string name="title_attribouter_website">Web sitesi</string>
+  <string name="title_attribouter_rate">Derecelendir</string>
+  <string name="title_attribouter_version">Versiyon %1$s</string>
+  <string name="title_attribouter_license">Lisans</string>
+  <string name="title_attribouter_license_permissions">İzinler</string>
+  <string name="title_attribouter_license_conditions">Koşullar</string>
+  <string name="title_attribouter_license_limitations">Sınırlamalar</string>
+  <string name="title_attribouter_more_info">Daha Fazla Bilgi</string>
+  <string name="title_attribouter_translators">Çevirmenler</string>
+  <string name="about_our_team">Ekibimiz</string>
+  <string name="about_our_contributors">Asıl katkıda bulunanlar</string>
+  <string name="about_our_family">Diğer aile üyelerimiz</string>
+  <string name="about_role_lead">Lider Geliştirici</string>
+  <string name="about_role_devops">Geliştirici</string>
+  <string name="about_role_dev">Geliştirici</string>
+  <string name="about_role_dev_mod">Geliştirici / Moderatör</string>
+  <string name="about_role_designer">Tasarımcı</string>
+  <string name="about_role_special_snowflake">Halkla İlişkiler Yöneticisi / Moderatör</string>
+  <string name="about_role_mod_support">Moderatör / Destek</string>
+  <string name="about_role_family_member">Aile Üyesi</string>
+  <string name="about_bio_deletescape">Android geliştiricisi ve meraklısı. Lawnchair projesinin kurucusu.</string>
+  <string name="about_bio_divadsn">18 yaşında, kafeini ve pizzayı kod haline getiriyor. Ayrıca daha önce Codebucket olarak da bilinir.</string>
+  <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
+  <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
+  <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi.</string>
+  <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratumdaki uygulama geliştiricisi.</string>
 </resources>
