@@ -332,6 +332,8 @@ public class Launcher extends BaseActivity
         ThemeManager.Companion.getInstance(this).addOverride(
                 dockSearchBar ? new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this));
 
+        FeatureFlags.LAUNCHER3_PHYSICS = prefs.getEnablePhysics();
+
         boolean gradientStyleDock = prefs.getDockGradientStyle();
         FeatureFlags.LAUNCHER3_P_ALL_APPS = !gradientStyleDock;
         FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS = gradientStyleDock;

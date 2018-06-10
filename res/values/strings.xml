@@ -455,4 +455,5 @@
     <string name="add_settings_shortcut_title">Add settings shortcut to home screen</string>
     <string name="icon_pack_default">System icons</string>
     <string name="loading">Loading…</string>
+    <string name="low_performance_mode_pref_title">Low performance mode</string>
 </resources>

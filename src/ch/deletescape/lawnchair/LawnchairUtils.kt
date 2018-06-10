@@ -140,6 +140,15 @@ class KFloatPropertyCompat(private val property: KMutableProperty0<Float>, name:
     }
 }
 
+class KFloatProperty(private val property: KMutableProperty0<Float>, name: String) : Property<Any, Float>(Float::class.java, name) {
+
+    override fun get(`object`: Any) = property.get()
+
+    override fun set(`object`: Any, value: Float) {
+        property.set(value)
+    }
+}
+
 val SCALE_XY: Property<View, Float> = object : Property<View, Float>(Float::class.java, "scaleXY") {
     override fun set(view: View, value: Float) {
         view.scaleX = value

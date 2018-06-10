@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.views
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.support.animation.DynamicAnimation
@@ -9,8 +10,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.EdgeEffect
 import ch.deletescape.lawnchair.JavaField
+import ch.deletescape.lawnchair.KFloatProperty
 import ch.deletescape.lawnchair.KFloatPropertyCompat
 import ch.deletescape.lawnchair.clamp
+import com.android.launcher3.Utilities
 import com.android.launcher3.touch.OverScroll
 import kotlin.reflect.KMutableProperty0
 
@@ -21,6 +24,9 @@ class SpringEdgeEffect(
         private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
         private val velocityMultiplier: Float) : EdgeEffect(context) {
 
+    private val prefs = Utilities.getLawnchairPrefs(context)
+
+    private val shiftProperty = KFloatProperty(target, "value")
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {
         spring = SpringForce(0f).setStiffness(850f).setDampingRatio(0.5f)
     }
@@ -47,10 +53,16 @@ class SpringEdgeEffect(
     }
 
     private fun releaseSpring(velocity: Float) {
-        springVelocity = velocity
-        springValue = target.get()
-        springStartValueIsSet = true
-        spring.start()
+        if (prefs.enablePhysics) {
+            springVelocity = velocity
+            springValue = target.get()
+            springStartValueIsSet = true
+            spring.start()
+        } else {
+            ObjectAnimator.ofFloat(this, shiftProperty, 0f)
+                    .setDuration(100)
+                    .start()
+        }
     }
 
     class Manager(val view: View) {

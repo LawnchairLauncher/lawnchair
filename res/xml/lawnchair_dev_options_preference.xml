@@ -12,6 +12,12 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_lowPerformanceMode"
+        android:title="@string/low_performance_mode_pref_title"
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <Preference
         android:key="addSettingsShortcut"
         android:title="@string/add_settings_shortcut_title"
