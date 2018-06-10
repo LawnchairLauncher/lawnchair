@@ -165,7 +165,7 @@ public class CaretDrawable extends Drawable {
     public void setForceDark(boolean forceDark) {
         if (mForceDark != forceDark) {
             mForceDark = forceDark;
-            mCaretPaint.setColor(mForceDark ? 0xFF212121 : mWorkspaceTextColor);
+            mCaretPaint.setColor(mForceDark ? 0x99000000 : mWorkspaceTextColor);
             invalidateSelf();
         }
     }
