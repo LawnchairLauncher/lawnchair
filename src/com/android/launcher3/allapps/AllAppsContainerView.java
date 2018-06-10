@@ -327,7 +327,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mAppsRecyclerView.getPaddingRight(), insets.bottom);
 
         if (mSearchContainer instanceof AllAppsQsbLayout) {
-            ((AllAppsQsbLayout) mSearchContainer).setTopMargin(insets.top);
+            ((AllAppsQsbLayout) mSearchContainer).setTopMargin(grid.isVerticalBarLayout() ? 0 : insets.top);
         }
 
         if (grid.isVerticalBarLayout()) {
