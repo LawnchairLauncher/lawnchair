@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.views
 
+import android.content.Context
 import android.graphics.Canvas
 import android.support.animation.DynamicAnimation
 import android.support.animation.SpringAnimation
@@ -10,13 +11,15 @@ import android.widget.EdgeEffect
 import ch.deletescape.lawnchair.JavaField
 import ch.deletescape.lawnchair.KFloatPropertyCompat
 import ch.deletescape.lawnchair.clamp
+import com.android.launcher3.touch.OverScroll
 import kotlin.reflect.KMutableProperty0
 
 class SpringEdgeEffect(
-        private val view: View,
+        context: Context,
+        private val getMax: () -> Int,
         private val target: KMutableProperty0<Float>,
         private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
-        private val velocityMultiplier: Float) : EdgeEffect(view.context) {
+        private val velocityMultiplier: Float) : EdgeEffect(context) {
 
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {
         spring = SpringForce(0f).setStiffness(850f).setDampingRatio(0.5f)
@@ -34,8 +37,8 @@ class SpringEdgeEffect(
 
     override fun onPull(deltaDistance: Float, displacement: Float) {
         activeEdge.set(this)
-        distance += deltaDistance * (velocityMultiplier / 3)
-        target.set(distance * view.height)
+        distance += deltaDistance * (velocityMultiplier * 2)
+        target.set(OverScroll.dampedScroll(distance * getMax(), getMax()).toFloat())
     }
 
     override fun onRelease() {
@@ -53,16 +56,14 @@ class SpringEdgeEffect(
     class Manager(val view: View) {
 
         var shiftX = 0f
-            set(rawValue) {
-                val value = clampShift(rawValue, view.width / 15f)
+            set(value) {
                 if (field != value) {
                     field = value
                     view.invalidate()
                 }
             }
         var shiftY = 0f
-            set(rawValue) {
-                val value = clampShift(rawValue, view.height / 15f)
+            set(value) {
                 if (field != value) {
                     field = value
                     view.invalidate()
@@ -106,10 +107,10 @@ class SpringEdgeEffect(
 
             override fun createEdgeEffect(recyclerView: RecyclerView?, direction: Int): EdgeEffect {
                 return when (direction) {
-                    DIRECTION_LEFT -> SpringEdgeEffect(view, ::shiftX, ::activeEdgeX, 0.3f)
-                    DIRECTION_TOP -> SpringEdgeEffect(view, ::shiftY, ::activeEdgeY, 0.3f)
-                    DIRECTION_RIGHT -> SpringEdgeEffect(view, ::shiftX, ::activeEdgeX, -0.3f)
-                    DIRECTION_BOTTOM -> SpringEdgeEffect(view, ::shiftY, ::activeEdgeY, -0.3f)
+                    DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, 0.3f)
+                    DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY, ::activeEdgeY, 0.3f)
+                    DIRECTION_RIGHT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, -0.3f)
+                    DIRECTION_BOTTOM -> SpringEdgeEffect(view.context, view::getWidth, ::shiftY, ::activeEdgeY, -0.3f)
                     else -> super.createEdgeEffect(recyclerView, direction)
                 }
             }
