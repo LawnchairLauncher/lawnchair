@@ -543,6 +543,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         @Override
         public boolean onDrag(float displacement, float velocity) {
+            if (!FeatureFlags.LAUNCHER3_PHYSICS) return false;
+
             boolean isScrollingUp = displacement > 0;
             if (isScrollingUp) {
                 if (!mAlreadyScrollingUp) {
@@ -581,6 +583,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         @Override
         public void onDragEnd(float velocity, boolean fling) {
+            if (!FeatureFlags.LAUNCHER3_PHYSICS) return;
+
            reset(mIsInOverScroll  /* shouldSpring */);
         }
 

@@ -99,7 +99,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
-    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)
+    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)

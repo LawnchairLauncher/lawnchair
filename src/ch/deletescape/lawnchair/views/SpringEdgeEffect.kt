@@ -3,16 +3,13 @@ package ch.deletescape.lawnchair.views
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
-import android.support.animation.DynamicAnimation
 import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.EdgeEffect
-import ch.deletescape.lawnchair.JavaField
 import ch.deletescape.lawnchair.KFloatProperty
 import ch.deletescape.lawnchair.KFloatPropertyCompat
-import ch.deletescape.lawnchair.clamp
 import com.android.launcher3.Utilities
 import com.android.launcher3.touch.OverScroll
 import kotlin.reflect.KMutableProperty0
@@ -30,9 +27,6 @@ class SpringEdgeEffect(
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {
         spring = SpringForce(0f).setStiffness(850f).setDampingRatio(0.5f)
     }
-    private var springVelocity by JavaField<Float>(spring, "mVelocity", DynamicAnimation::class.java)
-    private var springValue by JavaField<Float>(spring, "mValue", DynamicAnimation::class.java)
-    private var springStartValueIsSet by JavaField<Boolean>(spring, "mStartValueIsSet", DynamicAnimation::class.java)
     private var distance = 0f
 
     override fun draw(canvas: Canvas) = false
@@ -54,9 +48,8 @@ class SpringEdgeEffect(
 
     private fun releaseSpring(velocity: Float) {
         if (prefs.enablePhysics) {
-            springVelocity = velocity
-            springValue = target.get()
-            springStartValueIsSet = true
+            spring.setStartVelocity(velocity)
+            spring.setStartValue(target.get())
             spring.start()
         } else {
             ObjectAnimator.ofFloat(this, shiftProperty, 0f)
@@ -81,10 +74,6 @@ class SpringEdgeEffect(
                     view.invalidate()
                 }
             }
-
-        private fun clampShift(value: Float, max: Float): Float {
-            return value.clamp(-max, max)
-        }
 
         var activeEdgeX: SpringEdgeEffect? = null
             set(value) {

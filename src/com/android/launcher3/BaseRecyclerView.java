@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.views.SpringRecyclerView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
@@ -34,7 +35,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
  *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class BaseRecyclerView extends RecyclerView
+public abstract class BaseRecyclerView extends SpringRecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     protected RecyclerViewFastScroller mScrollbar;
