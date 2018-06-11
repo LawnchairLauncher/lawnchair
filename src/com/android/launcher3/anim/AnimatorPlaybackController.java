@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
@@ -72,7 +74,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         mOnCancelRunnable = onCancelRunnable;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
-        mAnimationPlayer.setInterpolator(Interpolators.LINEAR);
+        mAnimationPlayer.setInterpolator(LINEAR);
         mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.addUpdateListener(this);
 
@@ -105,6 +107,10 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     public long getDuration() {
         return mDuration;
+    }
+
+    public TimeInterpolator getInterpolator() {
+        return mAnim.getInterpolator() != null ? mAnim.getInterpolator() : LINEAR;
     }
 
     /**

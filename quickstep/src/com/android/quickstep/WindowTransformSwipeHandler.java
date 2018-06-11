@@ -575,7 +575,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (mRecentsView != null) {
+            if (mInteractionType == INTERACTION_NORMAL && mRecentsView != null) {
                 mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
