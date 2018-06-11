@@ -9,7 +9,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.google.android.libraries.launcherclient.GoogleNow;
+import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 import java.util.List;
 
@@ -65,10 +65,10 @@ public class NexusLauncherActivity extends Launcher {
     }
 
     public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-        return mLauncher.fA.getPredictedApps();
+        return mLauncher.mCallbacks.getPredictedApps();
     }
 
-    public GoogleNow getGoogleNow() {
-        return mLauncher.fy;
+    public LauncherClient getGoogleNow() {
+        return mLauncher.mClient;
     }
 }

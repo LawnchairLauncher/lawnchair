@@ -30,6 +30,6 @@
     android:maxLines="1"
     android:scrollHorizontally="true"
     android:singleLine="true"
-    android:textColor="#ff212121"
+    android:textColor="@color/qsb_drawer_text_color"
     android:textColorHint="?android:colorAccent"
     android:textSize="16sp" />

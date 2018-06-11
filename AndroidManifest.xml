@@ -170,7 +170,11 @@
             android:exported="true" />
 
         <!--
-        ENABLE_FOR_TESTING
+        Custom
+        -->
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
+
+        <!-- ENABLE_FOR_TESTING
 
         <activity
             android:name="com.android.launcher3.testing.LauncherExtension"

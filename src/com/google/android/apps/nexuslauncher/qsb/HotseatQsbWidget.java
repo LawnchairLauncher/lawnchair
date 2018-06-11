@@ -74,7 +74,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements LawnchairPref
 
     private void setColors() {
         View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
-        bz(mIsGoogleColored ? 0xCCFFFFFF : 0x99FAFAFA);
+        bz(getResources().getColor(mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default));
     }
 
     private void openQSB() {

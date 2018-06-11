@@ -456,4 +456,5 @@
     <string name="icon_pack_default">System icons</string>
     <string name="loading">Loading…</string>
     <string name="low_performance_mode_pref_title">Low performance mode</string>
+    <string name="action_preferences">@string/smartspace_preferences</string>
 </resources>

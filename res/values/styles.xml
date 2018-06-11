@@ -77,6 +77,7 @@
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
+        <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
 
         <!-- Backports -->
         <item name="android:textColorPrimary">@color/primary_text_material_dark</item>
