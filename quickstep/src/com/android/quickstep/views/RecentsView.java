@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -49,6 +50,7 @@ import android.text.TextPaint;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -88,6 +90,7 @@ import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -1193,6 +1196,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         TaskViewDrawable drawable = new TaskViewDrawable(tv, this);
         getOverlay().add(drawable);
 
+        final boolean[] passedOverviewThreshold = new boolean[] {false};
         ObjectAnimator drawableAnim =
                 ObjectAnimator.ofFloat(drawable, TaskViewDrawable.PROGRESS, 1, 0);
         drawableAnim.setInterpolator(LINEAR);
@@ -1203,6 +1207,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     animator.getAnimatedFraction() > UPDATE_SYSUI_FLAGS_THRESHOLD
                             ? targetSysUiFlags
                             : 0);
+
+            // Passing the threshold from taskview to fullscreen app will vibrate
+            final boolean passed = animator.getAnimatedFraction() >= MIN_PROGRESS_FOR_OVERVIEW;
+            if (passed != passedOverviewThreshold[0]) {
+                passedOverviewThreshold[0] = passed;
+                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            }
         });
 
         AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv,

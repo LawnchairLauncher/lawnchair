@@ -44,6 +44,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.WindowManager;
@@ -157,7 +158,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     public static final long MAX_SWIPE_DURATION = 350;
     public static final long MIN_SWIPE_DURATION = 80;
 
-    private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
+    public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
@@ -204,6 +205,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private boolean mWasLauncherAlreadyVisible;
 
+    private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
     private float mCurrentQuickScrubProgress;
@@ -570,6 +572,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void updateFinalShiftUi() {
+        final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
+        if (passed != mPassedOverviewThreshold) {
+            mPassedOverviewThreshold = passed;
+            if (mRecentsView != null) {
+                mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            }
+        }
+
         if (mLauncherTransitionController == null || mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
             return;
@@ -618,6 +629,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsAnimationWrapper.setController(controller, targets);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
+
+        mPassedOverviewThreshold = false;
     }
 
     public void onRecentsAnimationCanceled() {
