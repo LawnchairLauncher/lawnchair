@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.view.View.TRANSLATION_Y;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -27,8 +28,10 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.OSCILLATE;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.quickstep.TaskUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
@@ -115,11 +118,19 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
     public static final int RECENTS_QUICKSCRUB_LAUNCH_DURATION = 300;
-    private static final int LAUNCHER_RESUME_START_DELAY = 100;
+    private static final int LAUNCHER_RESUME_START_DELAY = 40;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
+
+    private static final int APP_CLOSE_ROW_START_DELAY_MS = 8;
+
+    // The sum of [slide, oscillate, and settle] should be <= LAUNCHER_RESUME_TOTAL_DURATION.
+    private static final int LAUNCHER_RESUME_TOTAL_DURATION = 346;
+    private static final int SPRING_SLIDE_DURATION = 166;
+    private static final int SPRING_OSCILLATE_DURATION = 130;
+    private static final int SPRING_SETTLE_DURATION = 50;
 
     private final Launcher mLauncher;
     private final DragLayer mDragLayer;
@@ -129,7 +140,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private final boolean mIsRtl;
 
     private final float mContentTransY;
-    private final float mWorkspaceTransY;
+    private final float mStartSlideTransY;
+    private final float mEndSlideTransY;
     private final float mClosingWindowTransY;
 
     private DeviceProfile mDeviceProfile;
@@ -159,8 +171,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
-        mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
+        mStartSlideTransY = res.getDimensionPixelSize(R.dimen.springs_trans_y);
+        mEndSlideTransY = -mStartSlideTransY * 0.1f;
 
         mLauncher.addOnDeviceProfileChangeListener(this);
         registerRemoteAnimations();
@@ -772,25 +785,49 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             });
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
-
-            mDragLayer.setTranslationY(-mWorkspaceTransY);;
-            workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
-                    -mWorkspaceTransY, 0));
-
-            mDragLayerAlpha.setValue(0);
-            workspaceAnimator.play(ObjectAnimator.ofFloat(
-                    mDragLayerAlpha, MultiValueAlpha.VALUE, 0, 1f));
-
             workspaceAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            workspaceAnimator.setDuration(333);
-            workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
+
+            ShortcutAndWidgetContainer currentPage = ((CellLayout) mLauncher.getWorkspace()
+                    .getChildAt(mLauncher.getWorkspace().getCurrentPage()))
+                    .getShortcutsAndWidgets();
+
+            // Set up springs on workspace items.
+            for (int i = currentPage.getChildCount() - 1; i >= 0; i--) {
+                View child = currentPage.getChildAt(i);
+                CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
+                addStaggeredAnimationForView(child, workspaceAnimator, lp.cellY + lp.cellVSpan);
+            }
+
+            // Set up a spring for the shelf.
+            if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+                float shiftRange = allAppsController.getShiftRange();
+                float slideStart = shiftRange / (shiftRange - mStartSlideTransY);
+                float oscillateStart = shiftRange / (shiftRange - mEndSlideTransY);
+                // Ensures a clean hand-off between slide and oscillate.
+                float slideEnd = Utilities.mapToRange(0, 0, 1f, oscillateStart, 1, OSCILLATE);
+
+                allAppsController.setProgress(slideStart);
+                Animator slideIn = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                        slideStart, slideEnd);
+                slideIn.setDuration(SPRING_SLIDE_DURATION);
+                slideIn.setInterpolator(DEACCEL);
+
+                Animator oscillate = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                        oscillateStart, 1f);
+                oscillate.setDuration(SPRING_OSCILLATE_DURATION);
+                oscillate.setInterpolator(OSCILLATE);
+
+                Animator settle = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, 1f);
+                settle.setDuration(SPRING_SETTLE_DURATION);
+                settle.setInterpolator(LINEAR);
+
+                workspaceAnimator.playSequentially(slideIn, oscillate, settle);
+            }
 
             mDragLayer.getScrim().hideSysUiScrim(true);
-
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
-            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
             workspaceAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -799,6 +836,51 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             });
             anim.play(workspaceAnimator);
         }
+    }
+
+    /**
+     * Adds an alpha/trans animator for {@param v}, with a start delay based on the view's row.
+     *
+     * @param v View in a ShortcutAndWidgetContainer.
+     * @param row The bottom-most row that contains the view.
+     */
+    private void addStaggeredAnimationForView(View v, AnimatorSet outAnimator, int row) {
+        // Invert the rows, because we stagger starting from the bottom of the screen.
+        int invertedRow = LauncherAppState.getIDP(mLauncher).numRows - row + 1;
+        long startDelay = (long) (invertedRow * APP_CLOSE_ROW_START_DELAY_MS);
+
+        v.setAlpha(0);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 1f);
+        alpha.setInterpolator(LINEAR);
+        alpha.setDuration(SPRING_SLIDE_DURATION);
+        alpha.setStartDelay(startDelay);
+        outAnimator.play(alpha);
+
+        // Ensures a clean hand-off between slide and oscillate.
+        float slideEnd = Utilities.mapToRange(0, 0, 1f, mEndSlideTransY, 0, OSCILLATE);
+        v.setTranslationY(mStartSlideTransY);
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(v, TRANSLATION_Y, mStartSlideTransY,
+                slideEnd);
+        slideIn.setInterpolator(DEACCEL);
+        slideIn.setStartDelay(startDelay);
+        slideIn.setDuration(SPRING_SLIDE_DURATION);
+
+        ObjectAnimator oscillate = ObjectAnimator.ofFloat(v, TRANSLATION_Y, mEndSlideTransY, 0);
+        oscillate.setInterpolator(OSCILLATE);
+        oscillate.setDuration(SPRING_OSCILLATE_DURATION);
+
+        ObjectAnimator settle = ObjectAnimator.ofFloat(v, TRANSLATION_Y, 0);
+        settle.setInterpolator(LINEAR);
+        settle.setDuration(SPRING_SETTLE_DURATION);
+
+        outAnimator.playSequentially(slideIn, oscillate, settle);
+        outAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setAlpha(1f);
+                v.setTranslationY(0);
+            }
+        });
     }
 
     private void resetContentView() {
