@@ -54,4 +54,6 @@
     <dimen name="clear_all_container_width">168dp</dimen>
 
     <dimen name="shelf_surface_radius">16dp</dimen>
+    <!-- same as vertical_drag_handle_size -->
+    <dimen name="shelf_surface_offset">24dp</dimen>
 </resources>

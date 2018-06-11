@@ -158,7 +158,6 @@ public class Interpolators {
      */
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
-        return t -> Utilities.mapToRange(interpolator.getInterpolation(t), 0, 1,
-                lowerBound, upperBound);
+        return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 }

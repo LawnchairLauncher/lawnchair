@@ -48,6 +48,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
 
@@ -281,13 +282,14 @@ public final class Utilities {
      * @param toMax The upper bound of the range that t is being mapped to.
      * @return The mapped value of t.
      */
-    public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax) {
+    public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax,
+            Interpolator interpolator) {
         if (fromMin == fromMax || toMin == toMax) {
             Log.e(TAG, "mapToRange: range has 0 length");
             return toMin;
         }
         float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
-        return mapRange(progress, toMin, toMax);
+        return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
     }
 
     public static float mapRange(float value, float min, float max) {
