@@ -1482,7 +1482,7 @@ public class Workspace extends PagedView
             currentChild.setAlpha(finalAlpha);
         }
 
-        if (direction == Direction.Y) {
+        if (direction == Direction.Y || direction == Direction.SCALE) {
             View nextChild = getChildAt(getNextPage());
             if (nextChild != null) {
                 property.set(nextChild, translation);
@@ -1491,7 +1491,7 @@ public class Workspace extends PagedView
         }
 
         // When the animation finishes, reset all pages, just in case we missed a page.
-        if (Float.compare(translation, 0) == 0) {
+        if (Float.compare(translation, direction == Direction.SCALE ? 1 : 0) == 0) {
             for (int i = getChildCount() - 1; i >= 0; i--) {
                 View child = getChildAt(i);
                 property.set(child, translation);
