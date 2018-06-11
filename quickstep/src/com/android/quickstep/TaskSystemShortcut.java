@@ -152,8 +152,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             }
                         };
 
-                AbstractFloatingView.closeOpenViews(activity, true,
-                        AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
+                dismissTaskMenuView(activity);
 
                 final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
                 if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
@@ -246,6 +245,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     }
                 };
                 taskView.launchTask(true, resultCallback, mHandler);
+                dismissTaskMenuView(activity);
             };
         }
     }
@@ -264,5 +264,10 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             }
             return null;
         }
+    }
+
+    private static void dismissTaskMenuView(BaseDraggingActivity activity) {
+        AbstractFloatingView.closeOpenViews(activity, true,
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }
