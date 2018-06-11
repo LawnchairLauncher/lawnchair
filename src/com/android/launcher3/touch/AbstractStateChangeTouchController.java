@@ -326,7 +326,7 @@ public abstract class AbstractStateChangeTouchController
                 }
             });
             mAtomicAnim.start();
-            mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
+            mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         }
     }
 
