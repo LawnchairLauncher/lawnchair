@@ -259,7 +259,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
-        enableFreeScroll(true);
+        setEnableFreeScroll(true);
+        setEnableOverscroll(true);
         setClipToOutline(true);
 
         mFastFlingVelocity = getResources()
