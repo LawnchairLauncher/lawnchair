@@ -92,7 +92,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         implements OnDeviceProfileChangeListener {
 
     private static final String TAG = "LauncherTransition";
+
+    /** Duration of status bar animations. */
     public static final int STATUS_BAR_TRANSITION_DURATION = 120;
+
+    /**
+     * Since our animations decelerate heavily when finishing, we want to start status bar animations
+     * x ms before the ending.
+     */
+    public static final int STATUS_BAR_TRANSITION_PRE_DELAY = 96;
 
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
@@ -210,9 +218,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 }
             };
 
-            int duration = findTaskViewToLaunch(launcher, v, null) != null
-                    ? RECENTS_LAUNCH_DURATION : APP_LAUNCH_DURATION;
-            int statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION;
+            boolean fromRecents = mLauncher.getStateManager().getState().overviewUi
+                    && findTaskViewToLaunch(launcher, v, null) != null;
+            int duration = fromRecents
+                    ? RECENTS_LAUNCH_DURATION
+                    : APP_LAUNCH_DURATION;
+
+            int statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
+                    - STATUS_BAR_TRANSITION_PRE_DELAY;
             return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
                     runner, duration, statusBarTransitionDelay));
         }
