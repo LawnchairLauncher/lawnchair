@@ -25,7 +25,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
-import static com.android.quickstep.views.RecentsViewContainer.CONTENT_ALPHA;
+import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -40,24 +40,21 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.quickstep.views.LauncherRecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsViewStateController implements StateHandler {
 
     private final Launcher mLauncher;
     private final LauncherRecentsView mRecentsView;
-    private final RecentsViewContainer mRecentsViewContainer;
 
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
-        mRecentsViewContainer = launcher.getOverviewPanelContainer();
     }
 
     @Override
     public void setState(LauncherState state) {
-        mRecentsViewContainer.setContentAlpha(state.overviewUi ? 1 : 0);
+        mRecentsView.setContentAlpha(state.overviewUi ? 1 : 0);
         float[] scaleTranslationYFactor = state.getOverviewScaleAndTranslationYFactor(mLauncher);
         SCALE_PROPERTY.set(mRecentsView, scaleTranslationYFactor[0]);
         mRecentsView.setTranslationYFactor(scaleTranslationYFactor[1]);
@@ -86,7 +83,7 @@ public class RecentsViewStateController implements StateHandler {
                 scaleAndTransYInterpolator);
         setter.setFloat(mRecentsView, TRANSLATION_Y_FACTOR, scaleTranslationYFactor[1],
                 scaleAndTransYInterpolator);
-        setter.setFloat(mRecentsViewContainer, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
+        setter.setFloat(mRecentsView, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
 
         if (!toState.overviewUi) {

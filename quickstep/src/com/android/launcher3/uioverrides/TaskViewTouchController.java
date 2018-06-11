@@ -115,8 +115,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             } else {
                 mTaskBeingDragged = null;
 
-                for (int i = 0; i < mRecentsView.getChildCount(); i++) {
-                    TaskView view = mRecentsView.getPageAt(i);
+                for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
+                    TaskView view = mRecentsView.getTaskViewAt(i);
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         mTaskBeingDragged = view;

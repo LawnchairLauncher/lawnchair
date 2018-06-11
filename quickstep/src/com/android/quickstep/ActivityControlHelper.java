@@ -25,6 +25,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
@@ -67,7 +68,6 @@ import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -293,7 +293,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
          */
         private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
             RecentsView recentsView = launcher.getOverviewPanel();
-            TaskView v = recentsView.getPageAt(recentsView.getCurrentPage());
+            TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
             ClipAnimationHelper clipHelper = new ClipAnimationHelper();
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
@@ -466,7 +466,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 return (transitionLength, interactionType) -> { };
             }
 
-            RecentsViewContainer rv = activity.getOverviewPanelContainer();
+            RecentsView rv = activity.getOverviewPanel();
             rv.setContentAlpha(0);
 
             return new AnimationFactory() {
@@ -490,8 +490,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         return;
                     }
 
-                    ObjectAnimator anim = ObjectAnimator
-                            .ofFloat(rv, RecentsViewContainer.CONTENT_ALPHA, 0, 1);
+                    ObjectAnimator anim = ObjectAnimator.ofFloat(rv, CONTENT_ALPHA, 0, 1);
                     anim.setDuration(transitionLength).setInterpolator(LINEAR);
                     AnimatorSet animatorSet = new AnimatorSet();
                     animatorSet.play(anim);

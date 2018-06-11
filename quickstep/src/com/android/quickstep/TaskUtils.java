@@ -104,8 +104,8 @@ public class TaskUtils {
             ComponentName componentName = itemInfo.getTargetComponent();
             int userId = itemInfo.user.getIdentifier();
             if (componentName != null) {
-                for (int i = 0; i < recentsView.getChildCount(); i++) {
-                    TaskView taskView = recentsView.getPageAt(i);
+                for (int i = 0; i < recentsView.getTaskViewCount(); i++) {
+                    TaskView taskView = recentsView.getTaskViewAt(i);
                     if (recentsView.isTaskViewVisible(taskView)) {
                         Task.TaskKey key = taskView.getTask().key;
                         if (componentName.equals(key.getComponent()) && userId == key.userId) {

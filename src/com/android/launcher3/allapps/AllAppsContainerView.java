@@ -490,6 +490,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         });
     }
 
+    @Override
+    public void getDrawingRect(Rect outRect) {
+        super.getDrawingRect(outRect);
+        outRect.offset(0, (int) getTranslationY());
+    }
+
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;
