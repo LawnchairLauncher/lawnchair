@@ -29,6 +29,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.os.SystemClock;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
@@ -88,6 +89,7 @@ public abstract class AbstractStateChangeTouchController
     private AnimatorSet mAtomicAnim;
     // True if we want to resume playing atomic components when mAtomicAnim completes.
     private boolean mScheduleResumeAtomicComponent;
+    private AutoPlayAtomicAnimationInfo mAtomicAnimAutoPlayInfo;
 
     private boolean mPassedOverviewAtomicThreshold;
     // mAtomicAnim plays the atomic components of the state animations when we pass the threshold.
@@ -235,12 +237,17 @@ public abstract class AbstractStateChangeTouchController
         if (mCurrentAnimation == null) {
             mFromState = mStartState;
             mToState = null;
-            mAtomicComponentsController = null;
+            cancelAnimationControllers();
             reinitCurrentAnimation(false, mDetector.wasInitialTouchPositive());
             mDisplacementShift = 0;
         } else {
             mCurrentAnimation.pause();
             mStartProgress = mCurrentAnimation.getProgressFraction();
+
+            mAtomicAnimAutoPlayInfo = null;
+            if (mAtomicComponentsController != null) {
+                mAtomicComponentsController.pause();
+            }
         }
         mCanBlockFling = mFromState == NORMAL;
         mFlingBlockCheck.unblockFling();
@@ -315,6 +322,7 @@ public abstract class AbstractStateChangeTouchController
                         return;
                     }
                     cancelAtomicComponentsController();
+
                     if (mCurrentAnimation != null) {
                         mAtomicComponentsStartProgress = mCurrentAnimation.getProgressFraction();
                         long duration = (long) (getShiftRange() * 2);
@@ -322,6 +330,7 @@ public abstract class AbstractStateChangeTouchController
                                 createAtomicAnimForState(mFromState, mToState, duration), duration);
                         mAtomicComponentsController.dispatchOnStart();
                         mAtomicComponentsTargetState = mToState;
+                        maybeAutoPlayAtomicComponentsAnim();
                     }
                 }
             });
@@ -416,16 +425,8 @@ public abstract class AbstractStateChangeTouchController
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();
-        if (mAtomicAnim == null) {
-            startAtomicComponentsAnim(endProgress, anim.getDuration());
-        } else {
-            mAtomicAnim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    startAtomicComponentsAnim(endProgress, anim.getDuration());
-                }
-            });
-        }
+        mAtomicAnimAutoPlayInfo = new AutoPlayAtomicAnimationInfo(endProgress, anim.getDuration());
+        maybeAutoPlayAtomicComponentsAnim();
     }
 
     /**
@@ -435,18 +436,32 @@ public abstract class AbstractStateChangeTouchController
      * the non-atomic components, which only happens if we reinit before the atomic animation
      * finishes.
      */
-    private void startAtomicComponentsAnim(float toProgress, long duration) {
-        if (mAtomicComponentsController != null) {
-            ValueAnimator atomicAnim = mAtomicComponentsController.getAnimationPlayer();
-            atomicAnim.setFloatValues(mAtomicComponentsController.getProgressFraction(), toProgress);
-            atomicAnim.setDuration(duration);
+    private void maybeAutoPlayAtomicComponentsAnim() {
+        if (mAtomicComponentsController == null || mAtomicAnimAutoPlayInfo == null) {
+            return;
+        }
+
+        final AnimatorPlaybackController controller = mAtomicComponentsController;
+        ValueAnimator atomicAnim = controller.getAnimationPlayer();
+        atomicAnim.setFloatValues(controller.getProgressFraction(),
+                mAtomicAnimAutoPlayInfo.toProgress);
+        long duration = mAtomicAnimAutoPlayInfo.endTime - SystemClock.elapsedRealtime();
+        mAtomicAnimAutoPlayInfo = null;
+        if (duration <= 0) {
             atomicAnim.start();
+            atomicAnim.end();
+            mAtomicComponentsController = null;
+        } else {
+            atomicAnim.setDuration(duration);
             atomicAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mAtomicComponentsController = null;
+                    if (mAtomicComponentsController == controller) {
+                        mAtomicComponentsController = null;
+                    }
                 }
             });
+            atomicAnim.start();
         }
     }
 
@@ -476,6 +491,10 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+        if (mAtomicComponentsController != null) {
+            mAtomicComponentsController.getAnimationPlayer().end();
+            mAtomicComponentsController = null;
+        }
         cancelAnimationControllers();
         boolean shouldGoToTargetState = true;
         if (mPendingAnimation != null) {
@@ -522,6 +541,18 @@ public abstract class AbstractStateChangeTouchController
         if (mAtomicComponentsController != null) {
             mAtomicComponentsController.getAnimationPlayer().cancel();
             mAtomicComponentsController = null;
+        }
+        mAtomicAnimAutoPlayInfo = null;
+    }
+
+    private static class AutoPlayAtomicAnimationInfo {
+
+        public final float toProgress;
+        public final long endTime;
+
+        AutoPlayAtomicAnimationInfo(float toProgress, long duration) {
+            this.toProgress = toProgress;
+            this.endTime = duration + SystemClock.elapsedRealtime();
         }
     }
 }
