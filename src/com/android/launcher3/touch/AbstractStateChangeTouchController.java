@@ -354,6 +354,8 @@ public abstract class AbstractStateChangeTouchController
 
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
+        final float interpolatedProgress = mCurrentAnimation.getInterpolator()
+                .getInterpolation(progress);
         if (fling) {
             targetState =
                     Float.compare(Math.signum(velocity), Math.signum(mProgressMultiplier)) == 0
@@ -362,7 +364,7 @@ public abstract class AbstractStateChangeTouchController
         } else {
             float successProgress = mToState == ALL_APPS
                     ? MIN_PROGRESS_TO_ALL_APPS : SUCCESS_TRANSITION_PROGRESS;
-            targetState = (progress > successProgress) ? mToState : mFromState;
+            targetState = (interpolatedProgress > successProgress) ? mToState : mFromState;
         }
 
         final float endProgress;
