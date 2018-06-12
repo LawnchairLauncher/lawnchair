@@ -102,7 +102,9 @@ public class DeviceProfile {
     public int hotseatBarSizePx;
     public final int hotseatBarTopPaddingPx;
     public final int hotseatBarBottomPaddingPx;
-    public final int hotseatBarSidePaddingPx;
+    // Start is the side next to the nav bar, end is the side next to the workspace
+    public final int hotseatBarSidePaddingStartPx;
+    public final int hotseatBarSidePaddingEndPx;
 
     // All apps
     public int allAppsCellHeightPx;
@@ -178,10 +180,14 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
-        hotseatBarSidePaddingPx =
+        hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
+        // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
+        hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
+                ? edgeMarginPx : 0;
         hotseatBarSizePx = isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
+                ? Utilities.pxFromDp(inv.iconSize, dm) + hotseatBarSidePaddingStartPx
+                        + hotseatBarSidePaddingEndPx
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
@@ -326,7 +332,8 @@ public class DeviceProfile {
 
         // Hotseat
         if (isVerticalLayout) {
-            hotseatBarSizePx = iconSizePx;
+            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
+                    + hotseatBarSidePaddingEndPx;
         }
         hotseatCellHeightPx = iconSizePx;
 
@@ -425,14 +432,12 @@ public class DeviceProfile {
         if (isVerticalBarLayout()) {
             padding.top = 0;
             padding.bottom = edgeMarginPx;
-            padding.left = hotseatBarSidePaddingPx;
-            padding.right = hotseatBarSidePaddingPx;
             if (isSeascape()) {
-                padding.left += hotseatBarSizePx;
-                padding.right += verticalDragHandleSizePx;
+                padding.left = hotseatBarSizePx;
+                padding.right = verticalDragHandleSizePx;
             } else {
-                padding.left += verticalDragHandleSizePx;
-                padding.right += hotseatBarSizePx;
+                padding.left = verticalDragHandleSizePx;
+                padding.right = hotseatBarSizePx;
             }
         } else {
             int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx;
@@ -462,11 +467,11 @@ public class DeviceProfile {
     public Rect getHotseatLayoutPadding() {
         if (isVerticalBarLayout()) {
             if (isSeascape()) {
-                mHotseatPadding.set(
-                        mInsets.left, mInsets.top, hotseatBarSidePaddingPx, mInsets.bottom);
+                mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx,
+                        mInsets.top, hotseatBarSidePaddingEndPx, mInsets.bottom);
             } else {
-                mHotseatPadding.set(
-                        hotseatBarSidePaddingPx, mInsets.top, mInsets.right, mInsets.bottom);
+                mHotseatPadding.set(hotseatBarSidePaddingEndPx, mInsets.top,
+                        mInsets.right + hotseatBarSidePaddingStartPx, mInsets.bottom);
             }
         } else {
 
