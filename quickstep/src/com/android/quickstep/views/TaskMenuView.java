@@ -26,6 +26,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -172,8 +173,9 @@ public class TaskMenuView extends AbstractFloatingView {
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         params.width = sTempRect.width();
+        params.gravity = Gravity.LEFT;
         setLayoutParams(params);
-        setX(Utilities.isRtl(getResources()) ? -sTempRect.left : sTempRect.left);
+        setX(sTempRect.left - insets.left);
         setY(sTempRect.top + getResources().getDimension(R.dimen.task_thumbnail_top_margin)
                 - insets.top);
     }
