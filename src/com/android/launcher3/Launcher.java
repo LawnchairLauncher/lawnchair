@@ -2328,6 +2328,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (isInState(NORMAL)) {
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
                     KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.widget_button_text),
+                    KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON));
         }
         final View currentFocus = getCurrentFocus();
         if (currentFocus != null) {
@@ -2373,6 +2375,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
                 case KeyEvent.KEYCODE_O:
                     if (new CustomActionsPopup(this, getCurrentFocus()).show()) {
+                        return true;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_W:
+                    if (isInState(NORMAL)) {
+                        OptionsPopupView.openWidgets(this);
                         return true;
                     }
                     break;
