@@ -63,7 +63,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
-    public static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
     // OverScroll constants
     private final static int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
@@ -83,7 +82,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public static final int INVALID_RESTORE_PAGE = -1001;
 
     private boolean mFreeScroll = false;
-    private boolean mSettleOnPageInFreeScroll = false;
 
     protected int mFlingThresholdVelocity;
     protected int mMinFlingVelocity;
@@ -356,17 +354,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public void scrollTo(int x, int y) {
-        // In free scroll mode, we clamp the scrollX
-        if (mFreeScroll) {
-            // If the scroller is trying to move to a location beyond the maximum allowed
-            // in the free scroll mode, we make sure to end the scroll operation.
-            if (!mScroller.isFinished() && (x > mMaxScrollX || x < 0)) {
-                forceFinishScroller(false);
-            }
-
-            x = Utilities.boundToRange(x, 0, mMaxScrollX);
-        }
-
         mUnboundedScrollX = x;
 
         boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < 0);
@@ -1026,13 +1013,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         dampedOverScroll(amount);
     }
 
-
-    protected void enableFreeScroll(boolean settleOnPageInFreeScroll) {
-        setEnableFreeScroll(true);
-        mSettleOnPageInFreeScroll = settleOnPageInFreeScroll;
-    }
-
-    private void setEnableFreeScroll(boolean freeScroll) {
+    protected void setEnableFreeScroll(boolean freeScroll) {
         boolean wasFreeScroll = mFreeScroll;
         mFreeScroll = freeScroll;
 
@@ -1041,8 +1022,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         } else if (wasFreeScroll) {
             snapToPage(getNextPage());
         }
-
-        setEnableOverscroll(!freeScroll);
     }
 
     protected void setEnableOverscroll(boolean enable) {
@@ -1155,42 +1134,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         snapToDestination();
                     }
                 } else {
-                    if (!mScroller.isFinished()) {
-                        abortScrollerAnimation(true);
+                    int unscaledScrollX = getScrollX() - (int) Math.round(
+                            mScroller.getSplineFlingDistance(velocityX) * Math.signum(velocityX));
+                    int duration = mScroller.getSplineFlingDuration(velocityX);
+                    int finalPage = getPageNearestToCenterOfScreen(unscaledScrollX);
+                    if ((isFling || isSignificantMove) && (finalPage != mCurrentPage)) {
+                        snapToPage(finalPage, duration);
+                    } else {
+                        snapToDestination();
                     }
-
-                    float scaleX = getScaleX();
-                    int vX = (int) (-velocityX * scaleX);
-                    int initialScrollX = (int) (getScrollX() * scaleX);
-
-                    mScroller.setInterpolator(mDefaultInterpolator);
-                    mScroller.fling(initialScrollX,
-                            getScrollY(), vX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-                    int unscaledScrollX = (int) (mScroller.getFinalX() / scaleX);
-                    mNextPage = getPageNearestToCenterOfScreen(unscaledScrollX);
-                    int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
-                    int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
-                    if (mSettleOnPageInFreeScroll && unscaledScrollX > 0
-                            && unscaledScrollX < mMaxScrollX) {
-                        // If scrolling ends in the half of the added space that is closer to the
-                        // end, settle to the end. Otherwise snap to the nearest page.
-                        // If flinging past one of the ends, don't change the velocity as it will
-                        // get stopped at the end anyway.
-                        final int finalX = unscaledScrollX < firstPageScroll / 2 ?
-                                0 :
-                                unscaledScrollX > (lastPageScroll + mMaxScrollX) / 2 ?
-                                        mMaxScrollX :
-                                        getScrollForPage(mNextPage);
-
-                        mScroller.setFinalX((int) (finalX * getScaleX()));
-                        // Ensure the scroll/snap doesn't happen too fast;
-                        int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
-                                - mScroller.getDuration();
-                        if (extraScrollDuration > 0) {
-                            mScroller.extendDuration(extraScrollDuration);
-                        }
-                    }
-                    invalidate();
                 }
                 onScrollInteractionEnd();
             } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
