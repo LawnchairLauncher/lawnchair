@@ -197,7 +197,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 if (v instanceof LauncherAppWidgetHostView) {
                     v.getGlobalVisibleRect(outRect);
                     if (outRect.contains(x, y)) {
-                        return false;
+                        return !((LauncherAppWidgetHostView) v).isScrollable();
                     }
                 }
             }

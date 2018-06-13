@@ -28,10 +28,12 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.AdapterView;
 import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 
+import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragLayer.TouchCompleteListener;
 
 /**
@@ -51,6 +53,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private boolean mChildrenFocused;
 
     protected int mErrorViewId = R.layout.appwidget_error;
+    private boolean mIsScrollable;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -274,6 +277,24 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         } catch (final RuntimeException e) {
             post(onLayoutRunnable);
         }
+
+        mIsScrollable = checkScrollableRecursively(this);
+    }
+
+    private boolean checkScrollableRecursively(ViewGroup viewGroup) {
+        if (viewGroup instanceof AdapterView) {
+            return true;
+        } else {
+            for (int i=0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                if (child instanceof ViewGroup) {
+                    if (checkScrollableRecursively((ViewGroup) child)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -290,5 +311,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     public float getScaleToFit() {
         return this.mScaleToFit;
+    }
+
+    public boolean isScrollable() {
+        return mIsScrollable;
     }
 }
