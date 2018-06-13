@@ -37,6 +37,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private SpringAnimation mSpring;
     private float mStartY;
     private boolean mAllAppsGoogleSearch;
+    private int mAdditionalTopMargin;
 
     public AllAppsQsbLayout(final Context context) {
         this(context, null);
@@ -64,6 +65,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 allAppsQsbLayout.setTranslationY(Math.round(mStartY + v));
             }
         }, 0f);
+
+        mAdditionalTopMargin = getResources().getDimensionPixelSize(R.dimen.all_apps_qsb_top_margin);
     }
 
     private void searchFallback() {
@@ -90,6 +93,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                     onScrollRangeChangeListener.onScrollRangeChanged(bottom
                             - HotseatQsbWidget.getBottomMargin(mActivity)
                             - (((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin
+                            + (Utilities.getLawnchairPrefs(mActivity).getDockSearchBar() ? 0 : mAdditionalTopMargin)
                             + (int) getTranslationY() + getResources().getDimensionPixelSize(R.dimen.qsb_widget_height)));
                 }
             }

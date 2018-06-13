@@ -200,11 +200,8 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     }
 
     private fun getHotseatHeight(insets: Rect): Int {
-        return if (insets.bottom != 0) {
-            mDeviceProfile.originalHotseatBarSizePx + insets.bottom
-        } else {
-            mDeviceProfile.originalHotseatBarSizePx + mDeviceProfile.mBottomMarginHw
-        }
+        return mDeviceProfile.originalHotseatBarSizePx + if (insets.bottom != 0)
+            insets.bottom else mDeviceProfile.mBottomMarginHw
     }
 
     private fun updateDrawRect(deviceProfile: DeviceProfile) {

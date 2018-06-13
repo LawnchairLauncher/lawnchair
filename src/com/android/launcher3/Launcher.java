@@ -328,9 +328,7 @@ public class Launcher extends BaseActivity
 
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
 
-        boolean dockSearchBar = prefs.getDockSearchBar();
-        ThemeManager.Companion.getInstance(this).addOverride(
-                dockSearchBar ? new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this));
+        ThemeManager.Companion.getInstance(this).addOverride(new ThemeOverride.LauncherQsb(this));
 
         boolean gradientStyleDock = prefs.getDockGradientStyle();
         FeatureFlags.LAUNCHER3_P_ALL_APPS = !gradientStyleDock;
