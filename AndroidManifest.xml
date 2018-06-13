@@ -68,6 +68,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:backupAgent=".LauncherBackupAgent"
@@ -370,6 +371,10 @@
         <activity
             android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
+
+        <activity
+            android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepTimeoutActivity"
+            android:theme="@style/SleepTimeoutTheme"/>
     </application>
 
 </manifest>

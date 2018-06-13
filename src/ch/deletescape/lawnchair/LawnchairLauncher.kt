@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
@@ -17,6 +18,8 @@ import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 
 class LawnchairLauncher : NexusLauncherActivity() {
+
+    val gestureController = GestureController(this)
 
     fun startEditIcon(itemInfo: ItemInfoWithIcon) {
         val component: ComponentKey? = when (itemInfo) {

@@ -35,6 +35,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.gestures.GestureController;
 import com.android.launcher3.*;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
@@ -99,6 +101,8 @@ public class DragLayer extends InsettableFrameLayout {
     // Handles all apps pull up interaction
     private AllAppsTransitionController mAllAppsController;
 
+    private GestureController mGestureController;
+
     private TouchController mActiveController;
     /**
      * Used to create a new DragLayer from XML.
@@ -123,6 +127,9 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
+        if (launcher instanceof LawnchairLauncher) {
+            mGestureController = ((LawnchairLauncher) launcher).getGestureController();
+        }
 
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
@@ -241,6 +248,11 @@ public class DragLayer extends InsettableFrameLayout {
         if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
             // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
             mActiveController = mPinchListener;
+            return true;
+        }
+
+        if (mGestureController != null && mGestureController.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mGestureController;
             return true;
         }
         return false;

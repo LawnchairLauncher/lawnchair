@@ -31,4 +31,16 @@
         <item>1</item>
         <item>4</item>
     </string-array>
+
+    <string-array name="dt2sHandlers">
+        <item>@string/dt2s_disabled</item>
+        <item>@string/dt2s_timeout</item>
+        <item>@string/dt2s_root</item>
+    </string-array>
+
+    <string-array name="dt2sHandlerClasses">
+        <item> </item>
+        <item>ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture$SleepGestureHandlerTimeout</item>
+        <item>ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture$SleepGestureHandlerRoot</item>
+    </string-array>
 </resources>

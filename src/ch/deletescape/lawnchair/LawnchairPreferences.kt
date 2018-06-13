@@ -102,6 +102,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
+    // Gestures
+    val doubleTapToSleepHandler by StringPref("pref_doubleTapToSleepHandler", " ", doNothing)
+    val doubleTapDelay = 350L
+
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()

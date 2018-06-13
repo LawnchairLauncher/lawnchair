@@ -89,4 +89,12 @@
         android:summary="@string/full_width_widgets_pref_summary"
         android:title="@string/full_width_width_widgets_pref_title" />
 
+    <ListPreference
+        android:key="pref_doubleTapToSleepHandler"
+        android:title="@string/dt2s_title"
+        android:entries="@array/dt2sHandlers"
+        android:entryValues="@array/dt2sHandlerClasses"
+        android:defaultValue=" "
+        android:summary="%s" />
+
 </PreferenceScreen>

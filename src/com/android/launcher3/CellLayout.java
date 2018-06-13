@@ -45,6 +45,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
@@ -349,6 +350,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         if (mLauncher.mWorkspace.isInOverviewMode()
                 && mStylusEventHelper.onMotionEvent(ev)) {
             return true;
+        }
+        if (mLauncher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) mLauncher).getGestureController().onBlankAreaTouch(ev);
         }
         return handled;
     }
