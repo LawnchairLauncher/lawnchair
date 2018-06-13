@@ -117,7 +117,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private static final int DISMISS_TASK_DURATION = 300;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
-    private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.6f;
+    public static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.85f;
 
     private static final float[] sTempFloatArray = new float[3];
 

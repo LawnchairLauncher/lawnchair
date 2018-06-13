@@ -24,6 +24,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -560,8 +561,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                             ? mSyncTransactionApplier
                             : null);
 
-            // TODO: This logic is spartanic!
-            boolean passedThreshold = shift > 0.12f;
+            boolean passedThreshold = shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
             if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
                 mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
