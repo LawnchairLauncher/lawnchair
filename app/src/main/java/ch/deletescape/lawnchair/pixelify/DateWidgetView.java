@@ -18,6 +18,7 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
@@ -145,17 +146,7 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
             intent.setSourceBounds(launcher.getViewBounds(dateText1));
             context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
         } else{
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-            alertBuilder.setTitle(R.string.no_calendar_app_title)
-                    .setMessage(R.string.no_calendar_app_content)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
+            Toast.makeText(context, R.string.no_calendar_app_content,Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -529,8 +529,7 @@
     <string name="local_backups">Local backups</string>
     <string name="backup_location_device_storage">Device storage</string>
     <string name="backup_location_documents_storage">Documents storage</string>
-    <string name="no_calendar_app_title">No calendar app installed</string>
-    <string name="no_calendar_app_content">You don\'t have a calendar-app installed. Please either activate the built-in calendar or download one from the Play Store</string>
+    <string name="no_calendar_app_content">You don\'t have a calendar-app installed. Please either enable the built-in calendar or download one from the Play Store</string>
 
     <!-- Preference Category Pixel Searchbar Title -->
     <string name="pref_category_pixel_searchbar">Pixel Searchbar</string>
