@@ -67,6 +67,7 @@ public class ExtractionUtils {
         if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
             return;
         }
+        if (!Utilities.hasStoragePermission(context)) return;
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
                 Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,

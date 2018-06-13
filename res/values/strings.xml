@@ -461,4 +461,6 @@
     <string name="dt2s_disabled">Disabled</string>
     <string name="dt2s_timeout">Using screen timeout</string>
     <string name="dt2s_root">Using root</string>
+    <string name="title_storage_permission_required">Storage Permission Required</string>
+    <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
 </resources>

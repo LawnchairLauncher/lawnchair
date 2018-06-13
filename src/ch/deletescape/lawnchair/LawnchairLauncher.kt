@@ -1,25 +1,34 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
-import com.android.launcher3.AppInfo
-import com.android.launcher3.ItemInfo
-import com.android.launcher3.ItemInfoWithIcon
-import com.android.launcher3.ShortcutInfo
+import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 
 class LawnchairLauncher : NexusLauncherActivity() {
 
     val gestureController = GestureController(this)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
+            Utilities.requestStoragePermission(this)
+        }
+
+        super.onCreate(savedInstanceState)
+    }
 
     fun startEditIcon(itemInfo: ItemInfoWithIcon) {
         val component: ComponentKey? = when (itemInfo) {
@@ -47,8 +56,23 @@ class LawnchairLauncher : NexusLauncherActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+        if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.title_storage_permission_required)
+                        .setMessage(R.string.content_storage_permission_required)
+                        .setPositiveButton(android.R.string.ok, { _, _ -> Utilities.requestStoragePermission(this@LawnchairLauncher) })
+                        .setCancelable(false)
+                        .show()
+                }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     companion object {
 
+        const val REQUEST_PERMISSION_STORAGE_ACCESS = 666
         const val CODE_EDIT_ICON = 100
 
         var currentEditInfo: ItemInfo? = null
