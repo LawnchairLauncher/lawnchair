@@ -160,7 +160,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void onClick(final View view) {
         super.onClick(view);
         if (view == this) {
-            if (!Utilities.ATLEAST_NOUGAT) {
+            if (!Utilities.ATLEAST_OREO) {
                 searchFallback();
                 return;
             }
