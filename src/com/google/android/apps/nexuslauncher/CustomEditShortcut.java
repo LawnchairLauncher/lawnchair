@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher;
 
+import android.content.Context;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -9,9 +10,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.popup.SystemShortcut;
 
-public class CustomEditShortcut extends SystemShortcut {
-    public CustomEditShortcut() {
-        super(R.drawable.ic_edit_no_shadow, R.string.action_preferences);
+public class CustomEditShortcut extends SystemShortcut.Custom {
+    public CustomEditShortcut(Context context) {
+        super();
     }
 
     @Override

@@ -117,6 +117,9 @@
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
 
+    <!-- Name of a custom shortcut class. -->
+    <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
+
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
 
