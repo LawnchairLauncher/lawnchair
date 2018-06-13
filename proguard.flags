@@ -107,10 +107,18 @@
   *;
 }
 
--keep class com.google.android.apps.nexuslauncher.CustomAppFilter { *; }
+-keep class com.google.android.apps.nexuslauncher.CustomAppFilter {
+  public <init>(...);
+}
 
--keep class com.google.android.apps.nexuslauncher.CustomIconProvider { *; }
+-keep class com.google.android.apps.nexuslauncher.CustomAppPredictor {
+  public <init>(...);
+}
 
--keep class com.google.android.apps.nexuslauncher.CustomDrawableFactory { *; }
+-keep class com.google.android.apps.nexuslauncher.CustomDrawableFactory {
+  public <init>(...);
+}
 
--keep class com.google.android.apps.nexuslauncher.CustomAppPredictor { *; }
+-keep class com.google.android.apps.nexuslauncher.CustomIconProvider {
+  public <init>(...);
+}
