@@ -382,7 +382,9 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        mState.onStateDisabled(mLauncher);
+        if (mState != state) {
+            mState.onStateDisabled(mLauncher);
+        }
         mState = state;
         mState.onStateEnabled(mLauncher);
         mLauncher.getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
