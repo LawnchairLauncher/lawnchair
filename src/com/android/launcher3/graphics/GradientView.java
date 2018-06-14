@@ -70,8 +70,8 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final int mAlphaColors;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
-    private float mAlphaStart;
-    private float mAlphaEnd;
+    private float mAlphaStart = 100;
+    private float mAlphaEnd = 242;
     private final WallpaperColorInfo mWallpaperColorInfo;
     protected final int mScrimColor;
 
