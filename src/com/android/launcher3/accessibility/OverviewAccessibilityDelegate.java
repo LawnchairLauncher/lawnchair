@@ -55,7 +55,7 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         Launcher launcher = Launcher.getLauncher(host.getContext());
         if (action == OVERVIEW) {
-            launcher.showOverviewMode(true);
+            launcher.showOverviewPopup(true);
             return true;
         } else if (action == WALLPAPERS) {
             launcher.onClickWallpaperPicker(host);

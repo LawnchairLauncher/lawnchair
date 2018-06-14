@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.launcher3.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:visibility="invisible"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:contentDescription="" />

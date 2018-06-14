@@ -126,6 +126,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private final Rect mEndRect = new Rect();
 
     private boolean mShouldAnimate = false;
+    private boolean mDisableDividers;
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -309,6 +310,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 if (mShortcutsItemView == null) {
                     mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
                             R.layout.shortcuts_item, this, false);
+                    if (mDisableDividers) {
+                        mShortcutsItemView.disableDividers();
+                    }
                     addView(mShortcutsItemView);
                     if (shouldUnroundTopCorners) {
                         shortcutsItemRoundedCorners &= ~ROUNDED_TOP_CORNERS;
@@ -980,5 +984,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     @Override
     public int getLogContainerType() {
         return ContainerType.DEEPSHORTCUTS;
+    }
+
+    public void disableDividers() {
+        mDisableDividers = true;
     }
 }

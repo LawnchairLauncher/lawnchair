@@ -52,6 +52,7 @@ import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
 import ch.deletescape.lawnchair.WidgetsFullSheet;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.popup.OptionsPopupMenu;
 import ch.deletescape.lawnchair.theme.ThemeManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import com.android.launcher3.DropTarget.DragObject;
@@ -1200,7 +1201,7 @@ public class Launcher extends BaseActivity
                 if (mState == State.WORKSPACE && !mWorkspace.isInOverviewMode() &&
                         !mWorkspace.isSwitchingState()) {
                     mOverviewPanel.requestFocus();
-                    showOverviewMode(true, true /* requestButtonFocus */);
+                    showOverviewPopup(true);
                 }
             }
             return true;
@@ -2717,7 +2718,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    showOverviewMode(true);
+                    showOverviewPopup(false);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2754,7 +2755,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    showOverviewMode(true);
+                    showOverviewPopup(false);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -2858,6 +2859,10 @@ public class Launcher extends BaseActivity
      */
     public void showOverviewMode(boolean animated) {
         showOverviewMode(animated, false);
+    }
+
+    public void showOverviewPopup(boolean resetPosition) {
+        OptionsPopupMenu.Companion.show(this, resetPosition);
     }
 
     /**

@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -37,6 +38,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.gestures.GestureController;
+import ch.deletescape.lawnchair.popup.OptionsPopupMenu;
 import com.android.launcher3.*;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
@@ -104,6 +106,8 @@ public class DragLayer extends InsettableFrameLayout {
     private GestureController mGestureController;
 
     private TouchController mActiveController;
+    private BubbleTextView mDummyBubbleTextView;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -172,6 +176,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
+        OptionsPopupMenu.Companion.onTouchDown((int) ev.getX(), (int) ev.getY());
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null && intercept) {
             ExtendedEditText textView = topView.getActiveTextView();
@@ -916,6 +921,21 @@ public class DragLayer extends InsettableFrameLayout {
         } else {
             super.addFocusables(views, direction, focusableMode);
         }
+    }
+
+    public BubbleTextView getDummyBubbleTextView() {
+        if (mDummyBubbleTextView == null) {
+            mDummyBubbleTextView = (BubbleTextView) mLauncher.getLayoutInflater()
+                    .inflate(R.layout.dummy_bubble_text_view, this, false);
+            mDummyBubbleTextView.setTag(new ItemInfo() {
+                @Override
+                public ComponentName getTargetComponent() {
+                    return new ComponentName(getContext(), "");
+                }
+            });
+            addView(mDummyBubbleTextView);
+        }
+        return mDummyBubbleTextView;
     }
 
     public void setTouchCompleteListener(TouchCompleteListener listener) {

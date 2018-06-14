@@ -68,6 +68,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     private final List<View> mSystemShortcutViews = new ArrayList<>();
 
     private int mHiddenShortcutsHeight;
+    private boolean mDisableDividers;
 
     public ShortcutsItemView(Context context) {
         this(context, null, 0);
@@ -149,7 +150,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             }
             mSystemShortcutIcons.addView(shortcutView, index);
         } else {
-            if (mShortcutsLayout.getChildCount() > 0) {
+            if (mShortcutsLayout.getChildCount() > 0 && !mDisableDividers) {
                 View prevChild = mShortcutsLayout.getChildAt(mShortcutsLayout.getChildCount() - 1);
                 if (prevChild instanceof DeepShortcutView) {
                     prevChild.findViewById(R.id.divider).setVisibility(VISIBLE);
@@ -336,5 +337,9 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         target.itemType = LauncherLogProto.ItemType.DEEPSHORTCUT;
         target.rank = info.rank;
         targetParent.containerType = LauncherLogProto.ContainerType.DEEPSHORTCUTS;
+    }
+
+    public void disableDividers() {
+        mDisableDividers = true;
     }
 }
