@@ -1,9 +1,7 @@
 package ch.deletescape.lawnchair.pixelify;
 
-import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -142,11 +140,11 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
         List<ResolveInfo> calendarActivities = pm.queryIntentActivities(intent, 0);
 
         //if the size of that list is not 0, then the user has some kind of calendar app installed
-        if(calendarActivities.size() != 0){
+        if (calendarActivities.size() != 0) {
             intent.setSourceBounds(launcher.getViewBounds(dateText1));
             context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
-        } else{
-            Toast.makeText(context, R.string.no_calendar_app_content,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, R.string.no_calendar_app_content, Toast.LENGTH_LONG).show();
         }
     }
 }
