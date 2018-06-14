@@ -152,12 +152,20 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.updateSmartspace()
     }
 
+    fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
+        keys.forEach { addOnPreferenceChangeListener(it, listener) }
+    }
+
     fun addOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
         if (onChangeListeners[key] == null) {
             onChangeListeners[key] = HashSet()
         }
         onChangeListeners[key]?.add(listener)
         listener.onValueChanged(key, this, true)
+    }
+
+    fun removeOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
+        keys.forEach { removeOnPreferenceChangeListener(it, listener) }
     }
 
     fun removeOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {

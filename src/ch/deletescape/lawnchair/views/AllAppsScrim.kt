@@ -248,6 +248,13 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        if (!pStyle) {
+            prefs.addOnPreferenceChangeListener(this,
+                    "pref_hotseatShouldUseCustomOpacity",
+                    "pref_hotseatCustomOpacity",
+                    "pref_allAppsShouldUseCustomOpacity",
+                    "pref_allAppsOpacitySB")
+        }
         blurDrawable?.startListening()
         wallpaperColorInfo.addOnChangeListener(this)
         onExtractedColorsChanged(wallpaperColorInfo)
@@ -256,6 +263,13 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
+        if (!pStyle) {
+            prefs.removeOnPreferenceChangeListener(this,
+                    "pref_hotseatShouldUseCustomOpacity",
+                    "pref_hotseatCustomOpacity",
+                    "pref_allAppsShouldUseCustomOpacity",
+                    "pref_allAppsOpacitySB")
+        }
         blurDrawable?.stopListening()
         wallpaperColorInfo.removeOnChangeListener(this)
     }

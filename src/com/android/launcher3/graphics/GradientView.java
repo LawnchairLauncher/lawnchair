@@ -38,11 +38,15 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
+import org.jetbrains.annotations.NotNull;
+
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
  * final state with progress 1.0;
  */
-public class GradientView extends View implements WallpaperColorInfo.OnChangeListener {
+public class GradientView extends View implements WallpaperColorInfo.OnChangeListener, LawnchairPreferences.OnPreferenceChangeListener {
 
     private static final int DEFAULT_COLOR = Color.WHITE;
     private static final int ALPHA_MASK_HEIGHT_DP = 500;
@@ -66,7 +70,8 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final int mAlphaColors;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
-    private final float mAlphaStart;
+    private float mAlphaStart;
+    private float mAlphaEnd;
     private final WallpaperColorInfo mWallpaperColorInfo;
     protected final int mScrimColor;
 
@@ -76,8 +81,6 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         Launcher launcher = Launcher.getLauncher(context);
-        boolean hideDockGradient = Utilities.getLawnchairPrefs(context).getHideDockGradient();
-        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);
@@ -171,7 +174,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         float head = 0.29f;
         float linearProgress = head + (mProgress * (mShiftScrim ? 0.85f : 1f) * (1f - head));
         float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
-        float interpolatedAlpha = (255 - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
+        float interpolatedAlpha = (mAlphaEnd - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
         paint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
         float div = (float) Math.floor(startMaskY + mMaskHeight);
         mAlphaMaskRect.set(0, startMaskY, mWidth, div);
@@ -193,12 +196,21 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         LinearGradient lg = new LinearGradient(0, 0, 0, mMaskHeight,
                 new int[]{
                         0x00FFFFFF,
-                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                        0xFFFFFFFF,
                         0xFFFFFFFF},
                 new float[]{0f, 0.8f, 1f},
                 Shader.TileMode.CLAMP);
         paint.setShader(lg);
         c.drawRect(0, 0, mMaskWidth, mMaskHeight, paint);
         return dst;
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+        Launcher launcher = Launcher.getLauncher(getContext());
+        boolean hideDockGradient = prefs.getHideDockGradient();
+        mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : prefs.getAllAppsStartAlpha();
+        mAlphaEnd = prefs.getAllAppsEndAlpha();
+        invalidate();
     }
 }
