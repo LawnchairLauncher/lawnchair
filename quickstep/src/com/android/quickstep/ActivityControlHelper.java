@@ -185,7 +185,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-                return dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
+                return dp.hotseatBarSizePx + hotseatInset;
             } else {
                 int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
                 // Track slightly below the top of the shelf (between top and content).
@@ -448,7 +448,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-                return dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
+                return dp.hotseatBarSizePx + hotseatInset;
             } else {
                 return dp.heightPx - outRect.rect.bottom;
             }
