@@ -174,6 +174,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             final ConfigBuilder f = new ConfigBuilder(this, true);
             if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
                 searchFallback();
+                if (mFallback != null) {
+                    mFallback.setHint(null);
+                }
             }
         }
     }
