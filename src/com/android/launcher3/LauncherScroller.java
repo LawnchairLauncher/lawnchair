@@ -459,13 +459,13 @@ public class LauncherScroller  {
         return Math.log(INFLEXION * Math.abs(velocity) / (mFlingFriction * mPhysicalCoeff));
     }
 
-    public int getSplineFlingDuration(float velocity) {
+    private int getSplineFlingDuration(float velocity) {
         final double l = getSplineDeceleration(velocity);
         final double decelMinusOne = DECELERATION_RATE - 1.0;
         return (int) (1000.0 * Math.exp(l / decelMinusOne));
     }
 
-    public double getSplineFlingDistance(float velocity) {
+    private double getSplineFlingDistance(float velocity) {
         final double l = getSplineDeceleration(velocity);
         final double decelMinusOne = DECELERATION_RATE - 1.0;
         return mFlingFriction * mPhysicalCoeff * Math.exp(DECELERATION_RATE / decelMinusOne * l);
