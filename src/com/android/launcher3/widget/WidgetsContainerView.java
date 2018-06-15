@@ -157,6 +157,8 @@ public class WidgetsContainerView extends BaseContainerView
             Log.e(TAG, "Unexpected dragging view: " + v);
         }
 
+        mLauncher.closeTopFloatingView();
+
         // We don't enter spring-loaded mode if the drag has been cancelled
         if (mLauncher.getDragController().isDragging()) {
             // Go into spring loaded mode (must happen before we startDrag())

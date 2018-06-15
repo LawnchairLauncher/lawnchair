@@ -4017,6 +4017,13 @@ public class Launcher extends BaseActivity
         }
     }
 
+    public void closeTopFloatingView() {
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
+        if (topView != null) {
+            topView.close(true);
+        }
+    }
+
     public void refreshGrid() {
         getWorkspace().refreshChildren();
     }
