@@ -54,7 +54,7 @@ public class SpringRelativeLayout extends RelativeLayout {
                 }
             };
 
-    private final SparseBooleanArray mSpringViews = new SparseBooleanArray();
+    protected final SparseBooleanArray mSpringViews = new SparseBooleanArray();
     private final SpringAnimation mSpring;
 
     private float mDampedScrollShift = 0;
