@@ -312,6 +312,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    @Override
+    public int getCanvasClipTopForOverscroll() {
+        return mHeader.getTop();
+    }
+
     private void rebindAdapters(boolean showTabs) {
         rebindAdapters(showTabs, false /* force */);
     }
