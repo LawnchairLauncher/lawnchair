@@ -314,7 +314,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public int getCanvasClipTopForOverscroll() {
-        return mHeader.getTop();
+        // Do not clip if the QSB is attached to the spring, otherwise the QSB will get clipped.
+        return mSpringViews.get(getSearchView().getId()) ? 0 : mHeader.getTop();
     }
 
     private void rebindAdapters(boolean showTabs) {
