@@ -7,9 +7,11 @@ import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
+import ch.deletescape.lawnchair.round
 import com.android.launcher3.*
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.dynamicui.WallpaperColorInfo
@@ -41,25 +43,13 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private val mDrawRect = Rect()
     private val mPadding = Rect()
     private val mInsets = Rect()
-    private val mRounded by lazy { Utilities.getLawnchairPrefs(context).dockRoundedCorners }
     private val mShadowHelper by lazy { NinePatchDrawHelper() }
-    private val mRadius by lazy { if (mRounded) resources.getDimension(R.dimen.all_apps_scrim_radius) else 0f }
+    private val mRadius get() = dpToPx(prefs.dockRadius).round()
+    private val mRounded get() = mRadius.compareTo(0f) != 0
     private val mShadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
-    private val mDrawMargin by lazy { mRadius + mShadowBlur }
     private val mDeviceProfile by lazy { Launcher.getLauncher(context).deviceProfile }
-    private val mFillAlpha by lazy { mMinAlpha }
-    private val mShadowBitmap by lazy {
-        val tmp = mRadius + mShadowBlur
-        val builder = ShadowGenerator.Builder(0)
-        builder.radius = mRadius
-        builder.shadowBlur = mShadowBlur
-        val round = 2 * Math.round(tmp) + 20
-        val bitmap = Bitmap.createBitmap(round, round / 2, Bitmap.Config.ARGB_8888)
-        val f = 2.0f * tmp + 20.0f - mShadowBlur
-        builder.bounds.set(mShadowBlur, mShadowBlur, f, f)
-        builder.drawShadow(Canvas(bitmap))
-        bitmap
-    }
+    private var mShadowBitmap = generateShadowBitmap()
+
     private var mDrawOffsetY = 0f
     private var mDrawHeight = 0f
     private val mAccelerator by lazy { AccelerateInterpolator() }
@@ -92,12 +82,10 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         }
     }
 
-    private val blurRadius = if (pStyle && !drawingFlatColor) mRadius else 0f
-    private val blurDrawable = if (BlurWallpaperProvider.isEnabled) {
-        context.blurWallpaperProvider.createDrawable(blurRadius, false).apply { callback = blurDrawableCallback }
-    } else {
-        null
-    }
+    private val blurRadius get() = if (pStyle && !drawingFlatColor) mRadius else 0f
+    private var blurDrawable = createBlurDrawable()
+
+    private val enableShadow get() = prefs.dockShadow
 
     init {
         updateColors()
@@ -120,7 +108,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             if (drawingFlatColor) return 0f
             if (height != 0) {
                 val offsetY = -shiftRange * (1 - progress)
-                return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat()
+                return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat() - mRadius
             }
         }
         return shiftRange
@@ -131,36 +119,36 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             blurDrawable?.draw(canvas)
             canvas.drawPaint(mFillPaint)
         } else if (pStyle) {
-            val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat()
+            val radius = mRadius
+            val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat() - radius
             val width = (width - mPadding.right).toFloat()
             if (remainingScreenColor != 0) {
                 if (!remainingScreenPathValid) {
                     tempPath.reset()
-                    tempPath.addRoundRect(0f, getHeight().toFloat() - mRadius, getWidth().toFloat(), 10f + (getHeight().toFloat() + mRadius), mRadius, mRadius, Path.Direction.CW)
+                    tempPath.addRoundRect(0f, getHeight().toFloat() - radius, getWidth().toFloat(), 10f + (getHeight().toFloat() + radius), radius, radius, Path.Direction.CW)
                     remainingScreenPath.reset()
                     remainingScreenPath.addRect(0f, 0f, getWidth().toFloat(), getHeight().toFloat(), Path.Direction.CW)
                     remainingScreenPath.op(tempPath, Path.Op.DIFFERENCE)
                     remainingScreenPathValid = true
                 }
                 remainingScreenPaint.color = remainingScreenColor
-                val scrimTranslation = getHeight() - height - mRadius
+                val scrimTranslation = getHeight() - height - radius
                 canvas.translate(0f, -scrimTranslation)
                 canvas.drawPath(remainingScreenPath, remainingScreenPaint)
                 canvas.translate(0f, scrimTranslation)
             }
             blurDrawable?.run {
-                setBounds(mPadding.left, height.toInt(), width.toInt(), (getHeight().toFloat() + mRadius).toInt())
+                setBounds(mPadding.left, height.toInt(), width.toInt(), (getHeight().toFloat() + radius).toInt())
                 draw(canvas)
             }
-            if (mRounded) {
+            if (mRounded && enableShadow) {
+                val f = mPadding.left.toFloat() - mShadowBlur
+                val f2 = height - mShadowBlur
+                val f3 = mShadowBlur + width
                 if (mPadding.left <= 0 && mPadding.right <= 0) {
-                    mShadowHelper.draw(mShadowBitmap, canvas, mPadding.left.toFloat() - mShadowBlur, height - mShadowBlur, width + mShadowBlur)
-                } else {
-                    val f = mPadding.left.toFloat() - mShadowBlur
-                    val f2 = height - mShadowBlur
-                    val f3 = mShadowBlur + width
-                    val height2 = getHeight().toFloat()
                     mShadowHelper.draw(mShadowBitmap, canvas, f, f2, f3)
+                } else {
+                    val height2 = getHeight().toFloat()
                     val height3 = mShadowBitmap.height
                     mShadowHelper.mSrc.top = height3 - 5
                     mShadowHelper.mSrc.bottom = height3
@@ -169,7 +157,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
                     mShadowHelper.draw3Patch(mShadowBitmap, canvas, f, f3)
                 }
             }
-            canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + mRadius, mRadius, mRadius, mFillPaint)
+            canvas.drawRoundRect(mPadding.left.toFloat(), height, width, getHeight().toFloat() + radius, radius, radius, mFillPaint)
         } else {
             blurDrawable?.draw(canvas)
             super.onDraw(canvas)
@@ -193,7 +181,6 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
         } else {
             mPadding.setEmpty()
             mDrawHeight = getHotseatHeight(insets).toFloat()
-            if (mRounded) mDrawHeight += resources.getDimension(R.dimen.all_apps_scrim_margin)
         }
         updateDrawRect(mDeviceProfile)
         invalidate()
@@ -288,5 +275,40 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun onExtractedColorsChanged(info: WallpaperColorInfo) {
         super.onExtractedColorsChanged(info)
         scrimColor = info.mainColor
+    }
+
+    private fun dpToPx(dp: Float): Float {
+        return (dp * context.resources.displayMetrics.density + 0.5f)
+    }
+
+    fun reset() {
+        remainingScreenPathValid = false
+        mShadowBitmap = generateShadowBitmap()
+        blurDrawable = createBlurDrawable()
+    }
+
+    private fun generateShadowBitmap(): Bitmap {
+        val tmp = mRadius + mShadowBlur
+        val builder = ShadowGenerator.Builder(0)
+        builder.radius = mRadius
+        builder.shadowBlur = mShadowBlur
+        val round = 2 * Math.round(tmp) + 20
+        val bitmap = Bitmap.createBitmap(round, round / 2, Bitmap.Config.ARGB_8888)
+        val f = 2.0f * tmp + 20.0f - mShadowBlur
+        builder.bounds.set(mShadowBlur, mShadowBlur, f, f)
+        builder.drawShadow(Canvas(bitmap))
+        return bitmap
+    }
+
+    private fun createBlurDrawable(): BlurDrawable? {
+        blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
+        return if (BlurWallpaperProvider.isEnabled) {
+            context.blurWallpaperProvider.createDrawable(blurRadius, false).apply { callback = blurDrawableCallback }
+        } else {
+            null
+        }?.apply {
+            setBounds(left, top, right, bottom)
+            if (isAttachedToWindow) startListening()
+        }
     }
 }

@@ -639,4 +639,11 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mShiftRange = scrollRange;
         setProgress(mProgress);
     }
+
+    public void reset() {
+        setProgress(1);
+        if (mGradientView != null) {
+            mGradientView.reset();
+        }
+    }
 }

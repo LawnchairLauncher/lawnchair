@@ -16,6 +16,8 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
 import java.lang.reflect.Field
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
@@ -165,3 +167,9 @@ fun Float.clamp(min: Float, max: Float): Float {
     if (this >= max) return max
     return this
 }
+
+fun Float.round() = roundToInt().toFloat()
+
+fun Float.ceilToInt() = ceil(this).toInt()
+
+fun Double.ceilToInt() = ceil(this).toInt()

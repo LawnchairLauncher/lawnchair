@@ -77,9 +77,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
     val dockDefaultOpacity = 100
     val dockOpacity by AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, resetAllApps)
+    val dockRadius by FloatPref("pref_dockRadius", 8f, resetAllApps)
+    val dockShadow by BooleanPref("pref_dockShadow", true, resetAllApps)
     val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, resetAllApps)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
-    val dockStyle by StringIntPref("pref_dockStyle", 3, recreate)
+    val dockGradient by BooleanPref("pref_dockGradient", false, recreate)
+    val dockStyle get() = if (dockGradient) 0 else 3
     val dockGradientStyle get() = (dockStyle and 1) == 0
     val dockRoundedCorners get() = (dockStyle and 2) != 0
     val hideDockGradient get() = (dockStyle and 4) != 0

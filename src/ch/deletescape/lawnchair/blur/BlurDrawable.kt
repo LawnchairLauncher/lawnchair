@@ -174,11 +174,9 @@ class BlurDrawable internal constructor(
 
         canvas.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.wallpaperYOffset, mPaint)
         if (mTopRounded) {
-            mTopCanvas.drawRect(mRect, mOpacityPaint)
             mTopCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - mRect.top, mCornerPaint)
         }
         if (mBottomRounded) {
-            mBottomCanvas.drawRect(mRect, mOpacityPaint)
             mBottomCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - bottomY, mCornerPaint)
         }
 
@@ -301,6 +299,7 @@ class BlurDrawable internal constructor(
     override fun setAlpha(alpha: Int) {
         mShouldDraw = alpha > 0
         mPaint.alpha = alpha
+        mCornerPaint.alpha = alpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {

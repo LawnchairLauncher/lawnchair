@@ -32,7 +32,7 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
     }
 
     fun resetAllApps() {
-        launcher.mAllAppsController.progress = 1f
+        launcher.mAllAppsController.reset()
     }
 
     fun updatePageIndicator() {

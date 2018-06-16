@@ -17,10 +17,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import ch.deletescape.lawnchair.blurWallpaperProvider
-import ch.deletescape.lawnchair.hasStoragePermission
-import ch.deletescape.lawnchair.launcherAppState
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.*
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -135,14 +132,14 @@ class BlurWallpaperProvider(val context: Context) {
             return bitmap
         }
 
-        val scaledWidth = Math.max(width, (bitmap.width * upscaleFactor).toInt())
-        val scaledHeight = Math.max(height, (bitmap.height * upscaleFactor).toInt())
+        val scaledWidth = Math.max(width, (bitmap.width * upscaleFactor).ceilToInt())
+        val scaledHeight = Math.max(height, (bitmap.height * upscaleFactor).ceilToInt())
         return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false)
     }
 
     fun blur(image: Bitmap): Bitmap {
-        val width = Math.ceil((image.width.toDouble() / DOWNSAMPLE_FACTOR)).toInt()
-        val height = Math.ceil((image.height.toDouble() / DOWNSAMPLE_FACTOR)).toInt()
+        val width = (image.width.toDouble() / DOWNSAMPLE_FACTOR).ceilToInt()
+        val height = (image.height.toDouble() / DOWNSAMPLE_FACTOR).ceilToInt()
 
         val inputBitmap = Bitmap.createScaledBitmap(image, width, height, false)
         val outputBitmap = Bitmap.createBitmap(inputBitmap)
