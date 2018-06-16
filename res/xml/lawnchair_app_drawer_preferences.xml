@@ -26,16 +26,9 @@
         android:defaultValue="false"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_allAppsShouldUseCustomOpacity"
-        android:title="@string/all_apps_uses_custom_opacity"
-        android:defaultValue="false"
-        android:persistent="true" />
-
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_allAppsOpacitySB"
         android:title="@string/all_apps_opacity_pref_title"
-        android:dependency="pref_allAppsShouldUseCustomOpacity"
         app:minValue="0"
         app:maxValue="1"
         app:defaultSeekbarValue="0.92"

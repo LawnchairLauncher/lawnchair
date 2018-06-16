@@ -76,7 +76,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
     val dockDefaultOpacity = 100
-    val dockCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, resetAllApps)
     val dockOpacity by AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, resetAllApps)
     val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, resetAllApps)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
@@ -89,11 +88,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
-    val allAppsCustomOpacity by BooleanPref("pref_allAppsShouldUseCustomOpacity", false, doNothing)
     val allAppsDefaultOpacity = 235
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)
-    val allAppsStartAlpha get() = if (dockCustomOpacity) dockOpacity else dockDefaultOpacity
-    val allAppsEndAlpha get() = if (allAppsCustomOpacity) allAppsOpacity else allAppsDefaultOpacity
+    val allAppsStartAlpha get() = dockOpacity
+    val allAppsEndAlpha get() = allAppsOpacity
     val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
 
     // Dev

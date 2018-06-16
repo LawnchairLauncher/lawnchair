@@ -4,11 +4,15 @@ import android.content.Context
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
+import android.view.ContextMenu
+import android.view.MenuItem
+import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import com.android.launcher3.R
 
-class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener {
+class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
     private var mSeekbar: SeekBar? = null
     private var mValueText: TextView? = null
@@ -19,6 +23,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     private var multiplier: Int = 0
     private var format: String? = null
     private var steps: Int = 100
+
 
     init {
         layoutResource = R.layout.preference_seekbar
@@ -42,12 +47,18 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         val view = holder.itemView
-        mSeekbar = view.findViewById<SeekBar>(R.id.seekbar)
-        mValueText = view.findViewById<TextView>(R.id.txtValue)
+        mSeekbar = view.findViewById(R.id.seekbar)
+        mValueText = view.findViewById(R.id.txtValue)
         mSeekbar!!.max = steps
         mSeekbar!!.setOnSeekBarChangeListener(this)
 
         current = getPersistedFloat(defaultValue)
+        updateDisplayedValue()
+
+        view.setOnCreateContextMenuListener(this)
+    }
+
+    private fun updateDisplayedValue() {
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
         updateSummary()
@@ -55,7 +66,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         current = min + (max - min) / steps * progress
-        current = Math.round(current * 100f)/100f; //round to .00 places
+        current = Math.round(current * 100f) / 100f //round to .00 places
         updateSummary()
 
         persistFloat(current)
@@ -68,4 +79,19 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
     override fun onStopTrackingTouch(seekBar: SeekBar) {}
+
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        menu.setHeaderTitle(title)
+        menu.add(0, 0, 0, R.string.reset_to_default)
+        for (i in (0 until menu.size())) {
+            menu.getItem(i).setOnMenuItemClickListener(this)
+        }
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        current = defaultValue
+        persistFloat(defaultValue)
+        updateDisplayedValue()
+        return true
+    }
 }

@@ -24,16 +24,9 @@
         android:defaultValue="false"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_hotseatShouldUseCustomOpacity"
-        android:title="@string/hotseat_uses_custom_opacity"
-        android:defaultValue="false"
-        android:persistent="true" />
-
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_hotseatCustomOpacity"
         android:title="@string/hotseat_custom_opacity"
-        android:dependency="pref_hotseatShouldUseCustomOpacity"
         app:minValue="0"
         app:maxValue="1"
         app:summaryFormat="%.0f%%"
