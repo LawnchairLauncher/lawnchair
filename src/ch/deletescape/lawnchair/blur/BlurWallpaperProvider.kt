@@ -94,7 +94,7 @@ class BlurWallpaperProvider(val context: Context) {
 
         this.wallpaper = null
         placeholder = createPlaceholder(wallpaper.width, wallpaper.height)
-        launcher.runOnUiThread(mNotifyRunnable)
+        launcher?.runOnUiThread(mNotifyRunnable)
         if (prefs.enableVibrancy) {
             wallpaper = applyVibrancy(wallpaper)
         }
@@ -102,7 +102,7 @@ class BlurWallpaperProvider(val context: Context) {
             Log.d("BWP", "starting blur")
             this.wallpaper = blur(wallpaper)
             Log.d("BWP", "blur done")
-            launcher.runOnUiThread(mNotifyRunnable)
+            launcher?.runOnUiThread(mNotifyRunnable)
         } catch(oom: OutOfMemoryError){
             prefs.enableBlur = false
             Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
