@@ -132,8 +132,14 @@ public class DragController implements DragDriver.EventListener, TouchController
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
+                              DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
+                              float initialDragViewScale, DragOptions options) {
+        return startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragOffset, dragRegion, initialDragViewScale, options, false);
+    }
+
+    public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale, DragOptions options) {
+            float initialDragViewScale, DragOptions options, boolean isZoomed) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -165,7 +171,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, initialDragViewScale, scaleDps);
+                registrationY, initialDragViewScale, scaleDps, isZoomed);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
         if (mOptions.isAccessibleDrag) {

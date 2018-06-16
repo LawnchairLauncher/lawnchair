@@ -121,7 +121,13 @@ public class DragView extends View {
      * @param registrationY The y coordinate of the registration point.
      */
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-                    final float initialScale, final float finalScaleDps) {
+                    final float initialScale, final float finalScaleDps, boolean isZoomed) {
+        this(launcher, bitmap, registrationX, registrationY, isZoomed ? initialScale * 1.1f : initialScale, initialScale, finalScaleDps);
+
+    }
+
+    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
+                    final float initialScale, float realInitialScale, final float finalScaleDps) {
         super(launcher);
         mLauncher = launcher;
         mDragLayer = launcher.getDragLayer();
@@ -169,7 +175,7 @@ public class DragView extends View {
         mRegistrationX = registrationX;
         mRegistrationY = registrationY;
 
-        mInitialScale = initialScale;
+        mInitialScale = realInitialScale;
 
         // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);

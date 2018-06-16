@@ -2228,7 +2228,7 @@ public class Workspace extends PagedView
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
+                dragObject, dragVisualizeOffset, dragRect, scale, dragOptions, child instanceof BubbleTextView);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
         b.recycle();
         return dv;
