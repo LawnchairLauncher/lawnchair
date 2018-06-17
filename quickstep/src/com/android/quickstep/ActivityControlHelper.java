@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
-
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
@@ -38,6 +37,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -100,8 +100,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
+    default int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+            @InteractionType int interactionType, TransformedRect outRect) {
+        return getSwipeUpDestinationAndLength(dp, context, interactionType, outRect, null);
+    }
+
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect);
+            @InteractionType int interactionType, TransformedRect outRect, PointF touchTown);
 
     void onSwipeUpComplete(T activity);
 
@@ -185,7 +190,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect) {
+                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
             if (interactionType == INTERACTION_QUICK_SCRUB) {
                 outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context);
@@ -195,9 +200,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + hotseatInset;
             } else {
-                int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-                // Track slightly below the top of the shelf (between top and content).
-                return shelfHeight - dp.edgeMarginPx * 2;
+                int swipeLength = LayoutUtils.getShelfTrackingDistance(dp);
+                if (touchDown != null) {
+                    // We are already partway through based on where we touched the nav bar.
+                    swipeLength -= dp.heightPx - touchDown.y;
+                }
+                return swipeLength;
             }
         }
 
@@ -456,7 +464,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect) {
+                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
             LayoutUtils.calculateFallbackTaskSize(context, dp, outRect.rect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();

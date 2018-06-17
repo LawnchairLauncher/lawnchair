@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -175,6 +176,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     protected boolean mIsGoingToHome;
     private DeviceProfile mDp;
     private int mTransitionDragLength;
+    private PointF mTouchDown;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -340,12 +342,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
     }
 
-    private void initTransitionEndpoints(DeviceProfile dp) {
+    private void initTransitionEndpoints(DeviceProfile dp, PointF touchDown) {
         mDp = dp;
 
         TransformedRect tempRect = new TransformedRect();
-        mTransitionDragLength = mActivityControlHelper
-                .getSwipeUpDestinationAndLength(dp, mContext, mInteractionType, tempRect);
+        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
+                dp, mContext, mInteractionType, tempRect, touchDown);
         mClipAnimationHelper.updateTargetRect(tempRect);
     }
 
@@ -569,7 +571,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
      * Called by {@link #mLayoutListener} when launcher layout changes
      */
     public void buildAnimationController() {
-        initTransitionEndpoints(mActivity.getDeviceProfile());
+        initTransitionEndpoints(mActivity.getDeviceProfile(), mTouchDown);
         mAnimationFactory.createActivityController(mTransitionDragLength, mInteractionType);
     }
 
@@ -619,7 +621,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds) {
+            RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds,
+            PointF touchDown) {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
@@ -650,7 +653,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }
         mClipAnimationHelper.prepareAnimation(false /* isOpening */);
-        initTransitionEndpoints(dp);
+        mTouchDown = touchDown;
+        initTransitionEndpoints(dp, mTouchDown);
 
         mRecentsAnimationWrapper.setController(controller, targets);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);

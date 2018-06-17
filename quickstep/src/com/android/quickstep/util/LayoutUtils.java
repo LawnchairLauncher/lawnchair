@@ -111,4 +111,10 @@ public class LayoutUtils {
         outRect.set(Math.round(x), Math.round(y),
                 Math.round(x + outWidth), Math.round(y + outHeight));
     }
+
+    public static int getShelfTrackingDistance(DeviceProfile dp) {
+        int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        // Track slightly below the top of the shelf (between top and content).
+        return shelfHeight - dp.edgeMarginPx * 2;
+    }
 }
