@@ -23,13 +23,15 @@
         <item>@string/dock_style_o</item>
         <item>@string/dock_style_n</item>
         <item>@string/dock_style_transparent</item>
+        <item>@string/dock_style_custom</item>
     </string-array>
 
     <string-array name="dockStyleValues">
-        <item>3</item>
-        <item>0</item>
         <item>1</item>
+        <item>2</item>
+        <item>3</item>
         <item>4</item>
+        <item>0</item>
     </string-array>
 
     <string-array name="dt2sHandlers">

@@ -173,3 +173,14 @@ fun Float.round() = roundToInt().toFloat()
 fun Float.ceilToInt() = ceil(this).toInt()
 
 fun Double.ceilToInt() = ceil(this).toInt()
+
+class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
+
+    operator fun getValue(thisRef: Any?, prop: KProperty<*>): T {
+        return property.get()
+    }
+
+    operator fun setValue(thisRef: Any?, prop: KProperty<*>, value: T) {
+        property.set(value)
+    }
+}

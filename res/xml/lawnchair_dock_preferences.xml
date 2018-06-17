@@ -2,6 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ch.deletescape.lawnchair.preferences.DockPresetPreference
+        android:key="pref_dockPreset"
+        android:title="@string/dock_style_pref_title"
+        android:summary="%s"
+        android:entries="@array/dockStyles"
+        android:entryValues="@array/dockStyleValues"
+        android:defaultValue="1"
+        android:persistent="true" />
+
     <SwitchPreference
         android:key="pref_dockSearchBar"
         android:title="@string/dock_search_bar"
@@ -15,24 +24,21 @@
         android:defaultValue="false"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_dockGradient"
+    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+        android:key="enableGradient"
         android:title="@string/dock_gradient"
-        android:defaultValue="false"
         android:disableDependentsState="true"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_dockShadow"
+    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+        android:key="enableShadow"
         android:title="@string/dock_shadow"
-        android:defaultValue="true"
-        android:dependency="pref_dockGradient"
-        android:persistent="true" />
+        android:dependency="enableGradient" />
 
-    <ch.deletescape.lawnchair.preferences.SeekbarPreference
-        android:key="pref_dockRadius"
+    <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
+        android:key="radius"
         android:title="@string/dock_radius"
-        android:dependency="pref_dockGradient"
+        android:dependency="enableGradient"
         app:minValue="0"
         app:maxValue="24"
         app:steps="24"
@@ -41,8 +47,8 @@
         app:defaultSeekbarValue="8"
         android:persistent="true" />
 
-    <ch.deletescape.lawnchair.preferences.SeekbarPreference
-        android:key="pref_hotseatCustomOpacity"
+    <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
+        android:key="opacityPref"
         android:title="@string/hotseat_custom_opacity"
         app:minValue="0"
         app:maxValue="1"
@@ -51,10 +57,9 @@
         app:defaultSeekbarValue="0.39"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_hotseatShowArrow"
+    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+        android:key="enableArrow"
         android:title="@string/hotseat_show_arrow"
-        android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference

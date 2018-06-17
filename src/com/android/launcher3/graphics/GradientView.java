@@ -208,8 +208,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     @Override
     public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
         Launcher launcher = Launcher.getLauncher(getContext());
-        boolean hideDockGradient = prefs.getHideDockGradient();
-        mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : prefs.getAllAppsStartAlpha();
+        mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : prefs.getAllAppsStartAlpha();
         mAlphaEnd = prefs.getAllAppsEndAlpha();
         invalidate();
     }

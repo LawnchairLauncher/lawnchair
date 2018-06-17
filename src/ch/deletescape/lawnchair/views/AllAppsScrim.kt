@@ -86,6 +86,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private var blurDrawable = createBlurDrawable()
 
     private val enableShadow get() = prefs.dockShadow
+    private val maxRadiusSpace = dpToPx(8f)
 
     init {
         updateColors()
@@ -108,7 +109,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             if (drawingFlatColor) return 0f
             if (height != 0) {
                 val offsetY = -shiftRange * (1 - progress)
-                return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat() - mRadius
+                return height.toFloat() + offsetY - mDrawHeight + mPadding.top.toFloat() - Math.min(maxRadiusSpace, mRadius)
             }
         }
         return shiftRange
@@ -120,7 +121,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             canvas.drawPaint(mFillPaint)
         } else if (pStyle) {
             val radius = mRadius
-            val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat() - radius
+            val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat() - Math.min(maxRadiusSpace, radius)
             val width = (width - mPadding.right).toFloat()
             if (remainingScreenColor != 0) {
                 if (!remainingScreenPathValid) {

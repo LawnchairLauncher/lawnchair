@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import ch.deletescape.lawnchair.iconpack.IconPackManager
+import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.theme.ThemeManager
@@ -73,19 +74,14 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
 
     // Dock
+    val dockStyles = DockStyle.StyleManager(this, recreate, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
     val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
-    val dockDefaultOpacity = 100
-    val dockOpacity by AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, resetAllApps)
-    val dockRadius by FloatPref("pref_dockRadius", 8f, resetAllApps)
-    val dockShadow by BooleanPref("pref_dockShadow", true, resetAllApps)
-    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, resetAllApps)
+    val dockRadius get() = dockStyles.currentStyle.radius
+    val dockShadow get() = dockStyles.currentStyle.enableShadow
+    val dockShowArrow get() = dockStyles.currentStyle.enableArrow
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
-    val dockGradient by BooleanPref("pref_dockGradient", false, recreate)
-    val dockStyle get() = if (dockGradient) 0 else 3
-    val dockGradientStyle get() = (dockStyle and 1) == 0
-    val dockRoundedCorners get() = (dockStyle and 2) != 0
-    val hideDockGradient get() = (dockStyle and 4) != 0
+    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockGridSize by lazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
 
     // Drawer
@@ -93,7 +89,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsDefaultOpacity = 235
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)
-    val allAppsStartAlpha get() = dockOpacity
+    val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
 
@@ -405,7 +401,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     abstract inner class PrefDelegate<T : Any>(val key: String, val defaultValue: T, private val onChange: () -> Unit) {
 
         private var cached = false
-        private lateinit var value: T
+        protected var value: T = defaultValue
 
         init {
             onChangeMap[key] = { onValueChanged() }

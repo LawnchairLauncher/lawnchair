@@ -11,19 +11,20 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.android.launcher3.R
 
-class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
     private var mSeekbar: SeekBar? = null
     private var mValueText: TextView? = null
     private var min: Float = 0.toFloat()
     private var max: Float = 0.toFloat()
-    private var current: Float = 0.toFloat()
+    protected var current: Float = 0.toFloat()
     private var defaultValue: Float = 0.toFloat()
     private var multiplier: Int = 0
     private var format: String? = null
     private var steps: Int = 100
 
+    open val allowResetToDefault = true
 
     init {
         layoutResource = R.layout.preference_seekbar
@@ -50,18 +51,25 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         mSeekbar = view.findViewById(R.id.seekbar)
         mValueText = view.findViewById(R.id.txtValue)
         mSeekbar!!.max = steps
-        mSeekbar!!.setOnSeekBarChangeListener(this)
 
         current = getPersistedFloat(defaultValue)
         updateDisplayedValue()
 
-        view.setOnCreateContextMenuListener(this)
+        if (allowResetToDefault) view.setOnCreateContextMenuListener(this)
+    }
+
+    fun setValue(value: Float) {
+        current = value
+        persistFloat(value)
+        updateDisplayedValue()
     }
 
     private fun updateDisplayedValue() {
+        mSeekbar?.setOnSeekBarChangeListener(null)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
         updateSummary()
+        mSeekbar?.setOnSeekBarChangeListener(this)
     }
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -89,9 +97,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        current = defaultValue
-        persistFloat(defaultValue)
-        updateDisplayedValue()
+        setValue(defaultValue)
         return true
     }
 }
