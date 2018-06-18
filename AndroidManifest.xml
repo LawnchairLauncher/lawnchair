@@ -172,10 +172,8 @@
 
         <!--
         Custom
-
-        Set max aspect ration to 3 to be safe for the next few years
         -->
-        <meta-data android:name="android.max_aspect" android:value="3" />
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
 
         <!-- ENABLE_FOR_TESTING
 
