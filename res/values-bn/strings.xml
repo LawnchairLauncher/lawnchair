@@ -102,9 +102,9 @@
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"আইকনের আকৃতি পরিবর্তন করা হচ্ছে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"অনুসন্ধান"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"সার্চ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"এই অ্যাপ্লিকেশানটি ইন্সটল করা নাই"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি সার্চ করে এটি নিজে ইন্সটল করতে পারেন।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনলোড হচ্ছে <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পন্ন হয়েছে"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনস্টলের অপেক্ষায় রয়েছে"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> উইজেট"</string>
