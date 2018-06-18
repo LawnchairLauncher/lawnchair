@@ -87,7 +87,7 @@
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Αλλαγή σχήματος εικονιδίου"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Χρήση προεπιλογής συστήματος"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Τετράγωνο"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Στρογγυλεμένο τετράγωνο"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Οβάλ τετράγωνο"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Κύκλος"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Δάκρυ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Εφαρμογή αλλαγών σχήματος εικονιδίων"</string>

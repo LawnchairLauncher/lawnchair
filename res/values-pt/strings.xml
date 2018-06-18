@@ -87,7 +87,7 @@
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Alterar forma de ícones"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar padrão do sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Quadrado"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Quadrado arredondado"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Arredondado"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Círculo"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Lágrima"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Aplicando alterações na forma dos ícones"</string>
