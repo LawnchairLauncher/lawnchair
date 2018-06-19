@@ -30,3 +30,16 @@ LOCAL_PACKAGE_NAME := Launcher3Tests
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 
 include $(BUILD_PACKAGE)
+
+#
+# Build rule for Tapl library.
+#
+include $(CLEAR_VARS)
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator
+
+LOCAL_SRC_FILES := $(call all-java-files-under, tapl)
+
+LOCAL_SDK_VERSION := current
+LOCAL_MODULE := ub-launcher-tapl
+
+include $(BUILD_STATIC_JAVA_LIBRARY)
