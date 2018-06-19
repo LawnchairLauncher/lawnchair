@@ -54,7 +54,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
     public void setContentAlpha(float alpha) {
         if (mContentAlpha != alpha) {
             mContentAlpha = alpha;
-            setAlpha(mScrollAlpha * mContentAlpha);
+            updateAlpha();
         }
     }
 
@@ -68,6 +68,12 @@ public class ClearAllButton extends Button implements PageCallbacks {
         float shift = Math.min(scrollState.scrollFromEdge, width);
         setTranslationX(mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift));
         mScrollAlpha = 1 - shift / width;
-        setAlpha(mScrollAlpha * mContentAlpha);
+        updateAlpha();
+    }
+
+    private void updateAlpha() {
+        final float alpha = mScrollAlpha * mContentAlpha;
+        setAlpha(alpha);
+        setClickable(alpha == 1);
     }
 }
