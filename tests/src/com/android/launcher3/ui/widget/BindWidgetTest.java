@@ -122,7 +122,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         setupAndVerifyContents(item, LauncherAppWidgetHostView.class, info.label);
     }
 
-    @Test
     public void testUnboundWidget_removed() throws Exception {
         LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
@@ -177,7 +176,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                         LauncherSettings.Favorites.APPWIDGET_ID))));
     }
 
-    @Test
     public void testPendingWidget_notRestored_removed() throws Exception {
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID

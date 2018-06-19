@@ -33,6 +33,7 @@ import android.support.test.uiautomator.Direction;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.LauncherAppState;
@@ -64,6 +65,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
+    public static final long SHORT_UI_TIMEOUT= 300;
     public static final long DEFAULT_UI_TIMEOUT = 3000;
     public static final long LARGE_UI_TIMEOUT = 10000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
@@ -72,6 +74,8 @@ public abstract class AbstractLauncherUiTest {
     protected UiDevice mDevice;
     protected Context mTargetContext;
     protected String mTargetPackage;
+
+    private static final String TAG = "AbstractLauncherUiTest";
 
     @Before
     public void setUp() throws Exception {
@@ -119,8 +123,7 @@ public abstract class AbstractLauncherUiTest {
     protected UiObject2 openWidgetsTray() {
         mDevice.pressMenu(); // Enter overview mode.
         mDevice.wait(Until.findObject(
-                By.text(mTargetContext.getString(R.string.widget_button_text)
-                        .toUpperCase(Locale.getDefault()))), DEFAULT_UI_TIMEOUT).click();
+                By.text(mTargetContext.getString(R.string.widget_button_text))), DEFAULT_UI_TIMEOUT).click();
         return findViewById(R.id.widgets_list_view);
     }
 
@@ -130,6 +133,8 @@ public abstract class AbstractLauncherUiTest {
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
         do {
+            // findObject can only execute after spring settles.
+            mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
             UiObject2 widget = container.findObject(condition);
             if (widget != null) {
                 return widget;
@@ -140,6 +145,7 @@ public abstract class AbstractLauncherUiTest {
 
     /**
      * Drags an icon to the center of homescreen.
+     * @param icon  object that is either app icon or shortcut icon
      */
     protected void dragToWorkspace(UiObject2 icon, boolean expectedToShowShortcuts) {
         Point center = icon.getVisibleCenter();
@@ -250,6 +256,7 @@ public abstract class AbstractLauncherUiTest {
             public LauncherAppWidgetProviderInfo call() throws Exception {
                 ComponentName cn = new ComponentName(getInstrumentation().getContext(),
                         hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
+                Log.d(TAG, "findWidgetProvider componentName=" + cn.flattenToString());
                 return AppWidgetManagerCompat.getInstance(mTargetContext)
                         .findProvider(cn, Process.myUserHandle());
             }
@@ -271,7 +278,13 @@ public abstract class AbstractLauncherUiTest {
 
     protected LauncherActivityInfo getSettingsApp() {
         return LauncherAppsCompat.getInstance(mTargetContext)
-                .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
+                .getActivityList("com.android.settings",
+                        Process.myUserHandle()).get(0);
+    }
+
+    protected LauncherActivityInfo getChromeApp() {
+        return LauncherAppsCompat.getInstance(mTargetContext)
+                .getActivityList("com.android.chrome", Process.myUserHandle()).get(0);
     }
 
     /**
