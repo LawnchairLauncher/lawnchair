@@ -16,36 +16,32 @@
 
 package com.android.launcher3.tapl;
 
+import static org.junit.Assert.assertTrue;
+
 import android.support.annotation.NonNull;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Direction;
 import android.support.test.uiautomator.UiObject2;
 
 /**
- * Operations on AllApps opened from Home.
+ * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public final class AllAppsFromHome {
+public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
     private static final int MIN_INTERACT_SIZE = 100;
     private static final int FLING_SPEED = 12000;
 
-    private final Launcher mLauncher;
     private final int mHeight;
 
-    AllAppsFromHome(Launcher launcher) {
-        mLauncher = launcher;
-        final UiObject2 allAppsContainer = assertState();
+    AllApps(LauncherInstrumentation launcher) {
+        super(launcher);
+        final UiObject2 allAppsContainer = verifyActiveContainer();
         mHeight = allAppsContainer.getVisibleBounds().height();
     }
 
-    /**
-     * Asserts that we are in all apps.
-     *
-     * @return All apps container.
-     */
-    @NonNull
-    private UiObject2 assertState() {
-        return mLauncher.assertState(Launcher.State.ALL_APPS);
+    @Override
+    protected LauncherInstrumentation.ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.ALL_APPS;
     }
 
     /**
@@ -57,41 +53,45 @@ public final class AllAppsFromHome {
      */
     @NonNull
     public AppIcon getAppIcon(String appName) {
-        final UiObject2 allAppsContainer = assertState();
+        final UiObject2 allAppsContainer = verifyActiveContainer();
         final BySelector appIconSelector = AppIcon.getAppIconSelector(appName);
         if (!allAppsContainer.hasObject(appIconSelector)) {
             scrollBackToBeginning();
             int attempts = 0;
             while (!allAppsContainer.hasObject(appIconSelector) &&
                     allAppsContainer.scroll(Direction.DOWN, 0.8f)) {
-                mLauncher.assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
+                assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
-                assertState();
+                verifyActiveContainer();
             }
         }
-        assertState();
+        verifyActiveContainer();
 
         final UiObject2 appIcon = mLauncher.getObjectInContainer(allAppsContainer, appIconSelector);
         ensureIconVisible(appIcon, allAppsContainer);
         return new AppIcon(mLauncher, appIcon);
     }
 
+    protected int getBottomMarginForSwipeUp() {
+        return 5;
+    }
+
     private void scrollBackToBeginning() {
-        final UiObject2 allAppsContainer = assertState();
+        final UiObject2 allAppsContainer = verifyActiveContainer();
 
         int attempts = 0;
-        allAppsContainer.setGestureMargins(5, 500, 5, 5);
+        allAppsContainer.setGestureMargins(5, 600, 5, getBottomMarginForSwipeUp());
 
         while (allAppsContainer.scroll(Direction.UP, 0.5f)) {
             mLauncher.waitForIdle();
-            assertState();
+            verifyActiveContainer();
 
-            mLauncher.assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
+            assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                     ++attempts <= MAX_SCROLL_ATTEMPTS);
         }
 
         mLauncher.waitForIdle();
-        assertState();
+        verifyActiveContainer();
     }
 
     private void ensureIconVisible(UiObject2 appIcon, UiObject2 allAppsContainer) {
@@ -102,7 +102,7 @@ public final class AllAppsFromHome {
             final float pct = Math.max(((float) (MIN_INTERACT_SIZE - appHeight)) / mHeight, 0.2f);
             allAppsContainer.scroll(Direction.DOWN, pct);
             mLauncher.waitForIdle();
-            assertState();
+            verifyActiveContainer();
         }
     }
 
@@ -110,22 +110,22 @@ public final class AllAppsFromHome {
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 allAppsContainer = assertState();
+        final UiObject2 allAppsContainer = verifyActiveContainer();
         // Start the gesture in the center to avoid starting at elements near the top.
         allAppsContainer.setGestureMargins(0, 0, 0, mHeight / 2);
         allAppsContainer.fling(Direction.DOWN, FLING_SPEED);
-        assertState();
+        verifyActiveContainer();
     }
 
     /**
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 allAppsContainer = assertState();
+        final UiObject2 allAppsContainer = verifyActiveContainer();
         // Start the gesture in the center, for symmetry with forward.
         allAppsContainer.setGestureMargins(0, mHeight / 2, 0, 0);
         allAppsContainer.fling(Direction.UP, FLING_SPEED);
-        assertState();
+        verifyActiveContainer();
     }
 
     /**
@@ -137,6 +137,6 @@ public final class AllAppsFromHome {
     @Deprecated
     @NonNull
     public UiObject2 getObjectDeprecated() {
-        return assertState();
+        return verifyActiveContainer();
     }
 }

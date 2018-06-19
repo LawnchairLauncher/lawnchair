@@ -57,6 +57,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -230,6 +231,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
                 // Optimization, hide the all apps view to prevent layout while initializing
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
+
+                AccessibilityManagerCompat.sendEventToTest(activity, "TAPL_WENT_TO_STATE");
             }
 
             return new AnimationFactory() {

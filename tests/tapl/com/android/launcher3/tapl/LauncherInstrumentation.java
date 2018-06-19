@@ -16,10 +16,13 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import android.app.ActivityManager;
+import android.app.UiAutomation;
 import android.content.res.Resources;
-import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,50 +32,76 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
-import android.util.Log;
 
 import org.junit.Assert;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeoutException;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
  * produces all other objects.
  */
-public final class Launcher {
+public final class LauncherInstrumentation {
+
+    // Types for launcher containers that the user is interacting with. "Background" is a
+    // pseudo-container corresponding to inactive launcher covered by another app.
+    enum ContainerType {
+        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND
+    }
+
+    // Base class for launcher containers.
+    static abstract class VisibleContainer {
+        protected final LauncherInstrumentation mLauncher;
+
+        protected VisibleContainer(LauncherInstrumentation launcher) {
+            mLauncher = launcher;
+            launcher.setActiveContainer(this);
+        }
+
+        protected abstract ContainerType getContainerType();
+
+        /**
+         * Asserts that the launcher is in the mode matching 'this' object.
+         *
+         * @return UI object for the container.
+         */
+        final UiObject2 verifyActiveContainer() {
+            assertTrue("Attempt to use a stale container", this == sActiveContainer.get());
+            return mLauncher.verifyContainerType(getContainerType());
+        }
+    }
 
     private static final String WORKSPACE_RES_ID = "workspace";
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
-
-    enum State {HOME, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND}
-
     static final String LAUNCHER_PKG = "com.google.android.apps.nexuslauncher";
-    static final int APP_LAUNCH_TIMEOUT_MS = 10000;
-    private static final int UI_OBJECT_WAIT_TIMEOUT_MS = 10000;
+    static final int WAIT_TIME_MS = 10000;
     private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
             "config_swipe_up_gesture_setting_available";
     private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
             "config_swipe_up_gesture_default";
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
-    private static final String TAG = "tapl.Launcher";
+
+    private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
+
     private final UiDevice mDevice;
     private final boolean mSwipeUpEnabled;
 
     /**
-     * Constructs the root of TAPL hierarchy. You get all other object from it.
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
-    public Launcher(UiDevice device) {
+    public LauncherInstrumentation(UiDevice device) {
         mDevice = device;
         final boolean swipeUpEnabledDefault =
                 !getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME) ||
                         getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
         mSwipeUpEnabled = Settings.Secure.getInt(
                 InstrumentationRegistry.getTargetContext().getContentResolver(),
-                SWIPE_UP_SETTING_NAME,
+                "swipe_up_to_switch_apps_enabled",
                 swipeUpEnabledDefault ? 1 : 0) == 1;
+        assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
     }
 
     private boolean getSystemBooleanRes(String resName) {
@@ -82,59 +111,18 @@ public final class Launcher {
         return res.getBoolean(resId);
     }
 
-    private void dumpViewHierarchy() {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            mDevice.dumpWindowHierarchy(stream);
-            stream.flush();
-            stream.close();
-            for (String line : stream.toString().split("\\r?\\n")) {
-                Log.e(TAG, line.trim());
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "error dumping XML to logcat", e);
-        }
-    }
-
-    void fail(String message) {
-        dumpViewHierarchy();
-        Assert.fail(message);
-    }
-
-    void assertTrue(String message, boolean condition) {
-        if (!condition) {
-            fail(message);
-        }
-    }
-
-    void assertNotNull(String message, Object object) {
-        assertTrue(message, object != null);
-    }
-
-    private void failEquals(String message, Object actual) {
-        String formatted = "Values should be different. ";
-        if (message != null) {
-            formatted = message + ". ";
-        }
-
-        formatted += "Actual: " + actual;
-        fail(formatted);
-    }
-
-    void assertNotEquals(String message, int unexpected, int actual) {
-        if (unexpected == actual) {
-            failEquals(message, actual);
-        }
+    void setActiveContainer(VisibleContainer container) {
+        sActiveContainer = new WeakReference<>(container);
     }
 
     boolean isSwipeUpEnabled() {
         return mSwipeUpEnabled;
     }
 
-    UiObject2 assertState(State state) {
-        switch (state) {
-            case HOME: {
-                //waitUntilGone(APPS_RES_ID);
+    private UiObject2 verifyContainerType(ContainerType containerType) {
+        switch (containerType) {
+            case WORKSPACE: {
+                waitUntilGone(APPS_RES_ID);
                 waitUntilGone(OVERVIEW_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(WORKSPACE_RES_ID);
@@ -147,13 +135,11 @@ public final class Launcher {
             }
             case ALL_APPS: {
                 waitUntilGone(OVERVIEW_RES_ID);
-                waitUntilGone(WORKSPACE_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(APPS_RES_ID);
             }
             case OVERVIEW: {
-                //waitForLauncherObject(APPS_RES_ID);
-                waitUntilGone(WORKSPACE_RES_ID);
+                waitForLauncherObject(APPS_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(OVERVIEW_RES_ID);
             }
@@ -165,30 +151,62 @@ public final class Launcher {
                 return null;
             }
             default:
-                fail("Invalid state: " + state);
+                fail("Invalid state: " + containerType);
                 return null;
+        }
+    }
+
+    private void executeAndWaitForEvent(Runnable command,
+            UiAutomation.AccessibilityEventFilter eventFilter, String message) {
+        try {
+            assertNotNull("executeAndWaitForEvent returned null (this can't happen)",
+                    InstrumentationRegistry.getInstrumentation().getUiAutomation()
+                            .executeAndWaitForEvent(
+                                    command, eventFilter, WAIT_TIME_MS));
+        } catch (TimeoutException e) {
+            fail(message);
         }
     }
 
     /**
      * Presses nav bar home button.
      *
-     * @return the Home object.
+     * @return the Workspace object.
      */
-    public Home pressHome() {
-        getSystemUiObject("home").click();
-        return getHome();
+    public Workspace pressHome() {
+        // Click home, then wait for any accessibility event, then wait until accessibility events
+        // stop.
+        // We need waiting for any accessibility event generated after pressing Home because
+        // otherwise waitForIdle may return immediately in case when there was a big enough pause in
+        // accessibility events prior to pressing Home.
+        executeAndWaitForEvent(
+                () -> getSystemUiObject("home").click(),
+                event -> true,
+                "Pressing Home didn't produce any events");
+        mDevice.waitForIdle();
+        return getWorkspace();
     }
 
     /**
-     * Gets the Home object if the current state is "active home", i.e. workspace. Fails if the
+     * Gets the Workspace object if the current state is "active home", i.e. workspace. Fails if the
      * launcher is not in that state.
      *
-     * @return Home object.
+     * @return Workspace object.
      */
     @NonNull
-    public Home getHome() {
-        return new Home(this);
+    public Workspace getWorkspace() {
+        return new Workspace(this);
+    }
+
+    /**
+     * Gets the Workspace object if the current state is "background home", i.e. some other app is
+     * active. Fails if the launcher is not in that state.
+     *
+     * @return Background object.
+     */
+    @NonNull
+    public Background getBackground() {
+        return new Background(this);
     }
 
     /**
@@ -214,40 +232,52 @@ public final class Launcher {
     }
 
     /**
-     * Gets the All Apps object if the current state is showing the all apps panel. Fails if the
-     * launcher is not in that state.
+     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
+     * from workspace. Fails if the launcher is not in that state. Please don't call this method if
+     * App Apps was opened by swiping up from Overview, as it won't fail and will return an
+     * incorrect object.
      *
      * @return All Aps object.
      */
     @NonNull
-    public AllAppsFromHome getAllApps() {
-        return new AllAppsFromHome(this);
+    public AllApps getAllApps() {
+        return new AllApps(this);
     }
 
     /**
-     * Gets the All Apps object if the current state is showing the all apps panel. Returns null if
-     * the launcher is not in that state.
+     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
+     * from overview. Fails if the launcher is not in that state. Please don't call this method if
+     * App Apps was opened by swiping up from home, as it won't fail and will return an
+     * incorrect object.
+     *
+     * @return All Aps object.
+     */
+    @NonNull
+    public AllAppsFromOverview getAllAppsFromOverview() {
+        return new AllAppsFromOverview(this);
+    }
+
+    /**
+     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
+     * from workspace. Returns null if launcher is not in that state. Please don't call this method
+     * if App Apps was opened by swiping up from Overview, as it won't fail and will return an
+     * incorrect object.
      *
      * @return All Aps object or null.
      */
     @Nullable
-    public AllAppsFromHome tryGetAllApps() {
+    public AllApps tryGetAllApps() {
         return tryGetLauncherObject(APPS_RES_ID) != null ? getAllApps() : null;
     }
 
     private void waitUntilGone(String resId) {
-//        assertTrue("Unexpected launcher object visible: " + resId,
-//                mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
-//                        UI_OBJECT_WAIT_TIMEOUT_MS));
+        assertTrue("Unexpected launcher object visible: " + resId,
+                mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
+                        WAIT_TIME_MS));
     }
 
     @NonNull
     UiObject2 getSystemUiObject(String resId) {
-        try {
-            mDevice.wakeUp();
-        } catch (RemoteException e) {
-            fail("Failed to wake up the device: " + e);
-        }
         final UiObject2 object = mDevice.findObject(By.res(SYSTEMUI_PACKAGE, resId));
         assertNotNull("Can't find a systemui object with id: " + resId, object);
         return object;
@@ -269,8 +299,8 @@ public final class Launcher {
     UiObject2 waitForObjectInContainer(UiObject2 container, String resName) {
         final UiObject2 object = container.wait(
                 Until.findObject(getLauncherObjectSelector(resName)),
-                UI_OBJECT_WAIT_TIMEOUT_MS);
-        assertNotNull("Can find a launcher object id: " + resName + " in container: " +
+                WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object id: " + resName + " in container: " +
                 container.getResourceName(), object);
         return object;
     }
@@ -278,8 +308,8 @@ public final class Launcher {
     @NonNull
     UiObject2 waitForLauncherObject(String resName) {
         final UiObject2 object = mDevice.wait(Until.findObject(getLauncherObjectSelector(resName)),
-                UI_OBJECT_WAIT_TIMEOUT_MS);
-        assertNotNull("Can find a launcher object; id: " + resName, object);
+                WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object; id: " + resName, object);
         return object;
     }
 
@@ -292,9 +322,12 @@ public final class Launcher {
         return mDevice;
     }
 
-    void swipe(int startX, int startY, int endX, int endY, int steps) {
-        mDevice.swipe(startX, startY, endX, endY, steps);
-        waitForIdle();
+    void swipe(int startX, int startY, int endX, int endY) {
+        executeAndWaitForEvent(
+                () -> mDevice.swipe(startX, startY, endX, endY, 60),
+                event -> "TAPL_WENT_TO_STATE".equals(event.getClassName()),
+                "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
+                        + ", " + endX + ", " + endY);
     }
 
     void waitForIdle() {

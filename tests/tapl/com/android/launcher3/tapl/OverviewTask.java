@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static org.junit.Assert.assertTrue;
+
 import android.support.test.uiautomator.Direction;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
@@ -24,29 +26,26 @@ import android.support.test.uiautomator.Until;
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
-    private final Launcher mLauncher;
+    private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
+    private final Overview mOverview;
 
-    OverviewTask(Launcher launcher, UiObject2 task) {
+    OverviewTask(LauncherInstrumentation launcher, UiObject2 task, Overview overview) {
         mLauncher = launcher;
-        assertState();
         mTask = task;
+        mOverview = overview;
+        verifyActiveContainer();
     }
 
-    /**
-     * Asserts that we are in overview.
-     *
-     * @return Overview panel.
-     */
-    private void assertState() {
-        mLauncher.assertState(Launcher.State.OVERVIEW);
+    private void verifyActiveContainer() {
+        mOverview.verifyActiveContainer();
     }
 
     /**
      * Swipes the task up.
      */
     public void dismiss() {
-        assertState();
+        verifyActiveContainer();
         // Dismiss the task via flinging it up.
         mTask.fling(Direction.DOWN);
         mLauncher.waitForIdle();
@@ -55,11 +54,11 @@ public final class OverviewTask {
     /**
      * Clicks at the task.
      */
-    public void open() {
-        assertState();
-        mLauncher.assertTrue("Launching task didn't open a new window: " +
+    public Background open() {
+        verifyActiveContainer();
+        assertTrue("Launching task didn't open a new window: " +
                         mTask.getParent().getContentDescription(),
-                mTask.clickAndWait(Until.newWindow(), Launcher.APP_LAUNCH_TIMEOUT_MS));
-        mLauncher.assertState(Launcher.State.BACKGROUND);
+                mTask.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
+        return new Background(mLauncher);
     }
 }

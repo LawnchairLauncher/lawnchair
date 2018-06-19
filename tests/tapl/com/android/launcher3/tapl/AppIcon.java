@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static org.junit.Assert.assertTrue;
+
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject2;
@@ -26,25 +28,25 @@ import android.widget.TextView;
  * App icon, whether in all apps or in workspace/
  */
 public final class AppIcon {
-    private final Launcher mLauncher;
+    private final LauncherInstrumentation mLauncher;
     private final UiObject2 mIcon;
 
-    AppIcon(Launcher launcher, UiObject2 icon) {
+    AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         mLauncher = launcher;
         mIcon = icon;
     }
 
     static BySelector getAppIconSelector(String appName) {
-        return By.clazz(TextView.class).text(appName).pkg(Launcher.LAUNCHER_PKG);
+        return By.clazz(TextView.class).text(appName).pkg(LauncherInstrumentation.LAUNCHER_PKG);
     }
 
     /**
      * Clicks the icon to launch its app.
      */
-    public void launch() {
-        mLauncher.assertTrue("Launching an app didn't open a new window: " + mIcon.getText(),
-                mIcon.clickAndWait(Until.newWindow(), Launcher.APP_LAUNCH_TIMEOUT_MS));
-        mLauncher.assertState(Launcher.State.BACKGROUND);
+    public Background launch() {
+        assertTrue("Launching an app didn't open a new window: " + mIcon.getText(),
+                mIcon.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
+        return new Background(mLauncher);
     }
 
     UiObject2 getIcon() {

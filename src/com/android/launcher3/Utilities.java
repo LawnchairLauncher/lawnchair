@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -129,6 +130,9 @@ public final class Utilities {
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+    public static final boolean IS_RUNNING_IN_TEST_HARNESS =
+                    ActivityManager.isRunningInTestHarness();
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
