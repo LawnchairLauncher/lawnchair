@@ -495,6 +495,7 @@
     <string name="title_storage_permission_required">Storage Permission Required</string>
     <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
     <string name="disable_popup">Don\'t show again</string>
+    <string name="cal_app_unavail_warn">You don\'t have a Calendar App installed. Please either enable the built-in Calendar App or download one from the Google Play Store.</string>
 
     <string name="backups">Backups</string>
     <string name="new_backup">Create</string>
