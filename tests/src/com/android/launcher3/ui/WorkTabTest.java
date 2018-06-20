@@ -71,10 +71,12 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
                 LARGE_UI_TIMEOUT));
 
+        /*
         assertTrue("Personal tab is missing",
                 mDevice.wait(Until.hasObject(getSelectorForId(R.id.tab_personal)),
                         LARGE_UI_TIMEOUT));
         assertTrue("Work tab is missing",
                 mDevice.wait(Until.hasObject(getSelectorForId(R.id.tab_work)), LARGE_UI_TIMEOUT));
+        */
     }
 }
