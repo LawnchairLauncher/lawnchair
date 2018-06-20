@@ -151,4 +151,5 @@
   <string name="hide_app">Ascundere aplicaţie</string>
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cilindru</string>
 </resources>

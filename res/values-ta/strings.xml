@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">முடக்கு</string>
     <string name="icon_shape_rounded_square">வளைந்த மூலைகளுடன் சதுரம்</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">சிலிண்டர்</string>
 </resources>

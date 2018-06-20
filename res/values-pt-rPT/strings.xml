@@ -148,4 +148,5 @@
   <string name="hide_app">Ocultar aplicação</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cilindro</string>
 </resources>

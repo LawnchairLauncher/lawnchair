@@ -151,4 +151,5 @@
   <string name="hide_app">Skjule app</string>
     <string name="icon_shape_rounded_square">Kvadrat med runde hjørner</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
 </resources>

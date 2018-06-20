@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ပိတ်ပါ</string>
     <string name="icon_shape_rounded_square">လုံးဝန်းသည့်အနားသတ်များရှိသည့် စတုရန်း</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">လုံးရှည်</string>
 </resources>

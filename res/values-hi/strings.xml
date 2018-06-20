@@ -151,4 +151,5 @@
   <string name="hide_app">एप्लिकेशन छुपाएँ</string>
     <string name="icon_shape_rounded_square">गोल कोने वाला वर्ग</string>
     <string name="smartspace_hours_mins">%1$s घंटे %2$s मिनट</string>
+    <string name="icon_shape_cylinder">सिलेंडर</string>
 </resources>

@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ÇAKTIVIZO</string>
     <string name="icon_shape_rounded_square">Katror i rrumbullakosur</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cilindër</string>
 </resources>

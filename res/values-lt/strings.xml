@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">IŠJUNGTI</string>
     <string name="icon_shape_rounded_square">Suapvalintas kvadratas</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cilindras</string>
 </resources>

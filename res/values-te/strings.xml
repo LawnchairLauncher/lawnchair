@@ -149,4 +149,5 @@
     <string name="action_edit">సవరించు</string>
     <string name="icon_shape_rounded_square">వృత్తాకార చతురస్రం</string>
     <string name="smartspace_hours_mins">%1$s:%2$s</string>
+    <string name="icon_shape_cylinder">సిలిండర్</string>
 </resources>

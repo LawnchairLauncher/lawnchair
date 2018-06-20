@@ -202,6 +202,8 @@
     <string name="icon_shape_circle">Circle</string>
     <!-- Option to change the shape of the home screen icons to a teardrop. This represents the name of the shape similar to a circle with with the bottom right corner pushed out like a square [CHAR LIMIT=50] -->
     <string name="icon_shape_teardrop">Teardrop</string>
+    <!-- Option to change the shape of the home screen icons to a cylinder. [CHAR LIMIT=50] -->
+    <string name="icon_shape_cylinder">Cylinder</string>
 
     <!-- Message shown in the progress dialog when the icon shape override is being applied [CHAR LIMIT=100]-->
     <string name="icon_shape_override_progress">Applying icon shape changes</string>

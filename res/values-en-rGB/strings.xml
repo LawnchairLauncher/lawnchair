@@ -149,4 +149,5 @@
     <string name="action_edit">Edit</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
 </resources>

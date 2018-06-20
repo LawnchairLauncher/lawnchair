@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">გამორთვა</string>
     <string name="icon_shape_rounded_square">მომრგვალებული კვადრატი</string>
     <string name="smartspace_hours_mins">%1$s და %2$s</string>
+    <string name="icon_shape_cylinder">ცილინდრი</string>
 </resources>

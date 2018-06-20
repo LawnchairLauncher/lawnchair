@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">DESAKTIBATU</string>
     <string name="icon_shape_rounded_square">Ertz biribilduko karratua</string>
     <string name="smartspace_hours_mins">%1$s eta %2$s</string>
+    <string name="icon_shape_cylinder">Zilindro</string>
 </resources>

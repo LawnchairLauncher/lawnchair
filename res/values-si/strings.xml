@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ක්‍රියා විරහිත කරන්න</string>
     <string name="icon_shape_rounded_square">වටකුරු සමචතුරස්‍රය</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">සිලින්ඩර්</string>
 </resources>

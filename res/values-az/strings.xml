@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">DEAKTİV EDİN</string>
     <string name="icon_shape_rounded_square">Kənarları dairəvi kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Silindir</string>
 </resources>

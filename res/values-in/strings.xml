@@ -148,4 +148,5 @@
   <string name="hide_app">Sembunyikan aplikasi</string>
     <string name="icon_shape_rounded_square">Persegi membulat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Silinder</string>
 </resources>

@@ -151,4 +151,5 @@
   <string name="hide_app">Dölj app</string>
     <string name="icon_shape_rounded_square">Rundad kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
 </resources>

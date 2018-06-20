@@ -151,4 +151,5 @@
   <string name="hide_app">Ẩn ứng dụng</string>
     <string name="icon_shape_rounded_square">Hình vuông có các góc được bo góc</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Hình trụ</string>
 </resources>

@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ਬੰਦ ਕਰੋ</string>
     <string name="icon_shape_rounded_square">ਗੋਲ ਕਿਨਾਰਿਆਂ ਵਾਲਾ ਵਰਗ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">ਸਿਲੰਡਰ</string>
 </resources>

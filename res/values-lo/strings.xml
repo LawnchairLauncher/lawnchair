@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ປິດໄວ້</string>
     <string name="icon_shape_rounded_square">ສີ່ຫຼ່ຽມຂອບມົນ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">ກະບອກ</string>
 </resources>

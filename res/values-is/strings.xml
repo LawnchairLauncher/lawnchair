@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">SLÖKKVA</string>
     <string name="icon_shape_rounded_square">Rúnnaður ferningur</string>
     <string name="smartspace_hours_mins">%1$s og %2$s</string>
+    <string name="icon_shape_cylinder">Sívalningur</string>
 </resources>

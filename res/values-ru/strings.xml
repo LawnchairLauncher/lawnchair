@@ -151,4 +151,5 @@
   <string name="hide_app">Скрыть приложение</string>
     <string name="icon_shape_rounded_square">Квадрат с закругленными углами</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Цилиндр</string>
 </resources>

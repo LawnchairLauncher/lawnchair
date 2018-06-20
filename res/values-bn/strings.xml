@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">বন্ধ করুন</string>
     <string name="icon_shape_rounded_square">গোলাকার কোণের বর্গক্ষেত্র</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">নল</string>
 </resources>

@@ -149,4 +149,5 @@
     <string name="action_edit">ویرایش</string>
     <string name="icon_shape_rounded_square">مربع با گوشه‌های گرد</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">سیلندر</string>
 </resources>

@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">បិទ</string>
     <string name="icon_shape_rounded_square">ការ៉េមានជ្រុងកោង</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">ស៊ីឡាំង</string>
 </resources>
