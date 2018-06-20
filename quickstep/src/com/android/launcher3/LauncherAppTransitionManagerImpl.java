@@ -195,7 +195,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         mLauncher.getStateManager().setCurrentAnimation(anim);
 
                         Rect windowTargetBounds = getWindowTargetBounds(targetCompats);
-                        anim.play(getIconAnimator(v, windowTargetBounds));
+                        playIconAnimators(anim, v, windowTargetBounds);
                         if (launcherClosing) {
                             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                                     getLauncherContentAnimator(true /* isAppOpening */);
@@ -420,9 +420,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     /**
-     * @return Animator that controls the icon used to launch the target.
+     * Animators for the "floating view" of the view used to launch the target.
      */
-    private AnimatorSet getIconAnimator(View v, Rect windowTargetBounds) {
+    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
@@ -477,7 +477,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         ((ViewGroup) mDragLayer.getParent()).addView(mFloatingView);
         v.setVisibility(View.INVISIBLE);
 
-        AnimatorSet appIconAnimatorSet = new AnimatorSet();
         int[] dragLayerBounds = new int[2];
         mDragLayer.getLocationOnScreen(dragLayerBounds);
 
@@ -507,8 +506,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
         x.setInterpolator(AGGRESSIVE_EASE);
         y.setInterpolator(AGGRESSIVE_EASE);
-        appIconAnimatorSet.play(x);
-        appIconAnimatorSet.play(y);
+        appOpenAnimator.play(x);
+        appOpenAnimator.play(y);
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
@@ -519,7 +518,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
         scaleAnim.setDuration(APP_LAUNCH_DURATION)
                 .setInterpolator(Interpolators.EXAGGERATED_EASE);
-        appIconAnimatorSet.play(scaleAnim);
+        appOpenAnimator.play(scaleAnim);
 
         // Fade out the app icon.
         ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);
@@ -532,9 +531,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             alpha.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_ALPHA_DURATION));
         }
         alpha.setInterpolator(LINEAR);
-        appIconAnimatorSet.play(alpha);
+        appOpenAnimator.play(alpha);
 
-        appIconAnimatorSet.addListener(new AnimatorListenerAdapter() {
+        appOpenAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Reset launcher to normal state
@@ -542,7 +541,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
             }
         });
-        return appIconAnimatorSet;
     }
 
     /**
