@@ -72,6 +72,7 @@ public class DeviceProfile {
 
     // Drag handle
     public final int verticalDragHandleSizePx;
+    private final int verticalDragHandleOverlapWorkspace;
 
     // Workspace icons
     public int iconSizePx;
@@ -101,7 +102,7 @@ public class DeviceProfile {
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public final int hotseatBarTopPaddingPx;
-    public final int hotseatBarBottomPaddingPx;
+    public int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
@@ -135,6 +136,17 @@ public class DeviceProfile {
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
 
+        // Determine sizes.
+        widthPx = width;
+        heightPx = height;
+        if (isLandscape) {
+            availableWidthPx = maxSize.x;
+            availableHeightPx = minSize.y;
+        } else {
+            availableWidthPx = minSize.x;
+            availableHeightPx = maxSize.y;
+        }
+
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
 
@@ -142,6 +154,8 @@ public class DeviceProfile {
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
+        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
         transposeLayoutWithOrientation =
@@ -164,6 +178,8 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
         verticalDragHandleSizePx = res.getDimensionPixelSize(
                 R.dimen.vertical_drag_handle_size);
+        verticalDragHandleOverlapWorkspace =
+                res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =
@@ -178,8 +194,9 @@ public class DeviceProfile {
 
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarBottomPaddingPx = (isTallDevice ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
@@ -191,30 +208,19 @@ public class DeviceProfile {
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
-        // Determine sizes.
-        widthPx = width;
-        heightPx = height;
-        if (isLandscape) {
-            availableWidthPx = maxSize.x;
-            availableHeightPx = minSize.y;
-        } else {
-            availableWidthPx = minSize.x;
-            availableHeightPx = maxSize.y;
-        }
-
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
-            hotseatBarSizePx += extraSpace - verticalDragHandleSizePx;
+            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
+                    - verticalDragHandleSizePx;
+            hotseatBarSizePx += extraSpace;
+            hotseatBarBottomPaddingPx += extraSpace;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
@@ -440,7 +446,8 @@ public class DeviceProfile {
                 padding.right = hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx;
+            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx
+                    - verticalDragHandleOverlapWorkspace;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
