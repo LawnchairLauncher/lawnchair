@@ -16,7 +16,6 @@
 package com.android.quickstep.views;
 
 import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
-
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -33,6 +32,7 @@ import android.util.AttributeSet;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -55,7 +55,7 @@ public class ShelfScrimView extends ScrimView {
     // For shelf mode
     private final int mEndAlpha;
     private final float mRadius;
-    private final float mMaxScrimAlpha;
+    private final int mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Mid point where the alpha changes
@@ -78,7 +78,7 @@ public class ShelfScrimView extends ScrimView {
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mMaxScrimAlpha = OVERVIEW.getWorkspaceScrimAlpha(mLauncher);
+        mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
@@ -144,9 +144,10 @@ public class ShelfScrimView extends ScrimView {
         } else {
             mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
 
+            // Note that these ranges and interpolators are inverted because progress goes 1 to 0.
             int alpha = Math.round(
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
-                            (float) mMidAlpha, LINEAR));
+                            (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
             mShelfColor = setAlphaComponent(mEndScrim, alpha);
 
             int remainingScrimAlpha = Math.round(

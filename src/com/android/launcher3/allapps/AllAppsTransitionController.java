@@ -5,6 +5,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -151,7 +152,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
-        setAlphas(state, NO_ANIM_PROPERTY_SETTER);
+        setAlphas(state, null, new AnimatorSetBuilder());
         onProgressAnimationEnd();
     }
 
@@ -164,7 +165,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
-            setAlphas(toState, config.getPropertySetter(builder));
+            setAlphas(toState, config, builder);
             // Fail fast
             onProgressAnimationEnd();
             return;
@@ -186,19 +187,24 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         builder.play(anim);
 
-        setAlphas(toState, config.getPropertySetter(builder));
+        setAlphas(toState, config, builder);
     }
 
-    private void setAlphas(LauncherState toState, PropertySetter setter) {
+    private void setAlphas(LauncherState toState, AnimationConfig config,
+            AnimatorSetBuilder builder) {
+        PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
+                : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
         boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
-        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, LINEAR);
-        setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, LINEAR);
-        setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, LINEAR);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter);
+        Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
+        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
+        setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
+        setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
+        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter,
+                allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
                 (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
