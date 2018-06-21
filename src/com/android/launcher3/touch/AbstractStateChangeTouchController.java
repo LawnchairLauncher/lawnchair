@@ -341,7 +341,7 @@ public abstract class AbstractStateChangeTouchController
 
     private AnimatorSet createAtomicAnimForState(LauncherState fromState, LauncherState targetState,
             long duration) {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        AnimatorSetBuilder builder = getAnimatorSetBuilderForStates(fromState, targetState);
         mLauncher.getStateManager().prepareForAtomicAnimation(fromState, targetState, builder);
         AnimationConfig config = new AnimationConfig();
         config.animComponents = ATOMIC_COMPONENT;
@@ -350,6 +350,11 @@ public abstract class AbstractStateChangeTouchController
             handler.setStateWithAnimation(targetState, builder, config);
         }
         return builder.build();
+    }
+
+    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
+            LauncherState toState) {
+        return new AnimatorSetBuilder();
     }
 
     @Override
