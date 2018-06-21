@@ -171,6 +171,7 @@ public class TouchInteractionService extends Service {
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewInteractionState mOverviewInteractionState;
     private OverviewCallbacks mOverviewCallbacks;
+    private TaskOverlayFactory mTaskOverlayFactory;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -187,6 +188,7 @@ public class TouchInteractionService extends Service {
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
         mOverviewInteractionState = OverviewInteractionState.getInstance(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
+        mTaskOverlayFactory = TaskOverlayFactory.get(this);
 
         sConnected = true;
 
@@ -239,7 +241,7 @@ public class TouchInteractionService extends Service {
                             mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                            tracker);
+                            mTaskOverlayFactory, tracker);
         }
     }
 
