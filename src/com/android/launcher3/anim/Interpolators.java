@@ -121,7 +121,7 @@ public class Interpolators {
         // Used to scale the oscillations horizontally
         private final float horizontalScale = 1f;
         // Used to shift the oscillations horizontally
-        private final float horizontalShift = 05f;
+        private final float horizontalShift = 0.5f;
         // Used to scale the oscillations vertically
         private final float verticalScale = 1f;
         // Used to shift the oscillations vertically
