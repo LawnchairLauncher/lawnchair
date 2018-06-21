@@ -25,10 +25,13 @@ import android.animation.ValueAnimator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.uioverrides.PortraitStatesTouchController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -67,8 +70,10 @@ public class LongSwipeHelper {
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
         // TODO: Scale it down so that we can reach all-apps in screen space
         mMaxSwipeDistance = Math.max(1, controller.getProgress() * controller.getShiftRange());
-        mAnimator = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(ALL_APPS, Math.round(2 * mMaxSwipeDistance));
+
+        AnimatorSetBuilder builder = PortraitStatesTouchController.getOverviewToAllAppsAnimation();
+        mAnimator = mLauncher.getStateManager().createAnimationToNewWorkspace(ALL_APPS, builder,
+                Math.round(2 * mMaxSwipeDistance), null, LauncherStateManager.ANIM_ALL);
         mAnimator.dispatchOnStart();
     }
 
