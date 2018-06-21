@@ -87,6 +87,7 @@ public class TaskMenuView extends AbstractFloatingView {
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
 
+    private final float mThumbnailTopMargin;
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
     private IconView mTaskIcon;
@@ -103,6 +104,7 @@ public class TaskMenuView extends AbstractFloatingView {
         super(context, attrs, defStyleAttr);
 
         mActivity = BaseDraggingActivity.fromContext(context);
+        mThumbnailTopMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
     }
 
     @Override
@@ -154,11 +156,16 @@ public class TaskMenuView extends AbstractFloatingView {
         return (type & TYPE_TASK_MENU) != 0;
     }
 
-    public static boolean showForTask(TaskView taskView) {
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y + mThumbnailTopMargin);
+    }
+
+    public static TaskMenuView showForTask(TaskView taskView) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
-        return taskMenuView.populateAndShowForTask(taskView);
+        return taskMenuView.populateAndShowForTask(taskView) ? taskMenuView : null;
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
@@ -188,7 +195,7 @@ public class TaskMenuView extends AbstractFloatingView {
         // Move the icon and text up half an icon size to lay over the TaskView
         LinearLayout.LayoutParams params =
                 (LinearLayout.LayoutParams) mTaskIcon.getLayoutParams();
-        params.topMargin = (int) -getResources().getDimension(R.dimen.task_thumbnail_top_margin);
+        params.topMargin = (int) -mThumbnailTopMargin;
         mTaskIcon.setLayoutParams(params);
 
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
@@ -213,12 +220,12 @@ public class TaskMenuView extends AbstractFloatingView {
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
-        params.width = sTempRect.width();
-        params.gravity = Gravity.LEFT;
+        params.width = taskView.getMeasuredWidth();
+        params.gravity = Gravity.START;
         setLayoutParams(params);
-        setX(Math.round(sTempRect.left - insets.left));
-        setY(Math.round(sTempRect.top - insets.top
-                + getResources().getDimension(R.dimen.task_thumbnail_top_margin)));
+        setScaleX(taskView.getScaleX());
+        setScaleY(taskView.getScaleY());
+        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top);
     }
 
     private void animateOpen() {
@@ -232,7 +239,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void animateOpenOrClosed(boolean closing) {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
-            return;
+            mOpenCloseAnimator.end();
         }
         mOpenCloseAnimator = LauncherAnimUtils.createAnimatorSet();
 

@@ -110,8 +110,24 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
     };
 
+    private final OnAttachStateChangeListener mTaskMenuStateListener =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                    if (mMenuView != null) {
+                        mMenuView.removeOnAttachStateChangeListener(this);
+                        mMenuView = null;
+                    }
+                }
+            };
+
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
+    private TaskMenuView mMenuView;
     private IconView mIconView;
     private float mCurveScale;
     private float mZoomScale;
@@ -200,11 +216,20 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setDrawable(task.icon);
-        mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
+        mIconView.setOnClickListener(icon -> showTaskMenu());
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
-            return TaskMenuView.showForTask(this);
+            return showTaskMenu();
         });
+    }
+
+    private boolean showTaskMenu() {
+        getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+        mMenuView = TaskMenuView.showForTask(this);
+        if (mMenuView != null) {
+            mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
+        }
+        return mMenuView != null;
     }
 
     @Override
@@ -266,6 +291,12 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
+
+        if (mMenuView != null) {
+            mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
+            mMenuView.setScaleX(getScaleX());
+            mMenuView.setScaleY(getScaleY());
+        }
     }
 
     @Override
