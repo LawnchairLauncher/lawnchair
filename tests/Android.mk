@@ -22,7 +22,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator mockito-targe
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := 28
 LOCAL_MIN_SDK_VERSION := 21
 
 LOCAL_PACKAGE_NAME := Launcher3Tests

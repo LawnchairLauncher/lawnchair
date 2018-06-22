@@ -44,13 +44,25 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
+    public static final int INVISIBLE_BY_PENDING_FLAGS = 1 << 2;
+
+    // This is not treated as invisibility flag, but adds as a hint for an incomplete transition.
+    // When the wallpaper animation runs, it replaces this flag with a proper invisibility
+    // flag, INVISIBLE_BY_PENDING_FLAGS only for the duration of that animation.
+    public static final int PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION = 1 << 3;
+
+    private static final int INVISIBLE_FLAGS =
+            INVISIBLE_BY_STATE_HANDLER | INVISIBLE_BY_APP_TRANSITIONS | INVISIBLE_BY_PENDING_FLAGS;
+    public static final int STATE_HANDLER_INVISIBILITY_FLAGS =
+            INVISIBLE_BY_STATE_HANDLER | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
     public static final int INVISIBLE_ALL =
-            INVISIBLE_BY_STATE_HANDLER | INVISIBLE_BY_APP_TRANSITIONS;
+            INVISIBLE_FLAGS | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
 
     @Retention(SOURCE)
     @IntDef(
             flag = true,
-            value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS})
+            value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS,
+                    INVISIBLE_BY_PENDING_FLAGS, PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION})
     public @interface InvisibilityFlags{}
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
@@ -208,7 +220,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     * @see LauncherAppTransitionManagerImpl.getWallpaperOpenRunner()
+     * @see LauncherAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
@@ -218,12 +230,15 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         mForceInvisible &= ~flag;
     }
 
-
     /**
      * @return Wether this activity should be considered invisible regardless of actual visibility.
      */
     public boolean isForceInvisible() {
-        return mForceInvisible != 0;
+        return hasSomeInvisibleFlag(INVISIBLE_FLAGS);
+    }
+
+    public boolean hasSomeInvisibleFlag(int mask) {
+        return (mForceInvisible & mask) != 0;
     }
 
     public interface MultiWindowModeChangedListener {
