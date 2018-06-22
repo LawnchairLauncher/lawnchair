@@ -29,6 +29,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -76,6 +77,7 @@ public class OverviewState extends LauncherState {
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
+        RecentsModel.getInstance(launcher).resetAssistCache();
     }
 
     @Override
