@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair.popup
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -22,7 +23,10 @@ class OptionsPopupMenu {
     class WidgetShortcut : SystemShortcut(R.drawable.ic_widget, R.string.widget_button_text) {
 
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo?): OnClickListener {
-            return OnClickListener { launcher.onClickAddWidgetButton(it) }
+            return OnClickListener {
+                AbstractFloatingView.getTopOpenView(launcher)?.close(false)
+                launcher.onClickAddWidgetButton(it)
+            }
         }
     }
 
