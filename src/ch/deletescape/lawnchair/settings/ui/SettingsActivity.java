@@ -248,8 +248,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
                 if (SmartspaceController.get(mContext).cY()) {
                     findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                } else {
-                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
                 }
 
                 ContentResolver resolver = getActivity().getContentResolver();
@@ -457,8 +455,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
         }
     }
-
-
 
     /**
      * Content observer which listens for system auto-rotate setting changes, and enables/disables
