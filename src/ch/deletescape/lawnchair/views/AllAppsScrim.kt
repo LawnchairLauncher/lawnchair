@@ -204,19 +204,20 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     }
 
     override fun setProgress(progress: Float, shiftRange: Float) {
+        val boundedProgress = Utilities.boundToRange(progress, 0f, 1f)
         if (pStyle) {
-            mFillPaint.alpha = interpolateAlpha(progress).toInt()
+            mFillPaint.alpha = interpolateAlpha(boundedProgress).toInt()
             if (drawingFlatColor) {
-                blurDrawable?.alpha = (progress * 255).toInt()
+                blurDrawable?.alpha = (boundedProgress * 255).toInt()
                 invalidate()
             } else {
-                remainingScreenColor = ColorUtils.setAlphaComponent(scrimColor, (progress * maxScrimAlpha * 255).toInt())
-                mDrawOffsetY = -shiftRange * progress
+                remainingScreenColor = ColorUtils.setAlphaComponent(scrimColor, (boundedProgress * maxScrimAlpha * 255).toInt())
+                mDrawOffsetY = -shiftRange * boundedProgress
                 invalidateDrawRect()
             }
         } else {
             super.setProgress(progress, shiftRange)
-            blurDrawable?.alpha = (progress * 255).toInt()
+            blurDrawable?.alpha = (boundedProgress * 255).toInt()
         }
     }
 
