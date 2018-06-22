@@ -45,6 +45,7 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,6 +82,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
     @Test
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
+    @Test @Ignore
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
@@ -93,6 +95,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
         });
     }
 
+    @Test @Ignore
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command =  RequestPinItemActivity.getCommandIntent(
@@ -110,6 +113,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
         }, command);
     }
 
+    @Test @Ignore
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -122,6 +126,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
         });
     }
 
+    @Test @Ignore
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(
