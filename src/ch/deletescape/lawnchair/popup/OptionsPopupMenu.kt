@@ -68,6 +68,7 @@ class OptionsPopupMenu {
                 popupView.populateAndShow(dummyBubbleTextView,
                         Collections.emptyList(), Collections.emptyList(), shortcuts)
             }
+            launcher.workspace.requestDisallowInterceptTouchEvent(true)
         }
 
         fun onTouchDown(x: Int, y: Int) {
