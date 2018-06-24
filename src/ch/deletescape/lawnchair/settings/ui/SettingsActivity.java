@@ -283,8 +283,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.lawnchair_theme_preferences) {
-                Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
+                ListPreference iconShapeOverride = (ListPreference) findPreference(IconShapeOverride.KEY_PREFERENCE);
                 if (iconShapeOverride != null) {
+                    if (Utilities.getLawnchairPrefs(mContext).getDeveloperOptionsEnabled()) {
+                        iconShapeOverride.setEntries(R.array.alt_icon_shape_override_paths_names);
+                        iconShapeOverride.setEntryValues(R.array.alt_icon_shape_override_paths_values);
+                    }
                     if (IconShapeOverride.isSupported(getActivity())) {
                         IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
                     } else {
