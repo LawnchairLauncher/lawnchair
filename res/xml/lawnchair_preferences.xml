@@ -66,12 +66,7 @@
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
         android:icon="@drawable/ic_information"
-        android:layout="@layout/sub_preference">
-
-        <!--suppress AndroidDomInspection (Injected at compile time) -->
-        <intent
-            android:targetPackage="@string/application_id"
-            android:targetClass="ch.deletescape.lawnchair.settings.ui.AboutActivity"/>
-    </Preference>
+        android:layout="@layout/sub_preference"
+        android:key="about"/>
 
 </PreferenceScreen>

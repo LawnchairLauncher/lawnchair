@@ -250,11 +250,6 @@
                 <data android:mimeType="application/zip" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="ch.deletescape.lawnchair.settings.ui.AboutActivity"
-            android:label="@string/about"
-            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme.V2" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -43,6 +43,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import me.jfenn.attribouter.Attribouter;
+
 import com.android.launcher3.*;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShapeOverride;
@@ -52,6 +54,8 @@ import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.android.launcher3.Utilities.restartLauncher;
 
@@ -102,14 +106,18 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
+        Fragment fragment;
         if (preference instanceof SubPreference) {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra(SubSettingsFragment.TITLE, preference.getTitle());
             intent.putExtra(SubSettingsFragment.CONTENT_RES_ID, ((SubPreference) preference).getContent());
             startActivity(intent);
             return true;
+        } else if(preference.getKey().equals("about")){
+            fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
+        } else {
+            fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
-        Fragment fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         if (fragment instanceof DialogFragment) {
             ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
         } else {
@@ -193,7 +201,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends BaseFragment {
+    public static class LauncherSettingsFragment extends BaseFragment implements LawnchairPreferences.OnPreferenceChangeListener {
 
         private Preference mDeveloperOptions;
 
@@ -201,6 +209,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsEnabled", this);
         }
 
         @Override
@@ -220,6 +229,30 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
                 getPreferenceScreen().addPreference(mDeveloperOptions);
                 mDeveloperOptions = null;
+            }
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null && "about".equals(preference.getKey())){
+                ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, preference);
+                return true;
+            }
+            return super.onPreferenceTreeClick(preference);
+        }
+
+        @Override
+        public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+            if("pref_developerOptionsEnabled".equals(key)){
+                if (prefs.getDeveloperOptionsEnabled()) {
+                    if(mDeveloperOptions != null){
+                        getPreferenceScreen().addPreference(mDeveloperOptions);
+                        mDeveloperOptions = null;
+                    }
+                } else {
+                    mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
+                    getPreferenceScreen().removePreference(mDeveloperOptions);
+                }
             }
         }
     }

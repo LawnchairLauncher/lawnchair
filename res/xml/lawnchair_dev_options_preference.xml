@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreference
+        android:key="pref_developerOptionsEnabled"
+        android:title="@string/show_developer_options"
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <Preference
         android:key="kill"
         android:title="@string/restart_lawnchair_pref_title"

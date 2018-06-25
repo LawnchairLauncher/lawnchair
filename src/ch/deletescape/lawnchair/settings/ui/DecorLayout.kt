@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair.settings.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -12,9 +13,12 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : FrameLayout(context) {
+class DecorLayout(context: Context, private val window: Window) : FrameLayout(context), View.OnClickListener {
+
+    private var tapCount = 0
 
     private val contentFrame: View
     private val actionBarContainer: View
@@ -59,12 +63,26 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
         actionBarContainer = findViewById(R.id.action_bar_container)
         toolbar = findViewById(R.id.toolbar)
         largeTitle = findViewById(R.id.large_title)
+        largeTitle.setOnClickListener(this)
 
         updateContentTopMargin(false)
 
         if (BlurWallpaperProvider.isEnabled) {
             findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
             background = BlurWallpaperProvider.getInstance(context).createDrawable()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        if (tapCount == 6 && tapCount < 7) {
+            Utilities.getLawnchairPrefs(context).developerOptionsEnabled = true
+            Snackbar.make(
+                    findViewById(R.id.content),
+                    R.string.developer_options_enabled,
+                    Snackbar.LENGTH_LONG).show()
+            tapCount++
+        } else {
+            tapCount++
         }
     }
 

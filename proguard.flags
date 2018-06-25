@@ -122,3 +122,7 @@
 -keep class ch.deletescape.lawnchair.iconpack.LawnchairIconProvider { *; }
 
 -keep class ch.deletescape.lawnchair.iconpack.LawnchairDrawableFactory { *; }
+
+-keep,allowshrinking,allowoptimization class me.jfenn.attribouter.** {
+ *;
+}

@@ -346,11 +346,6 @@
     <string name="pixel_style_pref_title">Pixel style</string>
     <string name="about_title">About</string>
     <string name="about_summary_title">Summary</string>
-    <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-    <string name="about_version">Version</string>
-    <string name="about_changelog">Changelog</string>
-    <string name="about_contributors_title">Contributors</string>
-    <string name="about_icon_designer">App Icon Designer</string>
     <string name="pixel_ui_pref_title">Theme</string>
     <string name="action_edit">Edit</string>
     <string name="hide_app_sum">Hide apps from the app drawer</string>
@@ -468,4 +463,38 @@
     <string name="dock_shadow">Dock shadow</string>
     <string name="dock_radius">Dock corner radius</string>
     <string name="dock_gradient">Use gradient dock</string>
+
+    <!-- About screen -->
+
+    <string name="about_twitter" translatable="false">Twitter</string>
+    <string name="title_attribouter_licenses">Open Source Licenses</string>
+    <string name="title_attribouter_email">Email</string>
+    <string name="title_attribouter_website">Website</string>
+    <string name="title_attribouter_rate">Rate</string>
+    <string name="title_attribouter_version">Version %1$s</string>
+    <string name="title_attribouter_license">License</string>
+    <string name="title_attribouter_license_permissions">Permissions</string>
+    <string name="title_attribouter_license_conditions">Conditions</string>
+    <string name="title_attribouter_license_limitations">Limitations</string>
+    <string name="title_attribouter_more_info">More Info</string>
+    <string name="title_attribouter_translators">Translators</string>
+    <string name="about_our_team">Our team</string>
+    <string name="about_our_contributors">Our main contributors</string>
+    <string name="about_our_family">Our other family members</string>
+    <string name="about_role_lead">Lead Developer</string>
+    <string name="about_role_devops">DevOps</string>
+    <string name="about_role_dev">Developer</string>
+    <string name="about_role_dev_mod">Developer / Moderator</string>
+    <string name="about_role_designer">Designer</string>
+    <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+    <string name="about_role_mod_support">Moderator / Support</string>
+    <string name="about_role_family_member">Family Member</string>
+    <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
+    <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
+    <string name="about_bio_recoded">Mild coder and graphics designer.</string>
+    <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
+    <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
+
+    <string name="show_developer_options">Enable developer options</string>
 </resources>
