@@ -498,4 +498,6 @@
 
     <string name="show_developer_options">Enable developer options</string>
     <string name="debug_crash_launcher">Crash the launcher</string>
+    <string name="gestures_pref_title">Gestures</string>
+    <string name="gestures_pref_summary">Customize your gestures</string>
 </resources>

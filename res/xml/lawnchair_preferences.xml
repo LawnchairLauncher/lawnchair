@@ -42,6 +42,13 @@
         app:content="@xml/lawnchair_app_drawer_preferences"
         android:layout="@layout/sub_preference" />
 
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_gesture"
+        android:summary="@string/gestures_pref_summary"
+        android:title="@string/gestures_pref_title"
+        app:content="@xml/lawnchair_gesture_preferences"
+        android:layout="@layout/sub_preference" />
+
     <Preference
         android:key="backups"
         android:title="@string/backups"
