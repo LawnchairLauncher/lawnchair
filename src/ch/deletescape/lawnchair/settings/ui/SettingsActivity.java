@@ -209,27 +209,18 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
-            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsEnabled", this);
         }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
-            if (!Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
-                mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
-                getPreferenceScreen().removePreference(mDeveloperOptions);
-            }
+            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsEnabled", this);
         }
 
         @Override
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.derived_app_name);
-            if (mDeveloperOptions != null &&
-                    Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled()) {
-                getPreferenceScreen().addPreference(mDeveloperOptions);
-                mDeveloperOptions = null;
-            }
         }
 
         @Override
@@ -251,7 +242,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     }
                 } else {
                     mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
-                    getPreferenceScreen().removePreference(mDeveloperOptions);
+                    if(mDeveloperOptions != null) {
+                        getPreferenceScreen().removePreference(mDeveloperOptions);
+                    }
                 }
             }
         }

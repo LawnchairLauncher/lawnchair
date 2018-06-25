@@ -74,13 +74,13 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
     }
 
     override fun onClick(v: View?) {
-        if (tapCount == 6 && tapCount < 7) {
+        if (tapCount == 6) {
             Utilities.getLawnchairPrefs(context).developerOptionsEnabled = true
             Snackbar.make(
                     findViewById(R.id.content),
                     R.string.developer_options_enabled,
                     Snackbar.LENGTH_LONG).show()
-            tapCount++
+            tapCount = 0
         } else {
             tapCount++
         }
