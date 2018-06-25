@@ -39,7 +39,7 @@
             launcher:pageIndicator="@+id/page_indicator" />
 
         <include
-            android:id="@+id/overview_panel_container"
+            android:id="@+id/overview_panel"
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
@@ -48,7 +48,7 @@
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="@dimen/vertical_drag_handle_size"
             android:layout_gravity="bottom|center_horizontal"
             android:theme="@style/HomeScreenElementTheme" />
 
