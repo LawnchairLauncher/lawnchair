@@ -98,7 +98,7 @@ public class QuickScrubController implements OnAlarmListener {
         }
         int page = mRecentsView.getNextPage();
         Runnable launchTaskRunnable = () -> {
-            TaskView taskView = mRecentsView.getPageAt(page);
+            TaskView taskView = mRecentsView.getTaskViewAt(page);
             if (taskView != null) {
                 mWaitingForTaskLaunch = true;
                 taskView.launchTask(true, (result) -> {
@@ -108,7 +108,7 @@ public class QuickScrubController implements OnAlarmListener {
                     } else {
                         mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(Touch.DRAGDROP,
                                 LauncherLogProto.Action.Direction.NONE, page,
-                                TaskUtils.getComponentKeyForTask(taskView.getTask().key));
+                                TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key));
                     }
                     mWaitingForTaskLaunch = false;
                 }, taskView.getHandler());
@@ -222,7 +222,7 @@ public class QuickScrubController implements OnAlarmListener {
 
     private void goToPageWithHaptic(int pageToGoTo, int overrideDuration, boolean forceHaptic,
             Interpolator interpolator) {
-        pageToGoTo = Utilities.boundToRange(pageToGoTo, 0, mRecentsView.getPageCount() - 1);
+        pageToGoTo = Utilities.boundToRange(pageToGoTo, 0, mRecentsView.getTaskViewCount() - 1);
         boolean snappingToPage = pageToGoTo != mRecentsView.getNextPage();
         if (snappingToPage) {
             int duration = overrideDuration > -1 ? overrideDuration
@@ -246,7 +246,7 @@ public class QuickScrubController implements OnAlarmListener {
             return;
         }
         if (mQuickScrubSection == QUICK_SCRUB_THRESHOLDS.length
-                && currPage < mRecentsView.getPageCount() - 1) {
+                && currPage < mRecentsView.getTaskViewCount() - 1) {
             goToPageWithHaptic(currPage + 1);
         } else if (mQuickScrubSection == 0 && currPage > 0) {
             goToPageWithHaptic(currPage - 1);

@@ -149,4 +149,5 @@
     <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
     <integer name="config_recentsMaxIconCacheSize">12</integer>
 
+    <item name="workspace_page_container" type="id" />
 </resources>
