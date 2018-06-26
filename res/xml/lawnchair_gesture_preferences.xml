@@ -19,4 +19,22 @@
         android:entryValues="@array/gestureHandlerClasses"
         android:defaultValue=""
         android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_gesture_swipe_down"
+        android:title="@string/gesture_swipe_down"
+        android:summary="%s"
+        android:entries="@array/gestureHandlers"
+        android:entryValues="@array/gestureHandlerClasses"
+        android:defaultValue="@string/action_open_notifications_class"
+        android:persistent="true" />
+
+     <ListPreference
+        android:key="pref_gesture_swipe_up"
+        android:title="@string/gesture_swipe_up"
+        android:summary="%s"
+        android:entries="@array/gestureHandlers"
+        android:entryValues="@array/gestureHandlerClasses"
+        android:defaultValue="@string/action_open_drawer_class"
+        android:persistent="true" />
 </PreferenceScreen>

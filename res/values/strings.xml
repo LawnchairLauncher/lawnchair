@@ -503,9 +503,15 @@
     <string name="action_open_overview">Open overview</string>
     <string name="action_global_search">Start global search</string>
     <string name="action_app_search">Start app search</string>
+    <string name="action_open_notifications">Open notification panel</string>
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
     <string name="action_none">Do nothing</string>
     <string name="gesture_press_home">Press Home</string>
     <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+
+    <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
+    <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
 </resources>

@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import ch.deletescape.lawnchair.views.TopRoundedCornerView
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -52,6 +53,8 @@ class WidgetsFullSheet(context: Context, attrs: AttributeSet?) : WidgetsBottomSh
             val sheet = launcher.layoutInflater
                     .inflate(R.layout.widgets_full_sheet, launcher.dragLayer, false) as WidgetsFullSheet
             sheet.launcher = launcher
+            if (launcher.widgetsView.parent != null && launcher.widgetsView.parent is ViewGroup)
+                (launcher.widgetsView.parent as ViewGroup).removeView(launcher.widgetsView)
             sheet.container.addView(launcher.widgetsView.apply {
                 visibility = View.VISIBLE
                 findViewById<View>(R.id.main_content).visibility = View.VISIBLE

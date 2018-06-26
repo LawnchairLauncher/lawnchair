@@ -43,16 +43,18 @@
         <item>@string/action_open_overview</item>
         <item>@string/action_global_search</item>
         <item>@string/action_app_search</item>
+        <item>@string/action_open_notifications</item>
     </string-array>
 
     <string-array name="gestureHandlerClasses">
         <item></item>
         <item>ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerTimeout</item>
         <item>ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerRoot</item>
-        <item>ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</item>
+        <item>@string/action_open_drawer_class</item>
         <item>ch.deletescape.lawnchair.gestures.handlers.OpenWidgetsGestureHandler</item>
         <item>ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</item>
         <item>ch.deletescape.lawnchair.gestures.handlers.StartGlobalSearchGestureHandler</item>
         <item>ch.deletescape.lawnchair.gestures.handlers.StartAppSearchGestureHandler</item>
+        <item>@string/action_open_notifications_class</item>
     </string-array>
 </resources>
