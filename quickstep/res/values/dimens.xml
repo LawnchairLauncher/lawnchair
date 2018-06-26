@@ -33,7 +33,7 @@
 
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">50dp</dimen>
-    <dimen name="springs_trans_y">-70dp</dimen>
+    <dimen name="workspace_trans_y">50dp</dimen>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
     <dimen name="recents_empty_message_text_size">16sp</dimen>
