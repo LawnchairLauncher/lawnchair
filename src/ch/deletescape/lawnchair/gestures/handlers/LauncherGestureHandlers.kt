@@ -24,7 +24,7 @@ class OpenWidgetsGestureHandler(launcher: LawnchairLauncher) : GestureHandler(la
 class OpenOverviewGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
 
     override fun onGestureTrigger() {
-        launcher.showOverviewPopup(true)
+        launcher.showOverviewPopup(false)
     }
 }
 
