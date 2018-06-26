@@ -112,29 +112,6 @@ public class Interpolators {
         }
     };
 
-    /**
-     * Interpolates using a particular section of the damped oscillation function.
-     * The section is selected by scaling and shifting the function.
-     */
-    public static final Interpolator OSCILLATE = new Interpolator() {
-
-        // Used to scale the oscillations horizontally
-        private final float horizontalScale = 1f;
-        // Used to shift the oscillations horizontally
-        private final float horizontalShift = 05f;
-        // Used to scale the oscillations vertically
-        private final float verticalScale = 1f;
-        // Used to shift the oscillations vertically
-        private final float verticalShift = 1f;
-
-        @Override
-        public float getInterpolation(float t) {
-            t = horizontalScale * (t + horizontalShift);
-            return (float) ((verticalScale * (Math.exp(-t) * Math.cos(2 * Math.PI * t)))
-                    + verticalShift);
-        }
-    };
-
     private static final float FAST_FLING_PX_MS = 10;
 
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {
