@@ -57,7 +57,6 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
-import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -805,9 +804,25 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 float shiftRange = allAppsController.getShiftRange();
                 float slideStart = shiftRange / (shiftRange - mStartSlideTransY);
                 float oscillateStart = shiftRange / (shiftRange - mEndSlideTransY);
+                // Ensures a clean hand-off between slide and oscillate.
+                float slideEnd = Utilities.mapToRange(0, 0, 1f, oscillateStart, 1, OSCILLATE);
 
-                buildSpringAnimation(workspaceAnimator, allAppsController, ALL_APPS_PROGRESS,
-                        0 /* startDelay */, slideStart, oscillateStart, 1f /* finalPosition */);
+                allAppsController.setProgress(slideStart);
+                Animator slideIn = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                        slideStart, slideEnd);
+                slideIn.setDuration(SPRING_SLIDE_DURATION);
+                slideIn.setInterpolator(DEACCEL);
+
+                Animator oscillate = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                        oscillateStart, 1f);
+                oscillate.setDuration(SPRING_OSCILLATE_DURATION);
+                oscillate.setInterpolator(OSCILLATE);
+
+                Animator settle = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, 1f);
+                settle.setDuration(SPRING_SETTLE_DURATION);
+                settle.setInterpolator(LINEAR);
+
+                workspaceAnimator.playSequentially(slideIn, oscillate, settle);
             }
 
             mDragLayer.getScrim().hideSysUiScrim(true);
@@ -837,13 +852,28 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         v.setAlpha(0);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 1f);
         alpha.setInterpolator(LINEAR);
-        alpha.setDuration(SPRING_SLIDE_DURATION + SPRING_OSCILLATE_DURATION);
+        alpha.setDuration(SPRING_SLIDE_DURATION);
         alpha.setStartDelay(startDelay);
         outAnimator.play(alpha);
 
-        buildSpringAnimation(outAnimator, v, TRANSLATION_Y, startDelay, mStartSlideTransY,
-                mEndSlideTransY, 0f /* finalPosition */);
+        // Ensures a clean hand-off between slide and oscillate.
+        float slideEnd = Utilities.mapToRange(0, 0, 1f, mEndSlideTransY, 0, OSCILLATE);
+        v.setTranslationY(mStartSlideTransY);
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(v, TRANSLATION_Y, mStartSlideTransY,
+                slideEnd);
+        slideIn.setInterpolator(DEACCEL);
+        slideIn.setStartDelay(startDelay);
+        slideIn.setDuration(SPRING_SLIDE_DURATION);
 
+        ObjectAnimator oscillate = ObjectAnimator.ofFloat(v, TRANSLATION_Y, mEndSlideTransY, 0);
+        oscillate.setInterpolator(OSCILLATE);
+        oscillate.setDuration(SPRING_OSCILLATE_DURATION);
+
+        ObjectAnimator settle = ObjectAnimator.ofFloat(v, TRANSLATION_Y, 0);
+        settle.setInterpolator(LINEAR);
+        settle.setDuration(SPRING_SETTLE_DURATION);
+
+        outAnimator.playSequentially(slideIn, oscillate, settle);
         outAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -851,36 +881,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 v.setTranslationY(0);
             }
         });
-    }
-
-    /**
-     * Spring animations consists of three sequential animators: a slide, an oscillation, and
-     * a settle.
-     */
-    private <T> void buildSpringAnimation(AnimatorSet outAnimator, T objectToSpring,
-            Property<T, Float> property, long startDelay, float slideStart, float oscillateStart,
-            float finalPosition) {
-        // Ensures a clean hand-off between slide and oscillate.
-        float slideEnd = Utilities.mapToRange(0, 0, 1f, oscillateStart, finalPosition, OSCILLATE);
-
-        property.set(objectToSpring, slideStart);
-
-        ObjectAnimator slideIn = ObjectAnimator.ofFloat(objectToSpring, property, slideStart,
-                slideEnd);
-        slideIn.setInterpolator(DEACCEL);
-        slideIn.setStartDelay(startDelay);
-        slideIn.setDuration(SPRING_SLIDE_DURATION);
-
-        ObjectAnimator oscillate = ObjectAnimator.ofFloat(objectToSpring, property, oscillateStart,
-                finalPosition);
-        oscillate.setInterpolator(OSCILLATE);
-        oscillate.setDuration(SPRING_OSCILLATE_DURATION);
-
-        ObjectAnimator settle = ObjectAnimator.ofFloat(objectToSpring, property, finalPosition);
-        settle.setInterpolator(LINEAR);
-        settle.setDuration(SPRING_SETTLE_DURATION);
-
-        outAnimator.playSequentially(slideIn, oscillate, settle);
     }
 
     private void resetContentView() {
