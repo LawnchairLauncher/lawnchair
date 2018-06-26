@@ -102,6 +102,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Gestures
     val doubleTapToSleepHandler by StringPref("pref_gesture_double_tap", "", doNothing)
     val doubleTapDelay = 350L
+    val pressHomeHandler by StringPref("pref_gesture_press_home", "", doNothing)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {

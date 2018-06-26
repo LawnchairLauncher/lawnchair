@@ -48,6 +48,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
 import ch.deletescape.lawnchair.WidgetsFullSheet;
@@ -1715,7 +1717,11 @@ public class Launcher extends BaseActivity
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
                 if (!mAllAppsController.isDragging()) {
-                    showWorkspace(true);
+                    if (this instanceof LawnchairLauncher && mState == State.WORKSPACE && mWorkspace.getState().containerType == ContainerType.WORKSPACE && AbstractFloatingView.getTopOpenView(this) == null && mWorkspace.getCurrentPage() == 0){
+                        ((LawnchairLauncher) this).getGestureController().onPressHome();
+                    } else {
+                        showWorkspace(true);
+                    }
                 }
             } else {
                 mOnResumeState = State.WORKSPACE;
@@ -1771,7 +1777,6 @@ public class Launcher extends BaseActivity
                 });
             }
         }
-
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }

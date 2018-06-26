@@ -4,7 +4,16 @@
 
     <ListPreference
         android:key="pref_gesture_double_tap"
-        android:title="Double Tap"
+        android:title="@string/gesture_double_tap"
+        android:summary="%s"
+        android:entries="@array/gestureHandlers"
+        android:entryValues="@array/gestureHandlerClasses"
+        android:defaultValue=""
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_gesture_press_home"
+        android:title="@string/gesture_press_home"
         android:summary="%s"
         android:entries="@array/gestureHandlers"
         android:entryValues="@array/gestureHandlerClasses"

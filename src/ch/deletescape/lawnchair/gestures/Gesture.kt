@@ -6,5 +6,11 @@ interface Gesture {
 
     val isEnabled: Boolean
 
-    fun onTouchEvent(ev: MotionEvent): Boolean
+    fun onTouchEvent(ev: MotionEvent): Boolean {
+        return false
+    }
+
+    fun onEvent(): Boolean {
+        return false
+    }
 }
