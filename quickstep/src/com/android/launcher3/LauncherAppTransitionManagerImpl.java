@@ -125,13 +125,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
 
-    private static final int APP_CLOSE_ROW_START_DELAY_MS = 9;
+    private static final int APP_CLOSE_ROW_START_DELAY_MS = 8;
 
-    private static final int SPRING_SLIDE_DURATION = 170;
-    private static final int SPRING_OSCILLATE_DURATION = 550;
-    private static final int SPRING_SETTLE_DURATION = 25;
-
-    private static final int SPRING_ALPHA_DURATION = 100;
+    // The sum of [slide, oscillate, and settle] should be <= LAUNCHER_RESUME_TOTAL_DURATION.
+    private static final int LAUNCHER_RESUME_TOTAL_DURATION = 346;
+    private static final int SPRING_SLIDE_DURATION = 166;
+    private static final int SPRING_OSCILLATE_DURATION = 130;
+    private static final int SPRING_SETTLE_DURATION = 50;
 
     private final Launcher mLauncher;
     private final DragLayer mDragLayer;
@@ -173,8 +173,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
-        mStartSlideTransY = res.getDimensionPixelSize(R.dimen.springs_start_slide_trans_y);
-        mEndSlideTransY = res.getDimensionPixelSize(R.dimen.springs_end_slide_trans_y);
+        mStartSlideTransY = res.getDimensionPixelSize(R.dimen.springs_trans_y);
+        mEndSlideTransY = -mStartSlideTransY * 0.1f;
 
         mLauncher.addOnDeviceProfileChangeListener(this);
         registerRemoteAnimations();
@@ -837,7 +837,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         v.setAlpha(0);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 1f);
         alpha.setInterpolator(LINEAR);
-        alpha.setDuration(SPRING_ALPHA_DURATION);
+        alpha.setDuration(SPRING_SLIDE_DURATION + SPRING_OSCILLATE_DURATION);
         alpha.setStartDelay(startDelay);
         outAnimator.play(alpha);
 
