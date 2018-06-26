@@ -41,15 +41,15 @@ public class AllAppsAppLaunchTest extends AbstractLauncherUiTest {
     private void performTest() throws Exception {
         mActivityMonitor.startLauncher();
 
-        LauncherActivityInfo settingsApp = getSettingsApp();
+        LauncherActivityInfo testApp = getChromeApp();
 
         // Open all apps and wait for load complete
         final UiObject2 appsContainer = openAllApps();
         assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
 
-        // Open settings app and verify app launched
-        scrollAndFind(appsContainer, By.text(settingsApp.getLabel().toString())).click();
+        // Open app and verify app launched
+        scrollAndFind(appsContainer, By.text(testApp.getLabel().toString())).click();
         assertTrue(mDevice.wait(Until.hasObject(By.pkg(
-                settingsApp.getComponentName().getPackageName()).depth(0)), DEFAULT_UI_TIMEOUT));
+                testApp.getComponentName().getPackageName()).depth(0)), DEFAULT_UI_TIMEOUT));
     }
 }

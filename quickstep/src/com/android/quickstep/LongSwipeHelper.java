@@ -20,18 +20,18 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
-import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
-import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 
 import android.animation.ValueAnimator;
-import android.view.Surface;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.uioverrides.PortraitStatesTouchController;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -39,7 +39,6 @@ import com.android.launcher3.util.FlingBlockCheck;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
  * Utility class to handle long swipe from an app.
@@ -65,15 +64,16 @@ public class LongSwipeHelper {
     }
 
     private void init() {
-        setTargetAlpha(0, true);
         mFlingBlockCheck.blockFling();
 
         // Init animations
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
         // TODO: Scale it down so that we can reach all-apps in screen space
         mMaxSwipeDistance = Math.max(1, controller.getProgress() * controller.getShiftRange());
-        mAnimator = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(ALL_APPS, Math.round(2 * mMaxSwipeDistance));
+
+        AnimatorSetBuilder builder = PortraitStatesTouchController.getOverviewToAllAppsAnimation();
+        mAnimator = mLauncher.getStateManager().createAnimationToNewWorkspace(ALL_APPS, builder,
+                Math.round(2 * mMaxSwipeDistance), null, LauncherStateManager.ANIM_ALL);
         mAnimator.dispatchOnStart();
     }
 
@@ -83,8 +83,7 @@ public class LongSwipeHelper {
     }
 
     public void destroy() {
-        // TODO: We can probably also hide the task view
-        setTargetAlpha(1, false);
+        // TODO: We can probably also show the task view
 
         mLauncher.getStateManager().goToState(OVERVIEW, false);
     }
@@ -136,31 +135,6 @@ public class LongSwipeHelper {
         animator.start();
     }
 
-    private void setTargetAlpha(float alpha, boolean defer) {
-        final Surface surface = getSurface(mLauncher.getDragLayer());
-        final long frameNumber = defer && surface != null ? getNextFrameNumber(surface) : -1;
-        if (defer) {
-            if (frameNumber == -1) {
-                defer = false;
-            } else {
-                mLauncher.getDragLayer().invalidate();
-            }
-        }
-
-        TransactionCompat transaction = new TransactionCompat();
-        for (RemoteAnimationTargetCompat app : mTargetSet.apps) {
-            if (!(app.isNotInRecents
-                    || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME)) {
-                transaction.setAlpha(app.leash, alpha);
-                if (defer) {
-                    transaction.deferTransactionUntil(app.leash, surface, frameNumber);
-                }
-            }
-        }
-        transaction.setEarlyWakeup();
-        transaction.apply();
-    }
-
     private void onSwipeAnimationComplete(boolean toAllApps, boolean isFling, Runnable callback) {
         mLauncher.getStateManager().goToState(toAllApps ? ALL_APPS : OVERVIEW, false);
         if (!toAllApps) {
@@ -175,5 +149,13 @@ public class LongSwipeHelper {
                 0);
 
         callback.run();
+    }
+
+    public float getTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
+        if (!(app.isNotInRecents
+                || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME)) {
+            return 0;
+        }
+        return expectedAlpha;
     }
 }

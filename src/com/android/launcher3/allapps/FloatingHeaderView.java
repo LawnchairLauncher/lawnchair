@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
@@ -28,6 +26,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.R;
@@ -227,8 +226,9 @@ public class FloatingHeaderView extends LinearLayout implements
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
     }
 
-    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter setter) {
-        setter.setViewAlpha(this, hasContent ? 1 : 0, LINEAR);
+    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter setter,
+            Interpolator fadeInterpolator) {
+        setter.setViewAlpha(this, hasContent ? 1 : 0, fadeInterpolator);
         allowTouchForwarding(hasContent);
     }
 

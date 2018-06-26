@@ -115,8 +115,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             } else {
                 mTaskBeingDragged = null;
 
-                for (int i = 0; i < mRecentsView.getChildCount(); i++) {
-                    TaskView view = mRecentsView.getPageAt(i);
+                for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
+                    TaskView view = mRecentsView.getTaskViewAt(i);
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         mTaskBeingDragged = view;
@@ -241,16 +241,16 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (blockedFling) {
             fling = false;
         }
+        float progress = mCurrentAnimation.getProgressFraction();
+        float interpolatedProgress = mCurrentAnimation.getInterpolator().getInterpolation(progress);
         if (fling) {
             logAction = Touch.FLING;
             boolean goingUp = velocity < 0;
             goingToEnd = goingUp == mCurrentAnimationIsGoingUp;
         } else {
             logAction = Touch.SWIPE;
-            goingToEnd = mCurrentAnimation.getProgressFraction() > SUCCESS_TRANSITION_PROGRESS;
+            goingToEnd = interpolatedProgress > SUCCESS_TRANSITION_PROGRESS;
         }
-
-        float progress = mCurrentAnimation.getProgressFraction();
         long animationDuration = SwipeDetector.calculateDuration(
                 velocity, goingToEnd ? (1 - progress) : progress);
         if (blockedFling && !goingToEnd) {
