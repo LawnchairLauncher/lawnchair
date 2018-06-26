@@ -741,6 +741,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
 
+        UiFactory.onLauncherStateOrResumeChanged(this);
+
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
