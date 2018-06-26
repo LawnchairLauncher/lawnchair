@@ -223,4 +223,9 @@ public class AppsSearchContainerLayout extends FrameLayout
             }
         });
     }
+
+    @Override
+    public void startSearch() {
+        mSearchBarController.focusSearchField();
+    }
 }

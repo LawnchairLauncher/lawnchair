@@ -3,7 +3,7 @@ package ch.deletescape.lawnchair.gestures
 import android.text.TextUtils
 import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
-import ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture
+import ch.deletescape.lawnchair.gestures.gestures.DoubleTapGesture
 import com.android.launcher3.util.TouchController
 
 class GestureController(val launcher: LawnchairLauncher) : TouchController {

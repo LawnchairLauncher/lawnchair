@@ -453,10 +453,6 @@
     <string name="loading">Loading…</string>
     <string name="low_performance_mode_pref_title">Low performance mode</string>
     <string name="action_preferences">@string/smartspace_preferences</string>
-    <string name="dt2s_title">Double tap to sleep</string>
-    <string name="dt2s_disabled">Disabled</string>
-    <string name="dt2s_timeout">Using screen timeout</string>
-    <string name="dt2s_root">Using root</string>
     <string name="title_storage_permission_required">Storage Permission Required</string>
     <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
     <string name="reset_to_default">Reset to default</string>
@@ -500,4 +496,14 @@
     <string name="debug_crash_launcher">Crash the launcher</string>
     <string name="gestures_pref_title">Gestures</string>
     <string name="gestures_pref_summary">Customize your gestures</string>
+
+    <!-- Gesture actions -->
+    <string name="action_open_drawer">Open app drawer</string>
+    <string name="action_open_widgets">Open widgets drawer</string>
+    <string name="action_open_overview">Open overview</string>
+    <string name="action_global_search">Start global search</string>
+    <string name="action_app_search">Start app search</string>
+    <string name="action_sleep_timeout">Sleep using screen timeout</string>
+    <string name="action_sleep_root">Sleep using root</string>
+    <string name="action_none">Do nothing</string>
 </resources>

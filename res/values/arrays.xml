@@ -34,15 +34,25 @@
         <item>0</item>
     </string-array>
 
-    <string-array name="dt2sHandlers">
-        <item>@string/dt2s_disabled</item>
-        <item>@string/dt2s_timeout</item>
-        <item>@string/dt2s_root</item>
+    <string-array name="gestureHandlers">
+        <item>@string/action_none</item>
+        <item>@string/action_sleep_timeout</item>
+        <item>@string/action_sleep_root</item>
+        <item>@string/action_open_drawer</item>
+        <item>@string/action_open_widgets</item>
+        <item>@string/action_open_overview</item>
+        <item>@string/action_global_search</item>
+        <item>@string/action_app_search</item>
     </string-array>
 
-    <string-array name="dt2sHandlerClasses">
-        <item> </item>
-        <item>ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture$SleepGestureHandlerTimeout</item>
-        <item>ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture$SleepGestureHandlerRoot</item>
+    <string-array name="gestureHandlerClasses">
+        <item></item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerTimeout</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerRoot</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.OpenWidgetsGestureHandler</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.StartGlobalSearchGestureHandler</item>
+        <item>ch.deletescape.lawnchair.gestures.handlers.StartAppSearchGestureHandler</item>
     </string-array>
 </resources>

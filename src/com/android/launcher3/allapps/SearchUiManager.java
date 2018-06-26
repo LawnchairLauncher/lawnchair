@@ -53,6 +53,8 @@ public interface SearchUiManager {
 
     void addOnScrollRangeChangeListener(OnScrollRangeChangeListener listener);
 
+    void startSearch();
+
     /**
      * Callback for listening to changes in the vertical scroll range when opening all-apps.
      */

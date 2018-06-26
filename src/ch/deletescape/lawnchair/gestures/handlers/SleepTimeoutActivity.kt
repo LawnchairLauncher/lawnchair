@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair.gestures.dt2s
+package ch.deletescape.lawnchair.gestures.handlers
 
 import android.app.Activity
 import android.os.Bundle

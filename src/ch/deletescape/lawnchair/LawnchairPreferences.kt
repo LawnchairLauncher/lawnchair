@@ -100,7 +100,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enablePhysics get() = !lowPerformanceMode
 
     // Gestures
-    val doubleTapToSleepHandler by StringPref("pref_doubleTapToSleepHandler", " ", doNothing)
+    val doubleTapToSleepHandler by StringPref("pref_gesture_double_tap", "", doNothing)
     val doubleTapDelay = 350L
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)

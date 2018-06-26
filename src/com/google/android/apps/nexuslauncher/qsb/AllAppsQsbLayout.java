@@ -164,20 +164,25 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_ALL_APPS_GOOGLE_SEARCH, this);
     }
 
+    @Override
+    public void startSearch() {
+        if (!Utilities.ATLEAST_NOUGAT || !mAllAppsGoogleSearch) {
+            searchFallback();
+            return;
+        }
+        final ConfigBuilder f = new ConfigBuilder(this, true);
+        if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+            searchFallback();
+            if (mFallback != null) {
+                mFallback.setHint(null);
+            }
+        }
+    }
+
     public void onClick(final View view) {
         super.onClick(view);
         if (view == this) {
-            if (!Utilities.ATLEAST_NOUGAT || !mAllAppsGoogleSearch) {
-                searchFallback();
-                return;
-            }
-            final ConfigBuilder f = new ConfigBuilder(this, true);
-            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
-                searchFallback();
-                if (mFallback != null) {
-                    mFallback.setHint(null);
-                }
-            }
+            startSearch();
         }
     }
 

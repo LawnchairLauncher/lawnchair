@@ -270,7 +270,7 @@
             android:theme="@style/SettingsTheme.V2" />
 
         <activity
-            android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepTimeoutActivity"
+            android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"
             android:theme="@style/SleepTimeoutTheme"/>
     </application>
 

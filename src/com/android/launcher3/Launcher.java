@@ -2913,17 +2913,24 @@ public class Launcher extends BaseActivity
      * Shows the apps view.
      */
     public void showAppsView(boolean animated, boolean updatePredictedApps) {
+        showAppsView(animated, updatePredictedApps, false);
+    }
+
+    /**
+     * Shows the apps view.
+     */
+    public void showAppsView(boolean animated, boolean updatePredictedApps, boolean startSearch) {
         markAppsViewShown();
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
-        showAppsOrWidgets(State.APPS, animated);
+        showAppsOrWidgets(State.APPS, animated, startSearch);
     }
 
     /**
      * Shows the widgets view.
      */
-    void showWidgetsView(boolean animated, boolean resetPageToZero) {
+    public void showWidgetsView(boolean animated, boolean resetPageToZero) {
         if (LOGD) Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
@@ -2947,6 +2954,17 @@ public class Launcher extends BaseActivity
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
     private boolean showAppsOrWidgets(State toState, boolean animated) {
+        return showAppsOrWidgets(toState, animated, false);
+    }
+
+    /**
+     * Sets up the transition to show the apps/widgets view.
+     *
+     * @return whether the current from and to state allowed this operation
+     */
+    // TODO: calling method should use the return value so that when {@code false} is returned
+    // the workspace transition doesn't fall into invalid state.
+    private boolean showAppsOrWidgets(State toState, boolean animated, boolean startSearch) {
         if (!(mState == State.WORKSPACE ||
                 mState == State.APPS_SPRING_LOADED ||
                 mState == State.WIDGETS_SPRING_LOADED ||
@@ -2964,7 +2982,7 @@ public class Launcher extends BaseActivity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(animated);
+            mStateTransitionAnimation.startAnimationToAllApps(animated, startSearch);
         } else {
             mStateTransitionAnimation.startAnimationToWidgets(animated);
         }

@@ -2,7 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        android:summary="Nothing here yet :("
-        android:title="Uh" />
+    <ListPreference
+        android:key="pref_gesture_double_tap"
+        android:title="Double Tap"
+        android:summary="%s"
+        android:entries="@array/gestureHandlers"
+        android:entryValues="@array/gestureHandlerClasses"
+        android:defaultValue=""
+        android:persistent="true" />
 </PreferenceScreen>
