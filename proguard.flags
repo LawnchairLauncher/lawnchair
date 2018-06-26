@@ -126,3 +126,5 @@
 -keep,allowshrinking,allowoptimization class me.jfenn.attribouter.** {
  *;
 }
+
+-keepclassmembers enum * { *; }
