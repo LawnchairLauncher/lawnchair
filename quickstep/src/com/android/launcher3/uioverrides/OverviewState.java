@@ -25,9 +25,11 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -75,6 +77,7 @@ public class OverviewState extends LauncherState {
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
+        RecentsModel.getInstance(launcher).resetAssistCache();
     }
 
     @Override
@@ -116,6 +119,11 @@ public class OverviewState extends LauncherState {
         }
         return 1 - (getDefaultSwipeHeight(launcher)
                 / launcher.getAllAppsController().getShiftRange());
+    }
+
+    @Override
+    public String getDescription(Launcher launcher) {
+        return launcher.getString(R.string.accessibility_desc_recent_apps);
     }
 
     public static float getDefaultSwipeHeight(Launcher launcher) {

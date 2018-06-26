@@ -18,20 +18,24 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -51,6 +55,16 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private static final String TAG = "PortraitStatesTouchCtrl";
 
+    /**
+     * The progress at which all apps content will be fully visible when swiping up from overview.
+     */
+    private static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
+
+    /**
+     * The progress at which recents will begin fading out when swiping up from overview.
+     */
+    private static final float RECENTS_FADE_THRESHOLD = 0.88f;
+
     private InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
 
     // If true, we will finish the current animation instantly on second touch.
@@ -69,8 +83,18 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 mCurrentAnimation.getAnimationPlayer().end();
             }
 
-            // If we are already animating from a previous state, we can intercept.
-            return true;
+            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+            if (ev.getY() >= allAppsController.getShiftRange() * allAppsController.getProgress()) {
+                // If we are already animating from a previous state, we can intercept as long as
+                // the touch is below the current all apps progress (to allow for double swipe).
+                return true;
+            }
+            // Otherwise, make sure everything is settled and don't intercept so they can scroll
+            // recents, dismiss a task, etc.
+            if (mAtomicAnim != null) {
+                mAtomicAnim.end();
+            }
+            return false;
         }
         if (mLauncher.isInState(ALL_APPS)) {
             // In all-apps only listen if the container cannot scroll itself
@@ -115,7 +139,38 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
         builder.setInterpolator(ANIM_VERTICAL_PROGRESS, mAllAppsInterpolatorWrapper);
+        return builder;
+    }
 
+    public static AnimatorSetBuilder getOverviewToAllAppsAnimation() {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
+                0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+        builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(DEACCEL,
+                RECENTS_FADE_THRESHOLD, 1));
+        return builder;
+    }
+
+    private AnimatorSetBuilder getAllAppsToOverviewAnimation() {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
+                1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
+        builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(ACCEL,
+                0f, 1 - RECENTS_FADE_THRESHOLD));
+        return builder;
+    }
+
+    @Override
+    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
+            LauncherState toState) {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        if (fromState == NORMAL && toState == OVERVIEW) {
+            builder = getNormalToOverviewAnimation();
+        } else if (fromState == OVERVIEW && toState == ALL_APPS) {
+            builder = getOverviewToAllAppsAnimation();
+        } else if (fromState == ALL_APPS && toState == OVERVIEW) {
+            builder = getAllAppsToOverviewAnimation();
+        }
         return builder;
     }
 
@@ -129,20 +184,17 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         float totalShift = endVerticalShift - startVerticalShift;
 
-        final AnimatorSetBuilder builder;
-
-        if (mFromState == NORMAL && mToState == OVERVIEW && totalShift != 0) {
-            builder = getNormalToOverviewAnimation();
-        } else {
-            builder = new AnimatorSetBuilder();
-        }
+        final AnimatorSetBuilder builder = totalShift == 0 ? new AnimatorSetBuilder()
+                : getAnimatorSetBuilderForStates(mFromState, mToState);
 
         cancelPendingAnim();
 
         RecentsView recentsView = mLauncher.getOverviewPanel();
-        TaskView taskView = (TaskView) recentsView.getChildAt(recentsView.getNextPage());
+        TaskView taskView = recentsView.getTaskViewAt(recentsView.getNextPage());
         if (recentsView.shouldSwipeDownLaunchApp() && mFromState == OVERVIEW && mToState == NORMAL
                 && taskView != null) {
+            // Reset the state manager, when changing the interaction mode
+            mLauncher.getStateManager().goToState(OVERVIEW, false /* animate */);
             mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
             mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
 
@@ -190,7 +242,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 // Update all apps interpolator to add a bit of overshoot starting from currFraction
                 final float currFraction = mCurrentAnimation.getProgressFraction();
                 mAllAppsInterpolatorWrapper.baseInterpolator = Interpolators.clampToProgress(
-                        new OvershootInterpolator(Math.min(Math.abs(velocity), 3f)), currFraction, 1);
+                        Interpolators.overshootInterpolatorForVelocity(velocity), currFraction, 1);
                 animator.setDuration(Math.min(expectedDuration, ATOMIC_DURATION))
                         .setInterpolator(LINEAR);
             }

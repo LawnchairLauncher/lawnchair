@@ -24,6 +24,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.PathInterpolator;
 
+import com.android.launcher3.Utilities;
+
 
 /**
  * Common interpolators used in Launcher
@@ -110,10 +112,46 @@ public class Interpolators {
         }
     };
 
+    /**
+     * Interpolates using a particular section of the damped oscillation function.
+     * The section is selected by scaling and shifting the function.
+     */
+    public static final Interpolator OSCILLATE = new Interpolator() {
+
+        // Used to scale the oscillations horizontally
+        private final float horizontalScale = 1f;
+        // Used to shift the oscillations horizontally
+        private final float horizontalShift = 0.5f;
+        // Used to scale the oscillations vertically
+        private final float verticalScale = 1f;
+        // Used to shift the oscillations vertically
+        private final float verticalShift = 1f;
+
+        @Override
+        public float getInterpolation(float t) {
+            t = horizontalScale * (t + horizontalShift);
+            return (float) ((verticalScale * (Math.exp(-t) * Math.cos(2 * Math.PI * t)))
+                    + verticalShift);
+        }
+    };
+
     private static final float FAST_FLING_PX_MS = 10;
 
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {
         return Math.abs(velocity) > FAST_FLING_PX_MS ? SCROLL : SCROLL_CUBIC;
+    }
+
+    public static Interpolator overshootInterpolatorForVelocity(float velocity) {
+        return overshootInterpolatorForVelocity(velocity, 1f);
+    }
+
+    /**
+     * Create an OvershootInterpolator with tension directly related to the velocity (in px/ms).
+     * @param velocity The start velocity of the animation we want to overshoot.
+     * @param dampFactor An optional factor to reduce the amount of tension (how far we overshoot).
+     */
+    public static Interpolator overshootInterpolatorForVelocity(float velocity, float dampFactor) {
+        return new OvershootInterpolator(Math.min(Math.abs(velocity), 3f) / dampFactor);
     }
 
     /**
@@ -134,5 +172,15 @@ public class Interpolators {
             }
             return interpolator.getInterpolation((t - lowerBound) / (upperBound - lowerBound));
         };
+    }
+
+    /**
+     * Runs the given interpolator such that the interpolated value is mapped to the given range.
+     * This is useful, for example, if we only use this interpolator for part of the animation,
+     * such as to take over a user-controlled animation when they let go.
+     */
+    public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
+            float upperBound) {
+        return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 }

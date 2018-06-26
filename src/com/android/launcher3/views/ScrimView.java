@@ -109,6 +109,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected int mEndFlatColorAlpha;
 
     protected final int mDragHandleSize;
+    protected float mDragHandleOffset;
     private final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
 
@@ -223,8 +224,14 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         if (mCurrentFlatColor != 0) {
             canvas.drawColor(mCurrentFlatColor);
         }
+        drawDragHandle(canvas);
+    }
+
+    protected void drawDragHandle(Canvas canvas) {
         if (mDragHandle != null) {
+            canvas.translate(0, -mDragHandleOffset);
             mDragHandle.draw(canvas);
+            canvas.translate(0, mDragHandleOffset);
         }
     }
 
@@ -237,20 +244,23 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
             final Drawable drawable = mDragHandle;
             mDragHandle = null;
-            drawable.setBounds(mDragHandleBounds);
 
-            Rect topBounds = new Rect(mDragHandleBounds);
-            topBounds.offset(0, -mDragHandleBounds.height() / 2);
+            Rect bounds = new Rect(mDragHandleBounds);
+            bounds.offset(0, -(int) mDragHandleOffset);
+            drawable.setBounds(bounds);
 
-            Rect invalidateRegion = new Rect(mDragHandleBounds);
+            Rect topBounds = new Rect(bounds);
+            topBounds.offset(0, -bounds.height() / 2);
+
+            Rect invalidateRegion = new Rect(bounds);
             invalidateRegion.top = topBounds.top;
 
             Keyframe frameTop = Keyframe.ofObject(0.6f, topBounds);
             frameTop.setInterpolator(DEACCEL);
-            Keyframe frameBot = Keyframe.ofObject(1, mDragHandleBounds);
+            Keyframe frameBot = Keyframe.ofObject(1, bounds);
             frameBot.setInterpolator(ACCEL);
             PropertyValuesHolder holder = PropertyValuesHolder .ofKeyframe("bounds",
-                    Keyframe.ofObject(0, mDragHandleBounds), frameTop, frameBot);
+                    Keyframe.ofObject(0, bounds), frameTop, frameBot);
             holder.setEvaluator(new RectEvaluator());
 
             ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
