@@ -118,8 +118,7 @@ public class LongSwipeHelper {
             if (blockedFling && !toAllApps) {
                 Interpolators.OvershootParams overshoot = new OvershootParams(currentFraction,
                         currentFraction, endProgress, velocityPxPerMs, (int) mMaxSwipeDistance);
-                duration = (overshoot.duration + duration)
-                        * LauncherAnimUtils.blockedFlingDurationFactor(0);
+                duration = (overshoot.duration + duration);
                 duration = Utilities.boundToRange(duration, MIN_OVERSHOOT_DURATION,
                         MAX_SWIPE_DURATION);
                 interpolator = overshoot.interpolator;

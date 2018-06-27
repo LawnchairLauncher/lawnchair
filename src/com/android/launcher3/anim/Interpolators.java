@@ -57,6 +57,9 @@ public class Interpolators {
 
     public static final Interpolator EXAGGERATED_EASE;
 
+    private static final int MIN_SETTLE_DURATION = 200;
+    private static final float OVERSHOOT_FACTOR = 0.9f;
+
     static {
         Path exaggeratedEase = new Path();
         exaggeratedEase.moveTo(0, 0);
@@ -186,7 +189,8 @@ public class Interpolators {
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.
-            float overshootBy = velocityPxPerMs * SINGLE_FRAME_MS / totalDistancePx / 2;
+            float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
+                    SINGLE_FRAME_MS / totalDistancePx / 2;
             overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
             end = overshootPastProgress + overshootBy;
             int endPx = (int) (end  * totalDistancePx);
@@ -211,7 +215,9 @@ public class Interpolators {
             // Above formula assumes constant acceleration. Since we use ACCEL_DEACCEL, we actually
             // have acceleration to halfway then deceleration the rest. So the formula becomes:
             //          t = sqrt(d/a) * 2 (half the distance for accel, half for deaccel)
-            long settleDuration = (long) Math.sqrt(settleDistancePx / decelerationPxPerMs) * 2;
+            long settleDuration = (long) Math.sqrt(settleDistancePx / decelerationPxPerMs) * 4;
+
+            settleDuration = Math.max(MIN_SETTLE_DURATION, settleDuration);
             // How much of the animation to devote to playing the overshoot (the rest is for settle).
             float overshootFraction = (float) duration / (duration + settleDuration);
             duration += settleDuration;
