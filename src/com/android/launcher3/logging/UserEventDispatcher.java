@@ -51,6 +51,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -61,7 +62,7 @@ import java.util.UUID;
  *
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
-public class UserEventDispatcher {
+public class UserEventDispatcher implements ResourceBasedOverride {
 
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
 
@@ -78,7 +79,7 @@ public class UserEventDispatcher {
             uuidStr = UUID.randomUUID().toString();
             sharedPrefs.edit().putString(UUID_STORAGE, uuidStr).apply();
         }
-        UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
+        UserEventDispatcher ued = Overrides.getObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
         ued.mDelegate = delegate;
         ued.mIsInLandscapeMode = dp.isVerticalBarLayout();

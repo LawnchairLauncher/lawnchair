@@ -36,11 +36,12 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 /**
  * Factory for creating new drawables.
  */
-public class DrawableFactory {
+public class DrawableFactory implements ResourceBasedOverride {
 
     private static final String TAG = "DrawableFactory";
 
@@ -52,7 +53,7 @@ public class DrawableFactory {
     public static DrawableFactory get(Context context) {
         synchronized (LOCK) {
             if (sInstance == null) {
-                sInstance = Utilities.getOverrideObject(DrawableFactory.class,
+                sInstance = Overrides.getObject(DrawableFactory.class,
                         context.getApplicationContext(), R.string.drawable_factory_class);
             }
             return sInstance;

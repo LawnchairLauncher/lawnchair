@@ -22,22 +22,22 @@ import android.support.annotation.AnyThread;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * Factory class to create and add an overlays on the TaskView
  */
-public class TaskOverlayFactory {
+public class TaskOverlayFactory implements ResourceBasedOverride {
 
     private static TaskOverlayFactory sInstance;
 
     public static TaskOverlayFactory get(Context context) {
         Preconditions.assertUIThread();
         if (sInstance == null) {
-            sInstance = Utilities.getOverrideObject(TaskOverlayFactory.class,
+            sInstance = Overrides.getObject(TaskOverlayFactory.class,
                     context.getApplicationContext(), R.string.task_overlay_factory_class);
         }
         return sInstance;

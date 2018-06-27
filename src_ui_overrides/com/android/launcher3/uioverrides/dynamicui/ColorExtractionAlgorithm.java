@@ -16,7 +16,6 @@
 
 package com.android.launcher3.uioverrides.dynamicui;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +24,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Range;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 import java.util.Arrays;
@@ -36,11 +34,6 @@ import java.util.List;
  * Implementation of tonal color extraction
  **/
 public class ColorExtractionAlgorithm {
-
-    public static ColorExtractionAlgorithm newInstance(Context context) {
-        return Utilities.getOverrideObject(ColorExtractionAlgorithm.class,
-                context.getApplicationContext(), R.string.color_extraction_impl_class);
-    }
 
     private static final String TAG = "Tonal";
 

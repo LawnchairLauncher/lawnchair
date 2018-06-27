@@ -23,13 +23,15 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import com.android.launcher3.util.ResourceBasedOverride;
+
 /**
  * Manages the opening and closing app transitions from Launcher.
  */
-public class LauncherAppTransitionManager {
+public class LauncherAppTransitionManager implements ResourceBasedOverride {
 
     public static LauncherAppTransitionManager newInstance(Context context) {
-        return Utilities.getOverrideObject(LauncherAppTransitionManager.class,
+        return Overrides.getObject(LauncherAppTransitionManager.class,
                 context, R.string.app_transition_manager_class);
     }
 
