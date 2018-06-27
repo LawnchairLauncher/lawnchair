@@ -15,9 +15,9 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
         edgeEffectFactory = springManager.createFactory()
     }
 
-    override fun dispatchDraw(canvas: Canvas) {
+    override fun draw(canvas: Canvas) {
         springManager.withSpring(canvas) {
-            super.dispatchDraw(canvas)
+            super.draw(canvas)
             false
         }
     }
