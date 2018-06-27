@@ -184,6 +184,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
+        populateAndShow(originalIcon, shortcutIds, notificationKeys, systemShortcuts, true);
+    }
+
+    public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
+            final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts, boolean bindAsApp) {
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
@@ -251,12 +256,18 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mLauncher.getDragController().addDragListener(this);
         mOriginalIcon.forceHideBadge(true);
 
-        // Load the shortcuts on a background thread and update the container as it animates.
-        final Looper workerLooper = LauncherModel.getWorkerLooper();
-        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
+        Runnable updateRunnable = PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
-                systemShortcuts, systemShortcutViews));
+                systemShortcuts, systemShortcutViews, bindAsApp);
+        if (bindAsApp) {
+            // Load the shortcuts on a background thread and update the container as it animates.
+            final Looper workerLooper = LauncherModel.getWorkerLooper();
+            new Handler(workerLooper).postAtFrontOfQueue(updateRunnable);
+        } else {
+            // Bind shortcuts now for overview popup
+            updateRunnable.run();
+        }
     }
 
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate, int numNotifications) {

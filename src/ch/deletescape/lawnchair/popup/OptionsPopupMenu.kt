@@ -66,7 +66,7 @@ class OptionsPopupMenu {
             dummyBubbleTextView.requestLayout()
             dummyBubbleTextView.post {
                 popupView.populateAndShow(dummyBubbleTextView,
-                        Collections.emptyList(), Collections.emptyList(), shortcuts)
+                        Collections.emptyList(), Collections.emptyList(), shortcuts, false)
             }
             launcher.workspace.requestDisallowInterceptTouchEvent(true)
         }

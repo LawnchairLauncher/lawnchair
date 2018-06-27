@@ -181,13 +181,13 @@ public class PopupPopulator {
             final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys,
             final NotificationItemView notificationView, final List<SystemShortcut> systemShortcuts,
-            final List<View> systemShortcutViews) {
+            final List<View> systemShortcutViews, final boolean bindAsApp) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return new Runnable() {
             @Override
             public void run() {
-                if (notificationView != null) {
+                if (bindAsApp && notificationView != null) {
                     List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
                             .getStatusBarNotificationsForKeys(notificationKeys);
                     List<NotificationInfo> infos = new ArrayList<>(notifications.size());
@@ -198,7 +198,7 @@ public class PopupPopulator {
                     uiHandler.post(new UpdateNotificationChild(notificationView, infos));
                 }
 
-                if (activity != null) {
+                if (bindAsApp && activity != null) {
                     List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
                             .queryForShortcutsContainer(activity, shortcutIds, user);
                     String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
@@ -223,7 +223,7 @@ public class PopupPopulator {
                     uiHandler.post(new UpdateSystemShortcutChild(container,
                             systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
                 }
-                if (activity != null) {
+                if (bindAsApp && activity != null) {
                     uiHandler.post(new Runnable() {
                         @Override
                         public void run() {
