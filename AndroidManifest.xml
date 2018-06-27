@@ -71,6 +71,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
+        android:name="ch.deletescape.lawnchair.LawnchairApp"
         android:backupAgent=".LauncherBackupAgent"
         android:fullBackupContent="@xml/backupscheme"
         android:fullBackupOnly="true"

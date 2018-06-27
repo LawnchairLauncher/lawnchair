@@ -497,4 +497,5 @@
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
     <string name="show_developer_options">Enable developer options</string>
+    <string name="debug_crash_launcher">Crash the launcher</string>
 </resources>

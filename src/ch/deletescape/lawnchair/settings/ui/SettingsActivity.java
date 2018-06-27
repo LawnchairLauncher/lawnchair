@@ -328,6 +328,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
                 findPreference("kill").setOnPreferenceClickListener(this);
+                findPreference("crashLauncher").setOnPreferenceClickListener(this);
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
             }
         }
@@ -455,13 +456,18 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            if (SMARTSPACE_PREF.equals(preference.getKey())) {
-                SmartspaceController.get(mContext).cZ();
-                return true;
-            } else if ("kill".equals(preference.getKey())) {
-                Utilities.killLauncher();
-            } else if ("addSettingsShortcut".equals(preference.getKey())) {
-                Utilities.pinSettingsShortcut(getActivity());
+            switch (preference.getKey()) {
+                case SMARTSPACE_PREF:
+                    SmartspaceController.get(mContext).cZ();
+                    return true;
+                case "kill":
+                    Utilities.killLauncher();
+                    break;
+                case "addSettingsShortcut":
+                    Utilities.pinSettingsShortcut(getActivity());
+                    break;
+                case "crashLauncher":
+                    throw new RuntimeException("Triggered from developer options");
             }
             return false;
         }

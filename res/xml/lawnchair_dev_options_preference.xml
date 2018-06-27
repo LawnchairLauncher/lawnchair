@@ -28,4 +28,9 @@
         android:key="addSettingsShortcut"
         android:title="@string/add_settings_shortcut_title"
         android:defaultValue="false"/>
+
+    <Preference
+        android:key="crashLauncher"
+        android:title="@string/debug_crash_launcher"
+        android:defaultValue="false"/>
 </PreferenceScreen>
