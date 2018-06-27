@@ -10,7 +10,7 @@ pipeline:
     image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ store_password, key_password ]
     environment:
-      - MAJOR_MINOR=alpha
+      - MAJOR_MINOR=2.0
       - TRAVIS=true
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
@@ -23,7 +23,7 @@ pipeline:
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
     channel_id: "-1001390439747"
     environment:
-      - MAJOR_MINOR=v2-alpha
+      - MAJOR_MINOR=${DRONE_BRANCH}
     when:
       event: push
       status: success
