@@ -2,7 +2,9 @@
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_pixel_searchbar">
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopQsb"
+        android:title="@string/pref_category_pixel_searchbar">
 
         <SwitchPreference
             android:defaultValue="true"
@@ -47,7 +49,9 @@
 
     </android.support.v7.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_homescreen">
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopOptions"
+        android:title="@string/pref_category_homescreen">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -107,7 +111,9 @@
 
     </android.support.v7.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_misc">
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopMisc"
+        android:title="@string/pref_category_misc">
 
         <SwitchPreference
             android:defaultValue="true"
