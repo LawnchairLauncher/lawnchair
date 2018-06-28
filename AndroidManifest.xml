@@ -271,6 +271,7 @@
 
         <activity
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"
+            android:screenOrientation="locked"
             android:theme="@style/SleepTimeoutTheme"/>
     </application>
 
