@@ -213,8 +213,10 @@ public class SettingsActivity extends AppCompatActivity implements
             if (getContent() == R.xml.launcher_theme_preferences) {
                 Preference prefWeatherEnabled = findPreference(FeatureFlags.KEY_PREF_WEATHER);
                 prefWeatherEnabled.setOnPreferenceChangeListener(this);
-                Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
+                ListPreference prefWeatherProvider = (ListPreference) findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
                 prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
+                if (!BuildConfig.AWARENESS_API_ENABLED)
+                    prefWeatherProvider.setValue("0");
                 prefWeatherProvider.setOnPreferenceChangeListener(this);
                 updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
                 Preference overrideShapePreference = findPreference(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE);

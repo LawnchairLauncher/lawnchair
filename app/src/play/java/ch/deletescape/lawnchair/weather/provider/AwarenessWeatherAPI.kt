@@ -1,7 +1,9 @@
-package ch.deletescape.lawnchair.weather
+package ch.deletescape.lawnchair.weather.provider
 
 import android.annotation.SuppressLint
 import android.content.Context
+import ch.deletescape.lawnchair.weather.WeatherAPI
+import ch.deletescape.lawnchair.weather.WeatherIconProvider
 import com.google.android.gms.awareness.Awareness
 import com.google.android.gms.awareness.snapshot.WeatherResult
 import com.google.android.gms.awareness.state.Weather
@@ -100,16 +102,16 @@ class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<Weath
         private const val CONDITION_WINDY = 1 shl 9
 
         private val CONDITIONS = intArrayOf(
-                AwarenessWeatherAPI.CONDITION_UNKNOWN,
-                AwarenessWeatherAPI.CONDITION_CLEAR,
-                AwarenessWeatherAPI.CONDITION_CLOUDY,
-                AwarenessWeatherAPI.CONDITION_FOGGY,
-                AwarenessWeatherAPI.CONDITION_HAZY,
-                AwarenessWeatherAPI.CONDITION_ICY,
-                AwarenessWeatherAPI.CONDITION_RAINY,
-                AwarenessWeatherAPI.CONDITION_SNOWY,
-                AwarenessWeatherAPI.CONDITION_STORMY,
-                AwarenessWeatherAPI.CONDITION_WINDY
+                CONDITION_UNKNOWN,
+                CONDITION_CLEAR,
+                CONDITION_CLOUDY,
+                CONDITION_FOGGY,
+                CONDITION_HAZY,
+                CONDITION_ICY,
+                CONDITION_RAINY,
+                CONDITION_SNOWY,
+                CONDITION_STORMY,
+                CONDITION_WINDY
         )
     }
 }

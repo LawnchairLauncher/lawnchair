@@ -140,6 +140,11 @@
         <item>1</item>
     </string-array>
 
+    <string-array name="weatherProviderClasses">
+        <item>ch.deletescape.lawnchair.weather.provider.OWMWeatherAPI</item>
+        <item>ch.deletescape.lawnchair.weather.provider.AwarenessWeatherAPI</item>
+    </string-array>
+
     <array name="icon_shape_override_paths_names">
         <item>@string/icon_shape_system_default</item>
         <item>@string/icon_shape_none</item>

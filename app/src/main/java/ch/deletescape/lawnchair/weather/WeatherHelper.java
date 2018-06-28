@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
@@ -45,8 +46,12 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         mHandler = new Handler();
         IPreferenceProvider prefs = Utilities.getPrefs(context);
         prefs.registerOnSharedPreferenceChangeListener(this);
-        mApi = WeatherAPI.Companion.create(context,
-                Integer.parseInt(prefs.getWeatherProvider()));
+        int provider = Integer.parseInt(prefs.getWeatherProvider());
+        if (provider == 1 && !BuildConfig.AWARENESS_API_ENABLED) {
+            provider = 0;
+            prefs.setWeatherProvider("0");
+        }
+        mApi = WeatherAPI.Companion.create(context, provider);
         mApi.setWeatherCallback(this);
         setCity(prefs.getWeatherCity());
         setUnits(prefs.getWeatherUnit());
