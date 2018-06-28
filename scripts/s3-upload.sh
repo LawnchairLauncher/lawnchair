@@ -11,6 +11,13 @@ CONTENT_TYPE=$(file --mime-type -b $FILE)
 TIMESTAMP=$(date -R)
 STRING_TO_SIGN="PUT\n\n${CONTENT_TYPE}\n${TIMESTAMP}\n${RESOURCE}"
 
+# Hotfix for APK files
+FILENAME=$(basename -- "$FILE")
+EXTENSION="${FILENAME##*.}"
+if [ $EXTENSION = "apk" ]; then
+    CONTENT_TYPE="application/vnd.android.package-archive"
+fi
+
 S3_KEY=$4
 S3_SECRET=$5
 
