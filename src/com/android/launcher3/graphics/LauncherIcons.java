@@ -337,15 +337,16 @@ public class LauncherIcons implements AutoCloseable {
         final int top = (textureHeight-height) / 2;
 
         mOldBounds.set(icon.getBounds());
+        int offset = 0;
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
-            int offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
+            offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
             int size = Math.max(width, height);
             icon.setBounds(offset, offset, offset + size, offset + size);
         } else {
             icon.setBounds(left, top, left+width, top+height);
         }
         mCanvas.save();
-        mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+        mCanvas.scale(scale, scale, textureWidth / 2 + offset, textureHeight / 2 + offset);
         icon.draw(mCanvas);
         mCanvas.restore();
         icon.setBounds(mOldBounds);
