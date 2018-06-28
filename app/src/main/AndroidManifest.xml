@@ -236,11 +236,10 @@
             </intent-filter>
         </activity>
 
-        <!--
         <activity
-            android:name="ch.deletescape.lawnchair.gestures.d2ts.SleepTimeoutActivity"
+            android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepTimeoutActivity"
+            android:screenOrientation="locked"
             android:theme="@style/SleepTimeoutTheme"/>
-        -->
     </application>
 
 </manifest>

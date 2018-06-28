@@ -30,8 +30,6 @@ class DoubleTapGesture(private val controller: GestureController) : Gesture {
         when (ev.actionMasked) {
             MotionEvent.ACTION_UP -> {
                 lastDown = if (ev.eventTime - lastDown <= delay) {
-                    Log.d("KEKEK", "TAPTAP uh")
-                    Log.d("KEKEK", "TAPTAP YES + " + prefs.dt2sHandler)
                     controller.createGestureHandler(handlerClass)?.onGestureTrigger()
                     0L
                 } else {
