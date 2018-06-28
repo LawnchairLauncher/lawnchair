@@ -1,4 +1,5 @@
 pipeline:
+  # Step 1: Generate changelog for later use
   changelog:
     image: lawnchairlauncher/drone-changelog:latest
     output: changelog.txt
@@ -6,6 +7,8 @@ pipeline:
       - /opt/drone/cache:/cache
     when:
       event: push
+
+  # Step 2: The actual point of all of this
   build:
     image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ awareness_api_key, store_password, key_password ]
@@ -16,6 +19,8 @@ pipeline:
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleDebug
+
+  # Step 3: Upload to Telegram or Transfer.sh, depending on the event
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
@@ -33,6 +38,8 @@ pipeline:
     when:
       event: pull_request
       status: success
+
+  # Step 4: Notify team members on Telegram
   telegram:
     image: appleboy/drone-telegram:latest
     secrets: [ telegram_token ]
