@@ -486,6 +486,7 @@
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="error_no_calendar">No calendar app installed</string>
 
     <!-- Strings for popup dialogs -->
     <string name="lawnfeed_not_enabled_title">Lawnfeed not enabled</string>
@@ -542,7 +543,6 @@
     <string name="legacy_backup">Legacy backup file</string>
 
     <!-- About screen -->
-
     <string name="about_twitter" translatable="false">Twitter</string>
     <string name="title_attribouter_licenses">Open Source Licenses</string>
     <string name="title_attribouter_email">Email</string>
