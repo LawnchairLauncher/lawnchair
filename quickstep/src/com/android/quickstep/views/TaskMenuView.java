@@ -175,9 +175,9 @@ public class TaskMenuView extends AbstractFloatingView {
         params.width = sTempRect.width();
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);
-        setX(sTempRect.left - insets.left);
-        setY(sTempRect.top + getResources().getDimension(R.dimen.task_thumbnail_top_margin)
-                - insets.top);
+        setX(Math.round(sTempRect.left - insets.left));
+        setY(Math.round(sTempRect.top - insets.top
+                + getResources().getDimension(R.dimen.task_thumbnail_top_margin)));
     }
 
     private void animateOpen() {
