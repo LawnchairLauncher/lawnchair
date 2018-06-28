@@ -62,6 +62,8 @@ object FeatureFlags {
     const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
     const val KEY_PREF_USE_SYSTEM_FONTS = "pref_useSystemFonts"
+    const val KEY_PREF_AUTO_ADD_SHORTCUTS = "pref_autoAddShortcuts"
+
     private var darkThemeFlag: Int = 0
 
     const val DARK_QSB = 1

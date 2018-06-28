@@ -79,6 +79,7 @@ interface IPreferenceProvider {
     val showDateOrWeather: Boolean
     val homeOpensDrawer: Boolean
     val usePixelIcons: Boolean
+    val autoAddShortcuts: Boolean
     val enableScreenRotation: Boolean
     val hideAppLabels: Boolean
     val hideAllAppsAppLabels: Boolean

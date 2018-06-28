@@ -24,6 +24,7 @@ import android.content.pm.LauncherApps.PinItemRequest;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
+
 import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompatVO;
@@ -60,7 +61,7 @@ public class AddItemActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
-        if (mRequest == null) {
+        if (!Utilities.getPrefs(getApplicationContext()).getAutoAddShortcuts() || mRequest == null) {
             finish();
             return;
         }

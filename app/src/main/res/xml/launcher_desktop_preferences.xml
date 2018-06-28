@@ -110,6 +110,13 @@
     <android.support.v7.preference.PreferenceCategory android:title="@string/pref_category_misc">
 
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_autoAddShortcuts"
+            android:persistent="true"
+            android:summary="@string/auto_add_shortcuts_description"
+            android:title="@string/auto_add_shortcuts_label" />
+
+        <SwitchPreference
             android:defaultValue="false"
             android:key="pref_fullWidthWidgets"
             android:persistent="true"

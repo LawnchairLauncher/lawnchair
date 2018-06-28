@@ -407,6 +407,8 @@
     <string name="pull_down_apps_search">Apps search</string>
     <string name="enable_screen_rotation">Screen rotation</string>
     <string name="use_system_fonts_title">Use system fonts for labels</string>
+    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <string name="auto_add_shortcuts_description">For new apps</string>
 
     <!-- Import/Export Strings -->
     <string name="backup_import_title">Restore</string>
