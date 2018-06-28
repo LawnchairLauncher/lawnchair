@@ -1,16 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-def getChangelog = { ->
-    File changelogFile = project.rootProject.file('changelog.txt')
-    if (changelogFile.exists()) {
-        def changelog = changelogFile.text
-        return changelog.trim().replace("\n", "\\n").replace("\"", "\\\"")
-    } else {
-        return "No changelog found!"
-    }
-}
-
 Properties localProps = new Properties()
 File localPropsFile = project.rootProject.file('local.properties')
 if (localPropsFile.exists()) {
@@ -38,13 +28,11 @@ android {
         buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
         buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
         buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
-        buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
+        buildConfigField "boolean", "ENABLE_LAWNFEED", "false"
 
         ext.awarenessApiKey = localProps.getProperty('awarenessApiKey') ?: System.getenv("AWARENESS_API_KEY")
         buildConfigField "boolean", "AWARENESS_API_ENABLED", ext.awarenessApiKey ? "true" : "false"
         manifestPlaceholders = [awarenessApiKey: ext.awarenessApiKey ?: "null"]
-
-        buildConfigField "boolean", "ENABLE_LAWNFEED", "false"
 
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))

@@ -450,8 +450,6 @@ public class Launcher extends Activity
         window.setNavigationBarColor(0);
 
         Settings.init(this);
-
-        Utilities.showChangelog(this);
     }
 
 

@@ -961,47 +961,6 @@ public final class Utilities {
         return typedValue.data;
     }
 
-    private static int getPreviousBuildNumber(IPreferenceProvider prefs) {
-        return prefs.getPreviousBuildNumber();
-    }
-
-    private static void setBuildNumber(IPreferenceProvider prefs, int buildNumber) {
-        prefs.setPreviousBuildNumber(buildNumber);
-    }
-
-    public static void showChangelog(Context context) {
-        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
-        final IPreferenceProvider prefs = getPrefs(context);
-        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
-            new AlertDialog.Builder(context)
-                    .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
-                    .setMessage(getChangelog().trim())
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            setBuildNumber(prefs, BuildConfig.TRAVIS_BUILD_NUMBER);
-                        }
-                    })
-                    .show();
-        }
-    }
-
-    @NonNull
-    public static String getChangelog() {
-        StringBuilder builder = new StringBuilder();
-        String[] lines = BuildConfig.CHANGELOG.split("\n");
-        for (String line : lines) {
-            if (line.contains("[no ci]")) {
-                line = line.replace("[no ci]", "");
-            }
-
-            builder.append(line.trim()).append('\n');
-        }
-
-        builder.deleteCharAt(builder.lastIndexOf("\n"));
-        return builder.toString();
-    }
-
     public static void updatePackage(Context context, UserHandle userHandle, String packageName) {
         if (!PackageManagerHelper.isAppEnabled(context.getPackageManager(), packageName, 0)) return;
         LauncherAppState instance = LauncherAppState.getInstance();
