@@ -3,6 +3,8 @@ package ch.deletescape.lawnchair.pixelify;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -14,7 +16,9 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.util.List;
 import java.util.Locale;
 
 import ch.deletescape.lawnchair.DeviceProfile;
@@ -123,6 +127,7 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
     @Override
     public void onClick(View v) {
         Context context = v.getContext();
+        PackageManager pm = context.getPackageManager();
         long currentTime = System.currentTimeMillis();
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
@@ -130,7 +135,13 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
 
         Launcher launcher = Launcher.getLauncher(getContext());
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        intent.setSourceBounds(launcher.getViewBounds(dateText1));
-        context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
+        List<ResolveInfo> calIntentAct = pm.queryIntentActivities(intent, 0);
+
+        if(calIntentAct.size() != 0) {
+            intent.setSourceBounds(launcher.getViewBounds(dateText1));
+            context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
+        } else {
+            Toast.makeText(context, R.string.cal_app_unavail_warn, Toast.LENGTH_LONG).show();
+        }
     }
 }
