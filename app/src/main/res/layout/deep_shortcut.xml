@@ -8,7 +8,6 @@
         android:id="@+id/bubble_text"
         style="@style/Icon"
         android:background="?android:attr/selectableItemBackground"
-        android:drawableEnd="@drawable/deep_shortcuts_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
         android:fontFamily="sans-serif"
         android:gravity="start|center"
