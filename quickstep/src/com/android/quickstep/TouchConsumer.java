@@ -29,6 +29,8 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface TouchConsumer extends Consumer<MotionEvent> {
 
+    TouchConsumer NO_OP = (ev) -> {};
+
     @IntDef(flag = true, value = {
             INTERACTION_NORMAL,
             INTERACTION_QUICK_SCRUB

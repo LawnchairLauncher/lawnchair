@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -109,7 +110,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         }
-        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+        if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, TYPE_ACCESSIBLE) != null) {
             return false;
         }
         return true;

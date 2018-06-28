@@ -169,12 +169,4 @@ public class LongSwipeHelper {
 
         callback.run();
     }
-
-    public float getTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
-        if (!(app.isNotInRecents
-                || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME)) {
-            return 0;
-        }
-        return expectedAlpha;
-    }
 }

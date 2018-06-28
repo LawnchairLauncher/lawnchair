@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
@@ -79,7 +80,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
-        if (AbstractFloatingView.getTopOpenView(mActivity) != null) {
+        if (AbstractFloatingView.getTopOpenViewWithType(mActivity, TYPE_ACCESSIBLE) != null) {
             return false;
         }
         return isRecentsInteractive();

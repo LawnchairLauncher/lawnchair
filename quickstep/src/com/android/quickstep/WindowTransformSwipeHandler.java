@@ -73,6 +73,7 @@ import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
+import com.android.quickstep.TouchInteractionService.OverviewTouchConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.TransformedRect;
@@ -80,7 +81,6 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -220,10 +220,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
 
-    private InputConsumerController mInputConsumer =
-            InputConsumerController.getRecentsAnimationInputConsumer();
-
-    private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
+    private final RecentsAnimationWrapper mRecentsAnimationWrapper =
+            new RecentsAnimationWrapper(this::createNewTouchProxyHandler);
 
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
@@ -247,9 +245,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 .createActivityInitListener(this::onActivityInit);
 
         initStateCallbacks();
-        // Register the input consumer on the UI thread, to ensure that it runs after any pending
-        // unregister calls
-        executeOnUiThread(mInputConsumer::registerInputConsumer);
     }
 
     private void initStateCallbacks() {
@@ -695,6 +690,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
     }
 
+    @UiThread
+    private TouchConsumer createNewTouchProxyHandler() {
+        mCurrentShift.finishAnimation();
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+        }
+        // Hide the task view, if not already hidden
+        setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+
+        return OverviewTouchConsumer.newInstance(mActivityControlHelper, true);
+    }
+
     private void handleNormalGestureEnd(float endVelocity, boolean isFling) {
         float velocityPxPerMs = endVelocity / 1000;
         long duration = MAX_SWIPE_DURATION;
@@ -737,6 +744,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 }
             }
         }
+        if (goingToHome) {
+            mRecentsAnimationWrapper.enableTouchProxy();
+        }
+
         animateToProgress(startShift, endShift, duration, interpolator, goingToHome);
     }
 
@@ -831,7 +842,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mActivityInitListener.unregister();
-        mInputConsumer.unregisterInputConsumer();
+        mRecentsAnimationWrapper.unregisterInputConsumer();
         mTaskSnapshot = null;
     }
 
@@ -1059,7 +1070,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLongSwipeController = mActivityControlHelper.getLongSwipeController(
                 mActivity, mRunningTaskId);
         onLongSwipeDisplacementUpdated();
-        setTargetAlphaProvider(mLongSwipeController::getTargetAlpha);
+        setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
     }
 
     private void onLongSwipeGestureFinishUi(float velocity, boolean isFling) {
@@ -1088,5 +1099,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void preloadAssistData() {
         RecentsModel.getInstance(mContext).preloadAssistData(mRunningTaskId, mAssistData);
+    }
+
+    public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
+        if (!(app.isNotInRecents
+                || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME)) {
+            return 0;
+        }
+        return expectedAlpha;
     }
 }
