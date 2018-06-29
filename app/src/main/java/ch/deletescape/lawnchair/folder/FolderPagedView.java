@@ -108,7 +108,6 @@ public class FolderPagedView extends PagedView {
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
-        setEdgeGlowColor(getResources().getColor(R.color.folder_edge_effect_color));
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
@@ -662,11 +661,5 @@ public class FolderPagedView extends PagedView {
 
     public int itemsPerPage() {
         return mMaxItemsPerPage;
-    }
-
-    @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
-        pos[0] = 0;
-        pos[1] = getViewportHeight();
     }
 }

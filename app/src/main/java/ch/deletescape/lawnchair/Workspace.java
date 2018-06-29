@@ -316,9 +316,6 @@ public class Workspace extends PagedView
     // State related to Launcher Overlay
     Launcher.LauncherOverlay mLauncherOverlay;
     float mLastOverlaySroll = 0;
-    // Total over scrollX in the overlay direction.
-    private int mUnboundedScrollX;
-    // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
     private int mFirstPageScrollX;
     private boolean mIgnoreQsbScroll;
@@ -499,8 +496,6 @@ public class Workspace extends PagedView
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
-
-        setEdgeGlowColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_INDEX, getResources().getColor(R.color.workspace_edge_effect_color)));
     }
 
     @Override
@@ -1229,18 +1224,9 @@ public class Workspace extends PagedView
         onOverlayScrollChanged(0);
     }
 
-    @Override
-    protected int getUnboundedScrollX() {
-        if (isScrollingOverlay()) {
-            return mUnboundedScrollX;
-        }
-
-        return super.getUnboundedScrollX();
-    }
-
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null && mLauncher.isClientConnected() &&
-                ((mIsRtl && mUnboundedScrollX > mMaxScrollX) || (!mIsRtl && mUnboundedScrollX < 0));
+                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX) || (!mIsRtl && getUnboundedScrollX() < 0));
     }
 
     @Override
@@ -1259,12 +1245,6 @@ public class Workspace extends PagedView
         } else {
             super.snapToDestination();
         }
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        mUnboundedScrollX = x;
-        super.scrollTo(x, y);
     }
 
     private void onWorkspaceOverallScrollChanged() {
@@ -1324,8 +1304,7 @@ public class Workspace extends PagedView
 
     @Override
     protected void overScroll(float amount) {
-        boolean shouldScrollOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
+        boolean shouldScrollOverlay = shouldScrollOverlay(amount);
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
                 mLastOverlaySroll != 0 && ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
@@ -1345,6 +1324,17 @@ public class Workspace extends PagedView
         if (shouldZeroOverlay) {
             mLauncherOverlay.onScrollChange(0, mIsRtl);
         }
+    }
+
+    @Override
+    protected boolean shouldScrollOverlay(float amount) {
+        return mLauncherOverlay != null && mLauncher.isClientConnected() &&
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
+    }
+
+    @Override
+    protected boolean allowLawnfeedPopup() {
+        return true;
     }
 
     private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(3f);
@@ -1483,13 +1473,6 @@ public class Workspace extends PagedView
             return mTempMatrix;
         }
         return super.getPageShiftMatrix();
-    }
-
-    @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
-        View child = getChildAt(getPageCount() - 1);
-        pos[0] = child.getTop();
-        pos[1] = child.getBottom();
     }
 
     protected void setWallpaperDimension() {
