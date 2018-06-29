@@ -63,6 +63,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1, { ThemeManager.getInstance(context).onThemeChanged() })
+    //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)

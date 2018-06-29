@@ -69,15 +69,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     protected SharedPreferences loadAndGetPreferences() {
         mMicIconView = findViewById(R.id.mic_icon);
         mMicIconView.setOnClickListener(this);
-        SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
-        loadPreferences(devicePrefs);
-        return devicePrefs;
+        SharedPreferences prefs = Utilities.getPrefs(getContext());
+        loadPreferences(prefs);
+        return prefs;
     }
 
     @Override
     protected void onDetachedFromWindow() {
         this.mActivity.getDeviceProfile().removeLauncherLayoutChangedListener(this);
-        Utilities.getDevicePrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         super.onDetachedFromWindow();
     }
 
@@ -198,7 +198,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
-        mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.GONE : View.VISIBLE);
+        mMicIconView.setVisibility(!sharedPreferences.getBoolean("opa_enabled", false) ? View.GONE : View.VISIBLE);
         requestLayout();
     }
 }

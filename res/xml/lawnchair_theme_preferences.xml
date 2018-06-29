@@ -27,6 +27,15 @@
         android:defaultValue="1"
         android:persistent="true" />
 
+    <!-- TODO: Move somewhere more appropriate -->
+    <SwitchPreference
+        android:key="opa_enabled"
+        android:persistent="true"
+        android:title="@string/pref_show_assistant_title"
+        android:summary="@string/pref_show_assistant_summary"
+        android:defaultValue="false"
+    />
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_enableBlur"
