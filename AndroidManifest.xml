@@ -69,6 +69,15 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_WALLPAPER_INTERNAL" />
+
+    <!-- EMUI specific permissions -->
+    <uses-permission android:name="com.android.permission.RECEIVE_LAUNCH_BROADCASTS" />
+    <!-- The following is NOT a typo, it is actually called wallpaperservcie ¯\_(ツ)_/¯ -->
+    <uses-permission android:name="com.huawei.wallpaperservcie.permission.SET_WALLPAPER_OFFSET" />
+    <uses-permission android:name="com.huawei.android.thememanager.permission.ACCESS_CHANGE_WALLPAPER" />
+    <uses-permission android:name="com.android.launcher.permission.LAUNCHER_ANIMATION" />
+    <uses-permission android:name="com.inveno.hwread.permission.LAUNCHER_RECEIVE" />
 
     <application
         android:name="ch.deletescape.lawnchair.LawnchairApp"

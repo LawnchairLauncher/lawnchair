@@ -65,7 +65,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
                             .getBlurWallpaperProvider().setWallpaperOffset(getCurrX());
                     mWallpaperManager.setWallpaperOffsets(mWindowToken, getCurrX(), 0.5f);
                     setWallpaperOffsetSteps();
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | SecurityException e) {
                     Log.e(TAG, "Error updating wallpaper offset: " + e);
                 }
             }
