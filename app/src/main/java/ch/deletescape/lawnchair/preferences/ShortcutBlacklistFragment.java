@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.preferences;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Process;
@@ -80,6 +81,11 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
             public void addSelectionsToList(Context context) {
                 PreferenceProvider.INSTANCE.getPreferences(context).setShortcutBlacklist(mSelections);
             }
+
+            @Override
+            public String getComponent(ComponentName component) {
+                return component.getPackageName();
+            }
         };
 
         recyclerView.setHasFixedSize(true);
@@ -101,7 +107,7 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
 
     @Override
     public void onItemClicked(int position) {
-        getActivity().setTitle(adapter.toggleSelection(position, installedApps.get(position).getComponentName().flattenToString()));
+        getActivity().setTitle(adapter.toggleSelection(position, installedApps.get(position).getComponentName().getPackageName()));
     }
 
     private List<LauncherActivityInfoCompat> getAppsList(Context context){
