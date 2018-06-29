@@ -1,10 +1,6 @@
 package com.google.android.apps.nexuslauncher.clock;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,14 +9,12 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconNormalizer;
-import com.android.launcher3.util.Preconditions;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 
 import java.util.Collections;
@@ -70,7 +64,6 @@ public class DynamicClock extends BroadcastReceiver
     }
     
     private static ClockLayers getClockLayers(Context context, int iconDpi, boolean normalizeIcon) {
-        Preconditions.assertWorkerThread();
         ClockLayers layers = new ClockLayers();
         try {
             PackageManager packageManager = context.getPackageManager();
