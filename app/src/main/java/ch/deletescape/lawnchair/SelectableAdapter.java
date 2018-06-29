@@ -20,7 +20,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
 
         mContext = LauncherAppState.getInstanceNoCreate().getContext();
 
-        Set<String> hiddenApps = getSelectionsFromList(mContext);
+        Set<String> hiddenApps = getSelectionsFromList();
 
         mSelections = new HashSet<>();
 
@@ -66,7 +66,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         }
     }
 
-    public Set<String> getSelectionsFromList() {
+    protected Set<String> getSelectionsFromList() {
         return PreferenceProvider.INSTANCE.getPreferences(mContext).getHiddenAppsSet();
     }
 

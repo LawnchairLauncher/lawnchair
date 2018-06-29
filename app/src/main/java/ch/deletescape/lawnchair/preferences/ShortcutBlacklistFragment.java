@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +48,16 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
         Context context = view.getContext();
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
+        // Sort installed apps by using a custom Comparator
         installedApps = getAppsList(context);
+        Collections.sort(installedApps, new Comparator<LauncherActivityInfoCompat>() {
+            @Override
+            public int compare(LauncherActivityInfoCompat a, LauncherActivityInfoCompat b) {
+                return a.getLabel().toString().compareToIgnoreCase(b.getLabel().toString());
+            }
+        });
+
+        // Inherit SelectableAdapter for hidden apps and apply shortcut blacklist
         adapter = new MultiSelectRecyclerViewAdapter(installedApps, this){
             @Override
             public String getString(Context context, int state) {
@@ -61,7 +72,7 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
             }
 
             @Override
-            public Set<String> getSelectionsFromList() {
+            protected Set<String> getSelectionsFromList() {
                 return PreferenceProvider.INSTANCE.getPreferences(mContext).getShortcutBlacklist();
             }
 
