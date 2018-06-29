@@ -127,14 +127,16 @@ public class ConfigBuilder {
 
         final int effectiveHeight = mQsbLayout.getHeight() - mQsbLayout.getPaddingTop() - mQsbLayout.getPaddingBottom() + 20;
         final Bitmap mShadowBitmap = mQsbLayout.mShadowBitmap;
-        final int internalWidth = (mShadowBitmap.getWidth() - effectiveHeight) / 2;
-        final int verticalPadding = (mQsbLayout.getHeight() - mShadowBitmap.getHeight()) / 2;
-        remoteViews.setViewPadding(R.id.qsb_background_container, mQsbLayout.getPaddingLeft() - internalWidth, verticalPadding, mQsbLayout.getPaddingRight() - internalWidth, verticalPadding);
-        final Bitmap bitmap = Bitmap.createBitmap(mShadowBitmap, 0, 0, mShadowBitmap.getWidth() / 2, mShadowBitmap.getHeight());
-        final Bitmap bitmap2 = Bitmap.createBitmap(mShadowBitmap, (mShadowBitmap.getWidth() - 20) / 2, 0, 20, mShadowBitmap.getHeight());
-        remoteViews.setImageViewBitmap(R.id.qsb_background_1, bitmap);
-        remoteViews.setImageViewBitmap(R.id.qsb_background_2, bitmap2);
-        remoteViews.setImageViewBitmap(R.id.qsb_background_3, bitmap);
+        if(mShadowBitmap != null) {
+            final int internalWidth = (mShadowBitmap.getWidth() - effectiveHeight) / 2;
+            final int verticalPadding = (mQsbLayout.getHeight() - mShadowBitmap.getHeight()) / 2;
+            remoteViews.setViewPadding(R.id.qsb_background_container, mQsbLayout.getPaddingLeft() - internalWidth, verticalPadding, mQsbLayout.getPaddingRight() - internalWidth, verticalPadding);
+            final Bitmap bitmap = Bitmap.createBitmap(mShadowBitmap, 0, 0, mShadowBitmap.getWidth() / 2, mShadowBitmap.getHeight());
+            final Bitmap bitmap2 = Bitmap.createBitmap(mShadowBitmap, (mShadowBitmap.getWidth() - 20) / 2, 0, 20, mShadowBitmap.getHeight());
+            remoteViews.setImageViewBitmap(R.id.qsb_background_1, bitmap);
+            remoteViews.setImageViewBitmap(R.id.qsb_background_2, bitmap2);
+            remoteViews.setImageViewBitmap(R.id.qsb_background_3, bitmap);
+        }
         if (mQsbLayout.mMicIconView.getVisibility() != View.VISIBLE) {
             remoteViews.setViewVisibility(R.id.mic_icon, View.INVISIBLE);
         }

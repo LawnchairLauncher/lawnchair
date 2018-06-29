@@ -974,8 +974,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.forceHideBadge(false);
+        if(mOriginalIcon != null) {
+            mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+            mOriginalIcon.forceHideBadge(false);
+        }
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }

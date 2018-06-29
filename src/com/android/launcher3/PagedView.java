@@ -1089,7 +1089,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             // We need to make sure to cancel our long press if
             // a scrollable widget takes over touch events
             final View currentPage = getPageAt(mCurrentPage);
-            currentPage.cancelLongPress();
+            if(currentPage != null) {
+                currentPage.cancelLongPress();
+            }
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
