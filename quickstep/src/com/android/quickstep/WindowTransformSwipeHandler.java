@@ -57,7 +57,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -611,10 +610,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds) {
-        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        InvariantDeviceProfile idp = appState == null ?
-                new InvariantDeviceProfile(mContext) : appState.getInvariantDeviceProfile();
-        DeviceProfile dp = idp.getDeviceProfile(mContext);
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
 

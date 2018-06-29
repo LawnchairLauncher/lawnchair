@@ -197,14 +197,10 @@ public class OverviewCommandHelper {
     }
 
     public void onTip(int actionType, int viewType) {
-        mMainThreadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
+        mMainThreadExecutor.execute(() ->
                 UserEventDispatcher.newInstance(mContext,
-                        new InvariantDeviceProfile(mContext).getDeviceProfile(mContext))
-                        .logActionTip(actionType, viewType);
-            }
-        });
+                        InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext))
+                        .logActionTip(actionType, viewType));
     }
 
     public ActivityControlHelper getActivityControlHelper() {

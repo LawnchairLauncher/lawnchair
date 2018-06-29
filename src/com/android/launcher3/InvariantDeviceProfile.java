@@ -29,6 +29,8 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -41,8 +43,12 @@ import java.util.Comparator;
 
 public class InvariantDeviceProfile {
 
-    // This is a static that we use for the default icon size on a 4/5-inch phone
-    private static float DEFAULT_ICON_SIZE_DP = 60;
+    // We do not need any synchronization for this variable as its only written on UI thread.
+    public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
+            new MainThreadInitializedObject<>((c) -> {
+                new ConfigMonitor(c).register();
+                return new InvariantDeviceProfile(c);
+            });
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -118,7 +124,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    public InvariantDeviceProfile(Context context) {
+    private InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
