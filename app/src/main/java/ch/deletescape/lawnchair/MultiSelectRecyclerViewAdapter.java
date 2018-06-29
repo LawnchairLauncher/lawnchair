@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair;
 
+import android.content.ComponentName;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelec
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
-        String component = mResolveInfos.get(position).getComponentName().flattenToString();
+        String component = getComponent(mResolveInfos.get(position).getComponentName());
         viewHolder.label.setText(mResolveInfos.get(position).getLabel());
         viewHolder.icon.setImageDrawable(mResolveInfos.get(position).getIcon(0));
 
@@ -76,5 +77,9 @@ public class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelec
 
     public interface ItemClickListener {
         void onItemClicked(int position);
+    }
+
+    public String getComponent(ComponentName component) {
+        return component.flattenToString();
     }
 }

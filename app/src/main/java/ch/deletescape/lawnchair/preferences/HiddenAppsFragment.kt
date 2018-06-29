@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+
 import ch.deletescape.lawnchair.LauncherAppState
 import ch.deletescape.lawnchair.MultiSelectRecyclerViewAdapter
 import ch.deletescape.lawnchair.R
@@ -25,7 +26,7 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_hidden_apps, container, false)
+        return inflater.inflate(R.layout.fragment_selectable_apps, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +66,7 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_apply -> {
-                adapter.addSelectionsToHideList(activity)
+                adapter.addSelectionsToList(activity)
                 LauncherAppState.getInstanceNoCreate().reloadAllApps()
                 activity!!.onBackPressed()
                 true

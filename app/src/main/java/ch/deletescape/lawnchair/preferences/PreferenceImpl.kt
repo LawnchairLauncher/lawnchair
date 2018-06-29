@@ -172,6 +172,15 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
             sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
         }
 
+    override var shortcutBlacklist: Set<String>
+        get() {
+            // We need to copy the set, as SharedPreferences doesn't return a copy of the Set object
+            return HashSet<String>(sharedPrefs.getStringSet(PreferenceFlags.KEY_SHORTCUT_BLACKLIST, HashSet<String>()))
+        }
+        set(value) {
+            sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_SHORTCUT_BLACKLIST, value).apply()
+        }
+
     override fun alternateIcon(key: String, alternateIcon: String, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putString(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key, alternateIcon), commit)
     }
@@ -228,6 +237,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val showDateOrWeather by BooleanPref(FeatureFlags.KEY_SHOW_DATE_OR_WEATHER, true)
     override val homeOpensDrawer by BooleanPref(FeatureFlags.KEY_HOME_OPENS_DRAWER, true)
     override val usePixelIcons by BooleanPref(FeatureFlags.KEY_PREF_PIXEL_STYLE_ICONS, true)
+    override val autoAddShortcuts by BooleanPref(FeatureFlags.KEY_PREF_AUTO_ADD_SHORTCUTS, true)
     override val enableScreenRotation by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_SCREEN_ROTATION, false)
     override val hideAppLabels by BooleanPref(FeatureFlags.KEY_PREF_HIDE_APP_LABELS, false)
     override val hideAllAppsAppLabels by BooleanPref(PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS, false)

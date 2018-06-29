@@ -46,6 +46,7 @@ object PreferenceFlags {
     const val KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS = "pref_animatedClockIconAlternativeClockApps"
     const val KEY_ENABLE_PHYSICS = "pref_enablePhysics"
     const val KEY_PREF_USE_SYSTEM_FONTS = "pref_useSystemFonts"
+    const val KEY_PREF_AUTO_ADD_SHORTCUTS = "pref_autoAddShortcuts"
 
     // Various
     const val KEY_PREF_WS_LABEL_COLOR = "pref_workspaceLabelColor"
@@ -109,6 +110,7 @@ object PreferenceFlags {
     const val KEY_USER_CREATION_TIME_KEY_PREFIX = "user_creation_time_"
     const val KEY_HIDDEN_APPS_SET = "hidden-app-set"
     const val KEY_HIDDEN_APPS = "hidden-app"
+    const val KEY_SHORTCUT_BLACKLIST = "shortcut-blacklist"
     const val KEY_TWO_ROW_DOCK = "pref_twoRowDock"
 
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"

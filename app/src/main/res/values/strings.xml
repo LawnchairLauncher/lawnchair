@@ -407,6 +407,12 @@
     <string name="pull_down_apps_search">Apps search</string>
     <string name="enable_screen_rotation">Screen rotation</string>
     <string name="use_system_fonts_title">Use system fonts for labels</string>
+    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <string name="auto_add_shortcuts_description">For new apps</string>
+    <string name="shortcut_blacklist">Shortcut blacklist</string>
+    <string name="shortcut_blacklist_sum">Prevent apps from adding icons to Home screen</string>
+    <string name="blacklist_app">Blocked app</string>
+    <string name="blacklist_app_selected">&#160;selected</string>
 
     <!-- Import/Export Strings -->
     <string name="backup_import_title">Restore</string>
@@ -475,11 +481,11 @@
     <string name="enable_spring_pref_title">Spring effect</string>
     <string name="hide_app">Hidden apps</string>
     <string name="hide_app_sum">Hide apps from the app drawer</string>
-    <string name="hide_app_selected">&#160;selected</string>
     <string name="hidden_app">Hidden app</string>
-    <string name="hide_app_apply">Apply</string>
+    <string name="hidden_app_selected">&#160;selected</string>
+    <string name="list_app_apply">Apply</string>
+    <string name="list_app_reset">Reset</string>
     <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
-    <string name="hide_app_reset">Reset</string>
     <string name="two_row_dock">Two row dock</string>
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>

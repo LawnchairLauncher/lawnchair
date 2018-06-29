@@ -10,14 +10,17 @@ import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 
 abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private Set<String> mSelections;
-    private Context mContext;
+    protected Set<String> mSelections;
+    protected Context mContext;
+
+    public static final int HIDDEN_APP = 0;
+    public static final int HIDDEN_APP_SELECTED = 1;
 
     SelectableAdapter() {
 
         mContext = LauncherAppState.getInstanceNoCreate().getContext();
 
-        Set<String> hiddenApps = PreferenceProvider.INSTANCE.getPreferences(mContext).getHiddenAppsSet();
+        Set<String> hiddenApps = getSelectionsFromList();
 
         mSelections = new HashSet<>();
 
@@ -40,19 +43,34 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         }
         notifyItemChanged(position);
         if (!mSelections.isEmpty()) {
-            return mSelections.size() + mContext.getString(R.string.hide_app_selected);
+            return mSelections.size() + getString(mContext, HIDDEN_APP_SELECTED);
         } else {
-            return mContext.getString(R.string.hidden_app);
+            return getString(mContext, HIDDEN_APP);
         }
     }
 
     public String clearSelection() {
         mSelections.clear();
         notifyDataSetChanged();
-        return mContext.getString(R.string.hidden_app);
+        return getString(mContext, HIDDEN_APP);
     }
 
-    public void addSelectionsToHideList(Context context) {
+    public String getString(Context context, int state) {
+        switch (state) {
+            case HIDDEN_APP:
+                return context.getString(R.string.hidden_app);
+            case HIDDEN_APP_SELECTED:
+                return context.getString(R.string.hidden_app_selected);
+            default:
+                return null;
+        }
+    }
+
+    protected Set<String> getSelectionsFromList() {
+        return PreferenceProvider.INSTANCE.getPreferences(mContext).getHiddenAppsSet();
+    }
+
+    public void addSelectionsToList(Context context) {
         PreferenceProvider.INSTANCE.getPreferences(context).setHiddenAppsSet(mSelections);
     }
 }

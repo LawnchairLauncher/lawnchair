@@ -24,6 +24,7 @@ import android.content.pm.LauncherApps.PinItemRequest;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
+
 import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompatVO;
@@ -59,8 +60,15 @@ public class AddItemActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Cancel if add shortcut is disabled
+        if (!Utilities.getPrefs(getApplicationContext()).getAutoAddShortcuts()) {
+            finish();
+            return;
+        }
+
+        // Check if app is on shortcut blacklist and cancel
         mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
-        if (mRequest == null) {
+        if (mRequest == null || Utilities.isShortcutBlacklist(getApplicationContext(), mRequest.getShortcutInfo().getPackage())) {
             finish();
             return;
         }

@@ -79,6 +79,7 @@ interface IPreferenceProvider {
     val showDateOrWeather: Boolean
     val homeOpensDrawer: Boolean
     val usePixelIcons: Boolean
+    val autoAddShortcuts: Boolean
     val enableScreenRotation: Boolean
     val hideAppLabels: Boolean
     val hideAllAppsAppLabels: Boolean
@@ -116,6 +117,7 @@ interface IPreferenceProvider {
     fun alternateIcon(key: String, alternateIcon: String, commit: Boolean = false)
     fun removeAlternateIcon(key: String)
     var hiddenAppsSet : Set<String>
+    var shortcutBlacklist: Set<String>
     var previousBuildNumber : Int
     var disableLawnfeedPopup: Boolean
     var overrideIconShape: String

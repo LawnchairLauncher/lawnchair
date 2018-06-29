@@ -944,6 +944,10 @@ public final class Utilities {
         return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
+    public static boolean isShortcutBlacklist(Context context, String key) {
+        return getPrefs(context).getShortcutBlacklist().contains(key);
+    }
+
     public static int getDynamicAccent(Context context) {
         if (!Utilities.getPrefs(context).getEnableDynamicUi()) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
