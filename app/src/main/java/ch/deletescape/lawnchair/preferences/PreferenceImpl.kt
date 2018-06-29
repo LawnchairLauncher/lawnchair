@@ -172,6 +172,15 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
             sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
         }
 
+    override var shortcutBlacklist: Set<String>
+        get() {
+            // We need to copy the set, as SharedPreferences doesn't return a copy of the Set object
+            return HashSet<String>(sharedPrefs.getStringSet(PreferenceFlags.KEY_SHORTCUT_BLACKLIST, HashSet<String>()))
+        }
+        set(value) {
+            sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_SHORTCUT_BLACKLIST, value).apply()
+        }
+
     override fun alternateIcon(key: String, alternateIcon: String, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putString(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key, alternateIcon), commit)
     }

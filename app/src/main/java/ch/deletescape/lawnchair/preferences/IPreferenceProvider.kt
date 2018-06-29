@@ -117,6 +117,7 @@ interface IPreferenceProvider {
     fun alternateIcon(key: String, alternateIcon: String, commit: Boolean = false)
     fun removeAlternateIcon(key: String)
     var hiddenAppsSet : Set<String>
+    var shortcutBlacklist: Set<String>
     var previousBuildNumber : Int
     var disableLawnfeedPopup: Boolean
     var overrideIconShape: String

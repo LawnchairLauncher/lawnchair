@@ -230,8 +230,9 @@ public class SettingsActivity extends AppCompatActivity implements
                 }
             } else if (getContent() == R.xml.launcher_desktop_preferences) {
                 if (!Utilities.ATLEAST_OREO) {
-                    ((PreferenceCategory) findPreference("prefCat_desktopMisc"))
-                        .removePreference(findPreference(FeatureFlags.KEY_PREF_AUTO_ADD_SHORTCUTS));
+                    PreferenceCategory cat = ((PreferenceCategory) findPreference("prefCat_desktopMisc"));
+                    cat.removePreference(findPreference(FeatureFlags.KEY_PREF_AUTO_ADD_SHORTCUTS));
+                    cat.removePreference(findPreference("pref_shortcutBlacklist"));
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {

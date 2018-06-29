@@ -122,6 +122,13 @@
             android:summary="@string/auto_add_shortcuts_description"
             android:title="@string/auto_add_shortcuts_label" />
 
+        <Preference
+            android:dependency="pref_autoAddShortcuts"
+            android:key="pref_shortcutBlacklist"
+            android:title="@string/shortcut_blacklist"
+            android:summary="@string/shortcut_blacklist_sum"
+            android:fragment="ch.deletescape.lawnchair.preferences.ShortcutBlacklistFragment" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_fullWidthWidgets"
