@@ -48,7 +48,27 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
 
         installedApps = getAppsList(context);
         adapter = new MultiSelectRecyclerViewAdapter(installedApps, this){
-            // override functions to apply changes to blacklist instead
+            @Override
+            public String getString(Context context, int state) {
+                switch (state) {
+                    case HIDDEN_APP:
+                        return context.getString(R.string.blacklist_app);
+                    case HIDDEN_APP_SELECTED:
+                        return context.getString(R.string.blacklist_app_selected);
+                    default:
+                        return null;
+                }
+            }
+
+            @Override
+            public Set<String> getSelectionsFromList() {
+                return PreferenceProvider.INSTANCE.getPreferences(mContext).getShortcutBlacklist();
+            }
+
+            @Override
+            public void addSelectionsToList(Context context) {
+                PreferenceProvider.INSTANCE.getPreferences(context).setShortcutBlacklist(mSelections);
+            }
         };
 
         recyclerView.setHasFixedSize(true);
