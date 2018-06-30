@@ -199,7 +199,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (mAlreadyHandled) {
             return false;   // early termination.
         }
-        if (!mTouchEventStartedOnHotseat && mLauncher instanceof LawnchairLauncher) {
+        if (!mTouchEventStartedOnHotseat && !mLauncher.isAllAppsVisible() && mLauncher instanceof LawnchairLauncher) {
             if (velocity > SWIPE_DOWN_VELOCITY && mProgress >= 1f && AbstractFloatingView.getTopOpenView(mLauncher) == null) {
                 ((LawnchairLauncher) mLauncher).getGestureController().onSwipeDown();
                 mAlreadyHandled = true;
