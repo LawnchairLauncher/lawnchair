@@ -518,5 +518,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         fun getInstanceNoCreate(): LawnchairPreferences {
             return INSTANCE!!
         }
+
+        fun destroyInstance() {
+            INSTANCE = null
+        }
     }
 }

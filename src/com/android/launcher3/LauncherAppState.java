@@ -195,4 +195,12 @@ public class LauncherAppState {
         cl.release();
         return provider;
     }
+
+    public static void destroyInstance() {
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.onTerminate();
+            INSTANCE = null;
+        }
+    }
 }

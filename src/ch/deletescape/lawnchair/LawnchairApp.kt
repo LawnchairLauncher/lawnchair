@@ -1,9 +1,11 @@
 package ch.deletescape.lawnchair
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.support.v4.content.ContextCompat
 import com.android.launcher3.BuildConfig
@@ -11,11 +13,19 @@ import java.io.File
 import java.io.PrintStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashSet
 
 class LawnchairApp : Application() {
 
+    private val activityHandler = ActivityHandler()
+
     init {
         Thread.setDefaultUncaughtExceptionHandler(LawnchairCrashHandler(this, Thread.getDefaultUncaughtExceptionHandler()))
+        registerActivityLifecycleCallbacks(activityHandler)
+    }
+
+    fun restart() {
+        activityHandler.finishAll()
     }
 
     private class LawnchairCrashHandler(val context: Context, val defaultHandler: Thread.UncaughtExceptionHandler)
@@ -66,5 +76,47 @@ class LawnchairApp : Application() {
             val dateFormat = SimpleDateFormat.getDateTimeInstance()
             return "Lawnchair crash ${dateFormat.format(Date())}"
         }
+    }
+
+    private class ActivityHandler : ActivityLifecycleCallbacks {
+
+        val activities = HashSet<Activity>()
+
+        fun finishAll() {
+            HashSet(activities).forEach { if (it is LawnchairLauncher) it.recreate() else it.finish() }
+        }
+
+        override fun onActivityPaused(activity: Activity) {
+
+        }
+
+        override fun onActivityResumed(activity: Activity) {
+
+        }
+
+        override fun onActivityStarted(activity: Activity) {
+
+        }
+
+        override fun onActivityDestroyed(activity: Activity) {
+            activities.remove(activity)
+        }
+
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {
+
+        }
+
+        override fun onActivityStopped(activity: Activity) {
+
+        }
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            activities.add(activity)
+        }
+    }
+
+    companion object {
+
+        fun get(context: Context) = context.applicationContext as LawnchairApp
     }
 }

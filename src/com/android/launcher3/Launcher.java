@@ -49,10 +49,7 @@ import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
-import ch.deletescape.lawnchair.WidgetsFullSheet;
+import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.popup.OptionsPopupMenu;
 import ch.deletescape.lawnchair.theme.ThemeManager;
@@ -1020,7 +1017,7 @@ public class Launcher extends BaseActivity
         }
 
         if (sRestart) {
-            Utilities.restartLauncher(this);
+            LawnchairApp.Companion.get(this).restart();
         }
 
         if (mUpdateWallpaper) {
@@ -1854,6 +1851,12 @@ public class Launcher extends BaseActivity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
+        }
+
+        if (sRestart) {
+            sRestart = false;
+            LauncherAppState.destroyInstance();
+            LawnchairPreferences.Companion.destroyInstance();
         }
     }
 
@@ -4058,6 +4061,10 @@ public class Launcher extends BaseActivity
 
     public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
         return sCustomAppWidgets;
+    }
+
+    public boolean shouldRecreate() {
+        return !sRestart;
     }
 
     public static Launcher getLauncher(Context context) {

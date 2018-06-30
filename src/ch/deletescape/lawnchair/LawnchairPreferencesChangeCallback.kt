@@ -6,7 +6,7 @@ import com.android.launcher3.pageindicators.PageIndicatorLineCaret
 class LawnchairPreferencesChangeCallback(private val launcher: LawnchairLauncher) {
 
     fun recreate() {
-        launcher.recreate()
+        if (launcher.shouldRecreate()) launcher.recreate()
     }
 
     fun reloadApps() {
