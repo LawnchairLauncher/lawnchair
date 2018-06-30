@@ -628,7 +628,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (LOGD) {
                 Log.d(TAG, "Adding view to ShortcutsAndWidgetsContainer: " + child);
             }
-            mShortcutsAndWidgets.addView(child, index, lp);
+            try {
+                mShortcutsAndWidgets.addView(child, index, lp);
+            } catch(NullPointerException e){
+                Log.e(TAG, "addViewToCellLayout (Get your shit together Huawei): ", e);
+            }
 
             if (markCells) markCellsAsOccupiedForView(child);
 
