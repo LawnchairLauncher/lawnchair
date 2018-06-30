@@ -195,7 +195,14 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         override val displayName = drawableName
         override val identifierName = drawableName
-        override val drawable get() = packResources.getDrawable(drawableId)
+        override val drawable: Drawable
+            get() {
+                try {
+                    return packResources.getDrawable(drawableId)
+                } catch (e: Resources.NotFoundException) {
+                    throw Exception("Failed to get drawable $drawableId ($drawableName) from $packPackageName", e)
+                }
+            }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
     }

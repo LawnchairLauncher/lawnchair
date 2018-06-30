@@ -108,7 +108,12 @@ class EditIconActivity : SettingsBaseActivity() {
             }
 
             fun bind(entry: IconPack.Entry) {
-                (itemView as ImageView).setImageDrawable(entry.drawable)
+                try {
+                    itemView.visibility = View.VISIBLE
+                    (itemView as ImageView).setImageDrawable(entry.drawable)
+                } catch (e: Exception) {
+                    itemView.visibility = View.GONE
+                }
             }
 
             override fun onClick(v: View) {
