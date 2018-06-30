@@ -75,7 +75,7 @@ class IconPickerActivity : SettingsBaseActivity() {
             return if (getItemViewType(0) == TYPE_ITEM) {
                 IconHolder(layoutInflater.inflate(R.layout.icon_item, parent, false))
             } else {
-                LoadingHolder(layoutInflater.inflate(R.layout.icon_grid_loading, parent, false))
+                LoadingHolder(layoutInflater.inflate(R.layout.adapter_loading, parent, false))
             }
         }
 

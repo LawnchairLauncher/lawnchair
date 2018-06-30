@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/loading"
-        layout="@layout/icon_grid_loading" />
+        layout="@layout/adapter_loading" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_view"
