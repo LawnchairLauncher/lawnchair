@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.Arrays;
@@ -52,8 +53,8 @@ public class ComponentKey {
             String componentStr = componentKeyStr.substring(0, userDelimiterIndex);
             Long componentUser = Long.valueOf(componentKeyStr.substring(userDelimiterIndex + 1));
             componentName = ComponentName.unflattenFromString(componentStr);
-            user = UserManagerCompat.getInstance(context)
-                    .getUserForSerialNumber(componentUser.longValue());
+            user = Utilities.notNullOrDefault(UserManagerCompat.getInstance(context)
+                    .getUserForSerialNumber(componentUser.longValue()), Process.myUserHandle());
         } else {
             // No user provided, default to the current user
             componentName = ComponentName.unflattenFromString(componentKeyStr);

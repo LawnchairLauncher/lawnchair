@@ -788,4 +788,8 @@ public final class Utilities {
             return res.getIdentifier(identifier.substring(1), null, packageName);
         }
     }
+
+    public static <T> T notNullOrDefault(T value, T defValue) {
+        return (value == null) ? defValue : value;
+    }
 }
