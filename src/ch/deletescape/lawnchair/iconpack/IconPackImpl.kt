@@ -171,6 +171,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             if (packClocks.containsKey(drawableId)) {
                 val drawable = packResources.getDrawable(drawableId)
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
+            } else if (drawableId != 0) {
+                return FastBitmapDrawable(icon)
             }
         }
         return basePack.newIcon(icon, itemInfo, null,
