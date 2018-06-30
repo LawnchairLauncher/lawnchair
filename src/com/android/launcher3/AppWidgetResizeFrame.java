@@ -119,8 +119,8 @@ public class AppWidgetResizeFrame extends FrameLayout
                 widgetView.getAppWidgetInfo();
         mDragLayer = dragLayer;
 
-        mMinHSpan = info.minSpanX;
-        mMinVSpan = info.minSpanY;
+        mMinHSpan = 1;
+        mMinVSpan = 1;
 
         if (!info.isCustomWidget) {
             mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
