@@ -43,6 +43,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
+import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import me.jfenn.attribouter.Attribouter;
 
 import com.android.launcher3.*;
@@ -388,6 +390,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof DockGridSizePreference) {
                 f = DockGridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof GesturePreference) {
+                f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;

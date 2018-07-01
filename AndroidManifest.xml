@@ -278,9 +278,6 @@
             android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
         <activity
-            android:name="ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerActivity"
-            android:theme="@style/SettingsTheme.V2" />
-        <activity
             android:name="ch.deletescape.lawnchair.gestures.ui.SelectAppActivity"
             android:label="@string/action_open_app_select_app"
             android:theme="@style/SettingsTheme.V2" />

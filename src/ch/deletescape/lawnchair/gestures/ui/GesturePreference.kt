@@ -1,15 +1,15 @@
 package ch.deletescape.lawnchair.gestures.ui
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.TypedArray
-import android.support.v7.preference.Preference
+import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.GestureController
+import com.android.launcher3.R
 
-class GesturePreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
+class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
     var value = ""
     var defaultValue = ""
@@ -51,11 +51,13 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : Preference(con
         return defaultValue
     }
 
-    override fun onClick() {
-        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
-            putExtra("title", title)
-            putExtra("key", key)
-            putExtra("value", value)
-        })
-    }
+//    override fun onClick() {
+//        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
+//            putExtra("title", title)
+//            putExtra("key", key)
+//            putExtra("value", value)
+//        })
+//    }
+
+    override fun getDialogLayoutResource() = R.layout.dialog_preference_recyclerview
 }
