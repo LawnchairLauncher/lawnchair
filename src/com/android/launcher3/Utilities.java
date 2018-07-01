@@ -784,4 +784,12 @@ public final class Utilities {
     public static void requestStoragePermission(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, LawnchairLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
+
+    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
+        try {
+            return Integer.parseInt(identifier.substring(1));
+        } catch (NumberFormatException e) {
+            return res.getIdentifier(identifier.substring(1), null, packageName);
+        }
+    }
 }

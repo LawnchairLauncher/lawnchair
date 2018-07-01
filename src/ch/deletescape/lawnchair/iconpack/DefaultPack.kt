@@ -130,7 +130,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             parseXml.close()
 
             if (appIcon != null) {
-                val resId = Integer.parseInt(appIcon.substring(1))
+                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
                 return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
             }
         } catch (ex: PackageManager.NameNotFoundException) {
