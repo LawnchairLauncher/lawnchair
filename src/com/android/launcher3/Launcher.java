@@ -2723,7 +2723,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    showOverviewPopup(false);
+                    onWorkspaceLongPress();
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2760,7 +2760,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    showOverviewPopup(false);
+                    onWorkspaceLongPress();
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -2864,6 +2864,10 @@ public class Launcher extends BaseActivity
      */
     public void showOverviewMode(boolean animated) {
         showOverviewMode(animated, false);
+    }
+
+    protected void onWorkspaceLongPress() {
+        showOverviewPopup(false);
     }
 
     public void showOverviewPopup(boolean resetPosition) {

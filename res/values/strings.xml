@@ -513,11 +513,13 @@
     <string name="action_none">Do nothing</string>
     <string name="gesture_press_home">Press Home</string>
     <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_long_press">Long press</string>
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_swipe_up">Swipe up</string>
 
     <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
+    <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
     <string name="pref_show_assistant_summary">Shows the voice search button in the Google searchbar</string>
 </resources>

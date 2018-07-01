@@ -46,6 +46,10 @@ class LawnchairLauncher : NexusLauncherActivity() {
         startActivityForResult(EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component), CODE_EDIT_ICON)
     }
 
+    override fun onWorkspaceLongPress() {
+        gestureController.onLongPress()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == CODE_EDIT_ICON && resultCode == Activity.RESULT_OK) {
             val itemInfo = currentEditInfo ?: return

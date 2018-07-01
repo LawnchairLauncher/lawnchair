@@ -8,6 +8,12 @@
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+        android:key="pref_gesture_long_press"
+        android:title="@string/gesture_long_press"
+        android:defaultValue="@string/action_open_overview_class"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_press_home"
         android:title="@string/gesture_press_home"
         android:defaultValue=""

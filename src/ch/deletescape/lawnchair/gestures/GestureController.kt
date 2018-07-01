@@ -5,10 +5,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
-import ch.deletescape.lawnchair.gestures.gestures.DoubleTapGesture
-import ch.deletescape.lawnchair.gestures.gestures.PressHomeGesture
-import ch.deletescape.lawnchair.gestures.gestures.SwipeDownGesture
-import ch.deletescape.lawnchair.gestures.gestures.SwipeUpGesture
+import ch.deletescape.lawnchair.gestures.gestures.*
 import ch.deletescape.lawnchair.gestures.handlers.*
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.TouchController
@@ -22,6 +19,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     private val doubleTapGesture = DoubleTapGesture(this)
     private val pressHomeGesture = PressHomeGesture(this)
     private val swipeDownGesture = SwipeDownGesture(this)
+    private val longPressGesture = LongPressGesture(this)
     private val swipeUpGesture = SwipeUpGesture(this)
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -34,6 +32,10 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
     fun onBlankAreaTouch(ev: MotionEvent) {
         doubleTapGesture.isEnabled && doubleTapGesture.onTouchEvent(ev)
+    }
+
+    fun onLongPress() {
+        longPressGesture.isEnabled && longPressGesture.onEvent()
     }
 
     fun onPressHome() {
