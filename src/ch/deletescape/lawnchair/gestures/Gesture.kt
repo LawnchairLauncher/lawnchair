@@ -2,15 +2,15 @@ package ch.deletescape.lawnchair.gestures
 
 import android.view.MotionEvent
 
-interface Gesture {
+abstract class Gesture(val controller: GestureController) {
 
-    val isEnabled: Boolean
+    abstract val isEnabled: Boolean
 
-    fun onTouchEvent(ev: MotionEvent): Boolean {
+    open fun onTouchEvent(ev: MotionEvent): Boolean {
         return false
     }
 
-    fun onEvent(): Boolean {
+    open fun onEvent(): Boolean {
         return false
     }
 }

@@ -504,6 +504,7 @@
     <string name="action_global_search">Start global search</string>
     <string name="action_app_search">Start app search</string>
     <string name="action_open_notifications">Open notification panel</string>
+    <string name="action_close_notifications">Close notification panel</string>
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
     <string name="action_none">Do nothing</string>

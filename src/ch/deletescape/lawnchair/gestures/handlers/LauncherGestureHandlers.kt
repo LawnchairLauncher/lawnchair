@@ -1,45 +1,58 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.content.Context
 import android.support.annotation.Keep
-import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
+import com.android.launcher3.R
+import org.json.JSONObject
 
 @Keep
-class OpenDrawerGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
+class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override fun onGestureTrigger() {
-        launcher.showAppsView(true, true)
+    override val displayName = context.getString(R.string.action_open_drawer)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.showAppsView(true, true)
     }
 }
 
 @Keep
-class OpenWidgetsGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
+class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override fun onGestureTrigger() {
-        launcher.showWidgetsView(true, true)
+    override val displayName = context.getString(R.string.action_open_widgets)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.showWidgetsView(true, true)
     }
 }
 
 @Keep
-class OpenOverviewGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
+class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override fun onGestureTrigger() {
-        launcher.showOverviewPopup(false)
+    override val displayName = context.getString(R.string.action_open_overview)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.showOverviewPopup(false)
     }
 }
 
 @Keep
-class StartGlobalSearchGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
+class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override fun onGestureTrigger() {
-        launcher.startGlobalSearch(null,  false, null, null)
+    override val displayName = context.getString(R.string.action_global_search)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.startGlobalSearch(null,  false, null, null)
     }
 }
 
 @Keep
-class StartAppSearchGestureHandler(launcher: LawnchairLauncher) : GestureHandler(launcher) {
+class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override fun onGestureTrigger() {
-        launcher.showAppsView(true, true, true)
+    override val displayName = context.getString(R.string.action_app_search)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.showAppsView(true, true, true)
     }
 }

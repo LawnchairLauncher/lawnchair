@@ -20,7 +20,7 @@ import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 
 class LawnchairLauncher : NexusLauncherActivity() {
 
-    val gestureController = GestureController(this)
+    val gestureController by lazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {

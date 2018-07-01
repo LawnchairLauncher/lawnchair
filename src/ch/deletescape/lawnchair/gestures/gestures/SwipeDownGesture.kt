@@ -2,16 +2,16 @@ package ch.deletescape.lawnchair.gestures.gestures
 
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler
 
-class SwipeDownGesture(private val controller: GestureController) : Gesture {
+class SwipeDownGesture(controller: GestureController) : Gesture(controller) {
 
-    private val prefs = controller.launcher.lawnchairPrefs
-    private val handlerClass get() = prefs.swipeDownHandler
+    private val handler by controller.createHandlerPref("pref_gesture_swipe_down",
+            NotificationsOpenGestureHandler(controller.launcher, null))
     override val isEnabled = true
 
     override fun onEvent(): Boolean {
-        controller.createGestureHandler(handlerClass)?.onGestureTrigger()
+        handler.onGestureTrigger(controller)
         return true
     }
 }

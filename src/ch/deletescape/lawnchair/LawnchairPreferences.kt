@@ -10,7 +10,10 @@ import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.theme.ThemeManager
-import com.android.launcher3.*
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherFiles
+import com.android.launcher3.MainThreadExecutor
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
@@ -42,7 +45,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     }
 
-    private val doNothing = { }
+    val doNothing = { }
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
@@ -98,11 +101,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enablePhysics get() = !lowPerformanceMode
 
     // Gestures
-    val doubleTapToSleepHandler by StringPref("pref_gesture_double_tap", "", doNothing)
     val doubleTapDelay = 350L
-    val pressHomeHandler by StringPref("pref_gesture_press_home", "", doNothing)
-    val swipeDownHandler by StringPref("pref_gesture_swipe_down", context.getString(R.string.action_open_notifications_class), doNothing)
-    val swipeUpHandler by StringPref("pref_gesture_swipe_up", context.getString(R.string.action_open_drawer_class), doNothing)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
@@ -283,6 +282,16 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         operator fun get(key: K): V? {
             return valueMap[key]
+        }
+    }
+
+    open inner class StringBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
+                                              private val fromString: (String) -> T, private val toString: (T) -> String) :
+            PrefDelegate<T>(key, defaultValue, onChange) {
+        override fun onGetValue(): T = sharedPrefs.getString(getKey(), null)?.run(fromString) ?: defaultValue
+
+        override fun onSetValue(value: T) {
+            edit { putString(getKey(), toString(value)) }
         }
     }
 

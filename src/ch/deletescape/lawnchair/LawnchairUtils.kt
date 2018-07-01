@@ -15,6 +15,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
+import org.json.JSONObject
 import java.lang.reflect.Field
 import kotlin.math.ceil
 import kotlin.math.roundToInt

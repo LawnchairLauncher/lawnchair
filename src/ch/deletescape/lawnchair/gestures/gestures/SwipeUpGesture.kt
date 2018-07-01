@@ -2,19 +2,18 @@ package ch.deletescape.lawnchair.gestures.gestures
 
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
-import ch.deletescape.lawnchair.lawnchairPrefs
-import com.android.launcher3.R
+import ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler
 
-class SwipeUpGesture(private val controller: GestureController) : Gesture {
+class SwipeUpGesture(controller: GestureController) : Gesture(controller) {
 
-    private val prefs = controller.launcher.lawnchairPrefs
-    private val handlerClass get() = prefs.swipeUpHandler
-    val isCustom get() = handlerClass != controller.launcher.getString(R.string.action_open_drawer_class)
+    private val handler by controller.createHandlerPref("pref_gesture_swipe_up",
+            OpenDrawerGestureHandler(controller.launcher, null))
+    val isCustom get() = handler !is OpenDrawerGestureHandler
     override val isEnabled = true
 
     override fun onEvent(): Boolean {
         if (isCustom){
-            controller.createGestureHandler(handlerClass)?.onGestureTrigger()
+            handler.onGestureTrigger(controller)
             return true
         }
         return false

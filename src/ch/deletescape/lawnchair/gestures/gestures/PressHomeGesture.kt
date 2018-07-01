@@ -2,16 +2,14 @@ package ch.deletescape.lawnchair.gestures.gestures
 
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
-import ch.deletescape.lawnchair.lawnchairPrefs
 
-class PressHomeGesture(private val controller: GestureController) : Gesture {
+class PressHomeGesture(controller: GestureController) : Gesture(controller) {
 
-    private val prefs = controller.launcher.lawnchairPrefs
-    private val handlerClass get() = prefs.pressHomeHandler
+    private val handler by controller.createHandlerPref("pref_gesture_press_home")
     override val isEnabled = true
 
     override fun onEvent(): Boolean {
-        controller.createGestureHandler(handlerClass)?.onGestureTrigger()
+        handler.onGestureTrigger(controller)
         return true
     }
 }
