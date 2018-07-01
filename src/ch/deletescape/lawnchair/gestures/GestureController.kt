@@ -70,6 +70,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 }
                 val className = config?.getString("class") ?: jsonString
                 val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
+                // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
                     return Class.forName(className).getConstructor(Context::class.java, JSONObject::class.java)
                             .newInstance(context, configValue) as GestureHandler
@@ -98,7 +99,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 OpenOverviewGestureHandler(context, null),
                 StartGlobalSearchGestureHandler(context, null),
                 StartAppSearchGestureHandler(context, null),
-                NotificationsOpenGestureHandler(context, null)
+                NotificationsOpenGestureHandler(context, null),
+                StartAppGestureHandler(context, null)
         )
     }
 }

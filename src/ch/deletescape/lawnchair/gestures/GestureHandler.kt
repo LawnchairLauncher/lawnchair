@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.gestures
 
 import android.content.Context
+import android.content.Intent
 import com.android.launcher3.R
 import org.json.JSONObject
 
@@ -8,10 +9,15 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     abstract val displayName: String
     open val hasConfig = false
+    open val configIntent: Intent? = null
 
     abstract fun onGestureTrigger(controller: GestureController)
 
     protected open fun saveConfig(config: JSONObject) {
+
+    }
+
+    open fun onConfigResult(data: Intent?) {
 
     }
 

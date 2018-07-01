@@ -52,7 +52,7 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : Preference(con
     }
 
     override fun onClick() {
-        context.startActivity(Intent(context, SelectGestureActivity::class.java).apply {
+        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
             putExtra("title", title)
             putExtra("key", key)
             putExtra("value", value)

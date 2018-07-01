@@ -1,10 +1,14 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.content.Context
+import android.content.Intent
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
+import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import com.android.launcher3.R
+import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.util.ComponentKey
 import org.json.JSONObject
 
 @Keep
@@ -54,5 +58,48 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Gest
 
     override fun onGestureTrigger(controller: GestureController) {
         controller.launcher.showAppsView(true, true, true)
+    }
+}
+
+@Keep
+class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val hasConfig = true
+    override val configIntent = Intent(context, SelectAppActivity::class.java)
+    override val displayName get() = if (target != null)
+        String.format(displayNameWithTarget, appName) else displayNameWithoutTarget
+
+    private val displayNameWithoutTarget = context.getString(R.string.action_open_app)!!
+    private val displayNameWithTarget = context.getString(R.string.action_open_app_with_target)!!
+
+    var appName: String? = null
+    var target: ComponentKey? = null
+
+    init {
+        if (config?.has("target") == true) {
+            appName = config.getString("appName")
+            target = ComponentKey(context, config.getString("target"))
+        }
+    }
+
+    override fun saveConfig(config: JSONObject) {
+        super.saveConfig(config)
+        config.put("appName", appName)
+        config.put("target", target?.toString())
+    }
+
+    override fun onConfigResult(data: Intent?) {
+        super.onConfigResult(data)
+        if (data != null) {
+            appName = data.getStringExtra("appName")
+            target = ComponentKey(context, data.getStringExtra("target"))
+        }
+    }
+
+    override fun onGestureTrigger(controller: GestureController) {
+        if (target != null) {
+            LauncherAppsCompat.getInstance(context)
+                    .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+        }
     }
 }

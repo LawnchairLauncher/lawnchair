@@ -507,6 +507,9 @@
     <string name="action_close_notifications">Close notification panel</string>
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
+    <string name="action_open_app">Start app</string>
+    <string name="action_open_app_with_target">Start %s</string>
+    <string name="action_open_app_select_app">Select app</string>
     <string name="action_none">Do nothing</string>
     <string name="gesture_press_home">Press Home</string>
     <string name="gesture_double_tap">Double Tap</string>

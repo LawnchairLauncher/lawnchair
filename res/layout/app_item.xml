@@ -34,5 +34,6 @@
         android:clickable="false"
         android:duplicateParentState="true"
         android:focusable="false"
+        android:visibility="gone"
         android:padding="8dp" />
 </RelativeLayout>
