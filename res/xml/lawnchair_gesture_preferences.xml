@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_double_tap"
         android:title="@string/gesture_double_tap"
-        android:summary="%s"
-        android:entries="@array/gestureHandlers"
-        android:entryValues="@array/gestureHandlerClasses"
         android:defaultValue=""
         android:persistent="true" />
 
-    <ListPreference
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_press_home"
         android:title="@string/gesture_press_home"
-        android:summary="%s"
-        android:entries="@array/gestureHandlers"
-        android:entryValues="@array/gestureHandlerClasses"
         android:defaultValue=""
         android:persistent="true" />
 
-    <ListPreference
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_swipe_down"
         android:title="@string/gesture_swipe_down"
-        android:summary="%s"
-        android:entries="@array/gestureHandlers"
-        android:entryValues="@array/gestureHandlerClasses"
         android:defaultValue="@string/action_open_notifications_class"
         android:persistent="true" />
 
-     <ListPreference
+     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_swipe_up"
         android:title="@string/gesture_swipe_up"
-        android:summary="%s"
-        android:entries="@array/gestureHandlers"
-        android:entryValues="@array/gestureHandlerClasses"
         android:defaultValue="@string/action_open_drawer_class"
         android:persistent="true" />
 </PreferenceScreen>

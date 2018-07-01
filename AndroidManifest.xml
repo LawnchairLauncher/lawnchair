@@ -277,6 +277,9 @@
         <activity
             android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="ch.deletescape.lawnchair.gestures.ui.SelectGestureActivity"
+            android:theme="@style/SettingsTheme.V2" />
 
         <activity
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"
