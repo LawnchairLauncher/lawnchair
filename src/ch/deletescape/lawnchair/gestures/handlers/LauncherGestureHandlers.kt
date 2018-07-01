@@ -32,6 +32,18 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
 }
 
 @Keep
+class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_open_settings)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.startActivity(Intent(Intent.ACTION_APPLICATION_PREFERENCES).apply {
+            `package` = controller.launcher.packageName
+        })
+    }
+}
+
+@Keep
 class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     override val displayName = context.getString(R.string.action_open_overview)!!
