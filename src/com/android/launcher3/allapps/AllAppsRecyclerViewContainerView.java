@@ -23,13 +23,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
-import com.android.launcher3.BubbleTextView;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import com.android.launcher3.*;
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
-import com.android.launcher3.ClickShadowView;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
@@ -78,11 +74,14 @@ public class AllAppsRecyclerViewContainerView extends RelativeLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        layoutInflater.inflate(LawnchairUtilsKt.getThemeAttr(getContext(), android.R.attr.keyboardLayout), this);
+
         int scroller = R.layout.all_apps_fast_scroller;
         if (getContext().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE && !FeatureFlags.LAUNCHER3_P_ALL_APPS) {
             scroller = R.layout.all_apps_fast_scroller_land;
         }
-        LayoutInflater.from(getContext()).inflate(scroller, this);
+        layoutInflater.inflate(scroller, this);
     }
 }

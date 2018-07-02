@@ -530,4 +530,5 @@
     <string name="weather_provider_widget">Google app widget</string>
     <string name="pref_smartspace_widget_provider">Weather provider</string>
     <string name="pref_smartspace_events">Show events</string>
+    <string name="title_all_apps_search">Show search bar</string>
 </resources>

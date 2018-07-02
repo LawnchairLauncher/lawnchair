@@ -28,6 +28,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import ch.deletescape.lawnchair.views.BlankSearchLayout;
 import com.android.launcher3.*;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
@@ -328,6 +329,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         if (mSearchContainer instanceof AllAppsQsbLayout) {
             ((AllAppsQsbLayout) mSearchContainer).setTopMargin(grid.isVerticalBarLayout() ? 0 : insets.top);
+        } else if (mSearchContainer instanceof BlankSearchLayout) {
+            ((BlankSearchLayout) mSearchContainer).setTopMargin(grid.isVerticalBarLayout() ? 0 : insets.top);
         }
 
         if (grid.isVerticalBarLayout()) {

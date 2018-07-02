@@ -57,8 +57,6 @@
             android:descendantFocusability="afterDescendants"
             android:focusable="true" />
 
-        <include layout="@layout/search_container_all_apps_include" />
-
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View
         android:id="@+id/nav_bar_bg"

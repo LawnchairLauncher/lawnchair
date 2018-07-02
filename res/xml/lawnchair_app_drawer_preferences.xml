@@ -9,9 +9,15 @@
         android:defaultValue="true" />
 
     <SwitchPreference
+        android:key="pref_allAppsSearch"
+        android:title="@string/title_all_apps_search"
+        android:defaultValue="true" />
+
+    <SwitchPreference
         android:key="pref_allAppsGoogleSearch"
         android:title="@string/title_all_apps_google_search"
         android:summary="@string/summary_all_apps_google_search"
+        android:dependency="pref_allAppsSearch"
         android:defaultValue="true" />
 
     <Preference
