@@ -42,13 +42,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
-import me.jfenn.attribouter.Attribouter;
-
 import com.android.launcher3.*;
 import com.android.launcher3.R;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.LooperExecutor;
@@ -56,7 +56,7 @@ import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
-
+import me.jfenn.attribouter.Attribouter;
 import org.jetbrains.annotations.NotNull;
 
 import static com.android.launcher3.Utilities.restartLauncher;
@@ -330,6 +330,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
                 findPreference("currentWeatherProvider").setSummary(
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
+                findPreference("appInfo").setOnPreferenceClickListener(this);
             }
         }
 
@@ -470,6 +471,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
                 case "crashLauncher":
                     throw new RuntimeException("Triggered from developer options");
+                case "appInfo":
+                    ComponentName componentName = new ComponentName(getActivity(), LawnchairLauncher.class);
+                    LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(componentName, android.os.Process.myUserHandle());
+                    break;
             }
             return false;
         }
