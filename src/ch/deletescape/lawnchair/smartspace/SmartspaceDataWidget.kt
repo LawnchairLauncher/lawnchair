@@ -13,7 +13,6 @@ import android.widget.RemoteViews
 import android.widget.TextView
 import ch.deletescape.lawnchair.getAllChilds
 import com.android.launcher3.Utilities
-import kotlin.math.roundToInt
 
 class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
 
@@ -67,12 +66,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     fun updateData(weatherIcon: Bitmap, temperatureString: String) {
         val temperatureAmount = temperatureString.substring(0, temperatureString.indexOfFirst { it < '0' || it > '9' })
-        val temperature = if (temperatureString.contains("C")) {
-            temperatureAmount.toInt()
-        } else {
-            ((temperatureAmount.toInt().toFloat() - 32) * 5f / 9f).roundToInt()
-        }
-        updateData(weatherIcon, temperature)
+        updateData(weatherIcon, temperatureAmount.toInt(), temperatureString.contains("C"))
     }
 
     inner class SmartspaceWidgetHost : AppWidgetHost(launcher, 1027) {

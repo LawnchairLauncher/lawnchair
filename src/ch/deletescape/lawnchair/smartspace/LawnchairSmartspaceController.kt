@@ -58,8 +58,8 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
         }
 
-        fun updateData(weatherIcon: Bitmap, temperature: Int) {
-            controller.updateData(DataContainer(WeatherData(weatherIcon, temperature)))
+        fun updateData(weatherIcon: Bitmap, temperature: Int, isMetric: Boolean) {
+            controller.updateData(DataContainer(WeatherData(weatherIcon, temperature, isMetric)))
         }
     }
 
@@ -70,9 +70,10 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         val isCardAvailable get() = card != null
     }
 
-    data class WeatherData(val icon: Bitmap, val temperature: Int) {
+    data class WeatherData(val icon: Bitmap, val temperature: Int, val isMetric: Boolean) {
 
-        val title get() = "$temperature°C"
+        val title get() = "$temperature°$unit"
+        val unit get() = if (isMetric) "C" else "F"
     }
 
     data class CardData(val icon: Bitmap, val title: String, val subtitle: String)
