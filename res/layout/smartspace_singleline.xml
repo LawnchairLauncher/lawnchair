@@ -64,6 +64,7 @@
         android:layout_weight="0.0"
         android:background="@drawable/bg_smartspace"
         android:clickable="true"
+        android:clipChildren="false"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingLeft="10dp"

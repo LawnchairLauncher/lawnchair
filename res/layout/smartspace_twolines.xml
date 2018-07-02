@@ -47,6 +47,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="4dp"
+        android:clipChildren="false"
         android:orientation="horizontal">
 
         <ImageView
@@ -87,6 +88,7 @@
             android:layout_weight="0.0"
             android:background="@drawable/bg_smartspace"
             android:clickable="true"
+            android:clipChildren="false"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="6dp"

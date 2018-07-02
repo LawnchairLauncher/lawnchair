@@ -99,6 +99,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         dB = new TextPaint();
         dB.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.smartspace_title_size));
         mEnableShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
+
+        setClipChildren(false);
     }
 
     @Override
