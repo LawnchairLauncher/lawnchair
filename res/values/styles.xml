@@ -203,7 +203,7 @@
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
     <style name="TextTitle">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">@font/google_sans</item>
     </style>
 
     <style name="AllAppsEmptySearchBackground">

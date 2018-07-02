@@ -16,6 +16,7 @@ import android.support.v4.provider.FontsContractCompat
 import android.util.Property
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
@@ -227,6 +228,10 @@ inline fun getGoogleSans(context: Context, crossinline callback: (Typeface) -> U
             handler.postAtFrontOfQueue({ callback(typeface) })
         }
     }, uiWorkerHandler)
+}
+
+fun TextView.setGoogleSans() {
+    getGoogleSans(context, ::setTypeface)
 }
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }

@@ -33,7 +33,7 @@
         android:layout_gravity="center_horizontal"
         android:paddingBottom="4dp"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         style="@style/TextTitle"
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
         android:textSize="24sp"
         android:layout_marginBottom="32dp"/>
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         style="@style/TextTitle"
         android:id="@+id/edit_title"
         android:background="@android:color/transparent"

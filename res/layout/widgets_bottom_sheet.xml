@@ -25,7 +25,7 @@
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         style="@style/TextTitle"
         android:id="@+id/title"
         android:layout_width="match_parent"
