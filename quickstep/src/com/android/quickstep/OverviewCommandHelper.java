@@ -49,7 +49,6 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -198,9 +197,7 @@ public class OverviewCommandHelper {
 
     public void onTip(int actionType, int viewType) {
         mMainThreadExecutor.execute(() ->
-                UserEventDispatcher.newInstance(mContext,
-                        InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext))
-                        .logActionTip(actionType, viewType));
+                UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));
     }
 
     public ActivityControlHelper getActivityControlHelper() {

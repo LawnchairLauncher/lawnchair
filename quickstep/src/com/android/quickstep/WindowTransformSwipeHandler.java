@@ -754,7 +754,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         int dstContainerType = toLauncher ? ContainerType.TASKSWITCHER : ContainerType.APP;
-        UserEventDispatcher.newInstance(mContext, dp).logStateChangeAction(
+        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
                 mLogAction, direction,
                 ContainerType.NAVBAR, ContainerType.APP,
                 dstContainerType,

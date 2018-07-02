@@ -107,7 +107,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this, mDeviceProfile, this);
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this, this);
         }
         return mUserEventDispatcher;
     }
