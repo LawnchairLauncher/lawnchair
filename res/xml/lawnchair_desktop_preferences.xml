@@ -41,6 +41,13 @@
         />
 
     <SwitchPreference
+        android:key="pref_smartspace_events"
+        android:dependency="pref_smartspace_widget_provider"
+        android:title="@string/pref_smartspace_events"
+        android:defaultValue="true"
+        />
+
+    <SwitchPreference
         android:key="pref_enable_minus_one"
         android:title="@string/title_show_google_app"
         android:summary="@string/pref_show_google_now_summary"

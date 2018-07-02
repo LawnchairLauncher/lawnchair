@@ -13,17 +13,24 @@ import java.util.concurrent.Semaphore
 class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
     var smartspaceData = DataContainer()
+    private var originalSmartspaceData = DataContainer()
     private val listeners = ArrayList<Listener>()
     private val providerPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
+    private val enableEvents = Utilities.getLawnchairPrefs(launcher)::smartspaceEvents
     private var dataProvider = BlankDataProvider(this) as DataProvider
 
     init {
         onProviderChanged()
     }
 
-    fun updateData(data: DataContainer) {
-        smartspaceData = data
+    private fun updateData(weather: WeatherData?, card: CardData?) {
+        originalSmartspaceData = DataContainer(weather, card)
+        smartspaceData = DataContainer(weather, if (enableEvents.get()) card else null)
         notifyListeners()
+    }
+
+    fun updateData() {
+        updateData(originalSmartspaceData.weather, originalSmartspaceData.card)
     }
 
     private fun notifyListeners() {
@@ -75,6 +82,7 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
             waiter?.release()
         }
 
+        @Synchronized
         open fun waitForSetup() {
             waiter?.run {
                 acquireUninterruptibly()
@@ -88,7 +96,7 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         }
 
         fun updateData(weather: WeatherData?, card: CardData?) {
-            controller.updateData(DataContainer(weather, card))
+            controller.updateData(weather, card)
         }
     }
 

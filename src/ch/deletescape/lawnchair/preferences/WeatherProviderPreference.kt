@@ -28,6 +28,10 @@ class WeatherProviderPreference(context: Context, attrs: AttributeSet?)
         return list
     }
 
+    override fun shouldDisableDependents(): Boolean {
+        return super.shouldDisableDependents() && value != BlankDataProvider::class.java.name
+    }
+
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (value != prefEntry.get()) {
             value = prefEntry.get()
