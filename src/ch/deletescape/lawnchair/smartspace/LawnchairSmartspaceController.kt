@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.smartspace
 
 import android.graphics.Bitmap
 import android.support.annotation.Keep
+import android.text.TextUtils
 import android.util.Log
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.runOnMainThread
@@ -86,8 +87,8 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
         }
 
-        fun updateData(weatherIcon: Bitmap, temperature: Int, isMetric: Boolean) {
-            controller.updateData(DataContainer(WeatherData(weatherIcon, temperature, isMetric)))
+        fun updateData(weather: WeatherData?, card: CardData?) {
+            controller.updateData(DataContainer(weather, card))
         }
     }
 
@@ -104,7 +105,9 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         val unit get() = if (isMetric) "C" else "F"
     }
 
-    data class CardData(val icon: Bitmap, val title: String, val subtitle: String)
+    data class CardData(val icon: Bitmap,
+                        val title: String, val titleEllipsize: TextUtils.TruncateAt?,
+                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt?)
 
     interface Listener {
 

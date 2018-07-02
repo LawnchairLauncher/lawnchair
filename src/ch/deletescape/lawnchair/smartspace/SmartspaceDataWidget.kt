@@ -11,7 +11,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.support.annotation.Keep
-import android.util.Log
+import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -92,9 +92,20 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         smartspaceWidgetHost.stopListening()
     }
 
-    fun updateData(weatherIcon: Bitmap, temperatureString: String) {
-        val temperatureAmount = temperatureString.substring(0, temperatureString.indexOfFirst { it < '0' || it > '9' })
-        updateData(weatherIcon, temperatureAmount.toInt(), temperatureString.contains("C"))
+    fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?) {
+        val weather = if (weatherIcon != null && temperature != null) {
+            val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
+            LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
+        } else {
+            null
+        }
+        val card = if (cardIcon != null && title != null && subtitle != null) {
+            LawnchairSmartspaceController.CardData(cardIcon,
+                    title.text as String, title.ellipsize, subtitle.text as String, subtitle.ellipsize)
+        } else {
+            null
+        }
+        updateData(weather, card)
     }
 
     inner class SmartspaceWidgetHost : AppWidgetHost(launcher, 1027) {
@@ -106,19 +117,34 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     inner class SmartspaceWidgetHostView(context: Context) : AppWidgetHostView(context) {
 
+        @Suppress("UNCHECKED_CAST")
         override fun updateAppWidget(remoteViews: RemoteViews?) {
             super.updateAppWidget(remoteViews)
 
             val childs = getAllChilds()
-            if (childs.size > 2) {
-                val lastTextView = childs.last { it is TextView } as TextView
-                val lastImageView = childs.last { it is ImageView } as ImageView
-                val drawable = lastImageView.drawable as? BitmapDrawable
-                if (drawable != null) {
-                    updateData(drawable.bitmap, lastTextView.text as String)
-                }
+            val texts = (childs.filter { it is TextView } as List<TextView>).filter { !TextUtils.isEmpty(it.text) }
+            val images = childs.filter { it is ImageView } as List<ImageView>
+            var weatherIconView: ImageView? = null
+            var temperature = "0C"
+            var cardIconView: ImageView? = null
+            var title: TextView? = null
+            var subtitle: TextView? = null
+            if (texts.isEmpty()) return
+            if (images.size >= 2) {
+                weatherIconView = images.last()
+                temperature = texts.last().text as String
             }
+            if (images.isNotEmpty() && images.size != 2) {
+                cardIconView = images.first()
+                title = texts[0]
+                subtitle = texts[1]
+            }
+            updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle)
         }
+    }
+
+    private fun extractBitmap(imageView: ImageView?): Bitmap? {
+        return (imageView?.drawable as? BitmapDrawable)?.bitmap
     }
 
     companion object {
@@ -132,7 +158,6 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         fun getSmartspaceWidgetProvider(context: Context): AppWidgetProviderInfo {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val providers = appWidgetManager.installedProviders.filter { it.provider == smartspaceProviderComponent }
-            Log.d(TAG, "providers = $providers")
             return providers.firstOrNull() ?: throw RuntimeException("smartspace widget not found")
         }
     }

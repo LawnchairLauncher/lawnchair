@@ -115,25 +115,12 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     @SuppressWarnings("ConstantConditions")
     private void loadDoubleLine(final LawnchairSmartspaceController.DataContainer data) {
         setBackgroundResource(mSmartspaceBackgroundRes);
-        /* TODO: implement double line card
-        ColorStateList dh = null;
-        final SmartspaceCard dp = data.dP;
-        if (!TextUtils.isEmpty(dp.getTitle())) {
-            mTitleText.setText(dp.cv() ? cn() : dp.getTitle());
-            mTitleText.setEllipsize(dp.cx(true));
-        }
-        if (!TextUtils.isEmpty(dp.cy()) || dp.getIcon() != null) {
-            mSubtitleText.setText(dp.cy());
-            mSubtitleText.setEllipsize(dp.cx(false));
-            if (dp.getIcon() != null) {
-                if (dp.cz() && WallpaperColorInfo.getInstance(getContext()).supportsDarkText()) {
-                    dh = dH;
-                }
-                mSubtitleIcon.setImageTintList(dh);
-                mSubtitleIcon.setImageBitmap(dp.getIcon());
-            }
-        }
-        */
+        mTitleText.setText(data.getCard().getTitle());
+        mTitleText.setEllipsize(data.getCard().getTitleEllipsize());
+        mSubtitleText.setText(data.getCard().getSubtitle());
+        mSubtitleText.setEllipsize(data.getCard().getSubtitleEllipsize());
+        mSubtitleIcon.setImageTintList(dH);
+        mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
         if (data.isWeatherAvailable()) {
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
