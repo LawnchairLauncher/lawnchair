@@ -92,9 +92,11 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk boolean mIsLoaderTaskRunning;
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    @Thunk static final HandlerThread sUiWorkerThread = new HandlerThread("launcher-ui-loader");
     @Thunk static final HandlerThread sIconPackThread = new HandlerThread("launcher-icon-pack");
     static {
         sWorkerThread.start();
+        sUiWorkerThread.start();
         sIconPackThread.start();
     }
     @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
@@ -692,6 +694,13 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
+    }
+
+    /**
+     * @return the looper for the ui worker thread which can be used to start background tasksfor ui.
+     */
+    public static Looper getUiWorkerLooper() {
+        return sUiWorkerThread.getLooper();
     }
 
     /**

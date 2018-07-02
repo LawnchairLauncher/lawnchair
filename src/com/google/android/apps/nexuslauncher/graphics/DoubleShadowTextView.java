@@ -2,12 +2,11 @@ package com.google.android.apps.nexuslauncher.graphics;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
-
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
-public class DoubleShadowTextView extends TextView {
+public class DoubleShadowTextView extends AppCompatTextView {
     private final DoubleShadowBubbleTextView.ShadowInfo mShadowInfo;
 
     public DoubleShadowTextView(Context context) {

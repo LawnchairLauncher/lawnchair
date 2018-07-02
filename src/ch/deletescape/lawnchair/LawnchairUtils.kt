@@ -4,18 +4,24 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.support.v4.provider.FontRequest
+import android.support.v4.provider.FontsContractCompat
 import android.util.Property
 import android.view.View
 import android.view.ViewGroup
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
-import org.json.JSONObject
 import java.lang.reflect.Field
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -184,4 +190,24 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
     operator fun setValue(thisRef: Any?, prop: KProperty<*>, value: T) {
         property.set(value)
     }
+}
+
+val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
+
+inline fun getGoogleSans(context: Context, crossinline callback: (Typeface) -> Unit) {
+    val handler = Handler(Looper.myLooper())
+    val request = FontRequest(
+            "com.google.android.gms.fonts", // ProviderAuthority
+            "com.google.android.gms",  // ProviderPackage
+            "name=Google Sans",  // Query
+            R.array.com_google_android_gms_fonts_certs)
+
+    // retrieve font in the background
+    FontsContractCompat.requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
+        override fun onTypefaceRetrieved(typeface: Typeface) {
+            super.onTypefaceRetrieved(typeface)
+
+            handler.postAtFrontOfQueue({ callback(typeface) })
+        }
+    }, uiWorkerHandler)
 }

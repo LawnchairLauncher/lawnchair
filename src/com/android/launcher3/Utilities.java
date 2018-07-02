@@ -738,10 +738,6 @@ public final class Utilities {
         window.getDecorView().setSystemUiVisibility(flags);
     }
 
-    public static Typeface getGoogleSans(Context context) {
-        return Typeface.createFromAsset(context.getAssets(), "fonts/GoogleSans-Regular.ttf");
-    }
-
     public static Pair<Integer, Integer> getScreenSize(Context context) {
         int x, y;
         WindowManager wm = ((WindowManager)

@@ -1,13 +1,8 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
 import android.animation.ValueAnimator;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
@@ -22,12 +17,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -195,17 +185,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mClockView = findViewById(R.id.clock);
         backportClockVisibility(true);
         mTitleSeparator = findViewById(R.id.title_sep);
-
-        setGoogleSans(mTitleText, mSubtitleText, mTitleWeatherText, mSubtitleWeatherText, mClockView);
-    }
-
-    private void setGoogleSans(TextView... views) {
-        Typeface tf = Utilities.getGoogleSans(getContext());
-        for (TextView view : views) {
-            if (view != null) {
-                view.setTypeface(tf);
-            }
-        }
     }
 
     private String cn() {
