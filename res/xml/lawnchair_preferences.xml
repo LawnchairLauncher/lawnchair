@@ -29,6 +29,13 @@
         android:layout="@layout/sub_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_smartspace"
+        android:summary="@string/smartspace_preferences_in_settings_desc"
+        android:title="@string/smartspace_preferences_in_settings"
+        app:content="@xml/lawnchair_smartspace_preferences"
+        android:layout="@layout/sub_preference"/>
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_dock"
         android:summary="@string/dock_pref_summary"
         android:title="@string/dock_pref_title"

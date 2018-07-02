@@ -274,10 +274,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
                 findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
 
-                if (SmartspaceController.get(mContext).cY()) {
-                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                }
-
                 ContentResolver resolver = getActivity().getContentResolver();
 
                 // Setup allow rotation preference

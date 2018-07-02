@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_smartspace"
+        android:title="@string/smartspace_preferences_in_settings"
+        android:summary="@string/smartspace_preferences_in_settings_desc"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_smartspace_time"
+        android:title="@string/smartspace_time"
+        android:summary="@string/in_smartspace"
+        android:defaultValue="false"
+        android:dependency="pref_smartspace"
+        />
+
+    <SwitchPreference
+        android:key="pref_smartspace_time_24_h"
+        android:title="@string/smartspace_time_24_h"
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
+        />
+
+    <SwitchPreference
+        android:key="pref_smartspace_date"
+        android:dependency="pref_smartspace_time"
+        android:title="@string/smartspace_date"
+        android:summary="@string/in_smartspace"
+        android:defaultValue="false"
+        />
+
+    <ch.deletescape.lawnchair.preferences.WeatherProviderPreference
+        android:key="pref_smartspace_widget_provider"
+        android:dependency="pref_smartspace"
+        android:title="@string/pref_smartspace_widget_provider"
+        android:summary="%s"
+        android:defaultValue="false"
+        />
+
+    <SwitchPreference
+        android:key="pref_smartspace_events"
+        android:dependency="pref_smartspace_widget_provider"
+        android:title="@string/pref_smartspace_events"
+        android:defaultValue="true"
+        />
+</PreferenceScreen>
