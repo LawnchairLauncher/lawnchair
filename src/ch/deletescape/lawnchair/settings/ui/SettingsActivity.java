@@ -255,8 +255,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public static class SubSettingsFragment extends BaseFragment implements
             Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
-        static final String TITLE = "title";
-        static final String CONTENT_RES_ID = "content_res_id";
+        public static final String TITLE = "title";
+        public static final String CONTENT_RES_ID = "content_res_id";
 
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;

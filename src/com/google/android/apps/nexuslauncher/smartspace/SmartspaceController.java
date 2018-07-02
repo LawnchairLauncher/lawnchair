@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.OnAlarmListener;
-import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
+import com.android.launcher3.R;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.i;
+import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.apps.nexuslauncher.utils.ProtoStore;
 
 import java.io.PrintWriter;
@@ -148,7 +149,10 @@ public class SmartspaceController implements Handler.Callback {
     }
 
     public void cZ() {
-        this.mAppContext.sendBroadcast(this.db());
+        Intent intent = new Intent(mAppContext, SettingsActivity.class);
+        intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, mAppContext.getString(R.string.smartspace_preferences_in_settings));
+        intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, R.xml.lawnchair_smartspace_preferences);
+        mAppContext.startActivity(intent);
     }
 
     public void da(final ISmartspace ds) {
