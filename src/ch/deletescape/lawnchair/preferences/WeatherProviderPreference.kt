@@ -16,10 +16,16 @@ class WeatherProviderPreference(context: Context, attrs: AttributeSet?)
     private val prefEntry = prefs::weatherProvider
 
     init {
-        entryValues = listOf(
-                BlankDataProvider::class.java.name,
-                SmartspaceDataWidget::class.java.name).toTypedArray()
+        entryValues = getProviders().toTypedArray()
         entries = entryValues.map { context.getString(displayNames[it]!!) }.toTypedArray()
+    }
+
+    fun getProviders(): List<String> {
+        val list = ArrayList<String>()
+        list.add(BlankDataProvider::class.java.name)
+        if (Utilities.ATLEAST_NOUGAT)
+            list.add(SmartspaceDataWidget::class.java.name)
+        return list
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
