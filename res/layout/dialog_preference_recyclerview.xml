@@ -8,7 +8,7 @@
         style="?attr/preferenceFragmentListStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
         android:clipToPadding="false" />
