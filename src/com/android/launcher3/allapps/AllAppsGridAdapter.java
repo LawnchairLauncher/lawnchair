@@ -73,16 +73,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 6;
     public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 7;
     public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 8;
+    public static final int VIEW_TYPE_WORK_APPS_DIVIDER = 1 << 9;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_MARKET_DIVIDER
-            | VIEW_TYPE_PREDICTION_DIVIDER;
+            | VIEW_TYPE_PREDICTION_DIVIDER | VIEW_TYPE_WORK_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
     public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
             | VIEW_TYPE_DISCOVERY_ITEM;
     public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON
-            | VIEW_TYPE_PREDICTION_DIVIDER;
+            | VIEW_TYPE_PREDICTION_DIVIDER | VIEW_TYPE_WORK_APPS_DIVIDER;
 
 
     public interface BindViewCallback {
@@ -208,6 +209,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
 
+    private boolean mSeparateWorkApps;
+
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = launcher.getResources();
@@ -224,6 +227,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             mSpringAnimationHandler = new SpringAnimationHandler<>(
                     SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
         }
+        mSeparateWorkApps = Utilities.getLawnchairPrefs(launcher).getSeparateWorkApps();
     }
 
     public SpringAnimationHandler getSpringAnimationHandler() {
@@ -321,9 +325,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         R.layout.all_apps_discovery_loading_divider, parent, false);
                 return new ViewHolder(loadingDividerView);
             case VIEW_TYPE_PREDICTION_DIVIDER:
+                if (mSeparateWorkApps) {
+                    return new ViewHolder((mLayoutInflater.inflate(
+                            R.layout.all_apps_divider_alt, parent, false)));
+                }
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
+            case VIEW_TYPE_WORK_APPS_DIVIDER:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.work_apps_divider, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }

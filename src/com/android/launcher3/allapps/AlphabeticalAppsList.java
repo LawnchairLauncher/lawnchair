@@ -23,10 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.IconCache;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.*;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -38,13 +35,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.LabelComparator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * The alphabetically sorted list of applications.
@@ -145,6 +136,13 @@ public class AlphabeticalAppsList {
             return item;
         }
 
+        public static AdapterItem asWorkAppsDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_APPS_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
         public static AdapterItem asMarketDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
@@ -195,10 +193,13 @@ public class AlphabeticalAppsList {
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
 
+    private boolean mSeparateWorkApps;
+
     public AlphabeticalAppsList(Context context) {
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+        mSeparateWorkApps = Utilities.getLawnchairPrefs(context).getSeparateWorkApps();
     }
 
     /**
@@ -515,9 +516,16 @@ public class AlphabeticalAppsList {
             }
         }
 
+        UserHandle lastUser = null;
+
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
+            if (lastUser != null && !Objects.equals(lastUser, info.user) && mSeparateWorkApps) {
+                mAdapterItems.add(AdapterItem.asWorkAppsDivider(position++));
+            }
+            lastUser = info.user;
+
             String sectionName = getAndUpdateCachedSectionName(info.title);
 
             // Create a new section if the section names do not match

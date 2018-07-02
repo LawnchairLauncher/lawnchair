@@ -100,6 +100,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    val separateWorkApps by BooleanPref("pref_separateWorkApps", false, recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)

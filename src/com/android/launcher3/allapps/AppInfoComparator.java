@@ -20,10 +20,12 @@ import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * A comparator to arrange items based on user profiles.
@@ -33,33 +35,55 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     private final UserManagerCompat mUserManager;
     private final UserHandle mMyUser;
     private final LabelComparator mLabelComparator;
+    private final boolean mSeparateWorkApps;
 
     public AppInfoComparator(Context context) {
         mUserManager = UserManagerCompat.getInstance(context);
         mMyUser = Process.myUserHandle();
         mLabelComparator = new LabelComparator();
+        mSeparateWorkApps = Utilities.getLawnchairPrefs(context).getSeparateWorkApps();
     }
 
     @Override
     public int compare(AppInfo a, AppInfo b) {
-        // Order by the title in the current locale
-        int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
-        if (result != 0) {
-            return result;
-        }
+        if (mSeparateWorkApps) {
+            if (Objects.equals(a.user, b.user)) {
+                // Order by the title in the current locale
+                int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
+                if (result != 0) {
+                    return result;
+                }
 
-        // If labels are same, compare component names
-        result = a.componentName.compareTo(b.componentName);
-        if (result != 0) {
-            return result;
-        }
-
-        if (mMyUser.equals(a.user)) {
-            return -1;
+                // If labels are same, compare component names
+                return a.componentName.compareTo(b.componentName);
+            } else {
+                if (mMyUser.equals(a.user)) {
+                    return -1;
+                }
+                Long aUserSerial = mUserManager.getSerialNumberForUser(a.user);
+                Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
+                return aUserSerial.compareTo(bUserSerial);
+            }
         } else {
-            Long aUserSerial = mUserManager.getSerialNumberForUser(a.user);
-            Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
-            return aUserSerial.compareTo(bUserSerial);
+            // Order by the title in the current locale
+            int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
+            if (result != 0) {
+                return result;
+            }
+
+            // If labels are same, compare component names
+            result = a.componentName.compareTo(b.componentName);
+            if (result != 0) {
+                return result;
+            }
+
+            if (mMyUser.equals(a.user)) {
+                return -1;
+            } else {
+                Long aUserSerial = mUserManager.getSerialNumberForUser(a.user);
+                Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
+                return aUserSerial.compareTo(bUserSerial);
+            }
         }
     }
 }
