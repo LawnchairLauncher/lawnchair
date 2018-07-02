@@ -39,10 +39,11 @@
         android:defaultValue="false"
         />
 
-    <SwitchPreference
-        android:key="pref_smartspace_events"
-        android:dependency="pref_smartspace_widget_provider"
-        android:title="@string/pref_smartspace_events"
-        android:defaultValue="true"
+    <ch.deletescape.lawnchair.preferences.EventProviderPreference
+        android:key="pref_smartspace_event_provider"
+        android:dependency="pref_smartspace"
+        android:title="@string/pref_smartspace_event_provider"
+        android:summary="%s"
+        android:defaultValue="false"
         />
 </PreferenceScreen>

@@ -15,9 +15,10 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
     var smartspaceData = DataContainer()
     private var originalSmartspaceData = DataContainer()
     private val listeners = ArrayList<Listener>()
-    private val providerPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
-    private val enableEvents = Utilities.getLawnchairPrefs(launcher)::smartspaceEvents
-    private var dataProvider = BlankDataProvider(this) as DataProvider
+    private val weatherProviderPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
+    private val eventProviderPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
+    private var weatherDataProvider = BlankDataProvider(this, true,  true) as DataProvider
+    private var eventDataProvider = weatherDataProvider
 
     init {
         onProviderChanged()
@@ -25,12 +26,8 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
     private fun updateData(weather: WeatherData?, card: CardData?) {
         originalSmartspaceData = DataContainer(weather, card)
-        smartspaceData = DataContainer(weather, if (enableEvents.get()) card else null)
+        smartspaceData = DataContainer(weather, card)
         notifyListeners()
-    }
-
-    fun updateData() {
-        updateData(originalSmartspaceData.weather, originalSmartspaceData.card)
     }
 
     private fun notifyListeners() {
@@ -48,19 +45,25 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
     fun onProviderChanged() {
         runOnUiWorkerThread {
-            if (providerPref.get() != dataProvider::class.java.name) {
-                dataProvider.onDestroy()
-                dataProvider = createDataProvider()
-                runOnUiWorkerThread { providerPref.set(dataProvider::class.java.name) }
-                providerPref.set(dataProvider::class.java.name)
+            if (weatherProviderPref.get() != weatherDataProvider::class.java.name || eventProviderPref.get() != eventDataProvider::class.java.name) {
+                weatherDataProvider.onDestroy()
+                eventDataProvider.onDestroy()
+                createDataProviders()
+                runOnUiWorkerThread {
+                    weatherProviderPref.set(weatherDataProvider::class.java.name)
+                    eventProviderPref.set(eventDataProvider::class.java.name)
+                }
+                weatherProviderPref.set(weatherDataProvider::class.java.name)
+                eventProviderPref.set(eventDataProvider::class.java.name)
             }
         }
     }
 
-    private fun createDataProvider(): DataProvider {
-        return try {
-            (Class.forName(providerPref.get()).getConstructor(LawnchairSmartspaceController::class.java)
-                    .newInstance(this) as DataProvider).apply {
+    private fun createDataProviders() {
+        val singleProvider = weatherProviderPref.get() == eventProviderPref.get()
+        weatherDataProvider = try {
+            (Class.forName(weatherProviderPref.get()).getConstructor(LawnchairSmartspaceController::class.java)
+                    .newInstance(this, true, singleProvider) as DataProvider).apply {
                 runOnMainThread(::performSetup)
                 waitForSetup()
             }
@@ -68,10 +71,23 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
             Log.d("LSC", "couldn't create weather provider", t)
             BlankDataProvider(this)
         }
+        eventDataProvider = if (singleProvider) {
+            weatherDataProvider
+        } else {
+            try {
+                (Class.forName(eventProviderPref.get()).getConstructor(LawnchairSmartspaceController::class.java)
+                        .newInstance(this, singleProvider, true) as DataProvider).apply {
+                    runOnMainThread(::performSetup)
+                    waitForSetup()
+                }
+            } catch (t: Throwable) {
+                Log.d("LSC", "couldn't create event provider", t)
+                BlankDataProvider(this)
+            }
+        }
     }
 
-    abstract class DataProvider(val controller: LawnchairSmartspaceController) {
-
+    abstract class DataProvider(val controller: LawnchairSmartspaceController, val providesWeather: Boolean = false, val providesCards: Boolean = false) {
         private var waiter: Semaphore? = Semaphore(0)
 
         open fun performSetup() {
@@ -96,9 +112,18 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         }
 
         fun updateData(weather: WeatherData?, card: CardData?) {
-            controller.updateData(weather, card)
+            controller.updateData(if (providesWeather) weather else controller.originalSmartspaceData.weather, if (providesCards) card else controller.originalSmartspaceData.card)
+        }
+
+        fun updateWeather(weather: WeatherData?){
+            if (providesWeather) controller.updateData(weather, controller.originalSmartspaceData.card)
+        }
+
+        fun updateCard(card: CardData?) {
+            if (providesCards) controller.updateData(controller.originalSmartspaceData.weather, card)
         }
     }
+
 
     data class DataContainer(val weather: WeatherData? = null, val card: CardData? = null) {
 
@@ -124,7 +149,7 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 }
 
 @Keep
-class BlankDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
+class BlankDataProvider(controller: LawnchairSmartspaceController, providesWeather: Boolean = false, providesCards: Boolean = false) : LawnchairSmartspaceController.DataProvider(controller, providesWeather = providesWeather, providesCards = providesCards) {
 
     override fun performSetup() {
         super.performSetup()

@@ -76,8 +76,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
-    var smartspaceEvents by BooleanPref("pref_smartspace_events", true, ::updateSmartspaceData)
     var weatherProvider by StringPref("pref_smartspace_widget_provider",
+            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
 
     // Dock
@@ -155,10 +156,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateSmartspaceProvider() {
         onChangeCallback?.updateSmartspaceProvider()
-    }
-
-    private fun updateSmartspaceData() {
-        onChangeCallback?.updateSmartspaceData()
     }
 
     private fun updateSmartspace() {

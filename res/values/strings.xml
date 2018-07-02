@@ -529,7 +529,7 @@
     <string name="weather_provider_disabled">Disabled</string>
     <string name="weather_provider_widget">Google app widget</string>
     <string name="pref_smartspace_widget_provider">Weather provider</string>
-    <string name="pref_smartspace_events">Show events</string>
+    <string name="pref_smartspace_event_provider">Event provider</string>
     <string name="title_all_apps_search">Show search bar</string>
     <string name="smartspace_provider_error">Error</string>
     <string name="smartspace_widget_provider_not_found">At A Glance widget not found. Make sure you have the latest Google app installed.</string>
