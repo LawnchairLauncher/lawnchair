@@ -9,13 +9,11 @@ import android.icu.text.DisplayContext;
 import android.support.annotation.RequiresApi;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
-
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 import java.util.Locale;
-
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 public class IcuDateTextView extends DoubleShadowTextView {
     private DateFormat mDateFormat;
@@ -58,17 +56,14 @@ public class IcuDateTextView extends DoubleShadowTextView {
         }
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         boolean showTime = prefs.getSmartspaceTime();
+        boolean show24h = prefs.getSmartspaceTime24H();
         boolean showDate = prefs.getSmartspaceDate();
         if (showTime) {
-            if (showDate) {
-                (oldFormat = DateFormat.getInstanceForSkeleton(context
-                        .getString(R.string.icu_abbrev_time_date), Locale.getDefault()))
-                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-            } else {
-                (oldFormat = DateFormat.getInstanceForSkeleton(context
-                        .getString(R.string.icu_abbrev_time), Locale.getDefault()))
-                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-            }
+            String format = context.getString(show24h ? R.string.icu_abbrev_time : R.string.icu_abbrev_time_12h);
+            if (showDate)
+                format += context.getString(R.string.icu_abbrev_date);
+            (oldFormat = DateFormat.getInstanceForSkeleton(format, Locale.getDefault()))
+                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
         }
         return oldFormat;
     }

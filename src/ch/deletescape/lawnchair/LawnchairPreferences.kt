@@ -70,6 +70,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Desktop
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
+    val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }

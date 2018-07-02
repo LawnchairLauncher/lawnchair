@@ -317,7 +317,8 @@
 
     <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
     <string name="icu_abbrev_time">HH:mm</string>
-    <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
+    <string name="icu_abbrev_time_12h">hh:mm aa</string>
+    <string name="icu_abbrev_date"> dd MMMM</string>
     <string name="in_smartspace">In \"At a Glance\" widget</string>
     <string name="smartspace_time">Show time</string>
     <string name="smartspace_date">Show time and date</string>
@@ -524,4 +525,5 @@
     <string name="pref_show_assistant_title">Show voice search button</string>
     <string name="pref_show_assistant_summary">Shows the voice search button in the Google searchbar</string>
     <string name="current_weather_provider">Current weather provider</string>
+    <string name="smartspace_time_24_h">Show time in 24 hours</string>
 </resources>
