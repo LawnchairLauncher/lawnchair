@@ -67,7 +67,9 @@ class IconPackManager(private val context: Context) {
 
     fun onPackChanged() {
         currentPack = getIconPack(prefs.iconPack)
-        iconPacks.values.forEach { context.unregisterReceiver(updateReceivers[it]) }
+        iconPacks.values.forEach { pack ->
+            updateReceivers[pack]?.let { context.unregisterReceiver(it) }
+        }
         iconPacks.clear()
         updateReceivers.clear()
         if (currentPack != defaultPack) {
