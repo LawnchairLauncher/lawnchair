@@ -1017,7 +1017,7 @@ public class Launcher extends BaseActivity
         }
 
         if (sRestart) {
-            LawnchairApp.Companion.get(this).restart();
+            LawnchairAppKt.getLawnchairApp(this).restart();
         }
 
         if (mUpdateWallpaper) {

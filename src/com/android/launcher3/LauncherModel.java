@@ -100,6 +100,7 @@ public class LauncherModel extends BroadcastReceiver
         sIconPackThread.start();
     }
     @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk static final Handler sUiWorker = new Handler(sUiWorkerThread.getLooper());
     @Thunk static final Handler sIconPack = new Handler(sIconPackThread.getLooper());
 
     // Indicates whether the current model data is valid or not.

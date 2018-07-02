@@ -192,7 +192,24 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
     }
 }
 
+val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
+
+fun runOnUiWorkerThread(r: () -> Unit) {
+    if (LauncherModel.getWorkerLooper().thread.id == Looper.myLooper().thread.id) {
+        r()
+    } else {
+        uiWorkerHandler.postAtFrontOfQueue(r)
+    }
+}
+
+fun runOnMainThread(r: () -> Unit) {
+    if (Looper.getMainLooper().thread.id == Looper.myLooper().thread.id) {
+        r()
+    } else {
+        mainHandler.postAtFrontOfQueue(r)
+    }
+}
 
 inline fun getGoogleSans(context: Context, crossinline callback: (Typeface) -> Unit) {
     val handler = Handler(Looper.myLooper())

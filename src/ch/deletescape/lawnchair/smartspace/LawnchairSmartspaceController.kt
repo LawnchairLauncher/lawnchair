@@ -1,15 +1,20 @@
 package ch.deletescape.lawnchair.smartspace
 
 import android.graphics.Bitmap
+import android.support.annotation.Keep
+import android.util.Log
 import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.runOnUiWorkerThread
 import com.android.launcher3.Utilities
+import java.util.concurrent.Semaphore
 
 class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
     var smartspaceData = DataContainer()
     private val listeners = ArrayList<Listener>()
     private val providerPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
-    private var dataProvider = DataProvider(this)
+    private var dataProvider = BlankDataProvider(this) as DataProvider
 
     init {
         onProviderChanged()
@@ -34,25 +39,48 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
     }
 
     fun onProviderChanged() {
-        if (providerPref.get() != dataProvider::class.java.simpleName) {
-            dataProvider.onDestroy()
-            dataProvider = createDataProvider()
-            providerPref.set(dataProvider::class.java.simpleName)
+        runOnUiWorkerThread {
+            if (providerPref.get() != dataProvider::class.java.name) {
+                dataProvider.onDestroy()
+                dataProvider = createDataProvider()
+                runOnUiWorkerThread { providerPref.set(dataProvider::class.java.name) }
+                providerPref.set(dataProvider::class.java.name)
+            }
         }
     }
 
     private fun createDataProvider(): DataProvider {
-        try {
-            when (providerPref.get()) {
-                "SmartspaceDataWidget" -> return SmartspaceDataWidget(this)
+        return try {
+            (Class.forName(providerPref.get()).getConstructor(LawnchairSmartspaceController::class.java)
+                    .newInstance(this) as DataProvider).apply {
+                runOnMainThread(::performSetup)
+                waitForSetup()
             }
         } catch (t: Throwable) {
-
+            Log.d("LSC", "couldn't create weather provider", t)
+            BlankDataProvider(this)
         }
-        return DataProvider(this)
     }
 
-    open class DataProvider(val controller: LawnchairSmartspaceController) {
+    abstract class DataProvider(val controller: LawnchairSmartspaceController) {
+
+        private var waiter: Semaphore? = Semaphore(0)
+
+        open fun performSetup() {
+
+        }
+
+        protected fun onSetupComplete() {
+            waiter?.release()
+        }
+
+        open fun waitForSetup() {
+            waiter?.run {
+                acquireUninterruptibly()
+                release()
+                waiter = null
+            }
+        }
 
         open fun onDestroy() {
 
@@ -83,3 +111,6 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         fun onDataUpdated(data: DataContainer)
     }
 }
+
+@Keep
+class BlankDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller)

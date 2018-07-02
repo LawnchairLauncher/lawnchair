@@ -32,6 +32,14 @@
         android:defaultValue="false"
         />
 
+    <ch.deletescape.lawnchair.preferences.WeatherProviderPreference
+        android:key="pref_smartspace_widget_provider"
+        android:dependency="pref_smartspace"
+        android:title="@string/pref_smartspace_widget_provider"
+        android:summary="%s"
+        android:defaultValue="false"
+        />
+
     <SwitchPreference
         android:key="pref_enable_minus_one"
         android:title="@string/title_show_google_app"

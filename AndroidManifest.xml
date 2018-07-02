@@ -281,6 +281,9 @@
             android:name="ch.deletescape.lawnchair.gestures.ui.SelectAppActivity"
             android:label="@string/action_open_app_select_app"
             android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="ch.deletescape.lawnchair.BlankActivity"
+            android:theme="@style/Theme.Transparent" />
 
         <activity
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"

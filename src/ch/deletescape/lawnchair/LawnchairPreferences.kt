@@ -9,6 +9,8 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
+import ch.deletescape.lawnchair.smartspace.BlankDataProvider
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
@@ -74,8 +76,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
-    var weatherProvider = "SmartspaceDataWidget"
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
+    var weatherProvider by StringPref("pref_smartspace_widget_provider",
+            BlankDataProvider::class.java.name, ::updateSmartspaceProvider)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, recreate, resetAllApps)
@@ -146,6 +149,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateBlur() {
         onChangeCallback?.updateBlur()
+    }
+
+    private fun updateSmartspaceProvider() {
+        onChangeCallback?.updateSmartspaceProvider()
     }
 
     private fun updateSmartspace() {

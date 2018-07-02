@@ -1,19 +1,25 @@
 package ch.deletescape.lawnchair.smartspace
 
+import android.app.Activity
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.support.annotation.Keep
+import android.util.Log
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
+import ch.deletescape.lawnchair.BlankActivity
 import ch.deletescape.lawnchair.getAllChilds
 import com.android.launcher3.Utilities
 
+@Keep
 class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
 
     private val launcher = controller.launcher
@@ -22,13 +28,14 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     private var smartspaceView: SmartspaceWidgetHostView? = null
     private val widgetIdPref = prefs::smartspaceWidgetId
     private val providerInfo = getSmartspaceWidgetProvider(launcher)
+    private var isWidgetBound = false
 
-    init {
+    private fun startBinding() {
         val widgetManager = AppWidgetManager.getInstance(launcher)
 
         var widgetId = widgetIdPref.get()
         val widgetInfo = widgetManager.getAppWidgetInfo(widgetId)
-        var isWidgetBound = widgetInfo != null && widgetInfo.provider == providerInfo.provider
+        isWidgetBound = widgetInfo != null && widgetInfo.provider == providerInfo.provider
 
         val oldWidgetId = widgetId
         if (!isWidgetBound) {
@@ -40,22 +47,43 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             widgetId = smartspaceWidgetHost.allocateAppWidgetId()
             isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId, providerInfo.profile, providerInfo.provider, null)
-            if (!isWidgetBound) {
-                smartspaceWidgetHost.deleteAppWidgetId(widgetId)
-                widgetId = -1
-            }
-
-            if (oldWidgetId != widgetId) {
-                widgetIdPref.set(widgetId)
-            }
         }
 
         if (isWidgetBound) {
             smartspaceView = smartspaceWidgetHost.createView(launcher, widgetId, providerInfo) as SmartspaceWidgetHostView
             smartspaceWidgetHost.startListening()
+            onSetupComplete()
         } else {
-            throw IllegalStateException("widget must be bound")
+            val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
+                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
+            BlankActivity.startActivityForResult(launcher, bindIntent, 1028, { resultCode, _ ->
+                if (resultCode == Activity.RESULT_OK) {
+                    startBinding()
+                } else {
+                    smartspaceWidgetHost.deleteAppWidgetId(widgetId)
+                    widgetId = -1
+                    widgetIdPref.set(-1)
+                    onSetupComplete()
+                }
+            })
         }
+
+        if (oldWidgetId != widgetId) {
+            widgetIdPref.set(widgetId)
+        }
+    }
+
+    override fun performSetup() {
+        super.performSetup()
+
+        startBinding()
+    }
+
+    override fun waitForSetup() {
+        super.waitForSetup()
+
+        if (!isWidgetBound) throw IllegalStateException("widget must be bound")
     }
 
     override fun onDestroy() {
@@ -95,14 +123,17 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     companion object {
 
-        const val googlePackage = "com.google.android.googlequicksearchbox"
-        const val smartspaceComponent = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+        private const val TAG = "SmartspaceDataWidget"
+        private const val googlePackage = "com.google.android.googlequicksearchbox"
+        private const val smartspaceComponent = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
 
-        private val smartspaveProviderComponent = ComponentName(googlePackage, smartspaceComponent)
+        private val smartspaceProviderComponent = ComponentName(googlePackage, smartspaceComponent)
 
         fun getSmartspaceWidgetProvider(context: Context): AppWidgetProviderInfo {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            return appWidgetManager.installedProviders.first { it.provider ==  smartspaveProviderComponent}
+            val providers = appWidgetManager.installedProviders.filter { it.provider == smartspaceProviderComponent }
+            Log.d(TAG, "providers = $providers")
+            return providers.firstOrNull() ?: throw RuntimeException("smartspace widget not found")
         }
     }
 }

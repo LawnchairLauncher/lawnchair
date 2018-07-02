@@ -526,4 +526,7 @@
     <string name="pref_show_assistant_summary">Shows the voice search button in the Google searchbar</string>
     <string name="current_weather_provider">Current weather provider</string>
     <string name="smartspace_time_24_h">Show time in 24 hours</string>
+    <string name="weather_provider_disabled">Disabled</string>
+    <string name="weather_provider_widget">Google app widget</string>
+    <string name="pref_smartspace_widget_provider">Weather provider</string>
 </resources>

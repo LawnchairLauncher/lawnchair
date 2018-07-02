@@ -17,7 +17,7 @@ import kotlin.collections.HashSet
 
 class LawnchairApp : Application() {
 
-    private val activityHandler = ActivityHandler()
+    val activityHandler = ActivityHandler()
 
     init {
         Thread.setDefaultUncaughtExceptionHandler(LawnchairCrashHandler(this, Thread.getDefaultUncaughtExceptionHandler()))
@@ -36,6 +36,11 @@ class LawnchairApp : Application() {
         val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/logs")
 
         override fun uncaughtException(t: Thread?, e: Throwable?) {
+            handleException(t, e)
+            defaultHandler.uncaughtException(t, e)
+        }
+
+        fun handleException(t: Thread?, e: Throwable?) {
             if (e == null) return
             if (!hasPermission) return
             if (!folder.exists()) folder.mkdirs()
@@ -47,8 +52,6 @@ class LawnchairApp : Application() {
             addReportHeader(stream)
             e.printStackTrace(stream)
             stream.close()
-
-            defaultHandler.uncaughtException(t, e)
         }
 
         private fun addReportHeader(stream: PrintStream) {
@@ -78,9 +81,10 @@ class LawnchairApp : Application() {
         }
     }
 
-    private class ActivityHandler : ActivityLifecycleCallbacks {
+    class ActivityHandler : ActivityLifecycleCallbacks {
 
         val activities = HashSet<Activity>()
+        var foregroundActivity: Activity? = null
 
         fun finishAll() {
             HashSet(activities).forEach { if (it is LawnchairLauncher) it.recreate() else it.finish() }
@@ -99,6 +103,8 @@ class LawnchairApp : Application() {
         }
 
         override fun onActivityDestroyed(activity: Activity) {
+            if (activity == foregroundActivity)
+                foregroundActivity = null
             activities.remove(activity)
         }
 
@@ -114,9 +120,6 @@ class LawnchairApp : Application() {
             activities.add(activity)
         }
     }
-
-    companion object {
-
-        fun get(context: Context) = context.applicationContext as LawnchairApp
-    }
 }
+
+val Context.lawnchairApp get() = applicationContext as LawnchairApp
