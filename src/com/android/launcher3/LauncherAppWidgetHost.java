@@ -28,12 +28,9 @@ import android.os.Handler;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.Toast;
-
 import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
-
-import ch.deletescape.lawnchair.views.LawnchairAppWidgetHostView;
 
 
 /**
@@ -58,7 +55,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        LauncherAppWidgetHostView view = new LawnchairAppWidgetHostView(context);
+        LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
         mViews.put(appWidgetId, view);
         return view;
     }
@@ -119,7 +116,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget) {
-            LauncherAppWidgetHostView lahv = new LawnchairAppWidgetHostView(context);
+            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
             LayoutInflater inflater = (LayoutInflater)
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(appWidget.initialLayout, lahv);

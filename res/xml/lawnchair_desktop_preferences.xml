@@ -11,10 +11,10 @@
 
     <SwitchPreference
         android:key="pref_smartspace_time"
-        android:disableDependentsState="false"
         android:title="@string/smartspace_time"
         android:summary="@string/in_smartspace"
         android:defaultValue="false"
+        android:dependency="pref_smartspace"
         />
 
     <SwitchPreference
