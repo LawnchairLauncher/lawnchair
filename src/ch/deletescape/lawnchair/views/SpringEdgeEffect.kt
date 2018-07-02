@@ -90,9 +90,9 @@ class SpringEdgeEffect(
                 field = value
             }
 
-        inline fun withSpring(canvas: Canvas, body: () -> Boolean): Boolean {
+        inline fun withSpring(canvas: Canvas, allow: Boolean = true, body: () -> Boolean): Boolean {
             val result: Boolean
-            if (shiftX == 0f && shiftY == 0f) {
+            if ((shiftX == 0f && shiftY == 0f) || !allow) {
                 result = body()
             } else {
                 canvas.translate(shiftX, shiftY)

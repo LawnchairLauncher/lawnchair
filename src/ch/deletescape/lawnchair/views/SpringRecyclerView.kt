@@ -11,13 +11,22 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
 
     private val springManager = SpringEdgeEffect.Manager(this)
 
+    open val shouldTranslateSelf = true
+
     init {
         edgeEffectFactory = springManager.createFactory()
     }
 
     override fun draw(canvas: Canvas) {
-        springManager.withSpring(canvas) {
+        springManager.withSpring(canvas, shouldTranslateSelf) {
             super.draw(canvas)
+            false
+        }
+    }
+
+    override fun dispatchDraw(canvas: Canvas) {
+        springManager.withSpring(canvas, !shouldTranslateSelf) {
+            super.dispatchDraw(canvas)
             false
         }
     }

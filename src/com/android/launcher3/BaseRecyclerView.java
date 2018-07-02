@@ -197,4 +197,9 @@ public abstract class BaseRecyclerView extends SpringRecyclerView
         Utilities.mapCoordInSelfToDescendant(this.mScrollbar, view, iArr);
         return !mScrollbar.isNearThumb(iArr[0], iArr[1]) && getCurrentScrollY() == 0;
     }
+
+    @Override
+    public boolean getShouldTranslateSelf() {
+        return false;
+    }
 }
