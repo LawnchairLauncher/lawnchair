@@ -1,6 +1,7 @@
 package com.android.launcher3.allapps;
 
 import android.animation.*;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.animation.SpringAnimation;
@@ -12,8 +13,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
-
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture;
 import ch.deletescape.lawnchair.views.AllAppsScrim;
 import com.android.launcher3.*;
 import com.android.launcher3.anim.SpringAnimationHandler;
@@ -24,6 +25,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Handles AllApps view transition.
@@ -102,10 +105,17 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private SpringAnimation mSearchSpring;
     private SpringAnimationHandler mSpringAnimationHandler;
 
-    private final static float SWIPE_DOWN_VELOCITY = 2.5f;
-    private final static float SWIPE_UP_VELOCITY = -2.5f;
-    private boolean mSkipEnd;
-    private boolean mAlreadyHandled;
+    private final static float NOTIFICATION_OPEN_VELOCITY = 2.25f;
+    private final static float NOTIFICATION_CLOSE_VELOCITY = -0.35f;
+    enum GestureState {
+        Locked,
+        Free,
+        NotificationOpened,
+        NotificationClosed,
+        Triggered
+    }
+    private GestureState mGestureState;
+    private VerticalSwipeGesture mVerticalSwipeGesture;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -116,11 +126,12 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
+        mVerticalSwipeGesture = ((LawnchairLauncher) l).getGestureController().getVerticalSwipeGesture();
     }
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_MOVE) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
@@ -143,8 +154,10 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
                     }
                 } else {
-                    if (isInDisallowRecatchTopZone()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
+                    if (isInDisallowRecatchBottomZone()) {
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
+                    } else if (isInDisallowRecatchTopZone()) {
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
                     } else {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
                         ignoreSlopWhenSettling = true;
@@ -187,35 +200,60 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
-        preparePull(true);
+        preparePull(start);
         if (hasSpringAnimationHandler()) {
             mSpringAnimationHandler.skipToEnd();
         }
-        mSkipEnd = mAlreadyHandled = false;
+        mGestureState = GestureState.Free;
     }
 
     @Override
     public boolean onDrag(float displacement, float velocity) {
-        if (mAlreadyHandled) {
+        if (mAppsView == null) {
             return false;   // early termination.
-        }
-        if (!mTouchEventStartedOnHotseat && mProgress >= 1f && mLauncher instanceof LawnchairLauncher) {
-            if (velocity > SWIPE_DOWN_VELOCITY && AbstractFloatingView.getTopOpenView(mLauncher) == null) {
-                ((LawnchairLauncher) mLauncher).getGestureController().onSwipeDown();
-                mAlreadyHandled = true;
-                return true;
-            } else if (velocity < 0 && ((LawnchairLauncher) mLauncher).getGestureController().hasCustomSwipeUp()) {
-                if(velocity < SWIPE_UP_VELOCITY){
-                    ((LawnchairLauncher) mLauncher).getGestureController().onSwipeUp();
-                    mAlreadyHandled = true;
-                }
-                mSkipEnd = true;
-                return true;
-            }
         }
 
-        if(mAppsView == null){
-            return false;   // early termination.
+        //Locked means do not use any gesture code
+        if (mGestureState != GestureState.Locked) {
+            if (mProgress < 1f) {
+                //Apps list is being opened, disable notification code
+                mGestureState = GestureState.Locked;
+            } else {
+                //Disable code when access to the hidden APIs returns an error
+                if (mVerticalSwipeGesture.getCustomSwipeDown()) {
+                    if (velocity > NOTIFICATION_OPEN_VELOCITY && mGestureState == GestureState.Free) {
+                        mGestureState = GestureState.Triggered;
+                        mVerticalSwipeGesture.onSwipeDown();
+                    }
+                } else {
+                    if (velocity > NOTIFICATION_OPEN_VELOCITY &&
+                            (mGestureState == GestureState.Free || mGestureState == GestureState.NotificationClosed)) {
+                        mGestureState = openNotifications() ?
+                                GestureState.NotificationOpened :
+                                GestureState.Locked;
+                    } else if (velocity < NOTIFICATION_CLOSE_VELOCITY &&
+                            mGestureState == GestureState.NotificationOpened) {
+                        mGestureState = closeNotifications() ?
+                                GestureState.NotificationClosed :
+                                GestureState.Locked;
+                    }
+                }
+
+                if (mVerticalSwipeGesture.getCustomSwipeUp() && !mTouchEventStartedOnHotseat) {
+                    if (velocity < NOTIFICATION_CLOSE_VELOCITY && mGestureState == GestureState.Free) {
+                        mGestureState = GestureState.Triggered;
+                        mVerticalSwipeGesture.onSwipeUp();
+                    }
+                    return true;
+                }
+
+                //Don't open all apps when swipe gestures are triggered
+                if (mGestureState == GestureState.NotificationOpened ||
+                        mGestureState == GestureState.NotificationClosed ||
+                        mGestureState == GestureState.Triggered) {
+                    return true;
+                }
+            }
         }
 
         mContainerVelocity = velocity;
@@ -226,16 +264,42 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         return true;
     }
 
+    @SuppressLint({"WrongConstant", "PrivateApi"})
+    private boolean openNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandNotificationsPanel")
+                    .invoke(mLauncher.getSystemService("statusbar"));
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            return false;
+        }
+    }
+
+    @SuppressLint({"WrongConstant", "PrivateApi"})
+    private boolean closeNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("collapsePanels")
+                    .invoke(mLauncher.getSystemService("statusbar"));
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            return false;
+        }
+    }
+
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (mAppsView == null || mSkipEnd || mAlreadyHandled) {
+        if (mAppsView == null) {
             return; // early termination.
         }
 
         final int containerType = mTouchEventStartedOnHotseat
                 ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
 
-        if (fling) {
+        if (fling && mGestureState != GestureState.NotificationOpened
+                && mGestureState != GestureState.NotificationClosed
+                && mGestureState != GestureState.Triggered) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
 

@@ -5,7 +5,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
-import ch.deletescape.lawnchair.gestures.gestures.*
+import ch.deletescape.lawnchair.gestures.gestures.DoubleTapGesture
+import ch.deletescape.lawnchair.gestures.gestures.LongPressGesture
+import ch.deletescape.lawnchair.gestures.gestures.PressHomeGesture
+import ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture
 import ch.deletescape.lawnchair.gestures.handlers.*
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.TouchController
@@ -18,9 +21,9 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     private val blankGestureHandler = BlankGestureHandler(launcher, null)
     private val doubleTapGesture = DoubleTapGesture(this)
     private val pressHomeGesture = PressHomeGesture(this)
-    private val swipeDownGesture = SwipeDownGesture(this)
     private val longPressGesture = LongPressGesture(this)
-    private val swipeUpGesture = SwipeUpGesture(this)
+
+    val verticalSwipeGesture = VerticalSwipeGesture(this)
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         return false
@@ -40,18 +43,6 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
     fun onPressHome() {
         pressHomeGesture.isEnabled && pressHomeGesture.onEvent()
-    }
-
-    fun onSwipeDown() {
-        swipeDownGesture.isEnabled && swipeDownGesture.onEvent()
-    }
-
-    fun onSwipeUp(): Boolean {
-        return swipeUpGesture.isEnabled && swipeUpGesture.onEvent()
-    }
-
-    fun hasCustomSwipeUp():Boolean {
-        return swipeUpGesture.isEnabled && swipeUpGesture.isCustom
     }
 
     fun createHandlerPref(key: String, defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
