@@ -460,9 +460,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public boolean onPreferenceClick(Preference preference) {
             switch (preference.getKey()) {
-                case SMARTSPACE_PREF:
-                    SmartspaceController.get(mContext).cZ();
-                    return true;
                 case "kill":
                     Utilities.killLauncher();
                     break;

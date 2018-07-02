@@ -1,7 +1,9 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
+import android.content.Intent;
 import android.view.View;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -16,7 +18,10 @@ class SmartspacePreferencesShortcut extends SystemShortcut {
     public View.OnClickListener getOnClickListener(final Launcher launcher, ItemInfo itemInfo) {
         return new View.OnClickListener() {
             public void onClick(final View view) {
-                SmartspaceController.get(view.getContext()).cZ();
+                Intent intent = new Intent(launcher, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, launcher.getString(R.string.smartspace_preferences_in_settings));
+                intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, R.xml.lawnchair_smartspace_preferences);
+                launcher.startActivitySafely(view, intent, null);
                 AbstractFloatingView.closeAllOpenViews(launcher);
             }
         };
