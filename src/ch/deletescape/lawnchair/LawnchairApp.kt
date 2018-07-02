@@ -95,7 +95,7 @@ class LawnchairApp : Application() {
         }
 
         override fun onActivityResumed(activity: Activity) {
-
+            foregroundActivity = activity
         }
 
         override fun onActivityStarted(activity: Activity) {

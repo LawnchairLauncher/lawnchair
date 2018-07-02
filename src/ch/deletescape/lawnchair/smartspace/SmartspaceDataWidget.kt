@@ -11,12 +11,17 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.support.annotation.Keep
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
 import ch.deletescape.lawnchair.BlankActivity
 import ch.deletescape.lawnchair.getAllChilds
+import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.runOnMainThread
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @Keep
@@ -29,6 +34,10 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     private val widgetIdPref = prefs::smartspaceWidgetId
     private val providerInfo = getSmartspaceWidgetProvider(launcher)
     private var isWidgetBound = false
+
+    init {
+        if (!Utilities.ATLEAST_NOUGAT) throw IllegalStateException("only available on Nougat and above")
+    }
 
     private fun startBinding() {
         val widgetManager = AppWidgetManager.getInstance(launcher)
@@ -156,7 +165,22 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         fun getSmartspaceWidgetProvider(context: Context): AppWidgetProviderInfo {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val providers = appWidgetManager.installedProviders.filter { it.provider == smartspaceProviderComponent }
-            return providers.firstOrNull() ?: throw RuntimeException("smartspace widget not found")
+            val provider = providers.firstOrNull()
+            if (provider != null) {
+                return provider
+            } else {
+                runOnMainThread {
+                    val foreground = context.lawnchairApp.activityHandler.foregroundActivity ?: context
+                    if (foreground is AppCompatActivity) {
+                        AlertDialog.Builder(foreground)
+                                .setTitle(R.string.smartspace_provider_error)
+                                .setMessage(R.string.smartspace_widget_provider_not_found)
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .show()
+                    }
+                }
+                throw RuntimeException("smartspace widget not found")
+            }
         }
     }
 }

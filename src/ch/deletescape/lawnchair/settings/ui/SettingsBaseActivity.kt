@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.deletescape.lawnchair.getBooleanAttr
-import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
@@ -60,11 +59,5 @@ open class SettingsBaseActivity : AppCompatActivity() {
         val contentParent = decorLayout.findViewById(android.R.id.content) as ViewGroup
         contentParent.removeAllViews()
         contentParent.addView(v, lp)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        lawnchairApp.activityHandler.foregroundActivity = this
     }
 }
