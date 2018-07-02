@@ -73,6 +73,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
+    var weatherProvider = "SmartspaceDataWidget"
+    var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, recreate, resetAllApps)

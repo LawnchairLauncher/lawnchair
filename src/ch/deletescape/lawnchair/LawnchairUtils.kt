@@ -211,3 +211,16 @@ inline fun getGoogleSans(context: Context, crossinline callback: (Typeface) -> U
         }
     }, uiWorkerHandler)
 }
+
+fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
+
+fun ViewGroup.getAllChilds(list: MutableList<View>) {
+    for (i in (0 until childCount)) {
+        val child = getChildAt(i)
+        if (child is ViewGroup) {
+            child.getAllChilds(list)
+        } else {
+            list.add(child)
+        }
+    }
+}

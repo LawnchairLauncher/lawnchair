@@ -332,6 +332,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 findPreference("kill").setOnPreferenceClickListener(this);
                 findPreference("crashLauncher").setOnPreferenceClickListener(this);
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
+                findPreference("currentWeatherProvider").setSummary(
+                        Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
             }
         }
 

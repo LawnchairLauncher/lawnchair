@@ -17,19 +17,21 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener, View.OnClickListener, View.OnLongClickListener, Runnable {
+public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener, View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private View mTitleSeparator;
@@ -95,34 +97,27 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         dB.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.smartspace_title_size));
     }
 
-    private void initListeners(final SmartspaceDataContainer e) {
-        final boolean cs = e.cS();
-        if (mDoubleLine != cs) {
-            mDoubleLine = cs;
+    @Override
+    public void onDataUpdated(@NotNull LawnchairSmartspaceController.DataContainer data) {
+        if (mDoubleLine != data.isDoubleLine()) {
+            mDoubleLine = data.isDoubleLine();
             cs();
         }
         setOnClickListener(this);
         setOnLongClickListener(co());
         if (mDoubleLine) {
-            loadDoubleLine(e);
+            loadDoubleLine(data);
         } else {
-            loadSingleLine(e);
-        }
-        mHandler.removeCallbacks(this);
-        if (e.cS() && e.dP.cv()) {
-            final long cw = e.dP.cw();
-            long min = 61000L - System.currentTimeMillis() % 60000L;
-            if (cw > 0L) {
-                min = Math.min(min, cw);
-            }
-            mHandler.postDelayed(this, min);
+            loadSingleLine(data);
         }
     }
 
-    private void loadDoubleLine(final SmartspaceDataContainer e) {
-        ColorStateList dh = null;
+    @SuppressWarnings("ConstantConditions")
+    private void loadDoubleLine(final LawnchairSmartspaceController.DataContainer data) {
         setBackgroundResource(mSmartspaceBackgroundRes);
-        final SmartspaceCard dp = e.dP;
+        /* TODO: implement double line card
+        ColorStateList dh = null;
+        final SmartspaceCard dp = data.dP;
         if (!TextUtils.isEmpty(dp.getTitle())) {
             mTitleText.setText(dp.cv() ? cn() : dp.getTitle());
             mTitleText.setEllipsize(dp.cx(true));
@@ -138,28 +133,30 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 mSubtitleIcon.setImageBitmap(dp.getIcon());
             }
         }
-        if (e.isWeatherAvailable()) {
+        */
+        if (data.isWeatherAvailable()) {
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
-            mSubtitleWeatherText.setText(e.dO.getTitle());
-            mSubtitleWeatherIcon.setImageBitmap(e.dO.getIcon());
+            mSubtitleWeatherText.setText(data.getWeather().getTitle());
+            mSubtitleWeatherIcon.setImageBitmap(data.getWeather().getIcon());
         } else {
             mSubtitleWeatherContent.setVisibility(View.GONE);
         }
     }
 
-    private void loadSingleLine(final SmartspaceDataContainer e) {
+    @SuppressWarnings("ConstantConditions")
+    private void loadSingleLine(final LawnchairSmartspaceController.DataContainer data) {
         setBackgroundResource(0);
         mClockView.setOnClickListener(mCalendarClickListener);
         mClockView.setOnLongClickListener(co());
-        if (e.isWeatherAvailable()) {
+        if (data.isWeatherAvailable()) {
             mTitleSeparator.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mTitleWeatherContent.setOnLongClickListener(co());
-            mTitleWeatherText.setText(e.dO.getTitle());
-            mTitleWeatherIcon.setImageBitmap(e.dO.getIcon());
+            mTitleWeatherText.setText(data.getWeather().getTitle());
+            mTitleWeatherIcon.setImageBitmap(data.getWeather().getIcon());
         } else {
             mTitleWeatherContent.setVisibility(View.GONE);
             mTitleSeparator.setVisibility(View.GONE);
@@ -223,7 +220,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     public void cr(final SmartspaceDataContainer dq2) {
         dq = dq2;
         boolean visible = mSmartspaceContent.getVisibility() == View.VISIBLE;
-        initListeners(dq);
         if (!visible) {
             mSmartspaceContent.setVisibility(View.VISIBLE);
             mSmartspaceContent.setAlpha(0f);
@@ -238,6 +234,10 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         dp.da(this);
+        Launcher launcher = Launcher.getLauncher(getContext());
+        if (launcher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) launcher).getSmartspace().addListener(this);
+        }
     }
 
     public void onClick(final View view) {
@@ -250,6 +250,10 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         SmartspaceController.get(getContext()).da(null);
+        Launcher launcher = Launcher.getLauncher(getContext());
+        if (launcher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) launcher).getSmartspace().removeListener(this);
+        }
     }
 
     protected void onFinishInflate() {
@@ -293,9 +297,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     public void onResume() {
-        if (dq != null) {
-            initListeners(dq);
-        }
         backportClockVisibility(true);
     }
 
@@ -307,9 +308,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     @Override
     public void run() {
-        if (dq != null) {
-            initListeners(dq);
-        }
+
     }
 
     @Override

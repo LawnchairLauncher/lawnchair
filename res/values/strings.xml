@@ -523,4 +523,5 @@
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
     <string name="pref_show_assistant_summary">Shows the voice search button in the Google searchbar</string>
+    <string name="current_weather_provider">Current weather provider</string>
 </resources>

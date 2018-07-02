@@ -33,4 +33,9 @@
         android:key="crashLauncher"
         android:title="@string/debug_crash_launcher"
         android:defaultValue="false"/>
+
+    <Preference
+        android:key="currentWeatherProvider"
+        android:title="@string/current_weather_provider"
+        android:defaultValue="false"/>
 </PreferenceScreen>

@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.icu.text.DateFormat
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,10 +13,8 @@ import ch.deletescape.lawnchair.forEachChild
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getGoogleSans
-import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppWidgetHostView
 import com.android.launcher3.R
-import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -40,7 +37,6 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
     private var isSmartspace = false
     private var firstText = false
     private var firstImage = false
-    private var dateFormat: DateFormat? = null
     private var typeface: Typeface? = null
     private val textColor by lazy { context.getColorAttr(R.attr.workspaceTextColor) }
     private val darkText by lazy { context.getBooleanAttr(R.attr.isWorkspaceDarkText) }
@@ -74,38 +70,12 @@ open class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostV
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        if (isSmartspace) {
-            Launcher.getLauncher(context).mPrefCallback.addSmartspaceWidget(this)
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-
-        if (isSmartspace) {
-            Launcher.getLauncher(context).mPrefCallback.removeSmartspaceWidget(this)
-        }
-    }
-
     @TargetApi(24)
     private fun forceProductSans(parent: ViewGroup) {
         parent.forEachChild { v ->
             if (v is ViewGroup) {
                 forceProductSans(v)
             } else if (v is TextView) {
-                if (firstText) {
-                    firstText = false
-                    dateFormat = IcuDateTextView.getDateFormat(context, false, null)
-                    if (dateFormat != null) {
-                        val text = dateFormat?.format(System.currentTimeMillis())
-                        if (v.text != text) {
-                            v.text = text
-                        }
-                    }
-                }
                 v.typeface = typeface
                 v.setTextColor(textColor)
                 if (darkText) v.setShadowLayer(0f, 0f, 0f, 0)

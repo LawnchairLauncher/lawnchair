@@ -299,7 +299,6 @@ public class Launcher extends BaseActivity
     }
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
-    public LawnchairPreferencesChangeCallback mPrefCallback;
     private static boolean sRestart = false;
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
@@ -426,8 +425,6 @@ public class Launcher extends BaseActivity
             mRotationPrefChangeHandler = new RotationPrefChangeHandler();
             mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
-        mPrefCallback = new LawnchairPreferencesChangeCallback(this);
-        Utilities.getLawnchairPrefs(this).registerCallback(mPrefCallback);
 
         if (PinItemDragListener.handleDragRequest(this, getIntent())) {
             // Temporarily enable the rotation

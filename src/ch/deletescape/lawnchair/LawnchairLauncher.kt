@@ -14,6 +14,7 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
@@ -21,6 +22,8 @@ import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 class LawnchairLauncher : NexusLauncherActivity() {
 
     val gestureController by lazy { GestureController(this) }
+    val smartspace by lazy { LawnchairSmartspaceController(this) }
+    private var prefCallback = LawnchairPreferencesChangeCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
@@ -28,6 +31,15 @@ class LawnchairLauncher : NexusLauncherActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+        smartspace
+        Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Utilities.getLawnchairPrefs(this).unregisterCallback()
     }
 
     fun startEditIcon(itemInfo: ItemInfoWithIcon) {
