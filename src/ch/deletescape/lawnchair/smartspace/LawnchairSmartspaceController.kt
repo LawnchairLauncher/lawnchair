@@ -75,7 +75,7 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         private var waiter: Semaphore? = Semaphore(0)
 
         open fun performSetup() {
-
+            onSetupComplete()
         }
 
         protected fun onSetupComplete() {
@@ -124,4 +124,11 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 }
 
 @Keep
-class BlankDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller)
+class BlankDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
+
+    override fun performSetup() {
+        super.performSetup()
+
+        updateData(null, null)
+    }
+}

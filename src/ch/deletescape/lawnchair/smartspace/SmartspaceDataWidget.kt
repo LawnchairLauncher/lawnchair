@@ -75,8 +75,6 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     }
 
     override fun performSetup() {
-        super.performSetup()
-
         startBinding()
     }
 
