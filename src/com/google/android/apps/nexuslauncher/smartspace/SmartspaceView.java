@@ -284,7 +284,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         launcher.getDragLayer().addView(popupContainerWithArrow);
         ArrayList<SystemShortcut> list = new ArrayList<>(1);
         list.add(new SmartspacePreferencesShortcut());
-        popupContainerWithArrow.populateAndShow(dr, Collections.EMPTY_LIST, Collections.EMPTY_LIST, list);
+        popupContainerWithArrow.populateAndShow(dr, Collections.EMPTY_LIST, Collections.EMPTY_LIST, list, false);
         return b;
     }
 
