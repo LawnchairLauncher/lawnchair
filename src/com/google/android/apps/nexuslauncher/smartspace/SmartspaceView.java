@@ -3,6 +3,7 @@ package com.google.android.apps.nexuslauncher.smartspace;
 import android.animation.ValueAnimator;
 import android.content.*;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
@@ -21,6 +22,7 @@ import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.Themes;
@@ -54,6 +56,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private TextView mSubtitleText;
     private ViewGroup mSubtitleWeatherContent;
     private ImageView mSubtitleWeatherIcon;
+    private boolean mEnableShadow;
     private final Handler mHandler;
 
     public SmartspaceView(Context context, AttributeSet set) {
@@ -95,6 +98,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSmartspaceBackgroundRes = R.drawable.bg_smartspace;
         dB = new TextPaint();
         dB.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.smartspace_title_size));
+        mEnableShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
             mSubtitleWeatherText.setText(data.getWeather().getTitle());
-            mSubtitleWeatherIcon.setImageBitmap(data.getWeather().getIcon());
+            mSubtitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {
             mSubtitleWeatherContent.setVisibility(View.GONE);
         }
@@ -143,7 +147,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mTitleWeatherContent.setOnLongClickListener(co());
             mTitleWeatherText.setText(data.getWeather().getTitle());
-            mTitleWeatherIcon.setImageBitmap(data.getWeather().getIcon());
+            mTitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {
             mTitleWeatherContent.setVisibility(View.GONE);
             mTitleSeparator.setVisibility(View.GONE);
@@ -152,6 +156,10 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         if (!Utilities.ATLEAST_NOUGAT) {
             mClockView.onVisibilityAggregated(true);
         }
+    }
+
+    private Bitmap addShadowToBitmap(Bitmap bitmap) {
+        return mEnableShadow ? ShadowGenerator.getInstance(getContext()).recreateIcon(bitmap, false) : bitmap;
     }
 
     private void loadViews() {

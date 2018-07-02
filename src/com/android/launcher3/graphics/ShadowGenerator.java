@@ -66,7 +66,11 @@ public class ShadowGenerator {
     }
 
     public synchronized Bitmap recreateIcon(Bitmap icon) {
-        return recreateIcon(icon, true, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA,
+        return recreateIcon(icon, true);
+    }
+
+    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize) {
+        return recreateIcon(icon, resize, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA,
                 KEY_SHADOW_ALPHA);
     }
 
