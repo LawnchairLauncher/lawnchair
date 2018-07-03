@@ -94,7 +94,7 @@ public class OptionsPopupView extends ArrowPopup
         if (ev.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
-        if (mLauncher.getDragLayer().isEventOverView(this, ev)) {
+        if (getPopupContainer().isEventOverView(this, ev)) {
             return false;
         }
         close(true);

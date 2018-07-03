@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.lang.annotation.Retention;
@@ -151,7 +152,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         if (mIsOpen) {
             sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
         }
-        BaseDraggingActivity.fromContext(getContext()).getDragLayer()
+        ActivityContext.lookupContext(getContext()).getDragLayer()
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
     }
 
@@ -160,7 +161,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
-            BaseDraggingActivity activity, @FloatingViewType int type) {
+            ActivityContext activity, @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
@@ -176,7 +177,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         return null;
     }
 
-    public static void closeOpenContainer(BaseDraggingActivity activity,
+    public static void closeOpenContainer(ActivityContext activity,
             @FloatingViewType int type) {
         AbstractFloatingView view = getOpenView(activity, type);
         if (view != null) {
@@ -184,7 +185,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         }
     }
 
-    public static void closeOpenViews(BaseDraggingActivity activity, boolean animate,
+    public static void closeOpenViews(ActivityContext activity, boolean animate,
             @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
@@ -200,20 +201,20 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         }
     }
 
-    public static void closeAllOpenViews(BaseDraggingActivity activity, boolean animate) {
+    public static void closeAllOpenViews(ActivityContext activity, boolean animate) {
         closeOpenViews(activity, animate, TYPE_ALL);
         activity.finishAutoCancelActionMode();
     }
 
-    public static void closeAllOpenViews(BaseDraggingActivity activity) {
+    public static void closeAllOpenViews(ActivityContext activity) {
         closeAllOpenViews(activity, true);
     }
 
-    public static AbstractFloatingView getTopOpenView(BaseDraggingActivity activity) {
+    public static AbstractFloatingView getTopOpenView(ActivityContext activity) {
         return getTopOpenViewWithType(activity, TYPE_ALL);
     }
 
-    public static AbstractFloatingView getTopOpenViewWithType(BaseDraggingActivity activity,
+    public static AbstractFloatingView getTopOpenViewWithType(ActivityContext activity,
             @FloatingViewType int type) {
         return getOpenView(activity, type);
     }

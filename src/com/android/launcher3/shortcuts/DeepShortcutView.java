@@ -121,7 +121,7 @@ public class DeepShortcutView extends FrameLayout {
         mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
 
         // TODO: Add the click handler to this view directly and not the child view.
-        mBubbleText.setOnClickListener(ItemClickHandler.INSTANCE);
+        mBubbleText.setOnClickListener(container.getItemClickListener());
         mBubbleText.setOnLongClickListener(container);
         mBubbleText.setOnTouchListener(container);
     }
