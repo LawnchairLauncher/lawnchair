@@ -31,7 +31,7 @@
         android:defaultValue="false"
         />
 
-    <ch.deletescape.lawnchair.preferences.WeatherProviderPreference
+    <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
         android:key="pref_smartspace_widget_provider"
         android:dependency="pref_smartspace"
         android:title="@string/pref_smartspace_widget_provider"
@@ -39,7 +39,7 @@
         android:defaultValue="false"
         />
 
-    <ch.deletescape.lawnchair.preferences.EventProviderPreference
+    <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
         android:key="pref_smartspace_event_provider"
         android:dependency="pref_smartspace"
         android:title="@string/pref_smartspace_event_provider"

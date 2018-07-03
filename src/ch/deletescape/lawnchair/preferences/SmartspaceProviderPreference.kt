@@ -9,18 +9,34 @@ import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class EventProviderPreference(context: Context, attrs: AttributeSet?)
+class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     : ListPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
-    private val prefEntry = prefs::eventProvider
+    private val forWeather by lazy { key == "pref_smartspace_widget_provider" }
 
     init {
         entryValues = getProviders().toTypedArray()
         entries = entryValues.map { context.getString(displayNames[it]!!) }.toTypedArray()
     }
 
-    fun getProviders(): List<String> {
+    override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
+        super.onSetInitialValue(true, defaultValue)
+    }
+
+    private fun getProviders(): List<String> {
+        return if (forWeather) getWeatherProviders() else getEventProviders()
+    }
+
+    private fun getWeatherProviders(): List<String> {
+        val list = ArrayList<String>()
+        list.add(BlankDataProvider::class.java.name)
+        if (Utilities.ATLEAST_NOUGAT)
+            list.add(SmartspaceDataWidget::class.java.name)
+        return list
+    }
+
+    private fun getEventProviders(): List<String> {
         val list = ArrayList<String>()
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
@@ -33,8 +49,8 @@ class EventProviderPreference(context: Context, attrs: AttributeSet?)
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        if (value != prefEntry.get()) {
-            value = prefEntry.get()
+        if (value != getPersistedValue()) {
+            value = getPersistedValue()
         }
         notifyDependencyChange(shouldDisableDependents())
     }
@@ -42,21 +58,23 @@ class EventProviderPreference(context: Context, attrs: AttributeSet?)
     override fun onAttached() {
         super.onAttached()
 
-        prefs.addOnPreferenceChangeListener("pref_smartspace_event_provider", this)
+        prefs.addOnPreferenceChangeListener(key, this)
     }
 
     override fun onDetached() {
         super.onDetached()
 
-        prefs.removeOnPreferenceChangeListener("pref_smartspace_event_provider", this)
+        prefs.removeOnPreferenceChangeListener(key, this)
     }
 
     override fun getPersistedString(defaultReturnValue: String?): String {
-        return prefEntry.get()
+        return getPersistedValue()
     }
 
+    private fun getPersistedValue() = prefs.sharedPrefs.getString(key, SmartspaceDataWidget::class.java.name)
+
     override fun persistString(value: String?): Boolean {
-        prefEntry.set(value ?: BlankDataProvider::class.java.name)
+        prefs.sharedPrefs.edit().putString(key, value ?: BlankDataProvider::class.java.name).apply()
         return true
     }
 
