@@ -302,12 +302,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
 
     open inner class StringBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
-                                              private val fromString: (String) -> T, private val toString: (T) -> String) :
+                                              private val fromString: (String) -> T,
+                                              private val toString: (T) -> String,
+                                              private val dispose: (T) -> Unit) :
             PrefDelegate<T>(key, defaultValue, onChange) {
         override fun onGetValue(): T = sharedPrefs.getString(getKey(), null)?.run(fromString) ?: defaultValue
 
         override fun onSetValue(value: T) {
             edit { putString(getKey(), toString(value)) }
+        }
+
+        override fun disposeOldValue(oldValue: T) {
+            dispose(oldValue)
         }
     }
 
@@ -442,7 +448,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
 
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            cached = false
+            discardCachedValue()
             onSetValue(value)
         }
 
@@ -461,8 +467,19 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         internal fun getKey() = key
 
         private fun onValueChanged() {
-            cached = false
+            discardCachedValue()
             onChange.invoke()
+        }
+
+        private fun discardCachedValue() {
+            if (cached) {
+                cached = false
+                value.let(::disposeOldValue)
+            }
+        }
+
+        open fun disposeOldValue(oldValue: T) {
+
         }
     }
 

@@ -21,6 +21,10 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     }
 
+    open fun onDestroy() {
+
+    }
+
     override fun toString(): String {
         return JSONObject().apply {
             put("class", this@GestureHandler::class.java.name)

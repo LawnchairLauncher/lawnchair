@@ -46,7 +46,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     }
 
     fun createHandlerPref(key: String, defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
-            key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString)
+            key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString, GestureHandler::onDestroy)
 
     private fun createGestureHandler(jsonString: String) = createGestureHandler(launcher, jsonString, blankGestureHandler)
 
