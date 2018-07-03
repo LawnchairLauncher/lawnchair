@@ -2472,6 +2472,12 @@
     </translators>
     <licenses>
         <project
+            license="mit"
+            title="OWM JAPIs"
+            description="Java Library for OpenWeatherMap.org Weather APIs"
+            website="http://go.aksingh.net/owm-japis"
+            />
+        <project
             license="apache-2.0"
             repo="MrBIMC/VintageChroma" />
         <project repo="florent37/FiftyShadesOf" />

@@ -5,6 +5,7 @@ import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.BlankDataProvider
+import ch.deletescape.lawnchair.smartspace.OWMWeatherDataProvider
 import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -33,6 +34,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
             list.add(SmartspaceDataWidget::class.java.name)
+        list.add(OWMWeatherDataProvider::class.java.name)
         return list
     }
 
@@ -82,6 +84,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
 
         val displayNames = mapOf(
                 Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
-                Pair(SmartspaceDataWidget::class.java.name, R.string.weather_provider_widget))
+                Pair(SmartspaceDataWidget::class.java.name, R.string.weather_provider_widget),
+                Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm))
     }
 }

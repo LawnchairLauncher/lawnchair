@@ -528,6 +528,7 @@
     <string name="smartspace_time_24_h">Show time in 24 hours</string>
     <string name="weather_provider_disabled">Disabled</string>
     <string name="weather_provider_widget">Google app widget</string>
+    <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="pref_smartspace_widget_provider">Weather provider</string>
     <string name="pref_smartspace_event_provider">Event provider</string>
     <string name="title_all_apps_search">Show search bar</string>
@@ -537,4 +538,15 @@
     <string name="separate_work_apps_pref_title">Separate work apps from all apps</string>
     <string name="title_search_hidden_apps">Search hidden apps</string>
     <string name="summary_search_hidden_apps">Include hidden apps in search result</string>
+    <string name="default_owm_key" translatable="false">17a6438b1d63d5b05f7039e7cb52cde7</string>
+
+    <!-- Feel free to change this to the biggest/most important city for your language. But make sure to crosscheck that there are
+     results for the string on openweathermap.org -->
+    <string name="default_city">Lucerne, CH</string>
+    <string name="pref_weather_api_key_title">API key</string>
+    <string name="pref_weather_city_summary">For best results include country code</string>
+    <string name="pref_weather_city_title">City</string>
+    <string name="pref_weather_units">Weather Units</string>
+    <string name="units_metric">Metric</string>
+    <string name="units_imperial">Imperial</string>
 </resources>

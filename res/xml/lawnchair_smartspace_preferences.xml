@@ -36,14 +36,34 @@
         android:dependency="pref_smartspace"
         android:title="@string/pref_smartspace_widget_provider"
         android:summary="%s"
-        android:defaultValue="false"
         />
+
+    <ch.deletescape.lawnchair.preferences.OWMEditTextPreference
+        android:defaultValue="@string/default_owm_key"
+        android:dependency="pref_smartspace_widget_provider"
+        android:key="pref_weatherApiKey"
+        android:title="@string/pref_weather_api_key_title" />
+
+    <ch.deletescape.lawnchair.preferences.OWMEditTextPreference
+        android:defaultValue="@string/default_city"
+        android:dependency="pref_smartspace_widget_provider"
+        android:key="pref_weather_city"
+        android:title="@string/pref_weather_city_title" />
+
+    <ListPreference
+        android:defaultValue="metric"
+        android:dependency="pref_smartspace_widget_provider"
+        android:entries="@array/unitsTexts"
+        android:entryValues="@array/unitsValues"
+        android:key="pref_weather_units"
+        android:summary="%s"
+        android:title="@string/pref_weather_units" />
 
     <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
         android:key="pref_smartspace_event_provider"
         android:dependency="pref_smartspace"
         android:title="@string/pref_smartspace_event_provider"
         android:summary="%s"
-        android:defaultValue="false"
         />
+
 </PreferenceScreen>

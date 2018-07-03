@@ -41,7 +41,9 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { it.onDataUpdated(smartspaceData) }
+        runOnMainThread {
+            listeners.forEach { it.onDataUpdated(smartspaceData) }
+        }
     }
 
     fun addListener(listener: Listener) {
