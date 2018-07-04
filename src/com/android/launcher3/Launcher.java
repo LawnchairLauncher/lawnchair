@@ -333,6 +333,7 @@ public class Launcher extends BaseActivity
         boolean gradientStyleDock = prefs.getDockGradientStyle();
         FeatureFlags.LAUNCHER3_P_ALL_APPS = !gradientStyleDock;
         FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS = gradientStyleDock;
+        FeatureFlags.LAUNCHER3_PHYSICS = !prefs.getLowPerformanceMode();
 
         super.onCreate(savedInstanceState);
 

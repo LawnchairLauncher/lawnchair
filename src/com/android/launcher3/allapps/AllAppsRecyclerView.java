@@ -101,6 +101,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         mOverScrollHelper = new OverScrollHelper();
         mPullDetector = new SwipeDetector(getContext(), mOverScrollHelper, SwipeDetector.VERTICAL);
         mPullDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, true);
+
+        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+            setOverScrollMode(OVER_SCROLL_NEVER);
+        }
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
