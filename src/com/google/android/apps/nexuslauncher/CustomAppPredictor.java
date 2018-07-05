@@ -96,23 +96,18 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                 list.add(getComponentFromString(prediction));
             }
 
-            if (list.size() < MAX_PREDICTIONS) {
-                for (String placeHolder : PLACE_HOLDERS) {
-                    Intent intent = mPackageManager.getLaunchIntentForPackage(placeHolder);
-                    if (intent != null) {
-                        ComponentName componentInfo = intent.getComponent();
-                        if (componentInfo != null) {
-                            ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
-                            if (!predictionList.contains(key.toString())) {
-                                list.add(new ComponentKeyMapper<AppInfo>(key));
-                            }
+            for (int i = 0; i < PLACE_HOLDERS.length && list.size() < MAX_PREDICTIONS; i++) {
+                String placeHolder = PLACE_HOLDERS[i];
+                Intent intent = mPackageManager.getLaunchIntentForPackage(placeHolder);
+                if (intent != null) {
+                    ComponentName componentInfo = intent.getComponent();
+                    if (componentInfo != null) {
+                        ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
+                        if (!predictionList.contains(key.toString())) {
+                            list.add(new ComponentKeyMapper<AppInfo>(key));
                         }
                     }
                 }
-            }
-
-            if (list.size() > MAX_PREDICTIONS) {
-                list = list.subList(0, MAX_PREDICTIONS);
             }
         }
         return list;
