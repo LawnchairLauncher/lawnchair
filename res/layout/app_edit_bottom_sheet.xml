@@ -43,7 +43,7 @@
         android:textSize="24sp"
         android:layout_marginBottom="32dp"/>
 
-    <android.support.v7.widget.AppCompatEditText
+    <EditText
         style="@style/TextTitle"
         android:id="@+id/edit_title"
         android:background="@android:color/transparent"

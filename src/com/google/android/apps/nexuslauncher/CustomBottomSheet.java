@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.*;
 import com.android.launcher3.util.ComponentKey;
@@ -97,6 +98,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             mEditTitle.setHint(mInfoProvider.getDefaultTitle(mItemInfo));
             mEditTitle.setText(mPreviousTitle);
             mEditTitle.setVisibility(VISIBLE);
+            LawnchairUtilsKt.setGoogleSans(mEditTitle);
             title.setVisibility(View.GONE);
         }
     }
