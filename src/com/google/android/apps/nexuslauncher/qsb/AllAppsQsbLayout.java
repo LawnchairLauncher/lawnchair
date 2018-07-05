@@ -184,6 +184,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void preDispatchKeyEvent(final KeyEvent keyEvent) {
     }
 
+    @Override
+    public void startAppsSearch() {
+        onClick(this);
+    }
+
     public void refreshSearchResult() {
         if (mFallback != null) {
             mFallback.refreshSearchResult();
