@@ -535,4 +535,6 @@
     <string name="smartspace_widget_provider_not_found">At A Glance widget not found. Make sure you have the latest Google app installed.</string>
     <string name="all_apps_label">All apps</string>
     <string name="separate_work_apps_pref_title">Separate work apps from all apps</string>
+    <string name="title_search_hidden_apps">Search hidden apps</string>
+    <string name="summary_search_hidden_apps">Include hidden apps in search result</string>
 </resources>
