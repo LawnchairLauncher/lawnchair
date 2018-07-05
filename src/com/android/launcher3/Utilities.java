@@ -760,7 +760,7 @@ public final class Utilities {
     }
 
     public static String upperCaseFirstLetter(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
+        return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
     }
 
     public static void pinSettingsShortcut(Context context) {
