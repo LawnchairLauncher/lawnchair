@@ -128,3 +128,5 @@
 }
 
 -keepclassmembers enum * { *; }
+
+-dontobfuscate
