@@ -11,15 +11,15 @@ import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
-import android.support.v4.provider.FontRequest
-import android.support.v4.provider.FontsContractCompat
+import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.util.Property
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
@@ -212,26 +212,9 @@ fun runOnMainThread(r: () -> Unit) {
     }
 }
 
-inline fun getGoogleSans(context: Context, crossinline callback: (Typeface) -> Unit) {
-    val handler = Handler(Looper.myLooper())
-    val request = FontRequest(
-            "com.google.android.gms.fonts", // ProviderAuthority
-            "com.google.android.gms",  // ProviderPackage
-            "name=Google Sans",  // Query
-            R.array.com_google_android_gms_fonts_certs)
-
-    // retrieve font in the background
-    FontsContractCompat.requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
-        override fun onTypefaceRetrieved(typeface: Typeface) {
-            super.onTypefaceRetrieved(typeface)
-
-            handler.postAtFrontOfQueue({ callback(typeface) })
-        }
-    }, uiWorkerHandler)
-}
-
-fun TextView.setGoogleSans() {
-    getGoogleSans(context, ::setTypeface)
+@JvmOverloads
+fun TextView.setGoogleSans(style: Int = Typeface.NORMAL) {
+    context.lawnchairApp.fontLoader.loadGoogleSans(this, style)
 }
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
@@ -244,5 +227,22 @@ fun ViewGroup.getAllChilds(list: MutableList<View>) {
         } else {
             list.add(child)
         }
+    }
+}
+
+fun AppCompatActivity.hookGoogleSansDialogTitle() {
+    layoutInflater.factory2 = object : LayoutInflater.Factory2 {
+        override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
+            if (name == "android.support.v7.widget.DialogTitle") {
+                return (Class.forName(name).getConstructor(Context::class.java, AttributeSet::class.java)
+                        .newInstance(context, attrs) as TextView).apply { setGoogleSans(Typeface.BOLD) }
+            }
+            return delegate.createView(parent, name, context, attrs)
+        }
+
+        override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+            return onCreateView(null, name, context, attrs)
+        }
+
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.deletescape.lawnchair.getBooleanAttr
+import ch.deletescape.lawnchair.hookGoogleSansDialogTitle
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
@@ -21,6 +22,7 @@ open class SettingsBaseActivity : AppCompatActivity() {
         set(value) { decorLayout.actionBarElevation = value }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        hookGoogleSansDialogTitle()
         ThemeManager.getInstance(this).addOverride(ThemeOverride.Settings(this))
 
         super.onCreate(savedInstanceState)

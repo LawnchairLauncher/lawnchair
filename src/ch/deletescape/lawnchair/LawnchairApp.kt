@@ -18,6 +18,7 @@ import kotlin.collections.HashSet
 class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
+    val fontLoader by lazy { FontLoader(this) }
 
     init {
         Thread.setDefaultUncaughtExceptionHandler(LawnchairCrashHandler(this, Thread.getDefaultUncaughtExceptionHandler()))
