@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
+import android.widget.ImageView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.LauncherLayoutChangeListener;
 import com.android.launcher3.Launcher;
@@ -32,7 +33,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     protected final NexusLauncherActivity mActivity;
     protected int mColor;
-    protected View mMicIconView;
+    protected ImageView mMicIconView;
     private final RectF mDestRect;
     private final Rect mSrcRect;
     protected Bitmap mShadowBitmap;

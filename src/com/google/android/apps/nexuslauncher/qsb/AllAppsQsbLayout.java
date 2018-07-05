@@ -237,6 +237,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             mAllAppsGoogleSearch = allAppsGoogleSearch;
             ((ImageView) findViewById(R.id.g_icon)).setImageResource(mAllAppsGoogleSearch ?
                     R.drawable.ic_super_g_color : R.drawable.ic_allapps_search);
+            mMicIconView.setImageResource(mAllAppsGoogleSearch ? R.drawable.ic_mic_color : 0);
             if (mAllAppsGoogleSearch) {
                 removeFallbackView();
             } else {
