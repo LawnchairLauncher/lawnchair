@@ -792,4 +792,8 @@ public final class Utilities {
     public static <T> T notNullOrDefault(T value, T defValue) {
         return (value == null) ? defValue : value;
     }
+
+    public static Boolean isEmui(){
+        return !TextUtils.isEmpty(getSystemProperty("ro.build.version.emui", ""));
+    }
 }

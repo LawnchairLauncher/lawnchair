@@ -40,6 +40,9 @@ class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
         if (packageUser == null) {
             return super.getAllProviders(null);
         }
+        if (isBlacklisted(packageUser.mPackageName)){
+            return Collections.emptyList();
+        }
         return mAppWidgetManager.getInstalledProvidersForPackage(packageUser.mPackageName,
                 packageUser.mUser);
     }

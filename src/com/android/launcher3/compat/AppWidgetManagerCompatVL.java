@@ -54,8 +54,19 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             for (UserHandle user : mUserManager.getUserProfiles()) {
                 providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
             }
+            Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+            while (iterator.hasNext()) {
+                if (isBlacklisted(iterator.next().provider.getPackageName())) {
+                    iterator.remove();
+                }
+            }
             return providers;
         }
+
+        if (isBlacklisted(packageUser.mPackageName)) {
+            return Collections.emptyList();
+        }
+
         // Only get providers for the given package/user.
         List<AppWidgetProviderInfo> providers = new ArrayList<>(mAppWidgetManager
                 .getInstalledProvidersForProfile(packageUser.mUser));
@@ -69,8 +80,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
-            Bundle options) {
+    public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info, Bundle options) {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             return false;
         }
@@ -101,7 +111,8 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         for (UserHandle user : mUserManager.getUserProfiles()) {
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-                result.put(new ComponentKey(info.provider, user), info);
+                if (!isBlacklisted(info.provider.getPackageName()))
+                    result.put(new ComponentKey(info.provider, user), info);
             }
         }
         return result;
