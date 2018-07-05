@@ -189,6 +189,7 @@ public class AlphabeticalAppsList {
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
+    private AppInfoComparator mSearchAppNameComparator;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -198,8 +199,9 @@ public class AlphabeticalAppsList {
     public AlphabeticalAppsList(Context context) {
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
-        mAppNameComparator = new AppInfoComparator(context);
         mSeparateWorkApps = Utilities.getLawnchairPrefs(context).getSeparateWorkApps();
+        mAppNameComparator = new AppInfoComparator(context, mSeparateWorkApps);
+        mSearchAppNameComparator = new AppInfoComparator(context, false);
     }
 
     /**
@@ -521,7 +523,7 @@ public class AlphabeticalAppsList {
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
-            if (lastUser != null && !Objects.equals(lastUser, info.user) && mSeparateWorkApps) {
+            if (lastUser != null && !Objects.equals(lastUser, info.user) && mSeparateWorkApps && mSearchResults == null) {
                 mAdapterItems.add(AdapterItem.asWorkAppsDivider(position++));
             }
             lastUser = info.user;
@@ -666,7 +668,9 @@ public class AlphabeticalAppsList {
                     result.add(discoveryAppInfo);
                 }
             }
-            Collections.sort(result, mAppNameComparator);
+            Collections.sort(result, mSearchAppNameComparator);
+        } else if (mSeparateWorkApps) {
+            Collections.sort(result, mSearchAppNameComparator);
         }
         return result;
     }

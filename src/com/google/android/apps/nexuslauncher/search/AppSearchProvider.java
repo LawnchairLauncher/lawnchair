@@ -14,10 +14,8 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.allapps.AppInfoComparator;
@@ -32,13 +30,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 public class AppSearchProvider extends ContentProvider
 {
@@ -221,7 +213,7 @@ public class AppSearchProvider extends ContentProvider
                 }
             }
 
-            Collections.sort(list, new AppInfoComparator(this.mApp.getContext()));
+            Collections.sort(list, new AppInfoComparator(this.mApp.getContext(), false));
             return list;
         }
 

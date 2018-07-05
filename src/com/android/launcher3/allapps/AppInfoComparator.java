@@ -18,9 +18,7 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
-
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.LabelComparator;
 
@@ -37,11 +35,11 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     private final LabelComparator mLabelComparator;
     private final boolean mSeparateWorkApps;
 
-    public AppInfoComparator(Context context) {
+    public AppInfoComparator(Context context, boolean separateWorkApps) {
         mUserManager = UserManagerCompat.getInstance(context);
         mMyUser = Process.myUserHandle();
         mLabelComparator = new LabelComparator();
-        mSeparateWorkApps = Utilities.getLawnchairPrefs(context).getSeparateWorkApps();
+        mSeparateWorkApps = separateWorkApps;
     }
 
     @Override
