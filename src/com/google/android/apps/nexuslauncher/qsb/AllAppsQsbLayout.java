@@ -8,6 +8,7 @@ import android.support.animation.SpringAnimation;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,18 +59,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 allAppsQsbLayout.setTranslationY(Math.round(mStartY + v));
             }
         }, 0f);
-    }
-
-    private void searchFallback() {
-        if (mFallback != null) {
-            mFallback.showKeyboard();
-            return;
-        }
-        setOnClickListener(null);
-        mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
-        mFallback.bu(this, mApps, mRecyclerView);
-        addView(mFallback);
-        mFallback.showKeyboard();
     }
 
     public void addOnScrollRangeChangeListener(final SearchUiManager.OnScrollRangeChangeListener onScrollRangeChangeListener) {
@@ -159,15 +148,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void onClick(final View view) {
         super.onClick(view);
-        if (view == this) {
-            if (!Utilities.ATLEAST_OREO) {
-                searchFallback();
-                return;
+        if (view == this && (mFallback == null || mFallback.getVisibility() == View.GONE)) {
+            if (Utilities.ATLEAST_OREO) {
+                final ConfigBuilder config = new ConfigBuilder(this, true);
+                if (mActivity.getGoogleNow().startSearch(config.build(), config.getExtras())) {
+                    return;
+                }
             }
-            final ConfigBuilder f = new ConfigBuilder(this, true);
-            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
-                searchFallback();
-            }
+            startAppsSearch();
         }
     }
 
@@ -186,7 +174,22 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     @Override
     public void startAppsSearch() {
-        onClick(this);
+        if (mFallback == null) {
+            mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater()
+                    .inflate(R.layout.all_apps_google_search_fallback, this, false);
+            mFallback.initialize(this, mApps, mRecyclerView);
+            mFallback.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus && TextUtils.isEmpty(mFallback.getText())) {
+                        mFallback.setVisibility(View.GONE);
+                    }
+                }
+            });
+            addView(mFallback);
+        }
+        mFallback.setVisibility(View.VISIBLE);
+        mFallback.showKeyboard();
     }
 
     public void refreshSearchResult() {
