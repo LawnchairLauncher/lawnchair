@@ -1381,7 +1381,6 @@ public class Workspace extends PagedView
                 (amount >= 0 && (!hasCustomContent() || !mIsRtl));
 
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
-                !mLauncher.isAllAppsVisible() &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
