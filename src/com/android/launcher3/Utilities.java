@@ -125,6 +125,16 @@ public final class Utilities {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
+    public static final String THEME_OVERRIDE_KEY = "pref_override_theme";
+
+    public static int getThemeHints(Context context, int wallpaperHints) {
+        String hints = getPrefs(context).getString(THEME_OVERRIDE_KEY, "");
+        if (TextUtils.isEmpty(hints)) {
+            return wallpaperHints;
+        }
+        return Integer.valueOf(hints);
+    }
+
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
 
     public static boolean isPropertyEnabled(String propertyName) {

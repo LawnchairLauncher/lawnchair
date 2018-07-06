@@ -124,6 +124,13 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         mListeners.add(listener);
     }
 
+    @Override
+    public void updateAllListeners() {
+        for (OnColorsChangedListenerCompat listener : mListeners) {
+            listener.onColorsChanged(mColorsCompat, FLAG_SYSTEM);
+        }
+    }
+
     private void reloadColors() {
         JobInfo job = new JobInfo.Builder(Utilities.WALLPAPER_COMPAT_JOB_ID,
                 new ComponentName(mContext, ColorExtractionService.class))

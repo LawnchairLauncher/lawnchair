@@ -51,6 +51,8 @@ public abstract class WallpaperManagerCompat {
 
     public abstract void addOnColorsChangedListener(OnColorsChangedListenerCompat listener);
 
+    public abstract void updateAllListeners();
+
     /**
      * Interface definition for a callback to be invoked when colors change on a wallpaper.
      */

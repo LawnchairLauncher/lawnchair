@@ -19,6 +19,7 @@ public class NexusLauncherActivity extends Launcher {
     private final static String PREF_IS_RELOAD = "pref_reload_workspace";
     private NexusLauncher mLauncher;
     private boolean mIsReload;
+    private String mThemeHints;
 
     public NexusLauncherActivity() {
         mLauncher = new NexusLauncher(this);
@@ -27,6 +28,8 @@ public class NexusLauncherActivity extends Launcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         FeatureFlags.QSB_ON_FIRST_SCREEN = showSmartspace();
+        mThemeHints = themeHints();
+
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = Utilities.getPrefs(this);
@@ -41,7 +44,7 @@ public class NexusLauncherActivity extends Launcher {
     @Override
     public void onStart() {
         super.onStart();
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace()) {
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace() || !mThemeHints.equals(themeHints())) {
             Utilities.getPrefs(this).edit().putBoolean(PREF_IS_RELOAD, true).apply();
             if (Utilities.ATLEAST_NOUGAT) {
                 recreate();
@@ -63,6 +66,10 @@ public class NexusLauncherActivity extends Launcher {
 
     private boolean showSmartspace() {
         return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
+    }
+
+    private String themeHints() {
+        return Utilities.getPrefs(this).getString(Utilities.THEME_OVERRIDE_KEY, "");
     }
 
     public void overrideTheme(boolean isDark, boolean supportsDarkText) {
