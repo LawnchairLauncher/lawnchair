@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">गोलाकार चौरस</string>
     <string name="smartspace_hours_mins">%1$s:%2$s</string>
     <string name="icon_shape_cylinder">सिलेंडर</string>
+    <string name="theme_title">थीम</string>
+    <string name="theme_automatic">स्वयंचलित</string>
+    <string name="theme_default">डीफॉल्ट</string>
+    <string name="theme_light">हलका</string>
+    <string name="theme_dark">गडद</string>
 </resources>

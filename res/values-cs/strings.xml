@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Válec</string>
+    <string name="theme_title">Téma</string>
+    <string name="theme_automatic">Automatický</string>
+    <string name="theme_default">Výchozí nastavení</string>
+    <string name="theme_light">Světlo</string>
+    <string name="theme_dark">Temný</string>
 </resources>

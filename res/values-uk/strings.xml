@@ -151,4 +151,9 @@
     <string name="icon_shape_rounded_square">Заокруглений квадрат</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Циліндр</string>
+    <string name="theme_title">Тема</string>
+    <string name="theme_automatic">Автоматичний</string>
+    <string name="theme_default">За замовчуванням</string>
+    <string name="theme_light">Світло</string>
+    <string name="theme_dark">Темно</string>
 </resources>

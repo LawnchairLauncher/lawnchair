@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cylindre</string>
+    <string name="theme_title">Thème</string>
+    <string name="theme_automatic">Automatique</string>
+    <string name="theme_default">Défaut</string>
+    <string name="theme_light">Lumière</string>
+    <string name="theme_dark">Foncé</string>
 </resources>

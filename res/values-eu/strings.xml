@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Ertz biribilduko karratua</string>
     <string name="smartspace_hours_mins">%1$s eta %2$s</string>
     <string name="icon_shape_cylinder">Zilindro</string>
+    <string name="theme_title">Gaia</string>
+    <string name="theme_automatic">Automatikoa</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Argia</string>
+    <string name="theme_dark">Iluna</string>
 </resources>

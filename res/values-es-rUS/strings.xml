@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cilindro</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automático</string>
+    <string name="theme_default">Defecto</string>
+    <string name="theme_light">Ligero</string>
+    <string name="theme_dark">Oscuro</string>
 </resources>

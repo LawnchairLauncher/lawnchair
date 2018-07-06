@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Katror i rrumbullakosur</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cilindër</string>
+    <string name="theme_title">Temë</string>
+    <string name="theme_automatic">Automatik</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Dritë</string>
+    <string name="theme_dark">I errët</string>
 </resources>

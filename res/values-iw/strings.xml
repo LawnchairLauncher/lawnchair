@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">ריבוע בעל פינות מעוגלות</string>
     <string name="smartspace_hours_mins">%1$s, %2$s</string>
     <string name="icon_shape_cylinder">צִילִינדֶר</string>
+    <string name="theme_title">נושא</string>
+    <string name="theme_automatic">אוֹטוֹמָטִי</string>
+    <string name="theme_default">בְּרִירַת מֶחדָל</string>
+    <string name="theme_light">אוֹר</string>
+    <string name="theme_dark">אפל</string>
 </resources>

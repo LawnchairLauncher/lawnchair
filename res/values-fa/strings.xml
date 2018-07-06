@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">مربع با گوشه‌های گرد</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">سیلندر</string>
+    <string name="theme_title">موضوع</string>
+    <string name="theme_automatic">خودکار</string>
+    <string name="theme_default">پیش فرض</string>
+    <string name="theme_light">سبک</string>
+    <string name="theme_dark">تاریکی</string>
 </resources>

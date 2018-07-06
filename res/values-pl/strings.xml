@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="theme_title">Motyw</string>
+    <string name="theme_automatic">Automatyczny</string>
+    <string name="theme_default">Domyślnie</string>
+    <string name="theme_light">Jasny</string>
+    <string name="theme_dark">Ciemny</string>
 </resources>

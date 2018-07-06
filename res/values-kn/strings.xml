@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">ಚೌಕವನ್ನು ದುಂಡಾಗಿಸಲಾಗಿದೆ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">ಸಿಲಿಂಡರ್</string>
+    <string name="theme_title">ಥೀಮ್</string>
+    <string name="theme_automatic">ಸ್ವಯಂಚಾಲಿತ</string>
+    <string name="theme_default">ಡೀಫಾಲ್ಟ್</string>
+    <string name="theme_light">ಬೆಳಕು</string>
+    <string name="theme_dark">ಡಾರ್ಕ್</string>
 </resources>

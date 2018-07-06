@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">مربّع دائري</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">أسطوانة</string>
+    <string name="theme_title">موضوع</string>
+    <string name="theme_automatic">تلقائي</string>
+    <string name="theme_default">افتراضي</string>
+    <string name="theme_light">ضوء</string>
+    <string name="theme_dark">داكن</string>
 </resources>

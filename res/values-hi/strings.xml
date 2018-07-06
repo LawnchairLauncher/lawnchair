@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">गोल कोने वाला वर्ग</string>
     <string name="smartspace_hours_mins">%1$s घंटे %2$s मिनट</string>
     <string name="icon_shape_cylinder">सिलेंडर</string>
+    <string name="theme_title">विषय</string>
+    <string name="theme_automatic">स्वचालित</string>
+    <string name="theme_default">चूक</string>
+    <string name="theme_light">रोशनी</string>
+    <string name="theme_dark">अंधेरा</string>
 </resources>

@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Kənarları dairəvi kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silindir</string>
+    <string name="theme_title">Mövzu</string>
+    <string name="theme_automatic">Avtomatik</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">İşıq</string>
+    <string name="theme_dark">Qaranlıq</string>
 </resources>

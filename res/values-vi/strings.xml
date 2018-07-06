@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Hình vuông có các góc được bo góc</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Hình trụ</string>
+    <string name="theme_title">Chủ đề</string>
+    <string name="theme_automatic">Tự động</string>
+    <string name="theme_default">Mặc định</string>
+    <string name="theme_light">Ánh sáng</string>
+    <string name="theme_dark">Tối</string>
 </resources>

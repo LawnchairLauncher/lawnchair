@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Rúnnaður ferningur</string>
     <string name="smartspace_hours_mins">%1$s og %2$s</string>
     <string name="icon_shape_cylinder">Sívalningur</string>
+    <string name="theme_title">Þema</string>
+    <string name="theme_automatic">Sjálfvirk</string>
+    <string name="theme_default">Sjálfgefið</string>
+    <string name="theme_light">Ljós</string>
+    <string name="theme_dark">Myrkur</string>
 </resources>

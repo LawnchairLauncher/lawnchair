@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Pyöreäkulmainen neliö</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Sylinteri</string>
+    <string name="theme_title">Teema</string>
+    <string name="theme_automatic">Automaattinen</string>
+    <string name="theme_default">Oletusarvo</string>
+    <string name="theme_light">Valo</string>
+    <string name="theme_dark">Tumma</string>
 </resources>

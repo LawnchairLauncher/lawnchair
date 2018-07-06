@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Lekerekített sarkú négyzet</string>
     <string name="smartspace_hours_mins">%1$s:%2$s</string>
     <string name="icon_shape_cylinder">Henger</string>
+    <string name="theme_title">Téma</string>
+    <string name="theme_automatic">Automatikus</string>
+    <string name="theme_default">Alapértelmezett</string>
+    <string name="theme_light">Fény</string>
+    <string name="theme_dark">Sötét</string>
 </resources>

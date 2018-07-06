@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Segi empat sama berbucu bulat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silinder</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automatik</string>
+    <string name="theme_default">Lalai</string>
+    <string name="theme_light">Cahaya</string>
+    <string name="theme_dark">Gelap</string>
 </resources>

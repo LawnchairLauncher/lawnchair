@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Yuvarlanmış kare</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silindir</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Otomatik</string>
+    <string name="theme_default">Varsayılan</string>
+    <string name="theme_light">Işık</string>
+    <string name="theme_dark">Karanlık</string>
 </resources>

@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">Bilugang parisukat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silindro</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Awtomatikong</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Banayad</string>
+    <string name="theme_dark">Madilim</string>
 </resources>

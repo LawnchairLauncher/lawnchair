@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">ការ៉េមានជ្រុងកោង</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">ស៊ីឡាំង</string>
+    <string name="theme_title">ស្បែក</string>
+    <string name="theme_automatic">ដោយស្វ័យប្រវត្តិ</string>
+    <string name="theme_default">លំនាំដើម</string>
+    <string name="theme_light">ពន្លឺ</string>
+    <string name="theme_dark">ងងឹត</string>
 </resources>

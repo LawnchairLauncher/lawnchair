@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cilindar</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automatski</string>
+    <string name="theme_default">Zadano</string>
+    <string name="theme_light">Svjetlo</string>
+    <string name="theme_dark">Mrak</string>
 </resources>

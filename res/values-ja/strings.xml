@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">ラウンデッド スクエア</string>
     <string name="smartspace_hours_mins">%1$s%2$s</string>
     <string name="icon_shape_cylinder">シリンダー</string>
+    <string name="theme_title">テーマ</string>
+    <string name="theme_automatic">自動</string>
+    <string name="theme_default">デフォルト</string>
+    <string name="theme_light">光</string>
+    <string name="theme_dark">ダーク</string>
 </resources>

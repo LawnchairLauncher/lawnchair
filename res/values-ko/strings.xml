@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">모서리가 둥근 정사각형</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">실린더</string>
+    <string name="theme_title">테마</string>
+    <string name="theme_automatic">오토매틱</string>
+    <string name="theme_default">태만</string>
+    <string name="theme_light">빛</string>
+    <string name="theme_dark">어두운</string>
 </resources>

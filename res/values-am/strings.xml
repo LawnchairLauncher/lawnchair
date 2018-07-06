@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">ክብ ካሬ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">ሲሊንደር</string>
+    <string name="theme_title">ገጽታ</string>
+    <string name="theme_automatic">ራስ-ሰር</string>
+    <string name="theme_default">ነባሪ</string>
+    <string name="theme_light">ብርሃን</string>
+    <string name="theme_dark">ጨለማ</string>
 </resources>

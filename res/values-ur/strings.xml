@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">گول مربع</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">سلنڈر</string>
+    <string name="theme_title">خیالیہ</string>
+    <string name="theme_automatic">خود کار طریقے سے</string>
+    <string name="theme_default">پہلے سے طے شدہ</string>
+    <string name="theme_light">روشنی</string>
+    <string name="theme_dark">اندھیرے</string>
 </resources>

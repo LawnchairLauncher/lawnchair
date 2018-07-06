@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">වටකුරු සමචතුරස්‍රය</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">සිලින්ඩර්</string>
+    <string name="theme_title">තේමාව</string>
+    <string name="theme_automatic">ස්වයංක්රීයව</string>
+    <string name="theme_default">පෙරනිමි</string>
+    <string name="theme_light">ආලෝකය</string>
+    <string name="theme_dark">අඳුරු</string>
 </resources>

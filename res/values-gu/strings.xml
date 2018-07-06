@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">ગોળાકાર ચોરસ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">સિલિન્ડર</string>
+    <string name="theme_title">થીમ</string>
+    <string name="theme_automatic">આપોઆપ</string>
+    <string name="theme_default">ડિફૉલ્ટ</string>
+    <string name="theme_light">પ્રકાશ</string>
+    <string name="theme_dark">ડાર્ક</string>
 </resources>

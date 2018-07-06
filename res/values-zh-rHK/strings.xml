@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">圓角正方形</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">圆筒</string>
+    <string name="theme_title">主題</string>
+    <string name="theme_automatic">自動</string>
+    <string name="theme_default">默認</string>
+    <string name="theme_light">光</string>
+    <string name="theme_dark">黑暗</string>
 </resources>

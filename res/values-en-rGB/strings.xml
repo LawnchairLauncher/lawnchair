@@ -150,4 +150,9 @@
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_automatic">Automatic</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 </resources>

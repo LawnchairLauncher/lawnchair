@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Vierkant met geronde hoeke</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silinder</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Outomatiese</string>
+    <string name="theme_default">Verstek</string>
+    <string name="theme_light">Lig</string>
+    <string name="theme_dark">Donker</string>
 </resources>

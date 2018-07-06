@@ -149,4 +149,9 @@
     <string name="icon_shape_rounded_square">Квадрат заобљених углова</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Цилиндар.</string>
+    <string name="theme_title">Тема</string>
+    <string name="theme_automatic">Аутоматски</string>
+    <string name="theme_default">Уобичајено</string>
+    <string name="theme_light">Светло</string>
+    <string name="theme_dark">Дарк</string>
 </resources>

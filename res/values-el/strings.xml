@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Κύλινδρος</string>
+    <string name="theme_title">Θέμα</string>
+    <string name="theme_automatic">Αυτόματο</string>
+    <string name="theme_default">Προκαθορισμένο</string>
+    <string name="theme_light">Φωτεινό</string>
+    <string name="theme_dark">Σκοτεινό</string>
 </resources>

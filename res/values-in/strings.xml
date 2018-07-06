@@ -149,4 +149,9 @@
     <string name="icon_shape_rounded_square">Persegi membulat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Silinder</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Otomatis</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Cahaya</string>
+    <string name="theme_dark">Gelap</string>
 </resources>

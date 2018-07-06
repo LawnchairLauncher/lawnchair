@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Квадрат са скругленымі вугламі</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Цыліндр</string>
+    <string name="theme_title">Тэма</string>
+    <string name="theme_automatic">Аўтаматычная</string>
+    <string name="theme_default">Дэфолт</string>
+    <string name="theme_light">Святло</string>
+    <string name="theme_dark">Цёмна</string>
 </resources>

@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Burchaklari ovalsimon kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Shiling</string>
+    <string name="theme_title">Mavzu</string>
+    <string name="theme_automatic">Avtomatik</string>
+    <string name="theme_default">Standart</string>
+    <string name="theme_light">Nur</string>
+    <string name="theme_dark">Qorong'i</string>
 </resources>

@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Suapvalintas kvadratas</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cilindras</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automatinis</string>
+    <string name="theme_default">Numatytas</string>
+    <string name="theme_light">Šviesa</string>
+    <string name="theme_dark">Tamsus</string>
 </resources>

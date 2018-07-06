@@ -147,4 +147,9 @@
     <string name="icon_shape_rounded_square">Isikwele esijikelezayo</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">I-Cylinder</string>
+    <string name="theme_title">Isihloko</string>
+    <string name="theme_automatic">Ngokuzenzekelayo</string>
+    <string name="theme_default">Okuzenzakalelayo</string>
+    <string name="theme_light">Ukukhanya</string>
+    <string name="theme_dark">Umnyama</string>
 </resources>

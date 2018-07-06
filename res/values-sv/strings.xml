@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Rundad kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automatisk</string>
+    <string name="theme_default">Standard</string>
+    <string name="theme_light">Ljus</string>
+    <string name="theme_dark">Mörk</string>
 </resources>

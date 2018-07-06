@@ -152,4 +152,9 @@
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="icon_shape_cylinder">Cilindru</string>
+    <string name="theme_title">Temă</string>
+    <string name="theme_automatic">Automat</string>
+    <string name="theme_default">Mod implicit</string>
+    <string name="theme_light">Ușoară</string>
+    <string name="theme_dark">Întuneric</string>
 </resources>
