@@ -152,4 +152,5 @@
     <string name="theme_default">Defecto</string>
     <string name="theme_light">Ligero</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="theme_transparent">Transparente</string>
 </resources>

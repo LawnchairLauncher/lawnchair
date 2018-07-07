@@ -152,4 +152,5 @@
     <string name="theme_default">ਡਿਫੌਲਟ</string>
     <string name="theme_light">ਲਾਈਟ</string>
     <string name="theme_dark">ਹਨੇਰ</string>
+    <string name="theme_transparent">ਪਾਰਦਰਸ਼ੀ</string>
 </resources>

@@ -157,4 +157,5 @@
     <string name="theme_default">Štandardné</string>
     <string name="theme_light">Svetlo</string>
     <string name="theme_dark">Tmavý</string>
+    <string name="theme_transparent">Priehľadný</string>
 </resources>

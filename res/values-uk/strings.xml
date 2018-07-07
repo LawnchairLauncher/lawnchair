@@ -156,4 +156,5 @@
     <string name="theme_default">За замовчуванням</string>
     <string name="theme_light">Світло</string>
     <string name="theme_dark">Темно</string>
+    <string name="theme_transparent">Прозорий</string>
 </resources>

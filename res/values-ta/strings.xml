@@ -152,4 +152,5 @@
     <string name="theme_default">இயல்புநிலை</string>
     <string name="theme_light">ஒளி</string>
     <string name="theme_dark">டார்க்</string>
+    <string name="theme_transparent">ஒளி புகும்</string>
 </resources>

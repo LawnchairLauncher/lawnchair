@@ -152,4 +152,5 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">ແສງສະຫວ່າງ</string>
     <string name="theme_dark">ຊ້ໍາ</string>
+    <string name="theme_transparent">Transparent</string>
 </resources>

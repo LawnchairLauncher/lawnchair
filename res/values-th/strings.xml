@@ -155,4 +155,5 @@
     <string name="theme_default">ค่าเริ่มต้น</string>
     <string name="theme_light">เบา</string>
     <string name="theme_dark">มืด</string>
+    <string name="theme_transparent">โปร่งใส</string>
 </resources>

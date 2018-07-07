@@ -155,4 +155,5 @@
     <string name="theme_default">Zadano</string>
     <string name="theme_light">Svjetlo</string>
     <string name="theme_dark">Mrak</string>
+    <string name="theme_transparent">Transparentan</string>
 </resources>

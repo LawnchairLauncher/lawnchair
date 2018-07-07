@@ -152,4 +152,5 @@
     <string name="theme_default">पूर्वनिर्धारित</string>
     <string name="theme_light">लाइट</string>
     <string name="theme_dark">गाढा</string>
+    <string name="theme_transparent">पारदर्शी</string>
 </resources>

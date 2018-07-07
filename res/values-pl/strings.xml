@@ -157,4 +157,5 @@
     <string name="theme_default">Domyślnie</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_dark">Ciemny</string>
+    <string name="theme_transparent">Przezroczysty</string>
 </resources>

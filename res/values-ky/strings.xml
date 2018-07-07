@@ -152,4 +152,5 @@
     <string name="theme_default">По умолчанию</string>
     <string name="theme_light">Жарык</string>
     <string name="theme_dark">Караңгы</string>
+    <string name="theme_transparent">Тунук</string>
 </resources>

@@ -155,4 +155,5 @@
     <string name="theme_default">Misligholde</string>
     <string name="theme_light">Lys</string>
     <string name="theme_dark">Mørk</string>
+    <string name="theme_transparent">Gjennomsiktig</string>
 </resources>

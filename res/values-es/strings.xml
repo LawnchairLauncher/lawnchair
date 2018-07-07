@@ -157,4 +157,5 @@
     <string name="theme_default">Estandar</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="theme_transparent">Transparente</string>
 </resources>

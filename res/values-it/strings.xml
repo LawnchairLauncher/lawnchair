@@ -157,4 +157,5 @@
     <string name="theme_default">Predefinito</string>
     <string name="theme_light">Leggero</string>
     <string name="theme_dark">Buio</string>
+    <string name="theme_transparent">Trasparente</string>
 </resources>

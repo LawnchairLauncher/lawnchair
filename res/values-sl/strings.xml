@@ -155,4 +155,5 @@
     <string name="theme_default">Privzeto</string>
     <string name="theme_light">Svetloba</string>
     <string name="theme_dark">Temno</string>
+    <string name="theme_transparent">Pregleden</string>
 </resources>

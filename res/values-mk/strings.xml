@@ -152,4 +152,5 @@
     <string name="theme_default">Стандардно</string>
     <string name="theme_light">Светлина</string>
     <string name="theme_dark">Темно</string>
+    <string name="theme_transparent">Транспарентен</string>
 </resources>

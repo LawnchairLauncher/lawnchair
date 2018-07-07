@@ -152,4 +152,5 @@
     <string name="theme_default">Predeterminado</string>
     <string name="theme_light">Luz</string>
     <string name="theme_dark">Escuro</string>
+    <string name="theme_transparent">Transparente</string>
 </resources>

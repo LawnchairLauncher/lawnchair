@@ -154,4 +154,5 @@
     <string name="theme_default">Padrão</string>
     <string name="theme_light">Branco</string>
     <string name="theme_dark">Escuro</string>
+    <string name="theme_transparent">Transparente</string>
 </resources>

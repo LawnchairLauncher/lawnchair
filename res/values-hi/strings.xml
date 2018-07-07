@@ -157,4 +157,5 @@
     <string name="theme_default">चूक</string>
     <string name="theme_light">रोशनी</string>
     <string name="theme_dark">अंधेरा</string>
+    <string name="theme_transparent">पारदर्शक</string>
 </resources>

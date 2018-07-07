@@ -155,4 +155,5 @@
     <string name="theme_default">默认</string>
     <string name="theme_light">光</string>
     <string name="theme_dark">黑暗</string>
+    <string name="theme_transparent">透明</string>
 </resources>

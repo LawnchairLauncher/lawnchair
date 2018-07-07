@@ -152,4 +152,5 @@
     <string name="theme_default">ডিফল্ট</string>
     <string name="theme_light">আলো</string>
     <string name="theme_dark">অন্ধকার</string>
+    <string name="theme_transparent">স্বচ্ছ</string>
 </resources>

@@ -157,4 +157,5 @@
     <string name="theme_default">افتراضي</string>
     <string name="theme_light">ضوء</string>
     <string name="theme_dark">داكن</string>
+    <string name="theme_transparent">شفاف</string>
 </resources>

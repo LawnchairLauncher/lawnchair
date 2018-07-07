@@ -157,4 +157,5 @@
     <string name="theme_default">בְּרִירַת מֶחדָל</string>
     <string name="theme_light">אוֹר</string>
     <string name="theme_dark">אפל</string>
+    <string name="theme_transparent">שָׁקוּף</string>
 </resources>

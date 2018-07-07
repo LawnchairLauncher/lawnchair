@@ -157,4 +157,5 @@
     <string name="theme_default">デフォルト</string>
     <string name="theme_light">光</string>
     <string name="theme_dark">ダーク</string>
+    <string name="theme_transparent">トランスペアレント</string>
 </resources>

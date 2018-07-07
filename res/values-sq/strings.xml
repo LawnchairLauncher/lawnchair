@@ -152,4 +152,5 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">Dritë</string>
     <string name="theme_dark">I errët</string>
+    <string name="theme_transparent">I tejdukshëm</string>
 </resources>

@@ -157,4 +157,5 @@
     <string name="theme_default">태만</string>
     <string name="theme_light">빛</string>
     <string name="theme_dark">어두운</string>
+    <string name="theme_transparent">투명한</string>
 </resources>

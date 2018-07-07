@@ -152,4 +152,5 @@
     <string name="theme_default">Standart</string>
     <string name="theme_light">Nur</string>
     <string name="theme_dark">Qorong'i</string>
+    <string name="theme_transparent">Shaffof</string>
 </resources>

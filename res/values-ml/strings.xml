@@ -155,4 +155,5 @@
     <string name="theme_default">സ്ഥിരസ്ഥിതി</string>
     <string name="theme_light">വെളിച്ചം</string>
     <string name="theme_dark">ഇരുണ്ടത്</string>
+    <string name="theme_transparent">സുതാര്യം</string>
 </resources>

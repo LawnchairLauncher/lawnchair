@@ -157,4 +157,5 @@
     <string name="theme_default">Oletusarvo</string>
     <string name="theme_light">Valo</string>
     <string name="theme_dark">Tumma</string>
+    <string name="theme_transparent">Läpinäkyvä</string>
 </resources>

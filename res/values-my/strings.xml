@@ -152,4 +152,5 @@
     <string name="theme_default">ပျက်ကွက်</string>
     <string name="theme_light">အလင်း</string>
     <string name="theme_dark">မှောငျမိုကျသော</string>
+    <string name="theme_transparent">ကြည်လင်သော</string>
 </resources>

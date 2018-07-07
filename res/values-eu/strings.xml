@@ -152,4 +152,5 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">Argia</string>
     <string name="theme_dark">Iluna</string>
+    <string name="theme_transparent">Gardena</string>
 </resources>

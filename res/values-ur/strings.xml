@@ -152,4 +152,5 @@
     <string name="theme_default">پہلے سے طے شدہ</string>
     <string name="theme_light">روشنی</string>
     <string name="theme_dark">اندھیرے</string>
+    <string name="theme_transparent">شفاف</string>
 </resources>

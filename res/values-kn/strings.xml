@@ -155,4 +155,5 @@
     <string name="theme_default">ಡೀಫಾಲ್ಟ್</string>
     <string name="theme_light">ಬೆಳಕು</string>
     <string name="theme_dark">ಡಾರ್ಕ್</string>
+    <string name="theme_transparent">ಪಾರದರ್ಶಕ</string>
 </resources>

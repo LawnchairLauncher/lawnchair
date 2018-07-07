@@ -157,4 +157,5 @@
     <string name="theme_default">Mặc định</string>
     <string name="theme_light">Ánh sáng</string>
     <string name="theme_dark">Tối</string>
+    <string name="theme_transparent">Trong suốt</string>
 </resources>

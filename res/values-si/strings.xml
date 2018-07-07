@@ -152,4 +152,5 @@
     <string name="theme_default">පෙරනිමි</string>
     <string name="theme_light">ආලෝකය</string>
     <string name="theme_dark">අඳුරු</string>
+    <string name="theme_transparent">විනිවිද පෙනෙන</string>
 </resources>
