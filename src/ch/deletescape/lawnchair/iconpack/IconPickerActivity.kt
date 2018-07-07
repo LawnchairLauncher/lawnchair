@@ -136,9 +136,9 @@ class IconPickerActivity : SettingsBaseActivity() {
 
         private const val EXTRA_ICON_PACK = "pack"
 
-        fun newIntent(context: Context, iconPack: IconPack): Intent {
+        fun newIntent(context: Context, packageName: String): Intent {
             return Intent(context, IconPickerActivity::class.java).apply {
-                putExtra(EXTRA_ICON_PACK, iconPack.packPackageName)
+                putExtra(EXTRA_ICON_PACK, packageName)
             }
         }
     }

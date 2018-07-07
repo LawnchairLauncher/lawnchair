@@ -18,6 +18,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import java.lang.ref.WeakReference
 
 class EditIconActivity : SettingsBaseActivity() {
 
@@ -32,8 +33,8 @@ class EditIconActivity : SettingsBaseActivity() {
         } else null
     }
     private val iconPacks by lazy {
-        listOf(iconPackManager.defaultPack) + iconPackManager.getPackProviders()
-                .map { iconPackManager.getIconPack(it, false, true) }.sortedBy { it.displayName }
+        listOf(IconPackInfo("")) + iconPackManager.getPackProviders()
+                .map { IconPackInfo(it) }.sortedBy { it.title }
     }
     private val icons by lazy {
         component?.let { iconPacks.mapNotNull { it.getEntryForComponent(component!!) } }
@@ -47,15 +48,21 @@ class EditIconActivity : SettingsBaseActivity() {
 
         LooperExecutor(LauncherModel.getWorkerLooper()).execute {
             iconPacks
+            runOnUiThread(::bindPacks)
             if (component != null) icons
-            runOnUiThread { bindViews() }
+            runOnUiThread(::bindIcons)
         }
     }
 
-    fun bindViews() {
+    private fun bindPacks() {
         originalIcon.setImageDrawable(LawnchairLauncher.currentEditIcon)
         originalIcon.setOnClickListener { onSelectIcon(null) }
 
+        iconPackRecyclerView.adapter = IconPackAdapter()
+        iconPackRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun bindIcons() {
         if (component != null) {
             iconRecyclerView.adapter = IconAdapter()
             iconRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -64,11 +71,7 @@ class EditIconActivity : SettingsBaseActivity() {
             iconRecyclerView.visibility = View.GONE
         }
 
-        iconPackRecyclerView.adapter = IconPackAdapter()
-        iconPackRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        findViewById<View>(R.id.loading).visibility = View.GONE
-        findViewById<View>(R.id.main_view).visibility = View.VISIBLE
+        findViewById<View>(R.id.loadingProgressBar).visibility = View.GONE
     }
 
     fun onSelectIcon(entry: IconPack.Entry?) {
@@ -77,8 +80,8 @@ class EditIconActivity : SettingsBaseActivity() {
         finish()
     }
 
-    fun onSelectIconPack(iconPack: IconPack) {
-        startActivityForResult(IconPickerActivity.newIntent(this, iconPack), CODE_PICK_ICON)
+    fun onSelectIconPack(packageName: String) {
+        startActivityForResult(IconPickerActivity.newIntent(this, packageName), CODE_PICK_ICON)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -143,13 +146,36 @@ class EditIconActivity : SettingsBaseActivity() {
                 itemView.setOnClickListener(this)
             }
 
-            fun bind(iconPack: IconPack) {
-                icon.setImageDrawable(iconPack.displayIcon)
-                title.text = iconPack.displayName
+            fun bind(info: IconPackInfo) {
+                icon.setImageDrawable(info.icon)
+                title.text = info.title
             }
 
             override fun onClick(v: View) {
-                onSelectIconPack(iconPacks[adapterPosition])
+                onSelectIconPack(iconPacks[adapterPosition].packageName)
+            }
+        }
+    }
+
+    inner class IconPackInfo(val name: String) {
+
+        val icon = getIconPack().displayIcon
+        val title = getIconPack().displayName
+        val packageName = getIconPack().packPackageName
+
+        var packRef: WeakReference<IconPack>? = null
+
+        private fun getIconPack(): IconPack {
+            if (packRef?.get() == null) {
+                packRef = WeakReference(iconPackManager.getIconPack(name, false, false))
+            }
+            return packRef!!.get()!!
+        }
+
+        fun getEntryForComponent(key: ComponentKey): IconPack.Entry? {
+            return getIconPack().run {
+                ensureInitialLoadComplete()
+                getIconPack().getEntryForComponent(key)
             }
         }
     }

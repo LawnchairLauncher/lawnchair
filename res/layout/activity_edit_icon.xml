@@ -1,83 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     tools:context="ch.deletescape.lawnchair.iconpack.EditIconActivity">
 
-    <include
-        android:id="@+id/loading"
-        layout="@layout/adapter_loading" />
+    <ImageView
+        android:id="@+id/originalIcon"
+        android:layout_width="@dimen/icon_preview_size"
+        android:layout_height="@dimen/icon_preview_size"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/main_view"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/icon_preview_size"
+        android:layout_marginStart="32dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
+        app:layout_constraintStart_toEndOf="@+id/originalIcon"
+        app:layout_constraintTop_toTopOf="@+id/originalIcon"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <ImageView
-            android:id="@+id/originalIcon"
-            android:layout_width="@dimen/icon_preview_size"
-            android:layout_height="@dimen/icon_preview_size"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:scaleType="fitCenter"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@mipmap/ic_launcher" />
+    <ch.deletescape.lawnchair.views.SpringRecyclerView
+        android:id="@+id/iconRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/icon_item" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="1dp"
-            android:layout_height="@dimen/icon_preview_size"
-            android:layout_marginStart="32dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
-            app:layout_constraintStart_toEndOf="@+id/originalIcon"
-            app:layout_constraintTop_toTopOf="@+id/originalIcon"
-            app:layout_constraintVertical_bias="1.0" />
+    <View
+        android:id="@+id/horizontalDivider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/originalIcon" />
 
-        <ch.deletescape.lawnchair.views.SpringRecyclerView
-            android:id="@+id/iconRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/originalIcon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/divider"
-            app:layout_constraintTop_toTopOf="parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            tools:listitem="@layout/icon_item" />
+    <ch.deletescape.lawnchair.views.SpringRecyclerView
+        android:id="@+id/iconPackRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalDivider"
+        tools:listitem="@layout/icon_pack_item" />
 
-        <View
-            android:id="@+id/horizontalDivider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/originalIcon" />
-
-        <ch.deletescape.lawnchair.views.SpringRecyclerView
-            android:id="@+id/iconPackRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalDivider"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            tools:listitem="@layout/icon_pack_item" />
-    </android.support.constraint.ConstraintLayout>
-</FrameLayout>
+    <ProgressBar
+        android:id="@+id/loadingProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="@+id/iconRecyclerView"
+        app:layout_constraintStart_toStartOf="@+id/iconRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/divider" />
+</android.support.constraint.ConstraintLayout>
