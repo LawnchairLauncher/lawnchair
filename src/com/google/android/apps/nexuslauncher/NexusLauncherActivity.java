@@ -50,12 +50,17 @@ public class NexusLauncherActivity extends Launcher {
         super.onStart();
         if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace() || !mThemeHints.equals(themeHints())) {
             Utilities.getPrefs(this).edit().putBoolean(PREF_IS_RELOAD, true).apply();
-            if (Utilities.ATLEAST_NOUGAT) {
-                recreate();
-            } else {
-                finish();
-                startActivity(getIntent());
-            }
+            recreate();
+        }
+    }
+
+    @Override
+    public void recreate() {
+        if (Utilities.ATLEAST_NOUGAT) {
+            super.recreate();
+        } else {
+            finish();
+            startActivity(getIntent());
         }
     }
 
