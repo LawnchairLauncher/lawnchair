@@ -78,21 +78,30 @@ class IconPackManager(private val context: Context) {
         }
     }
 
-    fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack {
+    private inline fun getIconPackInternal(name: String, put: Boolean = true, load: Boolean = false,
+                    callback: (IconPack, Boolean) -> Unit = { _, _ -> }): IconPack {
         if (name == defaultPack.packPackageName) return defaultPack
+        val isFallback: Boolean
         return if (isPackProvider(context, name)) {
+            isFallback = false
             if (put)
                 iconPacks.getOrPut(name, { createPack(name) })
             else
                 iconPacks.getOrElse(name, { createPack(name, false) })
         } else {
+            isFallback = true
             iconPacks.remove(name)
             defaultPack
         }.apply {
             if (load) {
                 ensureInitialLoadComplete()
             }
+            callback.invoke(this, isFallback)
         }
+    }
+
+    fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack {
+        return getIconPackInternal(name, put, load)
     }
 
     private fun createPack(name: String, register: Boolean = true)
@@ -118,8 +127,12 @@ class IconPackManager(private val context: Context) {
                 iconProvider: LawnchairIconProvider?): Drawable {
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
                 ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
-        val pack = customEntry?.run { getIconPack(packPackageName) } ?: currentPack
-        return pack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, customEntry, currentPack, iconProvider)
+        var isFallback = false
+        val pack = customEntry?.run {
+            getIconPackInternal(packPackageName) { _, fallback -> isFallback = fallback }
+        } ?: currentPack
+        return pack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
+                if (isFallback) null else customEntry, currentPack, iconProvider)
     }
 
     fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
