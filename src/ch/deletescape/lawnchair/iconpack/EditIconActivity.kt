@@ -36,9 +36,8 @@ class EditIconActivity : SettingsBaseActivity() {
         listOf(IconPackInfo("")) + iconPackManager.getPackProviders()
                 .map { IconPackInfo(it) }.sortedBy { it.title }
     }
-    private val icons by lazy {
-        component?.let { iconPacks.mapNotNull { it.getEntryForComponent(component!!) } }
-    }
+    private val iconAdapter by lazy { IconAdapter() }
+    private val icons = arrayListOf<AdapterItem>(LoadingItem())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,30 +47,40 @@ class EditIconActivity : SettingsBaseActivity() {
 
         LooperExecutor(LauncherModel.getWorkerLooper()).execute {
             iconPacks
-            runOnUiThread(::bindPacks)
-            if (component != null) icons
-            runOnUiThread(::bindIcons)
+            runOnUiThread(::bindViews)
+            if (component != null) {
+                iconPacks.forEach {
+                    val entry = it.getEntryForComponent(component!!)
+                    if (entry != null) {
+                        runOnUiThread {
+                            val index = icons.size - 1
+                            icons.add(index, IconItem(entry))
+                            iconAdapter.notifyItemInserted(index)
+                        }
+                    }
+                }
+                runOnUiThread {
+                    icons.removeAt(icons.size - 1)
+                    iconAdapter.notifyItemRemoved(icons.size)
+                }
+            }
         }
     }
 
-    private fun bindPacks() {
+    private fun bindViews() {
         originalIcon.setImageDrawable(LawnchairLauncher.currentEditIcon)
         originalIcon.setOnClickListener { onSelectIcon(null) }
 
         iconPackRecyclerView.adapter = IconPackAdapter()
         iconPackRecyclerView.layoutManager = LinearLayoutManager(this)
-    }
 
-    private fun bindIcons() {
         if (component != null) {
-            iconRecyclerView.adapter = IconAdapter()
+            iconRecyclerView.adapter = iconAdapter
             iconRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         } else {
             divider.visibility = View.GONE
             iconRecyclerView.visibility = View.GONE
         }
-
-        findViewById<View>(R.id.loadingProgressBar).visibility = View.GONE
     }
 
     fun onSelectIcon(entry: IconPack.Entry?) {
@@ -95,22 +104,33 @@ class EditIconActivity : SettingsBaseActivity() {
     inner class IconAdapter : RecyclerView.Adapter<IconAdapter.Holder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(LayoutInflater.from(parent.context).inflate(R.layout.icon_item, parent, false))
+            return when (viewType) {
+                0 -> Holder(LayoutInflater.from(parent.context).inflate(R.layout.icon_suggestion_item, parent, false))
+                else -> LoadingHolder(LayoutInflater.from(parent.context).inflate(R.layout.icon_loading, parent, false))
+            }
         }
 
-        override fun getItemCount() = icons?.size ?: 0
+        override fun getItemViewType(position: Int): Int {
+            return when (icons[position]) {
+                is IconItem -> 0
+                else -> 1
+            }
+        }
+
+        override fun getItemCount() = icons.size
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            icons?.get(position)?.let { holder.bind(it) }
+            holder.bind(icons[position])
         }
 
-        inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        open inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
             init {
                 itemView.setOnClickListener(this)
             }
 
-            fun bind(entry: IconPack.Entry) {
+            open fun bind(item: AdapterItem) {
+                val entry = (item as IconItem).entry
                 try {
                     itemView.visibility = View.VISIBLE
                     (itemView as ImageView).setImageDrawable(entry.drawable)
@@ -120,7 +140,18 @@ class EditIconActivity : SettingsBaseActivity() {
             }
 
             override fun onClick(v: View) {
-                onSelectIcon(icons!![adapterPosition])
+                onSelectIcon((icons[adapterPosition] as IconItem).entry)
+            }
+        }
+
+        inner class LoadingHolder(itemView: View) : Holder(itemView) {
+
+            init {
+                itemView.setOnClickListener(null)
+            }
+
+            override fun bind(item: AdapterItem) {
+
             }
         }
     }
@@ -179,6 +210,12 @@ class EditIconActivity : SettingsBaseActivity() {
             }
         }
     }
+
+    open class AdapterItem
+
+    class IconItem(val entry: IconPack.Entry) : AdapterItem()
+
+    class LoadingItem : AdapterItem()
 
     companion object {
 

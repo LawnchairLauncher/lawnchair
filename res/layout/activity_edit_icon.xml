@@ -69,19 +69,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalDivider"
         tools:listitem="@layout/icon_pack_item" />
-
-    <ProgressBar
-        android:id="@+id/loadingProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:indeterminate="true"
-        app:layout_constraintBottom_toBottomOf="@+id/divider"
-        app:layout_constraintEnd_toEndOf="@+id/iconRecyclerView"
-        app:layout_constraintStart_toStartOf="@+id/iconRecyclerView"
-        app:layout_constraintTop_toTopOf="@+id/divider" />
 </android.support.constraint.ConstraintLayout>
