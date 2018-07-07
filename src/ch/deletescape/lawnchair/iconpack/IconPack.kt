@@ -7,12 +7,14 @@ import android.graphics.drawable.Drawable
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.LauncherModel
+import com.android.launcher3.compat.AlphabeticIndexCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Semaphore
 
 abstract class IconPack(val context: Context, val packPackageName: String) {
     private var waiter: Semaphore? = Semaphore(0)
+    private val indexCompat = AlphabeticIndexCompat(context)
 
     fun executeLoadPack() {
         LooperExecutor(LauncherModel.getIconPackLooper()).execute({
@@ -46,6 +48,27 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
                          basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable
 
+    open fun getAllIcons(): List<Category> {
+        ensureInitialLoadComplete()
+        return categorize(entries)
+    }
+
+    protected fun categorize(entries: List<Entry>): List<Category> {
+        val categories = ArrayList<Category>()
+        var category: Category? = null
+        var previousSection = ""
+        entries.sortedBy { it.displayName }.forEach {
+            val currentSection = indexCompat.computeSectionName(it.displayName)
+            if (currentSection != previousSection) {
+                previousSection = currentSection
+                category = Category(currentSection)
+                categories.add(category!!)
+            }
+            category!!.icons.add(it)
+        }
+        return categories
+    }
+
     abstract val entries: List<Entry>
 
     abstract class Entry {
@@ -55,5 +78,10 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
         abstract val drawable: Drawable
 
         abstract fun toCustomEntry(): IconPackManager.CustomIconEntry
+    }
+
+    class Category(val title: String) {
+
+        val icons = ArrayList<Entry>()
     }
 }

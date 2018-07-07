@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
@@ -22,7 +23,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
     private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
-    private val icons = ArrayList<CachedIconEntry>()
+    private val items = ArrayList<AdapterItem>()
     private val adapter = IconGridAdapter()
     private val layoutManager = GridLayoutManager(this, 1)
     private var canceled = false
@@ -82,7 +83,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
     }
 
     private fun getItemSpan(position: Int)
-            = if (adapter.getItemViewType(position) == adapter.TYPE_ITEM) 1 else layoutManager.spanCount
+            = if (adapter.isItem(position)) 1 else layoutManager.spanCount
 
     fun onSelectIcon(entry: IconPack.Entry) {
         val customEntry = entry.toCustomEntry()
@@ -92,32 +93,39 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
     inner class IconGridAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        val TYPE_LOADING = 0
-        val TYPE_ITEM = 1
+        private val loadingType = 0
+        private val itemType = 1
+        private val categoryType = 2
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            return if (getItemViewType(0) == TYPE_ITEM) {
-                IconHolder(layoutInflater.inflate(R.layout.icon_item, parent, false))
-            } else {
-                LoadingHolder(layoutInflater.inflate(R.layout.adapter_loading, parent, false))
+            return when (viewType) {
+                itemType -> IconHolder(layoutInflater.inflate(R.layout.icon_item, parent, false))
+                categoryType -> CategoryHolder(layoutInflater.inflate(R.layout.icon_category, parent, false))
+                else -> LoadingHolder(layoutInflater.inflate(R.layout.adapter_loading, parent, false))
             }
         }
 
-        override fun getItemCount() = Math.max(icons.size, 1)
+        override fun getItemCount() = Math.max(items.size, 1)
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is IconHolder) {
-                holder.bind(icons[position])
+                holder.bind(items[position] as IconItem)
+            } else if (holder is CategoryHolder) {
+                holder.bind(items[position] as CategoryItem)
             }
         }
 
         override fun getItemViewType(position: Int): Int {
-            return if (icons.size != 0)
-                TYPE_ITEM
-            else
-                TYPE_LOADING
+            return when {
+                items.size == 0 -> loadingType
+                items[position] is IconItem -> itemType
+                items[position] is CategoryItem -> categoryType
+                else -> loadingType
+            }
         }
+
+        fun isItem(position: Int) = getItemViewType(position) == itemType
 
         inner class IconHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -129,37 +137,53 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
                 }
             }
 
-            fun bind(cachedEntry: CachedIconEntry) {
+            fun bind(cachedEntry: IconItem) {
                 (itemView as ImageView).setImageDrawable(cachedEntry.drawable)
             }
 
             override fun onClick(v: View) {
-                onSelectIcon(icons[adapterPosition].entry)
+                onSelectIcon((items[adapterPosition] as IconItem).entry)
+            }
+        }
+
+        inner class CategoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+            private val title: TextView = itemView.findViewById(android.R.id.title)
+
+            fun bind(category: CategoryItem) {
+                title.text = category.title
             }
         }
 
         inner class LoadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
-    inner class LoadIconTask : AsyncTask<IconPack, Void, List<CachedIconEntry>>() {
+    inner class LoadIconTask : AsyncTask<IconPack, Void, List<AdapterItem>>() {
 
-        override fun doInBackground(vararg params: IconPack): List<CachedIconEntry> {
+        override fun doInBackground(vararg params: IconPack): List<AdapterItem> {
             val iconPack = params[0]
-            iconPack.ensureInitialLoadComplete()
-
-            val icons = ArrayList<CachedIconEntry>()
-            iconPack.entries.forEach { if (!canceled) icons.add(CachedIconEntry(it, it.drawable)) }
-            return icons
+            val items = ArrayList<AdapterItem>()
+            iconPack.getAllIcons().forEach {
+                items.add(CategoryItem(it.title))
+                it.icons.forEach {
+                    items.add(IconItem(it, it.drawable))
+                }
+            }
+            return items
         }
 
-        override fun onPostExecute(result: List<CachedIconEntry>) {
+        override fun onPostExecute(result: List<AdapterItem>) {
             if (canceled) return
-            icons.addAll(result.sortedBy { it.entry.displayName })
+            items.addAll(result)
             adapter.notifyDataSetChanged()
         }
     }
 
-    class CachedIconEntry(val entry: IconPack.Entry, val drawable: Drawable)
+    open class AdapterItem
+
+    class CategoryItem(val title: String) : AdapterItem()
+
+    class IconItem(val entry: IconPack.Entry, val drawable: Drawable) : AdapterItem()
 
     companion object {
 

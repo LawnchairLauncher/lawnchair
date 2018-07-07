@@ -9,6 +9,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Looper
 import android.util.Log
+import android.util.Xml
+import android.widget.Toast
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -18,6 +20,7 @@ import com.google.android.apps.nexuslauncher.CustomIconUtils
 import com.google.android.apps.nexuslauncher.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
 import java.util.*
 
@@ -177,6 +180,68 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         }
         return basePack.newIcon(icon, itemInfo, null,
                 IconPackManager.getInstance(context).defaultPack, drawableFactory)
+    }
+
+    override fun getAllIcons(): List<Category> {
+        val res = packResources
+        val xmlRes = res.getIdentifier("appfilter", "xml", packPackageName)
+        if (xmlRes != 0) {
+            val categories = ArrayList<Category>()
+            val allIcons = ArrayList<Entry>()
+            var category: Category? = null
+            var entry: Entry
+            try {
+                val parser = getXml("drawable")
+                while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
+                    if (parser.eventType != XmlPullParser.START_TAG) continue
+                    if ("category" == parser.name) {
+                        val title = parser.getAttributeValue(null, "title")
+                        category = Category(title)
+                        categories.add(category)
+                    } else if ("item" == parser.name) {
+                        val drawableName = parser.getAttributeValue(null, "drawable")
+                        val resId = Utilities.parseResourceIdentifier(packResources, "@drawable/$drawableName", packPackageName)
+                        if (resId != 0) {
+                            entry = Entry(drawableName, resId)
+                            allIcons.add(entry)
+                            if (category != null)
+                                category.icons.add(entry)
+                        }
+                    }
+                }
+                if (categories.size == 0) {
+                    return super.categorize(allIcons)
+                }
+                return categories
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return super.getAllIcons()
+    }
+
+    private fun getXml(name: String): XmlPullParser? {
+        val res: Resources
+        try {
+            res = context.packageManager.getResourcesForApplication(packPackageName)
+            val resourceId = res.getIdentifier(name, "xml", packPackageName)
+            return if (0 != resourceId) {
+                context.packageManager.getXml(packPackageName, resourceId, null)
+            } else {
+                val factory = XmlPullParserFactory.newInstance()
+                val parser = factory.newPullParser()
+                parser.setInput(res.assets.open("$name.xml"), Xml.Encoding.UTF_8.toString())
+                parser
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
+        } catch (e: XmlPullParserException) {
+            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
+        }
+
+        return null
     }
 
     fun getDrawable(name: String, density: Int): Drawable? {

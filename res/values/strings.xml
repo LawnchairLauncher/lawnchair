@@ -549,4 +549,5 @@
     <string name="pref_weather_units">Weather Units</string>
     <string name="units_metric">Metric</string>
     <string name="units_imperial">Imperial</string>
+    <string name="all_icons">All icons</string>
 </resources>
