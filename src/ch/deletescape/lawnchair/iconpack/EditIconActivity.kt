@@ -19,6 +19,7 @@ import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.lang.ref.WeakReference
+import java.util.*
 
 class EditIconActivity : SettingsBaseActivity() {
 
@@ -45,20 +46,26 @@ class EditIconActivity : SettingsBaseActivity() {
 
         title = intent.getStringExtra(EXTRA_TITLE)
 
-        LooperExecutor(LauncherModel.getWorkerLooper()).execute {
-            iconPacks
+        LooperExecutor(LauncherModel.getUiWorkerLooper()).execute {
+            val packs = iconPacks.map { it.getIconPack() }
             runOnUiThread(::bindViews)
             if (component != null) {
-                iconPacks.forEach {
-                    val entry = it.getEntryForComponent(component!!)
-                    if (entry != null) {
-                        runOnUiThread {
-                            val index = icons.size - 1
-                            icons.add(index, IconItem(entry))
-                            iconAdapter.notifyItemInserted(index)
+                packs.forEach {
+                    it.addOnLoadCompleteListener {
+                        val entry = it.getEntryForComponent(component!!)
+                        if (entry != null) {
+                            runOnUiThread {
+                                val item = IconItem(entry, it is DefaultPack, it.displayName)
+                                val index = - Collections.binarySearch(icons, item) - 1
+                                if (index >= 0) {
+                                    icons.add(index, item)
+                                    iconAdapter.notifyItemInserted(index)
+                                }
+                            }
                         }
                     }
                 }
+                packs.forEach { it.ensureInitialLoadComplete() }
                 runOnUiThread {
                     icons.removeAt(icons.size - 1)
                     iconAdapter.notifyItemRemoved(icons.size)
@@ -196,26 +203,34 @@ class EditIconActivity : SettingsBaseActivity() {
 
         var packRef: WeakReference<IconPack>? = null
 
-        private fun getIconPack(): IconPack {
+        fun getIconPack(): IconPack {
             if (packRef?.get() == null) {
                 packRef = WeakReference(iconPackManager.getIconPack(name, false, false))
             }
             return packRef!!.get()!!
         }
+    }
 
-        fun getEntryForComponent(key: ComponentKey): IconPack.Entry? {
-            return getIconPack().run {
-                ensureInitialLoadComplete()
-                getIconPack().getEntryForComponent(key)
+    abstract class AdapterItem : Comparable<AdapterItem>
+
+    class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) : AdapterItem() {
+
+        override fun compareTo(other: AdapterItem): Int {
+            if (other is IconItem) {
+                if (isDefault) return -1
+                if (other.isDefault) return 1
+                return title.compareTo(other.title)
             }
+            return -1
         }
     }
 
-    open class AdapterItem
+    class LoadingItem : AdapterItem() {
 
-    class IconItem(val entry: IconPack.Entry) : AdapterItem()
-
-    class LoadingItem : AdapterItem()
+        override fun compareTo(other: AdapterItem): Int {
+            return 1
+        }
+    }
 
     companion object {
 

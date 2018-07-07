@@ -15,12 +15,20 @@ import java.util.concurrent.Semaphore
 abstract class IconPack(val context: Context, val packPackageName: String) {
     private var waiter: Semaphore? = Semaphore(0)
     private val indexCompat = AlphabeticIndexCompat(context)
+    private val loadCompleteListeners = ArrayList<(IconPack) -> Unit>()
 
     fun executeLoadPack() {
         LooperExecutor(LauncherModel.getIconPackLooper()).execute({
             loadPack()
             waiter?.release()
+            loadCompleteListeners.forEach { it.invoke(this) }
+            loadCompleteListeners.clear()
         })
+    }
+
+    fun addOnLoadCompleteListener(listener: (IconPack) -> Unit) {
+        if (waiter != null) loadCompleteListeners.add(listener)
+        else listener.invoke(this)
     }
 
     @Synchronized

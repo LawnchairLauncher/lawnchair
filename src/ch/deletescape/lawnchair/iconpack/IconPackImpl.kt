@@ -38,7 +38,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     init {
         Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper().thread.name}")
         executeLoadPack()
-        Log.d(TAG, "init pack $packPackageName complete")
     }
 
     private val applicationInfo by lazy { context.packageManager.getApplicationInfo(packPackageName, PackageManager.GET_META_DATA) }
@@ -67,6 +66,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun loadPack() {
         try {
+            val startTime = System.currentTimeMillis()
             val pm = context.packageManager
             val res = packResources
             val resId = res.getIdentifier("appfilter", "xml", packPackageName)
@@ -117,6 +117,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     }
                 }
             }
+            val endTime = System.currentTimeMillis()
+            Log.d("IconPackImpl", "completed parsing pack $packPackageName in ${endTime - startTime}ms")
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         } catch (e: XmlPullParserException) {
