@@ -22,6 +22,7 @@ public class WallpaperColorsCompat {
 
     public static final int HINT_SUPPORTS_DARK_TEXT = 0x1;
     public static final int HINT_SUPPORTS_DARK_THEME = 0x2;
+    public static final int HINT_SUPPORTS_TRANSPARENCY = 0x4;
 
     private final int mPrimaryColor;
     private final int mSecondaryColor;

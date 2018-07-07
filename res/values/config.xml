@@ -165,11 +165,13 @@
         <item></item>
         <item>0</item>
         <item>2</item>
+        <item>4</item>
     </string-array>
 
     <string-array translatable="false" name="theme_override_names">
         <item>@string/theme_automatic</item>
         <item>@string/theme_default</item>
         <item>@string/theme_dark</item>
+        <item>@string/theme_transparent</item>
     </string-array>
 </resources>

@@ -84,6 +84,11 @@
         <item name="android:textColorSecondary">@color/secondary_text_material_dark</item>
     </style>
 
+    <style name="LauncherThemeTransparent" parent="@style/LauncherThemeDark">
+        <item name="allAppsScrimColor">#00FFFFFF</item>
+        <item name="workspaceStatusBarScrim">@null</item>
+    </style>
+
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
     Various foreground colors are overridden to be workspaceTextColor so that they are properly
@@ -209,6 +214,9 @@
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
     <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
+    <style name="GoogleSearchLauncherThemeTransparent" parent="@style/LauncherThemeTransparent">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
     <style name="HotseatQsbTheme">

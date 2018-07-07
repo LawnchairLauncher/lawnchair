@@ -376,7 +376,7 @@ public class Launcher extends BaseActivity
 
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText(), wallpaperColorInfo.isTransparent());
 
         super.onCreate(savedInstanceState);
 
@@ -496,11 +496,13 @@ public class Launcher extends BaseActivity
         recreate();
     }
 
-    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
+    protected void overrideTheme(boolean isDark, boolean supportsDarkText, boolean isTransparent) {
         if (isDark) {
             setTheme(R.style.LauncherThemeDark);
         } else if (supportsDarkText) {
             setTheme(R.style.LauncherThemeDarkText);
+        } else if (isTransparent) {
+            setTheme(R.style.LauncherThemeTransparent);
         }
     }
 
