@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.iconpack
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -209,7 +210,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                         }
                     }
                 }
-                if (categories.size == 0) {
+                if (allIcons.isEmpty()) {
+                    return arrayListOf(Category(context.getString(R.string.no_icon_found)))
+                }
+                if (categories.isEmpty()) {
                     return super.categorize(allIcons)
                 }
                 return categories
@@ -255,6 +259,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable", packPackageName)
+
+    fun createEntry(icon: Intent.ShortcutIconResource): Entry {
+        val id = packResources.getIdentifier(icon.resourceName, null, null)
+        val simpleName = packResources.getResourceEntryName(id)
+        return Entry(simpleName, id)
+    }
 
     inner class Entry(private val drawableName: String, val drawableId: Int) : IconPack.Entry() {
 

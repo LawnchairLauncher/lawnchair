@@ -551,4 +551,6 @@
     <string name="units_imperial">Imperial</string>
     <string name="all_icons">All icons</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="no_icon_found">No icon found</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>

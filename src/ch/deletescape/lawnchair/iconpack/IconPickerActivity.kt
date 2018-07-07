@@ -6,17 +6,16 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Process
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
+import com.android.launcher3.compat.LauncherAppsCompat
 
 class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
@@ -29,6 +28,9 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
     private var canceled = false
 
     private var dynamicPadding = 0
+
+    private val pickerComponent by lazy { LauncherAppsCompat.getInstance(this)
+            .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +48,38 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
         LoadIconTask().execute(iconPack)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (pickerComponent != null) menuInflater.inflate(R.menu.menu_icon_picker, menu)
+        return super.onCreateOptionsMenu(menu) || pickerComponent != null
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            finish()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.action_open_external -> {
+                val intent = Intent("com.novalauncher.THEME")
+                        .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                        .setComponent(pickerComponent)
+                startActivityForResult(intent, 1000)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null) {
+            if (data.hasExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)) {
+                val icon = data.getParcelableExtra<Intent.ShortcutIconResource>(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)
+                val entry = (iconPack as IconPackImpl).createEntry(icon)
+                onSelectIcon(entry)
+                return
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroy() {
