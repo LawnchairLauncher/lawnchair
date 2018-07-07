@@ -17,14 +17,17 @@ import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 
-class IconPickerActivity : SettingsBaseActivity() {
+class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
     private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
     private val icons = ArrayList<CachedIconEntry>()
     private val adapter = IconGridAdapter()
+    private val layoutManager = GridLayoutManager(this, 1)
     private var canceled = false
+
+    private var dynamicPadding = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +35,7 @@ class IconPickerActivity : SettingsBaseActivity() {
 
         title = iconPack.displayName
 
-        iconGrid.adapter = adapter
-        iconGrid.layoutManager = GridLayoutManager(this, 4).apply { spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int) = if (icons.size == 0) 4 else 1
-        } }
+        getContentFrame().addOnLayoutChangeListener(this)
 
         supportActionBar?.run {
             setDisplayShowHomeEnabled(true)
@@ -58,6 +58,31 @@ class IconPickerActivity : SettingsBaseActivity() {
         super.onDestroy()
         canceled = true
     }
+
+    override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+        getContentFrame().removeOnLayoutChangeListener(this)
+        calculateDynamicGrid(iconGrid.width)
+        iconGrid.adapter = adapter
+        iconGrid.layoutManager = layoutManager
+    }
+
+    private fun calculateDynamicGrid(width: Int) {
+        val iconPadding = resources.getDimensionPixelSize(R.dimen.icon_preview_padding)
+        val iconSize = resources.getDimensionPixelSize(R.dimen.icon_preview_size)
+        val iconSizeWithPadding = iconSize + iconPadding + iconPadding
+        val maxWidth = width - iconPadding - iconPadding
+        val columnCount = maxWidth / iconSizeWithPadding
+        val usedWidth = iconSize * columnCount
+        dynamicPadding = (width - usedWidth) / (columnCount + 1) / 2
+        layoutManager.spanCount = columnCount
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = getItemSpan(position)
+        }
+        iconGrid.setPadding(dynamicPadding, iconPadding, dynamicPadding, iconPadding)
+    }
+
+    private fun getItemSpan(position: Int)
+            = if (adapter.getItemViewType(position) == adapter.TYPE_ITEM) 1 else layoutManager.spanCount
 
     fun onSelectIcon(entry: IconPack.Entry) {
         val customEntry = entry.toCustomEntry()
@@ -98,6 +123,10 @@ class IconPickerActivity : SettingsBaseActivity() {
 
             init {
                 itemView.setOnClickListener(this)
+                (itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    leftMargin = dynamicPadding
+                    rightMargin = dynamicPadding
+                }
             }
 
             fun bind(cachedEntry: CachedIconEntry) {

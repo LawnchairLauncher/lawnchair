@@ -46,20 +46,24 @@ open class SettingsBaseActivity : AppCompatActivity() {
     }
 
     override fun setContentView(v: View) {
-        val contentParent = decorLayout.findViewById(android.R.id.content) as ViewGroup
+        val contentParent = getContentFrame()
         contentParent.removeAllViews()
         contentParent.addView(v)
     }
 
     override fun setContentView(resId: Int) {
-        val contentParent = decorLayout.findViewById(android.R.id.content) as ViewGroup
+        val contentParent = getContentFrame()
         contentParent.removeAllViews()
         LayoutInflater.from(this).inflate(resId, contentParent)
     }
 
     override fun setContentView(v: View, lp: ViewGroup.LayoutParams) {
-        val contentParent = decorLayout.findViewById(android.R.id.content) as ViewGroup
+        val contentParent = getContentFrame()
         contentParent.removeAllViews()
         contentParent.addView(v, lp)
+    }
+
+    fun getContentFrame(): ViewGroup {
+        return decorLayout.findViewById(android.R.id.content)
     }
 }

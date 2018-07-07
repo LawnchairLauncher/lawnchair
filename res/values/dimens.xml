@@ -266,6 +266,7 @@
     <dimen name="large_title_height">84dp</dimen>
     <dimen name="dialog_corner_radius">8dp</dimen>
     <dimen name="icon_preview_size">48dp</dimen>
+    <dimen name="icon_preview_padding">16dp</dimen>
     <dimen name="select_dialog_padding_start_material">20dp</dimen>
     <dimen name="select_dialog_drawable_padding_start_material">20dp</dimen>
 </resources>

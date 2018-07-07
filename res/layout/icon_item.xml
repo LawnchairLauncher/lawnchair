@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:scaleType="fitCenter"
-    android:layout_width="@dimen/icon_preview_size"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/icon_preview_size"
-    android:layout_margin="16dp"
+    android:layout_marginTop="@dimen/icon_preview_padding"
+    android:layout_marginBottom="@dimen/icon_preview_padding"
     tools:src="@mipmap/ic_launcher" />
