@@ -37,7 +37,8 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) : Lawnch
             val currentWeatherList = owm.currentWeatherByCityName(prefs.weatherCity)
             val temp = if (currentWeatherList.hasMainData()) currentWeatherList.mainData!!.temp else -1.0
             val icon = if (currentWeatherList.hasMainData()) currentWeatherList.weatherList?.get(0)?.iconCode else "-1"
-            val weather = LawnchairSmartspaceController.WeatherData(iconProvider.getIcon(icon), temp!!.roundToInt(), owm.unit == OWM.Unit.METRIC)
+            val forecastUrl = "https://openweathermap.org/city/${currentWeatherList.cityId}"
+            val weather = LawnchairSmartspaceController.WeatherData(iconProvider.getIcon(icon), temp!!.roundToInt(), owm.unit == OWM.Unit.METRIC, forecastUrl)
             super.updateData(weather, null)
         } catch (e:Exception){
             Log.w("OWM", "Updating weather data failed", e)

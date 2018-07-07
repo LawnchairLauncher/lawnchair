@@ -147,7 +147,7 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         val isCardAvailable get() = card != null
     }
 
-    data class WeatherData(val icon: Bitmap, val temperature: Int, val isMetric: Boolean) {
+    data class WeatherData(val icon: Bitmap, val temperature: Int, val isMetric: Boolean, val forecastUrl: String = "https://www.google.com/search?q=weather") {
 
         val title get() = "$temperature°$unit"
         val unit get() = if (isMetric) "C" else "F"

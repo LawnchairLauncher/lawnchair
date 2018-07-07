@@ -25,6 +25,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
@@ -58,8 +59,9 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private ImageView mSubtitleWeatherIcon;
     private boolean mEnableShadow;
     private final Handler mHandler;
+    private String mForecastUrl;
 
-    public SmartspaceView(Context context, AttributeSet set) {
+    public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
         mCalendarClickListener = new OnClickListener() {
@@ -84,9 +86,16 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mWeatherClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dq != null && dq.isWeatherAvailable()) {
-                    cp(10001);
-                    dq.dO.click(v);
+                cp(10001);
+                if (PackageManagerHelper.isAppEnabled(context.getPackageManager(), "com.google.android.googlequicksearchbox", 0)) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
+                    intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
+                            "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
+                    Launcher.getLauncher(context).startActivitySafely(v, intent, null);
+                } else {
+                    Launcher l = Launcher.getLauncher(context);
+                    Utilities.openURLinBrowser(context, mForecastUrl, l.getViewBounds(v), l.getActivityLaunchOptions(v));
                 }
             }
         };
@@ -128,6 +137,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleIcon.setImageTintList(dH);
         mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
         if (data.isWeatherAvailable()) {
+            mForecastUrl = data.getWeather().getForecastUrl();
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
@@ -144,6 +154,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mClockView.setOnClickListener(mCalendarClickListener);
         mClockView.setOnLongClickListener(co());
         if (data.isWeatherAvailable()) {
+            mForecastUrl = data.getWeather().getForecastUrl();
             mTitleSeparator.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
