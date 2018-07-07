@@ -35,8 +35,12 @@ public class NexusLauncherActivity extends Launcher {
         SharedPreferences prefs = Utilities.getPrefs(this);
         if (mIsReload = prefs.getBoolean(PREF_IS_RELOAD, false)) {
             prefs.edit().remove(PREF_IS_RELOAD).apply();
-            getWorkspace().setCurrentPage(0);
+
+            // Go back to overview after a reload
             showOverviewMode(false);
+
+            // Fix for long press not working
+            // This is overwritten in Launcher.onResume
             setWorkspaceLoading(false);
         }
     }
@@ -60,7 +64,12 @@ public class NexusLauncherActivity extends Launcher {
         super.clearPendingExecutor(executor);
         if (mIsReload) {
             mIsReload = false;
+
+            // Call again after the launcher has loaded for proper states
             showOverviewMode(false);
+
+            // Strip empty At A Glance page
+            getWorkspace().stripEmptyScreens();
         }
     }
 
