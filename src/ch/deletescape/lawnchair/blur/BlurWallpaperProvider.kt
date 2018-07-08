@@ -281,8 +281,8 @@ class BlurWallpaperProvider(val context: Context) {
             return isEnabled && sEnabledFlag and flag != 0
         }
 
-        fun getInstance(context: Context): BlurWallpaperProvider {
-            return LauncherAppState.getInstance(context).launcher.blurWallpaperProvider
+        fun getInstance(context: Context): BlurWallpaperProvider? {
+            return LauncherAppState.getInstance(context)?.launcher?.blurWallpaperProvider
         }
     }
 }

@@ -69,7 +69,7 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
         if (BlurWallpaperProvider.isEnabled) {
             findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
-            background = BlurWallpaperProvider.getInstance(context).createDrawable()
+            background = BlurWallpaperProvider.getInstance(context)?.createDrawable()
         }
     }
 
