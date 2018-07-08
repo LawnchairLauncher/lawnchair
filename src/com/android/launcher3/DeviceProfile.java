@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
 
@@ -673,6 +672,14 @@ public class DeviceProfile {
         workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
                 workspacePadding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing());
+
+        // Only display when enabled
+        View qsbContainer = launcher.getQsbContainer();
+        if (qsbContainer != null) {
+            lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();
+            lp.topMargin = mInsets.top + workspacePadding.top;
+            qsbContainer.setLayoutParams(lp);
+        }
 
         // Layout the hotseat
         Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);

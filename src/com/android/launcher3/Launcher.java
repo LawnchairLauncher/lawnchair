@@ -178,6 +178,7 @@ public class Launcher extends BaseActivity
     private View mLauncherView;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
+    private View mQsbContainer;
 
     public View mWeightWatcher;
 
@@ -1251,6 +1252,10 @@ public class Launcher extends BaseActivity
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
+        if (Utilities.getLawnchairPrefs(this).getUsePillQsb()) {
+            mQsbContainer = mDragLayer.findViewById(mDeviceProfile.isVerticalBarLayout()
+                    ? R.id.workspace_blocked_row : R.id.qsb_container);
+        }
         mWorkspace.initParentViews(mDragLayer);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1627,6 +1632,10 @@ public class Launcher extends BaseActivity
 
     public Workspace getWorkspace() {
         return mWorkspace;
+    }
+
+    public View getQsbContainer() {
+        return mQsbContainer;
     }
 
     public Hotseat getHotseat() {

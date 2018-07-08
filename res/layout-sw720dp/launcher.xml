@@ -56,6 +56,10 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar_horz" />
 
+        <include
+            layout="@layout/qsb_container"
+            android:id="@+id/qsb_container" />
+
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
             android:visibility="gone" />

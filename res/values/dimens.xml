@@ -31,7 +31,7 @@
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
-    <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
+    <dimen name="dynamic_grid_cell_layout_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_layout_bottom_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">7dp</dimen>
 
@@ -269,4 +269,14 @@
     <dimen name="icon_preview_padding">16dp</dimen>
     <dimen name="select_dialog_padding_start_material">20dp</dimen>
     <dimen name="select_dialog_drawable_padding_start_material">20dp</dimen>
+
+<!-- Pixel 1 -->
+    <dimen name="qsb_overlap_margin">-50dp</dimen>
+    <dimen name="qsb_button_height">56dp</dimen>
+    <dimen name="qsb_button_elevation">3dp</dimen>
+    <dimen name="qsb_touch_extension">20dp</dimen>
+    <dimen name="qsb_shadow_blur_radius">1dp</dimen>
+    <dimen name="qsb_key_shadow_offset">1dp</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20dp</dimen>
+    <dimen name="qsb_min_width_with_mic">124dp</dimen>
 </resources>

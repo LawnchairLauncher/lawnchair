@@ -50,4 +50,7 @@
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">56dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">32dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">6dp</dimen>
+
+<!-- Pixel 1 -->
+    <dimen name="qsb_overlap_margin">0dp</dimen>
 </resources>

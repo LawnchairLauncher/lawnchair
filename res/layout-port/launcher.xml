@@ -44,6 +44,10 @@
             launcher:pageIndicator="@+id/page_indicator">
         </com.android.launcher3.Workspace>
 
+        <include
+            layout="@layout/qsb_container"
+            android:id="@+id/qsb_container" />
+
         <include layout="@layout/all_apps_bg" />
 
         <!-- DO NOT CHANGE THE ID -->

@@ -553,4 +553,7 @@
     <string name="error_no_browser">No activity found to handle URLs</string>
     <string name="no_icon_found">No icon found</string>
     <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="week_day_format">%1$s, %2$s</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+    <string name="title_use_pill_qsb">Use Pixel 1 style</string>
 </resources>

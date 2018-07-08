@@ -176,4 +176,7 @@
     <item type="id" name="search_container_hotseat" />
     <item type="id" name="search_container_all_apps" />
 
+<!-- View ID to use for blocked area on the first screen -->
+    <item type="id" name="workspace_blocked_row" />
+
 </resources>

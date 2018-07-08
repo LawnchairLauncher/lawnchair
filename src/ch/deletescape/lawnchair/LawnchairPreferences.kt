@@ -82,6 +82,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
     var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
     var weatherUnit by StringPref("pref_weather_units", "metric")
+    var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, recreate, resetAllApps)

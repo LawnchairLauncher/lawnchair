@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ИЗКЛЮЧВАНЕ</string>
     <string name="icon_shape_rounded_square">Заоблен квадрат</string>
     <string name="smartspace_hours_mins">%1$s и %2$s</string>
+    <string name="week_day_format">%1$s, %2$s г.</string>
 </resources>

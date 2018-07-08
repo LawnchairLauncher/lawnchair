@@ -206,6 +206,15 @@
         <item name="android:fontFamily">@font/google_sans</item>
     </style>
 
+    <!-- Weather widget -->
+    <style name="WeatherWidget" />
+
+    <style name="WeatherWidget.Text">
+        <item name="android:shadowRadius">3.0</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
     <style name="AllAppsEmptySearchBackground">
         <item name="android:colorPrimary">#E0E0E0</item>
         <item name="android:colorControlHighlight">#BDBDBD</item>
