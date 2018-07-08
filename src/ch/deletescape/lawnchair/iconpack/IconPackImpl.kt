@@ -24,6 +24,7 @@ import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class IconPackImpl(context: Context, packPackageName: String) : IconPack(context, packPackageName) {
 
@@ -185,45 +186,52 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 IconPackManager.getInstance(context).defaultPack, drawableFactory)
     }
 
-    override fun getAllIcons(): List<Category> {
+    override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
+        var lastSend = System.currentTimeMillis() - 900
+        var tmpList = ArrayList<PackEntry>()
+        val sendResults = {
+            val current = System.currentTimeMillis()
+            if (current - lastSend >= 1000) {
+                callback(tmpList)
+                tmpList = ArrayList()
+                lastSend = current
+            }
+        }
+        var found = false
+        val startTime = System.currentTimeMillis()
         val res = packResources
         val xmlRes = res.getIdentifier("appfilter", "xml", packPackageName)
         if (xmlRes != 0) {
-            val categories = ArrayList<Category>()
-            val allIcons = ArrayList<Entry>()
-            var category: Category? = null
             var entry: Entry
             try {
                 val parser = getXml("drawable")
+                Log.d("IconPackImpl", "initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
                 while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
+                    if (cancel()) return
                     if (parser.eventType != XmlPullParser.START_TAG) continue
                     if ("category" == parser.name) {
                         val title = parser.getAttributeValue(null, "title")
-                        category = Category(title)
-                        categories.add(category)
+                        tmpList.add(CategoryTitle(title))
+                        sendResults()
                     } else if ("item" == parser.name) {
                         val drawableName = parser.getAttributeValue(null, "drawable")
                         val resId = Utilities.parseResourceIdentifier(packResources, "@drawable/$drawableName", packPackageName)
                         if (resId != 0) {
                             entry = Entry(drawableName, resId)
-                            allIcons.add(entry)
-                            if (category != null)
-                                category.icons.add(entry)
+                            tmpList.add(entry)
+                            sendResults()
+                            found = true
                         }
                     }
                 }
-                if (allIcons.isEmpty()) {
-                    return arrayListOf(Category(context.getString(R.string.no_icon_found)))
+                if (found) {
+                    return
                 }
-                if (categories.isEmpty()) {
-                    return super.categorize(allIcons)
-                }
-                return categories
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        return super.getAllIcons()
+        super.getAllIcons(callback, cancel)
     }
 
     private fun getXml(name: String): XmlPullParser? {

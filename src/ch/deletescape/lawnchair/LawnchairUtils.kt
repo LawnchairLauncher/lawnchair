@@ -195,20 +195,21 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
 
 val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
+val iconPackUiHandler by lazy { Handler(LauncherModel.getIconPackUiLooper()) }
 
 fun runOnUiWorkerThread(r: () -> Unit) {
-    if (LauncherModel.getWorkerLooper().thread.id == Looper.myLooper().thread.id) {
-        r()
-    } else {
-        uiWorkerHandler.postAtFrontOfQueue(r)
-    }
+    runOnThread(uiWorkerHandler, r)
 }
 
 fun runOnMainThread(r: () -> Unit) {
-    if (Looper.getMainLooper().thread.id == Looper.myLooper().thread.id) {
+    runOnThread(mainHandler, r)
+}
+
+fun runOnThread(handler: Handler, r: () -> Unit) {
+    if (handler.looper.thread.id == Looper.myLooper().thread.id) {
         r()
     } else {
-        mainHandler.postAtFrontOfQueue(r)
+        handler.post(r)
     }
 }
 

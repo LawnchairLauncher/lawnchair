@@ -56,40 +56,37 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
                          basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable
 
-    open fun getAllIcons(): List<Category> {
+    open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
         ensureInitialLoadComplete()
-        return categorize(entries)
+        callback(categorize(entries))
     }
 
-    protected fun categorize(entries: List<Entry>): List<Category> {
-        val categories = ArrayList<Category>()
-        var category: Category? = null
+    protected fun categorize(entries: List<Entry>): List<PackEntry> {
+        val packEntries = ArrayList<PackEntry>()
         var previousSection = ""
         entries.sortedBy { it.displayName }.forEach {
             val currentSection = indexCompat.computeSectionName(it.displayName)
             if (currentSection != previousSection) {
                 previousSection = currentSection
-                category = Category(currentSection)
-                categories.add(category!!)
+                packEntries.add(CategoryTitle(currentSection))
             }
-            category!!.icons.add(it)
+            packEntries.add(it)
         }
-        return categories
+        return packEntries
     }
 
     abstract val entries: List<Entry>
 
-    abstract class Entry {
+    open class PackEntry
+
+    class CategoryTitle(val title: String) : PackEntry()
+
+    abstract class Entry : PackEntry() {
 
         abstract val displayName: String
         abstract val identifierName: String
         abstract val drawable: Drawable
 
         abstract fun toCustomEntry(): IconPackManager.CustomIconEntry
-    }
-
-    class Category(val title: String) {
-
-        val icons = ArrayList<Entry>()
     }
 }

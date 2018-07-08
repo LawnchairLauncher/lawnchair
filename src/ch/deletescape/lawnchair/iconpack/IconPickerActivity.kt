@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Process
 import android.support.v7.widget.GridLayoutManager
@@ -12,7 +11,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import ch.deletescape.lawnchair.iconPackUiHandler
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
+import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.runOnThread
+import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -45,7 +48,37 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        LoadIconTask().execute(iconPack)
+        items.add(LoadingItem())
+
+        runOnUiWorkerThread {
+            // make sure whatever running on ui worker has finished, then start parsing the pack
+            runOnThread(iconPackUiHandler) { iconPack.getAllIcons(::addEntries, { canceled }) }
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        canceled = true
+    }
+
+    private fun addEntries(entries: List<IconPack.PackEntry>) {
+        val newItems = entries.mapNotNull {
+            when (it) {
+                is IconPack.CategoryTitle -> CategoryItem(it.title)
+                is IconPack.Entry -> IconItem(it)
+                else -> null
+            }
+        }
+        runOnUiThread {
+            if (items.size == 1 && items[0] is LoadingItem) {
+                items.removeAt(0)
+                adapter.notifyItemRemoved(0)
+            }
+
+            val addIndex = items.size
+            items.addAll(newItems)
+            adapter.notifyItemRangeInserted(addIndex, newItems.size)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -133,7 +166,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
             }
         }
 
-        override fun getItemCount() = Math.max(items.size, 1)
+        override fun getItemCount() = items.size
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is IconHolder) {
@@ -145,7 +178,6 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
         override fun getItemViewType(position: Int): Int {
             return when {
-                items.size == 0 -> loadingType
                 items[position] is IconItem -> itemType
                 items[position] is CategoryItem -> categoryType
                 else -> loadingType
@@ -154,7 +186,14 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
         fun isItem(position: Int) = getItemViewType(position) == itemType
 
-        inner class IconHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        inner class IconHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, IconItem.Callback {
+
+            private var iconLoader: IconItem? = null
+                set(value) {
+                    field?.callback = null
+                    value?.callback = this
+                    field = value
+                }
 
             init {
                 itemView.setOnClickListener(this)
@@ -164,8 +203,18 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
                 }
             }
 
-            fun bind(cachedEntry: IconItem) {
-                (itemView as ImageView).setImageDrawable(cachedEntry.drawable)
+            fun bind(item: IconItem) {
+                iconLoader = item
+                iconLoader?.loadIcon()
+                itemView.clearAnimation()
+                itemView.alpha = 0f
+            }
+
+            override fun onIconLoaded(drawable: Drawable) {
+                (itemView as ImageView).apply {
+                    setImageDrawable(drawable)
+                    animate().alpha(1f).setDuration(100).start()
+                }
             }
 
             override fun onClick(v: View) {
@@ -185,32 +234,28 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
         inner class LoadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
-    inner class LoadIconTask : AsyncTask<IconPack, Void, List<AdapterItem>>() {
-
-        override fun doInBackground(vararg params: IconPack): List<AdapterItem> {
-            val iconPack = params[0]
-            val items = ArrayList<AdapterItem>()
-            iconPack.getAllIcons().forEach {
-                items.add(CategoryItem(it.title))
-                it.icons.forEach {
-                    items.add(IconItem(it, it.drawable))
-                }
-            }
-            return items
-        }
-
-        override fun onPostExecute(result: List<AdapterItem>) {
-            if (canceled) return
-            items.addAll(result)
-            adapter.notifyDataSetChanged()
-        }
-    }
-
     open class AdapterItem
 
     class CategoryItem(val title: String) : AdapterItem()
 
-    class IconItem(val entry: IconPack.Entry, val drawable: Drawable) : AdapterItem()
+    class IconItem(val entry: IconPack.Entry) : AdapterItem() {
+
+        var callback: Callback? = null
+
+        fun loadIcon() {
+            runOnUiWorkerThread {
+                val drawable = entry.drawable
+                runOnMainThread { callback?.onIconLoaded(drawable) }
+            }
+        }
+
+        interface Callback {
+
+            fun onIconLoaded(drawable: Drawable)
+        }
+    }
+
+    class LoadingItem : AdapterItem()
 
     companion object {
 
