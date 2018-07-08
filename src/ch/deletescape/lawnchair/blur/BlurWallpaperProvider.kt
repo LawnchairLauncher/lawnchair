@@ -105,7 +105,7 @@ class BlurWallpaperProvider(val context: Context) {
             launcher?.runOnUiThread(mNotifyRunnable)
         } catch(oom: OutOfMemoryError){
             prefs.enableBlur = false
-            Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
+            launcher?.runOnUiThread { Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show() }
         }
     }
 
