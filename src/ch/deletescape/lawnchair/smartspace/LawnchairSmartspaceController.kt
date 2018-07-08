@@ -9,6 +9,7 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
 import com.android.launcher3.Utilities
 import java.util.concurrent.Semaphore
+import kotlin.math.roundToInt
 
 class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
 
@@ -38,6 +39,10 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         cardData = card
         smartspaceData = DataContainer(weather, card)
         notifyListeners()
+    }
+
+    private fun forceUpdate() {
+        updateData(weatherData, cardData)
     }
 
     private fun notifyListeners() {
@@ -80,6 +85,8 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
                         eventDataProvider.forceUpdate()
                     }
                 }
+            } else {
+                runOnMainThread(::forceUpdate)
             }
         }
     }
@@ -147,10 +154,25 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
         val isCardAvailable get() = card != null
     }
 
-    data class WeatherData(val icon: Bitmap, val temperature: Int, val isMetric: Boolean, val forecastUrl: String = "https://www.google.com/search?q=weather") {
+    data class WeatherData(val icon: Bitmap,
+                           private val temperature: Int,
+                           private val isMetric: Boolean,
+                           val forecastUrl: String = "https://www.google.com/search?q=weather") {
 
-        val title get() = "$temperature°$unit"
-        val unit get() = if (isMetric) "C" else "F"
+        fun getTitle(inMetric: Boolean): String {
+            val newTemp = if (isMetric == inMetric) {
+                temperature
+            } else {
+                if (isMetric) {
+                    ((temperature.toFloat() * 9f / 5f) + 32).roundToInt()
+                } else {
+                    ((temperature.toFloat() - 32) * 5f / 9f).roundToInt()
+                }
+            }
+            return "$newTemp°${getUnit(inMetric)}"
+        }
+
+        private fun getUnit(inMetric: Boolean) = if (inMetric) "C" else "F"
     }
 
     data class CardData(val icon: Bitmap,

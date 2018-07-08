@@ -81,7 +81,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
     var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
-    var weatherUnit by StringPref("pref_weather_units", "metric")
+    var weatherUnit by StringPref("pref_weather_units", "metric", ::updateSmartspaceProvider)
+    val useMetricWeatherUnit get() = weatherUnit == "metric"
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock

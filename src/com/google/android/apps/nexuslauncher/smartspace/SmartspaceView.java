@@ -141,7 +141,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
-            mSubtitleWeatherText.setText(data.getWeather().getTitle());
+            mTitleWeatherText.setText(data.getWeather().getTitle(
+                    Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
             mSubtitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {
             mSubtitleWeatherContent.setVisibility(View.GONE);
@@ -159,7 +160,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mTitleWeatherContent.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mTitleWeatherContent.setOnLongClickListener(co());
-            mTitleWeatherText.setText(data.getWeather().getTitle());
+            mTitleWeatherText.setText(data.getWeather().getTitle(
+                    Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
             mTitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {
             mTitleWeatherContent.setVisibility(View.GONE);

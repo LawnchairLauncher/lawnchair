@@ -15,10 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
+import com.android.launcher3.*;
 import com.android.launcher3.Workspace.OnStateChangeListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -131,7 +128,8 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         ImageView weatherIcon = view.findViewById(R.id.weather_widget_icon);
         weatherIcon.setImageBitmap(data.getWeather().getIcon());
         TextView weatherTemperature = view.findViewById(R.id.weather_widget_temperature);
-        weatherTemperature.setText(data.getWeather().getTitle());
+        weatherTemperature.setText(data.getWeather().getTitle(
+                Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
     }
 
     @Override
