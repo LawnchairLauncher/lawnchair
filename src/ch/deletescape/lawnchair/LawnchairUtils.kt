@@ -18,10 +18,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.popup.PopupContainerWithArrow
+import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ComponentKey
 import java.lang.reflect.Field
 import kotlin.math.ceil
@@ -245,5 +245,16 @@ fun AppCompatActivity.hookGoogleSansDialogTitle() {
             return onCreateView(null, name, context, attrs)
         }
 
+    }
+}
+
+fun openPopupMenu(icon: BubbleTextView, vararg shortcuts: SystemShortcut) {
+    val launcher = Launcher.getLauncher(icon.context)
+    (launcher.layoutInflater.inflate(R.layout.popup_container,
+            launcher.dragLayer, false) as PopupContainerWithArrow).apply {
+        disableDividers()
+        visibility = View.INVISIBLE
+        launcher.dragLayer.addView(this)
+        populateAndShow(icon, emptyList(), emptyList(), listOf(*shortcuts), false)
     }
 }

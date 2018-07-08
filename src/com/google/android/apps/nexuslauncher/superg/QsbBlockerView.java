@@ -2,6 +2,7 @@ package com.google.android.apps.nexuslauncher.superg;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,18 +15,23 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
 import com.android.launcher3.Workspace.OnStateChangeListener;
+import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
-public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, LawnchairSmartspaceController.Listener {
+public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, LawnchairSmartspaceController.Listener, View.OnLongClickListener, View.OnClickListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
+    private LawnchairSmartspaceController mController;
     private int mState = 0;
     private View mView;
+
+    private BubbleTextView mDummyBubbleTextView;
 
     private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -34,6 +40,25 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
         mBgPaint.setColor(Color.WHITE);
         mBgPaint.setAlpha(0);
+
+        Launcher launcher = Launcher.getLauncher(getContext());
+        if (launcher instanceof LawnchairLauncher) {
+            mController = ((LawnchairLauncher) launcher).getSmartspace();
+        }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mDummyBubbleTextView = findViewById(R.id.dummyBubbleTextView);
+        mDummyBubbleTextView.setTag(new ItemInfo() {
+            @Override
+            public ComponentName getTargetComponent() {
+                return new ComponentName(getContext(), "");
+            }
+        });
+        mDummyBubbleTextView.setContentDescription("");
     }
 
     @Override
@@ -56,19 +81,16 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         w.setOnStateChangeListener(this);
         prepareStateChange(w.getState(), null);
 
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) launcher).getSmartspace().addListener(this);
-        }
+        if (mController != null)
+            mController.addListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) launcher).getSmartspace().addListener(this);
-        }
+
+        if (mController != null)
+            mController.removeListener(this);
     }
 
     @Override
@@ -102,6 +124,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
                     oldView :
                     LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
             applyWeather(mView, data);
+            mView.setOnClickListener(this);
         }
 
         if (oldState != mState) {
@@ -122,6 +145,8 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
             }
             addView(mView);
         }
+
+        mView.setOnLongClickListener(this);
     }
 
     private void applyWeather(View view, LawnchairSmartspaceController.DataContainer data) {
@@ -135,6 +160,19 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mController != null)
+            mController.openWeather(v);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        // TODO: move it to below the widget view
+        LawnchairUtilsKt.openPopupMenu(mDummyBubbleTextView, new SmartspacePreferencesShortcut());
+        return true;
     }
 
     static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {

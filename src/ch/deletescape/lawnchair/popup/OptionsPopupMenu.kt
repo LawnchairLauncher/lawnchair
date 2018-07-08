@@ -1,15 +1,13 @@
 package ch.deletescape.lawnchair.popup
 
-import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import ch.deletescape.lawnchair.openPopupMenu
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
-import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.popup.SystemShortcut
-import java.util.*
 
 class OptionsPopupMenu {
 
@@ -49,15 +47,6 @@ class OptionsPopupMenu {
                 downY = dragLayer.top + dragLayer.height
                 downX = dragLayer.left + dragLayer.width
             }
-            val popupView = launcher.layoutInflater
-                    .inflate(R.layout.popup_container, dragLayer, false) as PopupContainerWithArrow
-            popupView.disableDividers()
-            popupView.visibility = View.INVISIBLE
-            dragLayer.addView(popupView)
-            val shortcuts = arrayListOf(
-                    WallpaperShortcut() as SystemShortcut,
-                    WidgetShortcut() as SystemShortcut,
-                    SettingsShortcut() as SystemShortcut)
             val dummyBubbleTextView = dragLayer.dummyBubbleTextView
             (dummyBubbleTextView.layoutParams as ViewGroup.MarginLayoutParams).apply {
                 topMargin = downY - dragLayer.top
@@ -65,8 +54,7 @@ class OptionsPopupMenu {
             }
             dummyBubbleTextView.requestLayout()
             dummyBubbleTextView.post {
-                popupView.populateAndShow(dummyBubbleTextView,
-                        Collections.emptyList(), Collections.emptyList(), shortcuts, false)
+                openPopupMenu(dummyBubbleTextView, WallpaperShortcut(), WidgetShortcut(), SettingsShortcut())
             }
             launcher.workspace.requestDisallowInterceptTouchEvent(true)
         }

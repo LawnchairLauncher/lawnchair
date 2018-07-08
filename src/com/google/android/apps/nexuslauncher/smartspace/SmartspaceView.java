@@ -19,20 +19,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
-import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener, View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
@@ -59,15 +54,20 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private ImageView mSubtitleWeatherIcon;
     private boolean mEnableShadow;
     private final Handler mHandler;
-    private String mForecastUrl;
+
+    private LawnchairSmartspaceController mController;
 
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
+        Launcher launcher = Launcher.getLauncher(getContext());
+        if (launcher instanceof LawnchairLauncher) {
+            mController = ((LawnchairLauncher) launcher).getSmartspace();
+        }
+
         mCalendarClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                cp(10000);
                 final Uri content_URI = CalendarContract.CONTENT_URI;
                 final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
                 ContentUris.appendId(appendPath, System.currentTimeMillis());
@@ -86,17 +86,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mWeatherClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                cp(10001);
-                if (PackageManagerHelper.isAppEnabled(context.getPackageManager(), "com.google.android.googlequicksearchbox", 0)) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
-                    intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
-                            "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
-                    Launcher.getLauncher(context).startActivitySafely(v, intent, null);
-                } else {
-                    Launcher l = Launcher.getLauncher(context);
-                    Utilities.openURLinBrowser(context, mForecastUrl, l.getViewBounds(v), l.getActivityLaunchOptions(v));
-                }
+                if (mController != null)
+                    mController.openWeather(v);
             }
         };
 
@@ -137,7 +128,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleIcon.setImageTintList(dH);
         mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
         if (data.isWeatherAvailable()) {
-            mForecastUrl = data.getWeather().getForecastUrl();
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
@@ -155,7 +145,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mClockView.setOnClickListener(mCalendarClickListener);
         mClockView.setOnLongClickListener(co());
         if (data.isWeatherAvailable()) {
-            mForecastUrl = data.getWeather().getForecastUrl();
             mTitleSeparator.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
@@ -214,10 +203,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         loadViews();
     }
 
-    protected final void cp(int n) {
-        //((UserEventDispatcherImpl) Launcher.getLauncher(getContext()).getUserEventDispatcher()).bp(n);
-    }
-
     public void cq() {
         ds = dp.cY();
         if (dq != null) {
@@ -244,15 +229,12 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         dp.da(this);
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) launcher).getSmartspace().addListener(this);
-        }
+        if (mController != null)
+            mController.addListener(this);
     }
 
     public void onClick(final View view) {
         if (dq != null && dq.cS()) {
-            cp(10002);
             dq.dP.click(view);
         }
     }
@@ -260,10 +242,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         SmartspaceController.get(getContext()).da(null);
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) launcher).getSmartspace().removeListener(this);
-        }
+        if (mController != null)
+            mController.removeListener(this);
     }
 
     protected void onFinishInflate() {
@@ -290,15 +270,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     public boolean onLongClick(final View view) {
-        final boolean b = true;
-        final Launcher launcher = Launcher.getLauncher(getContext());
-        final PopupContainerWithArrow popupContainerWithArrow = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(R.layout.popup_container, launcher.getDragLayer(), false);
-        popupContainerWithArrow.setVisibility(View.INVISIBLE);
-        launcher.getDragLayer().addView(popupContainerWithArrow);
-        ArrayList<SystemShortcut> list = new ArrayList<>(1);
-        list.add(new SmartspacePreferencesShortcut());
-        popupContainerWithArrow.populateAndShow(dr, Collections.EMPTY_LIST, Collections.EMPTY_LIST, list, false);
-        return b;
+        LawnchairUtilsKt.openPopupMenu(dr, new SmartspacePreferencesShortcut());
+        return true;
     }
 
     public void onPause() {
@@ -334,7 +307,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
 
         public void onClick(final View view) {
-            dZ.cp(10000);
             final Uri content_URI = CalendarContract.CONTENT_URI;
             final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
             ContentUris.appendId(appendPath, System.currentTimeMillis());

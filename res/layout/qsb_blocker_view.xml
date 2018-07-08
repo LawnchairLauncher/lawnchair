@@ -18,4 +18,13 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <com.android.launcher3.BubbleTextView
+        android:layout_gravity="center"
+        android:id="@+id/dummyBubbleTextView"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:contentDescription="" />
+</com.google.android.apps.nexuslauncher.superg.QsbBlockerView>

@@ -1,13 +1,19 @@
 package ch.deletescape.lawnchair.smartspace
 
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.Semaphore
 import kotlin.math.roundToInt
 
@@ -88,6 +94,20 @@ class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
             } else {
                 runOnMainThread(::forceUpdate)
             }
+        }
+    }
+
+    fun openWeather(v: View) {
+        if (weatherData == null) return
+        val launcher = Launcher.getLauncher(v.context)
+        if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
+            intent.component = ComponentName("com.google.android.googlequicksearchbox",
+                    "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
+            launcher.startActivitySafely(v, intent, null)
+        } else {
+            Utilities.openURLinBrowser(launcher, weatherData!!.forecastUrl, launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v))
         }
     }
 
