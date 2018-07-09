@@ -299,17 +299,15 @@ public class TouchInteractionService extends Service {
                             mInvalidated = true;
                         }
                         break;
+                    case ACTION_CANCEL:
+                    case ACTION_UP:
+                        startTouchTracking(ev);
+                        break;
                     case ACTION_MOVE: {
                         float displacement = ev.getY() - mDownPos.y;
                         if (Math.abs(displacement) >= mTouchSlop) {
-                            mTarget.getLocationOnScreen(mLocationOnScreen);
-
-                            // Send a down event only when mTouchSlop is crossed.
-                            MotionEvent down = MotionEvent.obtain(ev);
-                            down.setAction(ACTION_DOWN);
-                            sendEvent(down);
-                            down.recycle();
-                            mTrackingStarted = true;
+                            // Start tracking only when mTouchSlop is crossed.
+                            startTouchTracking(ev);
                         }
                     }
                 }
@@ -322,6 +320,18 @@ public class TouchInteractionService extends Service {
             if (action == ACTION_UP || action == ACTION_CANCEL) {
                 mInvalidated = true;
             }
+        }
+
+        private void startTouchTracking(MotionEvent ev) {
+            mTarget.getLocationOnScreen(mLocationOnScreen);
+
+            // Send down touch event
+            MotionEvent down = MotionEvent.obtain(ev);
+            down.setAction(ACTION_DOWN);
+            sendEvent(down);
+            down.recycle();
+
+            mTrackingStarted = true;
         }
 
         private void sendEvent(MotionEvent ev) {
