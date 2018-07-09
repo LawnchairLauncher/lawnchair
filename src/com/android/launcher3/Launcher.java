@@ -74,7 +74,6 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -1052,12 +1051,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public FolderIcon findFolderIcon(final long folderIconId) {
-        return (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info != null && info.id == folderIconId;
-            }
-        });
+        return (FolderIcon) mWorkspace.getHomescreenIconByItemId(folderIconId);
     }
 
     /**

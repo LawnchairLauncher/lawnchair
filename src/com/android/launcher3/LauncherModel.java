@@ -620,15 +620,12 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void updateAndBindShortcutInfo(final ShortcutInfo si, final ShortcutInfoCompat info) {
-        updateAndBindShortcutInfo(new Provider<ShortcutInfo>() {
-            @Override
-            public ShortcutInfo get() {
-                si.updateFromDeepShortcutInfo(info, mApp.getContext());
-                LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-                li.createShortcutIcon(info).applyTo(si);
-                li.recycle();
-                return si;
-            }
+        updateAndBindShortcutInfo(() -> {
+            si.updateFromDeepShortcutInfo(info, mApp.getContext());
+            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
+            li.createShortcutIcon(info).applyTo(si);
+            li.recycle();
+            return si;
         });
     }
 
