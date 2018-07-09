@@ -197,7 +197,7 @@ public class NotificationListener extends NotificationListenerService {
         mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
             @Override
             public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled && sIsConnected) {
                     requestUnbind();
                 }
             }
