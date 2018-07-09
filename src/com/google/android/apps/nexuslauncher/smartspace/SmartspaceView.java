@@ -56,6 +56,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final Handler mHandler;
 
     private LawnchairSmartspaceController mController;
+    private boolean mFinishedInflate;
 
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
@@ -229,7 +230,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         dp.da(this);
-        if (mController != null)
+        if (mController != null && mFinishedInflate)
             mController.addListener(this);
     }
 
@@ -249,6 +250,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onFinishInflate() {
         super.onFinishInflate();
         loadViews();
+        mFinishedInflate = true;
         dr = findViewById(R.id.dummyBubbleTextView);
         dr.setTag(new ItemInfo() {
             @Override
@@ -257,6 +259,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             }
         });
         dr.setContentDescription("");
+        if (isAttachedToWindow() && mController != null)
+            mController.addListener(this);
     }
 
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
