@@ -20,12 +20,12 @@
         android:key="pref_smartspace_time_24_h"
         android:title="@string/smartspace_time_24_h"
         android:defaultValue="false"
-        android:dependency="pref_use_pill_qsb"
+        android:dependency="pref_smartspace_time"
         />
 
     <SwitchPreference
         android:key="pref_smartspace_date"
-        android:dependency="pref_use_pill_qsb"
+        android:dependency="pref_smartspace_time"
         android:title="@string/smartspace_date"
         android:summary="@string/in_smartspace"
         android:defaultValue="false"
