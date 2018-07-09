@@ -153,6 +153,7 @@
     <declare-styleable name="SubPreference">
         <attr name="content" format="reference" />
         <attr name="longClickContent" format="reference" />
+        <attr name="previewLayout" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SeekbarPreference">
@@ -167,4 +168,5 @@
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />
+    <attr name="settingsBackground" format="color" />
 </resources>

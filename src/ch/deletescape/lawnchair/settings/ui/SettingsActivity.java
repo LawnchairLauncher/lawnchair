@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +47,8 @@ import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
+import ch.deletescape.lawnchair.theme.ThemeOverride;
+import ch.deletescape.lawnchair.views.PreviewFrame;
 import com.android.launcher3.*;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -88,6 +91,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
+        setupPreview();
+
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0;
         if (savedInstanceState == null) {
@@ -106,6 +111,24 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         updateUpButton();
     }
 
+    public void setupPreview() {
+        int layout = getIntent().getIntExtra(SubSettingsFragment.PREVIEW_LAYOUT, 0);
+        if (layout != 0) {
+            PreviewFrame previewFrame = findViewById(R.id.preview_frame);
+            getLayoutInflater().inflate(layout, previewFrame);
+        }
+    }
+
+    @NotNull
+    @Override
+    protected ThemeOverride getThemeOverride() {
+        if (getIntent().getIntExtra(SubSettingsFragment.PREVIEW_LAYOUT, 0) != 0) {
+            return new ThemeOverride.SettingsTransparent(this);
+        } else {
+            return super.getThemeOverride();
+        }
+    }
+
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
@@ -113,6 +136,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra(SubSettingsFragment.TITLE, preference.getTitle());
             intent.putExtra(SubSettingsFragment.CONTENT_RES_ID, ((SubPreference) preference).getContent());
+            intent.putExtra(SubSettingsFragment.PREVIEW_LAYOUT, ((SubPreference) preference).getPreviewLayout());
             startActivity(intent);
             return true;
         } else if(preference.getKey().equals("about")){
@@ -257,6 +281,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
+        public static final String PREVIEW_LAYOUT = "preview_layout";
 
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;

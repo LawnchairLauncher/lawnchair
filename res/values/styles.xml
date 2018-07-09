@@ -261,6 +261,7 @@
 
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="settingsBackground">@android:color/white</item>
         <item name="colorPrimary">?android:windowBackground</item>
         <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -296,6 +297,7 @@
     </style>
 
     <style name="SettingsTheme.V2.Dark" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/settings_background_dark</item>
         <item name="colorPrimary">?android:windowBackground</item>
         <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -308,6 +310,7 @@
         <item name="useLightSystemBars">false</item>
         <item name="alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
+        <item name="settingsBackground">@color/settings_background_dark</item>
     </style>
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
@@ -320,10 +323,26 @@
 
     <style name="SettingsTheme.V2.Black" parent="@style/SettingsTheme.V2.Dark">
         <item name="android:windowBackground">@android:color/black</item>
+        <item name="settingsBackground">@android:color/black</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Black.ActionBar</item>
     </style>
     <style name="SettingsTheme.V2.Black.ActionBar" parent="SettingsTheme.V2.Black">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
+    </style>
+
+    <style name="SettingsTheme.V2.Transparent" parent="SettingsTheme.V2">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
+    <style name="SettingsTheme.V2.Dark.Transparent" parent="SettingsTheme.V2.Dark">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
+    <style name="SettingsTheme.V2.Black.Transparent" parent="SettingsTheme.V2.Black">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
     </style>
 
     <style name="BorderlessButton" parent="Theme.AppCompat.Light">

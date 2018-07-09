@@ -17,13 +17,12 @@ import com.android.launcher3.Utilities
 @SuppressLint("Registered")
 open class SettingsBaseActivity : AppCompatActivity() {
     val decorLayout by lazy { DecorLayout(this, window) }
-    var actionBarElevation: Float
-        get() = decorLayout.actionBarElevation
-        set(value) { decorLayout.actionBarElevation = value }
+
+    protected open val themeOverride: ThemeOverride get() = ThemeOverride.Settings(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         hookGoogleSansDialogTitle()
-        ThemeManager.getInstance(this).addOverride(ThemeOverride.Settings(this))
+        ThemeManager.getInstance(this).addOverride(themeOverride)
 
         super.onCreate(savedInstanceState)
         super.setContentView(decorLayout)

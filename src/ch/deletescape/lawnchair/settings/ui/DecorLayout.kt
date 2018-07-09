@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.settings.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.Window
 import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
 import com.android.launcher3.R
@@ -25,6 +27,9 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
     private val toolbar: View
     private val largeTitle: View
 
+    private val shouldDrawBackground by lazy { context.getBooleanAttr(android.R.attr.windowShowWallpaper) }
+    private val settingsBackground by lazy { context.getColorAttr(R.attr.settingsBackground) }
+
     var actionBarElevation: Float
         get() = actionBarContainer.elevation
         set(value) {
@@ -33,7 +38,7 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
                 actionBarContainer.background = null
                 window.statusBarColor = 0
             } else {
-                val backgroundColor = context.getColorAttr(android.R.attr.windowBackground)
+                val backgroundColor = settingsBackground
                 actionBarContainer.background = ColorDrawable(backgroundColor)
                 window.statusBarColor = backgroundColor
             }
@@ -71,6 +76,15 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
             findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
             background = BlurWallpaperProvider.getInstance(context)?.createDrawable()
         }
+
+        if (shouldDrawBackground) {
+            setWillNotDraw(false)
+        }
+    }
+
+    override fun draw(canvas: Canvas) {
+        if (shouldDrawBackground) canvas.drawColor(settingsBackground)
+        super.draw(canvas)
     }
 
     override fun onClick(v: View?) {
