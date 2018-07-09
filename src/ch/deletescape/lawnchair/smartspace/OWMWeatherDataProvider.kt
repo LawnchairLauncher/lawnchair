@@ -13,12 +13,12 @@ import kotlin.math.roundToInt
 @Keep
 class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
 
-    private val launcher = controller.launcher
-    private val prefs = Utilities.getLawnchairPrefs(launcher)
+    private val context = controller.context
+    private val prefs = Utilities.getLawnchairPrefs(context)
     private val handlerThread = HandlerThread("owm").apply { if (!isAlive) start() }
     private val handler: Handler = Handler(handlerThread.looper)
     private val owm = OWM(prefs.weatherApiKey)
-    private val iconProvider = WeatherIconProvider(launcher)
+    private val iconProvider = WeatherIconProvider(context)
 
     init {
         prefs.addOnPreferenceChangeListener(this, "pref_weatherApiKey", "pref_weather_city", "pref_weather_units")

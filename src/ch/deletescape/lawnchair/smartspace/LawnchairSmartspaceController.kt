@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.smartspace
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -8,7 +9,6 @@ import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
 import com.android.launcher3.Launcher
@@ -17,14 +17,14 @@ import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.Semaphore
 import kotlin.math.roundToInt
 
-class LawnchairSmartspaceController(val launcher: LawnchairLauncher) {
+class LawnchairSmartspaceController(val context: Context) {
 
     var smartspaceData = DataContainer()
     private var weatherData: WeatherData? = null
     private var cardData: CardData? = null
     private val listeners = ArrayList<Listener>()
-    private val weatherProviderPref = Utilities.getLawnchairPrefs(launcher)::weatherProvider
-    private val eventProviderPref = Utilities.getLawnchairPrefs(launcher)::eventProvider
+    private val weatherProviderPref = Utilities.getLawnchairPrefs(context)::weatherProvider
+    private val eventProviderPref = Utilities.getLawnchairPrefs(context)::eventProvider
     private var weatherDataProvider = BlankDataProvider(this) as DataProvider
     private var eventDataProvider = weatherDataProvider
 

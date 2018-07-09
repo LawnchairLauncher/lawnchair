@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
@@ -41,10 +41,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         mBgPaint.setColor(Color.WHITE);
         mBgPaint.setAlpha(0);
 
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            mController = ((LawnchairLauncher) launcher).getSmartspace();
-        }
+        mController = LawnchairAppKt.getLawnchairApp(getContext()).getSmartspace();
     }
 
     @Override

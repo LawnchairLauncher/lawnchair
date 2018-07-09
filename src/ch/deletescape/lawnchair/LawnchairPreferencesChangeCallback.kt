@@ -41,7 +41,7 @@ class LawnchairPreferencesChangeCallback(private val launcher: LawnchairLauncher
     }
 
     fun updateSmartspaceProvider() {
-        launcher.smartspace.onProviderChanged()
+        launcher.lawnchairApp.smartspace.onProviderChanged()
     }
 
     fun updateSmartspace() {

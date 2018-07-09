@@ -27,12 +27,12 @@ import com.android.launcher3.Utilities
 @Keep
 class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
 
-    private val launcher = controller.launcher
-    private val prefs = Utilities.getLawnchairPrefs(launcher)
+    private val context = controller.context
+    private val prefs = Utilities.getLawnchairPrefs(context)
     private val smartspaceWidgetHost = SmartspaceWidgetHost()
     private var smartspaceView: SmartspaceWidgetHostView? = null
     private val widgetIdPref = prefs::smartspaceWidgetId
-    private val providerInfo = getSmartspaceWidgetProvider(launcher)
+    private val providerInfo = getSmartspaceWidgetProvider(context)
     private var isWidgetBound = false
 
     init {
@@ -40,7 +40,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     }
 
     private fun startBinding() {
-        val widgetManager = AppWidgetManager.getInstance(launcher)
+        val widgetManager = AppWidgetManager.getInstance(context)
 
         var widgetId = widgetIdPref.get()
         val widgetInfo = widgetManager.getAppWidgetInfo(widgetId)
@@ -59,14 +59,14 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         }
 
         if (isWidgetBound) {
-            smartspaceView = smartspaceWidgetHost.createView(launcher, widgetId, providerInfo) as SmartspaceWidgetHostView
+            smartspaceView = smartspaceWidgetHost.createView(context, widgetId, providerInfo) as SmartspaceWidgetHostView
             smartspaceWidgetHost.startListening()
             onSetupComplete()
         } else {
             val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-            BlankActivity.startActivityForResult(launcher, bindIntent, 1028, { resultCode, _ ->
+            BlankActivity.startActivityForResult(context, bindIntent, 1028, { resultCode, _ ->
                 if (resultCode == Activity.RESULT_OK) {
                     startBinding()
                 } else {
@@ -115,7 +115,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         updateData(weather, card)
     }
 
-    inner class SmartspaceWidgetHost : AppWidgetHost(launcher, 1027) {
+    inner class SmartspaceWidgetHost : AppWidgetHost(context, 1027) {
 
         override fun onCreateView(context: Context, appWidgetId: Int, appWidget: AppWidgetProviderInfo?): AppWidgetHostView {
             return SmartspaceWidgetHostView(context)

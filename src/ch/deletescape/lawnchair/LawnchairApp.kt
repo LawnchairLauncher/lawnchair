@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.content.ContextCompat
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import com.android.launcher3.BuildConfig
 import java.io.File
 import java.io.PrintStream
@@ -19,6 +20,7 @@ class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
     val fontLoader by lazy { FontLoader(this) }
+    val smartspace by lazy { LawnchairSmartspaceController(this) }
 
     init {
         Thread.setDefaultUncaughtExceptionHandler(LawnchairCrashHandler(this, Thread.getDefaultUncaughtExceptionHandler()))

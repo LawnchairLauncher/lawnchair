@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
@@ -61,10 +61,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (launcher instanceof LawnchairLauncher) {
-            mController = ((LawnchairLauncher) launcher).getSmartspace();
-        }
+        mController = LawnchairAppKt.getLawnchairApp(context).getSmartspace();
 
         mCalendarClickListener = new OnClickListener() {
             @Override
