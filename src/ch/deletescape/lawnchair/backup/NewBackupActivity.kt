@@ -110,7 +110,7 @@ class NewBackupActivity : SettingsBaseActivity() {
     }
 
     fun getTimestamp(): String {
-        val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US)
+        val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
         return simpleDateFormat.format(Date())
     }
 

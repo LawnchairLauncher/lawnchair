@@ -16,12 +16,12 @@ import com.android.launcher3.LauncherFiles
 import com.android.launcher3.Utilities
 import org.json.JSONArray
 import java.io.*
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
-import java.nio.charset.StandardCharsets
 
 class LawnchairBackup(val context: Context, val uri: Uri) {
 
@@ -283,7 +283,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         )
 
         private fun getTimestamp(): String {
-            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US)
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
             return simpleDateFormat.format(Date())
         }
     }
