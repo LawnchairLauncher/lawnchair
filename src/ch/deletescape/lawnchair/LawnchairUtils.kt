@@ -258,3 +258,11 @@ fun openPopupMenu(icon: BubbleTextView, vararg shortcuts: SystemShortcut) {
         populateAndShow(icon, emptyList(), emptyList(), listOf(*shortcuts), false)
     }
 }
+
+fun Context.getLauncherOrNull(): Launcher? {
+    return try {
+        Launcher.getLauncher(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}

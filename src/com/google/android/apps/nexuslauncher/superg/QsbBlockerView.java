@@ -61,9 +61,15 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mView != null && mState == 2) {
-            DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
+            Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
+            int size;
+            if (launcher != null) {
+                DeviceProfile deviceProfile = launcher.getDeviceProfile();
+                size = ((MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
+            } else {
+                size = getResources().getDimensionPixelSize(R.dimen.smartspace_preview_widget_margin);
+            }
             LayoutParams layoutParams = (LayoutParams) mView.getLayoutParams();
-            int size = ((MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
             layoutParams.leftMargin = layoutParams.rightMargin = size;
         }
 
@@ -74,9 +80,12 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
-        w.setOnStateChangeListener(this);
-        prepareStateChange(w.getState(), null);
+        Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
+        if (launcher != null) {
+            Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
+            w.setOnStateChangeListener(this);
+            prepareStateChange(w.getState(), null);
+        }
 
         if (mController != null)
             mController.addListener(this);

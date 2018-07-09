@@ -40,6 +40,7 @@ import android.view.ViewDebug;
 import android.view.ViewParent;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
@@ -142,9 +143,19 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = Launcher.getLauncher(context);
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mLauncher = LawnchairUtilsKt.getLauncherOrNull(context);
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        if (mLauncher == null) {
+            mDeferShadowGenerationOnTouch = false;
+            mLayoutHorizontal = false;
+            mIconSize = 0;
+            mCenterVertically = true;
+            mLongPressHelper = null;
+            mStylusEventHelper = null;
+            mOutlineHelper = null;
+            return;
+        }
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);

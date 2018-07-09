@@ -67,13 +67,14 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
-    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
-    val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
-    val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
 
     // Smartspace
+    val enableSmartspace by BooleanPref("pref_smartspace", true)
+    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
+    val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
+    val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var weatherProvider by StringPref("pref_smartspace_widget_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)

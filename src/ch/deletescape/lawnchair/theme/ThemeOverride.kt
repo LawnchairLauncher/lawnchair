@@ -73,7 +73,7 @@ abstract class ThemeOverride(val activity: Activity) {
     class SettingsTransparent(activity: Activity) : ThemeOverride(activity) {
 
         override val lightTheme = R.style.SettingsTheme_V2_Transparent
-        override val darkTextTheme = R.style.SettingsTheme_V2_Transparent
+        override val darkTextTheme = R.style.SettingsTheme_V2_DarkText_Transparent
         override val darkTheme = R.style.SettingsTheme_V2_Dark_Transparent
         override val blackTheme = R.style.SettingsTheme_V2_Black_Transparent
     }

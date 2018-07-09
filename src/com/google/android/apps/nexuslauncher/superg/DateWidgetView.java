@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -53,12 +54,18 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
-        int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns;
-        int marginEnd = (size - deviceProfile.iconSizePx) / 2;
-        mWidth = (deviceProfile.inv.numColumns - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
-        mText = "";
-        update();
+        Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
+        int marginEnd;
+        if (launcher != null) {
+            DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
+            int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns;
+            marginEnd = (size - deviceProfile.iconSizePx) / 2;
+            mWidth = (deviceProfile.inv.numColumns - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
+            mText = "";
+            update();
+        } else {
+            marginEnd = getResources().getDimensionPixelSize(R.dimen.smartspace_preview_widget_margin);
+        }
         setMarginEnd(mDateText1, marginEnd);
         setMarginEnd(mDateText2, marginEnd);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
