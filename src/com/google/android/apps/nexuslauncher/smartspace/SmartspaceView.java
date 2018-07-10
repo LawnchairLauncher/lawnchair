@@ -19,6 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
@@ -57,11 +59,13 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     private LawnchairSmartspaceController mController;
     private boolean mFinishedInflate;
+    private LawnchairPreferences mPrefs;
 
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
         mController = LawnchairAppKt.getLawnchairApp(context).getSmartspace();
+        mPrefs = Utilities.getLawnchairPrefs(context);
 
         mCalendarClickListener = new OnClickListener() {
             @Override
@@ -140,10 +144,21 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     @SuppressWarnings("ConstantConditions")
     private void loadSingleLine(final LawnchairSmartspaceController.DataContainer data) {
         setBackgroundResource(0);
-        mClockView.setOnClickListener(mCalendarClickListener);
-        mClockView.setOnLongClickListener(co());
+        if (mPrefs.getSmartspaceDate() || mPrefs.getSmartspaceTime()) {
+            mClockView.setVisibility(View.VISIBLE);
+            mClockView.setOnClickListener(mCalendarClickListener);
+            mClockView.setOnLongClickListener(co());
+            if (data.isWeatherAvailable()) {
+                mTitleSeparator.setVisibility(View.VISIBLE);
+            }
+            if (!Utilities.ATLEAST_NOUGAT) {
+                mClockView.onVisibilityAggregated(true);
+            }
+        } else {
+            mClockView.setVisibility(View.GONE);
+            mTitleSeparator.setVisibility(View.GONE);
+        }
         if (data.isWeatherAvailable()) {
-            mTitleSeparator.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setVisibility(View.VISIBLE);
             mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mTitleWeatherContent.setOnLongClickListener(co());
@@ -152,12 +167,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mTitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {
             mTitleWeatherContent.setVisibility(View.GONE);
-            mTitleSeparator.setVisibility(View.GONE);
         }
 
-        if (!Utilities.ATLEAST_NOUGAT) {
-            mClockView.onVisibilityAggregated(true);
-        }
     }
 
     private Bitmap addShadowToBitmap(Bitmap bitmap) {

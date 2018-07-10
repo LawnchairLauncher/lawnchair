@@ -321,7 +321,7 @@
     <string name="icu_abbrev_date"> dd MMMM</string>
     <string name="in_smartspace">In \"At a Glance\" widget</string>
     <string name="smartspace_time">Show time</string>
-    <string name="smartspace_date">Show time and date</string>
+    <string name="smartspace_date">Show date</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="label_search">Search</string>
     <string name="label_voice_search">Voice search</string>
