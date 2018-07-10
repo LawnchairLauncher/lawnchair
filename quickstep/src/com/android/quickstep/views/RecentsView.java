@@ -27,6 +27,8 @@ import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -57,6 +59,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
@@ -117,6 +120,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final Rect mTempRect = new Rect();
 
     private static final int DISMISS_TASK_DURATION = 300;
+    private static final int ADDITION_TASK_DURATION = 200;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     public static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.85f;
 
@@ -169,8 +173,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (!mHandleTaskStackChanges) {
                 return;
             }
-            // TODO: Re-enable layout transitions for addition of the unpinned task
+
             reloadIfNeeded();
+            enableLayoutTransitions();
         }
 
         @Override
@@ -239,6 +244,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private int mDownY;
 
     private PendingAnimation mPendingAnimation;
+    private LayoutTransition mLayoutTransition;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
@@ -355,7 +361,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public TaskView getTaskView(int taskId) {
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView tv = (TaskView) getChildAt(i);
-            if (tv.getTask().key.id == taskId) {
+            if (tv.getTask().key != null && tv.getTask().key.id == taskId) {
                 return tv;
             }
         }
@@ -448,6 +454,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
 
+        // Unload existing visible task data
+        unloadVisibleTaskData();
+
         final int requiredTaskCount = tasks.size();
         if (getTaskViewCount() != requiredTaskCount) {
             if (oldChildCount > 0) {
@@ -455,7 +464,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
             for (int i = getChildCount(); i < requiredTaskCount; i++) {
                 final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
-                addView(taskView);
+                addView(taskView, 0);
             }
             while (getChildCount() > requiredTaskCount) {
                 final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
@@ -465,9 +474,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 addView(mClearAllButton);
             }
         }
-
-        // Unload existing visible task data
-        unloadVisibleTaskData();
 
         // Rebind and reset all task views
         for (int i = requiredTaskCount - 1; i >= 0; i--) {
@@ -635,9 +641,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
             if (mHasVisibleTaskData.valueAt(i)) {
                 TaskView taskView = getTaskView(mHasVisibleTaskData.keyAt(i));
-                Task task = taskView.getTask();
-                loader.unloadTaskData(task);
-                loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                if (taskView != null) {
+                    Task task = taskView.getTask();
+                    loader.unloadTaskData(task);
+                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                }
             }
         }
         mHasVisibleTaskData.clear();
@@ -764,6 +772,38 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 firstTask.setIconScaleAndDim(scale);
             }
         }
+    }
+
+    private void enableLayoutTransitions() {
+        if (mLayoutTransition == null) {
+            mLayoutTransition = new LayoutTransition();
+            mLayoutTransition.enableTransitionType(LayoutTransition.APPEARING);
+            mLayoutTransition.setDuration(ADDITION_TASK_DURATION);
+            mLayoutTransition.setStartDelay(LayoutTransition.APPEARING, 0);
+
+            mLayoutTransition.addTransitionListener(new TransitionListener() {
+                @Override
+                public void startTransition(LayoutTransition transition, ViewGroup viewGroup,
+                    View view, int i) {
+                }
+
+                @Override
+                public void endTransition(LayoutTransition transition, ViewGroup viewGroup,
+                    View view, int i) {
+                    // When the unpinned task is added, snap to first page and disable transitions
+                    if (view instanceof TaskView) {
+                        snapToPage(0);
+                        disableLayoutTransitions();
+                    }
+
+                }
+            });
+        }
+        setLayoutTransition(mLayoutTransition);
+    }
+
+    private void disableLayoutTransitions() {
+        setLayoutTransition(null);
     }
 
     public void setSwipeDownShouldLaunchApp(boolean swipeDownShouldLaunchApp) {
