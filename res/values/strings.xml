@@ -328,7 +328,7 @@
     <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
     <string name="pref_icon_pack">Icon pack</string>
     <string name="state_loading">Applying…</string>
-    <string name="smartspace_preferences_in_settings">At A Glance</string>
+    <string name="smartspace_preferences_in_settings">Home widget</string>
     <string name="smartspace_preferences_in_settings_desc">At the top of your Home screen</string>
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
@@ -400,7 +400,7 @@
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="hide_apps">Hide apps</string>
-    <string name="hide_apps_sum">Hide app from the app drawer</string>
+    <string name="hide_apps_sum">Hide apps from the app drawer</string>
     <string name="grid_size">Grid size</string>
     <string name="grid_size_default">Default</string>
     <string name="developer_options_title">Developer options</string>
@@ -460,6 +460,14 @@
     <string name="dock_shadow">Dock shadow</string>
     <string name="dock_radius">Dock corner radius</string>
     <string name="dock_gradient">Use gradient dock</string>
+    
+    <!-- Categories -->
+    <string name="pref_category_icons">Icons</string>
+    <string name="pref_category_weather">Weather</string>
+    <string name="pref_category_misc">Miscellaneous</string>
+    <string name="pref_category_layout">Layout</string>
+    <string name="pref_category_theme">Style</string>
+    <string name="pref_category_searchbar">Searchbar</string>
 
     <!-- About screen -->
 
@@ -555,5 +563,5 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Use Pixel 1 style</string>
+    <string name="title_use_pill_qsb">Use Pixel searchbar</string>
 </resources>
