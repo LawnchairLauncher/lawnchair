@@ -133,7 +133,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             public void onLayoutChange(View v, int l, int t, int r, int b,
                                     int oldL, int oldT, int oldR, int oldB) {
                                 taskView.getRootView().removeOnLayoutChangeListener(this);
-                                recentsView.removeIgnoreResetTask(taskView);
+                                recentsView.clearIgnoreResetTask(taskId);
 
                                 // Start animating in the side pages once launcher has been resized
                                 recentsView.dismissTask(taskView, false, false);
@@ -178,7 +178,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         // Hide the task view and wait for the window to be resized
                         // TODO: Consider animating in launcher and do an in-place start activity
                         //       afterwards
-                        recentsView.addIgnoreResetTask(taskView);
+                        recentsView.setIgnoreResetTask(taskId);
                         taskView.setAlpha(0f);
                     };
 

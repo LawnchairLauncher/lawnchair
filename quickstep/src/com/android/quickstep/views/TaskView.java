@@ -18,7 +18,8 @@ package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA_MULTIPLIER;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.TaskSystemShortcut;
@@ -94,12 +96,27 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 }
             };
 
+    private static FloatProperty<TaskView> FOCUS_TRANSITION =
+            new FloatProperty<TaskView>("focusTransition") {
+        @Override
+        public void setValue(TaskView taskView, float v) {
+            taskView.setIconAndDimTransitionProgress(v);
+        }
+
+        @Override
+        public Float get(TaskView taskView) {
+            return taskView.mFocusTransitionProgress;
+        }
+    };
+
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private IconView mIconView;
     private float mCurveScale;
     private float mZoomScale;
-    private Animator mDimAlphaAnim;
+
+    private Animator mIconAndDimAnimator;
+    private float mFocusTransitionProgress = 1;
 
     public TaskView(Context context) {
         this(context, null);
@@ -201,28 +218,35 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         // Do nothing
     }
 
-    public void animateIconToScaleAndDim(float scale) {
-        mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
-        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA_MULTIPLIER, 1 - scale,
-                scale);
-        mDimAlphaAnim.setDuration(DIM_ANIM_DURATION);
-        mDimAlphaAnim.addListener(new AnimatorListenerAdapter() {
+    private void setIconAndDimTransitionProgress(float progress) {
+        mFocusTransitionProgress = progress;
+        mSnapshotView.setDimAlphaMultipler(progress);
+        float scale = FAST_OUT_SLOW_IN.getInterpolation(Utilities.boundToRange(
+                progress * DIM_ANIM_DURATION / SCALE_ICON_DURATION,  0, 1));
+        mIconView.setScaleX(scale);
+        mIconView.setScaleY(scale);
+    }
+
+    public void animateIconScaleAndDimIntoView() {
+        if (mIconAndDimAnimator != null) {
+            mIconAndDimAnimator.cancel();
+        }
+        mIconAndDimAnimator = ObjectAnimator.ofFloat(this, FOCUS_TRANSITION, 1);
+        mIconAndDimAnimator.setDuration(DIM_ANIM_DURATION).setInterpolator(LINEAR);
+        mIconAndDimAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mDimAlphaAnim = null;
+                mIconAndDimAnimator = null;
             }
         });
-        mDimAlphaAnim.start();
+        mIconAndDimAnimator.start();
     }
 
     protected void setIconScaleAndDim(float iconScale) {
-        mIconView.animate().cancel();
-        mIconView.setScaleX(iconScale);
-        mIconView.setScaleY(iconScale);
-        if (mDimAlphaAnim != null) {
-            mDimAlphaAnim.cancel();
+        if (mIconAndDimAnimator != null) {
+            mIconAndDimAnimator.cancel();
         }
-        mSnapshotView.setDimAlphaMultipler(iconScale);
+        setIconAndDimTransitionProgress(iconScale);
     }
 
     public void resetVisualProperties() {

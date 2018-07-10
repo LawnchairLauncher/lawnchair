@@ -134,7 +134,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     /**
      * Must return a non-null controller is supportsLongSwipe was true.
      */
-    LongSwipeHelper getLongSwipeController(T activity, RemoteAnimationTargetSet targetSet);
+    LongSwipeHelper getLongSwipeController(T activity, int runningTaskId);
 
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
@@ -384,12 +384,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public LongSwipeHelper getLongSwipeController(Launcher activity,
-                RemoteAnimationTargetSet targetSet) {
+        public LongSwipeHelper getLongSwipeController(Launcher activity, int runningTaskId) {
             if (activity.getDeviceProfile().isVerticalBarLayout()) {
                 return null;
             }
-            return new LongSwipeHelper(activity, targetSet);
+            return new LongSwipeHelper(activity, runningTaskId);
         }
 
         @Override
@@ -571,8 +570,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public LongSwipeHelper getLongSwipeController(RecentsActivity activity,
-                RemoteAnimationTargetSet targetSet) {
+        public LongSwipeHelper getLongSwipeController(RecentsActivity activity, int runningTaskId) {
             return null;
         }
 

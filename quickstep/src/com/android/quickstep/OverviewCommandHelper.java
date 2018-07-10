@@ -285,7 +285,7 @@ public class OverviewCommandHelper {
             }
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
-            mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+            mRecentsView.setRunningTaskIconScaledDown(true);
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(Action.Command.RECENTS_BUTTON,
                         mHelper.getContainerType(), ContainerType.TASKSWITCHER);
@@ -308,8 +308,7 @@ public class OverviewCommandHelper {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     if (mRecentsView != null) {
-                        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */,
-                                true /* animate */);
+                        mRecentsView.animateUpRunningTaskIconScale();
                     }
                 }
             });

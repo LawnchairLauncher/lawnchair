@@ -48,7 +48,6 @@ import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
@@ -249,8 +248,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
 
-    // Keeps track of task views whose visual state should not be reset
-    private ArraySet<TaskView> mIgnoreResetTaskViews = new ArraySet<>();
+    // Keeps track of task id whose visual state should not be reset
+    private int mIgnoreResetTaskId = -1;
 
     // Variables for empty state
     private final Drawable mEmptyIcon;
@@ -457,18 +456,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // Unload existing visible task data
         unloadVisibleTaskData();
 
+        TaskView ignoreRestTaskView =
+                mIgnoreResetTaskId == -1 ? null : getTaskView(mIgnoreResetTaskId);
+
         final int requiredTaskCount = tasks.size();
         if (getTaskViewCount() != requiredTaskCount) {
             if (oldChildCount > 0) {
                 removeView(mClearAllButton);
             }
             for (int i = getChildCount(); i < requiredTaskCount; i++) {
-                final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
-                addView(taskView, 0);
+                addView(inflater.inflate(R.layout.task, this, false));
             }
             while (getChildCount() > requiredTaskCount) {
-                final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
-                removeView(taskView);
+                removeView(getChildAt(getChildCount() - 1));
             }
             if (requiredTaskCount > 0) {
                 addView(mClearAllButton);
@@ -481,6 +481,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task);
+        }
+        if (mIgnoreResetTaskId != -1 && getTaskView(mIgnoreResetTaskId) != ignoreRestTaskView) {
+            // If the taskView mapping is changing, do not preserve the visuals. Since we are
+            // mostly preserving the first task, and new taskViews are added to the end, it should
+            // generally map to the same task.
+            mIgnoreResetTaskId = -1;
         }
         resetTaskVisuals();
 
@@ -501,14 +507,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void resetTaskVisuals() {
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView taskView = (TaskView) getChildAt(i);
-            if (!mIgnoreResetTaskViews.contains(taskView)) {
+            if (mIgnoreResetTaskId != taskView.getTask().key.id) {
                 taskView.resetVisualProperties();
             }
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
         }
-        applyIconScale(false /* animate */);
+
+        // Force apply the scale.
+        if (mIgnoreResetTaskId != mRunningTaskId) {
+            applyRunningTaskIconScale();
+        }
 
         updateCurveProperties();
         // Update the set of visible task's data
@@ -660,6 +670,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void reset() {
         mRunningTaskId = -1;
         mRunningTaskTileHidden = false;
+        mIgnoreResetTaskId = -1;
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -721,10 +732,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
         boolean runningTaskIconScaledDown = mRunningTaskIconScaledDown;
 
-        setRunningTaskIconScaledDown(false, false);
+        setRunningTaskIconScaledDown(false);
         setRunningTaskHidden(false);
         mRunningTaskId = runningTaskId;
-        setRunningTaskIconScaledDown(runningTaskIconScaledDown, false);
+        setRunningTaskIconScaledDown(runningTaskIconScaledDown);
         setRunningTaskHidden(runningTaskTileHidden);
 
         setCurrentPage(0);
@@ -754,23 +765,25 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mQuickScrubController;
     }
 
-    public void setRunningTaskIconScaledDown(boolean isScaledDown, boolean animate) {
-        if (mRunningTaskIconScaledDown == isScaledDown) {
-            return;
+    public void setRunningTaskIconScaledDown(boolean isScaledDown) {
+        if (mRunningTaskIconScaledDown != isScaledDown) {
+            mRunningTaskIconScaledDown = isScaledDown;
+            applyRunningTaskIconScale();
         }
-        mRunningTaskIconScaledDown = isScaledDown;
-        applyIconScale(animate);
     }
 
-    private void applyIconScale(boolean animate) {
-        float scale = mRunningTaskIconScaledDown ? 0 : 1;
+    private void applyRunningTaskIconScale() {
         TaskView firstTask = getTaskView(mRunningTaskId);
         if (firstTask != null) {
-            if (animate) {
-                firstTask.animateIconToScaleAndDim(scale);
-            } else {
-                firstTask.setIconScaleAndDim(scale);
-            }
+            firstTask.setIconScaleAndDim(mRunningTaskIconScaledDown ? 0 : 1);
+        }
+    }
+
+    public void animateUpRunningTaskIconScale() {
+        mRunningTaskIconScaledDown = false;
+        TaskView firstTask = getTaskView(mRunningTaskId);
+        if (firstTask != null) {
+            firstTask.animateIconScaleAndDimIntoView();
         }
     }
 
@@ -836,12 +849,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         public float scrollFromEdge;
     }
 
-    public void addIgnoreResetTask(TaskView taskView) {
-        mIgnoreResetTaskViews.add(taskView);
+    public void setIgnoreResetTask(int taskId) {
+        mIgnoreResetTaskId = taskId;
     }
 
-    public void removeIgnoreResetTask(TaskView taskView) {
-        mIgnoreResetTaskViews.remove(taskView);
+    public void clearIgnoreResetTask(int taskId) {
+        if (mIgnoreResetTaskId == taskId) {
+            mIgnoreResetTaskId = -1;
+        }
     }
 
     private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {

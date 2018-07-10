@@ -436,7 +436,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setRunningTaskHidden(true);
-        mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+        mRecentsView.setRunningTaskIconScaledDown(true);
         mLayoutListener.open();
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
@@ -841,7 +841,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
         mRecentsView.setRunningTaskHidden(false);
-        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, false /* animate */);
+        mRecentsView.setRunningTaskIconScaledDown(false);
         mQuickScrubController.cancelActiveQuickscrub();
     }
 
@@ -907,7 +907,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.
-        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
+        mRecentsView.animateUpRunningTaskIconScale();
         mRecentsView.setSwipeDownShouldLaunchApp(true);
 
         RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
@@ -939,7 +939,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
         mQuickScrubController.onFinishedTransitionToQuickScrub();
 
-        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
+        mRecentsView.animateUpRunningTaskIconScale();
         RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
     }
 
@@ -1044,7 +1044,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mLongSwipeController = mActivityControlHelper.getLongSwipeController(
-                mActivity, mRecentsAnimationWrapper.targetSet);
+                mActivity, mRunningTaskId);
         onLongSwipeDisplacementUpdated();
         setTargetAlphaProvider(mLongSwipeController::getTargetAlpha);
     }
