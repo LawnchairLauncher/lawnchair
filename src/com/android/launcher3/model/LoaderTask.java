@@ -478,15 +478,11 @@ public class LoaderTask implements Runnable {
                                     }
                                     info = new ShortcutInfo(pinnedShortcut, context);
                                     final ShortcutInfo finalInfo = info;
-                                    Provider<Bitmap> fallbackIconProvider = new Provider<Bitmap>() {
-                                        @Override
-                                        public Bitmap get() {
-                                            // If the pinned deep shortcut is no longer published,
-                                            // use the last saved icon instead of the default.
-                                            return c.loadIcon(finalInfo)
-                                                    ? finalInfo.iconBitmap : null;
-                                        }
-                                    };
+                                    // If the pinned deep shortcut is no longer published,
+                                    // use the last saved icon instead of the default.
+                                    Provider<Bitmap> fallbackIconProvider = () ->
+                                            c.loadIcon(finalInfo) ? finalInfo.iconBitmap : null;
+
                                     LauncherIcons li = LauncherIcons.obtain(context);
                                     li.createShortcutIcon(pinnedShortcut,
                                             true /* badged */, fallbackIconProvider).applyTo(info);

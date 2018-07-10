@@ -3034,16 +3034,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         });
     }
 
-    public View getViewForTag(final Object tag) {
-        return getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return info == tag;
-            }
-        });
-    }
-
     public LauncherAppWidgetHostView getWidgetForAppWidgetId(final int appWidgetId) {
         return (LauncherAppWidgetHostView) getFirstMatch(new ItemOperator() {
 

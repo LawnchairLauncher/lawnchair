@@ -19,20 +19,15 @@ package com.android.launcher3.util;
 /**
  * Utility class to allow lazy initialization of objects.
  */
-public abstract class Provider<T> {
+public interface Provider<T> {
 
     /**
      * Initializes and returns the object. This may contain expensive operations not suitable
      * to UI thread.
      */
-    public abstract T get();
+    T get();
 
-    public static <T> Provider<T> of (final T value) {
-        return new Provider<T>() {
-            @Override
-            public T get() {
-                return value;
-            }
-        };
+    static <T> Provider<T> of (T value) {
+        return() -> value;
     }
 }

@@ -478,7 +478,8 @@ public class IconCache {
             info.contentDescription = "";
             info.usingLowResIcon = false;
         } else {
-            getTitleAndIcon(info, new ActivityInfoProvider(info.getIntent(), info.user),
+            Intent intent = info.getIntent();
+            getTitleAndIcon(info, () -> mLauncherApps.resolveActivity(intent, info.user),
                     true, useLowResIcon);
         }
     }
@@ -866,22 +867,6 @@ public class IconCache {
             return BitmapFactory.decodeByteArray(data, 0, data.length, options);
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    private class ActivityInfoProvider extends Provider<LauncherActivityInfo> {
-
-        private final Intent mIntent;
-        private final UserHandle mUser;
-
-        public ActivityInfoProvider(Intent intent, UserHandle user) {
-            mIntent = intent;
-            mUser = user;
-        }
-
-        @Override
-        public LauncherActivityInfo get() {
-            return mLauncherApps.resolveActivity(mIntent, mUser);
         }
     }
 
