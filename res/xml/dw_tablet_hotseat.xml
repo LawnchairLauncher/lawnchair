@@ -16,7 +16,7 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
-    <!-- Messaging, Email, Browser, [All Apps], Music, Gallery, Camera -->
+    <!-- Messaging, Email, Browser, Maps, Music, Gallery, Camera -->
     <resolve
         launcher:container="-101"
         launcher:screen="0"
@@ -48,7 +48,13 @@
         <favorite launcher:uri="http://www.example.com/" />
     </resolve>
 
-    <!-- All Apps -->
+    <resolve
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="3"
+        launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MAPS;end" />
+    </resolve>
 
     <favorite
         launcher:container="-101"

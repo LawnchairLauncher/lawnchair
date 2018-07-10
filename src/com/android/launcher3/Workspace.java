@@ -2019,22 +2019,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void onNoCellFound(View dropTargetLayout) {
-        if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-            Hotseat hotseat = mLauncher.getHotseat();
-            boolean droppedOnAllAppsIcon = !FeatureFlags.NO_ALL_APPS_ICON
-                    && mTargetCell != null && !mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
-                    hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]));
-            if (!droppedOnAllAppsIcon) {
-                // Only show message when hotseat is full and drop target was not AllApps button
-                showOutOfSpaceMessage(true);
-            }
-        } else {
-            showOutOfSpaceMessage(false);
-        }
-    }
-
-    private void showOutOfSpaceMessage(boolean isHotseatLayout) {
-        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
+        int strId = mLauncher.isHotseatLayout(dropTargetLayout)
+                ? R.string.hotseat_out_of_space : R.string.out_of_space;
         Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
     }
 
