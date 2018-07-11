@@ -882,8 +882,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 // new thumbnail
                 finishTransitionPosted = new WindowCallbacksCompat(taskView) {
 
+                    // The number of frames to defer until we actually finish the animation
+                    private int mDeferFrameCount = 2;
+
                     @Override
                     public void onPostDraw(Canvas canvas) {
+                        if (mDeferFrameCount > 0) {
+                            mDeferFrameCount--;
+                            // Workaround, detach and reattach to invalidate the root node for
+                            // another draw
+                            detach();
+                            attach();
+                            taskView.invalidate();
+                            return;
+                        }
+
                         setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
                         detach();
                     }
