@@ -106,6 +106,10 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     protected boolean onDragStart(DragEvent event) {
+        return onDragStart(event, this);
+    }
+
+    protected boolean onDragStart(DragEvent event, DragOptions.PreDragCondition preDragCondition) {
         ClipDescription desc =  event.getClipDescription();
         if (desc == null || !desc.hasMimeType(getMimeType())) {
             Log.e(TAG, "Someone started a dragAndDrop before us.");
@@ -115,7 +119,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         Point downPos = new Point((int) event.getX(), (int) event.getY());
         DragOptions options = new DragOptions();
         options.systemDndStartPoint = downPos;
-        options.preDragCondition = this;
+        options.preDragCondition = preDragCondition;
 
         // We use drag event position as the screenPos for the preview image. Since mPreviewRect
         // already includes the view position relative to the drag event on the source window,
@@ -123,7 +127,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         // across windows, using drag position here give a good estimate for relative position
         // to source window.
         createDragHelper().startDrag(new Rect(mPreviewRect),
-                mPreviewBitmapWidth, mPreviewViewWidth, downPos,  this, options);
+                mPreviewBitmapWidth, mPreviewViewWidth, downPos, this, options);
         mDragStartTime = SystemClock.uptimeMillis();
         return true;
     }

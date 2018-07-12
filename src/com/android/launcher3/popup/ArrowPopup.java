@@ -36,8 +36,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
@@ -47,6 +49,7 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +137,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     protected void reorderAndShow(int viewsToFlip) {
         setVisibility(View.INVISIBLE);
         mIsOpen = true;
-        mLauncher.getDragLayer().addView(this);
+        getPopupContainer().addView(this);
         orientAboutObject();
 
         boolean reverseOrder = mIsAboveIcon;
@@ -163,7 +166,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
                 ? R.dimen.popup_arrow_horizontal_center_start
                 : R.dimen.popup_arrow_horizontal_center_end);
         final int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
-        mLauncher.getDragLayer().addView(mArrow);
+        getPopupContainer().addView(mArrow);
         DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
         if (mIsLeftAligned) {
             mArrow.setX(getX() + arrowCenterOffset - halfArrowWidth);
@@ -179,7 +182,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                     arrowLp.width, arrowLp.height, !mIsAboveIcon));
             Paint arrowPaint = arrowDrawable.getPaint();
-            arrowPaint.setColor(Themes.getAttrColor(mLauncher, R.attr.popupColorPrimary));
+            arrowPaint.setColor(Themes.getAttrColor(getContext(), R.attr.popupColorPrimary));
             // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));
@@ -222,7 +225,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         int height = getMeasuredHeight() + extraVerticalSpace;
 
         getTargetObjectLocation(mTempRect);
-        DragLayer dragLayer = mLauncher.getDragLayer();
+        InsettableFrameLayout dragLayer = getPopupContainer();
         Rect insets = dragLayer.getInsets();
 
         // Align left (right in RTL) if there is room.
@@ -301,12 +304,11 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             return;
         }
 
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        FrameLayout.LayoutParams arrowLp = (FrameLayout.LayoutParams) mArrow.getLayoutParams();
         if (mIsAboveIcon) {
             arrowLp.gravity = lp.gravity = Gravity.BOTTOM;
-            lp.bottomMargin =
-                    mLauncher.getDragLayer().getHeight() - y - getMeasuredHeight() - insets.top;
+            lp.bottomMargin = getPopupContainer().getHeight() - y - getMeasuredHeight() - insets.top;
             arrowLp.bottomMargin = lp.bottomMargin - arrowLp.height - mArrayOffset - insets.bottom;
         } else {
             arrowLp.gravity = lp.gravity = Gravity.TOP;
@@ -320,7 +322,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         super.onLayout(changed, l, t, r, b);
 
         // enforce contained is within screen
-        DragLayer dragLayer = mLauncher.getDragLayer();
+        ViewGroup dragLayer = getPopupContainer();
         if (getTranslationX() + l < 0 || getTranslationX() + r > dragLayer.getWidth()) {
             // If we are still off screen, center horizontally too.
             mGravity |= Gravity.CENTER_HORIZONTAL;
@@ -454,7 +456,11 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        mLauncher.getDragLayer().removeView(this);
-        mLauncher.getDragLayer().removeView(mArrow);
+        getPopupContainer().removeView(this);
+        getPopupContainer().removeView(mArrow);
+    }
+
+    protected BaseDragLayer getPopupContainer() {
+        return mLauncher.getDragLayer();
     }
 }

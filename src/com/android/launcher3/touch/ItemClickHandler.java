@@ -162,7 +162,7 @@ public class ItemClickHandler {
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
      */
-    private static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher) {
+    public static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher) {
         if (shortcut.isDisabled()) {
             final int disabledFlags = shortcut.runtimeStatusFlags & ShortcutInfo.FLAG_DISABLED_MASK;
             if ((disabledFlags &

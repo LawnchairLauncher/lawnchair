@@ -2405,10 +2405,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public static Launcher getLauncher(Context context) {
-        if (context instanceof Launcher) {
-            return (Launcher) context;
-        }
-        return ((Launcher) ((ContextWrapper) context).getBaseContext());
+        return (Launcher) fromContext(context);
     }
 
     /**

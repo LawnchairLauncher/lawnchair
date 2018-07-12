@@ -26,6 +26,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.IntDef;
+import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -114,13 +115,6 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     public boolean isInMultiWindowModeCompat() {
         return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
-    }
-
-    public static BaseActivity fromContext(Context context) {
-        if (context instanceof BaseActivity) {
-            return (BaseActivity) context;
-        }
-        return ((BaseActivity) ((ContextWrapper) context).getBaseContext());
     }
 
     public SystemUiController getSystemUiController() {
@@ -258,5 +252,15 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         writer.println(" mSystemUiController: " + mSystemUiController);
         writer.println(" mActivityFlags: " + mActivityFlags);
         writer.println(" mForceInvisible: " + mForceInvisible);
+    }
+
+    public static <T extends BaseActivity> T fromContext(Context context) {
+        if (context instanceof BaseActivity) {
+            return (T) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            return fromContext(((ContextWrapper) context).getBaseContext());
+        } else {
+            throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");
+        }
     }
 }
