@@ -306,7 +306,13 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState fromState, LauncherState state, long duration) {
+        // Since we are creating a state animation to a different state, temporarily prevent state
+        // change as part of config reset.
+        LauncherState originalRestState = mRestState;
+        mRestState = state;
         mConfig.reset();
+        mRestState = originalRestState;
+
         for (StateHandler handler : getStateHandlers()) {
             handler.setState(fromState);
         }
