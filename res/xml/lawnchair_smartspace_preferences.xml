@@ -10,7 +10,7 @@
 
     <SwitchPreference
         android:key="pref_smartspace_date"
-        android:dependency="pref_smartspace"
+        android:dependency="pref_use_pill_qsb"
         android:title="@string/smartspace_date"
         android:summary="@string/in_smartspace"
         android:defaultValue="true"
