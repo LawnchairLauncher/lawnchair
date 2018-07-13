@@ -25,11 +25,8 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) : Lawnch
     }
 
     override fun performSetup() {
+        super.performSetup()
         handler.post(::periodicUpdate)
-    }
-
-    override fun waitForSetup() {
-        // The waiter code from the super class breaks this provider
     }
 
     private fun updateData() {
