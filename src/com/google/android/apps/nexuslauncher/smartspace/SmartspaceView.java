@@ -133,7 +133,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mSubtitleWeatherContent.setVisibility(View.VISIBLE);
             mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
             mSubtitleWeatherContent.setOnLongClickListener(co());
-            mTitleWeatherText.setText(data.getWeather().getTitle(
+            mSubtitleWeatherText.setText(data.getWeather().getTitle(
                     Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
             mSubtitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
         } else {

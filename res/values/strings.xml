@@ -564,4 +564,5 @@
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="title_use_pill_qsb">Use Pixel searchbar</string>
+    <string name="weather_provider_testing">Debug</string>
 </resources>
