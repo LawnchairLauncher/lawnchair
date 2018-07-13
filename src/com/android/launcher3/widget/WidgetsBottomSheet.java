@@ -71,7 +71,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         onWidgetsBound();
 
-        mLauncher.getDragLayer().addView(this);
+        getPopupContainer().addView(this);
         mIsOpen = false;
         animateOpen();
     }
@@ -118,7 +118,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         LayoutInflater.from(getContext()).inflate(R.layout.widget_list_divider, parent, true);
     }
 
-    private WidgetCell addItemCell(ViewGroup parent) {
+    protected WidgetCell addItemCell(ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
                 R.layout.widget_cell, parent, false);
 

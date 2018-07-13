@@ -160,7 +160,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private void open(boolean animate) {
         if (animate) {
-            if (mLauncher.getDragLayer().getInsets().bottom > 0) {
+            if (getPopupContainer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
                 setTranslationShift(VERTICAL_START_POSITION);
             }
@@ -207,10 +207,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mNoIntercept = false;
             RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
             if (scroller.getThumbOffsetY() >= 0 &&
-                    mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
+                    getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
-            } else if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
-                mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, mLauncher.getDragLayer());
+            } else if (getPopupContainer().isEventOverView(mContent, ev)) {
+                mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, getPopupContainer());
             }
         }
         return super.onControllerInterceptTouchEvent(ev);
@@ -220,7 +220,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
         sheet.mIsOpen = true;
-        launcher.getDragLayer().addView(sheet);
+        sheet.getPopupContainer().addView(sheet);
         sheet.open(animate);
         return sheet;
     }

@@ -157,7 +157,7 @@ public class NotificationFooterLayout extends FrameLayout {
         Rect fromBounds = sTempRect;
         firstNotification.getGlobalVisibleRect(fromBounds);
         float scale = (float) toBounds.height() / fromBounds.height();
-        Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(firstNotification,
+        Animator moveAndScaleIcon = ObjectAnimator.ofPropertyValuesHolder(firstNotification,
                 new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
                         + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {

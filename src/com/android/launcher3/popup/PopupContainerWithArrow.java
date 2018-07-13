@@ -84,7 +84,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
     private final PointF mInterceptTouchDown = new PointF();
-    private final Point mIconLastTouchPos = new Point();
+    protected final Point mIconLastTouchPos = new Point();
 
     private final int mStartDragThreshold;
     private final LauncherAccessibilityDelegate mAccessibilityDelegate;
