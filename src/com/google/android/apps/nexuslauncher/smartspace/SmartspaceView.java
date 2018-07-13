@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
-import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
@@ -59,6 +58,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     private LawnchairSmartspaceController mController;
     private boolean mFinishedInflate;
+    private boolean mWeatherAvailable;
     private LawnchairPreferences mPrefs;
 
     public SmartspaceView(final Context context, AttributeSet set) {
@@ -113,6 +113,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
         setOnClickListener(this);
         setOnLongClickListener(co());
+        mWeatherAvailable = data.isWeatherAvailable();
         if (mDoubleLine) {
             loadDoubleLine(data);
         } else {
@@ -129,26 +130,24 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleText.setEllipsize(data.getCard().getSubtitleEllipsize());
         mSubtitleIcon.setImageTintList(dH);
         mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
-        if (data.isWeatherAvailable()) {
-            mSubtitleWeatherContent.setVisibility(View.VISIBLE);
-            mSubtitleWeatherContent.setOnClickListener(mWeatherClickListener);
-            mSubtitleWeatherContent.setOnLongClickListener(co());
-            mSubtitleWeatherText.setText(data.getWeather().getTitle(
-                    Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
-            mSubtitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
-        } else {
-            mSubtitleWeatherContent.setVisibility(View.GONE);
-        }
+        bindWeather(data, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
     }
 
     @SuppressWarnings("ConstantConditions")
     private void loadSingleLine(final LawnchairSmartspaceController.DataContainer data) {
         setBackgroundResource(0);
+        bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
+        bindClockAndSeparator(false);
+    }
+
+    private void bindClockAndSeparator(boolean forced) {
         if (mPrefs.getSmartspaceDate() || mPrefs.getSmartspaceTime()) {
             mClockView.setVisibility(View.VISIBLE);
             mClockView.setOnClickListener(mCalendarClickListener);
             mClockView.setOnLongClickListener(co());
-            if (data.isWeatherAvailable()) {
+            if (forced)
+                mClockView.reloadDateFormat(true);
+            if (mWeatherAvailable) {
                 mTitleSeparator.setVisibility(View.VISIBLE);
             }
             if (!Utilities.ATLEAST_NOUGAT) {
@@ -158,17 +157,26 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockView.setVisibility(View.GONE);
             mTitleSeparator.setVisibility(View.GONE);
         }
-        if (data.isWeatherAvailable()) {
-            mTitleWeatherContent.setVisibility(View.VISIBLE);
-            mTitleWeatherContent.setOnClickListener(mWeatherClickListener);
-            mTitleWeatherContent.setOnLongClickListener(co());
-            mTitleWeatherText.setText(data.getWeather().getTitle(
-                    Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
-            mTitleWeatherIcon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
-        } else {
-            mTitleWeatherContent.setVisibility(View.GONE);
-        }
+    }
 
+    private void bindWeather(LawnchairSmartspaceController.DataContainer data, View container, TextView title, ImageView icon) {
+        mWeatherAvailable = data.isWeatherAvailable();
+        if (mWeatherAvailable) {
+            container.setVisibility(View.VISIBLE);
+            container.setOnClickListener(mWeatherClickListener);
+            container.setOnLongClickListener(co());
+            title.setText(data.getWeather().getTitle(
+                    Utilities.getLawnchairPrefs(getContext()).getUseMetricWeatherUnit()));
+            icon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
+        } else {
+            container.setVisibility(View.GONE);
+        }
+    }
+
+    public void reloadCustomizations() {
+        if (!mDoubleLine) {
+            bindClockAndSeparator(true);
+        }
     }
 
     private Bitmap addShadowToBitmap(Bitmap bitmap) {
