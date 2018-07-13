@@ -161,6 +161,10 @@ public class TaskThumbnailView extends View {
         updateThumbnailPaintFilter();
     }
 
+    public float getDimAlpha() {
+        return mDimAlpha;
+    }
+
     public Rect getInsets() {
         if (mThumbnailData != null) {
             return mThumbnailData.insets;
