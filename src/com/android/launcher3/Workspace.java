@@ -2716,16 +2716,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                if (info.container == NO_ID) {
+                if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
-                    if (info instanceof AppInfo) {
-                        info = ((AppInfo) info).makeShortcut();
-                        d.dragInfo = info;
-                    } else if (info instanceof ShortcutInfo) {
-                        info = new ShortcutInfo((ShortcutInfo) info);
-                        d.dragInfo = info;
-                    }
-
+                    info = ((AppInfo) info).makeShortcut();
+                    d.dragInfo = info;
                 }
                 view = mLauncher.createShortcut(cellLayout, (ShortcutInfo) info);
                 break;
