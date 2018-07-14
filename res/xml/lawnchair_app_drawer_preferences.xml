@@ -2,57 +2,79 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:key="pref_show_predictions"
-        android:title="@string/title_app_suggestions"
-        android:summary="@string/summary_app_suggestions"
-        android:defaultValue="true" />
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerTheme"
+        android:title="@string/pref_category_theme">
+        
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:title="@string/all_apps_opacity_pref_title"
+            app:minValue="0"
+            app:maxValue="1"
+            app:defaultSeekbarValue="0.92"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerIcons"
+        android:title="@string/pref_category_icons">
+        
+        <Preference
+            android:key="pref_hiddenApps"
+            android:title="@string/hide_apps"
+            android:summary="@string/hide_apps_sum"
+            android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
 
-    <SwitchPreference
-        android:key="pref_allAppsSearch"
-        android:title="@string/title_all_apps_search"
-        android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_hideAllAppsAppLabels"
+            android:title="@string/hide_all_apps_icon_labels_pref_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerSearchbar"
+        android:title="@string/pref_category_searchbar">
+        
+        <SwitchPreference
+            android:key="pref_allAppsSearch"
+            android:title="@string/title_all_apps_search"
+            android:defaultValue="true" />
 
-    <SwitchPreference
-        android:key="pref_allAppsGoogleSearch"
-        android:title="@string/title_all_apps_google_search"
-        android:summary="@string/summary_all_apps_google_search"
-        android:dependency="pref_allAppsSearch"
-        android:disableDependentsState="true"
-        android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_allAppsGoogleSearch"
+            android:title="@string/title_all_apps_google_search"
+            android:summary="@string/summary_all_apps_google_search"
+            android:dependency="pref_allAppsSearch"
+            android:disableDependentsState="true"
+            android:defaultValue="true" />
 
-    <SwitchPreference
-        android:key="pref_search_hidden_apps"
-        android:title="@string/title_search_hidden_apps"
-        android:summary="@string/summary_search_hidden_apps"
-        android:dependency="pref_allAppsGoogleSearch"
-        android:defaultValue="false" />
+        <SwitchPreference
+            android:key="pref_search_hidden_apps"
+            android:title="@string/title_search_hidden_apps"
+            android:summary="@string/summary_search_hidden_apps"
+            android:dependency="pref_allAppsGoogleSearch"
+            android:defaultValue="false" />
 
-    <Preference
-        android:key="pref_hiddenApps"
-        android:title="@string/hide_apps"
-        android:summary="@string/hide_apps_sum"
-        android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerMisc"
+        android:title="@string/pref_category_misc">
+        
+        <SwitchPreference
+            android:key="pref_show_predictions"
+            android:title="@string/title_app_suggestions"
+            android:summary="@string/summary_app_suggestions"
+            android:defaultValue="true" />
 
-    <SwitchPreference
-        android:key="pref_hideAllAppsAppLabels"
-        android:title="@string/hide_all_apps_icon_labels_pref_title"
-        android:defaultValue="false"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_separateWorkApps"
+            android:title="@string/separate_work_apps_pref_title"
+            android:defaultValue="false"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_separateWorkApps"
-        android:title="@string/separate_work_apps_pref_title"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <ch.deletescape.lawnchair.preferences.SeekbarPreference
-        android:key="pref_allAppsOpacitySB"
-        android:title="@string/all_apps_opacity_pref_title"
-        app:minValue="0"
-        app:maxValue="1"
-        app:defaultSeekbarValue="0.92"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100"
-        android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
 </PreferenceScreen>

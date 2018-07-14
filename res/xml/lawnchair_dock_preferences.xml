@@ -1,74 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_dockTheme"
+        android:title="@string/pref_category_theme">
+        
+        <ch.deletescape.lawnchair.preferences.DockPresetPreference
+            android:key="pref_dockPreset"
+            android:title="@string/dock_style_pref_title"
+            android:summary="%s"
+            android:entries="@array/dockStyles"
+            android:entryValues="@array/dockStyleValues"
+            android:defaultValue="1"
+            android:persistent="true" />
 
-    <ch.deletescape.lawnchair.preferences.DockPresetPreference
-        android:key="pref_dockPreset"
-        android:title="@string/dock_style_pref_title"
-        android:summary="%s"
-        android:entries="@array/dockStyles"
-        android:entryValues="@array/dockStyleValues"
-        android:defaultValue="1"
-        android:persistent="true" />
+        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+            android:key="enableGradient"
+            android:title="@string/dock_gradient"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+ 
+        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+            android:key="enableShadow"
+            android:title="@string/dock_shadow"
+            android:dependency="enableGradient" />
 
-    <SwitchPreference
-        android:key="pref_dockSearchBar"
-        android:title="@string/dock_search_bar"
-        android:defaultValue="true"
-        android:persistent="true" />
+        <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
+            android:key="radius"
+            android:title="@string/dock_radius"
+            android:dependency="enableGradient"
+            app:minValue="0"
+            app:maxValue="24"
+            app:steps="24"
+            app:summaryFormat="%.0fdp"
+            app:summaryMultiplier="1"
+            app:defaultSeekbarValue="8"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_dockColoredGoogle"
-        android:title="@string/dock_colored_google"
-        android:dependency="pref_dockSearchBar"
-        android:defaultValue="false"
-        android:persistent="true" />
+        <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
+            android:key="opacityPref"
+            android:title="@string/hotseat_custom_opacity"
+            app:minValue="0"
+            app:maxValue="1"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="0.39"
+            android:persistent="true" />
+ 
+        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
+            android:key="enableArrow"
+            android:title="@string/hotseat_show_arrow"
+            android:persistent="true" />
 
-    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-        android:key="enableGradient"
-        android:title="@string/dock_gradient"
-        android:disableDependentsState="true"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_hotseatShowPageIndicator"
+            android:title="@string/hotseat_show_page_indicator"
+            android:defaultValue="true"
+            android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_dockIcons"
+        android:title="@string/pref_category_icons">
+        
+        <ch.deletescape.lawnchair.settings.ui.DockGridSizePreference
+            android:key="pref_dock_grid_size"
+            android:title="@string/num_hotseat_icons_pref_title" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_dockSearchbar"
+        android:title="@string/pref_category_searchbar">
+        
+        <SwitchPreference
+            android:key="pref_dockSearchBar"
+            android:title="@string/dock_search_bar"
+            android:defaultValue="true"
+            android:persistent="true" />
 
-    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-        android:key="enableShadow"
-        android:title="@string/dock_shadow"
-        android:dependency="enableGradient" />
-
-    <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
-        android:key="radius"
-        android:title="@string/dock_radius"
-        android:dependency="enableGradient"
-        app:minValue="0"
-        app:maxValue="24"
-        app:steps="24"
-        app:summaryFormat="%.0fdp"
-        app:summaryMultiplier="1"
-        app:defaultSeekbarValue="8"
-        android:persistent="true" />
-
-    <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
-        android:key="opacityPref"
-        android:title="@string/hotseat_custom_opacity"
-        app:minValue="0"
-        app:maxValue="1"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100"
-        app:defaultSeekbarValue="0.39"
-        android:persistent="true" />
-
-    <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-        android:key="enableArrow"
-        android:title="@string/hotseat_show_arrow"
-        android:persistent="true" />
-
-    <SwitchPreference
-        android:key="pref_hotseatShowPageIndicator"
-        android:title="@string/hotseat_show_page_indicator"
-        android:defaultValue="true"
-        android:persistent="true" />
-
-    <ch.deletescape.lawnchair.settings.ui.DockGridSizePreference
-        android:key="pref_dock_grid_size"
-        android:title="@string/num_hotseat_icons_pref_title" />
+        <SwitchPreference
+            android:key="pref_dockColoredGoogle"
+            android:title="@string/dock_colored_google"
+            android:dependency="pref_dockSearchBar"
+            android:defaultValue="false"
+            android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
 </PreferenceScreen>

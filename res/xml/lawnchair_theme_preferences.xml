@@ -1,56 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_themeIcons"
+        android:title="@string/pref_category_icons">
 
-    <ListPreference
-        android:key="pref_override_icon_shape"
-        android:title="@string/icon_shape_override_label"
-        android:summary="%s"
-        android:entries="@array/icon_shape_override_paths_names"
-        android:entryValues="@array/icon_shape_override_paths_values"
-        android:defaultValue=""
-        android:persistent="false" />
+        <ListPreference
+            android:key="pref_override_icon_shape"
+            android:title="@string/icon_shape_override_label"
+            android:summary="%s"
+            android:entries="@array/icon_shape_override_paths_names"
+            android:entryValues="@array/icon_shape_override_paths_values"
+            android:defaultValue=""
+            android:persistent="false" />
 
-    <com.google.android.apps.nexuslauncher.CustomIconPreference
-        android:key="pref_icon_pack"
-        android:title="@string/pref_icon_pack"
-        android:summary="%s"
-        android:defaultValue=""
-        android:persistent="true" />
+        <com.google.android.apps.nexuslauncher.CustomIconPreference
+            android:key="pref_icon_pack"
+            android:title="@string/pref_icon_pack"
+            android:summary="%s"
+            android:defaultValue=""
+            android:persistent="true" />
+    </android.support.v7.preference.PreferenceCategory>
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_themeStyle"
+        android:title="@string/pref_category_theme">
 
-    <ListPreference
-        android:key="pref_launcherTheme"
-        android:title="@string/theme_pref_title"
-        android:summary="%s"
-        android:entries="@array/themes"
-        android:entryValues="@array/themeValues"
-        android:defaultValue="1"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_launcherTheme"
+            android:title="@string/theme_pref_title"
+            android:summary="%s"
+            android:entries="@array/themes"
+            android:entryValues="@array/themeValues"
+            android:defaultValue="1"
+            android:persistent="true" />
 
-    <!-- TODO: Move somewhere more appropriate -->
-    <SwitchPreference
-        android:key="opa_enabled"
-        android:persistent="true"
-        android:title="@string/pref_show_assistant_title"
-        android:summary="@string/pref_show_assistant_summary"
-        android:defaultValue="false"
-    />
+        <!-- TODO: Move somewhere more appropriate -->
+        <SwitchPreference
+            android:key="opa_enabled"
+            android:persistent="true"
+            android:title="@string/pref_show_assistant_title"
+            android:summary="@string/pref_show_assistant_summary"
+            android:defaultValue="false"
+        />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_enableBlur"
-        android:persistent="true"
-        android:summary="@string/blur_pref_summary"
-        android:title="@string/blur_pref_title" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_enableBlur"
+            android:persistent="true"
+            android:summary="@string/blur_pref_summary"
+            android:title="@string/blur_pref_title" />
 
-    <ch.deletescape.lawnchair.preferences.SeekbarPreference
-        android:dependency="pref_enableBlur"
-        android:key="pref_blurRadius"
-        android:persistent="true"
-        android:title="@string/blur_radius_pref_title"
-        app:defaultSeekbarValue="75"
-        app:maxValue="150"
-        app:minValue="10"
-        app:steps="140"
-        app:summaryFormat="%.0f" />
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:dependency="pref_enableBlur"
+            android:key="pref_blurRadius"
+            android:persistent="true"
+            android:title="@string/blur_radius_pref_title"
+            app:defaultSeekbarValue="75"
+            app:maxValue="150"
+            app:minValue="10"
+            app:steps="140"
+            app:summaryFormat="%.0f" />
+    </android.support.v7.preference.PreferenceCategory>
 </PreferenceScreen>

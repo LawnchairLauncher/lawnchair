@@ -1,68 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopLayout"
+        android:title="@string/pref_category_layout">
+        
+        <ch.deletescape.lawnchair.settings.ui.GridSizePreference
+            android:key="pref_desktop_grid_size"
+            android:title="@string/grid_size" />
+        
+        <SwitchPreference
+            android:key="pref_enable_minus_one"
+            android:title="@string/title_show_google_app"
+            android:summary="@string/pref_show_google_now_summary"
+            android:defaultValue="true"
+            />
+        
+    </android.support.v7.preference.PreferenceCategory> 
+        
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopIcons"
+        android:title="@string/pref_category_icons">
+        
+        <SwitchPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="pref_hideAppLabels"
+            android:persistent="true"
+            android:title="@string/hide_icon_labels_pref_title" />
 
-    <SwitchPreference
-        android:key="pref_enable_minus_one"
-        android:title="@string/title_show_google_app"
-        android:summary="@string/pref_show_google_now_summary"
-        android:defaultValue="true"
-        />
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_iconSize"
+            android:persistent="true"
+            android:title="@string/icon_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.5"
+            app:minValue="0.3"
+            app:steps="120"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+        
+        <SwitchPreference
+            android:key="pref_add_icon_to_home"
+            android:title="@string/auto_add_shortcuts_label"
+            android:summary="@string/auto_add_shortcuts_description"
+            android:defaultValue="true"
+            android:persistent="true"
+            />
+    </android.support.v7.preference.PreferenceCategory>
+        
+        <android.support.v7.preference.PreferenceCategory
+            android:key="prefCat_desktopMisc"
+            android:title="@string/pref_category_misc">
+        
+            <com.android.launcher3.views.ButtonPreference
+            android:key="pref_icon_badging"
+            android:title="@string/icon_badging_title"
+            android:persistent="false"
+            android:widgetLayout="@layout/notification_pref_warning" >
+            <intent android:action="android.settings.NOTIFICATION_SETTINGS">
+                <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
+                <extra
+                    android:name=":settings:fragment_args_key"
+                    android:value="notification_badging" />
+            </intent>
+            </com.android.launcher3.views.ButtonPreference>
 
-    <com.android.launcher3.views.ButtonPreference
-        android:key="pref_icon_badging"
-        android:title="@string/icon_badging_title"
-        android:persistent="false"
-        android:widgetLayout="@layout/notification_pref_warning" >
-        <intent android:action="android.settings.NOTIFICATION_SETTINGS">
-            <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
-            <extra
-                android:name=":settings:fragment_args_key"
-                android:value="notification_badging" />
-        </intent>
-    </com.android.launcher3.views.ButtonPreference>
+            <SwitchPreference
+            android:key="pref_allowRotation"
+            android:title="@string/allow_rotation_title"
+            android:defaultValue="@bool/allow_rotation"
+            android:persistent="true"
+            />
 
-    <SwitchPreference
-        android:key="pref_add_icon_to_home"
-        android:title="@string/auto_add_shortcuts_label"
-        android:summary="@string/auto_add_shortcuts_description"
-        android:defaultValue="true"
-        android:persistent="true"
-        />
-
-    <SwitchPreference
-        android:key="pref_allowRotation"
-        android:title="@string/allow_rotation_title"
-        android:defaultValue="@bool/allow_rotation"
-        android:persistent="true"
-        />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:disableDependentsState="true"
-        android:key="pref_hideAppLabels"
-        android:persistent="true"
-        android:title="@string/hide_icon_labels_pref_title" />
-
-    <ch.deletescape.lawnchair.settings.ui.GridSizePreference
-        android:key="pref_desktop_grid_size"
-        android:title="@string/grid_size" />
-
-    <ch.deletescape.lawnchair.preferences.SeekbarPreference
-        android:key="pref_iconSize"
-        android:persistent="true"
-        android:title="@string/icon_scale_pref_title"
-        app:defaultSeekbarValue="1.0"
-        app:maxValue="1.5"
-        app:minValue="0.3"
-        app:steps="120"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_fullWidthWidgets"
-        android:persistent="true"
-        android:summary="@string/full_width_widgets_pref_summary"
-        android:title="@string/full_width_width_widgets_pref_title" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_fullWidthWidgets"
+            android:persistent="true"
+            android:summary="@string/full_width_widgets_pref_summary"
+            android:title="@string/full_width_width_widgets_pref_title" />
+    </android.support.v7.preference.PreferenceCategory>
 </PreferenceScreen>

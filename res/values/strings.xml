@@ -463,6 +463,8 @@
     
     <!-- Categories -->
     <string name="pref_category_icons">Icons</string>
+    <string name="pref_category_aag">At A Glance</string>
+    <string name="pref_category_pixel_searchbar">Pixel searchbar</string>
     <string name="pref_category_weather">Weather</string>
     <string name="pref_category_misc">Miscellaneous</string>
     <string name="pref_category_layout">Layout</string>
@@ -563,6 +565,6 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Use Pixel searchbar</string>
+    <string name="title_use_pill_qsb">Show Pixel searchbar</string>
     <string name="weather_provider_testing">Debug</string>
 </resources>
