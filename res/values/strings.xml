@@ -567,4 +567,5 @@
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="title_use_pill_qsb">Show Pixel searchbar</string>
     <string name="weather_provider_testing">Debug</string>
+    <string name="backup_generate_report">Generate bug report</string>
 </resources>

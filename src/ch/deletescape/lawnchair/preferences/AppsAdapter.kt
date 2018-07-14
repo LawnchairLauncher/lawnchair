@@ -12,15 +12,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import com.android.launcher3.AppInfo
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.R
+import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.ComponentKey
 
-open class AppsAdapter(private val context: Context, private val callback: Callback? = null)
+open class AppsAdapter(
+        private val context: Context,
+        private val callback: Callback? = null,
+        private val filter: AppFilter? = null)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_LOADING = 0
@@ -57,9 +57,9 @@ open class AppsAdapter(private val context: Context, private val callback: Callb
     }
 
     protected open fun loadAppsList() {
-        apps.addAll(getAppsList(context).apply {
-            sortBy { it.label.toString().toLowerCase() }
-        }.map { App(context, it) })
+        apps.addAll(getAppsList(context)
+                .sortedBy { it.label.toString().toLowerCase() }
+                .map { App(context, it) })
         handler.postAtFrontOfQueue(::onAppsListLoaded)
     }
 
@@ -76,12 +76,16 @@ open class AppsAdapter(private val context: Context, private val callback: Callb
         callback?.onAppSelected(apps[position])
     }
 
-    private fun getAppsList(context: Context): ArrayList<LauncherActivityInfo> {
+    private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
         val profiles = UserManagerCompat.getInstance(context).userProfiles
         val launcherAppsCompat = LauncherAppsCompat.getInstance(context)
         profiles.forEach { apps += launcherAppsCompat.getActivityList(null, it) }
-        return apps
+        return if (filter != null) {
+            apps.filter { filter.shouldShowApp(it.componentName, it.user) }
+        } else {
+            apps
+        }
     }
 
     class App(context: Context, val info: LauncherActivityInfo) {

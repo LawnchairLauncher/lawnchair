@@ -2,11 +2,12 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.view.View
+import com.android.launcher3.AppFilter
 import com.android.launcher3.util.ComponentKey
 import kotlin.reflect.KMutableProperty0
 
-abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null)
-    : AppsAdapter(context) {
+abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null, filter: AppFilter? = null)
+    : AppsAdapter(context, null, filter) {
 
     private val selections = HashSet<ComponentKey>()
 
@@ -64,8 +65,9 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
 
     companion object {
 
-        fun ofProperty(context: Context, property: KMutableProperty0<Set<String>>, callback: Callback? = null)
-                = object : SelectableAppsAdapter(context, callback) {
+        fun ofProperty(context: Context, property: KMutableProperty0<Set<String>>,
+                       callback: Callback? = null, filter: AppFilter? = null)
+                = object : SelectableAppsAdapter(context, callback, filter) {
 
             override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(context, it) })
 

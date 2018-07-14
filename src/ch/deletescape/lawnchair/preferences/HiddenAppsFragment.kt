@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import ch.deletescape.lawnchair.LawnchairAppFilter
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -25,7 +26,8 @@ class HiddenAppsFragment : Fragment(), SelectableAppsAdapter.Callback {
         super.onViewCreated(view, savedInstanceState)
         val context = view.context
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        adapter = SelectableAppsAdapter.ofProperty(context, Utilities.getLawnchairPrefs(context)::hiddenAppSet, this)
+        adapter = SelectableAppsAdapter.ofProperty(context,
+                Utilities.getLawnchairPrefs(context)::hiddenAppSet, this, LawnchairAppFilter(context))
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter

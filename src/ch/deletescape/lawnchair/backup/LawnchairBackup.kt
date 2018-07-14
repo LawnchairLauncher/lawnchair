@@ -219,7 +219,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             }
         }
 
-        fun create(context: Context, name: String, location: Uri, contents: Int): Boolean {
+        fun create(context: Context, name: String, location: Uri, contents: Int): Exception? {
             val contextWrapper = ContextWrapper(context)
             val files: MutableList<File> = ArrayList()
             if (contents or INCLUDE_HOMESCREEN != 0) {
@@ -237,7 +237,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             val outStream = FileOutputStream(pfd.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
             val data = ByteArray(BUFFER)
-            var success = false
+            var exception: Exception? = null
             try {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
@@ -264,15 +264,15 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                     }
                     input.close()
                 }
-                success = true
-            } catch (t: Throwable) {
-                Log.e(TAG, "Failed to create backup", t)
+            } catch (e: Exception) {
+                exception = e
+                Log.e(TAG, "Failed to create backup", e)
             } finally {
                 out.close()
                 outStream.close()
                 pfd.close()
                 cleanupConfig(context, devOptionsEnabled)
-                return success
+                return exception
             }
         }
 

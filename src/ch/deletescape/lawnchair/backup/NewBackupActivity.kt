@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
+import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import java.io.File
@@ -151,7 +152,7 @@ class NewBackupActivity : SettingsBaseActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class CreateBackupTask(val context: Context) : AsyncTask<Void, Void, Boolean>() {
+    private inner class CreateBackupTask(val context: Context) : AsyncTask<Void, Void, Exception?>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -164,7 +165,7 @@ class NewBackupActivity : SettingsBaseActivity() {
             inProgress = true
         }
 
-        override fun doInBackground(vararg params: Void?): Boolean {
+        override fun doInBackground(vararg params: Void?): Exception? {
             var contents = 0
             if (backupHomescreen.isChecked) {
                 contents = contents or LawnchairBackup.INCLUDE_HOMESCREEN
@@ -183,15 +184,18 @@ class NewBackupActivity : SettingsBaseActivity() {
             )
         }
 
-        override fun onPostExecute(result: Boolean) {
+        override fun onPostExecute(result: Exception?) {
             super.onPostExecute(result)
 
-            if (result) {
+            if (result == null) {
                 setResult(Activity.RESULT_OK, Intent().setData(backupUri))
                 finish()
             } else {
                 inProgress = false
-                Snackbar.make(findViewById(R.id.content), R.string.backup_failed, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(findViewById(R.id.content), R.string.backup_failed, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.backup_generate_report, {
+                            lawnchairApp.bugReporter.writeReport("Failed to create backup", result)
+                        }).show()
             }
         }
 
