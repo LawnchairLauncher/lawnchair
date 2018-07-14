@@ -29,44 +29,63 @@ It is focused on simplicity and rock solid stability. Bug reports go above all e
 Google Calendar’s icon changes with the date.
 - The exact same screen size profiles from the Pixel 2 Launcher are included. The same grid sizes and icon sizes.
 - Google Wallpapers and Voice Search are hidden from the app drawer.
+- The default home screen dock setup reflects the real Pixel Launcher's setup: Phone, Messages, Gmail, Store, Browser, Camera.
 
 **Custom**
 
 - Probably the most requested feature in the history of mankind’s development, icon packs are included in the settings app. Just a simple selection list where you can select from the list of packs installed on your phone.
+- Long pressing an app reveals the Edit shortcut. Press on it to hide an app in the app drawer or disable the icon pack for that app.
 - There are app suggestions based on the amount of drawer clicks at the top of the app drawer. These are not the same as the real Pixel Launcher. I will explain why in the FAQ.
-Round app icons from Android 7.1 are used when available.
+- Round app icons from Android 7.1 are used when available.
 - Calendar icons change with the date if the icon pack you use supports it.
-- All icon packs are hidden from the app drawer when an icon pack is being used.
+- All icon packs are automatically hidden from the app drawer when an icon pack is being used.
 - Google Now Launcher is hidden from the app drawer.
-- There is a custom screen size profile with a 6x6 grid when the DPI is low. This automatically kicks in on tablets or large phones. If you want to enable this, your DPI needs to be 370 or less (on a 1920x1080 device). This equals a 467dp smallest width, for those on Nougat.
+- There are custom screen size profile with a 4x4, 5x4 or 6x6 grid when the DPI is low or high. The 6x6 profile automatically kicks in on large phones. If you want to enable this, your DPI needs to be 370 or less (on a 1920x1080 device). This equals a 467dp smallest width, for those on Nougat.
+- Big tablet screen support is added with bigger icons and a search bar, using the Pixel C profile.
 - You can open and close notifications from anywhere on the home screen by swiping up and down.
 - New releases can be found in the settings app when clicking About -> Version.
-- Notification/shortcut popups are centered on the screen with a nice animation, when positioning it on the left or right would make it go out of the screen.
+- Long press app popups are centered on the screen with a nice animation, when positioning it on the left or right would make it go out of the screen.
 - When the popup still goes out of the screen in landscape, the popup arrow is hidden.
 - When pressing the search bar without the Google App available on your phone, the browser opens google.com. This makes it useful for MicroG or Pico GApps users on custom ROMs, instead of being a waste of space.
 - Themes are hardcoded to look like the Pixel, for compatibility across OEMs.
-- The list of all apps gets automatically resized when you start searching, so you can scroll to the bottom.
 - For devices without software navigation bar, there is padding under the search widget on the home screen.
+- Added an ellipsis (...) to At A Glance date when the text goes out of bounds.
+- The At A Glance setting has been replaced with an enable/disable toggle. You can still access the customization settings by long pressing on the widget.
+- Users can override the theme by selecting their preferred theme in the settings.
+- The added "Transparent" dark theme makes the app drawer as transparent as the launcher code allows.
+- When no Google App is installed but Google Go is found, its search will be launched when clicking the search bar
+- Accents are stripped from searches, so it is easier to search for apps in the app drawer.
+- Widgets can be resized in any direction where their size is bigger than 1 on the grid.
+- On Lollipop, the app drawer status bar gets a slightly darker background to make it easier to see the white icons.
+- The keyboard immediately closes when sliding down the app drawer search.
+- Long pressing the arrow for direct search has been re-added.
 
 ### Marshmallow
 - There are notification dots in the colour of the app’s icon.
 - You can view and interact with notifications in the long press popup on apps.
 - The settings menu uses the Oreo style and colours.
+- When long pressing an app there will be static shortcuts in the popup.
 
 ### Nougat
 - A light theme is applied when the wallpaper is light enough. This has a dark status bar, navigation bar and text.
 
 ### Nougat 7.1
-- When long pressing an app there will be shortcuts in the popup.
+- When long pressing an app there will be static and dynamic shortcuts in the popup.
 
 ### Oreo
 - There are settings for adding icons to home screen when installing, and changing the icon shape for adaptive icons.
 - Google Clock shows the current time and changes in real time.
 - The Google Now feed uses the same theme as the launcher.
+- Adaptive icon shape options include Squircle, Square, Rounded Square, Circle and Teardrop.
 
 **Custom**
 
 - Adaptive icons are disabled for pre-Oreo apps, so you don’t get boxes in boxes.
+- Available icon shape options include Cylinder from HMD/Nokia Android phones.
+
+## Google Icons
+This launcher supports adaptive icon packs. I made an example pack called Google Icons, which replaces OEM icons with the Google variant:
+https://github.com/amirzaidi/GoogleIcons/releases
 
 ## Magisk
 There is also a module for Pixel users if they grew bored of the default launcher and want to try out my launcher.
@@ -77,8 +96,6 @@ Disable this launcher and switch to different launcher before enabling or disabl
 Before I talk about the things I used for the creation, I want to put a disclaimer that I did not simply copy and paste what the developers did. I looked at their code to spare myself time in researching the places where changes are necessary for a feature, and then made my own implementation. Still, I want to credit these developers for the hard work they have done upon which others like me could build.
 
 ### Till Kottmann
-https://github.com/LawnchairLauncher/Lawnchair/commits/iconpack-suppor 
-
 Till is the founder of Lawnchair, the Pixel Launcher with many customization features. Initially I did not want to implement icon packs because I feared it would break too many things, but then I took a look at his old implementation to see how much work it really was. And to my surprise it could be done without changing any AOSP Java code. Instead, I could specify a custom icon loader through XML and then focus on writing that icon loader code. The icon loader could load an icon pack app’s icon list and save that list in memory.
 
 ### Paphonb
@@ -106,7 +123,7 @@ This Substratum developer taught me how to make a Magisk module this week. I wan
 I kanged the translations for the terms “Icon pack” and “Applying” from their launcher. Sorry (not really).
 
 ### Google
-For making the real Pixel Launcher in the first place.
+For making the real Pixel Launcher in the first place. I also got some translations using Google Translate.
 
 ### Alpha testers
 Working on this launcher took a long time, and I would like to thank all the testers across different Android versions and OEMs for making sure the launcher has rock solid stability. You reported bugs to me at an incredible pace which is necessary for a project of this scope. Without you I wouldn’t have been able to come this far!
@@ -186,3 +203,15 @@ Select another launcher as your default, then you can uninstall it from your pho
 
 ### How do I install this?
 Go to the APK Downloads link, and click the top most "Launcher3-aosp-debug.apk". After it is downloaded, click the notification and press install.
+
+### Navigation bar is not transparent.
+Custom ROM users have to disable the "RR dynamic navbar" feature. Samsung and LG users might have to enable the fullscreen mode for this app in their device's settings.
+
+### Navigation buttons are grey on Galaxy S8/9
+Unfortunately this is a Samsung specific problem and would require a lot of hacking around to fix. If you are desperate to make them white, consider using a substratum theme.
+
+### Feed has weird sizes that go out of the screen
+Seems to be a Google App problem, every launcher with the new feed is suffering from it, including the real Pixel Launcher. Make sure you are not using a Google App Beta.
+
+### Huawei/Honor crash
+For a reason I can’t diagnose because I don’t have a Huawei device, recent Huawei phones seem to crash on launch when the user hasn’t given the launcher storage permissions. If this happens to you go into your system settings and grant the storage permission manually.
