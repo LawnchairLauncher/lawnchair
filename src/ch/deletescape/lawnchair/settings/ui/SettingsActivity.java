@@ -27,7 +27,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -58,7 +57,6 @@ import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.CustomIconPreference;
-import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 import me.jfenn.attribouter.Attribouter;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,8 +89,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
 
-        setupPreview();
-
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0;
         if (savedInstanceState == null) {
@@ -111,18 +107,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         updateUpButton();
     }
 
-    public void setupPreview() {
-        int layout = getIntent().getIntExtra(SubSettingsFragment.PREVIEW_LAYOUT, 0);
-        if (layout != 0) {
-            PreviewFrame previewFrame = findViewById(R.id.preview_frame);
-            getLayoutInflater().inflate(layout, previewFrame);
-        }
-    }
-
     @NotNull
     @Override
     protected ThemeOverride getThemeOverride() {
-        if (getIntent().getIntExtra(SubSettingsFragment.PREVIEW_LAYOUT, 0) != 0) {
+        if (getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false)) {
             return new ThemeOverride.SettingsTransparent(this);
         } else {
             return super.getThemeOverride();
@@ -136,7 +124,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra(SubSettingsFragment.TITLE, preference.getTitle());
             intent.putExtra(SubSettingsFragment.CONTENT_RES_ID, ((SubPreference) preference).getContent());
-            intent.putExtra(SubSettingsFragment.PREVIEW_LAYOUT, ((SubPreference) preference).getPreviewLayout());
+            intent.putExtra(SubSettingsFragment.HAS_PREVIEW, ((SubPreference) preference).hasPreview());
             startActivity(intent);
             return true;
         } else if(preference.getKey().equals("about")){
@@ -281,7 +269,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
-        public static final String PREVIEW_LAYOUT = "preview_layout";
+        public static final String HAS_PREVIEW = "has_preview";
 
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;

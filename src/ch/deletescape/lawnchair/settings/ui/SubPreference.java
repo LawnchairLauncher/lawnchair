@@ -13,7 +13,7 @@ public class SubPreference extends Preference implements View.OnLongClickListene
     private int mContent;
     private int mLongClickContent;
     private boolean mLongClick;
-    private int mPreviewLayout;
+    private boolean mHasPreview;
 
     public SubPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -28,8 +28,8 @@ public class SubPreference extends Preference implements View.OnLongClickListene
                 case R.styleable.SubPreference_longClickContent:
                     mLongClickContent = a.getResourceId(attr, 0);
                     break;
-                case R.styleable.SubPreference_previewLayout:
-                    mPreviewLayout = a.getResourceId(attr, 0);
+                case R.styleable.SubPreference_hasPreview:
+                    mHasPreview = a.getBoolean(attr, false);
                     break;
             }
         }
@@ -42,7 +42,7 @@ public class SubPreference extends Preference implements View.OnLongClickListene
         Bundle b = new Bundle(2);
         b.putString(SettingsActivity.SubSettingsFragment.TITLE, (String) getTitle());
         b.putInt(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, getContent());
-        b.putInt(SettingsActivity.SubSettingsFragment.PREVIEW_LAYOUT, getPreviewLayout());
+        b.putBoolean(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, hasPreview());
         return b;
     }
 
@@ -50,8 +50,8 @@ public class SubPreference extends Preference implements View.OnLongClickListene
         return mLongClick ? mLongClickContent : mContent;
     }
 
-    public int getPreviewLayout() {
-        return mPreviewLayout;
+    public boolean hasPreview() {
+        return mHasPreview;
     }
 
     @Override

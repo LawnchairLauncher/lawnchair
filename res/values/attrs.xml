@@ -153,7 +153,7 @@
     <declare-styleable name="SubPreference">
         <attr name="content" format="reference" />
         <attr name="longClickContent" format="reference" />
-        <attr name="previewLayout" format="boolean" />
+        <attr name="hasPreview" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SeekbarPreference">
@@ -163,6 +163,10 @@
         <attr name="summaryMultiplier" format="integer" />
         <attr name="defaultSeekbarValue" format="float" />
         <attr name="steps" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="PreviewPreference">
+        <attr name="previewLayout" format="float" />
     </declare-styleable>
 
     <!-- Custom -->
