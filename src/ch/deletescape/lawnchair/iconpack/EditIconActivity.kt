@@ -7,12 +7,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
@@ -176,6 +179,7 @@ class EditIconActivity : SettingsBaseActivity() {
 
             private val icon = itemView.findViewById<ImageView>(android.R.id.icon)
             private val title = itemView.findViewById<TextView>(android.R.id.title)
+            private val packageName = itemView.findViewById<TextView>(android.R.id.text1)
 
             init {
                 itemView.setOnClickListener(this)
@@ -184,6 +188,10 @@ class EditIconActivity : SettingsBaseActivity() {
             fun bind(info: IconPackInfo) {
                 icon.setImageDrawable(info.icon)
                 title.text = info.title
+                packageName.isVisible = lawnchairPrefs.showDebugInfo && !TextUtils.isEmpty(info.packageName)
+                if (packageName.isVisible) {
+                    packageName.text = info.packageName
+                }
             }
 
             override fun onClick(v: View) {

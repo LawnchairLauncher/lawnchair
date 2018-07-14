@@ -17,15 +17,30 @@
         android:layout_height="@dimen/icon_preview_size"
         tools:src="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@android:id/title"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="18sp"
-        tools:text="Icon pack" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@android:id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="18sp"
+            tools:text="Icon pack" />
+
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="com.example.iconpack" />
+    </LinearLayout>
 </LinearLayout>

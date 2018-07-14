@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.content.res.XmlResourceParser
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Looper
@@ -68,51 +69,47 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override fun loadPack() {
         try {
             val startTime = System.currentTimeMillis()
-            val pm = context.packageManager
             val res = packResources
-            val resId = res.getIdentifier("appfilter", "xml", packPackageName)
-            if (resId != 0) {
-                val compStart = "ComponentInfo{"
-                val compStartlength = compStart.length
-                val compEnd = "}"
-                val compEndLength = compEnd.length
+            val compStart = "ComponentInfo{"
+            val compStartlength = compStart.length
+            val compEnd = "}"
+            val compEndLength = compEnd.length
 
-                val parseXml = pm.getXml(packPackageName, resId, null)
-                while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
-                    if (parseXml.eventType == XmlPullParser.START_TAG) {
-                        val name = parseXml.name
-                        val isCalendar = name == "calendar"
-                        if (isCalendar || name == "item") {
-                            var componentName: String? = parseXml.getAttributeValue(null, "component")
-                            val drawableName = parseXml.getAttributeValue(null, if (isCalendar) "prefix" else "drawable")
-                            if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
-                                componentName = componentName.substring(compStartlength, componentName.length - compEndLength)
-                                val parsed = ComponentName.unflattenFromString(componentName)
-                                if (parsed != null) {
-                                    if (isCalendar) {
-                                        packCalendars[parsed] = drawableName
-                                    } else {
+            val parseXml = getXml("appfilter") ?: throw IllegalStateException("parser is null")
+            while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
+                if (parseXml.eventType == XmlPullParser.START_TAG) {
+                    val name = parseXml.name
+                    val isCalendar = name == "calendar"
+                    if (isCalendar || name == "item") {
+                        var componentName: String? = parseXml.getAttributeValue(null, "component")
+                        val drawableName = parseXml.getAttributeValue(null, if (isCalendar) "prefix" else "drawable")
+                        if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
+                            componentName = componentName.substring(compStartlength, componentName.length - compEndLength)
+                            val parsed = ComponentName.unflattenFromString(componentName)
+                            if (parsed != null) {
+                                if (isCalendar) {
+                                    packCalendars[parsed] = drawableName
+                                } else {
 
-                                        val drawableId = res.getIdentifier(drawableName, "drawable", packPackageName)
-                                        if (drawableId != 0) {
-                                            packComponents[parsed] = Entry(drawableName, drawableId)
-                                        }
+                                    val drawableId = res.getIdentifier(drawableName, "drawable", packPackageName)
+                                    if (drawableId != 0) {
+                                        packComponents[parsed] = Entry(drawableName, drawableId)
                                     }
                                 }
                             }
-                        } else if (name == "dynamic-clock") {
-                            val drawableName = parseXml.getAttributeValue(null, "drawable")
-                            if (drawableName != null) {
-                                val drawableId = res.getIdentifier(drawableName, "drawable", packPackageName)
-                                if (drawableId != 0) {
-                                    packClocks[drawableId] = CustomClock.Metadata(
-                                            parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "defaultHour", 0),
-                                            parseXml.getAttributeIntValue(null, "defaultMinute", 0),
-                                            parseXml.getAttributeIntValue(null, "defaultSecond", 0))
-                                }
+                        }
+                    } else if (name == "dynamic-clock") {
+                        val drawableName = parseXml.getAttributeValue(null, "drawable")
+                        if (drawableName != null) {
+                            val drawableId = res.getIdentifier(drawableName, "drawable", packPackageName)
+                            if (parseXml is XmlResourceParser && drawableId != 0) {
+                                packClocks[drawableId] = CustomClock.Metadata(
+                                        parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
+                                        parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
+                                        parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
+                                        parseXml.getAttributeIntValue(null, "defaultHour", 0),
+                                        parseXml.getAttributeIntValue(null, "defaultMinute", 0),
+                                        parseXml.getAttributeIntValue(null, "defaultSecond", 0))
                             }
                         }
                     }
@@ -125,6 +122,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         } catch (e: XmlPullParserException) {
             e.printStackTrace()
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
     }
@@ -189,9 +188,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
         var lastSend = System.currentTimeMillis() - 900
         var tmpList = ArrayList<PackEntry>()
-        val sendResults = {
+        val sendResults = { force: Boolean ->
             val current = System.currentTimeMillis()
-            if (current - lastSend >= 1000) {
+            if (force || current - lastSend >= 1000) {
                 callback(tmpList)
                 tmpList = ArrayList()
                 lastSend = current
@@ -199,37 +198,34 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         }
         var found = false
         val startTime = System.currentTimeMillis()
-        val res = packResources
-        val xmlRes = res.getIdentifier("appfilter", "xml", packPackageName)
-        if (xmlRes != 0) {
-            var entry: Entry
-            try {
-                val parser = getXml("drawable")
-                Log.d("IconPackImpl", "initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
-                while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
-                    if (cancel()) return
-                    if (parser.eventType != XmlPullParser.START_TAG) continue
-                    if ("category" == parser.name) {
-                        val title = parser.getAttributeValue(null, "title")
-                        tmpList.add(CategoryTitle(title))
-                        sendResults()
-                    } else if ("item" == parser.name) {
-                        val drawableName = parser.getAttributeValue(null, "drawable")
-                        val resId = Utilities.parseResourceIdentifier(packResources, "@drawable/$drawableName", packPackageName)
-                        if (resId != 0) {
-                            entry = Entry(drawableName, resId)
-                            tmpList.add(entry)
-                            sendResults()
-                            found = true
-                        }
+        var entry: Entry
+        try {
+            val parser = getXml("drawable")
+            Log.d("IconPackImpl", "initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
+            while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
+                if (cancel()) return
+                if (parser.eventType != XmlPullParser.START_TAG) continue
+                if ("category" == parser.name) {
+                    val title = parser.getAttributeValue(null, "title")
+                    tmpList.add(CategoryTitle(title))
+                    sendResults(false)
+                } else if ("item" == parser.name) {
+                    val drawableName = parser.getAttributeValue(null, "drawable")
+                    val resId = Utilities.parseResourceIdentifier(packResources, "@drawable/$drawableName", packPackageName)
+                    if (resId != 0) {
+                        entry = Entry(drawableName, resId)
+                        tmpList.add(entry)
+                        sendResults(false)
+                        found = true
                     }
                 }
-                if (found) {
-                    return
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+            sendResults(true)
+            if (found) {
+                return
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         super.getAllIcons(callback, cancel)
     }
