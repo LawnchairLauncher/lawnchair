@@ -30,7 +30,6 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -269,10 +268,5 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             }
             return null;
         }
-    }
-
-    private static void dismissTaskMenuView(BaseDraggingActivity activity) {
-        AbstractFloatingView.closeOpenViews(activity, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }
