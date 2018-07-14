@@ -117,6 +117,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
             val endTime = System.currentTimeMillis()
             Log.d("IconPackImpl", "completed parsing pack $packPackageName in ${endTime - startTime}ms")
+            return
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         } catch (e: XmlPullParserException) {
@@ -126,6 +127,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
+        Toast.makeText(context, "Failed to parse AppFilter", Toast.LENGTH_SHORT).show()
     }
 
     override fun getEntryForComponent(key: ComponentKey) = packComponents[key.componentName]
@@ -244,13 +246,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 parser
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
         } catch (e: IOException) {
-            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
         } catch (e: XmlPullParserException) {
-            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show()
         }
-
         return null
     }
 

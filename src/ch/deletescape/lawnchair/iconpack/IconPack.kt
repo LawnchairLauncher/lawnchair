@@ -58,10 +58,22 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
         ensureInitialLoadComplete()
-        callback(categorize(entries))
+        callback(categorize(filterDuplicates(entries)))
     }
 
-    protected fun categorize(entries: List<Entry>): List<PackEntry> {
+    private fun filterDuplicates(entries: List<Entry>): List<Entry> {
+        var previous = ""
+        val filtered = ArrayList<Entry>()
+        entries.sortedBy { it.identifierName }.forEach {
+            if (it.identifierName != previous) {
+                previous = it.identifierName
+                filtered.add(it)
+            }
+        }
+        return filtered
+    }
+
+    private fun categorize(entries: List<Entry>): List<PackEntry> {
         val packEntries = ArrayList<PackEntry>()
         var previousSection = ""
         entries.sortedBy { it.displayName }.forEach {
