@@ -835,8 +835,13 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             boolean success) {
         if (!success) {
             d.dragView.remove();
-            mLauncher.showWorkspace(true);
             mLauncher.getDropTargetBar().onDragEnd();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLauncher.showWorkspace(true);
+                }
+            }, 500);
         }
     }
 
