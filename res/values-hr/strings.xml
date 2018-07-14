@@ -156,4 +156,5 @@
     <string name="theme_light">Svjetlo</string>
     <string name="theme_dark">Mrak</string>
     <string name="theme_transparent">Transparentan</string>
+    <string name="pref_open_source_licenses_title">Licence otvorenog izvornog koda</string>
 </resources>

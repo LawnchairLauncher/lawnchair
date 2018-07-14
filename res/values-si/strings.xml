@@ -153,4 +153,5 @@
     <string name="theme_light">ආලෝකය</string>
     <string name="theme_dark">අඳුරු</string>
     <string name="theme_transparent">විනිවිද පෙනෙන</string>
+    <string name="pref_open_source_licenses_title">විවෘත මූලාශ්‍ර බලපත්‍ර</string>
 </resources>

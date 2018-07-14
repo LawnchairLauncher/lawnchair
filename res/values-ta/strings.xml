@@ -153,4 +153,5 @@
     <string name="theme_light">ஒளி</string>
     <string name="theme_dark">டார்க்</string>
     <string name="theme_transparent">ஒளி புகும்</string>
+    <string name="pref_open_source_licenses_title">ஓப்பன் சோர்ஸ் உரிமங்கள்</string>
 </resources>

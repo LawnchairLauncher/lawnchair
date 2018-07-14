@@ -158,4 +158,5 @@
     <string name="theme_light">光</string>
     <string name="theme_dark">ダーク</string>
     <string name="theme_transparent">トランスペアレント</string>
+    <string name="pref_open_source_licenses_title">オープンソース ライセンス</string>
 </resources>

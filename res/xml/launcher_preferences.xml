@@ -114,6 +114,12 @@
                 android:data="package:com.google.android.apps.nexuslauncher" />
         </Preference>
 
+        <Preference
+            android:persistent="false"
+            android:title="@string/pref_open_source_licenses_title"
+            android:key="open_source_licenses"
+            android:fragment="com.google.android.apps.nexuslauncher.SettingsActivity$OpenSourceLicensesFragment" />
+
     </PreferenceScreen>
 
 </PreferenceScreen>

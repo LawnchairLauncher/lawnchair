@@ -158,4 +158,5 @@
     <string name="theme_light">Světlo</string>
     <string name="theme_dark">Temný</string>
     <string name="theme_transparent">Průhledný</string>
+    <string name="pref_open_source_licenses_title">Licence open source</string>
 </resources>

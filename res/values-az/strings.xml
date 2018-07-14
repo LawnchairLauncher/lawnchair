@@ -153,4 +153,5 @@
     <string name="theme_light">İşıq</string>
     <string name="theme_dark">Qaranlıq</string>
     <string name="theme_transparent">Şəffaf</string>
+    <string name="pref_open_source_licenses_title">Mənbə lisenziyalarını açın</string>
 </resources>

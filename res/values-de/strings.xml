@@ -158,4 +158,5 @@
     <string name="theme_light">Licht</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_transparent">Transparent</string>
+    <string name="pref_open_source_licenses_title">Open Source-Lizenzen</string>
 </resources>

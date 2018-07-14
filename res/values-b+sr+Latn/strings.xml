@@ -153,4 +153,5 @@
     <string name="theme_light">Svetlo</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_transparent">Transparentno</string>
+    <string name="pref_open_source_licenses_title">Licence otvorenog koda</string>
 </resources>

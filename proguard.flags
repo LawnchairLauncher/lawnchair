@@ -126,3 +126,7 @@
 -keep class com.google.android.apps.nexuslauncher.CustomIconProvider {
   public <init>(...);
 }
+
+-keep class com.google.android.apps.nexuslauncher.SettingsActivity$OpenSourceLicensesFragment {
+  *;
+}

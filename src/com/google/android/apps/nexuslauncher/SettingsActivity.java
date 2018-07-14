@@ -18,6 +18,8 @@ import android.preference.PreferenceFragment;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.android.launcher3.R;
 
@@ -140,6 +142,19 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
                     break;
             }
             return false;
+        }
+    }
+
+    public static class OpenSourceLicensesFragment extends DialogFragment {
+        public Dialog onCreateDialog(Bundle bundle) {
+            WebView view = new WebView(getActivity());
+            view.setWebViewClient(new WebViewClient());
+            view.getSettings().setBuiltInZoomControls(true);
+            view.loadUrl("file:///android_asset/license.html");
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.pref_open_source_licenses_title)
+                    .setView(view)
+                    .create();
         }
     }
 

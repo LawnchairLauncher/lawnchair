@@ -156,4 +156,5 @@
     <string name="theme_light">光</string>
     <string name="theme_dark">黑暗</string>
     <string name="theme_transparent">透明</string>
+    <string name="pref_open_source_licenses_title">开放源代码许可</string>
 </resources>

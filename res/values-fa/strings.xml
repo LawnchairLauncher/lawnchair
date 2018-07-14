@@ -156,4 +156,5 @@
     <string name="theme_light">سبک</string>
     <string name="theme_dark">تاریکی</string>
     <string name="theme_transparent">شفاف</string>
+    <string name="pref_open_source_licenses_title">مجوزهای منبع آزاد</string>
 </resources>
