@@ -3,7 +3,7 @@ package ch.deletescape.lawnchair
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.PageIndicatorLineCaret
 
-class LawnchairPreferencesChangeCallback(private val launcher: LawnchairLauncher) {
+class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
 
     fun recreate() {
         if (launcher.shouldRecreate()) launcher.recreate()

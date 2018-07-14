@@ -454,7 +454,11 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        setBackground(insets.top == 0 ? null
+        updateTopShadow();
+    }
+
+    public void updateTopShadow() {
+        setBackground(getInsets().top == 0 || !Utilities.getLawnchairPrefs(getContext()).getShowTopShadow() ? null
                 : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 

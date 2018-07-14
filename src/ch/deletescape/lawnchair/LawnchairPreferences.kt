@@ -70,6 +70,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
+    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+    val showTopShadow by BooleanPref("pref_showTopShadow", true, { onChangeCallback?.launcher?.dragLayer?.updateTopShadow() })
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", true)
@@ -100,7 +102,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
 
     // Drawer
-    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsDefaultOpacity = 235
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)

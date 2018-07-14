@@ -568,4 +568,6 @@
     <string name="title_use_pill_qsb">Show Pixel searchbar</string>
     <string name="weather_provider_testing">Debug</string>
     <string name="backup_generate_report">Generate bug report</string>
+    <string name="show_top_shadow_pref_title">Show top shadow</string>
+    <string name="show_top_shadow_pref_summary">Under the status bar</string>
 </resources>
