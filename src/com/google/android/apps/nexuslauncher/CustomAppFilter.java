@@ -34,7 +34,7 @@ public class CustomAppFilter extends LawnchairAppFilter {
         while (hiddenApps.contains(comp)) {
             hiddenApps.remove(comp);
         }
-        if (hidden != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName())) {
+        if (hidden) {
             hiddenApps.add(comp);
         }
         setHiddenApps(context, hiddenApps);
