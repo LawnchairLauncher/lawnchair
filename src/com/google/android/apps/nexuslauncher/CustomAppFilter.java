@@ -3,14 +3,12 @@ package com.google.android.apps.nexuslauncher;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.UserHandle;
-
+import ch.deletescape.lawnchair.LawnchairAppFilter;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import ch.deletescape.lawnchair.LawnchairAppFilter;
 
 public class CustomAppFilter extends LawnchairAppFilter {
     private final Context mContext;
@@ -43,7 +41,7 @@ public class CustomAppFilter extends LawnchairAppFilter {
     }
 
     static boolean isHiddenApp(Context context, ComponentKey key) {
-        return getHiddenApps(context).contains(key.toString()) != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName());
+        return getHiddenApps(context).contains(key.toString());
     }
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway
