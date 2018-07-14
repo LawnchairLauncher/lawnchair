@@ -68,7 +68,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-    val gridSize by lazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
+    private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
+    val gridSize by gridSizeDelegate
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", true)
@@ -95,7 +96,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
-    val dockGridSize by lazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
+    private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
+    val dockGridSize by dockGridSizeDelegate
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
@@ -485,6 +487,25 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
     }
 
+    inner class ResettableLazy<out T: Any>(private val create: () -> T) {
+
+        private var initialized = false
+        private var currentValue: T? = null
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            if (!initialized) {
+                currentValue = create()
+                initialized = true
+            }
+            return currentValue!!
+        }
+
+        fun resetValue() {
+            initialized = false
+            currentValue = null
+        }
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
         onChangeListeners[key]?.forEach { it.onValueChanged(key, this, false) }
@@ -552,7 +573,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
 
         fun destroyInstance() {
-            INSTANCE = null
+            INSTANCE?.apply {
+                onChangeListeners.clear()
+                onChangeCallback = null
+                gridSizeDelegate.resetValue()
+                dockGridSizeDelegate.resetValue()
+            }
         }
     }
 }
