@@ -253,6 +253,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
     override val useWhiteGoogleIcon by BooleanPref(FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON, false)
     override val ayyMatey by BooleanPref(PreferenceFlags.KEY_AYY_MATEY, false)
+    override val dt2sHandler by StringPref(FeatureFlags.KEY_PREF_DT2S_HANDLER, defaultValue = "")
     override fun migrateThemePref(context: Context) {
         val darkTheme = PreferenceProvider.getPreferences(context).darkTheme
         if (darkTheme) {

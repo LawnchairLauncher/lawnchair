@@ -149,5 +149,13 @@
             android:title="@string/notification_access_pref_title">
             <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
         </Preference>
+
+        <ListPreference
+            android:defaultValue=""
+            android:key="pref_dt2sHandler"
+            android:title="@string/dt2s_title"
+            android:summary="%s"
+            android:entries="@array/dt2sHandlers"
+            android:entryValues="@array/dt2sHandlerClasses" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

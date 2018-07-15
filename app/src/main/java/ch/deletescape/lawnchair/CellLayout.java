@@ -333,6 +333,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
+        mLauncher.getGestureController().onBlankAreaTouch(ev);
+
         // Stylus button press on a home screen should not switch between overview mode and
         // the home screen mode, however, once in overview mode stylus button press should be
         // enabled to allow rearranging the different home screens. So check what mode

@@ -104,6 +104,7 @@ interface IPreferenceProvider {
     val iconLabelsInTwoLines: Boolean
     val twoRowDock: Boolean
     val pulldownAction: String
+    val dt2sHandler: String
 
     // -----------------
     // PREFERENCES
