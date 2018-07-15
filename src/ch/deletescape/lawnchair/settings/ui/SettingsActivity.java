@@ -47,7 +47,6 @@ import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
-import ch.deletescape.lawnchair.views.PreviewFrame;
 import com.android.launcher3.*;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -228,7 +227,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
-            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsEnabled", this);
+            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsReallyEnabled", this);
         }
 
         @Override
@@ -248,7 +247,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         @Override
         public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
-            if("pref_developerOptionsEnabled".equals(key)){
+            if("pref_developerOptionsReallyEnabled".equals(key)){
                 if (prefs.getDeveloperOptionsEnabled()) {
                     if(mDeveloperOptions != null){
                         getPreferenceScreen().addPreference(mDeveloperOptions);

@@ -112,7 +112,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val separateWorkApps by BooleanPref("pref_separateWorkApps", false, recreate)
 
     // Dev
-    var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
+    var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode

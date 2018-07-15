@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
+import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import java.io.File
 
 @SuppressLint("ViewConstructor")
 class DecorLayout(context: Context, private val window: Window) : FrameLayout(context), View.OnClickListener {
@@ -88,15 +90,24 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
     }
 
     override fun onClick(v: View?) {
-        if (tapCount == 6) {
+        if (tapCount == 6 && allowDevOptions()) {
             Utilities.getLawnchairPrefs(context).developerOptionsEnabled = true
             Snackbar.make(
                     findViewById(R.id.content),
                     R.string.developer_options_enabled,
                     Snackbar.LENGTH_LONG).show()
-            tapCount = 0
-        } else {
             tapCount++
+        } else if (tapCount < 6) {
+            tapCount++
+        }
+    }
+
+    private fun allowDevOptions(): Boolean {
+        return try {
+            File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "Lawnchair/dev").exists()
+        } catch (e: SecurityException) {
+            false
         }
     }
 

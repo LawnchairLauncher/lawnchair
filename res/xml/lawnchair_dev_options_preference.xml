@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:key="pref_developerOptionsEnabled"
+        android:key="pref_developerOptionsReallyEnabled"
         android:title="@string/show_developer_options"
         android:defaultValue="false"
         android:persistent="true" />
