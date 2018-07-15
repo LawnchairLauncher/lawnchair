@@ -43,9 +43,9 @@
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
+    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget</string>
     <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-    <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
+    <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
@@ -73,9 +73,9 @@
     <!-- Drag and drop -->
     <skip />
     <!-- Error message when user has filled a home screen -->
-    <string name="out_of_space">No more room on this Home screen.</string>
+    <string name="out_of_space">No more room on the home screen</string>
     <!-- Error message when user has filled the hotseat -->
-    <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
+    <string name="hotseat_out_of_space">No more room in the dock</string>
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
@@ -93,20 +93,18 @@
     <!-- Permissions: -->
     <skip />
     <!-- Permission short label -->
-    <string name="permlab_install_shortcut">install shortcuts</string>
+    <string name="permlab_install_shortcut">Install shortcuts</string>
     <!-- Permission description -->
     <string name="permdesc_install_shortcut">Allows an app to add
-        shortcuts without user intervention.</string>
+        shortcuts without user intervention</string>
     <!-- Permission short label -->
-    <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <string name="permlab_read_settings">Read home screen settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_read_settings">Allows the app to read the settings and
-        shortcuts in Home.</string>
+    <string name="permdesc_read_settings">Allows the app to read home screen settings and shortcuts</string>
     <!-- Permission short label -->
-    <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <string name="permlab_write_settings">Write home screen settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_write_settings">Allows the app to change the settings and
-        shortcuts in Home.</string>
+    <string name="permdesc_write_settings">Allows the app to modify home screen settings and shortcuts</string>
 
     <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
     <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> is not allowed to make phone calls</string>
@@ -115,13 +113,13 @@
     <skip />
 
     <!-- Text to show user in place of a gadget when we can't display it properly -->
-    <string name="gadget_error_text">Problem loading widget</string>
+    <string name="gadget_error_text">Widget failed to load</string>
 
     <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-    <string name="gadget_setup_text">Setup</string>
+    <string name="gadget_setup_text">Awaiting setup</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
-    <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
+    <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled</string>
 
     <!-- Default folder title -->
     <string name="folder_hint_text">Unnamed Folder</string>
@@ -166,7 +164,7 @@
 
     <!-- Strings for settings -->
     <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-    <string name="allow_rotation_title">Allow Home screen rotation</string>
+    <string name="allow_rotation_title">Allow home screen rotation</string>
     <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
     <string name="allow_rotation_desc">When phone is rotated</string>
     <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
@@ -185,14 +183,14 @@
     <string name="title_change_settings">Change settings</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
-    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
-    <string name="auto_add_shortcuts_description">For new apps</string>
+    <string name="auto_add_shortcuts_description">Automatically add shortcuts to newly installed apps to the home screen</string>
 
     <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
-    <string name="icon_shape_override_label">Change icon shape</string>
+    <string name="icon_shape_override_label">Icon shape</string>
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
-    <string name="icon_shape_system_default">Use system default</string>
+    <string name="icon_shape_system_default">System default</string>
     <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
     <string name="icon_shape_square">Square</string>
     <!-- Option to change the shape of the home screen icons to a squircle. This represents the name of the shape somewhere between a circle and a square. [CHAR LIMIT=50] -->
@@ -217,7 +215,7 @@
     <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
     <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
-        You can remove it, or search for the app and install it manually.
+        You can remove the shortcut, or search for the app and install it manually.
     </string>
     <!-- Title for an app which is being downloaded. -->
     <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
@@ -230,7 +228,7 @@
 
     <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-    <string name="action_add_to_workspace">Add to Home screen</string>
+    <string name="action_add_to_workspace">Add to home screen</string>
 
     <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
     <string name="action_move_here">Move item here</string>
@@ -319,7 +317,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">In \"At a Glance\" widget</string>
+    <string name="in_smartspace">In \'At a glance\' widget</string>
     <string name="smartspace_time">Show time</string>
     <string name="smartspace_date">Show date</string>
     <string name="smartspace_preferences">Preferences</string>
@@ -329,19 +327,19 @@
     <string name="pref_icon_pack">Icon pack</string>
     <string name="state_loading">Applying…</string>
     <string name="smartspace_preferences_in_settings">Home widget</string>
-    <string name="smartspace_preferences_in_settings_desc">At the top of your Home screen</string>
+    <string name="smartspace_preferences_in_settings_desc">Info widget at the top of the home screen</string>
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
-    <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
+    <string name="msg_minus_one_on_left">To the left of the main home screen</string>
     <string name="about">About</string>
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Display app suggestions</string>
-    <string name="summary_app_suggestions">At the top of your All Apps list</string>
+    <string name="summary_app_suggestions">At the top of the app drawer</string>
     <string name="about_app_version">Version</string>
     <string name="app_releases_url">https://github.com/amirzaidi/launcher3/releases</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
-    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
+    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased"</string>
     <string name="label_turn_off_suggestions">TURN OFF</string>
     <string name="app_name_lawnchair">Lawnchair</string>
     <string name="pixel_style_pref_title">Pixel style</string>
@@ -354,16 +352,16 @@
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="pixel_ui_pref_summary">General appearance settings</string>
     <string name="app_drawer_pref_title">App drawer</string>
-    <string name="app_drawer_pref_summary">Customize your app drawer</string>
+    <string name="app_drawer_pref_summary">Customize the app drawer</string>
     <string name="general_pref_title">Desktop</string>
-    <string name="general_pref_summary">Customize your desktop</string>
+    <string name="general_pref_summary">Customize the home screen</string>
     <string name="about_pref_summary">Get to know the Lawnchair team</string>
     <string name="hidden_app">Hide apps</string>
     <string name="hide_app_selected">&#160; hidden</string>
     <string name="hide_app_reset">Reset</string>
     <string name="hide_app_apply">Apply</string>
-    <string name="hide_dock_gradient">Hide gradient</string>
-    <string name="dock_pref_summary">Customize your dock</string>
+    <string name="hide_dock_gradient">Disable gradient</string>
+    <string name="dock_pref_summary">Customize the dock</string>
     <string name="dock_pref_title">Dock</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
@@ -377,9 +375,9 @@
     <string name="backup_contents">Backup contents</string>
     <string name="backup_settings">Settings</string>
     <string name="backup_wallpaper">Wallpaper</string>
-    <string name="backup_error_blank_name">Name must not be blank</string>
-    <string name="backup_error_blank_location">Location must not be blank</string>
-    <string name="backup_error_blank_contents">Contents must not be blank</string>
+    <string name="backup_error_blank_name">Enter a name for the backup</string>
+    <string name="backup_error_blank_location">Pick a location for the backup</string>
+    <string name="backup_error_blank_contents">Pick the content of the backup</string>
     <string name="backup_creating">Creating backup</string>
     <string name="no_recent_backups">No recent backups</string>
     <string name="backup_loading">Loading...</string>
@@ -397,7 +395,7 @@
     <string name="restore_read_meta_fail">Invalid backup file</string>
     <string name="backup_share_title">Share backup</string>
     <string name="backup_share_text">Lawnchair backup file</string>
-    <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to take up the full width of the home screen</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="hide_apps">Hide apps</string>
     <string name="hide_apps_sum">Hide apps from the app drawer</string>
@@ -406,27 +404,27 @@
     <string name="developer_options_title">Developer options</string>
     <string name="developer_options_enabled">Developer options enabled</string>
     <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="restart_lawnchair_pref_summary">Re-apply all settings</string>
     <string name="show_debug_info_pref_title">Show debug info</string>
     <string name="debug_pref_title">Debug</string>
     <string name="debug_component_name">Component name</string>
     <string name="debug_component_name_copied">Copied</string>
-    <string name="read_external_storage_required">Storage permission is required to create backup</string>
+    <string name="read_external_storage_required">Grant Lawnchair the storage permission to create a backup</string>
     <string name="local_backups">Local backups</string>
-    <string name="backup_location_device_storage">Device storage</string>
-    <string name="backup_location_documents_storage">Documents storage</string>
+    <string name="backup_location_device_storage">Lawnchair folder</string>
+    <string name="backup_location_documents_storage">Custom location</string>
     <string name="grid_size_height">Height</string>
     <string name="grid_size_width">Width</string>
     <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">Blur</string>
-    <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-    <string name="blur_radius_pref_title">Blur amount</string>
-    <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resolution could possibly fix this.</string>
+    <string name="blur_pref_title">Enable blur</string>
+    <string name="blur_pref_summary">Apply a blur effect to parts of the interface. Not compatible with live wallpapers.</string>
+    <string name="blur_radius_pref_title">Blur strength</string>
+    <string name="blur_oom">Error while bluring wallpaper. Try lowering its resolution and try again.</string>
     <string name="dock_colored_google">Colored Google icon</string>
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
-    <string name="hotseat_p_style">P style dock</string>
+    <string name="hotseat_p_style">Android P style dock</string>
     <string name="theme_pref_title">Launcher theme</string>
     <string name="theme_auto">Auto</string>
     <string name="theme_auto_black">Auto (with OLED black)</string>
@@ -440,22 +438,22 @@
     <string name="dock_style_n">Flat</string>
     <string name="dock_style_transparent">Transparent</string>
     <string name="dock_style_custom">Custom</string>
-    <string name="dock_search_bar">Show search bar on dock</string>
+    <string name="dock_search_bar">Show search bar in dock</string>
     <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
     <string name="hotseat_custom_opacity">Dock opacity</string>
-    <string name="all_apps_uses_custom_opacity">Custom drawer opacity</string>
-    <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-    <string name="title_all_apps_google_search">Google search</string>
-    <string name="summary_all_apps_google_search">Show Google Search instead of normal apps search</string>
+    <string name="all_apps_uses_custom_opacity">Custom app drawer opacity</string>
+    <string name="all_apps_opacity_pref_title">App drawer opacity</string>
+    <string name="title_all_apps_google_search">Google Search in app drawer</string>
+    <string name="summary_all_apps_google_search">Display Google Search bar instead of apps search</string>
     <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="add_settings_shortcut_title">Add settings shortcut to home screen</string>
     <string name="icon_pack_default">System icons</string>
     <string name="loading">Loading…</string>
-    <string name="low_performance_mode_pref_title">Low performance mode</string>
+    <string name="low_performance_mode_pref_title">Low-performance mode</string>
     <string name="action_preferences">@string/smartspace_preferences</string>
     <string name="title_storage_permission_required">Storage Permission Required</string>
-    <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
+    <string name="content_storage_permission_required">Lawnchair requires the storage permission to access the device wallpaper.</string>
     <string name="reset_to_default">Reset to default</string>
     <string name="dock_shadow">Dock shadow</string>
     <string name="dock_radius">Dock corner radius</string>
@@ -463,13 +461,13 @@
     
     <!-- Categories -->
     <string name="pref_category_icons">Icons</string>
-    <string name="pref_category_aag">At A Glance</string>
-    <string name="pref_category_pixel_searchbar">Pixel searchbar</string>
+    <string name="pref_category_aag">At a glance</string>
+    <string name="pref_category_pixel_searchbar">Pixel style searchbar</string>
     <string name="pref_category_weather">Weather</string>
     <string name="pref_category_misc">Miscellaneous</string>
     <string name="pref_category_layout">Layout</string>
     <string name="pref_category_theme">Style</string>
-    <string name="pref_category_searchbar">Searchbar</string>
+    <string name="pref_category_searchbar">Search bar</string>
 
     <!-- About screen -->
 
@@ -493,8 +491,9 @@
     <string name="about_role_dev">Developer</string>
     <string name="about_role_dev_mod">Developer / Moderator</string>
     <string name="about_role_designer">Designer</string>
-    <string name="about_role_special_snowflake">PR Manager / Moderator</string>
-    <string name="about_role_mod_support">Moderator / Support</string>
+    <string name="about_role_ui_ux_designer">UI/UX Designer</string>
+    <string name="about_role_special_snowflake">PR Manager/Moderator</string>
+    <string name="about_role_mod_support">Moderator/Support</string>
     <string name="about_role_family_member">Family Member</string>
     <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
     <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
@@ -506,25 +505,25 @@
     <string name="show_developer_options">Enable developer options</string>
     <string name="debug_crash_launcher">Crash the launcher</string>
     <string name="gestures_pref_title">Gestures</string>
-    <string name="gestures_pref_summary">Customize your gestures</string>
+    <string name="gestures_pref_summary">Customize the home screen gestures</string>
 
     <!-- Gesture actions -->
     <string name="action_open_drawer">Open app drawer</string>
     <string name="action_open_widgets">Open widgets drawer</string>
     <string name="action_open_settings">Open launcher settings</string>
-    <string name="action_open_overview">Open overview</string>
-    <string name="action_global_search">Start global search</string>
-    <string name="action_app_search">Start app search</string>
-    <string name="action_open_notifications">Open notification panel</string>
-    <string name="action_close_notifications">Close notification panel</string>
+    <string name="action_open_overview">Open overview screen</string>
+    <string name="action_global_search">Open global search</string>
+    <string name="action_app_search">Open app search</string>
+    <string name="action_open_notifications">Open notifications panel</string>
+    <string name="action_close_notifications">Close notifications panel</string>
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
     <string name="action_open_app">Open app</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Select app</string>
     <string name="action_none">Do nothing</string>
-    <string name="gesture_press_home">Press Home</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_press_home">Home button</string>
+    <string name="gesture_double_tap">Double tap</string>
     <string name="gesture_long_press">Long press</string>
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_swipe_up">Swipe up</string>
@@ -533,7 +532,7 @@
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
-    <string name="pref_show_assistant_summary">Shows the voice search button in the Google searchbar</string>
+    <string name="pref_show_assistant_summary">Display a voice search button in the Google search bar</string>
     <string name="current_weather_provider">Current weather provider</string>
     <string name="smartspace_time_24_h">Show time in 24 hours</string>
     <string name="weather_provider_disabled">Disabled</string>
@@ -543,11 +542,11 @@
     <string name="pref_smartspace_event_provider">Event provider</string>
     <string name="title_all_apps_search">Show search bar</string>
     <string name="smartspace_provider_error">Error</string>
-    <string name="smartspace_widget_provider_not_found">At A Glance widget not found. Make sure you have the latest Google app installed.</string>
+    <string name="smartspace_widget_provider_not_found">\'At a glance\' widget not found. Make sure you have the latest Google app installed.</string>
     <string name="all_apps_label">All apps</string>
     <string name="separate_work_apps_pref_title">Separate work apps from all apps</string>
     <string name="title_search_hidden_apps">Search hidden apps</string>
-    <string name="summary_search_hidden_apps">Include hidden apps in search result</string>
+    <string name="summary_search_hidden_apps">Include hidden apps in search results</string>
     <string name="default_owm_key" translatable="false">17a6438b1d63d5b05f7039e7cb52cde7</string>
 
     <!-- Feel free to change this to the biggest/most important city for your language. But make sure to crosscheck that there are
@@ -565,9 +564,9 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Show Pixel searchbar</string>
+    <string name="title_use_pill_qsb">Show Pixel style search bar</string>
     <string name="weather_provider_testing">Debug</string>
     <string name="backup_generate_report">Generate bug report</string>
     <string name="show_top_shadow_pref_title">Show top shadow</string>
-    <string name="show_top_shadow_pref_summary">Under the status bar</string>
+    <string name="show_top_shadow_pref_summary">Display a shadow under the status bar</string>
 </resources>

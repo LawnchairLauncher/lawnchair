@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="24dp"
     android:width="24dp"
+    android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <path
-        android:fillColor="?android:attr/colorControlNormal"
-        android:pathData="M12,5.69l5,4.5V12v6h-2v-4v-2h-2h-2H9v2v4H7v-6v-1.81L12,5.69M12,3L2,12h3v8h6v-6h2v6h6v-8h3L12,3L12,3z" />
+  <path
+      android:pathData="M12,5.8482L17.5,10.6129L17.5,12.5294L17.5,18.8824L15.3,18.8824L15.3,14.6471L15.3,12.5294L13.1,12.5294L10.9,12.5294L8.7,12.5294L8.7,14.6471L8.7,18.8824L6.5,18.8824L6.5,12.5294L6.5,10.6129L12,5.8482ZM12.6548,3.5672C12.279,3.2417 11.721,3.2417 11.3452,3.5672L2.4188,11.3003C1.9289,11.7247 2.229,12.5294 2.8771,12.5294L4.3,12.5294L4.3,20C4.3,20.5523 4.7477,21 5.3,21L9.9,21C10.4523,21 10.9,20.5523 10.9,20L10.9,14.6471L13.1,14.6471L13.1,20C13.1,20.5523 13.5477,21 14.1,21L18.7,21C19.2523,21 19.7,20.5523 19.7,20L19.7,12.5294L21.1229,12.5294C21.771,12.5294 22.0711,11.7247 21.5813,11.3003L12.6548,3.5672Z"
+      android:fillColor="?android:attr/colorControlNormal"/>
 </vector>

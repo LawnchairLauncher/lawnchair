@@ -78,7 +78,7 @@
             name="Lumiq Creative"
             avatar="https://avatars.githubusercontent.com/u/30959743"
             login="lumiqcreative"
-            task="^@string/about_role_designer">
+            task="^@string/about_role_ui_ux_designer">
             <link
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
