@@ -18,7 +18,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@id/smartspace_content"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical">
@@ -48,6 +48,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="4dp"
         android:clipChildren="false"
+        android:animateLayoutChanges="true"
         android:orientation="horizontal">
 
         <ImageView
