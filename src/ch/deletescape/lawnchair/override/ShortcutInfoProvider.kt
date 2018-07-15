@@ -15,15 +15,15 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
 
     override fun getTitle(info: ShortcutInfo): String {
-        return (info.customTitle ?: info.title) as String
+        return (info.customTitle ?: info.title).toString()
     }
 
     override fun getDefaultTitle(info: ShortcutInfo): String {
-        return info.title as String
+        return info.title.toString()
     }
 
     override fun getCustomTitle(info: ShortcutInfo): String? {
-        return info.customTitle as String?
+        return info.customTitle?.toString()
     }
 
     override fun setTitle(info: ShortcutInfo, title: String?) {

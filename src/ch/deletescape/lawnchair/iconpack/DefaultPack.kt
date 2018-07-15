@@ -148,7 +148,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {
 
-        override val displayName by lazy { app.label as String }
+        override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()
         override val drawable get() = app.getIcon(0)!!
 

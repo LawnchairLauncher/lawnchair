@@ -16,12 +16,12 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
 
     override fun getTitle(info: AppInfo): String {
-        return prefs.customAppName[info.toComponentKey()] ?: info.title as String
+        return prefs.customAppName[info.toComponentKey()] ?: info.title.toString()
     }
 
     override fun getDefaultTitle(info: AppInfo): String {
         val app = getLauncherActivityInfo(info)
-        return app?.label as String? ?: "" // TODO: can this really be null?
+        return app?.label?.toString() ?: "" // TODO: can this really be null?
     }
 
     override fun getCustomTitle(info: AppInfo): String? {

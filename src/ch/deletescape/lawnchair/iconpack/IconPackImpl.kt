@@ -49,7 +49,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     override val displayName by lazy {
-        context.packageManager.getApplicationLabel(applicationInfo) as String
+        context.packageManager.getApplicationLabel(applicationInfo).toString()
     }
 
     override fun onDateChanged() {

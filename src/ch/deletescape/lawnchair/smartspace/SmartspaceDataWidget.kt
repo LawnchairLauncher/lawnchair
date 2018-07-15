@@ -108,7 +108,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         }
         val card = if (cardIcon != null && title != null && subtitle != null) {
             LawnchairSmartspaceController.CardData(cardIcon,
-                    title.text as String, title.ellipsize, subtitle.text as String, subtitle.ellipsize)
+                    title.text.toString(), title.ellipsize, subtitle.text.toString(), subtitle.ellipsize)
         } else {
             null
         }
@@ -139,7 +139,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             if (texts.isEmpty()) return
             if (images.size >= 2) {
                 weatherIconView = images.last()
-                temperature = texts.last().text as String
+                temperature = texts.last().text.toString()
             }
             if (images.isNotEmpty() && images.size != 2) {
                 cardIconView = images.first()
