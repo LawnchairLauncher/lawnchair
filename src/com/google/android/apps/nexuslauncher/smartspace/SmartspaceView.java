@@ -147,9 +147,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockView.setOnLongClickListener(co());
             if (forced)
                 mClockView.reloadDateFormat(true);
-            if (mWeatherAvailable) {
-                mTitleSeparator.setVisibility(View.VISIBLE);
-            }
+            LawnchairUtilsKt.setVisible(mTitleSeparator, mWeatherAvailable);
             if (!Utilities.ATLEAST_NOUGAT) {
                 mClockView.onVisibilityAggregated(true);
             }
