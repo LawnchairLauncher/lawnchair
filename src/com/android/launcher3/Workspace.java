@@ -1417,12 +1417,11 @@ public class Workspace extends PagedView
     }
 
     private void onWorkspaceOverallScrollChanged() {
-        float translationX = mOverlayTranslation + mFirstPageScrollX - getScrollX();
         if (mLauncher.getAllAppsBg() != null) {
-            mLauncher.getAllAppsBg().setTranslationX(translationX);
+            mLauncher.getAllAppsBg().setTranslationX(mOverlayTranslation + mFirstPageScrollX);
         }
         if (mPillQsb) {
-            mLauncher.getQsbContainer().setTranslationX(translationX);
+            mLauncher.getQsbContainer().setTranslationX(mOverlayTranslation + mFirstPageScrollX - getScrollX());
         }
     }
 
