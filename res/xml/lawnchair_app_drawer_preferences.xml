@@ -76,5 +76,11 @@
             android:defaultValue="false"
             android:persistent="true" />
 
+        <SwitchPreference
+            android:key="pref_keepScrollState"
+            android:title="@string/keep_scroll_state_pref_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
     </android.support.v7.preference.PreferenceCategory>
 </PreferenceScreen>
