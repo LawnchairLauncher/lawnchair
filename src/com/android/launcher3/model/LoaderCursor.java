@@ -419,7 +419,12 @@ public class LoaderCursor extends CursorWrapper {
             final GridOccupancy hotseatOccupancy =
                     occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
-            if (item.screenId >= mIDP.numHotseatIcons) {
+            int hotseatRows = Utilities.getLawnchairPrefs(mContext).getDockRowsCount();
+            int hotseatSize = mIDP.numHotseatIcons;
+            int hotseatX = (int) (item.screenId % hotseatSize);
+            int hotseatY = (int) (item.screenId / hotseatSize);
+
+            if (item.screenId >= mIDP.numHotseatIcons * hotseatRows) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
                         + ", position out of bounds: (0 to " + (mIDP.numHotseatIcons - 1)
@@ -428,18 +433,18 @@ public class LoaderCursor extends CursorWrapper {
             }
 
             if (hotseatOccupancy != null) {
-                if (hotseatOccupancy.cells[(int) item.screenId][0]) {
+                if (hotseatOccupancy.cells[hotseatX][hotseatY]) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") already occupied");
                     return false;
                 } else {
-                    hotseatOccupancy.cells[(int) item.screenId][0] = true;
+                    hotseatOccupancy.cells[hotseatX][hotseatY] = true;
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, 1);
-                occupancy.cells[(int) item.screenId][0] = true;
+                final GridOccupancy occupancy = new GridOccupancy(hotseatSize, hotseatRows);
+                occupancy.cells[hotseatX][hotseatY] = true;
                 occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }

@@ -569,4 +569,5 @@
     <string name="backup_generate_report">Generate bug report</string>
     <string name="show_top_shadow_pref_title">Show top shadow</string>
     <string name="show_top_shadow_pref_summary">Display a shadow under the status bar</string>
+    <string name="two_row_dock">Two row dock</string>
 </resources>

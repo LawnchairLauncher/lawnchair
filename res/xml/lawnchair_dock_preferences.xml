@@ -67,6 +67,12 @@
         <ch.deletescape.lawnchair.settings.ui.DockGridSizePreference
             android:key="pref_dock_grid_size"
             android:title="@string/num_hotseat_icons_pref_title" />
+
+        <SwitchPreference
+            android:key="pref_twoRowDock"
+            android:title="@string/two_row_dock"
+            android:defaultValue="false"
+            android:persistent="true" />
     </android.support.v7.preference.PreferenceCategory>
     
     <android.support.v7.preference.PreferenceCategory

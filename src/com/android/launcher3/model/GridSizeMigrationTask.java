@@ -633,6 +633,7 @@ public class GridSizeMigrationTask {
                 switch (entry.itemType) {
                     case Favorites.ITEM_TYPE_SHORTCUT:
                     case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                    case Favorites.ITEM_TYPE_APPWIDGET:
                     case Favorites.ITEM_TYPE_APPLICATION: {
                         verifyIntent(c.getString(indexIntent));
                         entry.weight = entry.itemType == Favorites.ITEM_TYPE_APPLICATION ?

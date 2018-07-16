@@ -1417,9 +1417,13 @@ public class Workspace extends PagedView
     }
 
     private void onWorkspaceOverallScrollChanged() {
-        if (mPillQsb)
-            mLauncher.getQsbContainer().setTranslationX(
-                    mOverlayTranslation + mFirstPageScrollX - getScrollX());
+        float translationX = mOverlayTranslation + mFirstPageScrollX - getScrollX();
+        if (mLauncher.getAllAppsBg() != null) {
+            mLauncher.getAllAppsBg().setTranslationX(translationX);
+        }
+        if (mPillQsb) {
+            mLauncher.getQsbContainer().setTranslationX(translationX);
+        }
     }
 
     @Override
@@ -1598,9 +1602,6 @@ public class Workspace extends PagedView
         }
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
-        if (direction != Direction.Y && mLauncher.getAllAppsBg() != null) {
-            property.set(mLauncher.getAllAppsBg(), translation);
-        }
     }
 
     private void setHotseatAlphaAtIndex(float alpha, int index) {

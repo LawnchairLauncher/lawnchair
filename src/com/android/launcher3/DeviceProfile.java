@@ -273,11 +273,20 @@ public class DeviceProfile {
     }
 
     public int getHotseatSize(InvariantDeviceProfile inv, Resources res, DisplayMetrics dm) {
-        return isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
-                : res.getDimensionPixelSize(Utilities.getLawnchairPrefs(mContext).getDockSearchBar() ?
+        int rows = Utilities.getLawnchairPrefs(mContext).getDockRowsCount();
+        if (isVerticalBarLayout()) {
+            return Utilities.pxFromDp(inv.iconSize, dm) * rows;
+        } else {
+            int baseHeight = res.getDimensionPixelSize(Utilities.getLawnchairPrefs(mContext).getDockSearchBar() ?
                     R.dimen.dynamic_grid_hotseat_size : R.dimen.v1_dynamic_grid_hotseat_size)
-                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+                    + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+            if (rows > 1) {
+                int extraRows = rows - 1;
+                return baseHeight + res.getDimensionPixelSize(R.dimen.v1_dynamic_grid_hotseat_size) * extraRows;
+            } else {
+                return baseHeight;
+            }
+        }
     }
 
     public int getHotseatBottomPadding(Resources res) {
@@ -400,7 +409,7 @@ public class DeviceProfile {
 
         // Hotseat
         if (isVerticalBarLayout()) {
-            hotseatBarSizePx = iconSizePx;
+            hotseatBarSizePx = iconSizePx * Utilities.getLawnchairPrefs(mContext).getDockRowsCount();
         }
         hotseatCellHeightPx = iconSizePx;
 
