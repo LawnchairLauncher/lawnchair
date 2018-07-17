@@ -189,9 +189,14 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     final Rect taskBounds = new Rect(position[0], position[1],
                             position[0] + width, position[1] + height);
 
+                    // Take the thumbnail of the task without a scrim and apply it back after
+                    float alpha = thumbnailView.getDimAlpha();
+                    thumbnailView.setDimAlpha(0);
                     Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
                             taskBounds.width(), taskBounds.height(), thumbnailView, 1f,
                             Color.BLACK);
+                    thumbnailView.setDimAlpha(alpha);
+
                     AppTransitionAnimationSpecsFuture future =
                             new AppTransitionAnimationSpecsFuture(mHandler) {
                         @Override
