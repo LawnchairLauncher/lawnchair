@@ -9,7 +9,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
@@ -59,7 +59,11 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
         adapter.callbacks = this
         loadLocalBackups()
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = GridLayoutManager(this, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) = if (position == 0) 2 else 1
+            }
+        }
         recyclerView.adapter = adapter
 
         Utilities.checkRestoreSuccess(this)

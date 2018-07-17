@@ -17,25 +17,48 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:src="@drawable/ic_file_restore"
-                android:paddingEnd="16dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="RtlSymmetry" />
+            <ch.deletescape.lawnchair.views.ScreenshotPreview
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@android:id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                tools:text="Backup item" />
+                <ImageView
+                    android:id="@+id/wallpaper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true" />
+            </ch.deletescape.lawnchair.views.ScreenshotPreview>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ImageView
+                    android:src="@drawable/ic_file_restore"
+                    android:paddingEnd="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@android:id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    tools:text="Backup item" />
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>

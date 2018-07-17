@@ -28,31 +28,54 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
     val meta by lazy { readMeta() }
 
     private fun readMeta(): Meta? {
+        var entry: ZipEntry?
+        var meta: Meta? = null
+        readZip { zipIs ->
+            while (true) {
+                entry = zipIs.nextEntry
+                if (entry == null) break
+                if (entry!!.name != Meta.FILE_NAME) continue
+                meta = Meta.fromString(String(zipIs.readBytes(), StandardCharsets.UTF_8))
+                break
+            }
+        }
+        return meta
+    }
+
+    private fun readPreview(): Pair<Bitmap?, Bitmap?>? {
+        var entry: ZipEntry?
+        var screenshot: Bitmap? = null
+        var wallpaper: Bitmap? = null
+        readZip { zipIs ->
+            while (true) {
+                entry = zipIs.nextEntry
+                if (entry == null) break
+                if (entry!!.name == "screenshot.png") {
+                    screenshot = BitmapFactory.decodeStream(zipIs)
+                } else if (entry!!.name == WALLPAPER_FILE_NAME) {
+                    wallpaper = BitmapFactory.decodeStream(zipIs)
+                }
+            }
+        }
+        return Pair(screenshot, wallpaper)
+    }
+
+    private inline fun readZip(body: (ZipInputStream) -> Unit) {
         try {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
             val inStream = FileInputStream(pfd.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
-            var entry: ZipEntry?
-            var meta: Meta? = null
             try {
-                while (true) {
-                    entry = zipIs.nextEntry
-                    if (entry == null) break
-                    if (entry.name != Meta.FILE_NAME) continue
-                    meta = Meta.fromString(String(zipIs.readBytes(), StandardCharsets.UTF_8))
-                    break
-                }
+                body(zipIs)
             } catch (t: Throwable) {
-                Log.e(TAG, "Unable to read meta for $uri", t)
+                Log.e(TAG, "Unable to read zip for $uri", t)
             } finally {
                 zipIs.close()
                 inStream.close()
                 pfd.close()
-                return meta
             }
         } catch (t: Throwable) {
-            Log.e(TAG, "Unable to read meta for $uri", t)
-            return null
+            Log.e(TAG, "Unable to read zip for $uri", t)
         }
     }
 
@@ -117,18 +140,32 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
         var callback: Callback? = null
         var meta: Meta? = null
+        var withPreview = false
+        var loaded = false
 
-        fun loadMeta() {
-            LoadMetaTask().execute()
+        fun loadMeta(withPreview: Boolean = false) {
+            if (!loaded) {
+                this.withPreview = withPreview
+                LoadMetaTask().execute()
+            } else {
+                callback?.onMetaLoaded()
+            }
         }
 
         @SuppressLint("StaticFieldLeak")
         inner class LoadMetaTask : AsyncTask<Void, Void, Meta?>() {
 
-            override fun doInBackground(vararg params: Void?) = backup.meta
+            override fun doInBackground(vararg params: Void?): Meta? {
+                backup.meta
+                if (withPreview) {
+                    backup.meta?.preview = backup.readPreview()
+                }
+                return backup.meta
+            }
 
             override fun onPostExecute(result: Meta?) {
                 meta = result
+                loaded = true
                 callback?.onMetaLoaded()
             }
         }
@@ -140,6 +177,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
     }
 
     data class Meta(val name: String, val contents: Int, val timestamp: String) {
+
+        var preview: Pair<Bitmap?, Bitmap?>? = null
 
         override fun toString(): String {
             val arr = JSONArray()

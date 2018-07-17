@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.android.launcher3.R
 import com.github.florent37.fiftyshadesof.FiftyShadesOf
@@ -96,6 +97,8 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     inner class ItemHolder(itemView: View) : Holder(itemView), LawnchairBackup.MetaLoader.Callback,
             View.OnClickListener, View.OnLongClickListener {
 
+        private val wallpaper = itemView.findViewById<ImageView>(R.id.wallpaper)
+        private val preview = itemView.findViewById<ImageView>(R.id.preview)
         private val title = itemView.findViewById<TextView>(android.R.id.title)
         private var indicator: FiftyShadesOf? = null
         private var metaLoader: LawnchairBackup.MetaLoader? = null
@@ -119,7 +122,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                     .fadein(true)
                     .start()
             metaLoader = backupMetaLoaderList[position - 1]
-            metaLoader?.loadMeta()
+            metaLoader?.loadMeta(true)
             backupItem.isEnabled = false
             title.text = context.getString(R.string.backup_loading)
         }
@@ -128,6 +131,8 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
             indicator?.stop()
             backupItem.isEnabled = true
             title.text = metaLoader?.meta?.name ?: context.getString(R.string.backup_invalid)
+            preview.setImageBitmap(metaLoader?.meta?.preview?.first)
+            wallpaper.setImageBitmap(metaLoader?.meta?.preview?.second)
         }
 
         override fun onClick(v: View) {
