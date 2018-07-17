@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">முடக்கு</string>
     <string name="icon_shape_rounded_square">வளைந்த மூலைகளுடன் சதுரம்</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">சிலிண்டர்</string>
+    <string name="theme_title">தீம்</string>
+    <string name="theme_automatic">தானியங்கி</string>
+    <string name="theme_default">இயல்புநிலை</string>
+    <string name="theme_light">ஒளி</string>
+    <string name="theme_dark">டார்க்</string>
+    <string name="theme_transparent">ஒளி புகும்</string>
+    <string name="pref_open_source_licenses_title">ஓப்பன் சோர்ஸ் உரிமங்கள்</string>
 </resources>

@@ -150,4 +150,12 @@
     <string name="icon_shape_rounded_square">Avrundet kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="icon_shape_cylinder">Sylinder</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automatisk</string>
+    <string name="theme_default">Misligholde</string>
+    <string name="theme_light">Lys</string>
+    <string name="theme_dark">Mørk</string>
+    <string name="theme_transparent">Gjennomsiktig</string>
+    <string name="pref_open_source_licenses_title">Lisenser for åpen kildekode</string>
 </resources>

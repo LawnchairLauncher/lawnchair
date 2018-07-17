@@ -77,7 +77,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private void ensureFallbackView() {
         if (mFallback == null) {
             mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
-            mFallback.bu(this, mApps, mRecyclerView);
+            mFallback.initialize(this, mApps, mRecyclerView);
             addView(mFallback);
         }
         mFallback.setVisibility(View.VISIBLE);
@@ -198,6 +198,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public void preDispatchKeyEvent(final KeyEvent keyEvent) {
+    }
+
+    @Override
+    public void startAppsSearch() {
+        onClick(this);
     }
 
     public void refreshSearchResult() {

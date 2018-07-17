@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ВЫКЛЮЧЫЦЬ</string>
     <string name="icon_shape_rounded_square">Квадрат са скругленымі вугламі</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Цыліндр</string>
+    <string name="theme_title">Тэма</string>
+    <string name="theme_automatic">Аўтаматычная</string>
+    <string name="theme_default">Дэфолт</string>
+    <string name="theme_light">Святло</string>
+    <string name="theme_dark">Цёмна</string>
+    <string name="theme_transparent">Празрысты</string>
+    <string name="pref_open_source_licenses_title">Ліцэнзіі на ПЗ з адкрытым зыходным кодам</string>
 </resources>

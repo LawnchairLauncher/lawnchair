@@ -31,7 +31,7 @@ public abstract class WallpaperManagerCompat {
             if (sInstance == null) {
                 context = context.getApplicationContext();
 
-                if (Utilities.ATLEAST_OREO) {
+                if (Utilities.ATLEAST_OREO_MR1) {
                     try {
                         sInstance = new WallpaperManagerCompatVOMR1(context);
                     } catch (Throwable e) {
@@ -50,6 +50,8 @@ public abstract class WallpaperManagerCompat {
     public abstract @Nullable WallpaperColorsCompat getWallpaperColors(int which);
 
     public abstract void addOnColorsChangedListener(OnColorsChangedListenerCompat listener);
+
+    public abstract void updateAllListeners();
 
     /**
      * Interface definition for a callback to be invoked when colors change on a wallpaper.

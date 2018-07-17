@@ -107,7 +107,9 @@
   *;
 }
 
--keep class com.google.android.apps.nexuslauncher.CustomAppFilter { *; }
+-keep class com.google.android.apps.nexuslauncher.CustomAppFilter {
+  public <init>(...);
+}
 
 -keep class com.google.android.apps.nexuslauncher.CustomAppPredictor { *; }
 
@@ -145,3 +147,7 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+
+-keep class com.google.android.apps.nexuslauncher.SettingsActivity$OpenSourceLicensesFragment {
+  *;
+}

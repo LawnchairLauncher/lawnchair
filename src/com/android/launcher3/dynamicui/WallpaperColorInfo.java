@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Pair;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.WallpaperColorsCompat;
 import com.android.launcher3.compat.WallpaperManagerCompat;
 
@@ -27,6 +28,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
         }
     }
 
+    private final Context mContext;
     private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final WallpaperManagerCompat mWallpaperManager;
     private final ColorExtractionAlgorithm mExtractionType;
@@ -34,9 +36,11 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private int mSecondaryColor;
     private boolean mIsDark;
     private boolean mSupportsDarkText;
+    private boolean mIsTransparent;
     private OnThemeChangeListener mOnThemeChangeListener;
 
     private WallpaperColorInfo(Context context) {
+        mContext = context;
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
         mExtractionType = ColorExtractionAlgorithm.newInstance(context);
@@ -59,13 +63,18 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
         return mSupportsDarkText;
     }
 
+    public boolean isTransparent() {
+        return mIsTransparent;
+    }
+
     @Override
     public void onColorsChanged(WallpaperColorsCompat colors, int which) {
         if ((which & FLAG_SYSTEM) != 0) {
             boolean wasDarkTheme = mIsDark;
             boolean didSupportDarkText = mSupportsDarkText;
+            boolean wasTransparent = mIsTransparent;
             update(colors);
-            notifyChange(wasDarkTheme != mIsDark || didSupportDarkText != mSupportsDarkText);
+            notifyChange(wasDarkTheme != mIsDark || didSupportDarkText != mSupportsDarkText || wasTransparent != mIsTransparent);
         }
     }
 
@@ -78,12 +87,12 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
             mMainColor = FALLBACK_COLOR;
             mSecondaryColor = FALLBACK_COLOR;
         }
-        mSupportsDarkText = wallpaperColors != null
-                ? (wallpaperColors.getColorHints()
-                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0 : false;
-        mIsDark = wallpaperColors != null
-                ? (wallpaperColors.getColorHints()
-                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0 : false;
+        int colorHints = Utilities.getThemeHints(mContext, wallpaperColors == null
+                ? 0
+                : wallpaperColors.getColorHints());
+        mSupportsDarkText = (colorHints & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
+        mIsDark = (colorHints & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
+        mIsTransparent = (colorHints & WallpaperColorsCompat.HINT_SUPPORTS_TRANSPARENCY) > 0;
     }
 
     public void setOnThemeChangeListener(OnThemeChangeListener onThemeChangeListener) {

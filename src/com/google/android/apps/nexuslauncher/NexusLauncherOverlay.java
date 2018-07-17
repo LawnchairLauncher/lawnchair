@@ -26,8 +26,6 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
 
     @Override
     public void setPersistentFlags(int flags) {
-        flags = 8 | 16; //Always enable app drawer Google style search bar
-
         flags &= (8 | 16);
         if (flags != mFlags) {
             mFlagsChanged = true;

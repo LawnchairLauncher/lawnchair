@@ -149,4 +149,12 @@
     <string name="action_edit">തിരുത്തുക</string>
     <string name="icon_shape_rounded_square">വൃത്താകാര ചതുരം</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">സിലിണ്ടർ</string>
+    <string name="theme_title">തീം</string>
+    <string name="theme_automatic">ഓട്ടോമാറ്റിക്</string>
+    <string name="theme_default">സ്ഥിരസ്ഥിതി</string>
+    <string name="theme_light">വെളിച്ചം</string>
+    <string name="theme_dark">ഇരുണ്ടത്</string>
+    <string name="theme_transparent">സുതാര്യം</string>
+    <string name="pref_open_source_licenses_title">ഓപ്പൺ സോഴ്‌സ് ലൈസൻസുകൾ</string>
 </resources>

@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ປິດໄວ້</string>
     <string name="icon_shape_rounded_square">ສີ່ຫຼ່ຽມຂອບມົນ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">ກະບອກ</string>
+    <string name="theme_title">ຫົວຂໍ້</string>
+    <string name="theme_automatic">ອັດຕະໂນມັດ</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">ແສງສະຫວ່າງ</string>
+    <string name="theme_dark">ຊ້ໍາ</string>
+    <string name="theme_transparent">Transparent</string>
+    <string name="pref_open_source_licenses_title">ໃບອະນຸຍາດໂອເພນຊອດ</string>
 </resources>

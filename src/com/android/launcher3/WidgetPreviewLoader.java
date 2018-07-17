@@ -340,7 +340,8 @@ public class WidgetPreviewLoader {
         int previewWidth;
         int previewHeight;
 
-        if (widgetPreviewExists) {
+        if (widgetPreviewExists && drawable.getIntrinsicWidth() > 0
+                && drawable.getIntrinsicHeight() > 0) {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
@@ -360,8 +361,8 @@ public class WidgetPreviewLoader {
             scale = maxPreviewWidth / (float) (previewWidth);
         }
         if (scale != 1f) {
-            previewWidth = (int) (scale * previewWidth);
-            previewHeight = (int) (scale * previewHeight);
+            previewWidth = Math.max((int)(scale * previewWidth), 1);
+            previewHeight = Math.max((int)(scale * previewHeight), 1);
         }
 
         // If a bitmap is passed in, we use it; otherwise, we create a bitmap of the right size

@@ -42,7 +42,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsS
         mAppsRecyclerView.onSearchResultsChanged();
     }
 
-    public void bu(AllAppsQsbLayout qsbLayout, AlphabeticalAppsList apps, AllAppsRecyclerView appsRecyclerView) {
+    public void initialize(AllAppsQsbLayout qsbLayout, AlphabeticalAppsList apps, AllAppsRecyclerView appsRecyclerView) {
         mQsbLayout = qsbLayout;
         mApps = apps;
         mAppsRecyclerView = appsRecyclerView;

@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ပိတ်ပါ</string>
     <string name="icon_shape_rounded_square">လုံးဝန်းသည့်အနားသတ်များရှိသည့် စတုရန်း</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">လုံးရှည်</string>
+    <string name="theme_title">အကွောငျး</string>
+    <string name="theme_automatic">Automatic</string>
+    <string name="theme_default">ပျက်ကွက်</string>
+    <string name="theme_light">အလင်း</string>
+    <string name="theme_dark">မှောငျမိုကျသော</string>
+    <string name="theme_transparent">ကြည်လင်သော</string>
+    <string name="pref_open_source_licenses_title">အခမဲ့ရင်းမြစ်လိုင်စင်များ</string>
 </resources>

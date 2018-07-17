@@ -152,4 +152,12 @@
     <string name="icon_shape_rounded_square">Квадрат с закругленными углами</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="icon_shape_cylinder">Цилиндр</string>
+    <string name="theme_title">Тема</string>
+    <string name="theme_automatic">Автоматическая</string>
+    <string name="theme_default">По умолчанию</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="theme_transparent">Прозрачная</string>
+    <string name="pref_open_source_licenses_title">Лицензии открытого ПО</string>
 </resources>

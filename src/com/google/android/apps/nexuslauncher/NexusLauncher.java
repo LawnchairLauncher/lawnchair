@@ -17,6 +17,7 @@ import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
+import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
 import com.google.android.libraries.gsa.launcherclient.StaticInteger;
@@ -207,6 +208,10 @@ public class NexusLauncher {
         }
 
         public void onStart() {
+            if (!ActionIntentFilter.googleEnabled(mLauncher)) {
+                mOverlay.setPersistentFlags(0);
+            }
+
             mStarted = true;
             mClient.onStart();
         }

@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">გამორთვა</string>
     <string name="icon_shape_rounded_square">მომრგვალებული კვადრატი</string>
     <string name="smartspace_hours_mins">%1$s და %2$s</string>
+    <string name="icon_shape_cylinder">ცილინდრი</string>
+    <string name="theme_title">თემა</string>
+    <string name="theme_automatic">ავტომატური</string>
+    <string name="theme_default">ნაგულისხმები</string>
+    <string name="theme_light">მსუბუქი</string>
+    <string name="theme_dark">ბნელი</string>
+    <string name="theme_transparent">გამჭვირვალე</string>
+    <string name="pref_open_source_licenses_title">ღია კოდის ლიცენზიები</string>
 </resources>

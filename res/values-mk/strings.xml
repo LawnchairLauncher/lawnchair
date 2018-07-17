@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ИСКЛУЧИ</string>
     <string name="icon_shape_rounded_square">Заоблен квадрат</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Цилиндер</string>
+    <string name="theme_title">Тема</string>
+    <string name="theme_automatic">Автоматски</string>
+    <string name="theme_default">Стандардно</string>
+    <string name="theme_light">Светлина</string>
+    <string name="theme_dark">Темно</string>
+    <string name="theme_transparent">Транспарентен</string>
+    <string name="pref_open_source_licenses_title">Лиценци за софтвер со отворен код</string>
 </resources>

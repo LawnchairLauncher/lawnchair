@@ -152,4 +152,12 @@
     <string name="icon_shape_rounded_square">Okrúhly štvorec</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="icon_shape_cylinder">Valec</string>
+    <string name="theme_title">Téma</string>
+    <string name="theme_automatic">Automatický</string>
+    <string name="theme_default">Štandardné</string>
+    <string name="theme_light">Svetlo</string>
+    <string name="theme_dark">Tmavý</string>
+    <string name="theme_transparent">Priehľadný</string>
+    <string name="pref_open_source_licenses_title">Licencie open source</string>
 </resources>

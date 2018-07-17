@@ -52,4 +52,8 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
     override fun startSearch() {
 
     }
+
+    override fun startAppsSearch() {
+        
+    }
 }

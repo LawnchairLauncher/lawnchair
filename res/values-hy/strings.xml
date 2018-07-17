@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ԱՆՋԱՏԵԼ</string>
     <string name="icon_shape_rounded_square">Շրջանակաձև քառակուսի</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Մխոց</string>
+    <string name="theme_title">Թեմա</string>
+    <string name="theme_automatic">Ավտոմատ</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">Լույս</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_transparent">Թափանցիկ</string>
+    <string name="pref_open_source_licenses_title">Բաց կոդով ծրագրակազմի արտոնագրեր</string>
 </resources>

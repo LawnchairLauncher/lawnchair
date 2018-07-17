@@ -172,6 +172,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
+     * Focuses the search field and begins an app search.
+     */
+    public void startAppsSearch() {
+        mSearchUiManager.startAppsSearch();
+    }
+
+    /**
      * Resets the state of AllApps.
      */
     public void reset() {

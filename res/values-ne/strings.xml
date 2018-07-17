@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">निष्क्रिय पार्नुहोस्</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">सिलेंडर</string>
+    <string name="theme_title">विषयवस्तु</string>
+    <string name="theme_automatic">स्वचालित</string>
+    <string name="theme_default">पूर्वनिर्धारित</string>
+    <string name="theme_light">लाइट</string>
+    <string name="theme_dark">गाढा</string>
+    <string name="theme_transparent">पारदर्शी</string>
+    <string name="pref_open_source_licenses_title">खुला स्रोतका इजाजतपत्रहरू</string>
 </resources>

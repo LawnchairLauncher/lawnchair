@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ਬੰਦ ਕਰੋ</string>
     <string name="icon_shape_rounded_square">ਗੋਲ ਕਿਨਾਰਿਆਂ ਵਾਲਾ ਵਰਗ</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">ਸਿਲੰਡਰ</string>
+    <string name="theme_title">ਥੀਮ</string>
+    <string name="theme_automatic">ਆਟੋਮੈਟਿਕ</string>
+    <string name="theme_default">ਡਿਫੌਲਟ</string>
+    <string name="theme_light">ਲਾਈਟ</string>
+    <string name="theme_dark">ਹਨੇਰ</string>
+    <string name="theme_transparent">ਪਾਰਦਰਸ਼ੀ</string>
+    <string name="pref_open_source_licenses_title">ਖੁੱਲ੍ਹਾ ਸਰੋਤ ਲਾਇਸੰਸ</string>
 </resources>

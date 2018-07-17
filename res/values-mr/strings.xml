@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">बंद करा</string>
     <string name="icon_shape_rounded_square">गोलाकार चौरस</string>
     <string name="smartspace_hours_mins">%1$s:%2$s</string>
+    <string name="icon_shape_cylinder">सिलेंडर</string>
+    <string name="theme_title">थीम</string>
+    <string name="theme_automatic">स्वयंचलित</string>
+    <string name="theme_default">डीफॉल्ट</string>
+    <string name="theme_light">हलका</string>
+    <string name="theme_dark">गडद</string>
+    <string name="theme_transparent">पारदर्शक</string>
+    <string name="pref_open_source_licenses_title">मुक्त स्रोत परवाने</string>
 </resources>

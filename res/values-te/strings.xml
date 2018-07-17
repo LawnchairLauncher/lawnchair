@@ -149,4 +149,12 @@
     <string name="action_edit">సవరించు</string>
     <string name="icon_shape_rounded_square">వృత్తాకార చతురస్రం</string>
     <string name="smartspace_hours_mins">%1$s:%2$s</string>
+    <string name="icon_shape_cylinder">సిలిండర్</string>
+    <string name="theme_title">థీమ్</string>
+    <string name="theme_automatic">స్వయంచాలక</string>
+    <string name="theme_default">డిఫాల్ట్</string>
+    <string name="theme_light">లైట్</string>
+    <string name="theme_dark">డార్క్</string>
+    <string name="theme_transparent">పారదర్శక</string>
+    <string name="pref_open_source_licenses_title">ఓపెన్ సోర్స్ లైసెన్స్‌లు</string>
 </resources>

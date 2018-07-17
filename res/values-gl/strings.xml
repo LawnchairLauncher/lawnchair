@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">DESACTIVAR</string>
     <string name="icon_shape_rounded_square">Cadrado redondeado</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Cilindro</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automático</string>
+    <string name="theme_default">Predeterminado</string>
+    <string name="theme_light">Luz</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_transparent">Transparente</string>
+    <string name="pref_open_source_licenses_title">Licenzas de código aberto</string>
 </resources>

@@ -25,12 +25,16 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
+import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 @TargetApi(27)
 public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
     private static final String TAG = "WMCompatVOMR1";
+
+    private final ArrayList<OnColorsChangedListenerCompat> mListeners = new ArrayList<>();
 
     private final WallpaperManager mWm;
     private Method mWCColorHintsMethod;
@@ -53,6 +57,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
     @Override
     public void addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
+        mListeners.add(listener);
         OnColorsChangedListener onChangeListener = new OnColorsChangedListener() {
             @Override
             public void onColorsChanged(WallpaperColors colors, int which) {
@@ -60,6 +65,14 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
             }
         };
         mWm.addOnColorsChangedListener(onChangeListener, null);
+    }
+
+    @Override
+    public void updateAllListeners() {
+        WallpaperColorsCompat colorsCompat = getWallpaperColors(FLAG_SYSTEM);
+        for (OnColorsChangedListenerCompat listener : mListeners) {
+            listener.onColorsChanged(colorsCompat, FLAG_SYSTEM);
+        }
     }
 
     private WallpaperColorsCompat convertColorsObject(WallpaperColors colors) {

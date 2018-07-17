@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">বন্ধ করুন</string>
     <string name="icon_shape_rounded_square">গোলাকার কোণের বর্গক্ষেত্র</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">নল</string>
+    <string name="theme_title">বিষয়</string>
+    <string name="theme_automatic">স্বয়ংক্রিয়</string>
+    <string name="theme_default">ডিফল্ট</string>
+    <string name="theme_light">আলো</string>
+    <string name="theme_dark">অন্ধকার</string>
+    <string name="theme_transparent">স্বচ্ছ</string>
+    <string name="pref_open_source_licenses_title">ওপেন সোর্স লাইসেন্স</string>
 </resources>

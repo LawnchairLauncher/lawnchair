@@ -147,4 +147,12 @@
     <string name="icon_shape_rounded_square">Isikwele esijikelezayo</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="icon_shape_cylinder">I-Cylinder</string>
+    <string name="theme_title">Isihloko</string>
+    <string name="theme_automatic">Ngokuzenzekelayo</string>
+    <string name="theme_default">Okuzenzakalelayo</string>
+    <string name="theme_light">Ukukhanya</string>
+    <string name="theme_dark">Umnyama</string>
+    <string name="theme_transparent">Okungafani</string>
+    <string name="pref_open_source_licenses_title">Amalayisense omthombo ovulekile</string>
 </resources>

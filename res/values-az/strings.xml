@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">DEAKTİV EDİN</string>
     <string name="icon_shape_rounded_square">Kənarları dairəvi kvadrat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Silindir</string>
+    <string name="theme_title">Mövzu</string>
+    <string name="theme_automatic">Avtomatik</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_light">İşıq</string>
+    <string name="theme_dark">Qaranlıq</string>
+    <string name="theme_transparent">Şəffaf</string>
+    <string name="pref_open_source_licenses_title">Mənbə lisenziyalarını açın</string>
 </resources>

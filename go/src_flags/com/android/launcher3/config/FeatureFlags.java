@@ -27,6 +27,9 @@ public final class FeatureFlags extends BaseFlags {
     public static final boolean GO_DISABLE_WIDGETS = true;
     public static final boolean LAUNCHER3_SPRING_ICONS = false;
 
+    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
+    public static final boolean LEGACY_ICON_TREATMENT = false;
+
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static boolean QSB_ON_FIRST_SCREEN = true;
 }

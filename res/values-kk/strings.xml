@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ӨШІРУ</string>
     <string name="icon_shape_rounded_square">Бұрышы жұмырланған төртбұрыш</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Цилиндр</string>
+    <string name="theme_title">Тақырып</string>
+    <string name="theme_automatic">Автоматты түрде</string>
+    <string name="theme_default">Әдетті</string>
+    <string name="theme_light">Жарық</string>
+    <string name="theme_dark">Қараңғы</string>
+    <string name="theme_transparent">Мөлдір</string>
+    <string name="pref_open_source_licenses_title">Ашық бастапқы код лицензиялары</string>
 </resources>

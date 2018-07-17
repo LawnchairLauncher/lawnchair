@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">ӨЧҮРҮҮ</string>
     <string name="icon_shape_rounded_square">Бурчтары тегеректелген чарчы</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">цилиндр</string>
+    <string name="theme_title">Тема</string>
+    <string name="theme_automatic">Автоматтык</string>
+    <string name="theme_default">По умолчанию</string>
+    <string name="theme_light">Жарык</string>
+    <string name="theme_dark">Караңгы</string>
+    <string name="theme_transparent">Тунук</string>
+    <string name="pref_open_source_licenses_title">Баштапкы коду ачык программалардын уруксаттамалары</string>
 </resources>

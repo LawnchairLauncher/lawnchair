@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">УНТРААХ</string>
     <string name="icon_shape_rounded_square">Мохоо дөрвөлжин</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Цилиндр</string>
+    <string name="theme_title">Сэдэв</string>
+    <string name="theme_automatic">Автоматаар</string>
+    <string name="theme_default">Үндсэн байна</string>
+    <string name="theme_light">Гэрэл</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_transparent">Ил тод</string>
+    <string name="pref_open_source_licenses_title">Нээлттэй эхийн лиценз</string>
 </resources>

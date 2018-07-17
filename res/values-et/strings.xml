@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">LÜLITA VÄLJA</string>
     <string name="icon_shape_rounded_square">Ümardatud nurkadega ruut</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">Silindriga</string>
+    <string name="theme_title">Teema</string>
+    <string name="theme_automatic">Automaatne</string>
+    <string name="theme_default">Vaikimisi</string>
+    <string name="theme_light">Valgus</string>
+    <string name="theme_dark">Tume</string>
+    <string name="theme_transparent">Läbipaistev</string>
+    <string name="pref_open_source_licenses_title">Avatud lähtekoodi litsentsid</string>
 </resources>

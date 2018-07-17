@@ -26,6 +26,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -166,6 +167,13 @@ public class AppsSearchContainerLayout extends FrameLayout
                     mSearchBarController.focusSearchField();
                 }
             }
+        }
+    }
+
+    @Override
+    public void startAppsSearch() {
+        if (mApps != null) {
+            mSearchBarController.focusSearchField();
         }
     }
 

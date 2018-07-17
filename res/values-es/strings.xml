@@ -152,4 +152,12 @@
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
     <string name="smartspace_hours_mins">%1$s y %2$s</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="icon_shape_cylinder">Cilindro</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_automatic">Automático</string>
+    <string name="theme_default">Estandar</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_transparent">Transparente</string>
+    <string name="pref_open_source_licenses_title">Licencias de código abierto</string>
 </resources>

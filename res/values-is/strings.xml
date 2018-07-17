@@ -146,4 +146,12 @@
     <string name="label_turn_off_suggestions">SLÖKKVA</string>
     <string name="icon_shape_rounded_square">Rúnnaður ferningur</string>
     <string name="smartspace_hours_mins">%1$s og %2$s</string>
+    <string name="icon_shape_cylinder">Sívalningur</string>
+    <string name="theme_title">Þema</string>
+    <string name="theme_automatic">Sjálfvirk</string>
+    <string name="theme_default">Sjálfgefið</string>
+    <string name="theme_light">Ljós</string>
+    <string name="theme_dark">Myrkur</string>
+    <string name="theme_transparent">Gegnsætt</string>
+    <string name="pref_open_source_licenses_title">Leyfi opins kóða</string>
 </resources>

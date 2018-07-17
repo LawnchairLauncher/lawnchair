@@ -150,4 +150,12 @@
     <string name="icon_shape_rounded_square">สี่เหลี่ยมจัตุรัสขอบมน</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="week_day_format">%1$s %2$s</string>
+    <string name="icon_shape_cylinder">กระบอก</string>
+    <string name="theme_title">กระทู้</string>
+    <string name="theme_automatic">อัตโนมัติ</string>
+    <string name="theme_default">ค่าเริ่มต้น</string>
+    <string name="theme_light">เบา</string>
+    <string name="theme_dark">มืด</string>
+    <string name="theme_transparent">โปร่งใส</string>
+    <string name="pref_open_source_licenses_title">ใบอนุญาตโอเพนซอร์ส</string>
 </resources>
