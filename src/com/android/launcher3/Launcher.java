@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -299,7 +300,7 @@ public class Launcher extends BaseActivity
     }
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
-    private static boolean sRestart = false;
+    public static boolean sRestart = false;
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
     private boolean mUpdateWallpaper = true;
@@ -331,7 +332,7 @@ public class Launcher extends BaseActivity
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
 
         ThemeManager.Companion.getInstance(this).addOverride(
-                prefs.getAllAppsSearch() ? new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this));
+                prefs.getAllAppsSearch() ? getLauncherTheme() : new ThemeOverride.Launcher(this));
 
         boolean gradientStyleDock = prefs.getDockGradientStyle();
         FeatureFlags.LAUNCHER3_P_ALL_APPS = !gradientStyleDock;
@@ -362,7 +363,7 @@ public class Launcher extends BaseActivity
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
         mDragController = new DragController(this);
-        mBlurWallpaperProvider = new BlurWallpaperProvider(this);
+        mBlurWallpaperProvider = new BlurWallpaperProvider(this, isScreenshotMode());
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
@@ -454,6 +455,11 @@ public class Launcher extends BaseActivity
         }
 
         Utilities.checkRestoreSuccess(this);
+    }
+
+    @NonNull
+    protected ThemeOverride getLauncherTheme() {
+        return new ThemeOverride.LauncherQsb(this);
     }
 
     @Override
@@ -1027,10 +1033,6 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onResume();
         }
 
-        if (sRestart) {
-            LawnchairAppKt.getLawnchairApp(this).restart();
-        }
-
         if (mUpdateWallpaper) {
             mUpdateWallpaper = false;
             mBlurWallpaperProvider.updateAsync();
@@ -1263,6 +1265,8 @@ public class Launcher extends BaseActivity
         if (Utilities.getLawnchairPrefs(this).getUsePillQsb()) {
             mQsbContainer = mDragLayer.findViewById(mDeviceProfile.isVerticalBarLayout()
                     ? R.id.workspace_blocked_row : R.id.qsb_container);
+        } else if (!mDeviceProfile.isVerticalBarLayout()) {
+            mDragLayer.removeView(mDragLayer.findViewById(R.id.qsb_container));
         }
         mWorkspace.initParentViews(mDragLayer);
 
@@ -4112,6 +4116,10 @@ public class Launcher extends BaseActivity
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
+    }
+
+    public boolean isScreenshotMode() {
+        return false;
     }
 
     private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener {

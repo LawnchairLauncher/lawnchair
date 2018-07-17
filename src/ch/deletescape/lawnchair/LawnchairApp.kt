@@ -18,8 +18,8 @@ class LawnchairApp : Application() {
         registerActivityLifecycleCallbacks(activityHandler)
     }
 
-    fun restart() {
-        activityHandler.finishAll()
+    fun restart(recreateLauncher: Boolean = true) {
+        activityHandler.finishAll(recreateLauncher)
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {
@@ -27,8 +27,8 @@ class LawnchairApp : Application() {
         val activities = HashSet<Activity>()
         var foregroundActivity: Activity? = null
 
-        fun finishAll() {
-            HashSet(activities).forEach { if (it is LawnchairLauncher) it.recreate() else it.finish() }
+        fun finishAll(recreateLauncher: Boolean = true) {
+            HashSet(activities).forEach { if (recreateLauncher && it is LawnchairLauncher) it.recreate() else it.finish() }
         }
 
         override fun onActivityPaused(activity: Activity) {

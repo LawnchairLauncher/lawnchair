@@ -24,8 +24,12 @@ import android.app.ProgressDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -40,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
@@ -56,8 +61,12 @@ import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.CustomIconPreference;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import me.jfenn.attribouter.Attribouter;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import static com.android.launcher3.Utilities.restartLauncher;
 
@@ -343,6 +352,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 findPreference("currentWeatherProvider").setSummary(
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
+                findPreference("screenshot").setOnPreferenceClickListener(this);
             }
         }
 
@@ -483,6 +493,26 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 case "appInfo":
                     ComponentName componentName = new ComponentName(getActivity(), LawnchairLauncher.class);
                     LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(componentName, android.os.Process.myUserHandle());
+                    break;
+                case "screenshot":
+                    final Context context = getActivity();
+                    LawnchairLauncher.Companion.takeScreenshot(getActivity(), new Handler(), new Function1<Uri, Unit>() {
+                        @Override
+                        public Unit invoke(Uri uri) {
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                                ImageView imageView = new ImageView(context);
+                                imageView.setImageBitmap(bitmap);
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Screenshot")
+                                        .setView(imageView)
+                                        .show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                    });
                     break;
             }
             return false;

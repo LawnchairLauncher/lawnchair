@@ -255,6 +255,21 @@
         <item name="gIcon">@drawable/ic_super_g_color</item>
         <item name="micIcon">@drawable/ic_mic_color</item>
     </style>
+
+    <!-- Custom -->
+    <style name="ScreenshotLauncherTheme" parent="@style/GoogleSearchLauncherTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+    <style name="ScreenshotLauncherThemeDark" parent="@style/GoogleSearchLauncherThemeDark">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+    <style name="ScreenshotLauncherThemeBlack" parent="@style/GoogleSearchLauncherThemeBlack">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+    <style name="ScreenshotLauncherThemeDarkText" parent="@style/GoogleSearchLauncherThemeDarkText">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="SettingsTheme" parent="@android:style/Theme.Material.Settings">
         <item name="android:actionBarTheme">@style/SettingsTheme.ActionBar</item>
         <item name="android:colorPrimary">@color/colorPrimary</item>

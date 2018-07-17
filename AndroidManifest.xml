@@ -121,6 +121,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="ch.deletescape.lawnchair.LawnchairLauncher$Screenshot"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/ScreenshotLauncherTheme"/>
+
         <!-- The settings activity. When extending keep the intent filter present -->
         <activity
             android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"

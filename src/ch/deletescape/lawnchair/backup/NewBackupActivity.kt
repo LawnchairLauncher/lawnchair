@@ -188,8 +188,8 @@ class NewBackupActivity : SettingsBaseActivity() {
             super.onPostExecute(result)
 
             if (result == null) {
-                setResult(Activity.RESULT_OK, Intent().setData(backupUri))
-                finish()
+                lawnchairApp.restart(true)
+                startActivity(Intent(this@NewBackupActivity, BackupListActivity::class.java))
             } else {
                 inProgress = false
                 Snackbar.make(findViewById(R.id.content), R.string.backup_failed, Snackbar.LENGTH_SHORT)

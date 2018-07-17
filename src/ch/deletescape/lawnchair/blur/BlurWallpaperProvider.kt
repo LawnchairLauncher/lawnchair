@@ -23,7 +23,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.util.*
 
-class BlurWallpaperProvider(val context: Context) {
+class BlurWallpaperProvider(val context: Context, private val forceDisable: Boolean) {
 
     private val prefs by lazy { context.lawnchairPrefs }
     private val mWallpaperManager: WallpaperManager = WallpaperManager.getInstance(context)
@@ -57,7 +57,7 @@ class BlurWallpaperProvider(val context: Context) {
     private val mUpdateRunnable = Runnable { updateWallpaper() }
 
     init {
-        isEnabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        isEnabled = !forceDisable && mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
 
         updateBlurRadius()
     }
@@ -73,7 +73,7 @@ class BlurWallpaperProvider(val context: Context) {
             prefs.enableBlur = false
             return
         }
-        val enabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        val enabled = !forceDisable && mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
         if (enabled != isEnabled) {
             prefs.restart()
         }

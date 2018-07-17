@@ -5,27 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
-
 import android.widget.ImageView;
-import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.*;
 import com.android.launcher3.DeviceProfile.LauncherLayoutChangeListener;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
@@ -166,9 +154,6 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
             paint.setColor(color);
             canvas.drawRoundRect(builder.bounds, (float) (height / 2), (float) (height / 2), paint);
             canvas.setBitmap(null);
-        }
-        if (Utilities.ATLEAST_OREO) {
-            return createPill.copy(Config.HARDWARE, false);
         }
         return createPill;
     }

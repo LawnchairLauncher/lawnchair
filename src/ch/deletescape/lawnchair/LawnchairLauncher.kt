@@ -5,20 +5,31 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
+import android.util.Log
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
+import java.io.File
+import java.io.FileOutputStream
+import java.util.concurrent.Semaphore
 
-class LawnchairLauncher : NexusLauncherActivity() {
+open class LawnchairLauncher : NexusLauncherActivity() {
 
     val gestureController by lazy { GestureController(this) }
     private var prefCallback = LawnchairPreferencesChangeCallback(this)
@@ -31,6 +42,18 @@ class LawnchairLauncher : NexusLauncherActivity() {
         super.onCreate(savedInstanceState)
 
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        restartIfPending()
+    }
+
+    open fun restartIfPending() {
+        if (Launcher.sRestart) {
+            lawnchairApp.restart(true)
+        }
     }
 
     override fun onDestroy() {
@@ -83,6 +106,63 @@ class LawnchairLauncher : NexusLauncherActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    class Screenshot : LawnchairLauncher() {
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+            super.onCreate(savedInstanceState)
+
+            findViewById<LauncherRootView>(R.id.launcher).setHideContent(true)
+        }
+
+        override fun finishBindingItems() {
+            super.finishBindingItems()
+
+            findViewById<LauncherRootView>(R.id.launcher).post(::takeScreenshot)
+        }
+
+        private fun takeScreenshot() {
+            val rootView = findViewById<LauncherRootView>(R.id.launcher)
+            val bitmap = Bitmap.createBitmap(rootView.width, rootView.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            rootView.setHideContent(false)
+            rootView.draw(canvas)
+            rootView.setHideContent(true)
+            val folder = File(filesDir, "tmp")
+            folder.mkdirs()
+            val file = File(folder, "screenshot.png")
+            val out = FileOutputStream(file)
+            try {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                out.close()
+                val result = Bundle(1).apply { putString("uri", Uri.fromFile(file).toString()) }
+                intent.getParcelableExtra<ResultReceiver>("callback").send(Activity.RESULT_OK, result)
+            } catch (e: Exception) {
+                out.close()
+                intent.getParcelableExtra<ResultReceiver>("callback").send(Activity.RESULT_CANCELED, null)
+                e.printStackTrace()
+            }
+            finish()
+        }
+
+        override fun isScreenshotMode() = true
+
+        override fun getLauncherTheme(): ThemeOverride {
+            return ThemeOverride.LauncherScreenshot(this)
+        }
+
+        override fun restartIfPending() {
+            Launcher.sRestart = true
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+
+            Launcher.sRestart = true
+        }
+    }
+
     companion object {
 
         const val REQUEST_PERMISSION_STORAGE_ACCESS = 666
@@ -93,6 +173,34 @@ class LawnchairLauncher : NexusLauncherActivity() {
 
         fun getLauncher(context: Context): LawnchairLauncher {
             return context as? LawnchairLauncher ?: (context as ContextWrapper).baseContext as LawnchairLauncher
+        }
+
+        fun takeScreenshotSync(context: Context): Uri? {
+            var uri: Uri? = null
+            val waiter = Semaphore(0)
+            takeScreenshot(context, uiWorkerHandler, {
+                uri = it
+                waiter.release()
+            })
+            waiter.acquireUninterruptibly()
+            waiter.release()
+            return uri
+        }
+
+        fun takeScreenshot(context: Context, handler: Handler = Handler(), callback: (Uri?) -> Unit) {
+            context.startActivity(Intent(context, Screenshot::class.java).apply {
+                putExtra("screenshot", true)
+                putExtra("callback", object : ResultReceiver(handler) {
+
+                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            callback(Uri.parse(resultData!!.getString("uri")))
+                        } else {
+                            callback(null)
+                        }
+                    }
+                })
+            })
         }
     }
 }

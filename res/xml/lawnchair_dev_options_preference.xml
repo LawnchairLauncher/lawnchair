@@ -8,6 +8,10 @@
         android:persistent="true" />
 
     <Preference
+        android:key="appInfo"
+        android:title="@string/app_info_drop_target_label" />
+
+    <Preference
         android:key="kill"
         android:title="@string/restart_lawnchair_pref_title"
         android:summary="@string/restart_lawnchair_pref_summary" />
@@ -31,6 +35,12 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_backupScreenshot"
+        android:title="Create screenshot for new backup"
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <Preference
         android:key="addSettingsShortcut"
         android:title="@string/add_settings_shortcut_title" />
@@ -44,6 +54,6 @@
         android:title="@string/current_weather_provider" />
 
     <Preference
-        android:key="appInfo"
-        android:title="@string/app_info_drop_target_label" />
+        android:key="screenshot"
+        android:title="Take screenshot" />
 </PreferenceScreen>

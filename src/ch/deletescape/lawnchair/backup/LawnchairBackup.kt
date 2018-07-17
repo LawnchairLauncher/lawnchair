@@ -11,6 +11,7 @@ import android.os.AsyncTask
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
+import ch.deletescape.lawnchair.LawnchairLauncher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.Utilities
@@ -228,6 +229,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         const val INCLUDE_HOMESCREEN = 1 shl 0
         const val INCLUDE_SETTINGS = 1 shl 1
         const val INCLUDE_WALLPAPER = 1 shl 2
+        const val INCLUDE_SCREENSHOT = 1 shl 3
 
         const val BUFFER = 2018
 
@@ -280,8 +282,20 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
 
-            val devOptionsEnabled = Utilities.getLawnchairPrefs(context)
-                    .developerOptionsEnabled
+            val prefs = Utilities.getLawnchairPrefs(context)
+            val includeScreenshot: Boolean
+
+            if (prefs.backupScreenshot) {
+                val screenshotFile = File(context.filesDir, "tmp/screenshot.png")
+                if (screenshotFile.exists()) screenshotFile.delete()
+                LawnchairLauncher.takeScreenshotSync(context)
+                includeScreenshot = screenshotFile.exists()
+                if (includeScreenshot) files.add(screenshotFile)
+            } else {
+                includeScreenshot = false
+            }
+
+            val devOptionsEnabled = prefs.developerOptionsEnabled
             prepareConfig(context)
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
             val outStream = FileOutputStream(pfd.fileDescriptor)
@@ -291,7 +305,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             try {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
-                out.write(getMeta(name, contents).toString().toByteArray())
+                val actualContents = if (includeScreenshot) contents or INCLUDE_SCREENSHOT else contents
+                out.write(getMeta(name, actualContents).toString().toByteArray())
                 if (contents and INCLUDE_WALLPAPER != 0) {
                     val wallpaperManager = WallpaperManager.getInstance(context)
                     val wallpaperDrawable = wallpaperManager.drawable

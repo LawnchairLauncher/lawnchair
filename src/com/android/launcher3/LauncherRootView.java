@@ -3,10 +3,7 @@ package com.android.launcher3;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
@@ -25,6 +22,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     private int mRightInsetBarWidth;
 
     private View mAlignedView;
+
+    private boolean mHideContent;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,6 +83,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (mHideContent) return;
         super.dispatchDraw(canvas);
 
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
@@ -96,5 +96,9 @@ public class LauncherRootView extends InsettableFrameLayout {
                 canvas.drawRect(0, 0, mLeftInsetBarWidth, getHeight(), mOpaquePaint);
             }
         }
+    }
+
+    public void setHideContent(boolean hide) {
+        mHideContent = hide;
     }
 }

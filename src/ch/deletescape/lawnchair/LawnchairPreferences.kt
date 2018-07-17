@@ -120,6 +120,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
+    val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
 
     // Gestures
     val doubleTapDelay = 350L
