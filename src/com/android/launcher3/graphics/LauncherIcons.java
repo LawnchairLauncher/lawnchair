@@ -49,6 +49,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Helper methods for generating various launcher icons
  */
@@ -104,14 +106,13 @@ public class LauncherIcons {
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
+            if (Utilities.ATLEAST_OREO && Utilities.getLawnchairPrefs(context).getIconPack().equals("") /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
                 dr.setBounds(0, 0, 1, 1);
                 scale = normalizer.getScale(icon, null, dr.getIconMask(), outShape);
-                if (FeatureFlags.LEGACY_ICON_TREATMENT &&
-                        !outShape[0]){
+                if (FeatureFlags.LEGACY_ICON_TREATMENT && !outShape[0]){
                     Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
                     if (wrappedIcon != icon) {
                         icon = wrappedIcon;
@@ -158,7 +159,7 @@ public class LauncherIcons {
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
+            if (Utilities.ATLEAST_OREO && Utilities.getLawnchairPrefs(context).getIconPack().equals("") /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
