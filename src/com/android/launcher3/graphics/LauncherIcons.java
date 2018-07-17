@@ -30,9 +30,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
@@ -104,7 +104,7 @@ public class LauncherIcons {
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
+            if (Utilities.ATLEAST_OREO /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
@@ -158,7 +158,7 @@ public class LauncherIcons {
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
+            if (Utilities.ATLEAST_OREO /*&& iconAppTargetSdk >= Build.VERSION_CODES.O*/) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
@@ -305,6 +305,9 @@ public class LauncherIcons {
                 AdaptiveIconDrawable iconWrapper = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
+                ColorDrawable bg = ((ColorDrawable) iconWrapper.getBackground());
+                int color = Utilities.findDominantColorByOccurence(Utilities.drawableToBitmap(drawable), 40);
+                bg.setColor(color);
                 fsd.setDrawable(drawable);
                 fsd.setScale(scale);
                 return (Drawable) iconWrapper;

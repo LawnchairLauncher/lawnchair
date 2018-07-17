@@ -42,6 +42,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.pm.ShortcutInfoCompat;
 import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.graphics.drawable.IconCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -384,6 +385,48 @@ public final class Utilities {
             }
         }
         return bestColor;
+    }
+
+    /**
+     * This picks a dominant color judging by how often it appears.
+     * @param bitmap The bitmap to scan
+     * @param samples The approximate max number of samples to use.
+     */
+    public static int findDominantColorByOccurence(Bitmap bitmap, int samples) {
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+        int sampleStride = (int) Math.sqrt((height * width) / samples);
+        if (sampleStride < 1) {
+            sampleStride = 1;
+        }
+
+        int[] rgbScoreHistogram = new int[0x1000000];
+        int highScore = -1;
+        int bestRGB = -1;
+
+        for (int y = 0; y < height; y += sampleStride) {
+            for (int x = 0; x < width; x += sampleStride) {
+                int argb = bitmap.getPixel(x, y);
+                int alpha = 0xFF & (argb >> 24);
+                if (alpha < 0x80) {
+                    // Drop mostly-transparent pixels.
+                    continue;
+                }
+                // Remove the alpha channel.
+                int rgb = ColorUtils.setAlphaComponent(argb, 0x00);
+                if (rgb < 0 || rgb >= rgbScoreHistogram.length) {
+                    // Defensively avoid array bounds violations.
+                    continue;
+                }
+                rgbScoreHistogram[rgb] += 1;
+                if (rgbScoreHistogram[rgb] > highScore) {
+                    highScore = rgbScoreHistogram[rgb];
+                    bestRGB = rgb;
+                }
+            }
+        }
+        // Add back alpha channel
+        return ColorUtils.setAlphaComponent(bestRGB, 0xFF);
     }
 
     /*
