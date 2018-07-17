@@ -16,7 +16,10 @@
 
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+
 import android.graphics.Path;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -45,12 +48,17 @@ public class Interpolators {
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
 
+    public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
+
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f,0, 0.4f, 1);
 
     public static final Interpolator EXAGGERATED_EASE;
+
+    private static final int MIN_SETTLE_DURATION = 200;
+    private static final float OVERSHOOT_FACTOR = 0.9f;
 
     static {
         Path exaggeratedEase = new Path();
@@ -112,46 +120,18 @@ public class Interpolators {
         }
     };
 
-    /**
-     * Interpolates using a particular section of the damped oscillation function.
-     * The section is selected by scaling and shifting the function.
-     */
-    public static final Interpolator OSCILLATE = new Interpolator() {
-
-        // Used to scale the oscillations horizontally
-        private final float horizontalScale = 1f;
-        // Used to shift the oscillations horizontally
-        private final float horizontalShift = 0.5f;
-        // Used to scale the oscillations vertically
-        private final float verticalScale = 1f;
-        // Used to shift the oscillations vertically
-        private final float verticalShift = 1f;
-
-        @Override
-        public float getInterpolation(float t) {
-            t = horizontalScale * (t + horizontalShift);
-            return (float) ((verticalScale * (Math.exp(-t) * Math.cos(2 * Math.PI * t)))
-                    + verticalShift);
-        }
-    };
-
     private static final float FAST_FLING_PX_MS = 10;
 
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {
         return Math.abs(velocity) > FAST_FLING_PX_MS ? SCROLL : SCROLL_CUBIC;
     }
 
-    public static Interpolator overshootInterpolatorForVelocity(float velocity) {
-        return overshootInterpolatorForVelocity(velocity, 1f);
-    }
-
     /**
      * Create an OvershootInterpolator with tension directly related to the velocity (in px/ms).
      * @param velocity The start velocity of the animation we want to overshoot.
-     * @param dampFactor An optional factor to reduce the amount of tension (how far we overshoot).
      */
-    public static Interpolator overshootInterpolatorForVelocity(float velocity, float dampFactor) {
-        return new OvershootInterpolator(Math.min(Math.abs(velocity), 3f) / dampFactor);
+    public static Interpolator overshootInterpolatorForVelocity(float velocity) {
+        return new OvershootInterpolator(Math.min(Math.abs(velocity), 3f));
     }
 
     /**
@@ -182,5 +162,76 @@ public class Interpolators {
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
+    }
+
+    /**
+     * Computes parameters necessary for an overshoot effect.
+     */
+    public static class OvershootParams {
+        public Interpolator interpolator;
+        public float start;
+        public float end;
+        public long duration;
+
+        /**
+         * Given the input params, sets OvershootParams variables to be used by the caller.
+         * @param startProgress The progress from 0 to 1 that the overshoot starts from.
+         * @param overshootPastProgress The progress from 0 to 1 where we overshoot past (should
+         *        either be equal to startProgress or endProgress, depending on if we want to
+         *        overshoot immediately or only once we reach the end).
+         * @param endProgress The final progress from 0 to 1 that we will settle to.
+         * @param velocityPxPerMs The initial velocity that causes this overshoot.
+         * @param totalDistancePx The distance against which progress is calculated.
+         */
+        public OvershootParams(float startProgress, float overshootPastProgress,
+                float endProgress, float velocityPxPerMs, int totalDistancePx) {
+            velocityPxPerMs = Math.abs(velocityPxPerMs);
+            start = startProgress;
+            int startPx = (int) (start * totalDistancePx);
+            // Overshoot by about half a frame.
+            float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
+                    SINGLE_FRAME_MS / totalDistancePx / 2;
+            overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
+            end = overshootPastProgress + overshootBy;
+            int endPx = (int) (end  * totalDistancePx);
+            int overshootDistance = endPx - startPx;
+            // Calculate deceleration necessary to reach overshoot distance.
+            // Formula: velocityFinal^2 = velocityInitial^2 + 2 * acceleration * distance
+            //          0 = v^2 + 2ad (velocityFinal == 0)
+            //          a = v^2 / -2d
+            float decelerationPxPerMs = velocityPxPerMs * velocityPxPerMs / (2 * overshootDistance);
+            // Calculate time necessary to reach peak of overshoot.
+            // Formula: acceleration = velocity / time
+            //          time = velocity / acceleration
+            duration = (long) (velocityPxPerMs / decelerationPxPerMs);
+
+            // Now that we're at the top of the overshoot, need to settle back to endProgress.
+            float settleDistance = end - endProgress;
+            int settleDistancePx = (int) (settleDistance * totalDistancePx);
+            // Calculate time necessary for the settle.
+            // Formula: distance = velocityInitial * time + 1/2 * acceleration * time^2
+            //          d = 1/2at^2 (velocityInitial = 0, since we just stopped at the top)
+            //          t = sqrt(2d/a)
+            // Above formula assumes constant acceleration. Since we use ACCEL_DEACCEL, we actually
+            // have acceleration to halfway then deceleration the rest. So the formula becomes:
+            //          t = sqrt(d/a) * 2 (half the distance for accel, half for deaccel)
+            long settleDuration = (long) Math.sqrt(settleDistancePx / decelerationPxPerMs) * 4;
+
+            settleDuration = Math.max(MIN_SETTLE_DURATION, settleDuration);
+            // How much of the animation to devote to playing the overshoot (the rest is for settle).
+            float overshootFraction = (float) duration / (duration + settleDuration);
+            duration += settleDuration;
+            // Finally, create the interpolator, composed of two interpolators: an overshoot, which
+            // reaches end > 1, and then a settle to endProgress.
+            Interpolator overshoot = Interpolators.clampToProgress(DEACCEL, 0, overshootFraction);
+            // The settle starts at 1, where 1 is the top of the overshoot, and maps to a fraction
+            // such that final progress is endProgress. For example, if we overshot to 1.1 but want
+            // to end at 1, we need to map to 1/1.1.
+            Interpolator settle = Interpolators.clampToProgress(Interpolators.mapToProgress(
+                    ACCEL_DEACCEL, 1, (endProgress - start) / (end - start)), overshootFraction, 1);
+            interpolator = t -> t <= overshootFraction
+                    ? overshoot.getInterpolation(t)
+                    : settle.getInterpolation(t);
+        }
     }
 }

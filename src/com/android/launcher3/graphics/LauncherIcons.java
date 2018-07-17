@@ -340,7 +340,7 @@ public class LauncherIcons implements AutoCloseable {
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
             int offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
             int size = Math.max(width, height);
-            icon.setBounds(offset, offset, offset + size, offset + size);
+            icon.setBounds(offset, offset, size - offset, size - offset);
         } else {
             icon.setBounds(left, top, left+width, top+height);
         }
