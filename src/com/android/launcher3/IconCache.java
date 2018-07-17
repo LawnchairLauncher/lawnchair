@@ -109,6 +109,10 @@ public class IconCache {
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+        if (Utilities.getLawnchairPrefs(context).getAlwaysClearIconCache()) {
+            Log.d(TAG, "IconCache: Clearing icon cache in constructor");
+            clear();
+        }
     }
 
     private Drawable getFullResDefaultActivityIcon() {
