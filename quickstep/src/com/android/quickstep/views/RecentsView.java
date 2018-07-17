@@ -55,6 +55,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -127,6 +128,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final RecentsModel mModel;
     private final int mTaskTopMargin;
     private final ClearAllButton mClearAllButton;
+    private final Rect mClearAllButtonDeadZoneRect = new Rect();
+    private final Rect mTaskViewDeadZoneRect = new Rect();
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -230,6 +233,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mHandleTaskStackChanges;
     private Runnable mNextPageSwitchRunnable;
     private boolean mSwipeDownShouldLaunchApp;
+    private boolean mTouchDownToStartHome;
+    private final int mTouchSlop;
+    private int mDownX;
+    private int mDownY;
 
     private PendingAnimation mPendingAnimation;
 
@@ -275,6 +282,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
         mEmptyIcon.setCallback(this);
@@ -378,9 +386,45 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
-        if (ev.getAction() == MotionEvent.ACTION_UP && mShowEmptyMessage) {
-            onAllTasksRemoved();
+        final int x = (int) ev.getX();
+        final int y = (int) ev.getY();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (mShowEmptyMessage) {
+                    onAllTasksRemoved();
+                }
+                if (mTouchDownToStartHome) {
+                    startHome();
+                }
+                mTouchDownToStartHome = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mTouchDownToStartHome = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // Passing the touch slop will not allow dismiss to home
+                if (mTouchDownToStartHome && Math.hypot(mDownX - x, mDownY - y) > mTouchSlop) {
+                    mTouchDownToStartHome = false;
+                }
+                break;
+            case MotionEvent.ACTION_DOWN:
+                // Touch down anywhere but the deadzone around the visible clear all button and
+                // between the task views will start home on touch up
+                if (mTouchState == TOUCH_STATE_REST) {
+                    updateDeadZoneRects();
+                    final boolean clearAllButtonDeadZoneConsumed = mClearAllButton.getAlpha() == 1
+                            && mClearAllButtonDeadZoneRect.contains(x, y);
+                    if (!clearAllButtonDeadZoneConsumed
+                            && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
+                        mTouchDownToStartHome = true;
+                    }
+                }
+                mDownX = x;
+                mDownY = y;
+                break;
         }
+
+
         // Do not let touch escape to siblings below this view.
         return true;
     }
@@ -599,7 +643,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mHasVisibleTaskData.clear();
     }
 
-    protected abstract void onAllTasksRemoved();
+    protected void onAllTasksRemoved() {
+        startHome();
+    }
+
+    protected abstract void startHome();
 
     public void reset() {
         mRunningTaskId = -1;
@@ -1056,6 +1104,27 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 + (getHeight() - mInsets.bottom - getPaddingBottom())) / 2);
         setPivotX(((mInsets.left + getPaddingLeft())
                 + (getWidth() - mInsets.right - getPaddingRight())) / 2);
+    }
+
+    private void updateDeadZoneRects() {
+        // Get the deadzone rect surrounding the clear all button to not dismiss overview to home
+        mClearAllButtonDeadZoneRect.setEmpty();
+        if (mClearAllButton.getWidth() > 0) {
+            int verticalMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.recents_clear_all_deadzone_vertical_margin);
+            mClearAllButton.getHitRect(mClearAllButtonDeadZoneRect);
+            mClearAllButtonDeadZoneRect.inset(-getPaddingRight() / 2, -verticalMargin);
+        }
+
+        // Get the deadzone rect between the task views
+        mTaskViewDeadZoneRect.setEmpty();
+        int count = getTaskViewCount();
+        if (count > 0) {
+            final View taskView = getTaskViewAt(0);
+            getTaskViewAt(count - 1).getHitRect(mTaskViewDeadZoneRect);
+            mTaskViewDeadZoneRect.union(taskView.getLeft(), taskView.getTop(), taskView.getRight(),
+                    taskView.getBottom());
+        }
     }
 
     private void updateEmptyStateUi(boolean sizeChanged) {
