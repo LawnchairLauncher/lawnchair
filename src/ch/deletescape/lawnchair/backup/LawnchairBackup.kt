@@ -57,7 +57,9 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 }
             }
         }
-        return Pair(screenshot, wallpaper)
+        if (screenshot == wallpaper) return null // both are null
+        return Pair(Utilities.getScaledDownBitmap(screenshot, 1000, false),
+                Utilities.getScaledDownBitmap(wallpaper, 1000, false))
     }
 
     private inline fun readZip(body: (ZipInputStream) -> Unit) {
@@ -142,9 +144,12 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         var meta: Meta? = null
         var withPreview = false
         var loaded = false
+        private var loading = false
 
         fun loadMeta(withPreview: Boolean = false) {
+            if (loading) return
             if (!loaded) {
+                loading = true
                 this.withPreview = withPreview
                 LoadMetaTask().execute()
             } else {
@@ -187,6 +192,11 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             arr.put(contents)
             arr.put(timestamp)
             return arr.toString()
+        }
+
+        fun recycle() {
+            preview?.first?.recycle()
+            preview?.second?.recycle()
         }
 
         companion object {

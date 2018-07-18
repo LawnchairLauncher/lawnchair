@@ -7,4 +7,6 @@
     android:clipToPadding="false"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     tools:context="ch.deletescape.lawnchair.backup.BackupListActivity" />

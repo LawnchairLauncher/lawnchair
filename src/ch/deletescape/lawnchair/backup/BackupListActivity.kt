@@ -149,6 +149,11 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.onDestroy()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {

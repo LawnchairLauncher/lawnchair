@@ -10,8 +10,8 @@
         android:foreground="?selectableItemBackground"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -21,13 +21,14 @@
             android:orientation="vertical">
 
             <ch.deletescape.lawnchair.views.ScreenshotPreview
+                android:id="@+id/preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/wallpaper"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:scaleType="centerCrop" />
 
                 <ImageView
