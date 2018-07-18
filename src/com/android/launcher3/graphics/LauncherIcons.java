@@ -24,8 +24,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -36,6 +38,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -48,8 +51,6 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
-
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 /**
  * Helper methods for generating various launcher icons
@@ -113,7 +114,7 @@ public class LauncherIcons {
                 dr.setBounds(0, 0, 1, 1);
                 scale = normalizer.getScale(icon, null, dr.getIconMask(), outShape);
                 if (FeatureFlags.LEGACY_ICON_TREATMENT && !outShape[0]){
-                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
+                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, normalizer, null, dr.getIconMask());
                     if (wrappedIcon != icon) {
                         icon = wrappedIcon;
                         scale = normalizer.getScale(icon, null, null, null);
@@ -167,7 +168,7 @@ public class LauncherIcons {
                 scale = normalizer.getScale(icon, iconBounds, dr.getIconMask(), outShape);
                 if (Utilities.ATLEAST_OREO && FeatureFlags.LEGACY_ICON_TREATMENT &&
                         !outShape[0]) {
-                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
+                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, normalizer, iconBounds, dr.getIconMask());
                     if (wrappedIcon != icon) {
                         icon = wrappedIcon;
                         scale = normalizer.getScale(icon, iconBounds, null, null);
@@ -296,7 +297,7 @@ public class LauncherIcons {
      * shrink the legacy icon and set it as foreground. Use color drawable as background to
      * create AdaptiveIconDrawable.
      */
-    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable, float scale) {
+    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable, IconNormalizer normalizer, RectF outBounds, Path mask) {
         if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.ATLEAST_OREO)) {
             return drawable;
         }
@@ -307,13 +308,20 @@ public class LauncherIcons {
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
                 ColorDrawable bg = ((ColorDrawable) iconWrapper.getBackground());
-                int color = Utilities.findDominantColorByOccurence(Utilities.drawableToBitmap(drawable), 40);
+                Bitmap b = Utilities.drawableToBitmap(drawable);
+                int color = Utilities.findDominantColorByOccurence(b, 40);
+                b = Utilities.removeColor(b, color);
+                Drawable d = new FastBitmapDrawable(b);
                 bg.setColor(color);
-                fsd.setDrawable(drawable);
-                fsd.setScale(scale);
+                if(Utilities.getLawnchairPrefs(context).getDebugLegacyTreatment()){
+                    bg.setColor(Color.RED);
+                }
+                fsd.setDrawable(d);
+                fsd.setScale(normalizer.getScale(d, outBounds, mask, null));
                 return (Drawable) iconWrapper;
             }
         } catch (Exception e) {
+            Log.e("LauncherIcons", "wrapToAdaptiveIconDrawable: ", e);
             return drawable;
         }
         return drawable;

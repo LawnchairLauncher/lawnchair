@@ -118,6 +118,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
+    val debugLegacyTreatment by BooleanPref("pref_debugLegacyTreatment", false, restart)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)

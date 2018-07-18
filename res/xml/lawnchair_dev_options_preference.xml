@@ -36,6 +36,13 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_debugLegacyTreatment"
+        android:title="Debug adaptive icon generation"
+        android:summary="I hope you like red"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_backupScreenshot"
         android:title="Create screenshot for new backup"
         android:defaultValue="false"

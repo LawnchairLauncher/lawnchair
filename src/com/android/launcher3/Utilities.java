@@ -32,11 +32,21 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.DeadObjectException;
+import android.os.PowerManager;
+import android.os.TransactionTooLargeException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,7 +58,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TtsSpan;
-import android.util.*;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.Pair;
+import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -57,10 +71,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
@@ -77,6 +87,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -427,6 +442,53 @@ public final class Utilities {
         }
         // Add back alpha channel
         return ColorUtils.setAlphaComponent(bestRGB, 0xFF);
+    }
+
+    /**
+     * Remove a color (and similar colors, based on a modified LAB distance) from a bitmap and trims away transparent pixels
+     * @param bitmap The bitmap to remove the color from
+     * @param color The color to remove
+     */
+    public static Bitmap removeColor(Bitmap bitmap, int color) {
+        if(!bitmap.isMutable()) {
+            bitmap = bitmap.copy(bitmap.getConfig(), true);
+        }
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+        int minX = width, maxX = 0, minY = height, maxY = 0;
+        final double[] targetLAB =  new double[3];
+        ColorUtils.colorToLAB(color, targetLAB);
+        final double[] lab = new double[3];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int col = bitmap.getPixel(x, y);
+                ColorUtils.colorToLAB(col, lab);
+                double distance = ((lab[0] - targetLAB[0]) * 2 + (lab[1] - targetLAB[1]) * 2 + (lab[2] - targetLAB[2]) * 3 /* No idea what multiplying this by 3 instead of 2 actually changes but it hugely improved the algorithm */) / 1.6;
+                if(Math.abs(distance) < 11.5) {
+                    bitmap.setPixel(x, y, Color.TRANSPARENT);
+                    col = Color.TRANSPARENT;
+                }
+                if(col == Color.TRANSPARENT){
+                    if (minY > y) {
+                        minY = y;
+                    }
+                    if (maxY < y) {
+                        maxY = y;
+                    }
+                    if (minX > x) {
+                        minX = x;
+                    }
+                    if (maxX < x) {
+                        maxX = x;
+                    }
+                }
+            }
+        }
+        int nWidth = maxX - minX;
+        int nHeight = maxY - minY;
+        if (nWidth > 0 && nHeight > 0)
+            bitmap = Bitmap.createBitmap(bitmap, minX, minY, nWidth, nHeight);
+        return bitmap;
     }
 
     /*
