@@ -222,10 +222,11 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         fun create(context: Context, name: String, location: Uri, contents: Int): Exception? {
             val contextWrapper = ContextWrapper(context)
             val files: MutableList<File> = ArrayList()
-            if (contents or INCLUDE_HOMESCREEN != 0) {
+
+            if (contents and INCLUDE_HOMESCREEN != 0) {
                 files.add(contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB))
             }
-            if (contents or INCLUDE_SETTINGS != 0) {
+            if (contents and INCLUDE_SETTINGS != 0) {
                 val dir = contextWrapper.cacheDir.parent
                 files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
@@ -242,7 +243,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
                 out.write(getMeta(name, contents).toString().toByteArray())
-                if (contents or INCLUDE_WALLPAPER != 0) {
+                if (contents and INCLUDE_WALLPAPER != 0) {
                     val wallpaperManager = WallpaperManager.getInstance(context)
                     val wallpaperDrawable = wallpaperManager.drawable
                     val wallpaperBitmap = Utilities.drawableToBitmap(wallpaperDrawable)
