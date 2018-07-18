@@ -4,6 +4,7 @@ import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler
 import ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler
+import ch.deletescape.lawnchair.gestures.handlers.StartAppSearchGestureHandler
 
 class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) {
 
@@ -16,6 +17,8 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
 
     val customSwipeUp get() = swipeUpHandler !is OpenDrawerGestureHandler
     val customSwipeDown get() = swipeDownHandler !is NotificationsOpenGestureHandler
+
+    val swipeUpAppsSearch get() = swipeUpHandler is StartAppSearchGestureHandler
 
     fun onSwipeUp() {
         swipeUpHandler.onGestureTrigger(controller)

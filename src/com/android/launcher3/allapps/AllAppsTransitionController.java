@@ -107,6 +107,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     private final static float NOTIFICATION_OPEN_VELOCITY = 2.25f;
     private final static float NOTIFICATION_CLOSE_VELOCITY = -0.35f;
+    private boolean mIgnoreTouch;
+
     enum GestureState {
         Locked,
         Free,
@@ -132,7 +134,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mNoIntercept = false;
+            mIgnoreTouch = mNoIntercept = false;
             mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
                 mNoIntercept = true;
@@ -183,7 +185,11 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (hasSpringAnimationHandler()) {
             mSpringAnimationHandler.addMovement(ev);
         }
-        return mDetector.onTouchEvent(ev);
+        if (!mIgnoreTouch) {
+            return mDetector.onTouchEvent(ev);
+        } else {
+            return false;
+        }
     }
 
     private boolean isInDisallowRecatchTopZone() {
@@ -249,11 +255,16 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
                 //Don't open all apps when swipe gestures are triggered
                 if (mGestureState == GestureState.NotificationOpened ||
-                        mGestureState == GestureState.NotificationClosed ||
-                        mGestureState == GestureState.Triggered) {
+                        mGestureState == GestureState.NotificationClosed) {
                     return true;
                 }
             }
+        }
+
+        if (mGestureState == GestureState.Triggered) {
+            mIgnoreTouch = true;
+            mDetector.finishedScrolling();
+            return true;
         }
 
         mContainerVelocity = velocity;
@@ -311,7 +322,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 }
                 mLauncher.showAppsView(true /* animated */,
                         false /* updatePredictedApps */,
-                        false /* focusSearchBar */);
+                        mVerticalSwipeGesture.getSwipeUpAppsSearch() /* focusSearchBar */);
                 if (hasSpringAnimationHandler()) {
                     mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
                     // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
@@ -336,7 +347,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 }
                 mLauncher.showAppsView(true, /* animated */
                         false /* updatePredictedApps */,
-                        false /* focusSearchBar */);
+                        mVerticalSwipeGesture.getSwipeUpAppsSearch() /* focusSearchBar */);
             }
         }
     }

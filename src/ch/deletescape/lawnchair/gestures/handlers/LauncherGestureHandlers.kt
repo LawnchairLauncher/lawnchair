@@ -12,7 +12,7 @@ import com.android.launcher3.util.ComponentKey
 import org.json.JSONObject
 
 @Keep
-class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     override val displayName = context.getString(R.string.action_open_drawer)!!
 
@@ -64,7 +64,7 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
 }
 
 @Keep
-class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : OpenDrawerGestureHandler(context, config) {
 
     override val displayName = context.getString(R.string.action_app_search)!!
 
