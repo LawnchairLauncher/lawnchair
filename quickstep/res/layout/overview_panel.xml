@@ -14,26 +14,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.RecentsViewContainer
+<com.android.quickstep.views.LauncherRecentsView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:visibility="invisible"
->
-    <include layout="@layout/overview_clear_all_button"/>
-
-    <com.android.quickstep.views.LauncherRecentsView
-        android:id="@id/overview_panel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:outlineProvider="none"
-        android:focusableInTouchMode="true"
-        android:accessibilityPaneTitle="@string/accessibility_recent_apps"
-        android:theme="@style/HomeScreenElementTheme"
-    >
-
-    </com.android.quickstep.views.LauncherRecentsView>
-</com.android.quickstep.views.RecentsViewContainer>
+    android:clipToPadding="false"
+    android:accessibilityPaneTitle="@string/accessibility_recent_apps"
+    android:visibility="invisible" />

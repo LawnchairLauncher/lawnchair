@@ -46,14 +46,15 @@ public class ShortcutsLaunchTest extends AbstractLauncherUiTest {
 
     private void performTest() throws Exception {
         mActivityMonitor.startLauncher();
-        LauncherActivityInfo settingsApp = getSettingsApp();
+        LauncherActivityInfo testApp = getSettingsApp();
 
         // Open all apps and wait for load complete
         final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
+        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
+                DEFAULT_UI_TIMEOUT));
 
         // Find settings app and verify shortcuts appear when long pressed
-        UiObject2 icon = scrollAndFind(appsContainer, By.text(settingsApp.getLabel().toString()));
+        UiObject2 icon = scrollAndFind(appsContainer, By.text(testApp.getLabel().toString()));
         // Press icon center until shortcuts appear
         Point iconCenter = icon.getVisibleCenter();
         sendPointer(MotionEvent.ACTION_DOWN, iconCenter);
@@ -63,11 +64,13 @@ public class ShortcutsLaunchTest extends AbstractLauncherUiTest {
 
         // Verify that launching a shortcut opens a page with the same text
         assertTrue(deepShortcutsContainer.getChildCount() > 0);
-        UiObject2 shortcut = deepShortcutsContainer.getChildren().get(0)
+
+        // Pick second children as it starts showing shortcuts.
+        UiObject2 shortcut = deepShortcutsContainer.getChildren().get(1)
                 .findObject(getSelectorForId(R.id.bubble_text));
         shortcut.click();
         assertTrue(mDevice.wait(Until.hasObject(By.pkg(
-                settingsApp.getComponentName().getPackageName())
+                testApp.getComponentName().getPackageName())
                 .text(shortcut.getText())), DEFAULT_UI_TIMEOUT));
     }
 }
