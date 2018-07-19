@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Acerca de</string>
   <string name="about_pref_summary">Conoce acerca del equipo de Lawnchair</string>
-  <string name="changelog_title">Registro de cambios de la build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pack de Iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Adaptación retroactiva de accesos rápidos</string>
   <string name="weather_api_key_not_set">Clave API no configurada</string>
   <string name="pref_weather_api_key_title">Clave API</string>
-  <string name="about_changelog">Registro de cambios</string>
   <string name="pref_all_apps_custom_label_color">Usar color de etiqueta personalizado</string>
   <string name="pref_all_apps_label_color">Color de las etiquetas de los iconos en el cajón de aplicaciones</string>
   <string name="pref_num_rows_drawer">Número de filas en el cajón</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Habilitar efecto de rebote</string>
   <string name="hide_app">Aplicaciones ocultas</string>
   <string name="hide_app_sum">Ocultar aplicaciones del cajón de aplicaciones</string>
-  <string name="hide_app_selected">&#160;seleccionado</string>
   <string name="hidden_app">Aplicación oculta</string>
-  <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalas para continuar.</string>
-  <string name="hide_app_reset">Restablecer</string>
   <string name="two_row_dock">Barra de aplicaciones de dos filas</string>
   <string name="reset_alternative_icons_title">¿Restablecer íconos alternativos?</string>
   <string name="reset_alternative_icons">Tienes %1$d aplicaciones con iconos alternativos, ¿quieres restablecerlos?</string>
@@ -496,4 +491,5 @@
   <string name="about_bio_josh">Diseñador gráfico independiente.</string>
   <string name="about_bio_chris">Mente Creativa, influenciador &amp; Creador de Contenido. Gerente de Relaciones Públicas y Medios de Comunicación.</string>
   <string name="about_bio_msfjarvis">Desarrollador central en halogenOS y Desarrollador de aplicación en substratum.</string>
+  <!-- DT2S -->
 </resources>
