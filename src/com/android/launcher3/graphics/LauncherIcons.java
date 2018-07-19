@@ -281,7 +281,7 @@ public class LauncherIcons {
             } else {
                 icon.setBounds(left, top, left+width, top+height);
             }
-            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.save();
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
             canvas.restore();

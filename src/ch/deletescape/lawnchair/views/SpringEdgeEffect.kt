@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
+import android.support.annotation.NonNull
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.EdgeEffect
@@ -106,7 +107,7 @@ class SpringEdgeEffect(
 
         inner class SpringEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
-            override fun createEdgeEffect(recyclerView: RecyclerView?, direction: Int): EdgeEffect {
+            override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
                 return when (direction) {
                     DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, 0.3f)
                     DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY, ::activeEdgeY, 0.3f)

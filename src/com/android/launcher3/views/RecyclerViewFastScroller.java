@@ -284,7 +284,7 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY < 0) {
             return;
         }
-        int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        int saveCount = canvas.save();
         canvas.translate(getWidth() / 2, mRv.getPaddingTop());
         // Draw the track
         float halfW = mWidth / 2;
