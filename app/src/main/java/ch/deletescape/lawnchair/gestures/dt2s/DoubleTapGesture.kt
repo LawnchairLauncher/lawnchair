@@ -20,9 +20,6 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.ComponentName
 
-
-
-
 class DoubleTapGesture(private val controller: GestureController) : Gesture {
 
     override val isEnabled = true

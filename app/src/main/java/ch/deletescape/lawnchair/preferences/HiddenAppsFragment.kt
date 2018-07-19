@@ -45,7 +45,7 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
 
         val hiddenApps = PreferenceProvider.getPreferences(context).hiddenAppsSet
         if (!hiddenApps.isEmpty()) {
-            activity!!.title = hiddenApps.size.toString() + getString(R.string.hide_app_selected)
+            activity!!.title = hiddenApps.size.toString() + getString(R.string.hidden_app_selected)
         } else {
             activity!!.title = getString(R.string.hidden_app)
         }

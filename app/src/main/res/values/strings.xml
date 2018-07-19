@@ -577,7 +577,7 @@
     <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
-    <!-- D2TS -->
+    <!-- DT2S -->
     <string name="dt2s_title">Double tap to sleep</string>
     <string name="dt2s_disabled">Disabled</string>
     <string name="dt2s_deviceadmin">Using device admin</string>
