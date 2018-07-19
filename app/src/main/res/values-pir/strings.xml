@@ -248,7 +248,6 @@ Waitin\' t\' install</string>
   <!-- About Lawnchair -->
   <string name="about_title">\'Bout</string>
   <string name="about_pref_summary">Explore \'bout th\' crew</string>
-  <string name="changelog_title">Log o\' changes for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pack o\' treasures</string>
   <string name="icon_pack_preference_summary">Select yer pack o\' treasures</string>
@@ -392,7 +391,6 @@ Waitin\' t\' install</string>
   <string name="pref_backport_shortcuts">Backpedal shortcuts</string>
   <string name="weather_api_key_not_set">ye to add API key</string>
   <string name="pref_weather_api_key_title">Ye key o\' API</string>
-  <string name="about_changelog">Ye Log o\' Changes</string>
   <string name="pref_all_apps_custom_label_color">Use custom color o\' label</string>
   <string name="pref_all_apps_label_color">Color of labels o\' treasures in treasure room</string>
   <string name="pref_num_rows_drawer">Treasure room rows</string>
@@ -410,11 +408,8 @@ Waitin\' t\' install</string>
   <string name="enable_spring_pref_title">Enable effect o\' sprin\'</string>
   <string name="hide_app">Hidden treasures</string>
   <string name="hide_app_sum">Burry ya treasures</string>
-  <string name="hide_app_selected">&#160;selected</string>
   <string name="hidden_app">Hidden flag</string>
-  <string name="hide_app_apply">Aye</string>
   <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
-  <string name="hide_app_reset">Reconquer</string>
   <string name="two_row_dock">double-deck\'r deck</string>
   <string name="reset_alternative_icons_title">Reconquer alternative treasures?</string>
   <string name="reset_alternative_icons">Ye have %1$d apps wit\' alternative treasures, d\' ye want t\' reset \'em?</string>
@@ -454,4 +449,5 @@ Waitin\' t\' install</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Otha</string>
   <!-- About screen -->
+  <!-- DT2S -->
 </resources>
