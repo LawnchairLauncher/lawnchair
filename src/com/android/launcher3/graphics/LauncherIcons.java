@@ -313,7 +313,7 @@ public class LauncherIcons {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
                 ColorDrawable bg = ((ColorDrawable) iconWrapper.getBackground());
                 Bitmap b = Utilities.drawableToBitmap(drawable);
-                int color = Utilities.findDominantColorByOccurence(b, 40);
+                final int color = Utilities.findDominantColorByOccurence(b, 40);
                 b = Utilities.removeColor(b, color);
                 Drawable d = new FastBitmapDrawable(b);
                 bg.setColor(color);

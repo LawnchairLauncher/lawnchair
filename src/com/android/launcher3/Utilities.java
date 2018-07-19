@@ -446,49 +446,29 @@ public final class Utilities {
 
     /**
      * Remove a color (and similar colors, based on a modified LAB distance) from a bitmap and trims away transparent pixels
+     *
      * @param bitmap The bitmap to remove the color from
-     * @param color The color to remove
+     * @param color  The color to remove
      */
     public static Bitmap removeColor(Bitmap bitmap, int color) {
-        if(!bitmap.isMutable()) {
-            bitmap = bitmap.copy(bitmap.getConfig(), true);
-        }
+        if(!bitmap.isMutable())
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
-        int minX = width, maxX = 0, minY = height, maxY = 0;
-        final double[] targetLAB =  new double[3];
+        final double[] targetLAB = new double[3];
         ColorUtils.colorToLAB(color, targetLAB);
         final double[] lab = new double[3];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int col = bitmap.getPixel(x, y);
-                ColorUtils.colorToLAB(col, lab);
+                ColorUtils.colorToLAB(bitmap.getPixel(x, y), lab);
                 double distance = ((lab[0] - targetLAB[0]) * 2 + (lab[1] - targetLAB[1]) * 2 + (lab[2] - targetLAB[2]) * 3 /* No idea what multiplying this by 3 instead of 2 actually changes but it hugely improved the algorithm */) / 1.6;
-                if(Math.abs(distance) < 11.5) {
+                if (Math.abs(distance) < 11.8) {
                     bitmap.setPixel(x, y, Color.TRANSPARENT);
-                    col = Color.TRANSPARENT;
-                }
-                if(col == Color.TRANSPARENT){
-                    if (minY > y) {
-                        minY = y;
-                    }
-                    if (maxY < y) {
-                        maxY = y;
-                    }
-                    if (minX > x) {
-                        minX = x;
-                    }
-                    if (maxX < x) {
-                        maxX = x;
-                    }
                 }
             }
         }
-        int nWidth = maxX - minX;
-        int nHeight = maxY - minY;
-        if (nWidth > 0 && nHeight > 0)
-            bitmap = Bitmap.createBitmap(bitmap, minX, minY, nWidth, nHeight);
-        return bitmap;
+        Bitmap.Config config = ATLEAST_OREO ? Bitmap.Config.RGBA_F16 : Bitmap.Config.ARGB_8888;
+        return bitmap.copy(config, true);
     }
 
     /*
