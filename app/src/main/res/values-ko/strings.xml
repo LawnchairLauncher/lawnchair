@@ -245,7 +245,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Lawnchair 정보</string>
   <string name="about_pref_summary">Lawnchair 팀 관련 정보</string>
-  <string name="changelog_title">%d 빌드의 변경사항</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">아이콘 팩</string>
   <string name="icon_pack_preference_summary">아이콘 팩 선택</string>
@@ -327,6 +326,7 @@
   <string name="default_text">기본</string>
   <string name="edit_icon_reset">다시 설정</string>
   <string name="show_top_shadow_title">그림자 표시</string>
+  <string name="pref_category_homescreen">데스크탑</string>
   <string name="theme_pref_title">테마</string>
   <string name="theme_light">밝은 테마</string>
   <string name="theme_dark">어두운 테마</string>
@@ -387,7 +387,6 @@
   <string name="pref_backport_shortcuts">바로가기 불러오기</string>
   <string name="weather_api_key_not_set">API key가 설정되지 않았습니다.</string>
   <string name="pref_weather_api_key_title">API 키</string>
-  <string name="about_changelog">변경 내역</string>
   <string name="pref_all_apps_custom_label_color">사용자 지정 이름 색상 사용</string>
   <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
   <string name="pref_num_rows_drawer">앱 서랍 행 개수</string>
@@ -405,11 +404,8 @@
   <string name="enable_spring_pref_title">스프링 효과 사용</string>
   <string name="hide_app">앱 숨기기</string>
   <string name="hide_app_sum">앱 서랍에서 앱 숨기기</string>
-  <string name="hide_app_selected">&#160;선택됨</string>
   <string name="hidden_app">숨겨진 앱</string>
-  <string name="hide_app_apply">적용</string>
   <string name="unauthorized_device">이 기기에 불법 복제 도구가 설치되어 있습니다. 계속하려면 그것들을 제거해주세요.</string>
-  <string name="hide_app_reset">다시 설정</string>
   <string name="two_row_dock">두행 독 사용</string>
   <string name="reset_alternative_icons_title">대체 아이콘을 재설정 하겠습니까?</string>
   <string name="reset_alternative_icons">대체 아이콘으로 설정 된 %1$d개의 앱을 재 설정 하 시겠습니까?</string>
@@ -458,10 +454,30 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">픽셀 검색바</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">아이콘</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">서랍</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">기타</string>
   <string name="blur_oom">Lawnchair가 배경화면을 흐리게 처리하는데 메모리가 부족합니다! 배경화면 이미지의 해상도를 낮추면 이 문제를 해결할 수도 있습니다.</string>
   <string name="legacy_backup">레거시 백업 파일</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">오픈소스 라이선스</string>
+  <string name="title_attribouter_email">이메일</string>
+  <string name="title_attribouter_website">웹사이트</string>
+  <string name="title_attribouter_rate">평가</string>
+  <string name="title_attribouter_version">버전: %1$s</string>
+  <string name="title_attribouter_license">라이선스</string>
+  <string name="title_attribouter_license_permissions">권한</string>
+  <string name="title_attribouter_more_info">추가 정보</string>
+  <string name="title_attribouter_translators">번역가</string>
+  <string name="about_our_team">우리 팀</string>
+  <string name="about_our_contributors">주요 공헌자</string>
+  <string name="about_bio_deletescape">안드로이드 개발자 &amp; 매니아. 밈을 사랑합니다(사실 조금 과하게). Lawnchair 프로젝트 설립자.</string>
+  <string name="about_bio_divadsn">18세. 카페인과 피자를 코드로 바꿉니다. 이전엔 Codebucket이라고 불렸습니다.</string>
+  <string name="about_bio_recoded">부드러운 코더이자 그래픽 디자이너.</string>
+  <string name="about_bio_josh">프리랜서 그래픽 디자이너.</string>
+  <string name="about_bio_chris">창의적인 마인드, 인플루엔서 &amp; 콘텐츠 크리에이터. 소셜미디어와 홍보 매니저.</string>
+  <string name="about_bio_msfjarvis">halogenOS의 핵심 개발자이자 substratum의 애플리케이션 개발자.</string>
+  <!-- DT2S -->
 </resources>
