@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Om</string>
   <string name="about_pref_summary">Lær dit Lawnchair team at kende</string>
-  <string name="changelog_title">Ændringslog for version #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon pakke</string>
   <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
@@ -373,7 +372,6 @@
   <string name="animated_clock_icon_alternative_clock_apps_title">Animér alternative ur-apps</string>
   <string name="weather_api_key_not_set">API-nøgle ikke defineret</string>
   <string name="pref_weather_api_key_title">API-nøgle</string>
-  <string name="about_changelog">Ændringslog</string>
   <string name="pref_num_rows_drawer">Antal rækker i applikationsmenuen</string>
   <string name="vertical_drawer_layout_pref_title">Vertikal liste</string>
   <!-- Time format for Weather Widget -->
@@ -384,10 +382,7 @@
   <string name="google_app_not_found">Google applikation er ikke installeret</string>
   <string name="hide_app">Skjule app</string>
   <string name="hide_app_sum">Skjul app fra oversigten</string>
-  <string name="hide_app_selected">&#160;valgt</string>
   <string name="hidden_app">Skjulte app</string>
-  <string name="hide_app_apply">Anvend</string>
-  <string name="hide_app_reset">Nulstil</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_outdated">En nyere version af Lawnfeed er nødvendig for at arbejde med denne version af Lawnchair. \n\nFør du installerer denne opdatering, vil du sandsynligvis blive nødt til at afinstallere den aktuelle version af Lawnfeed.\n\n Ønsker du at hente den nu?</string>
   <!-- Preference Category Pixel Searchbar Title -->
@@ -395,4 +390,5 @@
   <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <!-- About screen -->
+  <!-- DT2S -->
 </resources>

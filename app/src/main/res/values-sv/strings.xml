@@ -35,13 +35,13 @@
   <string name="shortcut_not_available">Genvägen är inte tillgänglig</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Tryck länge om du vill flytta en widget.</string>
+  <string name="long_press_widget_to_add">Tryck länge för att flytta en widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Tryck två gånger och håll kvar om du vill ta upp en widget eller använda anpassade åtgärder.</string>
+  <string name="long_accessible_way_to_add">Tryck två gånger och håll kvar för att ta upp en widget eller använda anpassade åtgärder.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d bred gånger %2$d hög</string>
+  <string name="widget_accessible_dims_format">%1$d bred och %2$d hög</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Sök efter appar</string>
@@ -73,7 +73,7 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Tillåter att en app lägger till genvägar utan åtgärd från användaren.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">läsa inställningar och genvägar för startsidan</string>
+  <string name="permlab_read_settings">läs heminställningar och genvägar</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Tillåter att appen läser inställningar och genvägar på startsidan.</string>
   <!-- Permission short label -->
@@ -88,27 +88,27 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Konfiguration</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Det här är en systemapp som inte kan avinstalleras.</string>
+  <string name="uninstall_system_app_text">Det här är en systemapp och kan inte avinstalleras.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Namnlös mapp</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> har inaktiverats</string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
-  <string name="default_scroll_format">Sidan %1$d av %2$d</string>
+  <string name="default_scroll_format">Sida %1$d av %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Startskärmen %1$d av %2$d</string>
+  <string name="workspace_scroll_format">Startskärm %1$d av %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Ny sida på startskärmen</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Mappen är öppen, <xliff:g id="WIDTH">%1$d</xliff:g> gånger <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tryck om du vill stänga mappen</string>
+  <string name="folder_tap_to_close">Tryck för att stänga mappen</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tryck om du vill spara namnändringen</string>
+  <string name="folder_tap_to_rename">Tryck för att spara namnändringen</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Mappen är stängd</string>
+  <string name="folder_closed">Mappen stängdes</string>
   <!-- Folder renamed format -->
   <string name="folder_renamed">Mappen har bytt namn till <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Folder name format -->
@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Mer om</string>
   <string name="about_pref_summary">Lär känna Lawnchair-teamet</string>
-  <string name="changelog_title">Ändringar för version #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
@@ -293,6 +292,7 @@
   <string name="debug_pref_summary">Starta om eller återskapa ikondatabasen</string>
   <string name="show_pixel_bar_pref_title">Visa övre Pixelrad</string>
   <string name="use_wide_searchbar_pref_title">Använd brett sökfält</string>
+  <string name="show_date_or_weather_title">Visa datum/väder på höger sida</string>
   <string name="show_mic_pref_title">Visa Google Assistent-knappen</string>
   <string name="use_round_searhbar">Använd runt sökfält för appar</string>
   <string name="pixel_style_icons_pref_title">Använd Pixel ikoner</string>
@@ -324,6 +324,7 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Återställ</string>
   <string name="show_top_shadow_title">Visa övre skugga</string>
+  <string name="pref_category_homescreen">Skrivbord</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Ljus</string>
   <string name="theme_dark">Mörk</string>
@@ -336,6 +337,7 @@
   <string name="pull_down_search">Öppna Sök</string>
   <string name="pull_down_apps_search">Sök appar</string>
   <string name="enable_screen_rotation">Aktivera skärmrotation</string>
+  <string name="use_system_fonts_title">Använd systemtypsnitt för etiketter</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importera</string>
   <string name="backup_export_title">Exportera</string>
@@ -383,7 +385,6 @@
   <string name="pref_backport_shortcuts">Bakåtporta genvägar</string>
   <string name="weather_api_key_not_set">API nyckel inte angiven</string>
   <string name="pref_weather_api_key_title">API nyckel</string>
-  <string name="about_changelog">Ändringslogg</string>
   <string name="pref_all_apps_custom_label_color">Använd skräddarsydd etikettfärg</string>
   <string name="pref_all_apps_label_color">Färg på ikonetiketter i applistan</string>
   <string name="pref_num_rows_drawer">Antal rader i applistan</string>
@@ -400,23 +401,86 @@
   <string name="enable_spring_pref_title">Aktivera fjädereffekt</string>
   <string name="hide_app">Dölj app</string>
   <string name="hide_app_sum">Dölj app från app lådan</string>
-  <string name="hide_app_selected">&#160;vald</string>
   <string name="hidden_app">Dold app</string>
-  <string name="hide_app_apply">Verkställ</string>
   <string name="unauthorized_device">Enheten har piratkopieringsverktyg installerat. Vänligen avinstallera dem att fortsätta.</string>
-  <string name="hide_app_reset">Återställ</string>
   <string name="two_row_dock">Tvåradig docka</string>
   <string name="reset_alternative_icons_title">Återställ alternativa appikoner?</string>
   <string name="reset_alternative_icons">Du har %1$d appar med alternativa ikoner, vill du återställa dem?</string>
   <string name="error_no_browser">Ingen aktivitet hittades för att hantera webbedresser</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed inte aktiverat</string>
   <string name="lawnfeed_not_enabled">Det ser ut som du försöker öppna sidan Google Nu, men du inte har aktiverat alternativet i beteende inställningar.\n\nVill aktivera det nu?</string>
   <string name="lawnfeed_outdated_title">Uppdatering av Lawnfeed krävs</string>
   <string name="lawnfeed_outdated">En nyare version av Lawnfeed krävs för att fungera med denna versionen av Lawnchair.\n\nInnan uppdateringen installeras behöver du förmodligen avinstallera nuvarande version av Lawnfeed.\n\nVill du ladda ner den nu?</string>
+  <string name="title_storage_permission_required">Lagringsbehörighet krävs</string>
+  <string name="content_storage_permission_required">På Android 8.1 och senare krävs lagringsbehörighet för att appar ska kunna ha tillgång till bakgrunder. Utan denna tillåtelse kan Lawnchair krascha eller visa oväntade beteenden.</string>
   <string name="disable_popup">Visa inte igen</string>
+  <string name="backups">Säkerhetskopior</string>
+  <string name="new_backup">Skapa</string>
+  <string name="restore_backup">Återställ</string>
+  <string name="backup_name">Namn</string>
+  <string name="backup_location">Plats</string>
+  <string name="choose_backup_path">Bläddra</string>
+  <string name="backup_homescreen">Hemskärm</string>
+  <string name="backup_contents">Säkerhetskopieringsinnehåll</string>
+  <string name="backup_settings">Inställningar</string>
+  <string name="backup_wallpaper">Bakgrund</string>
+  <string name="backup_error_blank_name">Namnet får inte vara tomt</string>
+  <string name="backup_error_blank_location">Plats får inte vara tomt</string>
+  <string name="backup_creating">Skapa säkerhetskopia</string>
+  <string name="no_recent_backups">Inga nyliga säkerhetskopior</string>
+  <string name="backup_loading">Laddar...</string>
+  <string name="backup_invalid">Otillgängligt</string>
+  <string name="backup_remove_from_recents">Ta bort från lista</string>
+  <string name="backup_share">Dela</string>
+  <string name="backup_timestamp">Skapad</string>
+  <string name="backup_restoring">Återställer säkerhetskopia</string>
+  <string name="backup_restarting">Startar om</string>
+  <string name="restore_contents">Återställ innehåll</string>
+  <string name="restore_success">Återställning lyckades</string>
+  <string name="backup_failed">Säkerhetskopiering misslyckades</string>
+  <string name="restore_failed">Återställning misslyckades</string>
+  <string name="restore_read_meta_fail">Ogiltig säkerhetskopieringsfil</string>
+  <string name="backup_share_title">Dela säkerhetskopiering</string>
+  <string name="backup_share_text">Lawnchair säkerhetskopieringsfil</string>
+  <string name="read_external_storage_required">Lagringsbehörighet krävs för att skapa säkerhetskopiering</string>
+  <string name="local_backups">Lokala säkerhetskopior</string>
+  <string name="backup_location_device_storage">Enhetslagring</string>
+  <string name="backup_location_documents_storage">Dokumentlagring</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Pixel sökfält</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Ikoner</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Applista</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Diverse</string>
+  <string name="legacy_backup">Tidigare säkerhetskopieringsfil</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Öppen källkodslicenser</string>
+  <string name="title_attribouter_email">Email</string>
+  <string name="title_attribouter_website">Webbsida</string>
+  <string name="title_attribouter_version">Version %1$s</string>
+  <string name="title_attribouter_license">Licens</string>
+  <string name="title_attribouter_license_permissions">Behörigheter</string>
+  <string name="title_attribouter_license_limitations">Begränsningar</string>
+  <string name="title_attribouter_more_info">Mer information</string>
+  <string name="title_attribouter_translators">Översättare</string>
+  <string name="about_our_team">Vårt team</string>
+  <string name="about_our_contributors">Våra huvudsakliga bidragsgivare</string>
+  <string name="about_our_family">Våra andra familjemedlemmar</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Utvecklare</string>
+  <string name="about_role_dev_mod">Utvecklare / Moderator</string>
+  <string name="about_role_designer">Designer</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Support</string>
+  <string name="about_role_family_member">Familjemedlem</string>
+  <string name="about_bio_deletescape">Android utvecklare &amp; entusiaster, älskar memes (lite för mycket faktiskt). Grundare av Lawnchair projektet.</string>
+  <string name="about_bio_divadsn">18 år, förvandlar koffein och pizza till kod. Även tidigare känd som Codebucket.</string>
+  <string name="about_bio_recoded">Mild programmerare och grafisk designer.</string>
+  <string name="about_bio_josh">Frilans grafisk designer.</string>
+  <string name="about_bio_chris">Kreativ hjärna, Influenser &amp; Upphovsman. Social Media och PR Manager.</string>
+  <string name="about_bio_msfjarvis">Kärnutvecklare på halogenOS och applikationsutvecklare vid Substratum.</string>
+  <!-- DT2S -->
 </resources>

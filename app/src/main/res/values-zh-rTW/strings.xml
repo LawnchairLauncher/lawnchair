@@ -245,7 +245,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">關於</string>
   <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
-  <string name="changelog_title">更新日誌 #%d</string>
   <string name="week_day_format">%1$s：%2$s</string>
   <string name="icon_pack_preference_title">圖示包</string>
   <string name="icon_pack_preference_summary">選擇一個圖示包</string>
@@ -388,7 +387,6 @@
   <string name="pref_backport_shortcuts">向低版本 Android 啟用應用捷徑</string>
   <string name="weather_api_key_not_set">API Key 尚未設定</string>
   <string name="pref_weather_api_key_title">API Key</string>
-  <string name="about_changelog">更新日誌</string>
   <string name="pref_all_apps_custom_label_color">使用自訂標籤顏色</string>
   <string name="pref_all_apps_label_color">應用程式抽屜圖示的標籤顏色</string>
   <string name="pref_num_rows_drawer">應用程式清單的列數</string>
@@ -406,11 +404,8 @@
   <string name="enable_spring_pref_title">啟用彈簧效果</string>
   <string name="hide_app">隱藏應用程式</string>
   <string name="hide_app_sum">從應用程式清單中隱藏應用程式</string>
-  <string name="hide_app_selected">&#160;已選</string>
   <string name="hidden_app">隱藏的應用程式</string>
-  <string name="hide_app_apply">套用</string>
   <string name="unauthorized_device">此裝置安裝了一些盜版工具，請解除安裝它們以便繼續。</string>
-  <string name="hide_app_reset">重設</string>
   <string name="two_row_dock">兩行 Dock 欄</string>
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
@@ -460,10 +455,41 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel 搜索欄</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">圖示</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">應用程式抽屜</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">其他設定</string>
   <string name="blur_oom">在記憶體用盡時，Lawnchair　將會試著模糊你的桌布！降低桌布的解析度有可能解決這個問題</string>
   <string name="legacy_backup">遺留的備份檔案</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">開放原始碼授權</string>
+  <string name="title_attribouter_email">Email</string>
+  <string name="title_attribouter_website">網站</string>
+  <string name="title_attribouter_rate">評價</string>
+  <string name="title_attribouter_version">版本 %1$s</string>
+  <string name="title_attribouter_license">授權</string>
+  <string name="title_attribouter_license_permissions">權限</string>
+  <string name="title_attribouter_license_conditions">條件</string>
+  <string name="title_attribouter_license_limitations">限制</string>
+  <string name="title_attribouter_more_info">更多的資訊</string>
+  <string name="title_attribouter_translators">翻譯人員</string>
+  <string name="about_our_team">團隊訊息</string>
+  <string name="about_our_contributors">主要貢獻者</string>
+  <string name="about_our_family">我們的其他成員</string>
+  <string name="about_role_lead">主要開發者</string>
+  <string name="about_role_devops">開發選項</string>
+  <string name="about_role_dev">開發人員</string>
+  <string name="about_role_dev_mod">開發者/維護者</string>
+  <string name="about_role_designer">設計師</string>
+  <string name="about_role_special_snowflake">公關經理人/維護者</string>
+  <string name="about_role_mod_support">維護者/支援</string>
+  <string name="about_role_family_member">家庭成員</string>
+  <string name="about_bio_deletescape">Android 開發人員與愛好者, 喜歡迷因 (玩得有點多)。Lawnchair 專案的創始人。</string>
+  <string name="about_bio_divadsn">18歲時，將咖啡因和比薩變成了原始碼。 此前也稱為 Codebucket。</string>
+  <string name="about_bio_recoded">溫和的編碼器和圖形設計師。</string>
+  <string name="about_bio_josh">自由業的平面設計師</string>
+  <string name="about_bio_chris">創造性思維、影響力與內容建立者。社交媒體和公關經理人。</string>
+  <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和底層的應用程式開發人員。</string>
+  <!-- DT2S -->
 </resources>

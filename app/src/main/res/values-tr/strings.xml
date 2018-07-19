@@ -246,10 +246,9 @@
   <!-- About Lawnchair -->
   <string name="about_title">Hakkında</string>
   <string name="about_pref_summary">Lawnchair ekibi hakkında bilgi sahibi olun</string>
-  <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Simge paketi</string>
-  <string name="icon_pack_preference_summary">Simge paketini seçin</string>
+  <string name="icon_pack_preference_summary">Bir simge paketi seçin</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Alt panelde duvar kağıdı renklerini kullan</string>
   <string name="hotseat_show_arrow">Oku göster</string>
   <string name="hotseat_show_page_indicator">Sayfa göstergesini göster</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
   <string name="weather_api_key_not_set">API anahtarı ayarlanmadı</string>
   <string name="pref_weather_api_key_title">API anahtarı</string>
-  <string name="about_changelog">Değişiklik günlüğü</string>
   <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
   <string name="pref_all_apps_label_color">Uygulama çekmecesi simge etiketi rengi</string>
   <string name="pref_num_rows_drawer">Uygulama çekmecesi satır sayısı</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Yay efekti</string>
   <string name="hide_app">Uygulamaları gizle</string>
   <string name="hide_app_sum">Uygulamaları uygulama çekmecesinden gizleyin</string>
-  <string name="hide_app_selected">&#160;seçildi</string>
   <string name="hidden_app">Gizli uygulama</string>
-  <string name="hide_app_apply">Uygula</string>
   <string name="unauthorized_device">Bu cihazda birkaç korsan yazılım mevcut. Devam etmek için lütfen bunları kaldırın.</string>
-  <string name="hide_app_reset">Sıfırla</string>
   <string name="two_row_dock">İki satır alt panel</string>
   <string name="reset_alternative_icons_title">Alternatif uygulama simgeleri sıfırlansın mı?</string>
   <string name="reset_alternative_icons">Alternatif simgelere sahip 5 uygulamanız var, bunları sıfırlamak istiyor musunuz?</string>
@@ -496,4 +491,5 @@
   <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
   <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi.</string>
   <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratumdaki uygulama geliştiricisi.</string>
+  <!-- DT2S -->
 </resources>

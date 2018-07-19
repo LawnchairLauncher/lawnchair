@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">Cerca altre app</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Spazio esaurito nella schermata Home.</string>
+  <string name="out_of_space">Non c\'è più spazio in questa pagina.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Spazio esaurito nella barra dei Preferiti.</string>
   <!-- All applications label -->
@@ -246,11 +246,10 @@
   <!-- About Lawnchair -->
   <string name="about_title">Informazioni</string>
   <string name="about_pref_summary">Conosci il Team di Lawnchair</string>
-  <string name="changelog_title">Cambiamenti nella versione #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacchetto icone</string>
   <string name="icon_pack_preference_summary">Seleziona un pacchetto icone</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">La dock utilizza il colore del wallpaper</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">La dock utilizza il colore dello sfondo</string>
   <string name="hotseat_show_arrow">Mostra freccia</string>
   <string name="hotseat_show_page_indicator">Mostra l\'indicatore di pagina</string>
   <string name="hotseat_uses_extracted_colors_pref_on">La dock verrà colorata con un colore estratto dallo sfondo</string>
@@ -268,7 +267,7 @@
   <string name="all_apps_opacity_pref_title">Opacità menù delle applicazioni</string>
   <string name="num_cols_pref_title">Numero di colonne</string>
   <string name="num_rows_pref_title">Numero di righe</string>
-  <string name="num_hotseat_icons_pref_title">Numero di icone</string>
+  <string name="num_hotseat_icons_pref_title">Numero di icone nella dock</string>
   <string name="icon_scale_pref_title">Grandezza icone</string>
   <string name="hotseat_height_scale">Scala di altezza</string>
   <string name="hotseat_custom_opacity">Opacità dock</string>
@@ -282,7 +281,7 @@
   <string name="general_pref_title">Schermata home</string>
   <string name="dock_pref_title">Dock</string>
   <string name="app_drawer_pref_title">Menù delle applicazioni</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="general_pref_summary">Personalizza la tua schermata home</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Backport shortcuts</string>
   <string name="weather_api_key_not_set">Poi key non settata</string>
   <string name="pref_weather_api_key_title">API key</string>
-  <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Utilizzare un colore personalizzato</string>
   <string name="pref_all_apps_label_color">Colore delle icone nel menù delle applicazioni</string>
   <string name="pref_num_rows_drawer">Numero di righe</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Abilita effetto a molla</string>
   <string name="hide_app">Nascondi app</string>
   <string name="hide_app_sum">Nascondi app dal menù delle applicazioni</string>
-  <string name="hide_app_selected">&#160;selezionato</string>
   <string name="hidden_app">App nascoste</string>
-  <string name="hide_app_apply">Applica</string>
   <string name="unauthorized_device">Questo dispositivo dispone di alcuni strumenti per la pirateria. Si prega di disinstallarli per continuare.</string>
-  <string name="hide_app_reset">Ripristina</string>
   <string name="two_row_dock">Dock su due righe</string>
   <string name="reset_alternative_icons_title">Ripristinare le app con icone alternative?</string>
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
@@ -496,4 +491,5 @@
   <string name="about_bio_josh">Designer grafico indipendente.</string>
   <string name="about_bio_chris">Mente Creativa, Influencer &amp; Creatore di Contenuti. Social Media e PR Manager.</string>
   <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
+  <!-- DT2S -->
 </resources>

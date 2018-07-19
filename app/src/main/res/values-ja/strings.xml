@@ -245,7 +245,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">アプリについて</string>
   <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
-  <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">アイコンパックを選択</string>
@@ -388,7 +387,6 @@
   <string name="pref_backport_shortcuts">バックポートのショートカット</string>
   <string name="weather_api_key_not_set">API キーが設定されていません</string>
   <string name="pref_weather_api_key_title">API キー</string>
-  <string name="about_changelog">変更履歴</string>
   <string name="pref_all_apps_custom_label_color">選択したラベルの色を使用する</string>
   <string name="pref_all_apps_label_color">ドロワーのアイコンラベルの色</string>
   <string name="pref_num_rows_drawer">ドロワーの行数</string>
@@ -406,11 +404,8 @@
   <string name="enable_spring_pref_title">スプリング効果を有効にする</string>
   <string name="hide_app">アプリを隠す</string>
   <string name="hide_app_sum">ドロワーからアプリを非表示にする</string>
-  <string name="hide_app_selected">&#160;選択済み</string>
   <string name="hidden_app">非表示のアプリ</string>
-  <string name="hide_app_apply">適用</string>
   <string name="unauthorized_device">このデバイスにはいくつかの海賊版や著作権侵害を助長するアプリがインストールされています。続行するにはアンインストールを行ってください。</string>
-  <string name="hide_app_reset">リセット</string>
   <string name="two_row_dock">ドックを2行で表示する</string>
   <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
@@ -491,4 +486,5 @@
   <string name="about_role_family_member">仲間たち</string>
   <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
 Lawnchairプロジェクトの創始者です。</string>
+  <!-- DT2S -->
 </resources>

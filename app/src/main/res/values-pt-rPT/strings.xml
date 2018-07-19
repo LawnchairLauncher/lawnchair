@@ -250,7 +250,6 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <!-- About Lawnchair -->
   <string name="about_title">Acerca</string>
   <string name="about_pref_summary">Conhecer a equipa Lawnchair</string>
-  <string name="changelog_title">Alterações da versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
@@ -266,9 +265,9 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="blur_radius_pref_title">Valor para desfocar</string>
   <string name="pref_iconLabelsInTwoLines">Nome do ícone em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar ícone branco da Google</string>
-  <string name="hide_icon_labels_pref_title">Coultar etiquetas dos ícones no ecrã inicial</string>
+  <string name="hide_icon_labels_pref_title">Ocultar texto dos ícones no ecrã inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ocultar nome dos ícones no menu</string>
-  <string name="workspace_label_color_hue_pref_title">Cor das legendas dos ícones do ambiente de trabalho</string>
+  <string name="workspace_label_color_hue_pref_title">Cor do texto dos ícones no ambiente de trabalho</string>
   <string name="all_apps_opacity_pref_title">Opacidade do menu</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
@@ -337,7 +336,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Escuro</string>
   <string name="theme_black">Preto</string>
-  <string name="hide_hotseat_pref_title">Esconder a Doca</string>
+  <string name="hide_hotseat_pref_title">Ocultar doca</string>
   <string name="all_icons">Todos os Ícones</string>
   <string name="pull_down_action_pref_title">Ação de puxar para baixo</string>
   <string name="pull_down_do_nothing">Nada fazer</string>
@@ -393,8 +392,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="pref_backport_shortcuts">Atalhos Backport</string>
   <string name="weather_api_key_not_set">Chave API não definida</string>
   <string name="pref_weather_api_key_title">Chave API</string>
-  <string name="about_changelog">Alterações</string>
-  <string name="pref_all_apps_custom_label_color">Usar etiqueta de cor personalizada</string>
+  <string name="pref_all_apps_custom_label_color">Usar cor de texto personalizada</string>
   <string name="pref_all_apps_label_color">Cor das etiquetas no menu</string>
   <string name="pref_num_rows_drawer">Número de linhas no menu</string>
   <string name="center_wallpaper_pref_title">Centrar papel de parede</string>
@@ -411,11 +409,8 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
   <string name="hide_app">Aplicações ocultas</string>
   <string name="hide_app_sum">Ocultar aplicações no menu</string>
-  <string name="hide_app_selected">&#160;selecionada</string>
   <string name="hidden_app">Aplicação oculta</string>
-  <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas piratas. Desinstale-as para continuar.</string>
-  <string name="hide_app_reset">Repor</string>
   <string name="two_row_dock">Doca com duas linhas</string>
   <string name="reset_alternative_icons_title">Repor ícones alternativos?</string>
   <string name="reset_alternative_icons">Você tem %1$d aplicações com ícones alternativos, deseja utilizar estes ícones?</string>
@@ -500,4 +495,5 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="about_bio_josh">Designer como trabalhador independente.</string>
   <string name="about_bio_chris">Mente criativa, influenciador e criador de conteúdos. Redes sociais e gestor de PR.</string>
   <string name="about_bio_msfjarvis">Principal programador do halogenOS e programador de aplicações em substratum.</string>
+  <!-- DT2S -->
 </resources>

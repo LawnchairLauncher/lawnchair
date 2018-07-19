@@ -245,7 +245,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Thông tin</string>
   <string name="about_pref_summary">Tìm hiểu về đội ngũ Lawnchair</string>
-  <string name="changelog_title">Những thay đổi của bản xây dựng #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Gói Biểu Tượng</string>
   <string name="icon_pack_preference_summary">Chọn Gói Biểu tượng</string>
@@ -294,6 +293,8 @@
   <string name="debug_pref_summary">Khởi động lại hoặc xây dựng lại dữ liệu biểu tượng</string>
   <string name="show_pixel_bar_pref_title">Hiển thị thanh tiện ích Pixel</string>
   <string name="use_wide_searchbar_pref_title">Sử dụng thanh tìm kiếm dài</string>
+  <string name="show_search_pill_title">Hiển thị ô tìm kiếm Google</string>
+  <string name="show_date_or_weather_title">Hiển thị ngày/thời tiết bên góc phải</string>
   <string name="show_mic_pref_title">Hiển thị biểu tượng Google Assistant</string>
   <string name="use_round_searhbar">Sử dụng thanh tìm kiếm ứng dụng bo tròn</string>
   <string name="pixel_style_icons_pref_title">Sử dụng các biểu tượng của Pixel</string>
@@ -325,6 +326,7 @@
   <string name="default_text">Mặc định</string>
   <string name="edit_icon_reset">Khôi phục</string>
   <string name="show_top_shadow_title">Hiển thị đổ bóng trên cùng</string>
+  <string name="pref_category_homescreen">Desktop</string>
   <string name="theme_pref_title">Giao diện</string>
   <string name="theme_light">Sáng</string>
   <string name="theme_dark">Tối</string>
@@ -337,6 +339,7 @@
   <string name="pull_down_search">Mở tìm kiếm</string>
   <string name="pull_down_apps_search">Tìm kiếm ứng dụng</string>
   <string name="enable_screen_rotation">Cho phép xoay màn hình</string>
+  <string name="use_system_fonts_title">Dùng phông chữ hệ thống cho tên ứng dụng</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Khôi phục</string>
   <string name="backup_export_title">Sao lưu</string>
@@ -384,11 +387,11 @@
   <string name="pref_backport_shortcuts">Lối tắt chồng lên nhau</string>
   <string name="weather_api_key_not_set">Khoá API chưa được thiết lập</string>
   <string name="pref_weather_api_key_title">Khoá API</string>
-  <string name="about_changelog">Thay đổi</string>
   <string name="pref_all_apps_custom_label_color">Sử dụng màu sắc tùy chỉnh</string>
   <string name="pref_all_apps_label_color">Màu của nhãn biểu tượng trong ngăn chứa ứng dụng</string>
   <string name="pref_num_rows_drawer">Số hàng trong ngăn chứa ứng dụng</string>
   <string name="center_wallpaper_pref_title">Căn chính giữa hình nền khi chỉ có một trang</string>
+  <string name="center_wallpaper_pref_summary">Chỉ hoạt động nếu màn hình chính sử dụng một trang</string>
   <string name="vertical_drawer_layout_pref_title">Hiển thị dạng danh sách dọc</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -401,25 +404,89 @@
   <string name="enable_spring_pref_title">Bật hiệu ứng nảy lên</string>
   <string name="hide_app">Ẩn ứng dụng</string>
   <string name="hide_app_sum">Ẩn khỏi ngăn chứa ứng dụng</string>
-  <string name="hide_app_selected">&#160;đã chọn</string>
   <string name="hidden_app">Ứng dụng được ẩn</string>
-  <string name="hide_app_apply">Áp dụng</string>
   <string name="unauthorized_device">Có một vài phần mềm lậu trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
-  <string name="hide_app_reset">Khôi phục</string>
   <string name="two_row_dock">Thanh dock hai hàng</string>
   <string name="reset_alternative_icons_title">Đặt lại biểu tượng ứng dụng thay thế?</string>
   <string name="reset_alternative_icons">Bạn có %1$d ứng dụng với các biểu tượng khác, bạn có muốn đặt lại chúng?</string>
   <string name="error_no_browser">Không có hành động nào phù hợp để xử lý URL</string>
   <!-- Strings for popup dialogs -->
+  <string name="lawnfeed_not_enabled_title">Chưa kích hoạt Lawnfeed</string>
   <string name="lawnfeed_not_enabled">Dường như bạn đang cố mở Google Now, nhưng bạn chưa bật tùy chọn này trong cài đặt hành vi.\n\nBạn có muốn bật nó bây giờ không?</string>
   <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
   <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
   <string name="title_storage_permission_required">Yêu cầu cấp quyền bộ nhớ</string>
   <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép Lawnchair có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
   <string name="disable_popup">Không hiển thị lại</string>
+  <string name="backups">Sao lưu</string>
+  <string name="new_backup">Khởi tạo</string>
+  <string name="restore_backup">Khôi phục</string>
+  <string name="backup_name">Tên</string>
+  <string name="backup_location">Địa điểm</string>
+  <string name="choose_backup_path">Chọn</string>
+  <string name="backup_homescreen">Màn hình chính</string>
+  <string name="backup_contents">Nội dung sao lưu</string>
+  <string name="backup_settings">Cài đặt</string>
+  <string name="backup_wallpaper">Hình nền</string>
+  <string name="backup_error_blank_name">Không để trống tên</string>
+  <string name="backup_error_blank_location">Không để trống địa điểm</string>
+  <string name="backup_error_blank_contents">Không để trống nội dung</string>
+  <string name="backup_creating">Đang tạo sao lưu</string>
+  <string name="no_recent_backups">Không có bản lưu gần đây</string>
+  <string name="backup_loading">Đang tải...</string>
+  <string name="backup_invalid">Không có</string>
+  <string name="backup_remove_from_recents">Xoá khỏi danh sách</string>
+  <string name="backup_share">Chia sẻ</string>
+  <string name="backup_timestamp">Đã tạo lúc</string>
+  <string name="backup_restoring">Đang khôi phục bản sao lưu</string>
+  <string name="backup_restarting">Đang khởi động lại</string>
+  <string name="restore_contents">Nội dung phục hồi</string>
+  <string name="restore_success">Khôi phục thành công</string>
+  <string name="backup_failed">Sao lưu thất bại</string>
+  <string name="restore_failed">Khôi phục thất bại</string>
+  <string name="restore_read_meta_fail">Tệp sau lưu lỗi</string>
+  <string name="backup_share_title">Chia sẻ bản lưu</string>
+  <string name="backup_share_text">Bản sao lưu Lawnchair</string>
+  <string name="read_external_storage_required">Cần quyền truy cập lưu trữ để tạo sao lưu</string>
+  <string name="local_backups">Sao lưu trên thiết bị</string>
+  <string name="backup_location_device_storage">Bộ nhớ thiết bị</string>
   <!-- Preference Category Pixel Searchbar Title -->
+  <string name="pref_category_pixel_searchbar">Thanh tìm kiếm Pixel</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Biểu tượng</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Ngăn chứa ứng dụng</string>
   <!-- Preference Category Misc Title -->
+  <string name="pref_category_misc">Khác</string>
+  <string name="blur_oom">Lawnchair quá tải khi đang làm mờ hình nền! Hạ độ phân giải hình nền có thể giúp khắc phục.</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Giấy phép mã nguồn mở</string>
+  <string name="title_attribouter_email">Email</string>
+  <string name="title_attribouter_website">Trang web</string>
+  <string name="title_attribouter_rate">Đánh giá</string>
+  <string name="title_attribouter_version">Phiên bản %1$s</string>
+  <string name="title_attribouter_license">Giấy phép</string>
+  <string name="title_attribouter_license_permissions">Cấp phép</string>
+  <string name="title_attribouter_license_conditions">Điều kiện</string>
+  <string name="title_attribouter_license_limitations">Hạn chế</string>
+  <string name="title_attribouter_more_info">Thông tin thêm</string>
+  <string name="title_attribouter_translators">Dịch giả</string>
+  <string name="about_our_team">Cộng tác viên</string>
+  <string name="about_our_contributors">Cộng tác viên chính</string>
+  <string name="about_our_family">Các thành viên khác trong đội ngũ</string>
+  <string name="about_role_lead">Nhà phát triển chính</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Nhà phát triển</string>
+  <string name="about_role_dev_mod">Nhà phát triển / Người kiểm duyệt</string>
+  <string name="about_role_designer">Thiết kế</string>
+  <string name="about_role_special_snowflake">Giám đốc quan hệ / Người kiểm duyệt</string>
+  <string name="about_role_mod_support">Người kiểm duyệt / Hỗ trợ</string>
+  <string name="about_role_family_member">Thành viên trong gia đình</string>
+  <string name="about_bio_deletescape">Nhà phát triển Android &amp; người đam mê, yêu thích meme (hơi nhiều một chút). Người sáng lập dự án Lawnchair.</string>
+  <string name="about_bio_divadsn">18 tuổi, viết code từ cà phê và pizza. Trước đây mang biệt danh Codebucket.</string>
+  <string name="about_bio_recoded">Coder và nhà thiết kế đồ họa.</string>
+  <string name="about_bio_josh">Nhà thiết kế đồ hoạ tự do.</string>
+  <string name="about_bio_chris">Sáng tạo, Ảnh hưởng &amp; Người sáng tạo nội dung. Truyền thông và Giám đốc quan hệ.</string>
+  <string name="about_bio_msfjarvis">Nhà phát triển cốt lõi tại halogenOS và nhà phát triển ứng dụng tại substratum.</string>
+  <!-- DT2S -->
 </resources>

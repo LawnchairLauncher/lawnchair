@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Over</string>
   <string name="about_pref_summary">Leer het Lawnchair-team kennen</string>
-  <string name="changelog_title">Changelog voor build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icoon pakket</string>
   <string name="icon_pack_preference_summary">Selecteer een icoon pakket</string>
@@ -272,7 +271,7 @@
   <string name="icon_scale_pref_title">Icoon grootte</string>
   <string name="hotseat_height_scale">Hoogte schaal</string>
   <string name="hotseat_custom_opacity">Favorieten balk doorzichtigheid</string>
-  <string name="hotseat_uses_custom_opacity">Aangepaste favorieten balk doorzichtigheid inschakelen</string>
+  <string name="hotseat_uses_custom_opacity">Aangepaste favorieten balk doorzichtigheid</string>
   <string name="icon_text_scale_pref_title">Icoon label grootte</string>
   <string name="icon_text_padding_scale_pref_title">Icoon opvulling schaal</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
@@ -340,7 +339,7 @@
   <string name="pull_down_notis">Notificaties weergeven</string>
   <string name="pull_down_search">Zoeken openen</string>
   <string name="pull_down_apps_search">Apps zoeken</string>
-  <string name="enable_screen_rotation">Scherm rotatie activeren</string>
+  <string name="enable_screen_rotation">Scherm rotatie</string>
   <string name="use_system_fonts_title">Systeemlettertypes gebruiken voor labels</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Herstel</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
   <string name="weather_api_key_not_set">API sleutel niet ingesteld</string>
   <string name="pref_weather_api_key_title">API sleutel</string>
-  <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Aangepaste labelkleur gebruiken</string>
   <string name="pref_all_apps_label_color">Kleur van icoon labels in app-overzicht</string>
   <string name="pref_num_rows_drawer">Aantal rijen in app-overzicht</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
   <string name="hide_app">Verborgen apps</string>
   <string name="hide_app_sum">App verbergen in het app-overzicht</string>
-  <string name="hide_app_selected">&#160;geselecteerd</string>
   <string name="hidden_app">Verborgen app</string>
-  <string name="hide_app_apply">Toepassen</string>
   <string name="unauthorized_device">Dit apparaat heeft een aantal piraterij-apps geïnstalleerd. Gelieve deze te deïnstalleren om verder te gaan.</string>
-  <string name="hide_app_reset">Reset</string>
   <string name="two_row_dock">Twee-rijige favorietenbalk</string>
   <string name="reset_alternative_icons_title">Reset alternatieve app iconen?</string>
   <string name="reset_alternative_icons">Je hebt %1$d apps met alternatieve iconen, wil je deze resetten?</string>
@@ -460,10 +455,41 @@
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel Zoekbalk</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Pictogrammen</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Applicatielade</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Diverse</string>
   <string name="blur_oom">Lawnchair had geen geheugen meer over tijdens het vervagen van uw achtergrond. U kunt proberen de resolutie van de achtergrond verlagen om dit probleem te verhelpen.</string>
   <string name="legacy_backup">Oudere back-up bestand</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Open Source Licenties</string>
+  <string name="title_attribouter_email">E-mail</string>
+  <string name="title_attribouter_website">Website</string>
+  <string name="title_attribouter_rate">Beoordelen</string>
+  <string name="title_attribouter_version">Versie %1$s</string>
+  <string name="title_attribouter_license">Licentie</string>
+  <string name="title_attribouter_license_permissions">Machtigingen</string>
+  <string name="title_attribouter_license_conditions">Voorwaarden</string>
+  <string name="title_attribouter_license_limitations">Beperkingen</string>
+  <string name="title_attribouter_more_info">Meer Info</string>
+  <string name="title_attribouter_translators">Vertalers</string>
+  <string name="about_our_team">Ons team</string>
+  <string name="about_our_contributors">Onze hoofd bijdragers</string>
+  <string name="about_our_family">Onze andere familieleden</string>
+  <string name="about_role_lead">Hoofdontwikkelaar</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Ontwikkelaar</string>
+  <string name="about_role_dev_mod">Ontwikkelaar / Moderator</string>
+  <string name="about_role_designer">Vormgever</string>
+  <string name="about_role_special_snowflake">PR Manager / Moderator</string>
+  <string name="about_role_mod_support">Moderator / Support</string>
+  <string name="about_role_family_member">Familielid</string>
+  <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
+  <string name="about_bio_divadsn">18 jaar oud, verandert cafeïne en pizza in code. Voorheen ook bekent als Codebucket.</string>
+  <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
+  <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
+  <string name="about_bio_chris">Creatieve geest, Beïnvloeder &amp; Content maker. Social Media en PR manager.</string>
+  <string name="about_bio_msfjarvis">Kernontwikkelaar bij halogenOS en applicatieontwikkelaar bij substratum.</string>
+  <!-- DT2S -->
 </resources>

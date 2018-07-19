@@ -35,7 +35,7 @@
   <string name="shortcut_not_available">Pintasan tidak tersedia</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Sentuh lama untuk memilih widget.</string>
+  <string name="long_press_widget_to_add">Sentuh lama &amp; tahan untuk memilih widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">Ketuk dua kali &amp; tahan untuk memilih widget atau menggunakan tindakan khusus.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -147,7 +147,7 @@
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> sedang mengunduh, <xliff:g id="PROGRESS">%2$s</xliff:g> selesai</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> menunggu dipasang</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> menunggu untuk dipasang</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Tambahkan ke beranda</string>
@@ -164,11 +164,11 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Pindah ke posisi <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Pindahkan ke posisi favorit <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Pindah ke posisi favorit <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Item dipindahkan</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Tambahkan ke folder: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Tambahkan ke folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Tambahkan ke folder dengan <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
@@ -250,7 +250,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Tentang</string>
   <string name="about_pref_summary">Mengenal tim Lawnchair</string>
-  <string name="changelog_title">Catatan perubahan pada tubuh #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paket Ikon</string>
   <string name="icon_pack_preference_summary">Pilih paket ikon</string>
@@ -393,7 +392,6 @@
   <string name="pref_backport_shortcuts">Implementasi pintasan baru</string>
   <string name="weather_api_key_not_set">API Key belum diatur</string>
   <string name="pref_weather_api_key_title">API key</string>
-  <string name="about_changelog">Catatan perubahan</string>
   <string name="pref_all_apps_custom_label_color">Gunakan warna label kustom</string>
   <string name="pref_all_apps_label_color">Warna ikon label di laci aplikasi</string>
   <string name="pref_num_rows_drawer">Jumlah baris pada laci</string>
@@ -411,11 +409,8 @@
   <string name="enable_spring_pref_title">Aktifkan efek memantul</string>
   <string name="hide_app">Sembunyikan aplikasi</string>
   <string name="hide_app_sum">Sembunyikan dari laci aplikasi</string>
-  <string name="hide_app_selected">&#160;dipilih</string>
   <string name="hidden_app">Aplikasi tersembunyi</string>
-  <string name="hide_app_apply">Terapkan</string>
   <string name="unauthorized_device">Perangkat ini memiliki beberapa alat pembajakan yang diinstal. Silakan hapus mereka untuk melanjutkan.</string>
-  <string name="hide_app_reset">Setel ulang</string>
   <string name="two_row_dock">Dock dua baris</string>
   <string name="reset_alternative_icons_title">Setel ulang ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki %1$d aplikasi dengan ikon alternatif, apakah anda ingin mengulangi setelan?</string>
@@ -500,4 +495,5 @@
   <string name="about_bio_josh">Desainer grafis freelance.</string>
   <string name="about_bio_chris">Pemikir kreatif, pemberi masukan &amp; pengisi konten. Sosial Media and PR Manager.</string>
   <string name="about_bio_msfjarvis">Pengembang inti di halogenOS dan pengembang aplikasi di substratum.</string>
+  <!-- DT2S -->
 </resources>
