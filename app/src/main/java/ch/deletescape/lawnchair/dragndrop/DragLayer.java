@@ -67,6 +67,7 @@ import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
+import ch.deletescape.lawnchair.gestures.GestureController;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -140,6 +141,8 @@ public class DragLayer extends InsettableFrameLayout {
 
     private final Drawable mTopShadow;
 
+    private GestureController mGestureController;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -174,6 +177,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
+        mGestureController = launcher.getGestureController();
 
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
@@ -328,6 +332,12 @@ public class DragLayer extends InsettableFrameLayout {
             mActiveController = mPinchListener;
             return true;
         }
+
+        if (mGestureController != null && mGestureController.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mGestureController;
+            return true;
+        }
+
         return false;
     }
 

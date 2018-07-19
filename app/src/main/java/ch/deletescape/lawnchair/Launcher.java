@@ -109,6 +109,8 @@ import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
+import ch.deletescape.lawnchair.gestures.GestureController;
+import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.iconpack.EditIconActivity;
 import ch.deletescape.lawnchair.keyboard.CustomActionsPopup;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
@@ -323,6 +325,7 @@ public class Launcher extends Activity
     private Rect mRectForFolderAnimation = new Rect();
 
     private DeviceProfile mDeviceProfile;
+    private GestureController mGestureController = new GestureController(this);
 
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
@@ -1633,6 +1636,10 @@ public class Launcher extends Activity
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
+    }
+
+    public GestureController getGestureController() {
+        return mGestureController;
     }
 
     public void closeSystemDialogs() {

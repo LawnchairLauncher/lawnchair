@@ -576,4 +576,13 @@
     <string name="about_bio_josh">Freelance graphic designer.</string>
     <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
+
+    <!-- DT2S -->
+    <string name="dt2s_title">Double tap to sleep</string>
+    <string name="dt2s_disabled">Disabled</string>
+    <string name="dt2s_deviceadmin">Using device admin</string>
+    <string name="dt2s_timeout">Using screen timeout</string>
+    <string name="dt2s_root">Using root</string>
+    <string name="dt2s_admin_hint">To be able to use double tap to lock, you have to enable device admin for Lawnchair. This is a secure lock, meaning you have to enter your PIN on the next unlock, if you have any.</string>
+    <string name="dt2s_admin_warning">By disabling device admin, you will not be able to use double tap to lock on your home screen.</string>
 </resources>

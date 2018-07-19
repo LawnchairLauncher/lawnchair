@@ -63,6 +63,7 @@ object FeatureFlags {
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
     const val KEY_PREF_USE_SYSTEM_FONTS = "pref_useSystemFonts"
     const val KEY_PREF_AUTO_ADD_SHORTCUTS = "pref_autoAddShortcuts"
+    const val KEY_PREF_DT2S_HANDLER = "pref_dt2sHandler"
 
     private var darkThemeFlag: Int = 0
 
