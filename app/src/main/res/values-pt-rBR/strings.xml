@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Sobre</string>
   <string name="about_pref_summary">Conheça a equipe por trás do Lawnchair</string>
-  <string name="changelog_title">Novidades da versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
   <string name="weather_api_key_not_set">Chave da API não definida</string>
   <string name="pref_weather_api_key_title">Chave da API</string>
-  <string name="about_changelog">Novidades</string>
   <string name="pref_all_apps_custom_label_color">Usar cor dos textos dos ícones personalizada</string>
   <string name="pref_all_apps_label_color">Cor do texto dos ícones na gaveta de apps</string>
   <string name="pref_num_rows_drawer">Número de linhas na gaveta de apps</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
   <string name="hide_app">Ocultar app</string>
   <string name="hide_app_sum">Ocultar aplicativos da gaveta de aplicativos</string>
-  <string name="hide_app_selected">&#160;selecionado</string>
   <string name="hidden_app">Aplicativos ocultos</string>
-  <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
-  <string name="hide_app_reset">Redefinir</string>
   <string name="two_row_dock">Dock com 2 linhas</string>
   <string name="reset_alternative_icons_title">Redefinir os ícones de apps alternativos?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, deseja restaurá-los?</string>
@@ -496,4 +491,5 @@
   <string name="about_bio_josh">Designer gráfico independente.</string>
   <string name="about_bio_chris">Mente criativa, influenciador &amp; Criador de conteúdos. Redes sociais e gestor de PR.</string>
   <string name="about_bio_msfjarvis">Principal programador do halogenOS e programador de aplicações em substratum.</string>
+  <!-- DT2S -->
 </resources>
