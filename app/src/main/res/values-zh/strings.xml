@@ -245,7 +245,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">关于</string>
   <string name="about_pref_summary">了解 Lawnchair 团队</string>
-  <string name="changelog_title">#%d 版的更新日志</string>
   <string name="week_day_format">%1$s， %2$s</string>
   <string name="icon_pack_preference_title">图标包</string>
   <string name="icon_pack_preference_summary">选择一个图标包</string>
@@ -388,7 +387,6 @@
   <string name="pref_backport_shortcuts">向低版本 Android 启用应用快捷方式</string>
   <string name="weather_api_key_not_set">API 密钥未设置</string>
   <string name="pref_weather_api_key_title">API 密钥</string>
-  <string name="about_changelog">更新日志​​​​​</string>
   <string name="pref_all_apps_custom_label_color">使用自定义标签颜色</string>
   <string name="pref_all_apps_label_color">抽屉应用标签颜色</string>
   <string name="pref_num_rows_drawer">抽屉网格行数</string>
@@ -406,11 +404,8 @@
   <string name="enable_spring_pref_title">启用回弹特效</string>
   <string name="hide_app">隐藏应用</string>
   <string name="hide_app_sum">从应用抽屉隐藏应用</string>
-  <string name="hide_app_selected">&#160;已选择</string>
   <string name="hidden_app">隐藏的应用</string>
-  <string name="hide_app_apply">应用</string>
   <string name="unauthorized_device">此设备已经安装了一些盗版工具，请卸载后继续。</string>
-  <string name="hide_app_reset">重置</string>
   <string name="two_row_dock">双行 Dock 栏</string>
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
@@ -465,7 +460,7 @@
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">杂项</string>
   <string name="blur_oom">Lawnchair 在尝试模糊壁纸时耗尽内存啦! 降低壁纸分辨率可能修复该问题。</string>
-  <string name="legacy_backup">旧备份文件</string>
+  <string name="legacy_backup">旧版本备份文件</string>
   <!-- About screen -->
   <string name="title_attribouter_licenses">开放源代码许可</string>
   <string name="title_attribouter_email">邮件</string>
@@ -482,17 +477,18 @@
   <string name="about_our_contributors">主要贡献者</string>
   <string name="about_our_family">其他团队成员</string>
   <string name="about_role_lead">首席开发者</string>
-  <string name="about_role_devops">调试</string>
+  <string name="about_role_devops">DevOps</string>
   <string name="about_role_dev">开发者</string>
-  <string name="about_role_dev_mod">开发者 / 主席</string>
-  <string name="about_role_designer">设计者</string>
-  <string name="about_role_special_snowflake">公关经理 / 主席</string>
+  <string name="about_role_dev_mod">开发者 / 管理员</string>
+  <string name="about_role_designer">设计师</string>
+  <string name="about_role_special_snowflake">公关经理 / 管理员</string>
   <string name="about_role_mod_support">其他管理和支持</string>
   <string name="about_role_family_member">团队成员</string>
   <string name="about_bio_deletescape">安卓开发者 &amp; 爱好者, 喜欢玩梗(玩得有点过火了)。Lawnchair 项目的创始人。</string>
   <string name="about_bio_divadsn">18岁, 把咖啡因和披萨变成代码。以前也被称为 Codebucket。</string>
   <string name="about_bio_recoded">温和的程序员和图形设计师。</string>
-  <string name="about_bio_josh">自由的图像设计师。</string>
-  <string name="about_bio_chris">创造性思维、影响者和内容创造者。社交媒体和公关经理。</string>
-  <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 substratum 的应用程序开发者。</string>
+  <string name="about_bio_josh">独立图像设计师。</string>
+  <string name="about_bio_chris">拥有创造性思维的影响者、内容创造者。社交媒体和公关总监。</string>
+  <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 Substratum 的应用程序开发者。</string>
+  <!-- DT2S -->
 </resources>
