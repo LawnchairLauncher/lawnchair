@@ -99,7 +99,7 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">%2$d/%1$d. kezdőképernyő</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Új kezdőképernyő oldal</string>
+  <string name="workspace_new_page">Új kezdőképernyő-oldal</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Mappa megnyitva – szélesség: <xliff:g id="WIDTH">%1$d</xliff:g>; magasság: <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Névjegy</string>
   <string name="about_pref_summary">Ismerje meg a Lawnchair csapatát</string>
-  <string name="changelog_title">Változások a #%d verzióban</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikoncsomag</string>
   <string name="icon_pack_preference_summary">Ikoncsomag kiválasztása</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Alkalmazás parancsikonok</string>
   <string name="weather_api_key_not_set">API kulcs nincs beállítva</string>
   <string name="pref_weather_api_key_title">API kulcs</string>
-  <string name="about_changelog">Változások</string>
   <string name="pref_all_apps_custom_label_color">Egyéni címkeszín</string>
   <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
   <string name="pref_num_rows_drawer">Sorok száma az alkalmazásfiókban</string>
@@ -407,11 +405,8 @@
   <string name="enable_spring_pref_title">Rugózás engedélyezése</string>
   <string name="hide_app">Alkalmazás elrejtése</string>
   <string name="hide_app_sum">Alkalmazás elrejtése az alkalmazásfiókból</string>
-  <string name="hide_app_selected">&#160; kiválasztva</string>
   <string name="hidden_app">Rejtett alkalmazás</string>
-  <string name="hide_app_apply">Alkalmazás</string>
   <string name="unauthorized_device">Ez a készülék rendelkezik néhány kalózkodásra alkalmas eszközzel. Távolítsa el őket a folytatáshoz.</string>
-  <string name="hide_app_reset">Visszaállítás</string>
   <string name="two_row_dock">Két soros dokk</string>
   <string name="reset_alternative_icons_title">Alternatív ikonok visszaállítása?</string>
   <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
@@ -496,4 +491,5 @@
   <string name="about_bio_josh">Független grafikai dizájner.</string>
   <string name="about_bio_chris">Kreatív elme, Ötletadó és Tartalomkészítő. Közösségi média és PR menedzser.</string>
   <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
+  <!-- DT2S -->
 </resources>
