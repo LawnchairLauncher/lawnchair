@@ -235,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     cat.removePreference(findPreference("pref_shortcutBlacklist"));
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
-                if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
+                if (Utilities.ATLEAST_NOUGAT_MR1) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
                 }
 
