@@ -52,6 +52,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateBlur = { updateBlur() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
+    private val clearIconCache = { reloadIcons() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
@@ -64,6 +65,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1, { ThemeManager.getInstance(context).onThemeChanged() })
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", true, clearIconCache)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
@@ -174,6 +176,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateSmartspace() {
         onChangeCallback?.updateSmartspace()
+    }
+
+    private fun reloadIcons() {
+        onChangeCallback?.reloadIcons()
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {

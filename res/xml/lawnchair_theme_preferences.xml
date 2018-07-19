@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <android.support.v7.preference.PreferenceCategory
         android:key="prefCat_themeIcons"
         android:title="@string/pref_category_icons">
 
-        <ListPreference
-            android:key="pref_override_icon_shape"
-            android:title="@string/icon_shape_override_label"
+        <com.google.android.apps.nexuslauncher.CustomIconPreference
+            android:defaultValue=""
+            android:key="pref_icon_pack"
+            android:persistent="true"
             android:summary="%s"
+            android:title="@string/pref_icon_pack" />
+        />
+
+        <ListPreference
+            android:defaultValue=""
             android:entries="@array/icon_shape_override_paths_names"
             android:entryValues="@array/icon_shape_override_paths_values"
-            android:defaultValue=""
-            android:persistent="false" />
-
-        <com.google.android.apps.nexuslauncher.CustomIconPreference
-            android:key="pref_icon_pack"
-            android:title="@string/pref_icon_pack"
+            android:key="pref_override_icon_shape"
+            android:persistent="false"
             android:summary="%s"
-            android:defaultValue=""
-            android:persistent="true" />
+            android:title="@string/icon_shape_override_label" />
+
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_enableLegacyTreatment"
+            android:persistent="true"
+            android:summary="@string/pref_legacy_treatment_summary"
+            android:title="@string/pref_legacy_treatment_title" />
     </android.support.v7.preference.PreferenceCategory>
-    
+
     <android.support.v7.preference.PreferenceCategory
         android:key="prefCat_themeStyle"
         android:title="@string/pref_category_theme">
 
         <ListPreference
-            android:key="pref_launcherTheme"
-            android:title="@string/theme_pref_title"
-            android:summary="%s"
+            android:defaultValue="1"
             android:entries="@array/themes"
             android:entryValues="@array/themeValues"
-            android:defaultValue="1"
-            android:persistent="true" />
+            android:key="pref_launcherTheme"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/theme_pref_title" />
 
         <!-- TODO: Move somewhere more appropriate -->
         <SwitchPreference
+            android:defaultValue="false"
             android:key="opa_enabled"
             android:persistent="true"
-            android:title="@string/pref_show_assistant_title"
             android:summary="@string/pref_show_assistant_summary"
-            android:defaultValue="false"
-        />
+            android:title="@string/pref_show_assistant_title" />
 
         <SwitchPreference
             android:defaultValue="false"
