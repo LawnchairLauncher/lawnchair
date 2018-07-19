@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Aplikace není k dispozici.</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Stažená aplikace je v nouzovém režimu zakázána</string>
+  <string name="safemode_shortcut_error">Stažené aplikace jsou v nouzovém režimu zakázány</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">V nouzovém režimu jsou widgety zakázány.</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -44,7 +44,7 @@
   <string name="widget_accessible_dims_format">šířka %1$d, výška %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Hledat aplikace</string>
+  <string name="all_apps_search_bar_hint">Prohledat aplikace</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Načítání aplikací…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -248,7 +248,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">O aplikaci</string>
   <string name="about_pref_summary">Seznamte se s týmem Lawnchair</string>
-  <string name="changelog_title">Seznam změn pro sestavení #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Balíček ikon</string>
   <string name="icon_pack_preference_summary">Vyberte balíček ikon</string>
@@ -391,7 +390,6 @@
   <string name="pref_backport_shortcuts">Zkratky zpětné kompatibility</string>
   <string name="weather_api_key_not_set">API klíč není nastaven</string>
   <string name="pref_weather_api_key_title">API klíč</string>
-  <string name="about_changelog">Seznam změn</string>
   <string name="pref_all_apps_custom_label_color">Použít vlastní barvu</string>
   <string name="pref_all_apps_label_color">Barva popisků ikon v seznamu aplikací</string>
   <string name="pref_num_rows_drawer">Počet sloupců v seznamu aplikací</string>
@@ -409,11 +407,8 @@
   <string name="enable_spring_pref_title">Povolit efekt pružiny</string>
   <string name="hide_app">Skrýt aplikaci</string>
   <string name="hide_app_sum">Skrýt aplikaci v seznamu aplikací</string>
-  <string name="hide_app_selected">&#160;vybráno</string>
   <string name="hidden_app">Skrytá aplikace</string>
-  <string name="hide_app_apply">Použít</string>
   <string name="unauthorized_device">Toto zařízení má nainstalovány nástroje pro pirátství. Odinstalujte je a pokračujte.</string>
-  <string name="hide_app_reset">Resetovat</string>
   <string name="two_row_dock">Dok ve dvou řadách</string>
   <string name="reset_alternative_icons_title">Resetovat alternativní ikony aplikací?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikací s alternativními ikonami, chcete je obnovit?</string>
@@ -498,4 +493,5 @@
   <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
   <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
   <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
+  <!-- DT2S -->
 </resources>
