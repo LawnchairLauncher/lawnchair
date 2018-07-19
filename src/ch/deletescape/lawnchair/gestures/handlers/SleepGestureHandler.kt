@@ -1,5 +1,8 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.app.admin.DeviceAdminReceiver
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -105,6 +108,31 @@ class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : Gestur
             val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             intent.data = Uri.parse("package:${launcher.packageName}")
             launcher.startActivity(intent)
+        }
+    }
+}
+
+@Keep
+class SleepGestureHandlerDeviceAdmin(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_sleep_device_admin)
+
+    override fun onGestureTrigger(controller: GestureController) {
+        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        if (devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
+            devicePolicyManager.lockNow()
+        } else {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepDeviceAdmin::class.java))
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
+            context.startActivity(intent)
+        }
+    }
+
+    class SleepDeviceAdmin : DeviceAdminReceiver() {
+
+        override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
+            return context.getString(R.string.dt2s_admin_warning)
         }
     }
 }

@@ -521,6 +521,7 @@
     <string name="action_close_notifications">Close notifications panel</string>
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
+    <string name="action_sleep_device_admin">Sleep using device admin</string>
     <string name="action_open_app">Open app</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Select app</string>
@@ -584,4 +585,8 @@
     <string name="pref_legacy_treatment_title">Generate adaptive icons</string>
     <string name="pref_legacy_treatment_summary">An adaptive icon will be generated for apps which don\'t already have one</string>
     <string name="action_search">Search</string>
+
+    <!-- DT2S -->
+    <string name="dt2s_admin_hint">To be able to use double tap to lock, you have to enable device admin for Lawnchair. This is a secure lock, meaning you have to enter your PIN on the next unlock, if you have any.</string>
+    <string name="dt2s_admin_warning">By disabling device admin, you will not be able to use double tap to lock on your home screen.</string>
 </resources>
