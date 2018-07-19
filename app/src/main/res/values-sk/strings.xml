@@ -248,7 +248,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">O aplikácii</string>
   <string name="about_pref_summary">Zoznámte sa s týmom Lawnchair</string>
-  <string name="changelog_title">Zoznam zmien pre vydanie #%d</string>
   <string name="week_day_format">%1$s %2$s</string>
   <string name="icon_pack_preference_title">Balíček ikon</string>
   <string name="icon_pack_preference_summary">Vyberte balíček ikon</string>
@@ -391,7 +390,6 @@
   <string name="pref_backport_shortcuts">Backport odkazy</string>
   <string name="weather_api_key_not_set">API kľúč nie je nastavený</string>
   <string name="pref_weather_api_key_title">API kľúč</string>
-  <string name="about_changelog">Zoznam zmien</string>
   <string name="pref_all_apps_custom_label_color">Vybrať vlastné farby menoviek</string>
   <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
   <string name="pref_num_rows_drawer">Počet riadkov v zobrazení ponuky</string>
@@ -409,11 +407,8 @@
   <string name="enable_spring_pref_title">Povoliť efekt pružiny</string>
   <string name="hide_app">Skryté aplikácie</string>
   <string name="hide_app_sum">Skryť aplikácie zo zoznamu aplikácií</string>
-  <string name="hide_app_selected">&#160;vybraných</string>
   <string name="hidden_app">Skrytá aplikácia</string>
-  <string name="hide_app_apply">Použiť</string>
   <string name="unauthorized_device">Toto zariadenie má nainštalované nástroje pre pirátstvo. Odinštalujte ich a pokračujte.</string>
-  <string name="hide_app_reset">Resetovať</string>
   <string name="two_row_dock">Dok v dvoch riadkoch</string>
   <string name="reset_alternative_icons_title">Obnoviť alternatívne ikony aplikácií?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikácií s alternatívnymi ikonami, chcete ich obnoviť?</string>
@@ -498,4 +493,5 @@
   <string name="about_bio_josh">Grafický dizajnér na voľnej nohe.</string>
   <string name="about_bio_chris">Tvorca myšlienky, vplyvná osoba &amp; tvorca obsahu. Vedúci sociálnych médií a PR manažér.</string>
   <string name="about_bio_msfjarvis">Hlavný vývojár HalogenOS a vývojár aplikácie Substratum.</string>
+  <!-- DT2S -->
 </resources>
