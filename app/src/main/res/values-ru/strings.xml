@@ -248,7 +248,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">О программе</string>
   <string name="about_pref_summary">Узнайте о команде Lawnchair</string>
-  <string name="changelog_title">Изменения в сборке #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набор значков</string>
   <string name="icon_pack_preference_summary">Выберите набор значков</string>
@@ -391,7 +390,6 @@
   <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
   <string name="weather_api_key_not_set">API ключ не установлен</string>
   <string name="pref_weather_api_key_title">API ключ</string>
-  <string name="about_changelog">Список изменений</string>
   <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
   <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
   <string name="pref_num_rows_drawer">Количество строк в меню приложений</string>
@@ -409,11 +407,8 @@
   <string name="enable_spring_pref_title">Включить эффект отскока</string>
   <string name="hide_app">Скрытые приложения</string>
   <string name="hide_app_sum">Скрыть приложение из меню</string>
-  <string name="hide_app_selected">&#160;выбрано</string>
   <string name="hidden_app">Скрытое приложение</string>
-  <string name="hide_app_apply">Применить</string>
   <string name="unauthorized_device">На этом устройстве установлены пиратские утилиты. Пожалуйста, удалите их для продолжения.</string>
-  <string name="hide_app_reset">Сброс</string>
   <string name="two_row_dock">Двухстрочный док-бар</string>
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
@@ -498,4 +493,5 @@
   <string name="about_bio_josh">Внештатный графический дизайнер.</string>
   <string name="about_bio_chris">Творческий разум и контент-менеджер. Менеджер по соцсетям и PR-менеджер.</string>
   <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
+  <!-- DT2S -->
 </resources>
