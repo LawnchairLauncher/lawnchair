@@ -22,29 +22,29 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Työ</string>
+  <string name="work_folder_name">Työt</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">Sovellusta ei ole asennettu.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Sovellus ei ole käytettävissä</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Ladatut sovellukset on poistettu käytöstä suojatussa tilassa</string>
+  <string name="safemode_shortcut_error">Ladatut sovellukset on poistettu käytöstä vikasietotilassa</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgetit poistettu käytöstä vikasietotilassa</string>
+  <string name="safemode_widget_error">Pienoisohjelmat on poistettu käytöstä vikasietotilassa</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Pikakuvake ei ole käytettävissä.</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Valitse widget painamalla sitä pitkään.</string>
+  <string name="long_press_widget_to_add">Voit valita pikakuvakkeen painamalla sitä pitkään.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Valitse widget tai käytä muokattuja toimintoja kaksoisnapauttamalla ja painamalla kohdetta pitkään.</string>
+  <string name="long_accessible_way_to_add">Valitse pikakuvake tai käytä erikoistoimintoja kaksoisnapauttamalla ja painamalla pitkään.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">Leveys: %1$d, korkeus: %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Sovellushaku</string>
+  <string name="all_apps_search_bar_hint">Hae sovelluksia</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Ladataan sovelluksia…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">Hae lisää sovelluksia</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Tässä aloitusruudussa ei ole enää tilaa.</string>
+  <string name="out_of_space">Tällä sivulla ei ole enää tilaa.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Suosikit-valikossa ei ole enää tilaa</string>
   <!-- All applications label -->
@@ -246,7 +246,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">Tietoja</string>
   <string name="about_pref_summary">Opi tuntemaan Lawnchair tiimi</string>
-  <string name="changelog_title">Muutosloki buildille #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Kuvakepaketti</string>
   <string name="icon_pack_preference_summary">Valitse kuvakepaketti</string>
@@ -389,7 +388,6 @@
   <string name="pref_backport_shortcuts">Backporttaa pikakuvakkeet</string>
   <string name="weather_api_key_not_set">API avainta ei ole määritetty</string>
   <string name="pref_weather_api_key_title">API avain</string>
-  <string name="about_changelog">Muutosloki</string>
   <string name="pref_all_apps_custom_label_color">Käytä mukautettua kuvaketeksti väriä</string>
   <string name="pref_all_apps_label_color">Kuvaketekstien väri sovellusvalikossa</string>
   <string name="pref_num_rows_drawer">Rivien lukumäärä sovellusvalikossa</string>
@@ -407,17 +405,15 @@
   <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
   <string name="hide_app">Piilota sovellus</string>
   <string name="hide_app_sum">Piilota sovellus sovellusvalikosta</string>
-  <string name="hide_app_selected">&#160;valittu</string>
   <string name="hidden_app">Piilotettu sovellus</string>
-  <string name="hide_app_apply">Käytä</string>
   <string name="unauthorized_device">Tähän laitteeseen on asennettu piraattityökaluja. Poista ne jatkaaksesi.</string>
-  <string name="hide_app_reset">Nollaa</string>
   <string name="two_row_dock">Kahden rivin telakka</string>
   <string name="reset_alternative_icons_title">Nollaa vaihtoehtoiset sovelluskuvakkeet?</string>
   <string name="reset_alternative_icons">Sinulla on %1$d sovellusta, joilla on vaihtoehtoiset kuvakkeet. Haluatko nollata ne?</string>
   <string name="error_no_browser">Ei löydetty toimintaa URL:ien käsittelemiseen</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed ei ole käytössä</string>
+  <string name="lawnfeed_not_enabled">Vaikuttaa siltä, että yrität avata Google Now sivun, vaikka sitä ei ole otettu käyttöön asetuksista.\n\nHaluatko ottaa sen käyttöön nyt?</string>
   <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
   <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
   <string name="title_storage_permission_required">Tallennustilan käyttöoikeus vaaditaan</string>
@@ -456,12 +452,45 @@ tallenustilan käyttöoikeudet jotta voit vaihtaa taustakuvaa. Jos käyttöoikeu
   <string name="read_external_storage_required">Oikeudet tallennustilan käyttöön tarvitaan varmuuskopion luomiseksi</string>
   <string name="local_backups">Paikalliset varmuuskopiot</string>
   <string name="backup_location_device_storage">Laitteen tallennustila</string>
+  <string name="backup_location_documents_storage">Dokumenttien tallennustila</string>
   <!-- Preference Category Pixel Searchbar Title -->
   <string name="pref_category_pixel_searchbar">Pixel hakupalkki</string>
   <!-- Preference Category Icons Title -->
+  <string name="pref_category_icons">Kuvakkeet</string>
   <!-- Preference Category Drawer Title -->
+  <string name="pref_category_drawer">Sovellusvalikko</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Sekalaiset</string>
   <string name="blur_oom">Lawnchairilta loppui resurssit taustakuvan sumentamiseen! Taustakuvan resoluution pienentäminen voi auttaa ongelman ratkaisussa.</string>
+  <string name="legacy_backup">Vanha varmuuskopio</string>
   <!-- About screen -->
+  <string name="title_attribouter_licenses">Avoimen lähdekoodin lisenssit</string>
+  <string name="title_attribouter_email">Sähköposti</string>
+  <string name="title_attribouter_website">Verkkosivusto</string>
+  <string name="title_attribouter_rate">Arvostele</string>
+  <string name="title_attribouter_version">Versio %1$s</string>
+  <string name="title_attribouter_license">Lisenssi</string>
+  <string name="title_attribouter_license_permissions">Käyttöoikeudet</string>
+  <string name="title_attribouter_license_conditions">Ehdot</string>
+  <string name="title_attribouter_license_limitations">Rajoitukset</string>
+  <string name="title_attribouter_more_info">Lisätietoja</string>
+  <string name="title_attribouter_translators">Kääntäjät</string>
+  <string name="about_our_team">Tiimimme</string>
+  <string name="about_our_contributors">Pääavustajamme</string>
+  <string name="about_our_family">Muut perheenjäsenemme</string>
+  <string name="about_role_lead">Pääsovelluskehittäjä</string>
+  <string name="about_role_devops">DevOps</string>
+  <string name="about_role_dev">Kehittäjä</string>
+  <string name="about_role_dev_mod">Sovelluskehittäjä / Ylläpitäjä</string>
+  <string name="about_role_designer">Suunnittelija</string>
+  <string name="about_role_special_snowflake">PR-Manageri / Ylläpitäjä</string>
+  <string name="about_role_mod_support">Ylläpitäjä / Tukihenkilö</string>
+  <string name="about_role_family_member">Perheenjäsen</string>
+  <string name="about_bio_deletescape">Android sovelluskehittäjä &amp; intoilija, rakastaa meemejä (hieman liikaa itseasiassa). Lawnchair-Projektin perustaja.</string>
+  <string name="about_bio_divadsn">18 vuotta vanha, muuttaa kofeinin ja pitsan koodiksi. Aiemmin tunnettu nimellä Codebucket.</string>
+  <string name="about_bio_recoded">Keskiverto koodaaja sekä graafinen suunnittelija.</string>
+  <string name="about_bio_josh">Freelance graafinen suunnittelija.</string>
+  <string name="about_bio_chris">Luova mielinen, vaikuttaja &amp; Sisällöntuottaja. Sosiaalisen median PR-Manageri.</string>
+  <string name="about_bio_msfjarvis">HalogenOS:än ja Substratumin ohjelmistokehittäjä.</string>
+  <!-- DT2S -->
 </resources>
