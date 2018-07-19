@@ -240,6 +240,17 @@
             android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepTimeoutActivity"
             android:screenOrientation="locked"
             android:theme="@style/SleepTimeoutTheme"/>
+
+        <receiver
+            android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepDeviceAdmin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/sleep_admin_policy" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.support.annotation.Keep
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 
@@ -13,9 +12,16 @@ import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
+import ch.deletescape.lawnchair.R
 
 import java.io.DataOutputStream
 import java.io.IOException
+import android.app.admin.DevicePolicyManager
+import android.content.Context
+import android.content.ComponentName
+
+
+
 
 class DoubleTapGesture(private val controller: GestureController) : Gesture {
 
@@ -69,6 +75,24 @@ class DoubleTapGesture(private val controller: GestureController) : Gesture {
                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 intent.data = Uri.parse("package:${launcher.packageName}")
                 launcher.startActivity(intent)
+            }
+        }
+    }
+
+    @Keep
+    class SleepGestureHandlerDeviceAdmin(launcher: Launcher) : GestureHandler(launcher) {
+
+        override fun onGestureTrigger() {
+            val devicePolicyManager = launcher.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            if (devicePolicyManager != null) {
+                if (devicePolicyManager.isAdminActive(ComponentName(launcher, SleepDeviceAdmin::class.java))) {
+                    devicePolicyManager.lockNow()
+                } else {
+                    val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(launcher, SleepDeviceAdmin::class.java))
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, launcher.getString(R.string.dt2s_admin_hint))
+                    launcher.startActivity(intent)
+                }
             }
         }
     }
