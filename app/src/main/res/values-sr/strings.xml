@@ -247,7 +247,6 @@
   <!-- About Lawnchair -->
   <string name="about_title">О апликацији</string>
   <string name="about_pref_summary">Упознајте Lawnchair тим</string>
-  <string name="changelog_title">Промене за изградњу #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Пакет икона</string>
   <string name="icon_pack_preference_summary">Изабери пакет икона</string>
@@ -390,7 +389,6 @@
   <string name="pref_backport_shortcuts">Backport пречица</string>
   <string name="weather_api_key_not_set">API кључеви нису подешени</string>
   <string name="pref_weather_api_key_title">API кључ</string>
-  <string name="about_changelog">Историја измена</string>
   <string name="pref_all_apps_custom_label_color">Боја по избору</string>
   <string name="pref_all_apps_label_color">Боја ознака икона</string>
   <string name="pref_num_rows_drawer">Број редова</string>
@@ -408,11 +406,8 @@
   <string name="enable_spring_pref_title">Ефекат одскока</string>
   <string name="hide_app">Сакриј апликацију</string>
   <string name="hide_app_sum">Сакриј апликацију из апликације drawer-а</string>
-  <string name="hide_app_selected">&#160;изабрано</string>
   <string name="hidden_app">Скривена апликација</string>
-  <string name="hide_app_apply">Примени</string>
   <string name="unauthorized_device">Овај уређај има инсталиран неколико пиратских алатки. Молим вас, деинсталирајте их да бисте наставили.</string>
-  <string name="hide_app_reset">Ресетуј</string>
   <string name="two_row_dock">Два реда dock</string>
   <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
@@ -497,4 +492,5 @@
   <string name="about_bio_josh">Самостални графички дизајнер.</string>
   <string name="about_bio_chris">Креативни ум, саветник за продају &amp; Креатор садржаја. Друштвени медији и ПР менаџер.</string>
   <string name="about_bio_msfjarvis">Основни програмер на halogenOS-у и апликације на субстратуму.</string>
+  <!-- DT2S -->
 </resources>
