@@ -246,46 +246,112 @@
   <!-- About Lawnchair -->
   <string name="about_title">درباره</string>
   <string name="about_pref_summary">درمورد تیم Lawnchair بدانید</string>
-  <string name="changelog_title">تغییرات بیلد #%d</string>
   <string name="week_day_format">%1$s، %2$s</string>
   <string name="icon_pack_preference_title">آیکون پک</string>
   <string name="icon_pack_preference_summary">یک آیکون پک را انتخاب کنید</string>
   <string name="hotseat_uses_extracted_colors_pref_title">داک رنگ کاغذدیواری را استفاده می کند</string>
   <string name="hotseat_show_arrow">نشانک را نشان بده</string>
+  <string name="hotseat_show_page_indicator">نشان دادن شاخص صفحه</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">پیشخوان با رنگی که از پس زمینه گرفته شده رنگ می شود</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">پیشخوان خاکستری رنگ می‌شود ولی روشنایی آن توسط پس زمینه مشخص می‌شود</string>
+  <string name="transparent_hotseat_pref_title">پیشخوان شفاف</string>
+  <string name="dynamic_ui_pref_title">گرفتن رنگ دوم از پس زمینه</string>
   <string name="blur_pref_title">فعالسازی بلور</string>
+  <string name="blur_pref_summary">بخش هایی که با پس زمینه زنده سازگاری ندارند تار می‌شوند</string>
+  <string name="blur_radius_pref_title">مقدار تاری</string>
   <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
   <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
+  <string name="hide_icon_labels_pref_title">در دسکتاپ نام برنامه ها پنهان شوند</string>
+  <string name="hide_all_apps_icon_labels_pref_title">در بخش برنامه ها اسم برنامه ها پنهان شوند</string>
+  <string name="workspace_label_color_hue_pref_title">رنگ نام برنامه ها در دسکتاپ</string>
   <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
   <string name="num_cols_pref_title">تعداد ستون ها</string>
   <string name="num_rows_pref_title">تعداد ردیف ها</string>
+  <string name="num_hotseat_icons_pref_title">تعداد برنامه ها در پیشخوان</string>
+  <string name="icon_scale_pref_title">مقیاس آیکون برنامه</string>
+  <string name="hotseat_height_scale">مقیاس ارتفاع</string>
+  <string name="hotseat_custom_opacity">اندازه تاری پیشخوان</string>
+  <string name="hotseat_uses_custom_opacity">شخصی سازی اندازه تاری پیشخوان</string>
+  <string name="icon_text_scale_pref_title">مقیاس نام برنامه ها</string>
+  <string name="icon_text_padding_scale_pref_title">مقیاس ابعاد آیکون</string>
+  <string name="full_width_width_widgets_pref_title">ویجت ها کل عرض صفحه را می‌گیرند</string>
+  <string name="notification_access_pref_title">نشان و پیش نمایش اعلان ها</string>
+  <string name="notification_access_pref_summary">برای فعال کردن این گذینه، باید به Lawnchair دسترسی به اعلان هایتان را بدهید</string>
+  <string name="general_pref_title">دسکتاپ</string>
+  <string name="dock_pref_title">پیشخوان</string>
+  <string name="app_drawer_pref_title">کشوی برنامه ها</string>
   <string name="pixel_ui_pref_title">تم</string>
+  <string name="behavior_pref_title">رفتار</string>
+  <string name="debug_pref_title">اشکال زدایی</string>
+  <string name="general_pref_summary">شخصی سازی دسکتاپ</string>
+  <string name="dock_pref_summary">شخصی سازی پیشخوان</string>
+  <string name="app_drawer_pref_summary">شخصی سازی کشوی برنامه ها</string>
+  <string name="backup_pref_title">پشتیبان گیری &amp; بازیابی</string>
+  <string name="behavior_pref_summary">رفتار ها را تغییر دهید</string>
+  <string name="backup_pref_summary">تنظیمات خود را پشتیبان گیری و بازیابی کنید</string>
+  <string name="show_pixel_bar_pref_title">نوار جستجوی پیکسل نشان داده می شود</string>
+  <string name="use_wide_searchbar_pref_title">از نوار جستجوی وسیع استفاده شود</string>
+  <string name="show_search_pill_title">قرص جستجوی گوگل نشان داده شود</string>
+  <string name="show_date_or_weather_title">تاریخ/آب و هوا در سمت راست نشان داده می شود</string>
+  <string name="show_mic_pref_title">دکمه دستیار گوگل نشان داده شود</string>
+  <string name="use_round_searhbar">از نوار جستجوی گرد برای کشوی برنامه ها استفاده شود</string>
+  <string name="pixel_style_icons_pref_title">از آیکون های پیکسل استفاده شود</string>
+  <string name="pixel_style_icons_pref_summary">وقتی که فعال باشد، آیکون های گرد در جاهای مورد استفاده استفاده می شود</string>
+  <string name="show_google_now_tab_pref_title">صفحه گوگل Now نشان داده شود</string>
+  <string name="restart_lawnchair_pref_title">راه اندازی مجدد</string>
+  <string name="restart_lawnchair_pref_summary">می‌تواند به تنظیماتی که خوب کار نمیکنند کمک کند</string>
+  <string name="light_statusbar_pref_title">نوار وضعیت روشن</string>
+  <string name="light_statusbar_pref_force">نوار وضعیت آیکون های تاریک نشان می‌دهد</string>
+  <string name="light_statusbar_pref_off">نوار وضعیت آیکون های روشن نشان می‌دهد</string>
+  <string name="home_opens_drawer_pref_title">دکمه خانه(وسط) کشوی برنامه ها را باز می‌کند</string>
+  <string name="home_opens_drawer_pref_summary">وقتی که در دسکتاپ هستید لمس کردن دکمه خانه(وسط) کشوی برنامه ها را باز می‌کند</string>
+  <string name="show_hidden_pref_title">برنامه های مخفی نشان داده شوند</string>
+  <string name="show_hidden_pref_on">برنامه ها مخفی شده نمایان می شوند</string>
+  <string name="show_hidden_pref_off">برنامه های مخفی شده قابل دیدن نیستند</string>
   <string name="export_db_title">پایگاه داده</string>
   <string name="import_db_title">پایگاه داده</string>
   <string name="export_prefs_title">تنظیمات</string>
   <string name="import_prefs_title">تنظیمات</string>
   <string name="test_title">بررسی</string>
   <string name="visibility">دید</string>
+  <string name="default_text">پیش‌فرض</string>
   <string name="edit_icon_reset">بازنشانی</string>
+  <string name="show_top_shadow_title">نمایش سایه بالایی</string>
+  <string name="pref_category_homescreen">دسکتاپ</string>
   <string name="theme_pref_title">تم</string>
+  <string name="theme_light">روشن</string>
+  <string name="theme_dark">تیره</string>
   <string name="theme_black">سیاه</string>
+  <string name="hide_hotseat_pref_title">داشبورد مخفی</string>
+  <string name="all_icons">همه‌ی آیکون ها</string>
+  <string name="pull_down_action_pref_title">عمل پایین کشیدن</string>
+  <string name="pull_down_do_nothing">کاری نکند</string>
+  <string name="pull_down_notis">نمایش اعلان‌ها</string>
+  <string name="pull_down_search">جست‌و‌جو باز شود</string>
+  <string name="pull_down_apps_search">جستجوی برنامه‌ها</string>
+  <string name="enable_screen_rotation">چرخش صفحه</string>
+  <string name="use_system_fonts_title">از فونت سیستم برای نام آیکون ها استفاده شود</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">بازیابی</string>
   <string name="backup_export_title">پشتیبان</string>
+  <string name="settings_export_success">تنظیمات با موفقیت پشتیبان گیری شدند</string>
+  <string name="db_export_success">داده ها با موفقیت پشتیبان گیری شدند</string>
+  <string name="settings_import_success">تنظیمات با موفقیت بازگردانی شد</string>
+  <string name="db_import_success">داده ها با موفقیت بازگردانی شد</string>
+  <string name="export_error">پشتیبان گیری به مشکل برخورده و متوقف شد</string>
   <string name="imexport_no_backup_found">هیچ فایل پشتیبانی یافت نشد</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="none">هیچ‌کدام</string>
   <string name="folder">پوشه</string>
   <string name="loading">در حال بارگذاری...</string>
   <string name="icon_shape_none">هیچ‌کدام</string>
-  <string name="about_changelog">تغییرات ایجاد شده</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="hide_app_apply">اعمال‌ کردن</string>
-  <string name="hide_app_reset">بازنشانی</string>
   <!-- Strings for popup dialogs -->
   <!-- Preference Category Pixel Searchbar Title -->
   <!-- Preference Category Icons Title -->
   <!-- Preference Category Drawer Title -->
   <!-- Preference Category Misc Title -->
   <!-- About screen -->
+  <!-- DT2S -->
 </resources>
