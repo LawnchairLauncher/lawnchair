@@ -451,7 +451,7 @@ public final class Utilities {
      * @param color  The color to remove
      */
     public static Bitmap removeColor(Bitmap bitmap, int color) {
-        if(!bitmap.isMutable())
+        if(!bitmap.isMutable() || bitmap.getConfig() != Bitmap.Config.ARGB_8888)
             bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
@@ -467,8 +467,8 @@ public final class Utilities {
                 }
             }
         }
-        Bitmap.Config config = ATLEAST_OREO ? Bitmap.Config.RGBA_F16 : Bitmap.Config.ARGB_8888;
-        return bitmap.copy(config, true);
+        bitmap.setHasAlpha(true);
+        return bitmap;
     }
 
     /*
