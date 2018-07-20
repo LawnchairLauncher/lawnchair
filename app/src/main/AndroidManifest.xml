@@ -243,6 +243,7 @@
 
         <receiver
             android:name="ch.deletescape.lawnchair.gestures.dt2s.SleepDeviceAdmin"
+            android:description="@string/dt2s_admin_hint"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
