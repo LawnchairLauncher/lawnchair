@@ -1037,6 +1037,8 @@ public class Launcher extends BaseActivity
             mUpdateWallpaper = false;
             mBlurWallpaperProvider.updateAsync();
         }
+
+        mAllAppsController.setProgress(mAllAppsController.getProgress());
     }
 
     @Override
