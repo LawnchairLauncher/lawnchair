@@ -35,7 +35,7 @@ pipeline:
   # Step 3: Upload to Telegram or Transfer.sh, depending on the event
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
-    secrets: [ bot_token, channel_id ]
+    secrets: [ bot_token, channel_id, dev_channel_id ]
     apk_path: app/build/outputs/apk/debug/app-debug.apk
     mapping_path: app/build/outputs/mapping/debug/mapping.txt
     channel_id: "-1001180711841"
@@ -69,4 +69,4 @@ pipeline:
       status: [ failure, success ]
 
 branches:
-  exclude: [ l10n_alpha2, v2-alpha ]
+  exclude: [ l10n_alpha2, v1-alpha ]
