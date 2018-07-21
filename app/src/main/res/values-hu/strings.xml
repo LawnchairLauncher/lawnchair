@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Alkalmazások keresése</string>
   <string name="enable_screen_rotation">Képernyőforgatás engedélyezése</string>
   <string name="use_system_fonts_title">A rendszer-betűtípus használata a feliratokhoz</string>
+  <string name="auto_add_shortcuts_label">Ikon hozzáadása a Kezdőképernyőhöz</string>
+  <string name="auto_add_shortcuts_description">Új alkalmazások esetében</string>
+  <string name="shortcut_blacklist">Parancsikon-feketelista</string>
+  <string name="shortcut_blacklist_sum">Megakadályozza, hogy az alkalmazások parancsikont adjanak a Kezdőképernyőhöz</string>
+  <string name="blacklist_app">Blokkolt alkalmazások</string>
+  <string name="blacklist_app_selected">&#160; kiválasztva</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Visszaállítás</string>
   <string name="backup_export_title">Biztonsági mentés</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Alkalmazás elrejtése</string>
   <string name="hide_app_sum">Alkalmazás elrejtése az alkalmazásfiókból</string>
   <string name="hidden_app">Rejtett alkalmazás</string>
+  <string name="hidden_app_selected">&#160; kiválasztva</string>
+  <string name="list_app_apply">Alkalmazás</string>
+  <string name="list_app_reset">Visszaállítás</string>
   <string name="unauthorized_device">Ez a készülék rendelkezik néhány kalózkodásra alkalmas eszközzel. Távolítsa el őket a folytatáshoz.</string>
   <string name="two_row_dock">Két soros dokk</string>
   <string name="reset_alternative_icons_title">Alternatív ikonok visszaállítása?</string>
   <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
   <string name="error_no_browser">Nem található URL-eket kezelni képes alkalmazás</string>
+  <string name="error_no_calendar">Nincs telepített naptáralkalmazás</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">A Lawnfeed nincs engedélyezve</string>
   <string name="lawnfeed_not_enabled">Úgy tűnik, a Google Now oldalat próbálja megnyitni, de még nem engedélyezte az opciót a viselkedési beállításokban.\n\nEngedélyezi most?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Kreatív elme, Ötletadó és Tartalomkészítő. Közösségi média és PR menedzser.</string>
   <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Dupla érintésre alvómód</string>
+  <string name="dt2s_disabled">Letiltva</string>
+  <string name="dt2s_deviceadmin">Rendszergazda-használat</string>
+  <string name="dt2s_timeout">Képernyő időtúllépés-használat</string>
+  <string name="dt2s_root">Root-használat</string>
+  <string name="dt2s_admin_hint">Hogy használni tudja a dupla érintésre lezárást, rendszergazda jogokat kell adnia a Lawnchair indítónak. Ez a funkció egy biztonsági zár, amit csak PIN-kóddal tud feloldani, ha rendelkezik vele.</string>
+  <string name="dt2s_admin_warning">A rendszergazda letiltásával, Ön nem lesz képes használni kezdőképernyőjén a dupla érintésre lezárás funkciót.</string>
 </resources>
