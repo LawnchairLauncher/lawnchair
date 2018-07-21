@@ -345,6 +345,12 @@
   <string name="pull_down_apps_search">Buka penelusuran aplikasi</string>
   <string name="enable_screen_rotation">Hidupkan rotasi layar</string>
   <string name="use_system_fonts_title">Menggunakan sistem font untuk label</string>
+  <string name="auto_add_shortcuts_label">Tambahkan ikon ke beranda</string>
+  <string name="auto_add_shortcuts_description">Untuk aplikasi baru</string>
+  <string name="shortcut_blacklist">Pintasan blacklist</string>
+  <string name="shortcut_blacklist_sum">Mencegah aplikasi menambahkan ikon ke layar Utama</string>
+  <string name="blacklist_app">Aplikasi yang diblokir</string>
+  <string name="blacklist_app_selected">&#160;dipilih</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Memulihkan</string>
   <string name="backup_export_title">Mencadangkan</string>
@@ -410,11 +416,15 @@
   <string name="hide_app">Sembunyikan aplikasi</string>
   <string name="hide_app_sum">Sembunyikan dari laci aplikasi</string>
   <string name="hidden_app">Aplikasi tersembunyi</string>
+  <string name="hidden_app_selected">&#160;dipilih</string>
+  <string name="list_app_apply">Terapkan</string>
+  <string name="list_app_reset">Setel ulang</string>
   <string name="unauthorized_device">Perangkat ini memiliki beberapa alat pembajakan yang diinstal. Silakan hapus mereka untuk melanjutkan.</string>
   <string name="two_row_dock">Dock dua baris</string>
   <string name="reset_alternative_icons_title">Setel ulang ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki %1$d aplikasi dengan ikon alternatif, apakah anda ingin mengulangi setelan?</string>
   <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
+  <string name="error_no_calendar">Tidak ada aplikasi kalender terpasang</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed tidak diaktifkan</string>
   <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
@@ -496,4 +506,11 @@
   <string name="about_bio_chris">Pemikir kreatif, pemberi masukan &amp; pengisi konten. Sosial Media and PR Manager.</string>
   <string name="about_bio_msfjarvis">Pengembang inti di halogenOS dan pengembang aplikasi di substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Ketuk dua kali untuk tidur</string>
+  <string name="dt2s_disabled">Nonaktifkan</string>
+  <string name="dt2s_deviceadmin">Gunakan admin device</string>
+  <string name="dt2s_timeout">Gunakan waktu habis layar</string>
+  <string name="dt2s_root">Gunakan root</string>
+  <string name="dt2s_admin_hint">Agar dapat menggunakan tap dua kali untuk mengunci, Anda harus mengaktifkan admin perangkat untuk Lawnchair. Ini adalah kunci aman, yang berarti Anda harus memasukkan PIN Anda pada pembukaan kunci berikutnya, jika Anda memilikinya.</string>
+  <string name="dt2s_admin_warning">Dengan menonaktifkan akses admin, anda tidak akan bisa menggunakan ketuk layar dua kali untuk mengunci.</string>
 </resources>
