@@ -343,6 +343,12 @@
   <string name="pull_down_apps_search">חיפוש יישומים</string>
   <string name="enable_screen_rotation">אפשר סיבוב מסך</string>
   <string name="use_system_fonts_title">השתמש בגופנים של המערכת עבור תוויות</string>
+  <string name="auto_add_shortcuts_label">הוספת סמל למסך הבית</string>
+  <string name="auto_add_shortcuts_description">עבור אפליקציות חדשות</string>
+  <string name="shortcut_blacklist">רשימה שחורה לקיצורי דרך</string>
+  <string name="shortcut_blacklist_sum">מנע מאפליקציות להוסיף סמלים למסך הבית</string>
+  <string name="blacklist_app">אפליקציה חסומה</string>
+  <string name="blacklist_app_selected">&#160;נבחר</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">ייבוא</string>
   <string name="backup_export_title">ייצוא</string>
@@ -408,11 +414,15 @@
   <string name="hide_app">הסתר אפליקציה</string>
   <string name="hide_app_sum">הסתר אפליקציה ממגירת האפליקציות</string>
   <string name="hidden_app">אפליקציה מוסתרת</string>
+  <string name="hidden_app_selected">&#160;נבחר</string>
+  <string name="list_app_apply">החל</string>
+  <string name="list_app_reset">איפוס</string>
   <string name="unauthorized_device">במכשיר זה מותקנים כלים פיראטיים. אנא הסר אותם כדי להמשיך.</string>
   <string name="two_row_dock">שורת עגינה כפולה</string>
   <string name="reset_alternative_icons_title">האם לאפס את סמלי האפליקציות החלופיים?</string>
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
   <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
+  <string name="error_no_calendar">אין אפליקציית לוח שנה מותקנת</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed אינו מופעל</string>
   <string name="lawnfeed_not_enabled">נראה שאתה מנסה לפתוח את הדף של Google Now, אך לא הפעלת את האפשרות בהגדרות.\n\nהאם ברצונך להפעיל אותה עכשיו?</string>
@@ -489,4 +499,11 @@
   <string name="about_role_family_member">בן משפחה</string>
   <string name="about_bio_josh">מעצב גרפי עצמאי.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">הקשה כפולה לכיבוי המסך</string>
+  <string name="dt2s_disabled">מבוטל</string>
+  <string name="dt2s_deviceadmin">באמצעות מנהל התקן</string>
+  <string name="dt2s_timeout">באמצעות זמן קצוב</string>
+  <string name="dt2s_root">באמצעות Root</string>
+  <string name="dt2s_admin_hint">כדי להפעיל הקשה כפולה לכיבוי המסך, עליך להפעיל את מנהל ההתקן עבור Lawnchair. זוהי נעילה מאובטחת, ולכן יהיה עליך להזין את ה-PIN שלך, אם הוא קיים, בביטול הנעילה הבא.</string>
+  <string name="dt2s_admin_warning">עם ביטול מנהל ההתקן, לא תוכל יותר להשתמש באפשרות הקשה כפולה לכיבוי על מסך הבית שלך.</string>
 </resources>
