@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Cerca aplicacions</string>
   <string name="enable_screen_rotation">Activa la rotació de pantalla</string>
   <string name="use_system_fonts_title">Utilitza les fonts de sistema per a les etiquetes</string>
+  <string name="auto_add_shortcuts_label">Afegeix icona a la pantalla d\'inici</string>
+  <string name="auto_add_shortcuts_description">Per a noves aplicacions</string>
+  <string name="shortcut_blacklist">Llista negra de dreceres</string>
+  <string name="shortcut_blacklist_sum">Impedeix que les aplicacions afegeixin dreceres a la pantalla d\'inici</string>
+  <string name="blacklist_app">Aplicació bloquejada</string>
+  <string name="blacklist_app_selected">&#160;seleccionada</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaura</string>
   <string name="backup_export_title">Còpia de seguretat</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Amaga l\'aplicació</string>
   <string name="hide_app_sum">Amaga l\'aplicació del calaix</string>
   <string name="hidden_app">Aplicacions amagades</string>
+  <string name="hidden_app_selected">&#160;seleccionada</string>
+  <string name="list_app_apply">Aplica</string>
+  <string name="list_app_reset">Restableix</string>
   <string name="unauthorized_device">Aquest dispositiu té instal·lades algunes eines de pirateria. Desinstal·leu-les per continuar.</string>
   <string name="two_row_dock">Barra d\'aplicacions de dues files</string>
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
   <string name="error_no_browser">No s\'ha trobat cap activitat per manegar l\'URL</string>
+  <string name="error_no_calendar">No s\'ha instal·lat cap aplicació de calendari</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed no està activat</string>
   <string name="lawnfeed_not_enabled">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu activat l\'opció en la configuració del comportament.\n\n Voleu activar-la ara?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Ment creativa, influent i creador de contingut. Social media i administrador de relacions públiques.</string>
   <string name="about_bio_msfjarvis">Desenvolupador principal en halogenOS i desenvolupador d\'aplicacions en substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Toqueu dues vegades per adormir</string>
+  <string name="dt2s_disabled">Desactivat</string>
+  <string name="dt2s_deviceadmin">S\'està utilitzant l\'administrador del dispositiu</string>
+  <string name="dt2s_timeout">S\'està utilitzant el temps d\'espera de la pantalla</string>
+  <string name="dt2s_root">S\'està utilitzant root</string>
+  <string name="dt2s_admin_hint">Per poder utilitzar el doble toc per bloquejar, cal activar l\'administrador del dispositiu per al Lawnchair. Es tracta d\'un bloqueig segur, és a dir, heu d\'introduir el vostre PIN al proper desbloqueig, si teniu cap.</string>
+  <string name="dt2s_admin_warning">Si desactiveu l\'administrador del dispositiu, no podreu utilitzar el doble toc per bloquejar la pantalla d\'inici.</string>
 </resources>
