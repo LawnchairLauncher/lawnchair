@@ -1,4 +1,17 @@
 pipeline:
+  # Step 0: Notify team members about upcoming build
+  notify:
+    image: appleboy/drone-telegram:latest
+    secrets: [ telegram_token ]
+    to: "-1001092684628"
+    format: markdown
+    message: >
+      *{{repo.owner}}/{{repo.name}}:*
+      Preparing to start build {{build.number}}...
+    when:
+      event: push
+
+  # Step 1: Generate changelog for later use
   changelog:
     image: lawnchairlauncher/drone-changelog:latest
     output: changelog.txt
@@ -6,6 +19,8 @@ pipeline:
       - /opt/drone/cache:/cache
     when:
       event: push
+
+  # Step 2: The actual point of all of this
   build:
     image: runmymind/docker-android-sdk:ubuntu-standalone
     secrets: [ store_password, key_password ]
@@ -16,17 +31,28 @@ pipeline:
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleAospCiOptimized;
+
+  # Step 3: Upload to Telegram or Transfer.sh, depending on the event
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
-    secrets: [ bot_token, channel_id ]
+    secrets: [ bot_token, channel_id, dev_channel_id ]
     apk_path: build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
-    channel_id: "-1001390439747"
+    channel_id: "-1001083653933"
+    public_branch: beta
     environment:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:
       event: push
       status: success
+  upload:
+    image: divadsn/drone-transfer.sh:latest
+    upload: app/build/outputs/apk/debug/app-debug.apk
+    when:
+      event: pull_request
+      status: success
+
+  # Step 4: Notify team members about build status
   telegram:
     image: appleboy/drone-telegram:latest
     secrets: [ telegram_token ]
@@ -43,3 +69,5 @@ pipeline:
       event: [ push, tag, deployment ]
       status: [ failure, success ]
 
+branches:
+  exclude: [ l10n_alpha2, v1-alpha ]
