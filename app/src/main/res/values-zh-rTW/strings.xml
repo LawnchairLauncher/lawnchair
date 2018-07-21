@@ -270,7 +270,7 @@
   <string name="icon_scale_pref_title">圖示大小</string>
   <string name="hotseat_height_scale">高度範圍</string>
   <string name="hotseat_custom_opacity">Dock 欄的不透明度</string>
-  <string name="hotseat_uses_custom_opacity">启用自訂 Dock 欄的不透明度</string>
+  <string name="hotseat_uses_custom_opacity">啟用自訂 Dock 欄的不透明度</string>
   <string name="icon_text_scale_pref_title">圖示字型大小</string>
   <string name="icon_text_padding_scale_pref_title">圖示填滿範圍</string>
   <string name="full_width_width_widgets_pref_title">全寬小工具</string>
@@ -340,6 +340,9 @@
   <string name="pull_down_apps_search">應用程式搜尋</string>
   <string name="enable_screen_rotation">允許螢幕旋轉</string>
   <string name="use_system_fonts_title">標籤使用系統字體</string>
+  <string name="auto_add_shortcuts_label">將圖示加到主螢幕</string>
+  <string name="shortcut_blacklist_sum">防止應用程式將圖示新增至主螢幕</string>
+  <string name="blacklist_app_selected">&#160;已選取</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">恢復</string>
   <string name="backup_export_title">匯出</string>
@@ -405,11 +408,15 @@
   <string name="hide_app">隱藏應用程式</string>
   <string name="hide_app_sum">從應用程式清單中隱藏應用程式</string>
   <string name="hidden_app">隱藏的應用程式</string>
+  <string name="hidden_app_selected">&#160;已選取</string>
+  <string name="list_app_apply">套用</string>
+  <string name="list_app_reset">重置</string>
   <string name="unauthorized_device">此裝置安裝了一些盜版工具，請解除安裝它們以便繼續。</string>
   <string name="two_row_dock">兩行 Dock 欄</string>
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
   <string name="error_no_browser">找不到處理 URL 的 Activity</string>
+  <string name="error_no_calendar">未找到日曆應用程式</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">未啟用 Lawnfeed</string>
   <string name="lawnfeed_not_enabled">您好像正在嘗試開啟 Google 即時頁面，但您尚未在功能設定中啟用該選項。\n\n您想現在開啟嗎？</string>
@@ -492,4 +499,7 @@
   <string name="about_bio_chris">創造性思維、影響力與內容建立者。社交媒體和公關經理人。</string>
   <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和底層的應用程式開發人員。</string>
   <!-- DT2S -->
+  <string name="dt2s_title">雙擊睡眠</string>
+  <string name="dt2s_disabled">已禁用</string>
+  <string name="dt2s_root">使用root權限</string>
 </resources>
