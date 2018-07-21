@@ -325,7 +325,7 @@
   <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
   <string name="default_text">Standard</string>
-  <string name="edit_icon_reset">Tilbakestill</string>
+  <string name="edit_icon_reset">Nullstill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
   <string name="pref_category_homescreen">Startskjerm</string>
   <string name="theme_pref_title">Tema</string>
@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Appsøk</string>
   <string name="enable_screen_rotation">Aktiver skjermrotering</string>
   <string name="use_system_fonts_title">Bruk systemskrifter for etiketter</string>
+  <string name="auto_add_shortcuts_label">Legg til app på startskjermen</string>
+  <string name="auto_add_shortcuts_description">For nye apper</string>
+  <string name="shortcut_blacklist">Svartelistede snarveier</string>
+  <string name="shortcut_blacklist_sum">Hindre apper fra å legges til på startskjermen</string>
+  <string name="blacklist_app">Svartelistet app</string>
+  <string name="blacklist_app_selected">&#160;valgt</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Gjenopprett</string>
   <string name="backup_export_title">Sikkerhetskopier</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Skjulte apper</string>
   <string name="hide_app_sum">Skjul apper i Alle apper</string>
   <string name="hidden_app">Skjult app</string>
+  <string name="hidden_app_selected">&#160;valgt</string>
+  <string name="list_app_apply">Bruk</string>
+  <string name="list_app_reset">Nullstill</string>
   <string name="unauthorized_device">Enheten har piratkopieringsverktøy installert. Avinstaller dem for å fortsette.</string>
   <string name="two_row_dock">To raders dokk</string>
   <string name="reset_alternative_icons_title">Nullstill alternative appikoner?</string>
   <string name="reset_alternative_icons">Du har %1$d apper med alternative ikoner, vil du nullstille dem?</string>
   <string name="error_no_browser">Ingen aktivitet for håndtering av URL-er funnet</string>
+  <string name="error_no_calendar">Ingen kalenderapp installiert</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed ikke aktivert</string>
   <string name="lawnfeed_not_enabled">Det ser ut som om du prøver å åpne Google Now siden, men du har ikke aktivert valget i innstillingene under Oppførsel.\n\nAktivere nå?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Kreativt sinn, Influenser &amp; Innholdsskaper. Sosiale media og PR Manager.</string>
   <string name="about_bio_msfjarvis">Kjerneutvikler hos halogenOS og applikasjonsutvikler hos Substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Dobbelttrykk for å gå inn i hvilemodus</string>
+  <string name="dt2s_disabled">Deaktivert</string>
+  <string name="dt2s_deviceadmin">Bruk enhetsadministrator</string>
+  <string name="dt2s_timeout">Bruk tidsavbrudd for skjerm</string>
+  <string name="dt2s_root">Bruk rot</string>
+  <string name="dt2s_admin_hint">For å kunne bruke dobbelttrykk for å låse, må du aktivere enhetsadministrator for Lawnchair. Dette er en sikker lås, det betyr at du må angi PIN ved neste opplåsing, hvis du satt opp en.</string>
+  <string name="dt2s_admin_warning">Ved å deaktivere systemadministrator vil du ikke lenger kunne bruke dobbelttrykk for å låse på startskjermen.</string>
 </resources>
