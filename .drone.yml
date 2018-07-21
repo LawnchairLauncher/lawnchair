@@ -39,7 +39,7 @@ pipeline:
     apk_path: build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
     channel_id: "-1001083653933"
-    public_branch: beta
+    public_branch: alpha
     environment:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:
