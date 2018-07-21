@@ -340,6 +340,12 @@
   <string name="pull_down_apps_search">查找应用</string>
   <string name="enable_screen_rotation">启用屏幕旋转</string>
   <string name="use_system_fonts_title">使用系统字体显示标签</string>
+  <string name="auto_add_shortcuts_label">将图标添加到主屏幕</string>
+  <string name="auto_add_shortcuts_description">自动添加新应用</string>
+  <string name="shortcut_blacklist">快捷方式黑名单</string>
+  <string name="shortcut_blacklist_sum">阻止应用程序将图标添加到主屏幕</string>
+  <string name="blacklist_app">已被屏蔽的应用</string>
+  <string name="blacklist_app_selected">&#160;已选择</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">恢复</string>
   <string name="backup_export_title">备份</string>
@@ -405,11 +411,15 @@
   <string name="hide_app">隐藏应用</string>
   <string name="hide_app_sum">从应用抽屉隐藏应用</string>
   <string name="hidden_app">隐藏的应用</string>
+  <string name="hidden_app_selected">&#160;已选择</string>
+  <string name="list_app_apply">应用</string>
+  <string name="list_app_reset">重置</string>
   <string name="unauthorized_device">此设备已经安装了一些盗版工具，请卸载后继续。</string>
   <string name="two_row_dock">双行 Dock 栏</string>
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
   <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
+  <string name="error_no_calendar">未找到已安装的日历应用</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed 未启用</string>
   <string name="lawnfeed_not_enabled">看起来您正在尝试打开 Google Now 页面，但是您还没有在行为设置中打开这个选项。\n\n您想现在启用吗？</string>
@@ -491,4 +501,11 @@
   <string name="about_bio_chris">拥有创造性思维的影响者、内容创造者。社交媒体和公关总监。</string>
   <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 Substratum 的应用程序开发者。</string>
   <!-- DT2S -->
+  <string name="dt2s_title">双击睡眠</string>
+  <string name="dt2s_disabled">已禁用</string>
+  <string name="dt2s_deviceadmin">使用设备管理员权限</string>
+  <string name="dt2s_timeout">使用屏幕超时</string>
+  <string name="dt2s_root">使用root权限</string>
+  <string name="dt2s_admin_hint">为了能够使用双击锁定，您必须启用 Lawnchair 的设备管理员权限。这是一个安全的锁屏方式，意味着你必须在下一次解锁时输入你的 PIN（如果有的话）。</string>
+  <string name="dt2s_admin_warning">若禁用设备管理员，您将无法使用双击来锁定主屏幕。</string>
 </resources>
