@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Apps zoeken</string>
   <string name="enable_screen_rotation">Scherm rotatie</string>
   <string name="use_system_fonts_title">Systeemlettertypes gebruiken voor labels</string>
+  <string name="auto_add_shortcuts_label">Icoon toevoegen aan Startscherm</string>
+  <string name="auto_add_shortcuts_description">Voor nieuwe apps</string>
+  <string name="shortcut_blacklist">Snelkoppelingen zwarte lijst</string>
+  <string name="shortcut_blacklist_sum">Apps tegenhouden iconen toe te voegen aan Startscherm</string>
+  <string name="blacklist_app">Geblokkeerde app</string>
+  <string name="blacklist_app_selected">&#160;geselecteerd</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Herstel</string>
   <string name="backup_export_title">Back-up</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Verborgen apps</string>
   <string name="hide_app_sum">App verbergen in het app-overzicht</string>
   <string name="hidden_app">Verborgen app</string>
+  <string name="hidden_app_selected">&#160;geselecteerd</string>
+  <string name="list_app_apply">Toepassen</string>
+  <string name="list_app_reset">Reset</string>
   <string name="unauthorized_device">Dit apparaat heeft een aantal piraterij-apps geïnstalleerd. Gelieve deze te deïnstalleren om verder te gaan.</string>
   <string name="two_row_dock">Twee-rijige favorietenbalk</string>
   <string name="reset_alternative_icons_title">Reset alternatieve app iconen?</string>
   <string name="reset_alternative_icons">Je hebt %1$d apps met alternatieve iconen, wil je deze resetten?</string>
   <string name="error_no_browser">Geen activiteit gevonden om URLs te verwerken</string>
+  <string name="error_no_calendar">Geen kalender app geïnstalleerd</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed uitgeschakeld</string>
   <string name="lawnfeed_not_enabled">Het lijkt erop dat je de Google Now pagina wilt openen, maar deze niet hebt ingeschakeld in de gedragsinstellingen.\n\nWil je het nu inschakelen?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Creatieve geest, Beïnvloeder &amp; Content maker. Social Media en PR manager.</string>
   <string name="about_bio_msfjarvis">Kernontwikkelaar bij halogenOS en applicatieontwikkelaar bij substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Dubbel tikken om te slapen</string>
+  <string name="dt2s_disabled">Uitgeschakeld</string>
+  <string name="dt2s_deviceadmin">Apparaat gebruiken als beheerder</string>
+  <string name="dt2s_timeout">Gebruik makend van scherm timeout</string>
+  <string name="dt2s_root">Gebruik makend van root</string>
+  <string name="dt2s_admin_hint">Om \"Dubbel-tik om te vergrendelen\" te gebruiken, dient Lawnchair apparaatbeheerder rechten te hebben. Dit is een beveiligde vergrendeling, waardoor je een PIN moet invoeren bij de volgende ontgrendeling (indien ingesteld).</string>
+  <string name="dt2s_admin_warning">Door apparaatbeheerder rechten te ontnemen, zul je niet langer gebruik kunnen maken van \"Dubbel-tik om te vergrendelen\".</string>
 </resources>
