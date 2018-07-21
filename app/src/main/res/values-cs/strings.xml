@@ -279,7 +279,7 @@
   <string name="full_width_width_widgets_pref_title">Widgety s plnou šířkou</string>
   <string name="full_width_widgets_pref_summary">Povolte widgetům pokrývat celou šířku bez odsazení</string>
   <string name="notification_access_pref_title">Zobrazení oznámení a náhledů</string>
-  <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte spouštěči Lawnchair přístup k vašim upozorněním</string>
+  <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte Lawnchair přístup k vašim upozorněním</string>
   <string name="general_pref_title">Obecné</string>
   <string name="dock_pref_title">Dok</string>
   <string name="app_drawer_pref_title">Seznam aplikací</string>
@@ -343,6 +343,12 @@
   <string name="pull_down_apps_search">Vyhledávání v aplikacích</string>
   <string name="enable_screen_rotation">Povolit otáčení obrazovky</string>
   <string name="use_system_fonts_title">Použít systémová písma pro popisky</string>
+  <string name="auto_add_shortcuts_label">Přidat ikonu na domovskou obrazovku</string>
+  <string name="auto_add_shortcuts_description">Pro nové aplikace</string>
+  <string name="shortcut_blacklist">Černá listina zkratek</string>
+  <string name="shortcut_blacklist_sum">Předejít aplikacím v přidávání ikon na domovskou obrazovku</string>
+  <string name="blacklist_app">Blokována aplikace</string>
+  <string name="blacklist_app_selected">&#160;vybráno</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importovat</string>
   <string name="backup_export_title">Exportovat</string>
@@ -408,11 +414,15 @@
   <string name="hide_app">Skrýt aplikaci</string>
   <string name="hide_app_sum">Skrýt aplikaci v seznamu aplikací</string>
   <string name="hidden_app">Skrytá aplikace</string>
+  <string name="hidden_app_selected">&#160;vybráno</string>
+  <string name="list_app_apply">Použít</string>
+  <string name="list_app_reset">Obnovit</string>
   <string name="unauthorized_device">Toto zařízení má nainstalovány nástroje pro pirátství. Odinstalujte je a pokračujte.</string>
   <string name="two_row_dock">Dok ve dvou řadách</string>
   <string name="reset_alternative_icons_title">Resetovat alternativní ikony aplikací?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikací s alternativními ikonami, chcete je obnovit?</string>
   <string name="error_no_browser">Nebyla nalezena žádná aktivita pro práci s adresami URL</string>
+  <string name="error_no_calendar">Žádná aplikace kalendáře není nainstalována</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed není povolen</string>
   <string name="lawnfeed_not_enabled">Zdá se, že se pokoušíte otevřít stránku Google Now, avšak v nastavení chování jste tuto možnost nepovolili.\n\nChcete tuto možnost povolit?</string>
@@ -494,4 +504,11 @@
   <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
   <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Uspat poklepáním</string>
+  <string name="dt2s_disabled">Vypnuto</string>
+  <string name="dt2s_deviceadmin">Použít jako správce zařízení</string>
+  <string name="dt2s_timeout">Použít režim spánku</string>
+  <string name="dt2s_root">Použít root</string>
+  <string name="dt2s_admin_hint">Aby bylo možné použít DT2S, musíte Lawnchair nastavit jako administrátora zařízení. Toto je zabezpečené zamčení, tudíž budete muset zadat kód k odemčení, pakliže jste nějaký nastavili.</string>
+  <string name="dt2s_admin_warning">Pokud vypněte administrátora zařízení, nebudete schopni používat Dt2S.</string>
 </resources>
