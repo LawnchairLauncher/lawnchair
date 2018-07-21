@@ -249,7 +249,7 @@
   <string name="about_title">О aplikacji</string>
   <string name="about_pref_summary">Poznaj zespół Lawnchaira</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Zestaw ikon</string>
+  <string name="icon_pack_preference_title">Paczka ikon</string>
   <string name="icon_pack_preference_summary">Wybierz paczkę ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock pobiera kolor z tapety</string>
   <string name="hotseat_show_arrow">Pokaż strzałkę</string>
@@ -273,7 +273,7 @@
   <string name="icon_scale_pref_title">Rozmiar ikon</string>
   <string name="hotseat_height_scale">Skala wysokości</string>
   <string name="hotseat_custom_opacity">Nieprzezroczystość docka</string>
-  <string name="hotseat_uses_custom_opacity">Włącz niestandardową nieprzezroczystość docka</string>
+  <string name="hotseat_uses_custom_opacity">Dock używa własnej przezroczystości</string>
   <string name="icon_text_scale_pref_title">Rozmiar tekstu</string>
   <string name="icon_text_padding_scale_pref_title">Skala odstępu ikon</string>
   <string name="full_width_width_widgets_pref_title">Widżety na całej szerokości</string>
@@ -306,15 +306,15 @@
   <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
-  <string name="pinch_to_overview_pref_title">Uszczypnij dla podglądu ekranów</string>
+  <string name="pinch_to_overview_pref_title">Podgląd ekranów po uszczypnięciu</string>
   <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
   <string name="light_statusbar_pref_title">Jasny pasek stanu</string>
-  <string name="light_statusbar_pref_force">Pasek stanu wyświetli ciemne ikony</string>
-  <string name="light_statusbar_pref_off">Pasek stanu będzie zawsze pokazywać jasne ikony.</string>
-  <string name="keep_scroll_state_pref_title">Zachowanie pozycji przewijania</string>
-  <string name="keep_scroll_state_pref_summary">Zapisuje pozycję przewijania w szufladzie</string>
+  <string name="light_statusbar_pref_force">Pasek stanu będzie wyświetlał ciemne ikony</string>
+  <string name="light_statusbar_pref_off">Pasek stanu będzie pokazywał jasne ikony</string>
+  <string name="keep_scroll_state_pref_title">Zapisz pozycję przewijania</string>
+  <string name="keep_scroll_state_pref_summary">Zapisuje pozycję przewijania listy aplikacji</string>
   <string name="home_opens_drawer_pref_title">Przycisk home otwiera listę aplikacji</string>
-  <string name="home_opens_drawer_pref_summary">Naciśnięcie przycisku Home na ekranie głównym otworzy szufladę z aplikacjami</string>
+  <string name="home_opens_drawer_pref_summary">Naciśnięcie przycisku Home na ekranie głównym otworzy listę aplikacji</string>
   <string name="show_hidden_pref_title">Pokaż ukryte aplikacje</string>
   <string name="show_hidden_pref_on">Ukryte aplikacje zostaną pokazane by zmienić ustawienia widoczności</string>
   <string name="show_hidden_pref_off">Ukryte aplikacje nie będą widoczne</string>
@@ -343,6 +343,12 @@
   <string name="pull_down_apps_search">Wyszukiwanie aplikacji</string>
   <string name="enable_screen_rotation">Włącz obracanie ekranu</string>
   <string name="use_system_fonts_title">Użyj czcionki systemowej dla etykiet</string>
+  <string name="auto_add_shortcuts_label">Dodaj ikonę do ekranu głównego</string>
+  <string name="auto_add_shortcuts_description">Dla nowych aplikacji</string>
+  <string name="shortcut_blacklist">Czarna lista skrótów</string>
+  <string name="shortcut_blacklist_sum">Blokuj wybranym aplikacjom dodawanie nowych ikon na stronie głównej</string>
+  <string name="blacklist_app">Blokowana aplikacja</string>
+  <string name="blacklist_app_selected">&#160;wybrano</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Przywróć</string>
   <string name="backup_export_title">Wsparcie</string>
@@ -359,7 +365,7 @@
   <string name="units_imperial">Imperialne</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Pogoda</string>
-  <string name="pref_weather_title">Włącz pogodę</string>
+  <string name="pref_weather_title">Pogoda</string>
   <string name="pref_weather_units">Jednostki pogodowe</string>
   <string name="pref_weather_city_summary">Aby uzyskać najlepsze wyniki, należy podać kod kraju</string>
   <string name="pref_weather_city_title">Miasto</string>
@@ -385,14 +391,14 @@
   <string name="animated_clock_icon_alternative_clock_apps_title">Animuj alternatywne aplikacje zegara</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Włącz to, jeśli nie używasz Zegara Google jako domyślnej aplikacji zegara</string>
   <string name="location_permission_warn">Aby zmienić dostawcę pogodowego wymagane jest uprawienie do lokalizacji!</string>
-  <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
+  <string name="num_cols_drawer_pref_title">Liczba kolumn w liście aplikacji</string>
   <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
-  <string name="pref_backport_shortcuts">Skróty</string>
+  <string name="pref_backport_shortcuts">Skróty na starsze urządzenia</string>
   <string name="weather_api_key_not_set">Nie ustawiono klucza API</string>
   <string name="pref_weather_api_key_title">Klucz API</string>
   <string name="pref_all_apps_custom_label_color">Użyj niestandardowego koloru etykiety</string>
-  <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
-  <string name="pref_num_rows_drawer">Liczba wierszy w szufladzie</string>
+  <string name="pref_all_apps_label_color">Kolor etykiet ikon w liście aplikacji</string>
+  <string name="pref_num_rows_drawer">Liczba wierszy w liście aplikacji</string>
   <string name="center_wallpaper_pref_title">Wyśrodkowana tapeta gdy jest tylko jedna strona</string>
   <string name="center_wallpaper_pref_summary">Działa tylko wtedy, gdy ekran wykorzystuje jedną stronę</string>
   <string name="vertical_drawer_layout_pref_title">Wyświetl jako pionową listę</string>
@@ -408,16 +414,20 @@
   <string name="hide_app">Ukryj aplikacje</string>
   <string name="hide_app_sum">Ukryj aplikacje z listy</string>
   <string name="hidden_app">Ukryta aplikacja</string>
+  <string name="hidden_app_selected">&#160;wybrano</string>
+  <string name="list_app_apply">Zastosuj</string>
+  <string name="list_app_reset">Przywróć</string>
   <string name="unauthorized_device">To urządzenie ma zainstalowane kilka narzędzi służących piractwu. Proszę odinstalować je aby kontynuować.</string>
   <string name="two_row_dock">Dock w dwóch rzędach</string>
-  <string name="reset_alternative_icons_title">Zresetować ikony alternatywnych aplikacji?</string>
+  <string name="reset_alternative_icons_title">Zresetować własne ustawione ikony aplikacji?</string>
   <string name="reset_alternative_icons">Masz %1$d aplikacji z alternatywnymi ikonami, czy chcesz je zresetować?</string>
   <string name="error_no_browser">Nie znaleziono żadnej aktywności obsługującej adresy URL</string>
+  <string name="error_no_calendar">Brak aplikacji Kalendarza na urządzeniu</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed nie jest aktywny</string>
   <string name="lawnfeed_not_enabled">Wygląda, że próbujesz otworzyć stronę Google Now, ale nie włączono opcji w ustawieniach zachowania.\n\nCzy włączyć teraz?</string>
   <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
-  <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
+  <string name="lawnfeed_outdated">Do pracy z tą wersją Lawnchair jest potrzebna nowsza wersja Lawnfeed.\n\nPrzed aktualizacją prawdopodobnie będzie trzeba usunąć obecną wersję Lawnfeed.\n\nCzy chcesz pobrać ją teraz?</string>
   <string name="title_storage_permission_required">Wymagany dostęp do plików</string>
   <string name="content_storage_permission_required">W Androidzie 8.1 i wyższym uprawnienia do \"pamięci urządzenia\" są wymagane dla aplikacji z dostępem do tapet. Bez tego Lawnchair może ulec awarii lub zachowywać się niestabilnie.</string>
   <string name="disable_popup">Nie pokazuj ponownie</string>
@@ -435,12 +445,12 @@
   <string name="backup_error_blank_location">Ścieżka nie może być pusta</string>
   <string name="backup_error_blank_contents">Zawartość nie może być pusta</string>
   <string name="backup_creating">Tworzenie kopii zapasowej</string>
-  <string name="no_recent_backups">Brak niedawnych kopii zapasowych</string>
+  <string name="no_recent_backups">Brak kopii zapasowych</string>
   <string name="backup_loading">Ładowanie...</string>
   <string name="backup_invalid">Niedostępny</string>
   <string name="backup_remove_from_recents">Usuń z listy</string>
   <string name="backup_share">Udostępnij</string>
-  <string name="backup_timestamp">Stworzono</string>
+  <string name="backup_timestamp">Utworzono</string>
   <string name="backup_restoring">Przywracanie kopii zapasowej</string>
   <string name="backup_restarting">Ponowne uruchamianie</string>
   <string name="restore_contents">Przywróć zawartość</string>
@@ -459,7 +469,7 @@
   <!-- Preference Category Icons Title -->
   <string name="pref_category_icons">Ikony</string>
   <!-- Preference Category Drawer Title -->
-  <string name="pref_category_drawer">Szuflada</string>
+  <string name="pref_category_drawer">Lista aplikacji</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Pozostałe</string>
   <string name="blur_oom">Lawnchairowi skończyła się pamięć podczas próby rozmycia tapety. Zmniejszenie rozdzielczości tapety może rozwiązać ten problem.</string>
@@ -492,6 +502,13 @@
   <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
   <string name="about_bio_josh">Niezależny grafik.</string>
   <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR.</string>
-  <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w Substratum.</string>
+  <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Stuknij dwukrotnie aby zablokować</string>
+  <string name="dt2s_disabled">Wyłączono</string>
+  <string name="dt2s_deviceadmin">Używając administratora urządzenia</string>
+  <string name="dt2s_timeout">Używając wygaszanie ekranu</string>
+  <string name="dt2s_root">Używając root</string>
+  <string name="dt2s_admin_hint">Aby móc korzystać z podwójnego dotknięcia, aby zablokować, musisz włączyć administratora urządzenia dla Lawnchaira. Jest to bezpieczna blokada, co oznacza, że ​​musisz podać kod PIN przy następnym odblokowaniu, jeśli go posiadasz.</string>
+  <string name="dt2s_admin_warning">Wyłączając administratora urządzenia, nie będziesz w stanie użyć podwójnego dotknięcia, aby zablokować ekran główny.</string>
 </resources>

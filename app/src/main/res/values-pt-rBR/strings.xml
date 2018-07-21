@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Abrir pesquisa de aplicativos</string>
   <string name="enable_screen_rotation">Ativar a rotação de tela</string>
   <string name="use_system_fonts_title">Use fontes do sistema para rótulos</string>
+  <string name="auto_add_shortcuts_label">Adicionar ícone à tela inicial</string>
+  <string name="auto_add_shortcuts_description">Para novos aplicativos</string>
+  <string name="shortcut_blacklist">Lista negra de atalhos</string>
+  <string name="shortcut_blacklist_sum">Impedir que aplicativos adicionem ícones à tela inicial</string>
+  <string name="blacklist_app">Aplicativo bloqueado</string>
+  <string name="blacklist_app_selected">&#160;selecionado</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaurar backup</string>
   <string name="backup_export_title">Fazer backup</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Ocultar app</string>
   <string name="hide_app_sum">Ocultar aplicativos da gaveta de aplicativos</string>
   <string name="hidden_app">Aplicativos ocultos</string>
+  <string name="hidden_app_selected">&#160;selecionado</string>
+  <string name="list_app_apply">Aplicar</string>
+  <string name="list_app_reset">Redefinir</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
   <string name="two_row_dock">Dock com 2 linhas</string>
   <string name="reset_alternative_icons_title">Redefinir os ícones de apps alternativos?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, deseja restaurá-los?</string>
   <string name="error_no_browser">Nenhum navegador encontrado para abrir URLs</string>
+  <string name="error_no_calendar">Nenhum aplicativo de calendário instalado</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed não habilitado</string>
   <string name="lawnfeed_not_enabled">Parece que você está tentando abrir a página do Google Now, mas você não ativou a opção nas configurações de comportamento.\n\nVocê quer habilitá-lo agora?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Mente criativa, influenciador &amp; Criador de conteúdos. Redes sociais e gestor de PR.</string>
   <string name="about_bio_msfjarvis">Principal programador do halogenOS e programador de aplicações em substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Toque duplo para desligar a tela</string>
+  <string name="dt2s_disabled">Desativado</string>
+  <string name="dt2s_deviceadmin">Usando o administrador do dispositivo</string>
+  <string name="dt2s_timeout">Usando o tempo limite da tela</string>
+  <string name="dt2s_root">Usando root</string>
+  <string name="dt2s_admin_hint">Para poder usar o toque duplo para bloquear, você precisa habilitar o administrador do dispositivo para o Lawnchair. Esse é um bloqueio seguro, o que significa que você precisa inserir seu PIN no próximo desbloqueio, se tiver algum.</string>
+  <string name="dt2s_admin_warning">Ao desativar o administrador do dispositivo, você não poderá usar o toque duplo para bloquear a tela inicial.</string>
 </resources>

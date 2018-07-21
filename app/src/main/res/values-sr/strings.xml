@@ -342,6 +342,12 @@
   <string name="pull_down_apps_search">Претрага апликација</string>
   <string name="enable_screen_rotation">Омогући ротацију екрана</string>
   <string name="use_system_fonts_title">Користити системски фонтовe за етикете</string>
+  <string name="auto_add_shortcuts_label">Додај икону на почетни екран</string>
+  <string name="auto_add_shortcuts_description">За нове апликације</string>
+  <string name="shortcut_blacklist">Црна листа пречица</string>
+  <string name="shortcut_blacklist_sum">Забраните апликације да додају иконе на Почетни екран</string>
+  <string name="blacklist_app">Блокиране апликације</string>
+  <string name="blacklist_app_selected">&#160;изабрано</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Увези</string>
   <string name="backup_export_title">Извези</string>
@@ -407,11 +413,15 @@
   <string name="hide_app">Сакриј апликацију</string>
   <string name="hide_app_sum">Сакриј апликацију из апликације drawer-а</string>
   <string name="hidden_app">Скривена апликација</string>
+  <string name="hidden_app_selected">&#160;изабрано</string>
+  <string name="list_app_apply">Примени</string>
+  <string name="list_app_reset">Поништи</string>
   <string name="unauthorized_device">Овај уређај има инсталиран неколико пиратских алатки. Молим вас, деинсталирајте их да бисте наставили.</string>
   <string name="two_row_dock">Два реда dock</string>
   <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
   <string name="error_no_browser">Није пронађена никаква активност која би се бавила URL адресама</string>
+  <string name="error_no_calendar">Није инсталирана апликација за календар</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed није омогућен</string>
   <string name="lawnfeed_not_enabled">Изгледа да покушавате да отворите страницу Google Now, али нисте омогућили опцију у понашање подешавање.\n\nДа ли желите да омогућите то сада?</string>
@@ -493,4 +503,11 @@
   <string name="about_bio_chris">Креативни ум, саветник за продају &amp; Креатор садржаја. Друштвени медији и ПР менаџер.</string>
   <string name="about_bio_msfjarvis">Основни програмер на halogenOS-у и апликације на субстратуму.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Дупли додир за спавање</string>
+  <string name="dt2s_disabled">Онемогућено</string>
+  <string name="dt2s_deviceadmin">Коришћење администратора уређаја</string>
+  <string name="dt2s_timeout">Омогући временско гашење екрана</string>
+  <string name="dt2s_root">Користећи рут</string>
+  <string name="dt2s_admin_hint">Да бисте могли да користите двоструки додир за закључавање, морате омогућити администратора уређаја за Lawnchair. Ово је сигурносно закључавање, што значи да морате унети свој ПИН код следећег откључавања, ако га имате.</string>
+  <string name="dt2s_admin_warning">Ако онемогућите администратора уређаја, нећете моћи да користите двоструки додир за закључавање на почетном екрану.</string>
 </resources>

@@ -60,7 +60,7 @@
   <string name="all_apps_button_label">Lista de aplicações</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Ecrã principal</string>
+  <string name="all_apps_home_button_label">Ecrã</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Remover</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
@@ -316,7 +316,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="keep_scroll_state_pref_title">Guardar posição de deslocamento</string>
   <string name="keep_scroll_state_pref_summary">Guardar posição de deslocamento no menu</string>
   <string name="home_opens_drawer_pref_title">Botão Home abre o menu de aplicações</string>
-  <string name="home_opens_drawer_pref_summary">Pressionar o botão Home na tela inicial irá abrir a gaveta de aplicações</string>
+  <string name="home_opens_drawer_pref_summary">Se premir o botão Home no ecrã inicial, abre o menu de aplicações</string>
   <string name="show_hidden_pref_title">Mostrar aplicações ocultas</string>
   <string name="show_hidden_pref_on">Aplicações ocultas serão visíveis para alterar as definições de visibilidade</string>
   <string name="show_hidden_pref_off">Aplicações ocultas não serão visíveis</string>
@@ -345,6 +345,12 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="pull_down_apps_search">Pesquisar aplicações</string>
   <string name="enable_screen_rotation">Ativar rotação automática</string>
   <string name="use_system_fonts_title">Utilizar tipo de letra do sistema</string>
+  <string name="auto_add_shortcuts_label">Adicionar ícone ao ecrã inicial</string>
+  <string name="auto_add_shortcuts_description">Para novas aplicações</string>
+  <string name="shortcut_blacklist">Lista negra para atalhos</string>
+  <string name="shortcut_blacklist_sum">Impede as aplicações de adicionarem ícones ao ecrã</string>
+  <string name="blacklist_app">Aplicação bloqueada</string>
+  <string name="blacklist_app_selected">&#160;selecionada</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaurar</string>
   <string name="backup_export_title">Backup</string>
@@ -410,11 +416,15 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="hide_app">Aplicações ocultas</string>
   <string name="hide_app_sum">Ocultar aplicações no menu</string>
   <string name="hidden_app">Aplicação oculta</string>
+  <string name="hidden_app_selected">&#160;selecionada</string>
+  <string name="list_app_apply">Aplicar</string>
+  <string name="list_app_reset">Repor</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas piratas. Desinstale-as para continuar.</string>
   <string name="two_row_dock">Doca com duas linhas</string>
   <string name="reset_alternative_icons_title">Repor ícones alternativos?</string>
   <string name="reset_alternative_icons">Você tem %1$d aplicações com ícones alternativos, deseja utilizar estes ícones?</string>
   <string name="error_no_browser">Não existe uma aplicação para manipular URL</string>
+  <string name="error_no_calendar">Nenhum calendário instalado</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed não está ativado</string>
   <string name="lawnfeed_not_enabled">Parece que está a tentar abrir a página do Google Now, mas esta opção não está ativada nas definições de comportamento.\n\nAtivar agora?</string>
@@ -496,4 +506,11 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
   <string name="about_bio_chris">Mente criativa, influenciador e criador de conteúdos. Redes sociais e gestor de PR.</string>
   <string name="about_bio_msfjarvis">Principal programador do halogenOS e programador de aplicações em substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Toque duplo para desligar ecrã</string>
+  <string name="dt2s_disabled">Desativado</string>
+  <string name="dt2s_deviceadmin">Usando administrador do dispsoitivo</string>
+  <string name="dt2s_timeout">Usando tempo limite</string>
+  <string name="dt2s_root">Usando root</string>
+  <string name="dt2s_admin_hint">Para poder utilizar o toque duplo para bloquear, tem que ativar a administração do dispositivo para o Lawnchair. Este é um bloqueio seguro, o que significa que é necessário utilizar o PIN no próximo desbloqueio, caso esteja definido.</string>
+  <string name="dt2s_admin_warning">Se desativar o administrador do dispositivo, não vai ser possível utilizar o toque duplo no ecrã inicial.</string>
 </resources>

@@ -342,6 +342,12 @@
   <string name="pull_down_apps_search">Căutați aplicații</string>
   <string name="enable_screen_rotation">Activaţi rotirea ecranului</string>
   <string name="use_system_fonts_title">Folosește fonturile de sistem pentru etichete</string>
+  <string name="auto_add_shortcuts_label">Adăugare pictogramă pe ecranul de pornire</string>
+  <string name="auto_add_shortcuts_description">Pentru aplicații noi</string>
+  <string name="shortcut_blacklist">Listă neagră</string>
+  <string name="shortcut_blacklist_sum">Împiedicați aplicațiile să adauge pictograme pe ecranul de pornire</string>
+  <string name="blacklist_app">Aplicaţii blocate</string>
+  <string name="blacklist_app_selected">&#160;selectate</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
@@ -407,11 +413,15 @@
   <string name="hide_app">Ascundere aplicaţie</string>
   <string name="hide_app_sum">Ascunde aplicații în lista aplicaţiilor</string>
   <string name="hidden_app">Aplicații ascunse</string>
+  <string name="hidden_app_selected">&#160;selectate</string>
+  <string name="list_app_apply">Aplicare</string>
+  <string name="list_app_reset">Resetare</string>
   <string name="unauthorized_device">Acest dispozitiv are câteva instrumente de piraterie instalate. Vă rugăm să le dezinstalați pentru a continua.</string>
   <string name="two_row_dock">Doc în două rânduri</string>
   <string name="reset_alternative_icons_title">Resetați pictogramele alternative ale aplicațiilor?</string>
   <string name="reset_alternative_icons">Aveți %1$d aplicații cu pictograme alternative, doriți să le resetați?</string>
   <string name="error_no_browser">Nu s-a găsit nicio activitate pentru gestionarea adreselor URL</string>
+  <string name="error_no_calendar">Nu este instalată nicio aplicație de calendar</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed nu este activat</string>
   <string name="lawnfeed_not_enabled">Se pare că încercați să deschideți pagina Google Now, dar nu ați activat opțiunea din setările de comportament.\n\nDoriți să o activați acum?</string>
@@ -493,4 +503,11 @@
   <string name="about_bio_chris">Minte creativă, Influențator și Creator de conținut. Social Media și PR Manager.</string>
   <string name="about_bio_msfjarvis">Dezvoltator principal al halogenOS și dezvoltator al substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Dublă-apăsare pentru sleep</string>
+  <string name="dt2s_disabled">Dezactivată</string>
+  <string name="dt2s_deviceadmin">Utilizând administratorul dispozitivului</string>
+  <string name="dt2s_timeout">Utilizând expirarea ecranului</string>
+  <string name="dt2s_root">Utilizând accesul la root</string>
+  <string name="dt2s_admin_hint">Pentru a putea utiliza blocare prin atingere dublă, trebuie să activați administrator dispozitiv pentru Lawnchair. Aceasta este o blocare sigură, ceea ce înseamnă că trebuie să introduceți codul PIN la următoarea deblocare, dacă aveți vreunul.</string>
+  <string name="dt2s_admin_warning">Prin dezactivarea administratorului dispozitivului, nu veți putea utiliza atingerea dublă pentru a bloca dispozitivul.</string>
 </resources>

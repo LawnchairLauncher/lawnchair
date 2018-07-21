@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Uygulama ara</string>
   <string name="enable_screen_rotation">Ekran döndürme</string>
   <string name="use_system_fonts_title">Etiketler için sistem yazı tiplerini kullan</string>
+  <string name="auto_add_shortcuts_label">Ana ekrana simge ekle</string>
+  <string name="auto_add_shortcuts_description">Yeni uygulamalar için</string>
+  <string name="shortcut_blacklist">Kara liste kısayolu</string>
+  <string name="shortcut_blacklist_sum">Uygulamaların simgeleri Ana ekrana eklemesini engelle</string>
+  <string name="blacklist_app">Engellenen uygulama</string>
+  <string name="blacklist_app_selected">&#160;seçildi</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Geri yükle</string>
   <string name="backup_export_title">Yedekle</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Uygulamaları gizle</string>
   <string name="hide_app_sum">Uygulamaları uygulama çekmecesinden gizleyin</string>
   <string name="hidden_app">Gizli uygulama</string>
+  <string name="hidden_app_selected">&#160;seçildi</string>
+  <string name="list_app_apply">Uygula</string>
+  <string name="list_app_reset">Sıfırla</string>
   <string name="unauthorized_device">Bu cihazda birkaç korsan yazılım mevcut. Devam etmek için lütfen bunları kaldırın.</string>
   <string name="two_row_dock">İki satır alt panel</string>
   <string name="reset_alternative_icons_title">Alternatif uygulama simgeleri sıfırlansın mı?</string>
   <string name="reset_alternative_icons">Alternatif simgelere sahip 5 uygulamanız var, bunları sıfırlamak istiyor musunuz?</string>
   <string name="error_no_browser">URL\'leri işleyecek etkinlik bulunamadı</string>
+  <string name="error_no_calendar">Takvim uygulaması yüklü değil</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed etkin değil</string>
   <string name="lawnfeed_not_enabled">Google Now sayfasını açmaya çalışıyorsunuz gibi gözüküyor, fakat davranış ayarlarındaki seçeneği etkinleştirmemişsiniz.\n\nEtkinleştirmek ister misiniz?</string>
@@ -460,14 +470,14 @@
   <string name="pref_category_drawer">Uygulama çekmecesi</string>
   <!-- Preference Category Misc Title -->
   <string name="pref_category_misc">Çeşitli</string>
-  <string name="blur_oom">Lawnchair, duvar kağıdınızı bulanıklaştırmaya çalışan bellek bitti! Duvar kağıdı çözünürlüğünü düşürmek bunu düzeltebilir.</string>
+  <string name="blur_oom">Lawnchair, duvar kağıdınızı bulanıklaştırmaya çalışırken geçici bellek alanı doldu! Duvar kağıdı çözünürlüğünü düşürmek bunu düzeltebilir.</string>
   <string name="legacy_backup">Eski yedekleme dosyası</string>
   <!-- About screen -->
   <string name="title_attribouter_licenses">Açık Kaynak Lisansları</string>
   <string name="title_attribouter_email">E-Posta</string>
   <string name="title_attribouter_website">Web sitesi</string>
   <string name="title_attribouter_rate">Derecelendir</string>
-  <string name="title_attribouter_version">Versiyon %1$s</string>
+  <string name="title_attribouter_version">Sürüm %1$s</string>
   <string name="title_attribouter_license">Lisans</string>
   <string name="title_attribouter_license_permissions">İzinler</string>
   <string name="title_attribouter_license_conditions">Koşullar</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi.</string>
   <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratumdaki uygulama geliştiricisi.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Uyutmak için çift dokunun</string>
+  <string name="dt2s_disabled">Devre dışı</string>
+  <string name="dt2s_deviceadmin">Cihaz yöneticisini kullan</string>
+  <string name="dt2s_timeout">Ekran zaman aşımını kullan</string>
+  <string name="dt2s_root">Kök erişimini kullan</string>
+  <string name="dt2s_admin_hint">Çift dokunmayı kullanarak kilitlemek için, Lawnchair için cihaz yöneticisini etkinleştirmeniz gerekiyor. Bu, güvenli bir kilitleme, yani bir sonraki kilidinizde PIN\'inizi girmeniz gerektiği anlamına gelir.</string>
+  <string name="dt2s_admin_warning">Cihaz yöneticisini devre dışı bırakarak, ana ekranınızı kilitlemek için çift dokunma özelliğini kullanamazsınız.</string>
 </resources>

@@ -360,7 +360,7 @@ Waitin\' t\' install</string>
   <string name="units_imperial">American stuff</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Rain, wind and clouds</string>
-  <string name="pref_weather_title">Enable rain, wind and clouds</string>
+  <string name="pref_weather_title">Rain, wind and clouds</string>
   <string name="pref_weather_units">Units o\' weather</string>
   <string name="pref_weather_city_summary">Fer best results include land code</string>
   <string name="pref_weather_city_title">Harbour</string>

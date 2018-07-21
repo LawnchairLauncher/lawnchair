@@ -343,6 +343,12 @@
   <string name="pull_down_apps_search">Поиск приложений</string>
   <string name="enable_screen_rotation">Включить авто-поворот экрана</string>
   <string name="use_system_fonts_title">Использовать системные шрифты для ярлыков</string>
+  <string name="auto_add_shortcuts_label">Добавлять значки на главный экран</string>
+  <string name="auto_add_shortcuts_description">Для новых приложений</string>
+  <string name="shortcut_blacklist">Чёрный список значков</string>
+  <string name="shortcut_blacklist_sum">Запретить приложениям добавлять значки на главный экран</string>
+  <string name="blacklist_app">Заблокированные приложения</string>
+  <string name="blacklist_app_selected">&#160;выбрано</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Импорт</string>
   <string name="backup_export_title">Экспорт</string>
@@ -408,11 +414,15 @@
   <string name="hide_app">Скрытые приложения</string>
   <string name="hide_app_sum">Скрыть приложение из меню</string>
   <string name="hidden_app">Скрытое приложение</string>
+  <string name="hidden_app_selected">&#160;выбрано</string>
+  <string name="list_app_apply">Применить</string>
+  <string name="list_app_reset">Сбросить</string>
   <string name="unauthorized_device">На этом устройстве установлены пиратские утилиты. Пожалуйста, удалите их для продолжения.</string>
   <string name="two_row_dock">Двухстрочный док-бар</string>
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
   <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
+  <string name="error_no_calendar">Приложения календаря не установлено</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed не включен</string>
   <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
@@ -494,4 +504,11 @@
   <string name="about_bio_chris">Творческий разум и контент-менеджер. Менеджер по соцсетям и PR-менеджер.</string>
   <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Двойное нажатие для отключения экрана</string>
+  <string name="dt2s_disabled">Выключен</string>
+  <string name="dt2s_deviceadmin">Использование прав администратора</string>
+  <string name="dt2s_timeout">Использование тайм-аута экрана</string>
+  <string name="dt2s_root">Использование root</string>
+  <string name="dt2s_admin_hint">Чтобы иметь возможность использовать двойное нажатие для блокировки, вы должны предоставить права администратора для Lawnchair. Это защитный механизм, по которому требуется ввести PIN-код для последующей разблокировки, если он установлен.</string>
+  <string name="dt2s_admin_warning">Отключив права администратора, вы не сможете использовать двойное нажатие для блокировки на вашем главном экране.</string>
 </resources>

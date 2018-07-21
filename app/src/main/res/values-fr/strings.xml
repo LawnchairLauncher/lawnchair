@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Recherche d\'applications</string>
   <string name="enable_screen_rotation">Activer la rotation de l\'écran</string>
   <string name="use_system_fonts_title">Utiliser les polices de caractères du système pour les étiquettes</string>
+  <string name="auto_add_shortcuts_label">Ajouter l\'icône à l\'Écran d\'Accueil</string>
+  <string name="auto_add_shortcuts_description">Pour les nouvelles applis</string>
+  <string name="shortcut_blacklist">Liste noire des raccourcis</string>
+  <string name="shortcut_blacklist_sum">Empêcher les applications d\'ajouter des icônes à l\'Écran d\'accueil</string>
+  <string name="blacklist_app">Applications bloquées</string>
+  <string name="blacklist_app_selected">&#160;sélectionné</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restauration</string>
   <string name="backup_export_title">Sauvegarde</string>
@@ -406,11 +412,15 @@
   <string name="hide_app">Apps masquées</string>
   <string name="hide_app_sum">Masquer l\'application de la liste des applications</string>
   <string name="hidden_app">Application masquée</string>
+  <string name="hidden_app_selected">&#160;sélectionné</string>
+  <string name="list_app_apply">Appliquer</string>
+  <string name="list_app_reset">Réinitialiser</string>
   <string name="unauthorized_device">Cet appareil possède des outils de piratage installés. Veuillez les désinstaller pour continuer.</string>
   <string name="two_row_dock">Dock à deux rangées</string>
   <string name="reset_alternative_icons_title">Réinitialiser les icônes alternatives d\'applications ?</string>
   <string name="reset_alternative_icons">Vous avez %1$d applications avec des icônes alternatives, souhaitez-vous les réinitialiser ?</string>
   <string name="error_no_browser">Aucune application trouvée pour gérer les URLs</string>
+  <string name="error_no_calendar">Aucune appli de calendrier installé</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed non activé</string>
   <string name="lawnfeed_not_enabled">On dirait que vous essayez d’ouvrir la page Google Now, mais vous n’avez pas activé l’option dans les paramètres de comportement.\n\nSouhaitez-vous l’activer maintenant ?</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Esprit créatif, influenceur et créateur de contenu. Responsable des médias sociaux et des relations publiques.</string>
   <string name="about_bio_msfjarvis">Développeur principal pour halogenOS et développeur d\'application pour Substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Veille avec double appui</string>
+  <string name="dt2s_disabled">Désactivé</string>
+  <string name="dt2s_deviceadmin">Utiliser l\'administrateur de l\'appareil</string>
+  <string name="dt2s_timeout">Utiliser le délai d’extinction de l\'écran</string>
+  <string name="dt2s_root">Utiliser le Root</string>
+  <string name="dt2s_admin_hint">Pour pouvoir utiliser le double-tap pour verrouiller, vous devez autoriser l’accès d\'administration à Lawnchair. C\'est un verrouillage sécurisé, cela veut dire que vous devrez entrer votre PIN, si vous en avez un, au prochain déverrouillage.</string>
+  <string name="dt2s_admin_warning">En désactivant l\'accès d\'administration, vous ne pourrez plus utiliser le double-tap sur l\'écran d\'accueil pour verrouiller votre appareil.</string>
 </resources>

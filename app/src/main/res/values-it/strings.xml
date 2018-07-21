@@ -341,6 +341,11 @@
   <string name="pull_down_apps_search">Ricerca app</string>
   <string name="enable_screen_rotation">Abilita rotazione schermo</string>
   <string name="use_system_fonts_title">Usa il font di sistema per le etichette</string>
+  <string name="auto_add_shortcuts_label">Aggiungi icone alla schermata Home</string>
+  <string name="auto_add_shortcuts_description">Per le nuove app</string>
+  <string name="shortcut_blacklist">Scorciatoia lista nera</string>
+  <string name="shortcut_blacklist_sum">Impedisci alle app di aggiungere icone alla schermata Home</string>
+  <string name="blacklist_app">App bloccate</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importa</string>
   <string name="backup_export_title">Esporta</string>
@@ -406,11 +411,14 @@
   <string name="hide_app">Nascondi app</string>
   <string name="hide_app_sum">Nascondi app dal menù delle applicazioni</string>
   <string name="hidden_app">App nascoste</string>
+  <string name="list_app_apply">Applica</string>
+  <string name="list_app_reset">Ripristina</string>
   <string name="unauthorized_device">Questo dispositivo dispone di alcuni strumenti per la pirateria. Si prega di disinstallarli per continuare.</string>
   <string name="two_row_dock">Dock su due righe</string>
   <string name="reset_alternative_icons_title">Ripristinare le app con icone alternative?</string>
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
   <string name="error_no_browser">Nessuna attività trovata per gestire gli URL</string>
+  <string name="error_no_calendar">Nessuna app calendario installata</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed non abilitato</string>
   <string name="lawnfeed_not_enabled">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai attivato l\'opzione dalle impostazioni.\n\nVuoi attivarla ora?</string>
@@ -492,4 +500,10 @@
   <string name="about_bio_chris">Mente Creativa, Influencer &amp; Creatore di Contenuti. Social Media e PR Manager.</string>
   <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Doppio tocco per spegnere lo schermo</string>
+  <string name="dt2s_disabled">Disattivato</string>
+  <string name="dt2s_deviceadmin">utilizzare dispositivo amministratore</string>
+  <string name="dt2s_timeout">Timeout blocco schermo</string>
+  <string name="dt2s_admin_hint">Per poter utilizzare il doppio tocco per bloccare il telefono, è necessario abilitare l\'accesso da amministratore a Lawnchair. Questo è un blocco di sicurezza, ciò vuol dire che, al prossimo sblocco, dovrai inserire un pin, se ne hai uno.</string>
+  <string name="dt2s_admin_warning">Disabilitando l\'accesso amministratore, non sarai in grado di usare il doppio tocco sulla schermata home per bloccare il dispositivo.</string>
 </resources>
