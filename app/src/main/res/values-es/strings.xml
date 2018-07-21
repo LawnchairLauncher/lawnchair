@@ -247,7 +247,7 @@
   <string name="about_title">Acerca de</string>
   <string name="about_pref_summary">Conoce acerca del equipo de Lawnchair</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Pack de Iconos</string>
+  <string name="icon_pack_preference_title">Paquete de íconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Utilizar el color del fondo de pantalla para el dock</string>
   <string name="hotseat_show_arrow">Mostrar flecha</string>
@@ -341,6 +341,12 @@
   <string name="pull_down_apps_search">Buscar aplicaciones</string>
   <string name="enable_screen_rotation">Habilitar la rotación de la pantalla</string>
   <string name="use_system_fonts_title">Usar las fuentes del sistema para las etiquetas</string>
+  <string name="auto_add_shortcuts_label">Añadir icono a la pantalla de inicio</string>
+  <string name="auto_add_shortcuts_description">Para nuevas aplicaciones</string>
+  <string name="shortcut_blacklist">Lista negra de accesos directo</string>
+  <string name="shortcut_blacklist_sum">Evite que las aplicaciones agreguen iconos a la pantalla de inicio</string>
+  <string name="blacklist_app">Aplicaciones bloqueadas</string>
+  <string name="blacklist_app_selected">&#160;seleccionado</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Restaurar</string>
   <string name="backup_export_title">Exportar</string>
@@ -406,14 +412,18 @@
   <string name="hide_app">Aplicaciones ocultas</string>
   <string name="hide_app_sum">Ocultar aplicaciones del cajón de aplicaciones</string>
   <string name="hidden_app">Aplicación oculta</string>
+  <string name="hidden_app_selected">&#160;seleccionado</string>
+  <string name="list_app_apply">Aplicar</string>
+  <string name="list_app_reset">Restablecer</string>
   <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalas para continuar.</string>
   <string name="two_row_dock">Barra de aplicaciones de dos filas</string>
   <string name="reset_alternative_icons_title">¿Restablecer íconos alternativos?</string>
   <string name="reset_alternative_icons">Tienes %1$d aplicaciones con iconos alternativos, ¿quieres restablecerlos?</string>
   <string name="error_no_browser">No se encontró ninguna actividad para manejar las URLs</string>
+  <string name="error_no_calendar">No hay una aplicación de calendario instalada</string>
   <!-- Strings for popup dialogs -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed no está habilitado</string>
-  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en Ajustes/Comportamiento.\n\n¿Quieres activarla ahora?</string>
+  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en ajustes.\n\n ¿Quieres activarla ahora?</string>
   <string name="lawnfeed_outdated_title">Actualización de Lawnfeed requerida</string>
   <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de Lawnchair.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
   <string name="title_storage_permission_required">Permiso de almacenamiento requerido</string>
@@ -492,4 +502,11 @@
   <string name="about_bio_chris">Mente Creativa, influenciador &amp; Creador de Contenido. Gerente de Relaciones Públicas y Medios de Comunicación.</string>
   <string name="about_bio_msfjarvis">Desarrollador central en halogenOS y Desarrollador de aplicación en substratum.</string>
   <!-- DT2S -->
+  <string name="dt2s_title">Doble toque para suspender</string>
+  <string name="dt2s_disabled">Desactivado</string>
+  <string name="dt2s_deviceadmin">Usando el administrador del dispositivo</string>
+  <string name="dt2s_timeout">Usando el tiempo de espera de pantalla</string>
+  <string name="dt2s_root">Usando root</string>
+  <string name="dt2s_admin_hint">Para poder usar doble toque para bloquear, debe habilitar el administrador del dispositivo para Lawnchair. Este es un bloqueo seguro, lo que significa que debe ingresar su PIN en el próximo desbloqueo, si tiene alguno.</string>
+  <string name="dt2s_admin_warning">Al deshabilitar el administrador del dispositivo, no podrá usar la doble pulsación para bloquear la pantalla de inicio.</string>
 </resources>
