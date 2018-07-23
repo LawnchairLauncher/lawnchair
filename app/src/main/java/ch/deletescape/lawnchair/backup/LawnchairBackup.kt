@@ -126,12 +126,12 @@ open class LawnchairBackup(val context: Context, val uri: Uri?) {
         }
 
         override fun restore(contents: Int): Boolean {
-            if (contents or LawnchairBackup.INCLUDE_HOMESCREEN != 0) {
+            if (contents and LawnchairBackup.INCLUDE_HOMESCREEN != 0) {
                 val file = context.getDatabasePath(LauncherFiles.LAUNCHER_DB)
                 val backup = DumbImportExportTask.getDbBackupFile()
                 if (!restoreFile(backup, file)) return false
             }
-            if (contents or LawnchairBackup.INCLUDE_SETTINGS != 0) {
+            if (contents and LawnchairBackup.INCLUDE_SETTINGS != 0) {
                 val dir = context.cacheDir.parent
                 val file = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
                 val backup = DumbImportExportTask.getSettingsBackupFile()
@@ -264,10 +264,10 @@ open class LawnchairBackup(val context: Context, val uri: Uri?) {
         fun create(context: Context, name: String, location: Uri, contents: Int): Boolean {
             val contextWrapper = ContextWrapper(context)
             val files: MutableList<File> = ArrayList()
-            if (contents or INCLUDE_HOMESCREEN != 0) {
+            if (contents and INCLUDE_HOMESCREEN != 0) {
                 files.add(contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB))
             }
-            if (contents or INCLUDE_SETTINGS != 0) {
+            if (contents and INCLUDE_SETTINGS != 0) {
                 val dir = contextWrapper.cacheDir.parent
                 files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
@@ -282,7 +282,7 @@ open class LawnchairBackup(val context: Context, val uri: Uri?) {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
                 out.write(getMeta(name, contents).toString().toByteArray())
-                if (contents or INCLUDE_WALLPAPER != 0) {
+                if (contents and INCLUDE_WALLPAPER != 0) {
                     val wallpaperManager = WallpaperManager.getInstance(context)
                     val wallpaperDrawable = wallpaperManager.drawable
                     val wallpaperBitmap = Utilities.drawableToBitmap(wallpaperDrawable)
