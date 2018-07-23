@@ -1,0 +1,54 @@
+language: android
+dist: trusty
+jdk: oraclejdk8
+addons:
+  apt:
+    packages:
+      - libfile-mimeinfo-perl
+branches:
+  except:
+    - l10n_alpha2
+    - alpha
+env:
+  - MAJOR_MINOR=1.2.0
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-27.0.3
+    - android-27
+    - extra-google-m2repository
+before_install:
+  - 'yes | sdkmanager "platforms;android-27"'
+  - 'chmod a+x ./scripts/deploy-*.sh'
+  - 'chmod a+x ./scripts/changelog.sh'
+  - 'chmod a+x ./scripts/s3-upload.sh'
+  - 'git fetch --tags'
+before_script:
+  - 'bash scripts/changelog.sh > changelog.txt'
+script:
+  - 'bash ./gradlew assembleDebug check;'
+  - 'bash ./gradlew app:assembleRelease check;'
+before_cache:
+  - 'rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock'
+  - 'rm -fr $HOME/.gradle/caches/*/plugin-resolution/'
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+before_deploy:
+  - "cp app/build/outputs/apk/debug/app-debug.apk Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk"
+  - "cp app/build/outputs/mapping/debug/mapping.txt proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.txt"
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-s3.sh
+    on:
+      tags: true
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GITHUB_OAUTH_TOKEN
+    file: "Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk"
+    on:
+      tags: true
