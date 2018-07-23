@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -490,10 +489,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void drawBadge(Canvas canvas) {
         if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-            int offsetX = mBackground.getOffsetX();
-            int offsetY = mBackground.getOffsetY();
-            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
-            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+            BubbleTextView.getIconBounds(this, mTempBounds, mLauncher.getDeviceProfile().iconSizePx);
 
             // If we are animating to the accepting state, animate the badge out.
             float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());

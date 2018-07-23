@@ -120,7 +120,7 @@ public class ShadowGenerator {
         }
 
         public Builder setupBlurForSize(int height) {
-            shadowBlur = height * 1f / 32;
+            shadowBlur = height * 1f / 24;
             keyShadowDistance = height * 1f / 16;
             return this;
         }

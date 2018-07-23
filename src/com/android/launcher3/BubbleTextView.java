@@ -386,10 +386,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void getIconBounds(Rect outBounds) {
-        int top = getPaddingTop();
-        int left = (getWidth() - mIconSize) / 2;
-        int right = left + mIconSize;
-        int bottom = top + mIconSize;
+        getIconBounds(this, outBounds, mIconSize);
+    }
+
+    public static void getIconBounds(View iconView, Rect outBounds, int iconSize) {
+        int top = iconView.getPaddingTop();
+        int left = (iconView.getWidth() - iconSize) / 2;
+        int right = left + iconSize;
+        int bottom = top + iconSize;
         outBounds.set(left, top, right, bottom);
     }
 
