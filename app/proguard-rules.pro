@@ -91,3 +91,7 @@
 -keep class ch.deletescape.lawnchair.preferences.HiddenAppsFragment {
   *;
 }
+
+-keep class ch.deletescape.lawnchair.preferences.ShortcutBlacklistFragment {
+  *;
+}
