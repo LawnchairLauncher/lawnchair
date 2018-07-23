@@ -57,7 +57,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_ALL_APPS_OPACITY:
                     applyAllAppsOpacity(preferences);
                     break;
-                case PreferenceFlags.KEY_PREF_SHOW_HIDDEN_APPS:
                 case PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS:
                     las.reloadAllApps();
                     break;

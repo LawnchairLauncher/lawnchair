@@ -12,6 +12,6 @@ public class PreferenceAppFilter implements AppFilter {
         if (app.getPackageName().equals(context.getPackageName()))
             return false;
         IPreferenceProvider prefs = Utilities.getPrefs(context);
-        return prefs.getShowHidden() || !Utilities.isAppHidden(context, app.flattenToString());
+        return !Utilities.isAppHidden(context, app.flattenToString());
     }
 }

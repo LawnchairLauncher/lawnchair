@@ -378,9 +378,6 @@
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
     <string name="home_opens_drawer_pref_summary">Pressing the home button while on the desktop will open the app drawer</string>
-    <string name="show_hidden_pref_title">Show hidden apps</string>
-    <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-    <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
     <string name="export_db_title">Database</string>
     <string name="import_db_title">Database</string>
     <string name="export_prefs_title">Settings</string>

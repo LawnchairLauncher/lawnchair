@@ -64,14 +64,6 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_showHidden"
-        android:title="@string/show_hidden_pref_title"
-        android:summaryOn="@string/show_hidden_pref_on"
-        android:summaryOff="@string/show_hidden_pref_off"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <SwitchPreference
         android:key="pref_lockDesktop"
         android:title="@string/lock_desktop"
         android:defaultValue="false"

@@ -35,7 +35,6 @@ object PreferenceFlags {
     const val KEY_BLUR_MODE = "pref_blurMode"
 
     // Boolean
-    const val KEY_SHOW_HIDDEN = "pref_showHidden"
     const val KEY_HOTSEAT_SHOULD_USE_CUSTOM_OPACITY = "pref_hotseatShouldUseCustomOpacity"
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE = KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS + "_cache"
@@ -67,7 +66,6 @@ object PreferenceFlags {
     const val KEY_SHOW_DATE_OR_WEATHER = "pref_showDateOrWeather"
     const val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
     const val KEY_PREF_ALL_APPS_OPACITY = "pref_allAppsOpacitySB"
-    const val KEY_PREF_SHOW_HIDDEN_APPS = "pref_showHidden"
     const val KEY_PREF_NUM_COLS = "pref_numCols"
     const val KEY_PREF_NUM_COLS_DRAWER = "pref_numColsDrawer"
     const val KEY_PREF_NUM_ROWS = "pref_numRows"
