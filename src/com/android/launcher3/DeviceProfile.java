@@ -665,6 +665,9 @@ public class DeviceProfile {
     public void layout(Launcher launcher, boolean notifyListeners) {
         FrameLayout.LayoutParams lp;
         boolean hasVerticalBarLayout = isVerticalBarLayout();
+        boolean hideHotseat = Utilities.getLawnchairPrefs(mContext).getDockHide();
+
+        hotseatBarSizePx = hideHotseat ? 0 : originalHotseatBarSizePx;
 
         // Layout the search bar space
         Point searchBarBounds = getSearchBarDimensForWidgetOpts();
@@ -711,7 +714,7 @@ public class DeviceProfile {
                     : hotseatBarRightNavBarLeftPaddingPx;
 
             lp.gravity = Gravity.RIGHT;
-            lp.width = hotseatBarSizePx + mInsets.left + mInsets.right
+            lp.width = hideHotseat ? 0 : hotseatBarSizePx + mInsets.left + mInsets.right
                     + paddingLeft + paddingRight;
             lp.height = LayoutParams.MATCH_PARENT;
 
@@ -724,7 +727,7 @@ public class DeviceProfile {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hotseatBarSizePx + mInsets.bottom;
+            lp.height = hideHotseat ? 0 : hotseatBarSizePx + mInsets.bottom;
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
                             + cellLayoutPaddingLeftRightPx,
                     hotseatBarTopPaddingPx,
@@ -735,7 +738,7 @@ public class DeviceProfile {
             // to ensure that we have space for the folders
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hotseatBarSizePx + mInsets.bottom;
+            lp.height = hideHotseat ? 0 : hotseatBarSizePx + mInsets.bottom;
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
                             + cellLayoutPaddingLeftRightPx,
                     hotseatBarTopPaddingPx,

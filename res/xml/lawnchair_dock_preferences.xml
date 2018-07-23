@@ -13,11 +13,13 @@
             android:entries="@array/dockStyles"
             android:entryValues="@array/dockStyleValues"
             android:defaultValue="1"
+            android:disableDependentsState="true"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableGradient"
             android:title="@string/dock_gradient"
+            android:dependency="pref_dockPreset"
             android:disableDependentsState="true"
             android:persistent="true" />
  
@@ -41,6 +43,7 @@
         <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
             android:key="opacityPref"
             android:title="@string/hotseat_custom_opacity"
+            android:dependency="pref_dockPreset"
             app:minValue="0"
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
@@ -51,6 +54,7 @@
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableArrow"
             android:title="@string/hotseat_show_arrow"
+            android:dependency="pref_dockPreset"
             android:persistent="true" />
 
         <SwitchPreference

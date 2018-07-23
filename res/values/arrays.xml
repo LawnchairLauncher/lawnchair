@@ -23,6 +23,7 @@
         <item>@string/dock_style_o</item>
         <item>@string/dock_style_n</item>
         <item>@string/dock_style_transparent</item>
+        <item>@string/dock_style_hidden</item>
         <item>@string/dock_style_custom</item>
     </string-array>
 
@@ -31,6 +32,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
         <item>0</item>
     </string-array>
 

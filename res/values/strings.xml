@@ -439,6 +439,7 @@
     <string name="dock_style_o">Gradient</string>
     <string name="dock_style_n">Flat</string>
     <string name="dock_style_transparent">Transparent</string>
+    <string name="dock_style_hidden">Hidden</string>
     <string name="dock_style_custom">Custom</string>
     <string name="dock_search_bar">Show search bar in dock</string>
     <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>

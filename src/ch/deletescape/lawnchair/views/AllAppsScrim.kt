@@ -54,7 +54,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     private var mDrawHeight = 0f
     private val mAccelerator by lazy { AccelerateInterpolator() }
 
-    private val drawingFlatColor = pStyle && mDeviceProfile.isVerticalBarLayout
+    private val drawingFlatColor = pStyle && mDeviceProfile.isVerticalBarLayout || prefs.dockHide
     private val mMinAlpha get() = if (drawingFlatColor) 0 else prefs.allAppsStartAlpha
     private val mAlphaRange get() = prefs.allAppsEndAlpha - mMinAlpha
     private val maxScrimAlpha = 0.5f

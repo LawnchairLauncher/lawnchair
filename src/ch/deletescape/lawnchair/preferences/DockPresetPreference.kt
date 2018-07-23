@@ -11,10 +11,17 @@ class DockPresetPreference(context: Context, attrs: AttributeSet?) : ListPrefere
 
     private val property = prefs.dockStyles::dockPreset
 
-    private val onChangeListener = { value = "${property.get()}" }
+    private val onChangeListener = {
+        value = "${property.get()}"
+        notifyDependencyChange(shouldDisableDependents())
+    }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
         value = "${property.get()}"
+    }
+
+    override fun shouldDisableDependents(): Boolean {
+        return prefs.dockHide || super.shouldDisableDependents()
     }
 
     override fun onAttached() {

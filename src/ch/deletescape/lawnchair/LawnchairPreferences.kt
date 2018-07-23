@@ -100,6 +100,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
+    val dockHide get() = dockStyles.currentStyle.hide
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
