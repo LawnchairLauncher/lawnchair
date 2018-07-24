@@ -1034,7 +1034,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     protected void onScrollInteractionBegin() {
-        super.onScrollInteractionEnd();
+        super.onScrollInteractionBegin();
         mScrollInteractionBegan = true;
     }
 

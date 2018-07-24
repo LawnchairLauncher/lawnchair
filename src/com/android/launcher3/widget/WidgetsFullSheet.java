@@ -20,6 +20,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -222,6 +223,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         launcher.getDragLayer().addView(sheet);
         sheet.open(animate);
         return sheet;
+    }
+
+    @VisibleForTesting
+    public static WidgetsRecyclerView getWidgetsView(Launcher launcher) {
+        return launcher.findViewById(R.id.widgets_list_view);
     }
 
     @Override

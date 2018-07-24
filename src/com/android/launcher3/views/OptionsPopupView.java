@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
@@ -131,6 +132,11 @@ public class OptionsPopupView extends ArrowPopup
             popup.mItemMap.put(view, item);
         }
         popup.reorderAndShow(popup.getChildCount());
+    }
+
+    @VisibleForTesting
+    public static OptionsPopupView getOptionsPopup(Launcher launcher) {
+        return launcher.findViewById(R.id.deep_shortcuts_container);
     }
 
     public static void showDefaultOptions(Launcher launcher, float x, float y) {

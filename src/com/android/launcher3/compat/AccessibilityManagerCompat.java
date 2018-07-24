@@ -16,10 +16,13 @@
 
 package com.android.launcher3.compat;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+
+import com.android.launcher3.Utilities;
 
 public class AccessibilityManagerCompat {
 
@@ -43,5 +46,20 @@ public class AccessibilityManagerCompat {
 
     private static AccessibilityManager getManager(Context context) {
         return (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+    }
+
+    public static void sendEventToTest(Context context, String eventTag) {
+        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS) return;
+
+        final AccessibilityManager accessibilityManager = getManager(context);
+        if (accessibilityManager.isEnabled() &&
+                accessibilityManager.getEnabledAccessibilityServiceList(
+                        AccessibilityServiceInfo.FEEDBACK_ALL_MASK).size() == 0) {
+
+            final AccessibilityEvent e = AccessibilityEvent.obtain(
+                    AccessibilityEvent.TYPE_ANNOUNCEMENT);
+            e.setClassName(eventTag);
+            accessibilityManager.sendAccessibilityEvent(e);
+        }
     }
 }
