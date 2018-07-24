@@ -671,7 +671,10 @@ public class DeviceProfile {
             hotseatBarSizePx = 0;
         } else {
             hotseatBarSizePx = originalHotseatBarSizePx;
-            mAddedBottomMarginHw = false;
+            if (mAddedBottomMarginHw) {
+                hotseatBarBottomPaddingPx -= mBottomMarginHw;
+                mAddedBottomMarginHw = false;
+            }
             updateInsets(mInsets);
         }
 
