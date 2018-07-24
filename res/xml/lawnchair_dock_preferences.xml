@@ -54,7 +54,6 @@
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableArrow"
             android:title="@string/hotseat_show_arrow"
-            android:dependency="pref_dockPreset"
             android:persistent="true" />
 
         <SwitchPreference
