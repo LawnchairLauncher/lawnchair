@@ -537,6 +537,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Reset launcher to normal state
+                if (isBubbleTextView) {
+                    ((BubbleTextView) v).setStayPressed(false);
+                }
                 v.setVisibility(View.VISIBLE);
                 ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
             }
