@@ -25,11 +25,11 @@ abstract class DockStyle(protected val manager: StyleManager) {
         get() = opacity.toFloat() / 255f
         set(value) { opacity = (value * 255f).roundToInt() }
 
-    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, false, true, 8f, 100, false, false)
-    private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, true, false, 0f, 100, true, false)
-    private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager, false, false, 0f, 100, true, false)
-    private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, true, false, 0f, 100, true, false)
-    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, false, true, 0f, 100, false, true){
+    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = true, defaultRadius = 8f, defaultArrow = false)
+    private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true)
+    private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager)
+    private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultOpacity = 0)
+    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultHide = true){
         override var enableArrow
             get() = showArrowProperty.get()
             set(value) { setProp(showArrowProperty, value, defaultArrow) }
@@ -48,12 +48,12 @@ abstract class DockStyle(protected val manager: StyleManager) {
     }
 
     private abstract class PredefinedStyle(manager: StyleManager,
-                                   val defaultGradient: Boolean,
-                                   val defaultShadow: Boolean,
-                                   val defaultRadius: Float,
-                                   val defaultOpacity: Int,
-                                   val defaultArrow: Boolean,
-                                   val defaultHide: Boolean) : DockStyle(manager) {
+                                   val defaultGradient: Boolean = false,
+                                   val defaultShadow: Boolean = false,
+                                   val defaultRadius: Float = 0f,
+                                   val defaultOpacity: Int = 100,
+                                   val defaultArrow: Boolean = true,
+                                   val defaultHide: Boolean = false) : DockStyle(manager) {
 
         override var enableGradient
             get() = defaultGradient
