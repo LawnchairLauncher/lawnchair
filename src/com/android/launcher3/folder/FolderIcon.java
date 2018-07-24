@@ -77,7 +77,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
-    @Thunk static boolean sStaticValuesDirty = true;
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
@@ -183,12 +182,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        sStaticValuesDirty = true;
-        return super.onSaveInstanceState();
     }
 
     public Folder getFolder() {

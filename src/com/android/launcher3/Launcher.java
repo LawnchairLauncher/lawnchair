@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.content.pm.ActivityInfo.CONFIG_LOCALE;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 
@@ -85,6 +86,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -355,6 +357,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);
+
+        if ((diff & CONFIG_LOCALE) != 0) {
+            Folder.setLocaleDependentFields(getResources(), true /* force */);
+        }
+
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
