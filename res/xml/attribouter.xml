@@ -52,6 +52,11 @@
             login="fonix232"
             task="^@string/about_role_dev" />
         <contributor
+            name="Amir Zaidi"
+            avatar="https://avatars.githubusercontent.com/u/2102185"
+            login="amirzaidi"
+            task="^@string/about_role_dev" />
+        <contributor
             name="reCoded"
             avatar="https://avatars.githubusercontent.com/u/29968331"
             bio="@string/about_bio_recoded"
@@ -125,18 +130,13 @@
         showDefaults="false"
         title="@string/about_our_family">
         <contributor
-            name="Amir Zaidi"
-            avatar="https://avatars.githubusercontent.com/u/2102185"
-            login="amirzaidi"
-            task="^@string/about_role_family_member" />
-        <contributor
             name="Anas Karbila"
             avatar="https://avatars.githubusercontent.com/u/7457130"
             login="thecrazyskull"
             task="^@string/about_role_family_member" />
         <contributor
             name="Craig Hart"
-            avatar="https://i.imgur.com/ZJLRMvU.png"
+            avatar="https://i.imgur.com/aRTfabO.png"
             blog="https://craigary.net/"
             task="^@string/about_role_family_member" />
         <contributor
@@ -181,6 +181,12 @@
             name="Shubby"
             avatar="https://avatars.githubusercontent.com/u/24932404"
             login="shubchan"
+            task="^@string/about_role_family_member" />
+        <contributor
+            name="Sicarius"
+            avatar="https://avatars.githubusercontent.com/u/19359270"
+            login="sicrs"
+            blog="https://sicrs.github.io/"
             task="^@string/about_role_family_member" />
         <contributor
             name="Yannick"

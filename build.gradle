@@ -154,7 +154,7 @@ dependencies {
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'me.jfenn:attribouter:0.0.7'
+    implementation 'me.jfenn:attribouter:0.0.8'
     implementation 'net.aksingh:owm-japis:2.5.2.2'
 }
 
