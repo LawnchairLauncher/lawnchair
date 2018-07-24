@@ -667,7 +667,13 @@ public class DeviceProfile {
         boolean hasVerticalBarLayout = isVerticalBarLayout();
         boolean hideHotseat = Utilities.getLawnchairPrefs(mContext).getDockHide();
 
-        hotseatBarSizePx = hideHotseat ? 0 : originalHotseatBarSizePx;
+        if(hideHotseat){
+            hotseatBarSizePx = 0;
+        } else {
+            hotseatBarSizePx = originalHotseatBarSizePx;
+            mAddedBottomMarginHw = false;
+            updateInsets(mInsets);
+        }
 
         // Layout the search bar space
         Point searchBarBounds = getSearchBarDimensForWidgetOpts();
