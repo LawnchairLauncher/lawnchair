@@ -18,8 +18,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3.tests">
 
-    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"/>
-    <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
+    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"
+              tools:overrideLibrary="android.support.test.uiautomator.v18"/>
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
