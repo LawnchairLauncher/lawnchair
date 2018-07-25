@@ -602,4 +602,8 @@ public final class Utilities {
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
     }
+
+    public interface Consumer<T> {
+        void accept(T var1);
+    }
 }

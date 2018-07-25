@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import android.app.ActivityManager;
 import android.app.UiAutomation;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,8 +33,7 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
-
-import org.junit.Assert;
+import android.view.accessibility.AccessibilityEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
@@ -156,16 +156,28 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void executeAndWaitForEvent(Runnable command,
+    private Bundle executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, String message) {
         try {
-            assertNotNull("executeAndWaitForEvent returned null (this can't happen)",
+            final AccessibilityEvent event =
                     InstrumentationRegistry.getInstrumentation().getUiAutomation()
                             .executeAndWaitForEvent(
-                                    command, eventFilter, WAIT_TIME_MS));
+                                    command, eventFilter, WAIT_TIME_MS);
+            assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
+            return (Bundle) event.getParcelableData();
         } catch (TimeoutException e) {
             fail(message);
+            return null;
         }
+    }
+
+    Bundle getAnswerFromLauncher(UiObject2 view, String requestTag) {
+        // Send a fake set-text request to Launcher to initiate a response with requested data.
+        final String responseTag = requestTag + "_RESPONSE";
+        return executeAndWaitForEvent(
+                () -> view.setText(requestTag),
+                event -> responseTag.equals(event.getClassName()),
+                "Launcher didn't respond to request: " + requestTag);
     }
 
     /**

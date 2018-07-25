@@ -30,11 +30,6 @@ public final class AllAppsFromOverview extends AllApps {
         verifyActiveContainer();
     }
 
-    @Override
-    protected int getBottomMarginForSwipeUp() {
-        return 600;
-    }
-
     /**
      * Swipes down to switch back to Overview whence we came from.
      *
