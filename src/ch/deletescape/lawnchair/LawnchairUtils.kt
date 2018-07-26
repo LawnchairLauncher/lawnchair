@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
@@ -272,3 +273,21 @@ var View.isVisible: Boolean
     set(value) {
         visibility = if (value) View.VISIBLE else View.GONE
     }
+
+private val MAX_UNICODE = '\uFFFF'
+
+/**
+ * Returns true if {@param query} is a considered equal to {@param target}
+ */
+fun java.text.Collator.matches(query: String, target: String): Boolean {
+    return when (this.compare(query, target)) {
+        0 -> true
+        -1 ->
+            // The target string can contain a modifier which would make it larger than
+            // the query string (even though the length is same). If the query becomes
+            // larger after appending a unicode character, it was originally a prefix of
+            // the target string and hence should match.
+            this.compare(query + MAX_UNICODE, target) > -1
+        else -> false
+    }
+}

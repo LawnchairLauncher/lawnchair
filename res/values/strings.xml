@@ -583,4 +583,5 @@
     <string name="pref_open_source_licenses_title">Open source licenses</string>
     <string name="pref_legacy_treatment_title">Generate adaptive icons</string>
     <string name="pref_legacy_treatment_summary">An adaptive icon will be generated for apps which don\'t already have one</string>
+    <string name="action_search">Search</string>
 </resources>

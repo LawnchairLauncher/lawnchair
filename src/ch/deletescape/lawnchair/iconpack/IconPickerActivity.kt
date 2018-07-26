@@ -8,27 +8,29 @@ import android.os.Bundle
 import android.os.Process
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import ch.deletescape.lawnchair.iconPackUiHandler
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
-import ch.deletescape.lawnchair.runOnMainThread
-import ch.deletescape.lawnchair.runOnThread
-import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
+import java.text.Collator
 
-class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
-
+class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener, View.OnFocusChangeListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
     private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
-    private val items = ArrayList<AdapterItem>()
+    private var items = ArrayList<AdapterItem>()
+    private var itemsCopy = ArrayList<AdapterItem>()
     private val adapter = IconGridAdapter()
     private val layoutManager = GridLayoutManager(this, 1)
     private var canceled = false
+    private var searchView: SearchView? = null
+    private val collator = Collator.getInstance()
+    private var closingSearch:Boolean = false
 
     private var dynamicPadding = 0
 
@@ -54,6 +56,10 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
             // make sure whatever running on ui worker has finished, then start parsing the pack
             runOnThread(iconPackUiHandler) { iconPack.getAllIcons(::addEntries, { canceled }) }
         }
+        collator.apply {
+            decomposition = Collator.CANONICAL_DECOMPOSITION
+            strength = Collator.TERTIARY
+        }
     }
 
     override fun finish() {
@@ -77,13 +83,69 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
 
             val addIndex = items.size
             items.addAll(newItems)
+            itemsCopy.clear()
+            itemsCopy.addAll(items)
             adapter.notifyItemRangeInserted(addIndex, newItems.size)
         }
     }
 
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        closingSearch = true
+        searchView!!.apply {
+            setQuery("", false)
+            clearFocus()
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (closingSearch) {
+            closingSearch = false
+            return true
+        }
+        val hashCode = items.hashCode()
+        items.clear()
+        items.addAll(itemsCopy)
+        val q = query?.trim()
+        if (q != null && !q.isEmpty()){
+            items.removeAll(items.filter {
+                when (it) {
+                    is IconItem -> !collator.matches(q, it.entry.displayName)
+                    else -> true
+                }
+            })
+        }
+        if(items.hashCode() != hashCode) runOnUiThread { adapter.notifyDataSetChanged() }
+        return true
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (pickerComponent != null) menuInflater.inflate(R.menu.menu_icon_picker, menu)
-        return super.onCreateOptionsMenu(menu) || pickerComponent != null
+        menuInflater.inflate(R.menu.menu_icon_picker, menu)
+        if (pickerComponent == null) {
+            menu.removeItem(R.id.action_open_external)
+        }
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as SearchView
+        searchView!!.setOnQueryTextListener(this)
+        searchView!!.setOnQueryTextFocusChangeListener(this)
+        return true
+    }
+
+    override fun onFocusChange(view: View?, hasFocus: Boolean) {
+        if (view == searchView) {
+            if (hasFocus) {
+                title = ""
+            } else {
+                searchView!!.isIconified = true
+                title = iconPack.displayName
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (searchView!!.isIconified) {
+            super.onBackPressed()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -208,12 +270,14 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener {
                 iconLoader?.loadIcon()
                 itemView.clearAnimation()
                 itemView.alpha = 0f
+                // We're just being optimistic here, but starting the animation in the callback
+                // results in empty view holders in some cases and places.
+                itemView.animate().alpha(1f).setDuration(125).start()
             }
 
             override fun onIconLoaded(drawable: Drawable) {
                 (itemView as ImageView).apply {
                     setImageDrawable(drawable)
-                    animate().alpha(1f).setDuration(100).start()
                 }
             }
 
