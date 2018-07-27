@@ -13,6 +13,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import ch.deletescape.lawnchair.toTitleCase
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -272,7 +273,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     inner class Entry(private val drawableName: String, val drawableId: Int) : IconPack.Entry() {
 
-        override val displayName = drawableName
+        override val displayName = drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase()
         override val identifierName = drawableName
         override val drawable: Drawable
             get() {

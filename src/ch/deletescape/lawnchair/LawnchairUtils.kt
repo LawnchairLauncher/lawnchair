@@ -14,6 +14,7 @@ import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
+import android.util.Log
 import android.util.Property
 import android.view.LayoutInflater
 import android.view.View
@@ -291,3 +292,5 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
         else -> false
     }
 }
+
+fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
