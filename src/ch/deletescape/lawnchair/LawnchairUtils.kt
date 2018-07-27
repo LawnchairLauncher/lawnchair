@@ -278,7 +278,7 @@ var View.isVisible: Boolean
 private val MAX_UNICODE = '\uFFFF'
 
 /**
- * Returns true if {@param query} is a considered equal to {@param target}
+ * Returns true if {@param target} is a search result for {@param query}
  */
 fun java.text.Collator.matches(query: String, target: String): Boolean {
     return when (this.compare(query, target)) {
@@ -288,7 +288,7 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
             // the query string (even though the length is same). If the query becomes
             // larger after appending a unicode character, it was originally a prefix of
             // the target string and hence should match.
-            this.compare(query + MAX_UNICODE, target) > -1
+            this.compare(query + MAX_UNICODE, target) > -1 || target.contains(query, ignoreCase = true)
         else -> false
     }
 }
