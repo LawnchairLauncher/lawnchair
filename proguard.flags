@@ -151,3 +151,5 @@
 -keep class com.google.android.apps.nexuslauncher.SettingsActivity$OpenSourceLicensesFragment {
   *;
 }
+
+-keep class android.support.v7.widget.SearchView { *; }
