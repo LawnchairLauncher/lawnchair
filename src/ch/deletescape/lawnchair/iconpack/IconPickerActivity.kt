@@ -128,6 +128,9 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         searchView = searchItem.actionView as SearchView
         searchView!!.setOnQueryTextListener(this)
         searchView!!.setOnQueryTextFocusChangeListener(this)
+        // Unfortunately this is seriously the only way of changing this darn icon that worked for me.
+        val searchIcon = searchView!!.findViewById<ImageView>(android.support.v7.appcompat.R.id.search_button)
+        searchIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_search, null))
         return true
     }
 
