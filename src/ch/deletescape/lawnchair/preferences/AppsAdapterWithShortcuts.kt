@@ -10,6 +10,7 @@ import android.os.Handler
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -150,7 +151,7 @@ open class AppsAdapterWithShortcuts(
     inner class ShortcutItem(val info: ShortcutInfoCompat) : Item {
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
-        val iconDrawable = shortcutManager.getShortcutIconDrawable(info, 0)
+        val iconDrawable = shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
     }
 
     class LoadingItem : Item
