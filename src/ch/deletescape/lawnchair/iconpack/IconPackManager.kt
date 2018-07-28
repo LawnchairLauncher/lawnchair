@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -156,6 +157,15 @@ class IconPackManager(private val context: Context) {
         return packs
     }
 
+    fun getPackProviderInfos(): HashMap<String, IconPackInfo> {
+        val pm = context.packageManager
+        val packs = HashMap<String, IconPackInfo>()
+        ICON_INTENTS.forEach { intent -> pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
+            packs[it.activityInfo.packageName] = IconPackInfo.fromResolveInfo(it, pm)
+        } }
+        return packs
+    }
+
     fun onPackUpdated() {
         LooperExecutor(LauncherModel.getIconPackLooper()).execute {
             val userManagerCompat = UserManagerCompat.getInstance(context)
@@ -204,6 +214,12 @@ class IconPackManager(private val context: Context) {
                 val icon = TextUtils.join("/", parts.subList(1, parts.size))
                 return CustomIconEntry(parts[0], if (TextUtils.isEmpty(icon)) null else icon)
             }
+        }
+    }
+
+    data class IconPackInfo(val packageName: String, val icon: Drawable, val label: CharSequence) {
+        companion object {
+            fun fromResolveInfo(info: ResolveInfo, pm: PackageManager) = IconPackInfo(info.activityInfo.packageName, info.loadIcon(pm), info.loadLabel(pm))
         }
     }
 

@@ -6,11 +6,10 @@
         android:key="prefCat_themeIcons"
         android:title="@string/pref_category_icons">
 
-        <com.google.android.apps.nexuslauncher.CustomIconPreference
+        <ch.deletescape.lawnchair.settings.ui.IconPackPreference
             android:defaultValue=""
             android:key="pref_icon_pack"
             android:persistent="true"
-            android:summary="%s"
             android:title="@string/pref_icon_pack" />
         />
 

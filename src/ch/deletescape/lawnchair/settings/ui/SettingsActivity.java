@@ -283,7 +283,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
 
-        private CustomIconPreference mIconPackPref;
         private Context mContext;
 
         @Override
@@ -341,9 +340,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         getPreferenceScreen().removePreference(iconShapeOverride);
                     }
                 }
-
-                mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
-                mIconPackPref.setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
@@ -387,9 +383,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onResume() {
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
-
-            if (mIconPackPref != null)
-                mIconPackPref.reloadIconPacks();
         }
 
         @Override
@@ -414,6 +407,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 f = DockGridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof GesturePreference) {
                 f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
+            } else if (preference instanceof IconPackPreference) {
+                f = IconPackDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
@@ -443,9 +438,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
-                case ICON_PACK_PREF:
-                    LawnchairUtilsKt.reloadIcons(getContext());
-                    return true;
                 case SHOW_PREDICTIONS_PREF:
                     if ((boolean) newValue) {
                         return true;

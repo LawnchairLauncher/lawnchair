@@ -318,3 +318,5 @@ fun reloadIcons(context: Context) {
         }
     }
 }
+
+fun Context.getIcon():Drawable = packageManager.getApplicationIcon(applicationInfo)

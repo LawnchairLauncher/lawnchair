@@ -575,6 +575,8 @@
     <string name="show_top_shadow_pref_summary">Display a shadow under the status bar</string>
     <string name="two_row_dock">Two row dock</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
+    <string name="iconpack_none">None</string>
+    <string name="reset">Reset</string>
 
     <!-- Theme selection -->
     <string name="theme_title">Theme</string>
