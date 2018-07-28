@@ -316,7 +316,7 @@ public class LauncherClient {
         }
     }
 
-    /* Only used for accessibility
+    // Only used for accessibility
     public final void showOverlay(boolean feedRunning) {
         if (mOverlay != null) {
             try {
@@ -325,7 +325,6 @@ public class LauncherClient {
             }
         }
     }
-    */
 
     public final boolean startSearch(byte[] bArr, Bundle bundle) {
         if (apiVersion >= 6 && mOverlay != null) {

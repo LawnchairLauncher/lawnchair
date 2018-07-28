@@ -77,6 +77,16 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Open
 }
 
 @Keep
+class OpenOverlayGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_overlay)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        controller.launcher.googleNow.showOverlay(true)
+    }
+}
+
+@Keep
 class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     override val hasConfig = true
