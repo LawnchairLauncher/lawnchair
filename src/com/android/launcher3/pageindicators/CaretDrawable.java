@@ -24,6 +24,8 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
@@ -49,7 +51,9 @@ public class CaretDrawable extends Drawable {
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
         final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
 
-        mWorkspaceTextColor = Themes.getAttrColor(context, R.attr.workspaceTextColor);
+        boolean isLauncher = LawnchairUtilsKt.getLauncherOrNull(context) != null;
+        mWorkspaceTextColor = Themes.getAttrColor(context, isLauncher
+                ? R.attr.workspaceTextColor : android.R.attr.textColorPrimary);
         mCaretPaint.setColor(mWorkspaceTextColor);
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
@@ -65,7 +69,8 @@ public class CaretDrawable extends Drawable {
         mShadowPaint.setStrokeCap(Paint.Cap.ROUND);
         mShadowPaint.setStrokeJoin(Paint.Join.ROUND);
 
-        mUseShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
+        mUseShadow = isLauncher && !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
+
         mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
     }
 

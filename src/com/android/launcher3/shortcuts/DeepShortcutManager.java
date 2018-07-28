@@ -31,6 +31,7 @@ import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -195,6 +196,10 @@ public class DeepShortcutManager {
 
     public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandle user) {
         return query(FLAG_GET_ALL, null, null, null, user);
+    }
+
+    public List<ShortcutInfoCompat> queryForComponent(ComponentKey key) {
+        return query(FLAG_GET_ALL, key.componentName.getPackageName(), key.componentName, null, key.user);
     }
 
     private List<String> extractIds(List<ShortcutInfoCompat> shortcuts) {

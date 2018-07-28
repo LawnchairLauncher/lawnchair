@@ -2,12 +2,15 @@ package ch.deletescape.lawnchair.gestures.handlers
 
 import android.content.Context
 import android.content.Intent
+import android.os.UserHandle
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONObject
 
@@ -84,34 +87,75 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     private val displayNameWithoutTarget = context.getString(R.string.action_open_app)!!
     private val displayNameWithTarget = context.getString(R.string.action_open_app_with_target)!!
 
+    var type: String? = null
     var appName: String? = null
     var target: ComponentKey? = null
+    var intent: Intent? = null
+    var user: UserHandle? = null
+    var packageName: String? = null
+    var id: String? = null
 
     init {
-        if (config?.has("target") == true) {
+        if (config?.has("appName") == true) {
             appName = config.getString("appName")
-            target = ComponentKey(context, config.getString("target"))
+            type = if (config.has("type")) config.getString("type") else "app"
+            if (type == "app") {
+                target = ComponentKey(context, config.getString("target"))
+            } else {
+                intent = Intent.parseUri(config.getString("intent"), 0)
+                user = UserManagerCompat.getInstance(context).getUserForSerialNumber(config.getLong("user"))
+                packageName = config.getString("packageName")
+                id = config.getString("id")
+            }
         }
     }
 
     override fun saveConfig(config: JSONObject) {
         super.saveConfig(config)
         config.put("appName", appName)
-        config.put("target", target?.toString())
+        config.put("type", type)
+        when (type) {
+            "app" -> {
+                config.put("target", target.toString())
+            }
+            "shortcut" -> {
+                config.put("intent", intent!!.toUri(0))
+                config.put("user", UserManagerCompat.getInstance(context).getSerialNumberForUser(user))
+                config.put("packageName", packageName)
+                config.put("id", id)
+            }
+        }
     }
 
     override fun onConfigResult(data: Intent?) {
         super.onConfigResult(data)
         if (data != null) {
             appName = data.getStringExtra("appName")
-            target = ComponentKey(context, data.getStringExtra("target"))
+            type = data.getStringExtra("type")
+            when (type) {
+                "app" -> {
+                    target = ComponentKey(context, data.getStringExtra("target"))
+                }
+                "shortcut" -> {
+                    intent = Intent.parseUri(data.getStringExtra("intent"), 0)
+                    user = data.getParcelableExtra("user")
+                    packageName = data.getStringExtra("packageName")
+                    id = data.getStringExtra("id")
+                }
+            }
         }
     }
 
     override fun onGestureTrigger(controller: GestureController) {
-        if (target != null) {
-            LauncherAppsCompat.getInstance(context)
-                    .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+        when (type) {
+            "app" -> {
+                LauncherAppsCompat.getInstance(context)
+                        .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+            }
+            "shortcut" -> {
+                DeepShortcutManager.getInstance(context)
+                        .startShortcut(packageName, id, intent, null, user)
+            }
         }
     }
 }
