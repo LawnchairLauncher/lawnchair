@@ -283,6 +283,15 @@
         </provider>
 
         <activity
+            android:name="ch.deletescape.lawnchair.iconpack.ApplyIconPackActivity"
+            android:theme="@style/SettingsTheme.V2.Transparent" >
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.APPLY_ICONS"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="ch.deletescape.lawnchair.iconpack.EditIconActivity"
             android:theme="@style/SettingsTheme.V2" />
         <activity

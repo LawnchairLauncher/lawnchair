@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.PageIndicatorLineCaret
@@ -56,21 +57,6 @@ class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
     }
 
     fun reloadIcons() {
-        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
-            val userManagerCompat = UserManagerCompat.getInstance(launcher)
-            val model = LauncherAppState.getInstance(launcher).model
-
-            for (user in userManagerCompat.userProfiles) {
-                model.onPackagesReload(user)
-            }
-
-            IconPackManager.getInstance(launcher).onPackChanged()
-
-            val shortcutManager = DeepShortcutManager.getInstance(launcher)
-            val launcherApps = LauncherAppsCompat.getInstance(launcher)
-            userManagerCompat.userProfiles.forEach { user ->
-                launcherApps.getActivityList(null, user).forEach { reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
-            }
-        }
+        ch.deletescape.lawnchair.reloadIcons(launcher)
     }
 }

@@ -49,6 +49,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
@@ -443,29 +444,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
                 case ICON_PACK_PREF:
-                    ProgressDialog.show(mContext,
-                            null /* title */,
-                            mContext.getString(R.string.state_loading),
-                            true /* indeterminate */,
-                            false /* cancelable */);
-
-                    new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-                        @SuppressLint("ApplySharedPref")
-                        @Override
-                        public void run() {
-                            // Clear the icon cache.
-                            LauncherAppState.getInstance(mContext).getIconCache().clear();
-
-                            // Wait for it
-                            try {
-                                Thread.sleep(1000);
-                            } catch (Exception e) {
-                                Log.e("SettingsActivity", "Error waiting", e);
-                            }
-
-                            restartLauncher(mContext);
-                        }
-                    });
+                    LawnchairUtilsKt.reloadIcons(getContext());
                     return true;
                 case SHOW_PREDICTIONS_PREF:
                     if ((boolean) newValue) {

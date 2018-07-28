@@ -764,6 +764,18 @@ public final class Utilities {
         return LawnchairPreferences.Companion.getInstance(context);
     }
 
+    public static void goToHome(Context context){
+        PackageManager pm = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ComponentName componentName = intent.resolveActivity(pm);
+        if (!context.getPackageName().equals(componentName.getPackageName())) {
+            intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        }
+        context.startActivity(intent);
+    }
+
     public static void restartLauncher(Context context) {
         PackageManager pm = context.getPackageManager();
 
@@ -775,7 +787,6 @@ public final class Utilities {
             intent = pm.getLaunchIntentForPackage(context.getPackageName());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-
         restartLauncher(context, intent);
     }
 

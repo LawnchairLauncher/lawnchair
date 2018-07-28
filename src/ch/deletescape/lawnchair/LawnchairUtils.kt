@@ -20,11 +20,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.popup.SystemShortcut
+import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LooperExecutor
+import com.google.android.apps.nexuslauncher.CustomIconUtils
 import java.lang.reflect.Field
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -294,3 +299,22 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
 }
 
 fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
+
+fun reloadIcons(context: Context) {
+    LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+        val userManagerCompat = UserManagerCompat.getInstance(context)
+        val model = LauncherAppState.getInstance(context).model
+
+        for (user in userManagerCompat.userProfiles) {
+            model.onPackagesReload(user)
+        }
+
+        IconPackManager.getInstance(context).onPackChanged()
+
+        val shortcutManager = DeepShortcutManager.getInstance(context)
+        val launcherApps = LauncherAppsCompat.getInstance(context)
+        userManagerCompat.userProfiles.forEach { user ->
+            launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
+        }
+    }
+}

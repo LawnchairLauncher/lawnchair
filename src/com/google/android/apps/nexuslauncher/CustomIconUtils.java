@@ -23,9 +23,10 @@ import java.util.List;
 
 public class CustomIconUtils {
     private final static String[] ICON_INTENTS = new String[] {
+            "ch.deletescape.lawnchair.ICONPACK",
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",
-            "com.teslacoilsw.launcher.THEME",
+            "com.novalauncher.THEME",
             "com.gau.go.launcherex.theme",
             "org.adw.launcher.THEMES",
             "org.adw.launcher.icons.ACTION_PICK_ICON"
