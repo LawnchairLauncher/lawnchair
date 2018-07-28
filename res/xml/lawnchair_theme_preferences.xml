@@ -24,7 +24,7 @@
 
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"

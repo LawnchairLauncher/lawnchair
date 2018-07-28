@@ -65,7 +65,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1, { ThemeManager.getInstance(context).onThemeChanged() })
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", true, reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", false, reloadIcons)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
