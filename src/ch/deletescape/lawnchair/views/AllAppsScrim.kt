@@ -266,7 +266,12 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun setTranslationX(translationX: Float) {
         super.setTranslationX(translationX)
 
-        if (pStyle) blurDrawable?.setPotitionX(translationX)
+        if (pStyle) {
+            blurDrawable?.let {
+                it.setPositionX(translationX)
+                invalidate()
+            }
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

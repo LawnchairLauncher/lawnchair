@@ -361,7 +361,7 @@ class BlurDrawable internal constructor(
             invalidateSelf()
     }
 
-    fun setPotitionX(position: Float) {
+    fun setPositionX(position: Float) {
         mPositionX = position
         invalidateBlur()
         if (!mUseTransparency)
