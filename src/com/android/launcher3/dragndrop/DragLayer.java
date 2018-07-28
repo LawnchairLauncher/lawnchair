@@ -547,6 +547,10 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    public boolean isResizing() {
+        return mCurrentResizeFrame != null;
+    }
+
     public boolean clearResizeFrame() {
         if (mCurrentResizeFrame != null) {
             removeView(mCurrentResizeFrame);

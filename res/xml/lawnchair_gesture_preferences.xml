@@ -4,7 +4,7 @@
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_double_tap"
         android:title="@string/gesture_double_tap"
-        android:defaultValue=""
+        android:defaultValue="@string/action_do_nothing_class"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
@@ -16,7 +16,13 @@
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:key="pref_gesture_press_home"
         android:title="@string/gesture_press_home"
-        android:defaultValue=""
+        android:defaultValue="@string/action_do_nothing_class"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+        android:key="pref_gesture_press_back"
+        android:title="@string/gesture_press_back"
+        android:defaultValue="@string/action_do_nothing_class"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference

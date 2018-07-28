@@ -2245,12 +2245,14 @@ public class Launcher extends BaseActivity
         } else if (mWorkspace.isInOverviewMode()) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
-        } else {
+        } else if (mWorkspace.isInWidgetResizeMode()) {
             // TODO: Log this case.
             mWorkspace.exitWidgetResizeMode();
 
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
+        } else if(this instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) this).getGestureController().onPressBack();
         }
     }
 

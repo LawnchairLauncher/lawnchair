@@ -2006,6 +2006,10 @@ public class Workspace extends PagedView
         dragLayer.clearResizeFrame();
     }
 
+    public boolean isInWidgetResizeMode(){
+        return mLauncher.getDragLayer().isResizing();
+    }
+
     @Override
     protected void getFreeScrollPageRange(int[] range) {
         getOverviewModePages(range);
