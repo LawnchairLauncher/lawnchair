@@ -5,26 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.os.Process
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
+import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import java.text.Collator
+import java.util.*
+import java.util.concurrent.Semaphore
 
 class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener, View.OnFocusChangeListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
     private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
-    private var items = ArrayList<AdapterItem>()
-    private var itemsCopy = ArrayList<AdapterItem>()
+    private val items get() = searchItems ?: actualItems
+    private var actualItems = ArrayList<AdapterItem>()
     private val adapter = IconGridAdapter()
     private val layoutManager = GridLayoutManager(this, 1)
     private var canceled = false
@@ -36,6 +42,15 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
     private val pickerComponent by lazy { LauncherAppsCompat.getInstance(this)
             .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
+
+    private var searchItems: MutableList<AdapterItem>? = null
+    private val searchHandler = object : Handler(LauncherModel.getIconPackUiLooper()) {
+        override fun handleMessage(msg: Message) {
+            if (msg.what == R.id.message_search) {
+                processSearchQuery(msg.obj as String?)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +69,16 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
         runOnUiWorkerThread {
             // make sure whatever running on ui worker has finished, then start parsing the pack
-            runOnThread(iconPackUiHandler) { iconPack.getAllIcons(::addEntries, { canceled }) }
+            runOnThread(iconPackUiHandler) {
+                iconPack.getAllIcons(::addEntries) { canceled }
+                // Wait for the ui to finish processing new data
+                val waiter = Semaphore(0)
+                runOnUiThread {
+                    waiter.release()
+                }
+                waiter.acquireUninterruptibly()
+                waiter.release()
+            }
         }
         collator.apply {
             decomposition = Collator.CANONICAL_DECOMPOSITION
@@ -83,8 +107,6 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
             val addIndex = items.size
             items.addAll(newItems)
-            itemsCopy.clear()
-            itemsCopy.addAll(items)
             adapter.notifyItemRangeInserted(addIndex, newItems.size)
         }
     }
@@ -103,20 +125,27 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             closingSearch = false
             return true
         }
-        val hashCode = items.hashCode()
-        items.clear()
-        items.addAll(itemsCopy)
-        val q = query?.trim()
-        if (q != null && !q.isEmpty()){
-            items.removeAll(items.filter {
-                when (it) {
-                    is IconItem -> !collator.matches(q, it.entry.displayName)
-                    else -> true
-                }
-            })
-        }
-        if(items.hashCode() != hashCode) runOnUiThread { adapter.notifyDataSetChanged() }
+        addToSearchQueue(query)
         return true
+    }
+
+    private fun addToSearchQueue(query: String?) {
+        searchHandler.removeMessages(R.id.message_search)
+        searchHandler.sendMessage(searchHandler.obtainMessage(R.id.message_search, query))
+    }
+
+    private fun processSearchQuery(query: String?) {
+        val q = query?.trim()
+        val filtered = if (!TextUtils.isEmpty(q)) {
+            actualItems.filter { it is IconItem && collator.matches(q!!, it.entry.displayName) }.toMutableList()
+        } else null
+        runOnUiThread {
+            val hashCode = items.hashCode()
+            searchItems = filtered
+            if (items.hashCode() != hashCode) {
+                adapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -273,15 +302,14 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
                 iconLoader?.loadIcon()
                 itemView.clearAnimation()
                 itemView.alpha = 0f
+                (itemView as ImageView).setImageDrawable(null)
                 // We're just being optimistic here, but starting the animation in the callback
                 // results in empty view holders in some cases and places.
                 itemView.animate().alpha(1f).setDuration(125).start()
             }
 
             override fun onIconLoaded(drawable: Drawable) {
-                (itemView as ImageView).apply {
-                    setImageDrawable(drawable)
-                }
+                (itemView as ImageView).setImageDrawable(drawable)
             }
 
             override fun onClick(v: View) {
