@@ -4,7 +4,7 @@
 
     <SwitchPreference
         android:key="pref_smartspace"
-        android:title="@string/smartspace_preferences_in_settings"
+        android:title="@string/home_widget"
         android:summary="@string/smartspace_preferences_in_settings_desc"
         android:defaultValue="true"
         android:persistent="true" />

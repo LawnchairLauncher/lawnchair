@@ -20,7 +20,7 @@ public class SmartspacePreferencesShortcut extends SystemShortcut {
         return new View.OnClickListener() {
             public void onClick(final View view) {
                 Intent intent = new Intent(launcher, SettingsActivity.class);
-                intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, launcher.getString(R.string.smartspace_preferences_in_settings));
+                intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, launcher.getString(R.string.home_widget));
                 intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, R.xml.lawnchair_smartspace_preferences);
                 intent.putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, true);
                 launcher.startActivitySafely(view, intent, null);

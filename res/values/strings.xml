@@ -327,7 +327,8 @@
     <string name="label_voice_search">Voice search</string>
     <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
     <string name="pref_icon_pack">Icon pack</string>
-    <string name="smartspace_preferences_in_settings">Home widget</string>
+    <string name="home_widget">Home widget</string>
+    <string name="smartspace_preferences_in_settings">At A Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Info widget at the top of the home screen</string>
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
