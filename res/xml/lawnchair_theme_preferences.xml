@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_themeIcons"
         android:title="@string/pref_category_icons">
 
@@ -23,15 +23,15 @@
             android:title="@string/icon_shape_override_label" />
 
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"
             android:title="@string/pref_legacy_treatment_title" />
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_themeStyle"
         android:title="@string/pref_category_theme">
 
@@ -44,15 +44,21 @@
             android:summary="%s"
             android:title="@string/theme_pref_title" />
 
+        <ch.deletescape.lawnchair.preferences.ColorPickerPreference
+            android:key="pref_accentColor"
+            android:persistent="true"
+            android:title="@string/pref_accent_color"
+            app:defaultColor="@color/colorAccent"/>
+
         <!-- TODO: Move somewhere more appropriate -->
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="opa_enabled"
             android:persistent="true"
             android:summary="@string/pref_show_assistant_summary"
             android:title="@string/pref_show_assistant_title" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_enableBlur"
             android:persistent="true"
@@ -69,5 +75,5 @@
             app:minValue="10"
             app:steps="140"
             app:summaryFormat="%.0f" />
-    </android.support.v7.preference.PreferenceCategory>
-</PreferenceScreen>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

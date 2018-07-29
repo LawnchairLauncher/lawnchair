@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerTheme"
         android:title="@string/pref_category_theme">
         
@@ -15,9 +15,9 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerIcons"
         android:title="@string/pref_category_icons">
         
@@ -27,23 +27,23 @@
             android:summary="@string/hide_apps_sum"
             android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_hideAllAppsAppLabels"
             android:title="@string/hide_all_apps_icon_labels_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerSearchbar"
         android:title="@string/pref_category_searchbar">
         
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_allAppsSearch"
             android:title="@string/title_all_apps_search"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_allAppsGoogleSearch"
             android:title="@string/title_all_apps_google_search"
             android:summary="@string/summary_all_apps_google_search"
@@ -51,36 +51,36 @@
             android:disableDependentsState="true"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_search_hidden_apps"
             android:title="@string/title_search_hidden_apps"
             android:summary="@string/summary_search_hidden_apps"
             android:dependency="pref_allAppsGoogleSearch"
             android:defaultValue="false" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerMisc"
         android:title="@string/pref_category_misc">
         
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_show_predictions"
             android:title="@string/title_app_suggestions"
             android:summary="@string/summary_app_suggestions"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_separateWorkApps"
             android:title="@string/separate_work_apps_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_keepScrollState"
             android:title="@string/keep_scroll_state_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
 
-    </android.support.v7.preference.PreferenceCategory>
-</PreferenceScreen>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

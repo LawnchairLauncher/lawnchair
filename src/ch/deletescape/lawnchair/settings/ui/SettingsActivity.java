@@ -17,11 +17,13 @@
 
 package ch.deletescape.lawnchair.settings.ui;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -35,10 +37,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.preference.*;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,29 +53,32 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
-import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
-import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
-import ch.deletescape.lawnchair.theme.ThemeOverride;
-import com.android.launcher3.*;
+
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
+import com.android.launcher3.SessionCommitReceiver;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ButtonPreference;
-import com.google.android.apps.nexuslauncher.CustomIconPreference;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import me.jfenn.attribouter.Attribouter;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import static com.android.launcher3.Utilities.restartLauncher;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
+import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
+import ch.deletescape.lawnchair.preferences.ColorPickerPreference;
+import ch.deletescape.lawnchair.theme.ColorEngine;
+import ch.deletescape.lawnchair.theme.ThemeOverride;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import me.jfenn.attribouter.Attribouter;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -136,9 +145,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             intent.putExtra(SubSettingsFragment.HAS_PREVIEW, ((SubPreference) preference).hasPreview());
             startActivity(intent);
             return true;
+        } else if(preference instanceof ColorPickerPreference){
+            ((ColorPickerPreference) preference).setFragmentManager(getSupportFragmentManager());
+            ((ColorPickerPreference) preference).showDialog();
+            return true;
         } else if(preference.getKey().equals("about")){
             fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
-        } else {
+        }  else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
         if (fragment instanceof DialogFragment) {
@@ -178,7 +191,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         updateUpButton();
     }
 
-    private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+    private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener, ColorEngine.OnAccentChangeListener {
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
@@ -190,6 +203,28 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
 
             return recyclerView;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
+        }
+
+        @Override
+        public void onAccentChange(int color) {
+            try {
+                Drawable arrowBack = getContext().getResources().getDrawable(R.drawable.ic_arrow_back);
+                arrowBack.setTint(color);
+                ((SettingsActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(arrowBack);
+            } catch (NullPointerException ignored) {
+            }
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
         }
 
         @Override

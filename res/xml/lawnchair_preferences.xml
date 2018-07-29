@@ -10,7 +10,7 @@
      limitations under the License.
 -->
 
-<PreferenceScreen android:title="Settings"
+<android.support.v7.preference.PreferenceScreen android:title="Settings"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -57,7 +57,7 @@
         app:content="@xml/lawnchair_gesture_preferences"
         android:layout="@layout/sub_preference" />
 
-    <Preference
+    <ch.deletescape.lawnchair.preferences.StyledIconPreference
         android:key="backups"
         android:title="@string/backups"
         android:summary="@string/backup_pref_summary"
@@ -68,7 +68,7 @@
         <intent
             android:targetPackage="@string/application_id"
             android:targetClass="ch.deletescape.lawnchair.backup.BackupListActivity"/>
-    </Preference>
+    </ch.deletescape.lawnchair.preferences.StyledIconPreference>
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:key="developerOptions"
@@ -77,11 +77,11 @@
         app:content="@xml/lawnchair_dev_options_preference"
         android:layout="@layout/sub_preference" />
 
-    <Preference
+    <ch.deletescape.lawnchair.preferences.StyledIconPreference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
         android:icon="@drawable/ic_information"
         android:layout="@layout/sub_preference"
         android:key="about"/>
 
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

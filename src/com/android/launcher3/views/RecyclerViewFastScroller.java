@@ -37,10 +37,12 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
 
+import ch.deletescape.lawnchair.theme.ColorEngine;
+
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
-public class RecyclerViewFastScroller extends View {
+public class RecyclerViewFastScroller extends View implements ColorEngine.OnAccentChangeListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
 
@@ -120,7 +122,6 @@ public class RecyclerViewFastScroller extends View {
 
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(Themes.getColorAccent(context));
         mThumbPaint.setStyle(Paint.Style.FILL);
 
         Resources res = getResources();
@@ -352,5 +353,22 @@ public class RecyclerViewFastScroller extends View {
         top = Utilities.boundToRange(top,
                 mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
+    }
+
+    @Override
+    public void onAccentChange(int color) {
+        mThumbPaint.setColor(color);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
     }
 }

@@ -1,8 +1,11 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.animation.FloatPropertyCompat;
 import android.support.animation.SpringAnimation;
 import android.support.annotation.NonNull;
@@ -13,7 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import ch.deletescape.lawnchair.LawnchairPreferences;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
@@ -23,14 +26,20 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+
 import org.jetbrains.annotations.NotNull;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.theme.ColorEngine;
+
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager,
-        WallpaperColorInfo.OnChangeListener, LawnchairPreferences.OnPreferenceChangeListener {
+        WallpaperColorInfo.OnChangeListener, LawnchairPreferences.OnPreferenceChangeListener,
+        ColorEngine.OnAccentChangeListener {
     public static final String KEY_ALL_APPS_GOOGLE_SEARCH = "pref_allAppsGoogleSearch";
 
     private AllAppsRecyclerView mRecyclerView;
     private FallbackAppsSearchView mFallback;
+    private ImageView mSearchIcon;
     private int mAlpha;
     private Bitmap mBitmap;
     private AlphabeticalAppsList mApps;
@@ -158,10 +167,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mSearchIcon = findViewById(R.id.g_icon);
         WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
         instance.addOnChangeListener(this);
         onExtractedColorsChanged(instance);
-        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_ALL_APPS_GOOGLE_SEARCH, this);
+        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener( KEY_ALL_APPS_GOOGLE_SEARCH, this);
+        ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
     }
 
     @Override
@@ -189,6 +200,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected void onDetachedFromWindow() {
         Utilities.getLawnchairPrefs(getContext()).removeOnPreferenceChangeListener(KEY_ALL_APPS_GOOGLE_SEARCH, this);
         WallpaperColorInfo.getInstance(getContext()).removeOnChangeListener(this);
+        ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
         super.onDetachedFromWindow();
     }
 
@@ -238,9 +250,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
         boolean allAppsGoogleSearch = prefs.getAllAppsGoogleSearch();
-        if (mAllAppsGoogleSearch != allAppsGoogleSearch || force) {
+        if (mAllAppsGoogleSearch != allAppsGoogleSearch || force || "pref_accentColor".equals(key)) {
             mAllAppsGoogleSearch = allAppsGoogleSearch;
-            ((ImageView) findViewById(R.id.g_icon)).setImageResource(mAllAppsGoogleSearch ?
+            mSearchIcon.setImageResource(mAllAppsGoogleSearch ?
                     R.drawable.ic_super_g_color : R.drawable.ic_allapps_search);
             mMicIconView.setImageResource(mAllAppsGoogleSearch ? R.drawable.ic_mic_color : 0);
             if (mAllAppsGoogleSearch) {
@@ -248,6 +260,29 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             } else {
                 ensureFallbackView();
             }
+        }
+    }
+
+    @Override
+    public void onAccentChange(int color) {
+        if (mSearchIcon != null) {
+            if (!mAllAppsGoogleSearch) {
+                mSearchIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            } else {
+                mSearchIcon.clearColorFilter();
+            }
+        }
+        if (mFallback != null) {
+            int[][] states = new int[][]{
+                    new int[]{android.R.attr.state_focused}, // focused
+                    new int[]{-android.R.attr.state_focused}, // normal
+            };
+
+            int[] colors = new int[]{
+                    Color.TRANSPARENT,
+                    color
+            };
+            mFallback.setHintTextColor(new ColorStateList(states, colors));
         }
     }
 }

@@ -165,6 +165,15 @@
         <attr name="steps" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="ColorPickerPreference">
+        <attr name="defaultColor" format="color" />
+        <attr name="colorMode" format="integer" >
+            <enum name="RGB" value="0" />
+            <enum name="ARGB" value="1" />
+            <!-- <enum name="HSV" value="2" /> -->
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="PreviewPreference">
         <attr name="previewLayout" format="float" />
     </declare-styleable>

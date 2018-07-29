@@ -31,5 +31,5 @@
     android:scrollHorizontally="true"
     android:singleLine="true"
     android:textColor="@color/qsb_drawer_text_color"
-    android:textColorHint="?android:colorAccent"
+    android:textColorHint="@drawable/all_apps_search_hint"
     android:textSize="16sp" />

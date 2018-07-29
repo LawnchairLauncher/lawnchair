@@ -29,7 +29,9 @@ import android.widget.Toast;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.Themes;
 
-public class InfoDropTarget extends UninstallDropTarget {
+import ch.deletescape.lawnchair.theme.ColorEngine;
+
+public class InfoDropTarget extends UninstallDropTarget implements ColorEngine.OnAccentChangeListener {
 
     private static final String TAG = "InfoDropTarget";
 
@@ -43,8 +45,6 @@ public class InfoDropTarget extends UninstallDropTarget {
 
     @Override
     protected void setupUi() {
-        // Get the hover color
-        mHoverColor = Themes.getColorAccent(getContext());
         setDrawable(R.drawable.ic_info_shadow);
     }
 
@@ -116,5 +116,24 @@ public class InfoDropTarget extends UninstallDropTarget {
                 (info instanceof LauncherAppWidgetInfo &&
                         ((LauncherAppWidgetInfo) info).restoreStatus == 0) ||
                 info instanceof PendingAddItemInfo);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // Register accent change listener
+        ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
+    }
+
+    @Override
+    public void onAccentChange(int color) {
+        mHoverColor = color;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Remove accent change listener
+        ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockTheme"
         android:title="@string/pref_category_theme">
         
@@ -56,14 +56,14 @@
             android:title="@string/hotseat_show_arrow"
             android:persistent="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_hotseatShowPageIndicator"
             android:title="@string/hotseat_show_page_indicator"
             android:defaultValue="true"
             android:persistent="true" />
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockIcons"
         android:title="@string/pref_category_icons">
         
@@ -71,28 +71,28 @@
             android:key="pref_dock_grid_size"
             android:title="@string/num_hotseat_icons_pref_title" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_twoRowDock"
             android:title="@string/two_row_dock"
             android:defaultValue="false"
             android:persistent="true" />
-    </android.support.v7.preference.PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
-    <android.support.v7.preference.PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockSearchbar"
         android:title="@string/pref_category_searchbar">
         
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_dockSearchBar"
             android:title="@string/dock_search_bar"
             android:defaultValue="true"
             android:persistent="true" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
             android:key="pref_dockColoredGoogle"
             android:title="@string/dock_colored_google"
             android:dependency="pref_dockSearchBar"
             android:defaultValue="false"
             android:persistent="true" />
-    </android.support.v7.preference.PreferenceCategory>
-</PreferenceScreen>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

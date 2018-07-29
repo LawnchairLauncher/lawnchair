@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
@@ -9,10 +10,15 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.theme.ColorEngine
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import com.android.launcher3.util.Themes
+
 
 open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, ColorEngine.OnAccentChangeListener {
 
     private var mSeekbar: SeekBar? = null
     private var mValueText: TextView? = null
@@ -56,6 +62,21 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         updateDisplayedValue()
 
         if (allowResetToDefault) view.setOnCreateContextMenuListener(this)
+        ColorEngine.getInstance(context).addAccentChangeListener(this)
+    }
+
+    override fun onAccentChange(color: Int) {
+        val stateList = ColorStateList.valueOf(color)
+        mSeekbar?.apply {
+            thumbTintList = stateList
+            progressTintList = stateList
+            progressBackgroundTintList = stateList
+        }
+    }
+
+    override fun onDetached() {
+        super.onDetached()
+        ColorEngine.getInstance(context).removeAccentChangeListener(this)
     }
 
     fun setValue(value: Float) {

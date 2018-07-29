@@ -156,6 +156,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'me.jfenn:attribouter:0.0.8'
     implementation 'net.aksingh:owm-japis:2.5.2.2'
+    implementation 'me.priyesh:chroma:1.0.2'
 }
 
 protobuf {

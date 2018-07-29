@@ -16,7 +16,7 @@ class IconPackPreference(context: Context, attrs: AttributeSet?) : DialogPrefere
 
     init {
         IconPackManager.getInstance(context)
-        layoutResource = R.layout.pref_icon_pack
+        layoutResource = R.layout.pref_with_preview_icon
         Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_icon_pack", this)
     }
 

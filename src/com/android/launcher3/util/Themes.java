@@ -22,13 +22,17 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 
+import com.android.launcher3.Utilities;
+
+import ch.deletescape.lawnchair.theme.ColorEngine;
+
 /**
  * Various utility methods associated with theming.
  */
 public class Themes {
 
     public static int getColorAccent(Context context) {
-        return getAttrColor(context, android.R.attr.colorAccent);
+        return ColorEngine.Companion.getInstance(context).getAccent();
     }
 
     public static int getAttrColor(Context context, int attr) {

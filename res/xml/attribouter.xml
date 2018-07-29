@@ -2485,7 +2485,7 @@
             />
         <project
             license="apache-2.0"
-            repo="MrBIMC/VintageChroma" />
+            repo="ItsPriyesh/chroma" />
         <project repo="florent37/FiftyShadesOf" />
     </licenses>
 </about>
