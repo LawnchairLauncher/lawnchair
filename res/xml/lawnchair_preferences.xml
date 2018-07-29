@@ -31,7 +31,7 @@
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_smartspace"
         android:summary="@string/smartspace_preferences_in_settings_desc"
-        android:title="@string/smartspace_preferences_in_settings"
+        android:title="@string/home_widget"
         app:content="@xml/lawnchair_smartspace_preferences"
         app:hasPreview="true"
         android:layout="@layout/sub_preference"/>
