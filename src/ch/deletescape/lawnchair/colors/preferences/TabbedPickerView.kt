@@ -75,6 +75,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
             val color = colors[position]
             holder.text.setBackgroundColor(color.resolveColor())
             holder.text.text = color.getDisplayName()
+            holder.text.setTextColor(color.computeForegroundColor())
         }
 
         inner class Holder(val text: TextView) : RecyclerView.ViewHolder(text) {
