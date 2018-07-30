@@ -79,6 +79,12 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
 
     inner class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.Holder>() {
 
+        private val colors = listOf(
+                SystemAccentResolver(ColorEngine.ColorResolver.Config(engine)),
+                PixelAccentResolver(ColorEngine.ColorResolver.Config(engine)),
+                WallpaperMainColorResolver(ColorEngine.ColorResolver.Config(engine)),
+                WallpaperSecondaryColorResolver(ColorEngine.ColorResolver.Config(engine)))
+
         override fun getItemCount() = colors.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
