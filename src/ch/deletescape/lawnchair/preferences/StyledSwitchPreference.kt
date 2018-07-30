@@ -29,7 +29,6 @@ open class StyledSwitchPreference(context: Context, attrs: AttributeSet?) : Swit
 
     override fun onAccentChange(color: Int, foregroundColor: Int) {
         if (checkableView is Switch) {
-            Log.d("switch", "wew i'm here")
             val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
             val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
             val switchThumbNormal = context.resources.getColor(normalLight)

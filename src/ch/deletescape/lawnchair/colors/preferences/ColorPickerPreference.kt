@@ -15,7 +15,6 @@ import me.priyesh.chroma.ColorSelectListener
 class ColorPickerPreference(context: Context, attrs: AttributeSet?)
     : Preference(context, attrs), ColorEngine.OnAccentChangeListener {
 
-    var fragmentManager: FragmentManager? = null
     private val engine = ColorEngine.getInstance(context)
 
     init {
@@ -43,7 +42,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         icon.setColorFilter(color, PorterDuff.Mode.SRC)
     }
 
-    fun showDialog() {
+    fun showDialog(fragmentManager: FragmentManager) {
         ColorPickerDialog.newInstance(engine.accent).show(fragmentManager, key)
     }
 }

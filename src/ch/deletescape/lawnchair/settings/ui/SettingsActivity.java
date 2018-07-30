@@ -144,8 +144,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             startActivity(intent);
             return true;
         } else if(preference instanceof ColorPickerPreference){
-            ((ColorPickerPreference) preference).setFragmentManager(getSupportFragmentManager());
-            ((ColorPickerPreference) preference).showDialog();
+            ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
             return true;
         } else if(preference.getKey().equals("about")){
             fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
