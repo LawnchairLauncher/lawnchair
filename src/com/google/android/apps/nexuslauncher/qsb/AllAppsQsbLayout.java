@@ -84,11 +84,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private void ensureFallbackView() {
+        boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
         if (mFallback == null) {
             mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
             mFallback.initialize(this, mApps, mRecyclerView);
             addView(mFallback);
         }
+        mFallback.setTextColor(getResources().getColor(isDarkTheme ? R.color.qsb_drawer_text_color_dark : R.color.qsb_drawer_text_color_normal));
         mFallback.setVisibility(View.VISIBLE);
     }
 
@@ -205,7 +207,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
-        int color = getResources().getColor(Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark) ? R.color.qsb_background_drawer_dark : R.color.qsb_background_drawer_default);
+        boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
+        int color = getResources().getColor(isDarkTheme ? R.color.qsb_background_drawer_dark : R.color.qsb_background_drawer_default);
         bz(ColorUtils.compositeColors(ColorUtils.compositeColors(color, Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor)), wallpaperColorInfo.getMainColor()));
     }
 
@@ -257,6 +260,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             mMicIconView.setImageResource(mAllAppsGoogleSearch ? R.drawable.ic_mic_color : 0);
             if (mAllAppsGoogleSearch) {
                 removeFallbackView();
+                mSearchIcon.clearColorFilter();
             } else {
                 ensureFallbackView();
             }
