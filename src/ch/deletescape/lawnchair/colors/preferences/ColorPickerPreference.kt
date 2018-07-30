@@ -35,7 +35,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         engine.removeAccentChangeListener(this)
     }
 
-    override fun onAccentChange(color: Int) {
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
         summary = engine.accentResolver.getDisplayName()
         if (icon == null){
             icon = context.resources.getDrawable(R.drawable.color_preview, null)

@@ -210,7 +210,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         }
 
         @Override
-        public void onAccentChange(int color) {
+        public void onAccentChange(int color, int foregroundColor) {
             try {
                 Drawable arrowBack = getContext().getResources().getDrawable(R.drawable.ic_arrow_back);
                 arrowBack.setTint(color);

@@ -18,6 +18,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
     var accentResolver by createResolverPref(KEY_ACCENT_RESOLVER)
     val accent get() = accentResolver.resolveColor()
+    val accentForeground get() = accentResolver.computeForegroundColor()
 
     init {
         prefs.addOnPreferenceChangeListener(this, KEY_ACCENT_RESOLVER)
@@ -37,12 +38,12 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     private fun notifyAccentChanged() {
-        runOnMainThread { accentListeners.forEach { it.onAccentChange(accent) } }
+        runOnMainThread { accentListeners.forEach { it.onAccentChange(accent, accentForeground) } }
     }
 
     fun addAccentChangeListener(listener: OnAccentChangeListener) {
         accentListeners.add(listener)
-        listener.onAccentChange(accent)
+        listener.onAccentChange(accent, accentForeground)
     }
 
     fun removeAccentChangeListener(listener: OnAccentChangeListener) = accentListeners.remove(listener)
@@ -70,7 +71,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine)))
 
     interface OnAccentChangeListener {
-        fun onAccentChange(color: Int)
+        fun onAccentChange(color: Int, foregroundColor: Int)
     }
 
     abstract class ColorResolver(val config: Config) {

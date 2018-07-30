@@ -27,7 +27,7 @@ open class StyledSwitchPreference(context: Context, attrs: AttributeSet?) : Swit
         ColorEngine.getInstance(context).addAccentChangeListener(this)
     }
 
-    override fun onAccentChange(color: Int) {
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
         if (checkableView is Switch) {
             Log.d("switch", "wew i'm here")
             val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)

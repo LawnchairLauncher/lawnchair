@@ -362,8 +362,9 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     }
 
     @Override
-    public void onAccentChange(int color) {
+    public void onAccentChange(int color, int foregroundColor) {
         mThumbPaint.setColor(color);
+        mPopupView.setTextColor(foregroundColor);
     }
 
     @Override

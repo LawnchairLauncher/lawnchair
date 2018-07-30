@@ -62,7 +62,7 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         ColorEngine.getInstance(context).addAccentChangeListener(this)
     }
 
-    override fun onAccentChange(color: Int) {
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
         val stateList = ColorStateList.valueOf(color)
         mSeekbar?.apply {
             thumbTintList = stateList

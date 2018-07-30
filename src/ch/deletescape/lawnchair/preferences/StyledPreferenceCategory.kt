@@ -16,7 +16,7 @@ class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : Prefere
         ColorEngine.getInstance(context).addAccentChangeListener(this)
     }
 
-    override fun onAccentChange(color: Int) {
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
         title?.setTextColor(color)
     }
 

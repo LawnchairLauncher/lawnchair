@@ -125,7 +125,7 @@ public class InfoDropTarget extends UninstallDropTarget implements ColorEngine.O
     }
 
     @Override
-    public void onAccentChange(int color) {
+    public void onAccentChange(int color, int foregroundColor) {
         mHoverColor = color;
     }
 

@@ -264,7 +264,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onAccentChange(int color) {
+    public void onAccentChange(int color, int foregroundColor) {
         if (mSearchIcon != null) {
             if (!mAllAppsGoogleSearch) {
                 mSearchIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
