@@ -2,7 +2,9 @@ package ch.deletescape.lawnchair.theme
 
 import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Utilities
 import java.util.HashSet
@@ -32,11 +34,12 @@ class ColorEngine private constructor(context: Context) : LawnchairPreferences.O
         accentListeners.add(listener)
         listener.onAccentChange(accent)
     }
+
     fun removeAccentChangeListener(listener: OnAccentChangeListener) = accentListeners.remove(listener)
 
     interface OnAccentChangeListener {
         fun onAccentChange (color: Int)
     }
 
-    companion object : SingletonHolder<ColorEngine, Context>(::ColorEngine)
+    companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine)))
 }
