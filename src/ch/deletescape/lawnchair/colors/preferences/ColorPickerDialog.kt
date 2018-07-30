@@ -16,16 +16,15 @@
 
 package ch.deletescape.lawnchair.colors.preferences
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.support.annotation.ColorInt
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.view.WindowManager
-import ch.deletescape.lawnchair.colors.ColorEngine
+import com.android.launcher3.R
 import me.priyesh.chroma.*
-import kotlin.properties.Delegates
 
 class ColorPickerDialog : DialogFragment() {
 
@@ -54,7 +53,8 @@ class ColorPickerDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = context!!
-        val initialColor = savedInstanceState?.getInt(ArgInitialColor, ChromaView.DefaultColor) ?: arguments!!.getInt(ArgInitialColor)
+        val initialColor = savedInstanceState?.getInt(ArgInitialColor, ChromaView.DefaultColor)
+                ?: arguments!!.getInt(ArgInitialColor)
 
         tabbedPickerView = TabbedPickerView(context, initialColor, ::dismiss)
         return AlertDialog.Builder(context).setView(tabbedPickerView).create().apply {
@@ -68,6 +68,9 @@ class ColorPickerDialog : DialogFragment() {
                     width = resources.getDimensionPixelSize(R.dimen.chroma_dialog_width)
                 }
                 window.setLayout(width, height)
+
+                // for some reason it won't respect the windowBackground attribute in the theme
+                window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
             }
         }
     }
