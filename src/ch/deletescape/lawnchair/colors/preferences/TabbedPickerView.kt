@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.OrientationHelper
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +15,7 @@ import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
-import me.priyesh.chroma.ChromaView
-import me.priyesh.chroma.ColorMode
-import me.priyesh.chroma.orientation
+import me.priyesh.chroma.*
 
 @SuppressLint("ViewConstructor")
 class TabbedPickerView(context: Context, initialColor: Int, private val dismiss: () -> Unit)
@@ -34,8 +32,11 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
     private val isLandscape = orientation(context) == Configuration.ORIENTATION_LANDSCAPE
 
     private val minItemHeight = context.resources.getDimensionPixelSize(R.dimen.color_preview_height)
+    private val minItemWidthLandscape = context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
     private val chromaViewHeight = context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
-    private var itemHeight = Math.max(minItemHeight, chromaViewHeight / colors.size)
+    private val viewHeightLandscape = context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
+    private val itemHeight = Math.max(minItemHeight, chromaViewHeight / colors.size)
+    private val itemWidthLandscape get () = Math.max(minItemWidthLandscape, viewPager.measuredWidth / colors.size)
 
     val chromaView = ChromaView(initialColor, ColorMode.RGB, context).apply {
         enableButtonBar(object : ChromaView.ButtonBarListener {
@@ -53,6 +54,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
 
     init {
         LayoutInflater.from(context).inflate(R.layout.tabbed_color_picker, this)
+        measure(MeasureSpec.EXACTLY,0)
         viewPager.adapter = ViewPagerAdapter(listOf(
                 Pair(context.getString(R.string.color_presets), initRecyclerView()),
                 Pair(context.getString(R.string.color_custom), chromaView)
@@ -60,7 +62,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         if (!isLandscape) {
             viewPager.layoutParams.height = chromaViewHeight
         } else {
-            viewPager.layoutParams.height = resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
+            viewPager.layoutParams.height = viewHeightLandscape
         }
         viewPager.childFilter = { it is ChromaView }
         tabLayout.setupWithViewPager(viewPager)
@@ -69,11 +71,13 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         }
     }
 
-    private fun initRecyclerView(): View {
+    private fun initRecyclerView(): RecyclerView {
         val recyclerView = LayoutInflater.from(context)
                 .inflate(R.layout.preference_spring_recyclerview, this, false) as RecyclerView
         recyclerView.adapter = ColorsAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = TwoWayLinearLayoutManager(context).apply {
+            orientation = if(isLandscape) OrientationHelper.HORIZONTAL else OrientationHelper.VERTICAL
+        }
         return recyclerView
     }
 
@@ -103,6 +107,11 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
             init {
                 if (!isLandscape) {
                     text.layoutParams.height = itemHeight
+                } else {
+                    text.layoutParams.apply {
+                        height = viewHeightLandscape
+                        width = itemWidthLandscape
+                    }
                 }
                 text.setOnClickListener {
                     engine.accentResolver = colors[adapterPosition]

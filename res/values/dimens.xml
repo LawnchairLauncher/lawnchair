@@ -282,5 +282,6 @@
     <dimen name="smartspace_preview_height">100dp</dimen>
     <dimen name="smartspace_preview_widget_margin">24dp</dimen>
     <dimen name="color_preview_height">80dp</dimen>
+    <dimen name="color_preview_width">100dp</dimen>
     <dimen name="chroma_view_height">436dp</dimen>
 </resources>
