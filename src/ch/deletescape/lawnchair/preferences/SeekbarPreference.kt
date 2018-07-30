@@ -10,11 +10,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
-import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.theme.ColorEngine
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.util.Themes
 
 
 open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :

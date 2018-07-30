@@ -5,10 +5,7 @@ import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.TextView
-import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.theme.ColorEngine
-import com.android.launcher3.Utilities
-import com.android.launcher3.util.Themes
+import ch.deletescape.lawnchair.colors.ColorEngine
 
 class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : PreferenceCategory(context, attrs), ColorEngine.OnAccentChangeListener {
     var title: TextView? = null

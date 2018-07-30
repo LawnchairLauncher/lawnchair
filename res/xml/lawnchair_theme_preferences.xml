@@ -44,7 +44,7 @@
             android:summary="%s"
             android:title="@string/theme_pref_title" />
 
-        <ch.deletescape.lawnchair.preferences.ColorPickerPreference
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_accentColor"
             android:persistent="true"
             android:title="@string/pref_accent_color"

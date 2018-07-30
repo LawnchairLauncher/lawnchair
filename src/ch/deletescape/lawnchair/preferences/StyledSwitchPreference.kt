@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Switch
-import ch.deletescape.lawnchair.theme.ColorEngine
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.util.Themes
 
 

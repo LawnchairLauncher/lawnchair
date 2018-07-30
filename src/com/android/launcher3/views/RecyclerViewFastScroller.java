@@ -37,7 +37,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
 
-import ch.deletescape.lawnchair.theme.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 
 /**
  * The track and scrollbar that shows when you scroll the list.

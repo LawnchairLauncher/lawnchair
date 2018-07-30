@@ -12,6 +12,7 @@ import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
 import android.util.Log
@@ -342,4 +343,23 @@ fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
 
 fun <T>useApplicationContext(creator: (Context) -> T): (Context) -> T {
     return { it -> creator(it.applicationContext) }
+}
+
+class ViewPagerAdapter(private val pages: List<Pair<String, View>>) : PagerAdapter() {
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val view = pages[position].second
+        container.addView(view)
+        return view
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeAllViews()
+    }
+
+    override fun getCount() = pages.size
+
+    override fun isViewFromObject(view: View, obj: Any) = (view === obj)
+
+    override fun getPageTitle(position: Int) = pages[position].first
 }

@@ -30,7 +30,7 @@ import com.android.launcher3.util.Themes;
 import org.jetbrains.annotations.NotNull;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.theme.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager,
         WallpaperColorInfo.OnChangeListener, LawnchairPreferences.OnPreferenceChangeListener,

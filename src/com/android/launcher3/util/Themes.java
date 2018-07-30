@@ -22,9 +22,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 
-import com.android.launcher3.Utilities;
-
-import ch.deletescape.lawnchair.theme.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 
 /**
  * Various utility methods associated with theming.

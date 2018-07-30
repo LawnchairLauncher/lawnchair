@@ -27,9 +27,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.util.Themes;
 
-import ch.deletescape.lawnchair.theme.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 
 public class InfoDropTarget extends UninstallDropTarget implements ColorEngine.OnAccentChangeListener {
 

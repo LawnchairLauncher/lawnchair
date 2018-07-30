@@ -598,4 +598,10 @@
 
     <string name="icon_pack_applied_toast">\"%s\" has been applied successfully!</string>
     <string name="app_gesture_failed_toast">Opening app failed</string>
+    <string name="color_system_accent">System accent</string>
+    <string name="color_pixel_accent">Pixel blue</string>
+    <string name="color_presets">Presets</string>
+    <string name="color_custom">Custom</string>
+    <string name="color_wallpaper_main">Wallpaper main</string>
+    <string name="color_wallpaper_secondary">Wallpaper secondary</string>
 </resources>
