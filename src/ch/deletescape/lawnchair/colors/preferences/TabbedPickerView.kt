@@ -26,8 +26,8 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
     private val engine = ColorEngine.getInstance(context)
 
     private val colors = listOf(
-            SystemAccentResolver(ColorEngine.ColorResolver.Config(engine)),
             PixelAccentResolver(ColorEngine.ColorResolver.Config(engine)),
+            SystemAccentResolver(ColorEngine.ColorResolver.Config(engine)),
             WallpaperMainColorResolver(ColorEngine.ColorResolver.Config(engine)),
             WallpaperSecondaryColorResolver(ColorEngine.ColorResolver.Config(engine)))
 
