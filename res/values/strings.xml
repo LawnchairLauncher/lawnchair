@@ -596,4 +596,5 @@
     <string name="dt2s_admin_warning">By disabling device admin, you will not be able to use double tap to lock on your home screen.</string>
 
     <string name="icon_pack_applied_toast">\"%s\" has been applied successfully!</string>
+    <string name="app_gesture_failed_toast">Opening app failed</string>
 </resources>

@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.UserHandle
 import android.support.annotation.Keep
+import android.widget.Toast
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -159,8 +161,13 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     override fun onGestureTrigger(controller: GestureController) {
         when (type) {
             "app" -> {
-                LauncherAppsCompat.getInstance(context)
-                        .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+                try {
+                    LauncherAppsCompat.getInstance(context)
+                            .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+                } catch (e: NullPointerException){
+                    // App is probably not installed anymore, show a Toast
+                    Toast.makeText(context, R.string.app_gesture_failed_toast, Toast.LENGTH_LONG).show()
+                }
             }
             "shortcut" -> {
                 DeepShortcutManager.getInstance(context)
