@@ -594,4 +594,6 @@
     <!-- DT2S -->
     <string name="dt2s_admin_hint">To be able to use double tap to lock, you have to enable device admin for Lawnchair. This is a secure lock, meaning you have to enter your PIN on the next unlock, if you have any.</string>
     <string name="dt2s_admin_warning">By disabling device admin, you will not be able to use double tap to lock on your home screen.</string>
+
+    <string name="icon_pack_applied_toast">\"%s\" has been applied successfully!</string>
 </resources>
