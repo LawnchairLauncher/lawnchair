@@ -6,17 +6,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.design.widget.TextInputLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.widget.AppCompatEditText
 import android.view.View
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.RadioButton
+import android.widget.*
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
@@ -24,21 +27,24 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewBackupActivity : SettingsBaseActivity() {
+class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnAccentChangeListener {
 
     private val permissionRequestReadExternalStorage = 0
 
-    private val backupName by lazy { findViewById<EditText>(R.id.name) }
+    private val backupName by lazy { findViewById<AppCompatEditText>(R.id.name) }
+    private val backupNameLayout by lazy { findViewById<TextInputLayout>(R.id.textInputLayout) }
 
     private val backupHomescreen by lazy { findViewById<CheckBox>(R.id.content_homescreen) }
     private val backupSettings by lazy { findViewById<CheckBox>(R.id.content_settings) }
     private val backupWallpaper by lazy { findViewById<CheckBox>(R.id.content_wallpaper) }
 
     private val backupLocationDevice by lazy { findViewById<RadioButton>(R.id.location_device) }
+    private val backupLocationDocuments by lazy { findViewById<RadioButton>(R.id.location_documents) }
 
     private val config by lazy { findViewById<View>(R.id.config) }
     private val startButton by lazy { findViewById<FloatingActionButton>(R.id.fab) }
     private val progress by lazy { findViewById<View>(R.id.progress) }
+    private val progressBar by lazy { findViewById<ProgressBar>(R.id.progressBar) }
 
     private var backupUri = Uri.parse("/")
     private var inProgress = false
@@ -149,6 +155,44 @@ class NewBackupActivity : SettingsBaseActivity() {
 
     override fun onBackPressed() {
         if (!inProgress) super.onBackPressed()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ColorEngine.getInstance(this).addAccentChangeListener(this)
+    }
+
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
+        val tintList = ColorStateList.valueOf(color)
+        startButton.apply {
+            DrawableCompat.setTint(background, color)
+            DrawableCompat.setTint(drawable, foregroundColor)
+        }
+        backupName.apply {
+            highlightColor = color
+            supportBackgroundTintList = tintList
+        }
+        try {
+            val focusedTextColor = TextInputLayout::class.java.getDeclaredField("focusedTextColor")
+            focusedTextColor.isAccessible = true
+            focusedTextColor.set(backupNameLayout, tintList)
+        } catch (e: Exception) {
+            lawnchairApp.bugReporter.writeReport("Failed to set focusedTextColor on TextInputLayout", e)
+        }
+        backupHomescreen.buttonTintList = tintList
+        backupSettings.buttonTintList = tintList
+        backupWallpaper.buttonTintList = tintList
+        backupLocationDevice.buttonTintList = tintList
+        backupLocationDocuments.buttonTintList = tintList
+        progressBar.indeterminateTintList = tintList
+        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
+        arrowBack?.setTint(color)
+        supportActionBar?.setHomeAsUpIndicator(arrowBack)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ColorEngine.getInstance(this).removeAccentChangeListener(this)
     }
 
     @SuppressLint("StaticFieldLeak")

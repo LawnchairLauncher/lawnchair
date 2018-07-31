@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 
@@ -88,6 +89,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         init {
             itemView.findViewById<View>(R.id.action_new_backup).setOnClickListener(this)
             itemView.findViewById<View>(R.id.action_restore_backup).setOnClickListener(this)
+            itemView.findViewById<TextView>(R.id.local_backup_title).setTextColor(ColorEngine.getInstance(context).accent)
         }
 
         override fun onClick(v: View) {

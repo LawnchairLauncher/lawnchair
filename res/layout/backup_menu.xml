@@ -55,6 +55,7 @@
     </android.support.v7.widget.CardView>
 
     <TextView
+        android:id="@+id/local_backup_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
