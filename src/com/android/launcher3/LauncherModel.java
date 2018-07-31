@@ -420,8 +420,8 @@ public class LauncherModel extends BroadcastReceiver
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
             ExtractionUtils.startColorExtractionServiceIfNecessary(context);
-            LauncherAppState.getInstance(context).getLauncher()
-                    .getBlurWallpaperProvider().updateAsync();
+            Launcher l = LauncherAppState.getInstance(context).getLauncher();
+            if (l != null) l.getBlurWallpaperProvider().updateAsync();
         }
     }
 
