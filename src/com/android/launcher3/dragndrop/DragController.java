@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
 
@@ -31,6 +32,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
@@ -145,6 +147,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         // Hide soft keyboard, if visible
         UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
+        AbstractFloatingView.closeOpenViews(mLauncher, false, TYPE_DISCOVERY_BOUNCE);
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
