@@ -287,6 +287,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                     color
             };
             mFallback.setHintTextColor(new ColorStateList(states, colors));
+            mFallback.setHighlightColor(color);
         }
     }
 }

@@ -27,7 +27,7 @@
             android:summary="@string/hide_apps_sum"
             android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_hideAllAppsAppLabels"
             android:title="@string/hide_all_apps_icon_labels_pref_title"
             android:defaultValue="false"
@@ -38,12 +38,12 @@
         android:key="prefCat_drawerSearchbar"
         android:title="@string/pref_category_searchbar">
         
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_allAppsSearch"
             android:title="@string/title_all_apps_search"
             android:defaultValue="true" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_allAppsGoogleSearch"
             android:title="@string/title_all_apps_google_search"
             android:summary="@string/summary_all_apps_google_search"
@@ -51,7 +51,7 @@
             android:disableDependentsState="true"
             android:defaultValue="true" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_search_hidden_apps"
             android:title="@string/title_search_hidden_apps"
             android:summary="@string/summary_search_hidden_apps"
@@ -64,19 +64,19 @@
         android:key="prefCat_drawerMisc"
         android:title="@string/pref_category_misc">
         
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_show_predictions"
             android:title="@string/title_app_suggestions"
             android:summary="@string/summary_app_suggestions"
             android:defaultValue="true" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_separateWorkApps"
             android:title="@string/separate_work_apps_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_keepScrollState"
             android:title="@string/keep_scroll_state_pref_title"
             android:defaultValue="false"

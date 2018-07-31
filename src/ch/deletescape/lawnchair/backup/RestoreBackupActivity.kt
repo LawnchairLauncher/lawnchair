@@ -235,9 +235,6 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
         backupSettings.buttonTintList = tintList
         backupWallpaper.buttonTintList = tintList
         progressBar.indeterminateTintList = tintList
-        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-        arrowBack?.setTint(color)
-        supportActionBar?.setHomeAsUpIndicator(arrowBack)
     }
 
     override fun onDetachedFromWindow() {

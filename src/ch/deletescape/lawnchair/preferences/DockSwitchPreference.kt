@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import com.android.launcher3.Utilities
 import kotlin.reflect.KMutableProperty1
 
-class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitchPreference(context, attrs) {
+class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitchPreferenceCompat(context, attrs) {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle

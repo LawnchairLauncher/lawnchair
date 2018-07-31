@@ -17,6 +17,7 @@
             style="@android:style/TextAppearance.Material.Title" />
 
         <ProgressBar
+            android:id="@+id/progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:indeterminate="true"
             android:layout_width="match_parent"

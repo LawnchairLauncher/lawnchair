@@ -2,7 +2,7 @@
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:key="pref_smartspace"
         android:title="@string/home_widget"
         android:summary="@string/smartspace_preferences_in_settings_desc"
@@ -18,7 +18,7 @@
         android:key="homewidgetStyle"
         android:title="@string/pref_category_theme">
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_date"
             android:dependency="pref_use_pill_qsb"
             android:title="@string/smartspace_date"
@@ -26,7 +26,7 @@
             android:defaultValue="true"
             />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time"
             android:title="@string/smartspace_time"
             android:summary="@string/in_smartspace"
@@ -34,23 +34,23 @@
             android:dependency="pref_use_pill_qsb"
             />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time_24_h"
             android:title="@string/smartspace_time_24_h"
             android:defaultValue="false"
             android:dependency="pref_smartspace_time"
             />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_use_pill_qsb"
             android:dependency="pref_smartspace"
             android:title="@string/title_use_pill_qsb"
             android:disableDependentsState="true"
             android:defaultValue="false"
             />
-        
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
-        
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_homewidgetWeather"
         android:title="@string/pref_category_weather">

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -15,7 +16,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -232,7 +235,12 @@ open class AppsAdapterWithShortcuts(
         }
     }
 
-    inner class LoadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class LoadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            val progressBar = itemView.findViewById<ProgressBar>(R.id.progress)
+            progressBar.indeterminateTintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+        }
+    }
 
     class DiffCallback(val old: List<Item>, val new: List<Item>) : DiffUtil.Callback() {
 

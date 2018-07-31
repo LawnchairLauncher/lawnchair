@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.hookGoogleSansDialogTitle
 import ch.deletescape.lawnchair.theme.ThemeManager
@@ -15,7 +16,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @SuppressLint("Registered")
-open class SettingsBaseActivity : AppCompatActivity() {
+open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChangeListener {
     val decorLayout by lazy { DecorLayout(this, window) }
 
     protected open val themeOverride: ThemeOverride get() = ThemeOverride.Settings(this)
@@ -64,5 +65,21 @@ open class SettingsBaseActivity : AppCompatActivity() {
 
     fun getContentFrame(): ViewGroup {
         return decorLayout.findViewById(android.R.id.content)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ColorEngine.getInstance(this).addAccentChangeListener(this)
+    }
+
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
+        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
+        arrowBack?.setTint(color)
+        supportActionBar?.setHomeAsUpIndicator(arrowBack)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ColorEngine.getInstance(this).removeAccentChangeListener(this)
     }
 }

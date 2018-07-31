@@ -23,7 +23,7 @@
             android:title="@string/icon_shape_override_label" />
 
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
@@ -51,14 +51,14 @@
             app:defaultColor="@color/colorAccent"/>
 
         <!-- TODO: Move somewhere more appropriate -->
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="opa_enabled"
             android:persistent="true"
             android:summary="@string/pref_show_assistant_summary"
             android:title="@string/pref_show_assistant_title" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_enableBlur"
             android:persistent="true"

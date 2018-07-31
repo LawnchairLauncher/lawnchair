@@ -185,9 +185,6 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnAccentChangeList
         backupLocationDevice.buttonTintList = tintList
         backupLocationDocuments.buttonTintList = tintList
         progressBar.indeterminateTintList = tintList
-        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-        arrowBack?.setTint(color)
-        supportActionBar?.setHomeAsUpIndicator(arrowBack)
     }
 
     override fun onDetachedFromWindow() {

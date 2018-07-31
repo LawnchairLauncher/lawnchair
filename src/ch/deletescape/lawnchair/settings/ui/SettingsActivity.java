@@ -188,7 +188,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         updateUpButton();
     }
 
-    private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener, ColorEngine.OnAccentChangeListener {
+    public abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
@@ -200,28 +200,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
 
             return recyclerView;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
-        }
-
-        @Override
-        public void onAccentChange(int color, int foregroundColor) {
-            try {
-                Drawable arrowBack = getContext().getResources().getDrawable(R.drawable.ic_arrow_back);
-                arrowBack.setTint(color);
-                ((SettingsActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(arrowBack);
-            } catch (NullPointerException ignored) {
-            }
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-            ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
         }
 
         @Override

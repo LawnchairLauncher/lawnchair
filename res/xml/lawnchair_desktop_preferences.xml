@@ -10,7 +10,7 @@
             android:key="pref_desktop_grid_size"
             android:title="@string/grid_size" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_enable_minus_one"
             android:summary="@string/pref_show_google_now_summary"
@@ -22,7 +22,7 @@
         android:key="prefCat_desktopIcons"
         android:title="@string/pref_category_icons">
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:disableDependentsState="true"
             android:key="pref_hideAppLabels"
@@ -40,7 +40,7 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_add_icon_to_home"
             android:persistent="true"
@@ -65,20 +65,20 @@
             </intent>
         </com.android.launcher3.views.ButtonPreference>
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/allow_rotation"
             android:key="pref_allowRotation"
             android:persistent="true"
             android:title="@string/allow_rotation_title" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_fullWidthWidgets"
             android:persistent="true"
             android:summary="@string/full_width_widgets_pref_summary"
             android:title="@string/full_width_width_widgets_pref_title" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_showTopShadow"
             android:persistent="true"

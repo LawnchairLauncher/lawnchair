@@ -16,7 +16,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
         android:key="pref_app_hide"
         android:title="@string/hide_app"
         android:summary="@string/hide_app_sum"

@@ -18,7 +18,7 @@ import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks, ColorEngine.OnAccentChangeListener {
+class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
     private val permissionRequestReadExternalStorage = 0
 
@@ -177,21 +177,5 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks, 
         } else {
             super.onActivityResult(requestCode, resultCode, resultData)
         }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        ColorEngine.getInstance(this).addAccentChangeListener(this)
-    }
-
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-        arrowBack?.setTint(color)
-        supportActionBar?.setHomeAsUpIndicator(arrowBack)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ColorEngine.getInstance(this).removeAccentChangeListener(this)
     }
 }
