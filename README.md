@@ -12,7 +12,7 @@ Download now!
 
 ## Now what does this cost?
 
-Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still buy me a beer or something via [PayPal](https://www.paypal.me/deletescape). Or get the [Donut Donation](https://play.google.com/store/apps/details?id=ch.deletescape.donut) app from Google Play to show your support.
+Nothing, I am promising that Lawnchair, including all its features, will always be free! But if you really like it, you can still buy me a beer or something via [PayPal](https://www.paypal.me/deletescape). Or get the [Donut Donation](https://play.google.com/store/apps/details?id=ch.deletescape.donut) app from Google Play to show your support.
 
 ## How to Contribute?
 
