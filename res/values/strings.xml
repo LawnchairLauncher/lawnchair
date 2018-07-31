@@ -604,4 +604,5 @@
     <string name="color_custom">Custom</string>
     <string name="color_wallpaper_main">Wallpaper main</string>
     <string name="color_wallpaper_secondary">Wallpaper secondary</string>
+    <string name="pref_dark_searchbar">Use dark searchbar</string>
 </resources>
