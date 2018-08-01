@@ -9,8 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
 import com.android.launcher3.R
@@ -56,7 +55,8 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         LayoutInflater.from(context).inflate(R.layout.tabbed_color_picker, this)
         measure(MeasureSpec.EXACTLY,0)
         viewPager.adapter = ViewPagerAdapter(listOf(
-                Pair(context.getString(R.string.color_presets), initRecyclerView()),
+                Pair(context.getString(R.string.color_presets), initPresetList()),
+//                Pair(context.getString(R.string.color_presets), initRecyclerView()),
                 Pair(context.getString(R.string.color_custom), chromaView)
         ))
         if (!isLandscape) {
@@ -68,6 +68,29 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         tabLayout.setupWithViewPager(viewPager)
         if (engine.accentResolver is RGBColorResolver) {
             viewPager.currentItem = 1
+        }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun initPresetList(): View {
+        return ExpandFillLinearLayout(context, null).apply {
+            orientation = if (isLandscape) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+            childWidth = minItemWidthLandscape
+            childHeight = minItemHeight
+
+            colors.forEach {
+                val preview = LayoutInflater.from(context).inflate(R.layout.color_preview, null) as ColorPreviewView
+                preview.colorResolver = it
+                preview.setOnClickListener { _ ->
+                    engine.accentResolver = it
+                    dismiss()
+                }
+                addView(preview)
+            }
+
+//            addView(View(context).apply { setBackgroundColor(Color.RED) })
+//            addView(View(context).apply { setBackgroundColor(Color.GREEN) })
+//            addView(View(context).apply { setBackgroundColor(Color.BLUE) })
         }
     }
 

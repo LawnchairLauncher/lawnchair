@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.colors.preferences.ColorPreviewView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/color_preview_height"
+    android:layout_height="match_parent"
     android:textColor="?android:textColorPrimary"
     android:foreground="?selectableItemBackground"
     android:gravity="start|bottom"

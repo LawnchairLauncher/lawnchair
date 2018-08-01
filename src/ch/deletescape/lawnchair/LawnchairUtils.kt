@@ -126,11 +126,15 @@ fun Context.getBooleanAttr(attr: Int): Boolean {
     return value
 }
 
-inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
+inline fun ViewGroup.forEachChildIndexed(action: (View, Int) -> Unit) {
     val count = childCount
     for (i in (0 until count)) {
-        action(getChildAt(i))
+        action(getChildAt(i), i)
     }
+}
+
+inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
+    forEachChildIndexed { view, _ -> action(view) }
 }
 
 fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
@@ -354,8 +358,8 @@ class ViewPagerAdapter(private val pages: List<Pair<String, View>>) : PagerAdapt
         return view
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeAllViews()
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View)
     }
 
     override fun getCount() = pages.size
