@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.isVisible
@@ -33,6 +35,8 @@ class IconPackDialogFragmentCompat : PreferenceDialogFragmentCompat(), AdapterVi
         listView = view.findViewById(R.id.pack_list)
         listView.adapter = IconAdapter(context!!, prefs.iconPack, prefs.showDebugInfo)
         listView.onItemClickListener = this
+        val accent = ColorEngine.getInstance(context!!).accent
+        listView.backgroundTintList = ColorStateList.valueOf(accent)
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -76,7 +80,10 @@ class IconPackDialogFragmentCompat : PreferenceDialogFragmentCompat(), AdapterVi
                 tag = info.packageName
                 findViewById<TextView>(android.R.id.title).text = info.label
                 findViewById<ImageView>(android.R.id.icon).setImageDrawable(info.icon)
-                findViewById<RadioButton>(R.id.radio).isChecked = info.packageName == current
+                findViewById<RadioButton>(R.id.radio).apply {
+                    isChecked = info.packageName == current
+                    buttonTintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+                }
                 findViewById<TextView>(android.R.id.text1).apply {
                     text = info.packageName
                     isVisible = debug

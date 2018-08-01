@@ -1,13 +1,18 @@
 package ch.deletescape.lawnchair.settings.ui
 
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
+import android.util.Log
 import android.view.View
 import android.widget.NumberPicker
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
+class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngine.OnAccentChangeListener {
 
     private val gridSizePreference get() = preference as GridSizePreference
 
@@ -38,6 +43,8 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
+
+        ColorEngine.getInstance(context!!).addAccentChangeListener(this)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -59,6 +66,24 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
         outState.putInt(SAVE_STATE_ROWS, numRowsPicker.value)
         outState.putInt(SAVE_STATE_COLUMNS, numColumnsPicker.value)
+    }
+
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
+        try {
+            val mSelectionDivider = NumberPicker::class.java.getDeclaredField("mSelectionDivider")
+            mSelectionDivider.isAccessible = true
+            val drawable = mSelectionDivider.get(numColumnsPicker) as Drawable
+            drawable.setTint(color)
+            mSelectionDivider.set(numColumnsPicker, drawable)
+            mSelectionDivider.set(numRowsPicker, drawable)
+        } catch (e: Exception) {
+            Log.e("GridSizeDialog","Failed to set mSelectionDivider", e)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        ColorEngine.getInstance(context!!).removeAccentChangeListener(this)
     }
 
     companion object {

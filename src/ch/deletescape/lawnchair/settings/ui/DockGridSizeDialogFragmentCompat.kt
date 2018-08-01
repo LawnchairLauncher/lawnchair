@@ -1,14 +1,17 @@
 package ch.deletescape.lawnchair.settings.ui
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener {
+class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnAccentChangeListener {
 
     private val gridSizePreference get() = preference as DockGridSizePreference
 
@@ -38,6 +41,7 @@ class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekB
         numRowsPicker.setOnSeekBarChangeListener(this)
 
         numRowsLabel.text = "${numRowsPicker.progress + minValue}"
+        ColorEngine.getInstance(context!!).addAccentChangeListener(this)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -70,6 +74,20 @@ class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekB
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
 
+    }
+
+    override fun onAccentChange(color: Int, foregroundColor: Int) {
+        val tintList = ColorStateList.valueOf(color)
+        numRowsPicker.apply {
+            progressBackgroundTintList = tintList
+            progressTintList = tintList
+            thumbTintList = tintList
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        ColorEngine.getInstance(context!!).removeAccentChangeListener(this)
     }
 
     companion object {
