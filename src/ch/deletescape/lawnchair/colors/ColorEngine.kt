@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.colors
 
 import android.content.Context
+import android.support.v4.graphics.ColorUtils
 import android.support.v7.graphics.Palette
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
@@ -87,7 +88,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         override fun toString() = TextUtils.join("|", listOf(this::class.java.name) + args) as String
 
         open fun computeForegroundColor(): Int {
-            return Palette.Swatch(resolveColor(), 1).bodyTextColor
+            return Palette.Swatch(ColorUtils.setAlphaComponent(resolveColor(), 0xFF), 1).bodyTextColor
         }
 
         open fun startListening() {
