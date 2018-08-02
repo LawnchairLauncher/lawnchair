@@ -12,9 +12,8 @@ class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLay
     var childHeight = 0
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // TODO: why this works perfectly with plain views but nothing else
         val fillLayout = if (orientation == HORIZONTAL) {
-            val exactHeight = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY)
+            val exactHeight = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
             performMeasure(widthMeasureSpec, childWidth) { view, spec ->
                 measureChild(view, spec, exactHeight)
             }

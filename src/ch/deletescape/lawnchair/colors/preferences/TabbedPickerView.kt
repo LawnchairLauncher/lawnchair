@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
-import android.support.v7.widget.OrientationHelper
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
@@ -34,8 +31,6 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
     private val minItemWidthLandscape = context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
     private val chromaViewHeight = context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
     private val viewHeightLandscape = context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
-    private val itemHeight = Math.max(minItemHeight, chromaViewHeight / colors.size)
-    private val itemWidthLandscape get () = Math.max(minItemWidthLandscape, viewPager.measuredWidth / colors.size)
 
     val chromaView = ChromaView(initialColor, ColorMode.RGB, context).apply {
         enableButtonBar(object : ChromaView.ButtonBarListener {
@@ -56,7 +51,6 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         measure(MeasureSpec.EXACTLY,0)
         viewPager.adapter = ViewPagerAdapter(listOf(
                 Pair(context.getString(R.string.color_presets), initPresetList()),
-//                Pair(context.getString(R.string.color_presets), initRecyclerView()),
                 Pair(context.getString(R.string.color_custom), chromaView)
         ))
         if (!isLandscape) {
@@ -86,60 +80,6 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
                     dismiss()
                 }
                 addView(preview)
-            }
-
-//            addView(View(context).apply { setBackgroundColor(Color.RED) })
-//            addView(View(context).apply { setBackgroundColor(Color.GREEN) })
-//            addView(View(context).apply { setBackgroundColor(Color.BLUE) })
-        }
-    }
-
-    private fun initRecyclerView(): RecyclerView {
-        val recyclerView = LayoutInflater.from(context)
-                .inflate(R.layout.preference_spring_recyclerview, this, false) as RecyclerView
-        recyclerView.adapter = ColorsAdapter()
-        recyclerView.layoutManager = TwoWayLinearLayoutManager(context).apply {
-            orientation = if(isLandscape) OrientationHelper.HORIZONTAL else OrientationHelper.VERTICAL
-        }
-        return recyclerView
-    }
-
-    inner class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.Holder>() {
-
-        private val colors = listOf(
-                SystemAccentResolver(ColorEngine.ColorResolver.Config(engine)),
-                PixelAccentResolver(ColorEngine.ColorResolver.Config(engine)),
-                WallpaperMainColorResolver(ColorEngine.ColorResolver.Config(engine)),
-                WallpaperSecondaryColorResolver(ColorEngine.ColorResolver.Config(engine)))
-
-        override fun getItemCount() = colors.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(LayoutInflater.from(parent.context).inflate(R.layout.color_preview, parent, false) as TextView)
-        }
-
-        override fun onBindViewHolder(holder: Holder, position: Int) {
-            val color = colors[position]
-            holder.text.setBackgroundColor(color.resolveColor())
-            holder.text.text = color.getDisplayName()
-            holder.text.setTextColor(color.computeForegroundColor())
-        }
-
-        inner class Holder(val text: TextView) : RecyclerView.ViewHolder(text) {
-
-            init {
-                if (!isLandscape) {
-                    text.layoutParams.height = itemHeight
-                } else {
-                    text.layoutParams.apply {
-                        height = viewHeightLandscape
-                        width = itemWidthLandscape
-                    }
-                }
-                text.setOnClickListener {
-                    engine.accentResolver = colors[adapterPosition]
-                    dismiss()
-                }
             }
         }
     }
