@@ -141,4 +141,8 @@ public class DeepShortcutView extends FrameLayout {
     public View getIconView() {
         return mIconView;
     }
+
+    public ShortcutInfoCompat getDetail() {
+        return mDetail;
+    }
 }
