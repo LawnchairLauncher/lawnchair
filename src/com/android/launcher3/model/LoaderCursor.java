@@ -24,7 +24,6 @@ import android.content.Intent.ShortcutIconResource;
 import android.content.pm.LauncherActivityInfo;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
@@ -387,15 +386,6 @@ public class LoaderCursor extends CursorWrapper {
     protected boolean checkItemPlacement(ItemInfo item, ArrayList<Long> workspaceScreens) {
         long containerIndex = item.screenId;
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            // Return early if we detect that an item is under the hotseat button
-            if (!FeatureFlags.NO_ALL_APPS_ICON &&
-                    mIDP.isAllAppsButtonRank((int) item.screenId)) {
-                Log.e(TAG, "Error loading shortcut into hotseat " + item
-                        + " into position (" + item.screenId + ":" + item.cellX + ","
-                        + item.cellY + ") occupied by all apps");
-                return false;
-            }
-
             final GridOccupancy hotseatOccupancy =
                     occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 

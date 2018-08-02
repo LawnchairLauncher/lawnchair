@@ -224,8 +224,7 @@ public class RecyclerViewFastScroller extends View {
                 }
                 if (isNearThumb(x, y)) {
                     mTouchOffsetY = mDownY - mThumbOffsetY;
-                } else if (FeatureFlags.LAUNCHER3_DIRECT_SCROLL
-                        && mRv.supportsFastScrolling()
+                } else if (mRv.supportsFastScrolling()
                         && isNearScrollBar(mDownX)) {
                     calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
                     updateFastScrollSectionNameAndThumbOffset(mLastY, y);

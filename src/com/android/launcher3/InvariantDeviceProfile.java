@@ -28,7 +28,6 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Thunk;
@@ -312,17 +311,6 @@ public class InvariantDeviceProfile {
         landscapeIconSize *= w;
         iconTextSize *= w;
         return this;
-    }
-
-    public int getAllAppsButtonRank() {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
-            throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
-        }
-        return numHotseatIcons / 2;
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        return rank == getAllAppsButtonRank();
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
