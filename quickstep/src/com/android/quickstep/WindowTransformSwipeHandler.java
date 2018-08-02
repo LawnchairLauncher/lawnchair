@@ -256,6 +256,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
         };
 
+        // Re-setup the recents UI when gesture starts, as the state could have been changed during
+        // that time by a previous window transition.
+        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_GESTURE_STARTED_QUICKSTEP,
+                this::setupRecentsViewUi);
+
         mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED_QUICKSCRUB,
                 this::initializeLauncherAnimationController);
         mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED_QUICKSTEP,
@@ -429,11 +434,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             });
         }
 
+        setupRecentsViewUi();
+        mLayoutListener.open();
+        mStateCallback.setState(STATE_LAUNCHER_STARTED);
+    }
+
+    private void setupRecentsViewUi() {
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setRunningTaskHidden(true);
         mRecentsView.setRunningTaskIconScaledDown(true);
-        mLayoutListener.open();
-        mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
 
     public void setLauncherOnDrawCallback(Runnable callback) {
