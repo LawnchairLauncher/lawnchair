@@ -274,6 +274,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Mimetype for .shed backup files -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -284,6 +285,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!-- Apply directly from iconpack -->
         <activity
             android:name="ch.deletescape.lawnchair.iconpack.ApplyIconPackActivity"
             android:theme="@style/SettingsTheme.V2.Transparent" >
@@ -293,12 +295,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- Icon picker -->
         <activity
             android:name="ch.deletescape.lawnchair.iconpack.EditIconActivity"
             android:theme="@style/SettingsTheme.V2" />
         <activity
             android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
+
+        <!-- Gesture app selection -->
         <activity
             android:name="ch.deletescape.lawnchair.gestures.ui.SelectAppActivity"
             android:label="@string/action_open_app_select_app"
@@ -307,11 +313,13 @@
             android:name="ch.deletescape.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
+        <!-- DT2S using screen timeout -->
         <activity
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"
             android:screenOrientation="locked"
             android:theme="@style/SleepTimeoutTheme"/>
 
+        <!-- DT2S using device admin -->
         <receiver
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerDeviceAdmin$SleepDeviceAdmin"
             android:description="@string/dt2s_admin_hint"
