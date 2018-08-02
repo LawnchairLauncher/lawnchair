@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Process;
 import android.support.animation.DynamicAnimation;
 import android.support.annotation.NonNull;
@@ -48,6 +49,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -548,5 +550,17 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
         }
+    }
+
+    @Override
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (AccessibilityManagerCompat.processTestRequest(
+                mLauncher, "TAPL_GET_SCROLL", action, arguments,
+                response ->
+                        response.putInt("scrollY", getActiveRecyclerView().getCurrentScrollY()))) {
+            return true;
+        }
+
+        return super.performAccessibilityAction(action, arguments);
     }
 }

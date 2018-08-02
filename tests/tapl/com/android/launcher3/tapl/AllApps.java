@@ -72,26 +72,31 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         return new AppIcon(mLauncher, appIcon);
     }
 
-    protected int getBottomMarginForSwipeUp() {
-        return 5;
-    }
-
     private void scrollBackToBeginning() {
         final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 searchBox =
+                mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
 
         int attempts = 0;
-        allAppsContainer.setGestureMargins(5, 600, 5, getBottomMarginForSwipeUp());
+        allAppsContainer.setGestureMargins(0, searchBox.getVisibleBounds().bottom + 1, 0, 5);
 
-        while (allAppsContainer.scroll(Direction.UP, 0.5f)) {
-            mLauncher.waitForIdle();
-            verifyActiveContainer();
+        for (int scroll = getScroll(allAppsContainer);
+                scroll != 0;
+                scroll = getScroll(allAppsContainer)) {
+            assertTrue("Negative scroll position", scroll > 0);
 
             assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                     ++attempts <= MAX_SCROLL_ATTEMPTS);
+
+            allAppsContainer.scroll(Direction.UP, 1);
         }
 
-        mLauncher.waitForIdle();
         verifyActiveContainer();
+    }
+
+    private int getScroll(UiObject2 allAppsContainer) {
+        return mLauncher.getAnswerFromLauncher(allAppsContainer, "TAPL_GET_SCROLL").
+                getInt("scrollY", -1);
     }
 
     private void ensureIconVisible(UiObject2 appIcon, UiObject2 allAppsContainer) {
