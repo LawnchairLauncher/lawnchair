@@ -714,12 +714,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setCurrentTask(runningTaskId);
     }
 
+    public TaskView getRunningTaskView() {
+        return getTaskView(mRunningTaskId);
+    }
+
     /**
      * Hides the tile associated with {@link #mRunningTaskId}
      */
     public void setRunningTaskHidden(boolean isHidden) {
         mRunningTaskTileHidden = isHidden;
-        TaskView runningTask = getTaskView(mRunningTaskId);
+        TaskView runningTask = getRunningTaskView();
         if (runningTask != null) {
             runningTask.setAlpha(isHidden ? 0 : mContentAlpha);
         }
@@ -745,7 +749,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void showNextTask() {
-        TaskView runningTaskView = getTaskView(mRunningTaskId);
+        TaskView runningTaskView = getRunningTaskView();
         if (runningTaskView == null) {
             // Launch the first task
             if (getTaskViewCount() > 0) {
@@ -773,7 +777,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void applyRunningTaskIconScale() {
-        TaskView firstTask = getTaskView(mRunningTaskId);
+        TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
             firstTask.setIconScaleAndDim(mRunningTaskIconScaledDown ? 0 : 1);
         }
@@ -781,7 +785,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void animateUpRunningTaskIconScale() {
         mRunningTaskIconScaledDown = false;
-        TaskView firstTask = getTaskView(mRunningTaskId);
+        TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
             firstTask.animateIconScaleAndDimIntoView();
         }

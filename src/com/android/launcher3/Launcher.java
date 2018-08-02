@@ -1606,14 +1606,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.onBackPressed()) {
             // Handled by the floating view.
-        } else if (!isInState(NORMAL)) {
-            LauncherState lastState = mStateManager.getLastState();
-            ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType,
-                    lastState.containerType);
-            mStateManager.goToState(lastState);
         } else {
-            // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
+            mStateManager.getState().onBackPressed(this);
         }
     }
 
