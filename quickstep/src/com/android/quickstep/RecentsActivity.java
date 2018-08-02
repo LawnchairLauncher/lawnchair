@@ -232,6 +232,12 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        UiFactory.onEnterAnimationComplete(this);
+    }
+
+    @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         UiFactory.onTrimMemory(this, level);
