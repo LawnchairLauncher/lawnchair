@@ -841,6 +841,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 @Override
                 public void run() {
                     mLauncher.showWorkspace(true);
+                    mLauncher.getWorkspace().removeExtraEmptyScreen(true, true);
                 }
             }, 500);
         }
