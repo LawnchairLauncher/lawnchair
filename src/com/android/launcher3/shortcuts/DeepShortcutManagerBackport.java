@@ -29,6 +29,7 @@ import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -46,7 +47,7 @@ public class DeepShortcutManagerBackport {
 
     public static List<ShortcutInfoCompat> getForPackage(Context context, LauncherApps mLauncherApps, ComponentName activity, String packageName) {
         List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>();
-        if (Utilities.ATLEAST_MARSHMALLOW) {
+        if (Utilities.ATLEAST_MARSHMALLOW && FeatureFlags.LAUNCHER3_BACKPORT_SHORTCUTS) {
             List<LauncherActivityInfo> infoList = mLauncherApps.getActivityList(packageName, android.os.Process.myUserHandle());
             for (LauncherActivityInfo info : infoList) {
                 if (activity == null || activity.equals(info.getComponentName())) {

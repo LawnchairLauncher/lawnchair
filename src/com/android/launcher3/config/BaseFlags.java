@@ -47,6 +47,8 @@ abstract class BaseFlags {
     public static final boolean LAUNCHER3_PHYSICS = true;
     // When enabled allows use of spring motions on the icons.
     public static final boolean LAUNCHER3_SPRING_ICONS = true;
+    // When enabled, app shortcuts are extracted from the package XML.
+    public static final boolean LAUNCHER3_BACKPORT_SHORTCUTS = false;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
