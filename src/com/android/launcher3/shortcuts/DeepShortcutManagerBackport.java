@@ -127,7 +127,7 @@ public class DeepShortcutManagerBackport {
                 }
                 parseXml.close();
             }
-        } catch (PackageManager.NameNotFoundException | Resources.NotFoundException | XmlPullParserException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
