@@ -40,6 +40,6 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator
 LOCAL_SRC_FILES := $(call all-java-files-under, tapl)
 
 LOCAL_SDK_VERSION := current
-LOCAL_MODULE := ub-launcher-tapl
+LOCAL_MODULE := ub-launcher-aosp-tapl
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
