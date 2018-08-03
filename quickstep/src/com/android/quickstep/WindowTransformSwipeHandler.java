@@ -641,10 +641,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
             }
             // If we are not in multi-window mode, home insets should be same as system insets.
-            Rect insets = new Rect();
-            WindowManagerWrapper.getInstance().getStableInsets(insets);
             dp = dp.copy(mContext);
-            dp.updateInsets(insets);
+            dp.updateInsets(homeContentInsets);
         }
         dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
 
