@@ -93,13 +93,10 @@ public final class Overview extends LauncherInstrumentation.VisibleContainer {
     public AllAppsFromOverview switchToAllApps() {
         verifyActiveContainer();
 
-        // Swipe from the hotseat to near the top, e.g. 10% of the screen.
-        final UiObject2 predictionRow = mLauncher.waitForLauncherObject(
-                "prediction_row");
-        final Point start = predictionRow.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.1f);
-        mLauncher.swipe(
-                start.x, start.y, start.x, endY);
+        // Swipe from navbar to the top.
+        final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
+        final Point start = navBar.getVisibleCenter();
+        mLauncher.swipe(start.x, start.y, start.x, 0);
 
         return new AllAppsFromOverview(mLauncher);
     }
