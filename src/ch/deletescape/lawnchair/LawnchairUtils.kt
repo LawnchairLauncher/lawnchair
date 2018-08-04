@@ -12,6 +12,7 @@ import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.ColorUtils
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
