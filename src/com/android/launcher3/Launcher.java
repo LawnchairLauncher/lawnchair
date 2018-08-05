@@ -2238,9 +2238,6 @@ public class Launcher extends BaseActivity
         } else {
             // TODO: Log this case.
             mWorkspace.exitWidgetResizeMode();
-
-            // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
         }
     }
 
