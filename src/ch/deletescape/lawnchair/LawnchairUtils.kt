@@ -27,6 +27,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.support.animation.FloatPropertyCompat
@@ -378,6 +379,8 @@ fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
 fun <T>useApplicationContext(creator: (Context) -> T): (Context) -> T {
     return { it -> creator(it.applicationContext) }
 }
+
+fun String.toUri() : Uri = Uri.parse(this.trim())
 
 class ViewPagerAdapter(private val pages: List<Pair<String, View>>) : PagerAdapter() {
 
