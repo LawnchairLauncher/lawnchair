@@ -9,7 +9,7 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 
 class SesameDataProvider private constructor(private val context: Context) {
-    private val defaultCount = 10
+    private val defaultCount = 20
 
     fun recentlyUsedShortcuts(count: Int = defaultCount): List<SesameResult> {
         return query(SesameProvider.RECENTLY_USED, count)

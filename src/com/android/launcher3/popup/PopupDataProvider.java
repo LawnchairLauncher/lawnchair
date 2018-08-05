@@ -46,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import ch.deletescape.lawnchair.sesame.SesameDataProvider;
+
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
  */
@@ -172,19 +174,22 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (component == null) {
             return Collections.EMPTY_LIST;
         }
-
+        List<String> ids = new ArrayList<>();
         if (!Utilities.ATLEAST_NOUGAT_MR1) {
-            List<String> ids = new ArrayList<>();
             for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
                     (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),
                     info.getTargetComponent(),
                     info.getTargetComponent().getPackageName())) {
                 ids.add(compat.getId());
             }
-            return ids;
+        } else {
+            List<String> tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+            if(tmp != null) ids.addAll(tmp);
         }
-        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.EMPTY_LIST : ids;
+        for(SesameDataProvider.SesameResult result : SesameDataProvider.Companion.getInstance(mLauncher).queryShortcutsForPackage(info.getTargetComponent().getPackageName())){
+            ids.add(result.getUri());
+        }
+        return ids;
     }
 
     public BadgeInfo getBadgeInfoForItem(ItemInfo info) {

@@ -202,7 +202,9 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
                         .penaltyLog().build());
 
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                if (intent.hasExtra("ch.deletescape.lawnchair.SESAME_MARKER")) {
+                    startActivity(intent, optsBundle);
+                } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
