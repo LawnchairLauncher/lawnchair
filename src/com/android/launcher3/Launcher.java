@@ -1650,8 +1650,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     lastState.containerType);
             mStateManager.goToState(lastState);
         } else {
-            // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
 
             if (this instanceof LawnchairLauncher) {
                 ((LawnchairLauncher) this).getGestureController().onPressBack();
