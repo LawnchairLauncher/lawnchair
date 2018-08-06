@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -38,10 +40,10 @@ import com.android.launcher3.util.SettingsObserver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -60,12 +62,20 @@ public class NotificationListener extends NotificationListenerService {
 
     private static NotificationListener sNotificationListenerInstance = null;
     private static NotificationsChangedListener sNotificationsChangedListener;
+    private static StatusBarNotificationsChangedListener sStatusBarNotificationsChangedListener;
     private static boolean sIsConnected;
     private static boolean sIsCreated;
 
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
     private final Ranking mTempRanking = new Ranking();
+    /** Maps groupKey's to the corresponding group of notifications. */
+    private final Map<String, NotificationGroup> mNotificationGroupMap = new HashMap<>();
+    /** Maps keys to their corresponding current group key */
+    private final Map<String, String> mNotificationGroupKeyMap = new HashMap<>();
+
+    /** The last notification key that was dismissed from launcher UI */
+    private String mLastKeyDismissedByLauncher;
 
     private SettingsObserver mNotificationBadgingObserver;
 
@@ -140,22 +150,12 @@ public class NotificationListener extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         sIsCreated = true;
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         sIsCreated = false;
-        mNotificationBadgingObserver.unregister();
     }
 
     public static @Nullable NotificationListener getInstanceIfConnected() {
@@ -176,14 +176,34 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
+    public static void setStatusBarNotificationsChangedListener
+            (StatusBarNotificationsChangedListener listener) {
+        sStatusBarNotificationsChangedListener = listener;
+    }
+
     public static void removeNotificationsChangedListener() {
         sNotificationsChangedListener = null;
+    }
+
+    public static void removeStatusBarNotificationsChangedListener() {
+        sStatusBarNotificationsChangedListener = null;
     }
 
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
         sIsConnected = true;
+
+        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
+            @Override
+            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled) {
+                    requestUnbind();
+                }
+            }
+        };
+        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+
         onNotificationFullRefresh();
     }
 
@@ -195,13 +215,21 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
+        mNotificationBadgingObserver.unregister();
     }
 
     @Override
     public void onNotificationPosted(final StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
-                .sendToTarget();
+            .sendToTarget();
+        if (sStatusBarNotificationsChangedListener != null) {
+            sStatusBarNotificationsChangedListener.onNotificationPosted(sbn);
+        }
     }
 
     /**
@@ -222,11 +250,81 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(final StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
+        if (sbn == null) {
+            // There is a bug in platform where we can get a null notification; just ignore it.
+            return;
+        }
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
-                = new Pair<>(PackageUserKey.fromNotification(sbn),
-                        NotificationKeyData.fromNotification(sbn));
+            = new Pair<>(PackageUserKey.fromNotification(sbn),
+            NotificationKeyData.fromNotification(sbn));
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
-                .sendToTarget();
+            .sendToTarget();
+        if (sStatusBarNotificationsChangedListener != null) {
+            sStatusBarNotificationsChangedListener.onNotificationRemoved(sbn);
+        }
+
+        NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
+        String key = sbn.getKey();
+        if (notificationGroup != null) {
+            notificationGroup.removeChildKey(key);
+            if (notificationGroup.isEmpty()) {
+                if (key.equals(mLastKeyDismissedByLauncher)) {
+                    // Only cancel the group notification if launcher dismissed the last child.
+                    cancelNotification(notificationGroup.getGroupSummaryKey());
+                }
+                mNotificationGroupMap.remove(sbn.getGroupKey());
+            }
+        }
+        if (key.equals(mLastKeyDismissedByLauncher)) {
+            mLastKeyDismissedByLauncher = null;
+        }
+    }
+
+    public void cancelNotificationFromLauncher(String key) {
+        mLastKeyDismissedByLauncher = key;
+        cancelNotification(key);
+    }
+
+    @Override
+    public void onNotificationRankingUpdate(RankingMap rankingMap) {
+        super.onNotificationRankingUpdate(rankingMap);
+        String[] keys = rankingMap.getOrderedKeys();
+        for (StatusBarNotification sbn : getActiveNotifications(keys)) {
+            updateGroupKeyIfNecessary(sbn);
+        }
+    }
+
+    private void updateGroupKeyIfNecessary(StatusBarNotification sbn) {
+        String childKey = sbn.getKey();
+        String oldGroupKey = mNotificationGroupKeyMap.get(childKey);
+        String newGroupKey = sbn.getGroupKey();
+        if (oldGroupKey == null || !oldGroupKey.equals(newGroupKey)) {
+            // The group key has changed.
+            mNotificationGroupKeyMap.put(childKey, newGroupKey);
+            if (oldGroupKey != null && mNotificationGroupMap.containsKey(oldGroupKey)) {
+                // Remove the child key from the old group.
+                NotificationGroup oldGroup = mNotificationGroupMap.get(oldGroupKey);
+                oldGroup.removeChildKey(childKey);
+                if (oldGroup.isEmpty()) {
+                    mNotificationGroupMap.remove(oldGroupKey);
+                }
+            }
+        }
+        if (sbn.isGroup() && newGroupKey != null) {
+            // Maintain group info so we can cancel the summary when the last child is canceled.
+            NotificationGroup notificationGroup = mNotificationGroupMap.get(newGroupKey);
+            if (notificationGroup == null) {
+                notificationGroup = new NotificationGroup();
+                mNotificationGroupMap.put(newGroupKey, notificationGroup);
+            }
+            boolean isGroupSummary = (sbn.getNotification().flags
+                    & Notification.FLAG_GROUP_SUMMARY) != 0;
+            if (isGroupSummary) {
+                notificationGroup.setGroupSummaryKey(childKey);
+            } else {
+                notificationGroup.addChildKey(childKey);
+            }
+        }
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
@@ -264,21 +362,25 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+        Notification notification = sbn.getNotification();
+
+        updateGroupKeyIfNecessary(sbn);
+
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
         if (!mTempRanking.canShowBadge()) {
             return true;
         }
-        Notification notification = sbn.getNotification();
         if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
             // Special filtering for the default, legacy "Miscellaneous" channel.
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return true;
             }
         }
-        boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
         boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);
+        boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
         return (isGroupHeader || missingTitleAndText);
     }
 
@@ -288,5 +390,10 @@ public class NotificationListener extends NotificationListenerService {
         void onNotificationRemoved(PackageUserKey removedPackageUserKey,
                 NotificationKeyData notificationKey);
         void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications);
+    }
+
+    public interface StatusBarNotificationsChangedListener {
+        void onNotificationPosted(StatusBarNotification sbn);
+        void onNotificationRemoved(StatusBarNotification sbn);
     }
 }

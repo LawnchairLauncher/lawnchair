@@ -16,6 +16,10 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
+import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,16 +30,25 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.ListView;
 
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.ListViewHighlighter;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
+
+import java.util.Objects;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -48,6 +61,11 @@ public class SettingsActivity extends Activity {
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
+    private static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
+    private static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
+    private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
+    private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +73,13 @@ public class SettingsActivity extends Activity {
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
             getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new LauncherSettingsFragment())
+                    .replace(android.R.id.content, getNewFragment())
                     .commit();
         }
+    }
+
+    protected PreferenceFragment getNewFragment() {
+        return new LauncherSettingsFragment();
     }
 
     /**
@@ -65,32 +87,22 @@ public class SettingsActivity extends Activity {
      */
     public static class LauncherSettingsFragment extends PreferenceFragment {
 
-        private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
+
+        private String mPreferenceKey;
+        private boolean mPreferenceHighlighted = false;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) {
+                mPreferenceHighlighted = savedInstanceState.getBoolean(SAVE_HIGHLIGHTED_KEY);
+            }
+
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
 
             ContentResolver resolver = getActivity().getContentResolver();
-
-            // Setup allow rotation preference
-            Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
-            if (getResources().getBoolean(R.bool.allow_rotation)) {
-                // Launcher supports rotation by default. No need to show this setting.
-                getPreferenceScreen().removePreference(rotationPref);
-            } else {
-                mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
-
-                // Register a content observer to listen for system setting changes while
-                // this UI is active.
-                mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
-
-                // Initialize the UI once
-                rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
-            }
 
             ButtonPreference iconBadgingPref =
                     (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
@@ -115,41 +127,94 @@ public class SettingsActivity extends Activity {
                     getPreferenceScreen().removePreference(iconShapeOverride);
                 }
             }
+
+            // Setup allow rotation preference
+            Preference rotationPref = findPreference(ALLOW_ROTATION_PREFERENCE_KEY);
+            if (getResources().getBoolean(R.bool.allow_rotation)) {
+                // Launcher supports rotation by default. No need to show this setting.
+                getPreferenceScreen().removePreference(rotationPref);
+            } else {
+                // Initialize the UI once
+                rotationPref.setDefaultValue(getAllowRotationDefaultValue());
+            }
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+            outState.putBoolean(SAVE_HIGHLIGHTED_KEY, mPreferenceHighlighted);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            Intent intent = getActivity().getIntent();
+            mPreferenceKey = intent.getStringExtra(EXTRA_FRAGMENT_ARG_KEY);
+            if (isAdded() && !mPreferenceHighlighted && !TextUtils.isEmpty(mPreferenceKey)) {
+                getView().postDelayed(this::highlightPreference, DELAY_HIGHLIGHT_DURATION_MILLIS);
+            }
+        }
+
+        private void highlightPreference() {
+            Preference pref = findPreference(mPreferenceKey);
+            if (pref == null || getPreferenceScreen() == null) {
+                return;
+            }
+            PreferenceScreen screen = getPreferenceScreen();
+            if (Utilities.ATLEAST_OREO) {
+                screen = selectPreferenceRecursive(pref, screen);
+            }
+            if (screen == null) {
+                return;
+            }
+
+            View root = screen.getDialog() != null
+                    ? screen.getDialog().getWindow().getDecorView() : getView();
+            ListView list = root.findViewById(android.R.id.list);
+            if (list == null || list.getAdapter() == null) {
+                return;
+            }
+            Adapter adapter = list.getAdapter();
+
+            // Find the position
+            int position = -1;
+            for (int i = adapter.getCount() - 1; i >= 0; i--) {
+                if (pref == adapter.getItem(i)) {
+                    position = i;
+                    break;
+                }
+            }
+            new ListViewHighlighter(list, position);
+            mPreferenceHighlighted = true;
         }
 
         @Override
         public void onDestroy() {
-            if (mRotationLockObserver != null) {
-                mRotationLockObserver.unregister();
-                mRotationLockObserver = null;
-            }
             if (mIconBadgingObserver != null) {
                 mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
             }
             super.onDestroy();
         }
-    }
 
-    /**
-     * Content observer which listens for system auto-rotate setting changes, and enables/disables
-     * the launcher rotation setting accordingly.
-     */
-    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
+        @TargetApi(Build.VERSION_CODES.O)
+        private PreferenceScreen selectPreferenceRecursive(
+                Preference pref, PreferenceScreen topParent) {
+            if (!(pref.getParent() instanceof PreferenceScreen)) {
+                return null;
+            }
 
-        private final Preference mRotationPref;
-
-        public SystemDisplayRotationLockObserver(
-                Preference rotationPref, ContentResolver resolver) {
-            super(resolver);
-            mRotationPref = rotationPref;
-        }
-
-        @Override
-        public void onSettingChanged(boolean enabled) {
-            mRotationPref.setEnabled(enabled);
-            mRotationPref.setSummary(enabled
-                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
+            PreferenceScreen parent = (PreferenceScreen) pref.getParent();
+            if (Objects.equals(parent.getKey(), topParent.getKey())) {
+                return parent;
+            } else if (selectPreferenceRecursive(parent, topParent) != null) {
+                ((PreferenceScreen) parent.getParent())
+                        .onItemClick(null, null, parent.getOrder(), 0);
+                return parent;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -222,9 +287,13 @@ public class SettingsActivity extends Activity {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
+            Bundle showFragmentArgs = new Bundle();
+            showFragmentArgs.putString(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString());
+
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
+                    .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                    .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs);
             getActivity().startActivity(intent);
         }
     }

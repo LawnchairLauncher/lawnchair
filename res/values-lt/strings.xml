@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nerasta jokių užklausą „<xliff:g id="QUERY">%1$s</xliff:g>“ atitinkančių programų"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Ieškoti daugiau programų"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Pranešimai"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Paliesk. ir palaikyk., kad pasirinkt. spart. klav."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dukart palieskite ir palaikykite, kad pasirinkt. spartųjį klavišą ar naudotumėte tinkintus veiksmus."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Šiame pagrindiniame ekrane vietos nebėra."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Mėgstamiausių dėkle nebėra vietos"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Programų sąrašas"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Asmeninių programų sąrašas"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Darbo programų sąrašas"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Pagrindinis"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ištrinti"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Pašalinti"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Programos inform."</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Įdiegti"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"įdiegti sparčiuosius klavišus"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Programai leidžiama pridėti sparčiuosius klavišus be naudotojo įsikišimo."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
@@ -59,6 +64,12 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Tai sistemos programa ir jos negalima pašalinti."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Aplankas be pavadinimo"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ išjungta"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one">„<xliff:g id="APP_NAME_2">%1$s</xliff:g>“, yra <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> pranešimas</item>
+      <item quantity="few">„<xliff:g id="APP_NAME_2">%1$s</xliff:g>“, yra <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> pranešimai</item>
+      <item quantity="many">„<xliff:g id="APP_NAME_2">%1$s</xliff:g>“, yra <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> pranešimo</item>
+      <item quantity="other">„<xliff:g id="APP_NAME_2">%1$s</xliff:g>“, yra <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> pranešimų</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d psl. iš %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d pagrindinis ekranas iš %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Naujas pagrindinio ekrano puslapis"</string>
@@ -72,19 +83,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ekrano fonai"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"„Home“ nustatymai"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Išjungė administratorius"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Apžvalga"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Leisti pasukti pagrindinį ekraną"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kai telefonas pasukamas"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Naudojant dabartinį pateikties nustatymą neleidžiama pasukti"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Pranešimų taškai"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Įjungta"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Išjungta"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Reikalinga prieiga prie pranešimų"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Kad būtų rodomi pranešimų taškai, įjunkite programos „<xliff:g id="NAME">%1$s</xliff:g>“ pranešimus."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Keisti nustatymus"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Rodyti pranešimų taškus"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Pridėti piktogr. prie pagrindinio ekrano"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Skirta naujoms programoms"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Pakeisti piktogramos formą"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"pagrindiniame ekrane"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Naudoti numatytuosius sistemos nustatymus"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kvadratas"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kvadratais suapvalintais kampais"</string>
@@ -99,6 +110,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"Atsisiunčiama programa „<xliff:g id="NAME">%1$s</xliff:g>“, <xliff:g id="PROGRESS">%2$s</xliff:g> baigta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Laukiama, kol bus įdiegta programa „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"„<xliff:g id="NAME">%1$s</xliff:g>“ valdikliai"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Valdiklių sąrašas"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Valdiklių sąrašas uždarytas"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Pridėti prie pagrind. ekrano"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Perkelti elementą čia"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elementas pridėtas prie pagrindinio ekrano"</string>
@@ -114,9 +127,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Kurti aplanką naudojant: „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="folder_created" msgid="6409794597405184510">"Aplankas sukurtas"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Perkelti į pagrindinį ekraną"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Perkelti ekraną į kairę"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Perkelti ekraną į dešinę"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Ekranas perkeltas"</string>
     <string name="action_resize" msgid="1802976324781771067">"Pakeisti dydį"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Padidinti plotį"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Padidinti aukštį"</string>
@@ -124,8 +134,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Sumažinti aukštį"</string>
     <string name="widget_resized" msgid="9130327887929620">"Valdiklio dydis pakeistas: plotis – <xliff:g id="NUMBER_0">%1$s</xliff:g>, aukštis – <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Spartieji klavišai"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"Programos „<xliff:g id="APP_NAME">%2$s</xliff:g>“ spartieji klavišai (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>)"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"„<xliff:g id="APP_NAME">%3$s</xliff:g>“ spartieji klavišai (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) ir pranešimai (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>)"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Spartieji klavišai ir pranešimai"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Atsisakyti"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Pranešimo atsisakyta"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Asmeninės"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Darbo"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Darbo profilis"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Darbo programas rasite čia"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Kiekvienai darbo programai priskirtas ženklelis, o tokių programų sauga rūpinasi jūsų organizacija. Perkelkite programas į pagrindinį ekraną, kad galėtumėte lengviau jas pasiekti."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Tvarko jūsų organizacija"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Programos ir pranešimai išjungti"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Uždaryti"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Uždaryta"</string>
 </resources>

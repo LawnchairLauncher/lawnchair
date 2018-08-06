@@ -28,12 +28,10 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsObserver;
-import com.android.launcher3.util.TestingUtils;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +40,7 @@ import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
 
 public class LauncherAppState {
 
-    public static final boolean PROFILE_STARTUP = FeatureFlags.IS_DOGFOOD_BUILD;
+    public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
@@ -91,10 +89,6 @@ public class LauncherAppState {
         Preconditions.assertUIThread();
         mContext = context;
 
-        if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.startTrackingMemory(mContext);
-        }
-
         mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
@@ -111,17 +105,14 @@ public class LauncherAppState {
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
-        // For extracting colors from the wallpaper
-        if (Utilities.ATLEAST_NOUGAT) {
-            // TODO: add a broadcast entry to the manifest for pre-N.
-            filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+
+        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            filter.addAction(ACTION_FORCE_ROLOAD);
         }
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         new ConfigMonitor(mContext).register();
-
-        ExtractionUtils.startColorExtractionServiceIfNecessary(mContext);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_badging_enabled)) {
             mNotificationBadgingObserver = null;

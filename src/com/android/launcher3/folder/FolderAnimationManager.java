@@ -16,12 +16,17 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
@@ -74,19 +79,6 @@ public class FolderAnimationManager {
 
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
-    private static final Property<View, Float> SCALE_PROPERTY =
-            new Property<View, Float>(Float.class, "scale") {
-                @Override
-                public Float get(View view) {
-                    return view.getScaleX();
-                }
-
-                @Override
-                public void set(View view, Float scale) {
-                    view.setScaleX(scale);
-                    view.setScaleY(scale);
-                }
-            };
 
     public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;
@@ -101,8 +93,9 @@ public class FolderAnimationManager {
 
         mIsOpening = isOpening;
 
-        mDuration = mFolder.mMaterialExpandDuration;
-        mDelay = mContext.getResources().getInteger(R.integer.config_folderDelay);
+        Resources res = mContent.getResources();
+        mDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+        mDelay = res.getInteger(R.integer.config_folderDelay);
 
         mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.folder_interpolator);
@@ -118,7 +111,7 @@ public class FolderAnimationManager {
      */
     public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
-        FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
+        ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = mFolderIcon.getPreviewItems();
 
         // Match position of the FolderIcon
@@ -129,7 +122,7 @@ public class FolderAnimationManager {
         float initialSize = (scaledRadius * 2) * scaleRelativeToDragLayer;
 
         // Match size/scale of icons in the preview
-        float previewScale = rule.scaleForItem(0, itemsInPreview.size());
+        float previewScale = rule.scaleForItem(itemsInPreview.size());
         float previewSize = rule.getIconSize() * previewScale;
         float initialScale = previewSize / itemsInPreview.get(0).getIconSize()
                 * scaleRelativeToDragLayer;
@@ -180,9 +173,8 @@ public class FolderAnimationManager {
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
 
         // Initialize the Folder items' text.
-        PropertyResetListener colorResetListener = new PropertyResetListener<>(
-                BubbleTextView.TEXT_ALPHA_PROPERTY,
-                Color.alpha(Themes.getAttrColor(mContext, android.R.attr.textColorSecondary)));
+        PropertyResetListener colorResetListener =
+                new PropertyResetListener<>(TEXT_ALPHA_PROPERTY, 1f);
         for (BubbleTextView icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
             if (mIsOpening) {
                 icon.setTextVisibility(false);
@@ -242,15 +234,14 @@ public class FolderAnimationManager {
      */
     private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
             int previewItemOffsetX, int previewItemOffsetY) {
-        FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
+        ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
         final List<BubbleTextView> itemsInPreview = isOnFirstPage
                 ? mFolderIcon.getPreviewItems()
                 : mFolderIcon.getPreviewItemsOnPage(mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
         final int numItemsInFirstPagePreview = isOnFirstPage
-                ? numItemsInPreview
-                : FolderIcon.NUM_ITEMS_IN_PREVIEW;
+                ? numItemsInPreview : MAX_NUM_ITEMS_IN_PREVIEW;
 
         TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator();
 
@@ -264,7 +255,7 @@ public class FolderAnimationManager {
             cwc.setupLp(btv);
 
             // Match scale of icons in the preview of the items on the first page.
-            float previewScale = rule.scaleForItem(i, numItemsInFirstPagePreview);
+            float previewScale = rule.scaleForItem(numItemsInFirstPagePreview);
             float previewSize = rule.getIconSize() * previewScale;
             float iconScale = previewSize / itemsInPreview.get(i).getIconSize();
 
@@ -299,7 +290,7 @@ public class FolderAnimationManager {
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
 
-            if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+            if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
                 // These delays allows the preview items to move as part of the Folder's motion,
                 // and its only necessary for large folders because of differing interpolators.
                 int delay = mIsOpening ? mDelay : mDelay * 2;
@@ -349,7 +340,7 @@ public class FolderAnimationManager {
     }
 
     private TimeInterpolator getPreviewItemInterpolator() {
-        if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+        if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
             // With larger folders, we want the preview items to reach their final positions faster
             // (when opening) and later (when closing) so that they appear aligned with the rest of
             // the folder items when they are both visible.

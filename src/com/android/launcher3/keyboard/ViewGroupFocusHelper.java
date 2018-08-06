@@ -18,7 +18,6 @@ package com.android.launcher3.keyboard;
 
 import android.graphics.Rect;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 
 import com.android.launcher3.PagedView;
 
@@ -52,8 +51,8 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
     private void computeLocationRelativeToContainer(View child, Rect outRect) {
         View parent = (View) child.getParent();
-        outRect.left += child.getLeft();
-        outRect.top += child.getTop();
+        outRect.left += child.getX();
+        outRect.top += child.getY();
 
         if (parent != mContainer) {
             if (parent instanceof PagedView) {
@@ -63,23 +62,5 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
             computeLocationRelativeToContainer(parent, outRect);
         }
-    }
-
-    /**
-     * Sets the alpha of this FocusIndicatorHelper to 0 when a view with this listener
-     * receives focus.
-     */
-    public View.OnFocusChangeListener getHideIndicatorOnFocusListener() {
-        return new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    endCurrentAnimation();
-                    setCurrentView(null);
-                    setAlpha(0);
-                    invalidateDirty();
-                }
-            }
-        };
     }
 }

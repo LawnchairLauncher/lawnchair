@@ -40,13 +40,11 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 
 import org.junit.Before;
 
@@ -67,6 +65,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
     public static final long DEFAULT_UI_TIMEOUT = 3000;
+    public static final long LARGE_UI_TIMEOUT = 10000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -82,11 +81,6 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
-        Utilities.getPrefs(mTargetContext)
-                .edit()
-                .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
-                .commit();
-
         if (naturalOrientation) {
             mDevice.setOrientationNatural();
         } else {
@@ -104,8 +98,13 @@ public abstract class AbstractLauncherUiTest {
     protected UiObject2 openAllApps() {
         mDevice.waitForIdle();
         if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // clicking on the page indicator brings up all apps tray on non tablets.
-            findViewById(R.id.page_indicator).click();
+            UiObject2 hotseat = mDevice.wait(
+                    Until.findObject(getSelectorForId(R.id.hotseat)), 2500);
+            Point start = hotseat.getVisibleCenter();
+            int endY = (int) (mDevice.getDisplayHeight() * 0.1f);
+            // 100 px/step
+            mDevice.swipe(start.x, start.y, start.x, endY, (start.y - endY) / 100);
+
         } else {
             mDevice.wait(Until.findObject(
                     By.desc(mTargetContext.getString(R.string.all_apps_button_label))),
@@ -221,7 +220,6 @@ public abstract class AbstractLauncherUiTest {
             mMainThreadExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
                     LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
                 }
             });

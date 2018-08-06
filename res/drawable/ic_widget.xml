@@ -14,13 +14,12 @@ Copyright (C) 2016 The Android Open Source Project
     limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="48dp"
-        android:height="48dp"
-        android:viewportWidth="48.0"
-        android:viewportHeight="48.0">
+        android:width="@dimen/options_menu_icon_size"
+        android:height="@dimen/options_menu_icon_size"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M26,28v12c0,1,0.8,2,2,2h12c1,0,2-1,2-2V28c0-1.2-1-2-2-2H28C26.8,26,26,26.8,26,28z M8,42h12c1.2,0,2-1,2-2V28
-        c0-1.2-0.8-2-2-2H8c-1,0-2,0.8-2,2v12C6,41,7,42,8,42z M6,8v12c0,1.2,1,2,2,2h12c1.2,0,2-0.8,2-2V8c0-1-0.8-2-2-2H8C7,6,6,7,6,8z
-        M32.6,4.6l-8,8c-0.8,0.8-0.8,2,0,2.8l8,8c0.8,0.8,2,0.8,2.8,0l8-8c0.8-0.8,0.8-2,0-2.8l-8-8C34.6,3.8,33.4,3.8,32.6,4.6z"/>
+        android:fillColor="?android:attr/textColorPrimary"
+        android:pathData="M16.66,4.52l2.83,2.83l-2.83,2.83l-2.83-2.83L16.66,4.52 M9,5v4H5V5H9 M19,15v4h-4v-4H19 M9,15v4H5v-4H9 M16.66,1.69
+            L11,7.34L16.66,13l5.66-5.66L16.66,1.69L16.66,1.69z M11,3H3v8h8V7.34V3L11,3z M21,13h-4.34H13v8h8V13L21,13z M11,13H3v8h8V13L11,13z"/>
 </vector>

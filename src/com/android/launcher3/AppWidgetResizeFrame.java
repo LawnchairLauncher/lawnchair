@@ -8,22 +8,20 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
-import com.android.launcher3.util.TouchController;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-public class AppWidgetResizeFrame extends FrameLayout
-        implements View.OnKeyListener, TouchController {
+public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
@@ -109,12 +107,28 @@ public class AppWidgetResizeFrame extends FrameLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        ViewGroup content = (ViewGroup) getChildAt(0);
         for (int i = 0; i < HANDLE_COUNT; i ++) {
-            mDragHandles[i] = getChildAt(i);
+            mDragHandles[i] = content.getChildAt(i);
         }
     }
 
-    public void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
+    public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        Launcher launcher = Launcher.getLauncher(cellLayout.getContext());
+        AbstractFloatingView.closeAllOpenViews(launcher);
+
+        DragLayer dl = launcher.getDragLayer();
+        AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
+                .inflate(R.layout.app_widget_resize_frame, dl, false);
+        frame.setupForWidget(widget, cellLayout, dl);
+        ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
+
+        dl.addView(frame);
+        frame.mIsOpen = true;
+        frame.snapToWidget(false);
+    }
+
+    private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
             DragLayer dragLayer) {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
@@ -126,14 +140,8 @@ public class AppWidgetResizeFrame extends FrameLayout
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
 
-        if (!info.isCustomWidget) {
-            mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
-                    widgetView.getAppWidgetInfo().provider, null);
-        } else {
-            Resources r = getContext().getResources();
-            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
-            mWidgetPadding = new Rect(padding, padding, padding, padding);
-        }
+        mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
+                widgetView.getAppWidgetInfo().provider, null);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mDragHandles[INDEX_TOP].setVisibility(GONE);
@@ -391,7 +399,7 @@ public class AppWidgetResizeFrame extends FrameLayout
         out.bottom = out.top + height;
     }
 
-    public void snapToWidget(boolean animate) {
+    private void snapToWidget(boolean animate) {
         getSnappedRectRelativeToDragLayer(sTmpRect);
         int newWidth = sTmpRect.width();
         int newHeight = sTmpRect.height();
@@ -455,7 +463,7 @@ public class AppWidgetResizeFrame extends FrameLayout
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         // Clear the frame and give focus to the widget host view when a directional key is pressed.
         if (FocusLogic.shouldConsume(keyCode)) {
-            mDragLayer.clearResizeFrame();
+            close(false);
             mWidgetView.requestFocus();
             return true;
         }
@@ -505,7 +513,23 @@ public class AppWidgetResizeFrame extends FrameLayout
         if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
             return true;
         }
+        close(false);
         return false;
+    }
+
+    @Override
+    protected void handleClose(boolean animate) {
+        mDragLayer.removeView(this);
+    }
+
+    @Override
+    public void logActionCommand(int command) {
+        // TODO: Log this case.
+    }
+
+    @Override
+    protected boolean isOfType(int type) {
+        return (type & TYPE_WIDGET_RESIZE_FRAME) != 0;
     }
 
     /**

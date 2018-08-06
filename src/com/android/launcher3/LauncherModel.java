@@ -16,8 +16,10 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
+import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -37,21 +39,18 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
+import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.CacheDataUpdatedTask;
-import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -63,6 +62,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -134,8 +134,9 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    public interface Callbacks extends LauncherAppWidgetHost.ProviderChangedListener {
-        public boolean setLoadOnResume();
+    public interface Callbacks {
+        public void rebindModel();
+
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
         public void startBinding();
@@ -154,7 +155,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
+        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
@@ -193,13 +194,13 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Adds the provided items to the workspace.
      */
-    public void addAndBindAddedWorkspaceItems(
-            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
+    public void addAndBindAddedWorkspaceItems(List<Pair<ItemInfo, Object>> itemList) {
+        enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 
-    public ModelWriter getWriter(boolean hasVerticalHotseat) {
-        return new ModelWriter(mApp.getContext(), sBgDataModel, hasVerticalHotseat);
+    public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
+        return new ModelWriter(mApp.getContext(), this, sBgDataModel,
+                hasVerticalHotseat, verifyChanges);
     }
 
     static void checkItemInfoLocked(
@@ -406,8 +407,8 @@ public class LauncherModel extends BroadcastReceiver
                     enqueueModelUpdateTask(new UserLockStateChangedTask(user));
                 }
             }
-        } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            ExtractionUtils.startColorExtractionServiceIfNecessary(context);
+        } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
+            forceReload();
         }
     }
 
@@ -422,25 +423,11 @@ public class LauncherModel extends BroadcastReceiver
             mModelLoaded = false;
         }
 
-        // Do this here because if the launcher activity is running it will be restarted.
-        // If it's not running startLoaderFromBackground will merely tell it that it needs
-        // to reload.
-        startLoaderFromBackground();
-    }
-
-    /**
-     * When the launcher is in the background, it's possible for it to miss paired
-     * configuration changes.  So whenever we trigger the loader from the background
-     * tell the launcher that it needs to re-run the loader when it comes back instead
-     * of doing it now.
-     */
-    public void startLoaderFromBackground() {
+        // Start the loader if launcher is already running, otherwise the loader will run,
+        // the next time launcher starts
         Callbacks callbacks = getCallback();
         if (callbacks != null) {
-            // Only actually run the loader if they're not paused.
-            if (!callbacks.setLoadOnResume()) {
-                startLoader(callbacks.getCurrentWorkspaceScreen());
-            }
+            startLoader(callbacks.getCurrentWorkspaceScreen());
         }
     }
 
@@ -460,11 +447,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                mUiExecutor.execute(new Runnable() {
-                            public void run() {
-                                oldCallbacks.clearPendingBinds();
-                            }
-                        });
+                mUiExecutor.execute(oldCallbacks::clearPendingBinds);
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
@@ -506,6 +489,15 @@ public class LauncherModel extends BroadcastReceiver
             stopLoader();
             mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
             runOnWorkerThread(mLoaderTask);
+        }
+    }
+
+    public void startLoaderForResultsIfNotLoaded(LoaderResults results) {
+        synchronized (mLock) {
+            if (!isModelLoaded()) {
+                Log.d(TAG, "Workspace not loaded, loading now");
+                startLoaderForResults(results);
+            }
         }
     }
 
@@ -632,7 +624,9 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public ShortcutInfo get() {
                 si.updateFromDeepShortcutInfo(info, mApp.getContext());
-                si.iconBitmap = LauncherIcons.createShortcutIcon(info, mApp.getContext());
+                LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
+                li.createShortcutIcon(info).applyTo(si);
+                li.recycle();
                 return si;
             }
         });
