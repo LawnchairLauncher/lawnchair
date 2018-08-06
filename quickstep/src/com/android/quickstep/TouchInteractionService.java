@@ -90,7 +90,14 @@ public class TouchInteractionService extends Service {
         public void onMotionEvent(MotionEvent ev) {
             mEventQueue.queue(ev);
 
-            String name = sMotionEventNames.get(ev.getActionMasked());
+            int action = ev.getActionMasked();
+            if (action == ACTION_DOWN) {
+                mOverviewInteractionState.setSwipeGestureInitializing(true);
+            } else if (action == ACTION_UP || action == ACTION_CANCEL) {
+                mOverviewInteractionState.setSwipeGestureInitializing(false);
+            }
+
+            String name = sMotionEventNames.get(action);
             if (name != null){
                 TraceHelper.partitionSection("SysUiBinder", name);
             }
@@ -106,6 +113,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
+            mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
@@ -146,8 +154,8 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickStep(MotionEvent motionEvent) {
             mEventQueue.onQuickStep(motionEvent);
+            mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.endSection("SysUiBinder", "onQuickStep");
-
         }
 
         @Override

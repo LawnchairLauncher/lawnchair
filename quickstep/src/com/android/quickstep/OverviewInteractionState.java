@@ -70,6 +70,8 @@ public class OverviewInteractionState {
     private final Handler mUiHandler;
     private final Handler mBgHandler;
 
+    private boolean mSwipeGestureInitializing = false;
+
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
     private boolean mSwipeUpEnabled = true;
@@ -177,6 +179,15 @@ public class OverviewInteractionState {
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview back button alpha", e);
         }
+    }
+
+    @WorkerThread
+    public void setSwipeGestureInitializing(boolean swipeGestureInitializing) {
+        mSwipeGestureInitializing = swipeGestureInitializing;
+    }
+
+    public boolean swipeGestureInitializing() {
+        return mSwipeGestureInitializing;
     }
 
     private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
