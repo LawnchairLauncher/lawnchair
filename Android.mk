@@ -193,6 +193,7 @@ LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
     $(LOCAL_PATH)/go/res
 
+LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_PROGUARD_ENABLED := full
 
 LOCAL_SDK_VERSION := system_current
