@@ -77,7 +77,7 @@ public class OverviewState extends LauncherState {
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
-        RecentsModel.getInstance(launcher).resetAssistCache();
+        RecentsModel.INSTANCE.get(launcher).resetAssistCache();
     }
 
     @Override

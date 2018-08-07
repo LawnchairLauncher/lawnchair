@@ -27,7 +27,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.support.annotation.WorkerThread;
@@ -38,6 +37,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.IconLoader;
@@ -50,7 +50,6 @@ import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 /**
@@ -59,23 +58,8 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel extends TaskStackChangeListener {
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static RecentsModel INSTANCE;
-
-    public static RecentsModel getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new RecentsModel(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(
-                            () -> RecentsModel.getInstance(context)).get();
-                } catch (InterruptedException|ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
+    public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
+            new MainThreadInitializedObject<>(c -> new RecentsModel(c));
 
     private final SparseArray<Bundle> mCachedAssistData = new SparseArray<>(1);
     private final ArrayList<AssistDataListener> mAssistDataListeners = new ArrayList<>();

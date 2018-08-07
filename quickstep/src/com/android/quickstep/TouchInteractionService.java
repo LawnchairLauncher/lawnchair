@@ -179,13 +179,13 @@ public class TouchInteractionService extends Service {
     public void onCreate() {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
-        mRecentsModel = RecentsModel.getInstance(this);
+        mRecentsModel = RecentsModel.INSTANCE.get(this);
         mRecentsModel.setPreloadTasksInBackground(true);
         mMainThreadExecutor = new MainThreadExecutor();
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, TouchConsumer.NO_OP);
-        mOverviewInteractionState = OverviewInteractionState.getInstance(this);
+        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.get(this);
 

@@ -73,7 +73,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
-            RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
+            RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
     }
 }

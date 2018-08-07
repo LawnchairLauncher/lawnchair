@@ -490,7 +490,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         // This method is only called when STATE_GESTURE_STARTED_QUICKSTEP/
         // STATE_GESTURE_STARTED_QUICKSCRUB is set, so we can enable the high-res thumbnail loader
         // here once we are sure that we will end up in an overview state
-        RecentsModel.getInstance(mContext).getRecentsTaskLoader()
+        RecentsModel.INSTANCE.get(mContext).getRecentsTaskLoader()
                 .getHighResThumbnailLoader().setVisible(true);
     }
 
@@ -949,7 +949,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsView.animateUpRunningTaskIconScale();
         mRecentsView.setSwipeDownShouldLaunchApp(true);
 
-        RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
+        RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
 
         doLogGesture(true /* toLauncher */);
         reset();
@@ -979,7 +979,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mQuickScrubController.onFinishedTransitionToQuickScrub();
 
         mRecentsView.animateUpRunningTaskIconScale();
-        RecentsModel.getInstance(mContext).onOverviewShown(false, TAG);
+        RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
     }
 
     public void onQuickScrubProgress(float progress) {
@@ -1113,7 +1113,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void preloadAssistData() {
-        RecentsModel.getInstance(mContext).preloadAssistData(mRunningTaskId, mAssistData);
+        RecentsModel.INSTANCE.get(mContext).preloadAssistData(mRunningTaskId, mAssistData);
     }
 
     public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
