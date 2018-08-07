@@ -77,7 +77,7 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     static final String LAUNCHER_PKG = "com.google.android.apps.nexuslauncher";
-    static final int WAIT_TIME_MS = 10000;
+    static final int WAIT_TIME_MS = 60000;
     private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
             "config_swipe_up_gesture_setting_available";
     private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
