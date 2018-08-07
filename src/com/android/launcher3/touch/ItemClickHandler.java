@@ -218,7 +218,7 @@ public class ItemClickHandler {
         if (item instanceof ShortcutInfo) {
             ShortcutInfo si = (ShortcutInfo) item;
             if (si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)
-                    && intent.getAction() == Intent.ACTION_VIEW) {
+                    && Intent.ACTION_VIEW.equals(intent.getAction())) {
                 // make a copy of the intent that has the package set to null
                 // we do this because the platform sometimes disables instant
                 // apps temporarily (triggered by the user) and fallbacks to the
