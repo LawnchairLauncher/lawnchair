@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2018 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.allapps.FloatingHeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/all_apps_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/search_container_all_apps"
+    android:clipToPadding="false"
+    android:paddingTop="@dimen/all_apps_header_top_padding"
+    android:orientation="vertical" >
+
+    <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_header_tab_height"
+        android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
+        android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tab_personal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/all_apps_personal_tab"
+            android:textAllCaps="true"
+            android:textColor="@color/all_apps_tab_text"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/tab_work"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/all_apps_work_tab"
+            android:textAllCaps="true"
+            android:textColor="@color/all_apps_tab_text"
+            android:textSize="14sp" />
+    </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
+</com.android.launcher3.allapps.FloatingHeaderView>

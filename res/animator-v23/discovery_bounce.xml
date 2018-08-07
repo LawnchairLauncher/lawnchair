@@ -26,14 +26,14 @@
             android:fraction="0"
             android:value="1f" />
         <keyframe
-            android:fraction="0.346"
+            android:fraction="0.246"
             android:value="1f" />
         <keyframe
             android:fraction=".423"
             android:interpolator="@interpolator/disco_bounce"
-            android:value="0.9438f" />
+            android:value="0.9738f" />
         <keyframe
-            android:fraction="0.654"
+            android:fraction="0.754"
             android:interpolator="@interpolator/disco_bounce"
             android:value="1f" />
         <keyframe

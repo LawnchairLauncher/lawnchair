@@ -27,24 +27,8 @@ import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 public interface DragSource extends LogContainerProvider {
 
     /**
-     * @return whether items dragged from this source supports 'App Info'
-     */
-    boolean supportsAppInfoDropTarget();
-
-    /**
-     * @return whether items dragged from this source supports 'Delete' drop target (e.g. to remove
-     * a shortcut.) If this returns false, the drop target will say "Cancel" instead of "Remove."
-     */
-    boolean supportsDeleteDropTarget();
-
-    /*
-     * @return the scale of the icons over the workspace icon size
-     */
-    float getIntrinsicIconScaleFactor();
-
-    /**
      * A callback made back to the source after an item from this source has been dropped on a
      * DropTarget.
      */
-    void onDropCompleted(View target, DragObject d, boolean isFlingToDelete, boolean success);
+    void onDropCompleted(View target, DragObject d, boolean success);
 }

@@ -9,7 +9,5 @@ public interface LauncherProviderChangeListener {
 
     void onLauncherProviderChanged();
 
-    void onExtractedColorsChanged();
-
     void onAppWidgetHostReset();
 }

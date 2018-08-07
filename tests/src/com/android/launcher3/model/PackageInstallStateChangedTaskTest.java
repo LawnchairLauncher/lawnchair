@@ -1,22 +1,30 @@
 package com.android.launcher3.model;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Arrays;
 import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link PackageInstallStateChangedTask}
  */
+@RunWith(AndroidJUnit4.class)
 public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void initData() throws Exception {
         initializeData("package_install_state_change_task_data");
     }
 
@@ -26,6 +34,7 @@ public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestC
         return new PackageInstallStateChangedTask(installInfo);
     }
 
+    @Test
     public void testSessionUpdate_ignore_installed() throws Exception {
         executeTaskForTest(newTask("app1", 30));
 
@@ -33,12 +42,14 @@ public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestC
         verifyProgressUpdate(0);
     }
 
+    @Test
     public void testSessionUpdate_shortcuts_updated() throws Exception {
         executeTaskForTest(newTask("app3", 30));
 
         verifyProgressUpdate(30, 5L, 6L, 7L);
     }
 
+    @Test
     public void testSessionUpdate_widgets_updated() throws Exception {
         executeTaskForTest(newTask("app4", 30));
 

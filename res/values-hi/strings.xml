@@ -28,40 +28,49 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोड में अक्षम हैं"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"शॉर्टकट उपलब्ध नहीं है"</string>
     <string name="home_screen" msgid="806512411299847073">"होम स्क्रीन"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"कस्टम कार्रवाई"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"कोई विजेट चुनने के लिए डबल टैप करके रखें या कस्‍टम कार्रवाइयां चुनें."</string>
+    <string name="custom_actions" msgid="3747508247759093328">"कस्टम कार्रवाइयां"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए दबाकर रखें"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"कोई विजेट चुनने के लिए दो बार छूएं और दबाये रखें या अपने मुताबिक कार्रवाइयां चुनें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौड़ाई गुणा %2$d ऊंचाई"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"मैन्युअल रूप से जोड़ने के लिए स्पर्श करके रखें"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"खुद जोड़ने के लिए दबाकर रखें"</string>
     <string name="place_automatically" msgid="8064208734425456485">"अपने आप जोड़ें"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप्लिकेशन खोजें"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक ऐप्लिकेशन खोजें"</string>
-    <string name="notifications_header" msgid="1404149926117359025">"नोटिफ़िकेशन"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"और ऐप सर्च करें"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"सूचनाएं"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"शॉर्टकट चुनने के लिए दबाकर रखें."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"शॉर्टकट चुनने या पसंद के मुताबिक कार्रवाई करने के लिए दो बार टैप करें और कुछ देर दबाए रखें."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर जगह नहीं बची है"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और जगह नहीं है"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ऐप्लिकेशन सूची"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"निजी ऐप्लिकेशन की सूची"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"काम से जुड़े ऐप्लिकेशन की सूची"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"होम पेज"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"निकालें"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करें"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ऐप की जानकारी"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्‍टॉल करें"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट इंस्‍टॉल करें"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ऐप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट जोड़ने देती है."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग और शॉर्टकट पढ़ें"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"ऐप्लिकेशन को होम में सेटिंग और शॉर्टकट पढ़ने देती है."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग और शॉर्टकट लिखें"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"ऐप्लिकेशन को होम में सेटिंग और शॉर्टकट बदलने देती है."</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ऐप को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट जोड़ने देती है."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"होम पेज की सेटिंग और शॉर्टकट पढ़ें"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ऐप्लिकेशन को होम पेज में सेटिंग और शॉर्टकट पढ़ने देती है."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"होम पेज की सेटिंग और शॉर्टकट लिखें"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ऐप्लिकेशन को होम पेज में सेटिंग और शॉर्टकट बदलने देती है."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> को फ़ोन कॉल करने की अनुमति नहीं है"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करने में समस्‍या"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"पेज %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
-    <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पृष्‍ठ"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पेज"</string>
     <string name="folder_opened" msgid="94695026776264709">"फ़ोल्डर खोला गया, <xliff:g id="WIDTH">%1$d</xliff:g> गुणा <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"फ़ोल्डर बंद करने के लिए टैप करें"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"नाम बदलना सहेजने के लिए टैप करें"</string>
@@ -70,35 +79,39 @@
     <string name="folder_name_format" msgid="6629239338071103179">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"शॉर्टकट"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके व्यवस्थापक द्वारा अक्षम"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"खास जानकारी"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"वर्तमान प्रदर्शन सेटिंग घुमाने की अनुमति नहीं देती"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"नोटिफ़िकेशन बिंदु"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"सूचना बिंदु"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"चालू"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"बंद"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"नोटिफ़िकेशन एक्‍सेस ज़रूरी है"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"नोटिफ़िकेशन बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन नोटिफ़िकेशन चालू करें"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के एक्सेस की ज़रूरत है"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकन जोड़ें"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"नए नोटिफ़िकेशन बताने वाला गोल निशान दिखाएं"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकॉन जोड़ें"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकन का आकार बदलें"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकॉन का आकार बदलें"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"होम स्‍क्रीन पर"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"सिस्टम डिफ़ॉल्ट का उपयोग करें"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"वर्ग"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"गोल कोनों वाला वर्ग"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"मंडली"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"आंसू की बूंद"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकन के आकार में बदलाव लागू किए जा रहे हैं"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकॉन के आकार में बदलाव किए जा रहे हैं"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"निकालें"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"खोजें"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"सर्च करें"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यह ऐप्स इंस्टॉल नहीं है"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"इस आइकॉन का ऐप इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप को खोज कर उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>
+    <!-- no translation found for widgets_list (796804551140113767) -->
+    <skip />
+    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
+    <skip />
     <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आइटम यहां ले जाएं"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"होम स्क्रीन में आइटम जोड़ा गया"</string>
@@ -114,9 +127,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"इसके साथ फ़ोल्डर बनाएं: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"फ़ोल्डर बनाया गया"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"होम स्क्रीन पर ले जाएं"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"स्क्रीन को बाएं ले जाएं"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"स्क्रीन को दाएं ले जाएं"</string>
-    <string name="screen_moved" msgid="266230079505650577">"स्क्रीन ले जाई गई"</string>
     <string name="action_resize" msgid="1802976324781771067">"आकार बदलें"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"चौड़ाई बढ़ाएं"</string>
     <string name="action_increase_height" msgid="459390020612501122">"ऊंचाई बढ़ाएं"</string>
@@ -124,8 +134,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ऊंचाई घटाएं"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेट का आकार बदलकर उसकी चौड़ाई <xliff:g id="NUMBER_0">%1$s</xliff:g> और ऊंचाई <xliff:g id="NUMBER_1">%2$s</xliff:g> कर दी गई"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट और <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> नोटिफ़िकेशन हैं"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट और सूचनाएं"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"नोटिफ़िकेशन को खारिज किया गया"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफ़ाइल"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"काम से जुड़े सभी ऐप्लिकेशन यहां पाएं"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"काम से जुड़े हर ऐप्लिकेशन पर एक बैज (निशान) होता है और इन ऐप्लिकेशन की सुरक्षा आपका संगठन करता है. आसानी से इस्तेमाल करने के लिए ऐप्लिकेशन को अपनी होम स्क्रीन पर ले जाएं."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"आपका संगठन प्रबंधित कर रहा है"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचनाएं और ऐप्लिकेशन बंद हैं"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बंद करें"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बंद कर दिया गया"</string>
 </resources>

@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="long_press_widget_to_add" msgid="4001616142797446267">"Dodirnite i držite da uzmete prečicu."</string>
-    <string name="long_accessible_way_to_add" msgid="2725225828389948328">"Dvaput dodirnite i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
+    <string name="long_accessible_way_to_add" msgid="2725225828389948328">"Dodirnite dvaput i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
     <string name="widget_button_text" msgid="4221900832360456858">"Prečice"</string>
     <string name="widgets_bottom_sheet_title" msgid="3949835990909395998">"Prečice aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

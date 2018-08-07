@@ -106,6 +106,11 @@ public class BgDataModel {
     public final WidgetsModel widgetsModel = new WidgetsModel();
 
     /**
+     * Id when the model was last bound
+     */
+    public int lastBindId = 0;
+
+    /**
      * Clears all the data
      */
     public synchronized void clear() {
@@ -118,9 +123,9 @@ public class BgDataModel {
         deepShortcutMap.clear();
     }
 
-     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
-             String[] args) {
-        if (args.length > 0 && TextUtils.equals(args[0], "--proto")) {
+    public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
+            String[] args) {
+        if (Arrays.asList(args).contains("--proto")) {
             dumpProto(prefix, fd, writer, args);
             return;
         }
@@ -219,7 +224,7 @@ public class BgDataModel {
             targetList.addAll(workspaces.valueAt(i).getFlattenedList());
         }
 
-        if (args.length > 1 && TextUtils.equals(args[1], "--debug")) {
+        if (Arrays.asList(args).contains("--debug")) {
             for (int i = 0; i < targetList.size(); i++) {
                 writer.println(prefix + DumpTargetWrapper.getDumpTargetStr(targetList.get(i)));
             }

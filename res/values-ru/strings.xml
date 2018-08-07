@@ -33,20 +33,25 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет или использовать специальные действия, нажмите на него дважды и не отпускайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную."</string>
     <string name="place_automatically" msgid="8064208734425456485">"Добавить автоматически"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Искать другие приложения"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Уведомления"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Нажмите и удерживайте, чтобы выбрать ярлык."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Нажмите дважды и удерживайте, чтобы выбрать ярлык или использовать специальные действия."</string>
     <string name="out_of_space" msgid="4691004494942118364">"На этом экране все занято"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В разделе \"Избранное\" больше нет места"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Список приложений"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Открыть список личных приложений"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Открыть список приложений для работы"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Главный экран"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Убрать"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Удалить"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"О приложении"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Установить"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Создание ярлыков"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Приложение сможет самостоятельно добавлять ярлыки."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Доступ к настройкам и ярлыкам главного экрана"</string>
@@ -59,8 +64,14 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Это системное приложение, его нельзя удалить."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Папка без названия"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> отключено"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомление</item>
+      <item quantity="few">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомления</item>
+      <item quantity="many">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомлений</item>
+      <item quantity="other">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомления</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Стр. %1$d из %2$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"Главные экран %1$d из %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Главный экран %1$d из %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Новый экран"</string>
     <string name="folder_opened" msgid="94695026776264709">"Папка открыта, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Нажмите, чтобы закрыть папку"</string>
@@ -72,19 +83,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Обои"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Настройки главного экрана"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Обзор"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешить поворачивать главный экран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Когда телефон повернут"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"В настройках отключен поворот экрана"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Значки уведомлений"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ВКЛ"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ВЫКЛ"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Вкл."</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Выкл."</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Нет доступа к уведомлениям"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Чтобы показывать значки уведомлений, включите уведомления в приложении \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Изменить настройки"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"Показывать значки уведомлений"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Добавлять значки"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Добавлять значки установленных приложений на главный экран."</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Добавлять значки установленных приложений на главный экран"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Изменить форму значков"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"на главном экране"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Использовать системные настройки по умолчанию"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Квадрат"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Квадрат с закругленными краями"</string>
@@ -99,6 +110,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"Скачивается \"<xliff:g id="NAME">%1$s</xliff:g>\" (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Ожидание установки \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>: виджеты"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Список виджетов"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Список виджетов закрыт"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Добавить на главный экран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Переместить элемент сюда"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент добавлен на главный экран"</string>
@@ -114,9 +127,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Создать папку с элементом <xliff:g id="NAME">%1$s</xliff:g>."</string>
     <string name="folder_created" msgid="6409794597405184510">"Папка создана."</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Переместить на главный экран"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Переместить экран влево"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Переместить экран вправо"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Экран перемещен"</string>
     <string name="action_resize" msgid="1802976324781771067">"Изменить размер"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Увеличить ширину"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Увеличить высоту"</string>
@@ -124,8 +134,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Уменьшить высоту"</string>
     <string name="widget_resized" msgid="9130327887929620">"Изменен размер виджета: до <xliff:g id="NUMBER_0">%1$s</xliff:g> в ширину и <xliff:g id="NUMBER_1">%2$s</xliff:g> в высоту"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Ярлыки"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"Количество ярлыков для приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\": <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Количество ярлыков для приложения \"<xliff:g id="APP_NAME">%3$s</xliff:g>\": <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>. Количество уведомлений: <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>."</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Ярлыки и уведомления"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Закрыть"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Уведомление закрыто"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личные"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Приложения для работы"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Рабочие приложения отмечены специальным значком. Их безопасность обеспечивает ваша организация. Для удобства перенесите эти приложения на главный экран."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Управляется вашей организацией"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Уведомления и приложения отключены."</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Закрыть"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Закрыта"</string>
 </resources>
