@@ -60,6 +60,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
@@ -290,7 +291,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public static final String CONTENT_RES_ID = "content_res_id";
         public static final String HAS_PREVIEW = "has_preview";
 
-        private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
 
         private Context mContext;
@@ -308,19 +308,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 ContentResolver resolver = getActivity().getContentResolver();
 
                 // Setup allow rotation preference
-                Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
+                Preference rotationPref = findPreference(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY);
                 if (getResources().getBoolean(R.bool.allow_rotation)) {
                     // Launcher supports rotation by default. No need to show this setting.
                     getPreferenceScreen().removePreference(rotationPref);
                 } else {
-                    mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
-
-                    // Register a content observer to listen for system setting changes while
-                    // this UI is active.
-                    mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
-
                     // Initialize the UI once
-                    rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+                    rotationPref.setDefaultValue(RotationHelper.getAllowRotationDefaultValue());
                 }
 
                 ButtonPreference iconBadgingPref =
@@ -397,10 +391,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         @Override
         public void onDestroy() {
-            if (mRotationLockObserver != null) {
-                mRotationLockObserver.unregister();
-                mRotationLockObserver = null;
-            }
             if (mIconBadgingObserver != null) {
                 mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
@@ -516,28 +506,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .setMessage(R.string.msg_disable_suggestions_prompt)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
-        }
-    }
-
-    /**
-     * Content observer which listens for system auto-rotate setting changes, and enables/disables
-     * the launcher rotation setting accordingly.
-     */
-    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
-
-        private final Preference mRotationPref;
-
-        public SystemDisplayRotationLockObserver(
-                Preference rotationPref, ContentResolver resolver) {
-            super(resolver);
-            mRotationPref = rotationPref;
-        }
-
-        @Override
-        public void onSettingChanged(boolean enabled) {
-            mRotationPref.setEnabled(enabled);
-            mRotationPref.setSummary(enabled
-                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
 

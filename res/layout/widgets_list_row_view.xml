@@ -31,7 +31,6 @@
         android:layout_height="@dimen/widget_section_height"
         android:background="?android:attr/colorPrimary"
         android:drawablePadding="@dimen/widget_section_horizontal_padding"
-        android:ellipsize="end"
         android:focusable="true"
         android:gravity="start|center_vertical"
         android:paddingBottom="@dimen/widget_section_vertical_padding"
@@ -42,7 +41,6 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
         android:textAlignment="viewStart"
-        launcher:deferShadowGeneration="true"
         launcher:iconDisplay="widget_section"
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />

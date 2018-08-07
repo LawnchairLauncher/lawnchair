@@ -37,9 +37,9 @@
     <permission
         android:name="${applicationId}.permission.READ_SETTINGS"
         android:description="@string/permdesc_read_settings"
-        android:label="@string/permlab_read_settings"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal" />
+        android:protectionLevel="signatureOrSystem"
+        android:label="@string/permlab_read_settings" />
     <permission
         android:name="${applicationId}.permission.WRITE_SETTINGS"
         android:description="@string/permdesc_write_settings"
@@ -102,16 +102,13 @@
         <activity
             android:name="ch.deletescape.lawnchair.LawnchairLauncher"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboard|keyboardHidden|navigation"
-            android:enabled="true"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="unspecified"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
-            android:screenOrientation="nosensor"
-            android:stateNotNeeded="true"
-            android:taskAffinity=""
-            android:windowSoftInputMode="adjustPan">
+            android:taskAffinity="" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -193,58 +190,6 @@
         -->
         <meta-data android:name="android.max_aspect" android:value="2.1" />
         <meta-data android:name="com.samsung.android.non_immersive" android:value="true" />
-
-        <!--
-        Custom
-        -->
-        <meta-data android:name="android.max_aspect" android:value="2.1" />
-
-        <!-- ENABLE_FOR_TESTING
-
-        <activity
-            android:name="com.android.launcher3.testing.LauncherExtension"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:theme="@style/Theme"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.testing.MemoryDumpActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:label="* HPROF"
-            android:excludeFromRecents="true"
-            android:icon="@drawable/ic_launcher_home"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.testing.ToggleWeightWatcher"
-            android:label="Show Mem"
-            android:icon="@drawable/ic_launcher_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service android:name="com.android.launcher3.testing.MemoryTracker" />
-        -->
 
         <activity
             android:name="ch.deletescape.lawnchair.backup.BackupListActivity"

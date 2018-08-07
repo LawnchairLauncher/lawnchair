@@ -1,15 +1,6 @@
 package ch.deletescape.lawnchair
 
-import ch.deletescape.lawnchair.iconpack.IconPackManager
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.Utilities
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.pageindicators.PageIndicatorLineCaret
-import com.android.launcher3.shortcuts.DeepShortcutManager
-import com.android.launcher3.util.LooperExecutor
-import com.google.android.apps.nexuslauncher.CustomIconUtils.reloadIcon
 
 class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
 
@@ -42,10 +33,10 @@ class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
     }
 
     fun updatePageIndicator() {
-        val indicator = launcher.workspace.pageIndicator
-        if (indicator is PageIndicatorLineCaret) {
-            indicator.updateLineHeight()
-        }
+//        val indicator = launcher.workspace.pageIndicator
+//        if (indicator is PageIndicatorLineCaret) {
+//            indicator.updateLineHeight()
+//        }
     }
 
     fun updateSmartspaceProvider() {

@@ -236,4 +236,19 @@ public abstract class FocusIndicatorHelper implements
             }
         }
     }
+
+    /**
+     * Simple subclass which assumes that the target view is a child of the container.
+     */
+    public static class SimpleFocusIndicatorHelper extends FocusIndicatorHelper {
+
+        public SimpleFocusIndicatorHelper(View container) {
+            super(container);
+        }
+
+        @Override
+        public void viewToRect(View v, Rect outRect) {
+            outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        }
+    }
 }

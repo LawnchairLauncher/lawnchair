@@ -23,7 +23,6 @@ import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.pageindicators.CaretDrawable
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey

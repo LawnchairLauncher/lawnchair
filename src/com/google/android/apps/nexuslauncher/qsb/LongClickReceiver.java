@@ -31,8 +31,7 @@ public class LongClickReceiver extends BroadcastReceiver {
                 return;
             }
             final ItemDragListener onDragListener = new ItemDragListener(resolveActivity, intent.getSourceBounds());
-            onDragListener.setLauncher(launcher);
-            launcher.showWorkspace(false);
+            onDragListener.init(launcher, false);
             launcher.getDragLayer().setOnDragListener(onDragListener);
             final ClipData clipData = new ClipData(new ClipDescription("", new String[] { onDragListener.getMimeType() }), new ClipData.Item(""));
             final Bundle bundle = new Bundle();

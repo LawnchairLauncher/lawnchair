@@ -41,10 +41,6 @@ public class NexusLauncherActivity extends Launcher {
         return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
     }
 
-    public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-        return mLauncher.mCallbacks.getPredictedApps();
-    }
-
     public LauncherClient getGoogleNow() {
         return mLauncher.mClient;
     }

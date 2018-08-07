@@ -19,6 +19,7 @@ import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import com.android.launcher3.*;
 import com.android.launcher3.Workspace.OnStateChangeListener;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,7 +85,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         if (launcher != null) {
             Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
             w.setOnStateChangeListener(this);
-            prepareStateChange(w.getState(), null);
+            prepareStateChange(null);
         }
 
         if (mController != null)
@@ -100,12 +101,12 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    public void prepareStateChange(Workspace.State state, AnimatorSet animatorSet) {
-        int i = state == Workspace.State.SPRING_LOADED ? 60 : 0;
-        if (animatorSet == null) {
+    public void prepareStateChange(AnimatorSetBuilder builder) {
+        int i = Launcher.getLauncher(getContext()).isInState(LauncherState.SPRING_LOADED) ? 60 : 0;
+        if (builder == null) {
             QSB_BLOCKER_VIEW_ALPHA.set(this, i);
         } else {
-            animatorSet.play(ObjectAnimator.ofInt(this, QSB_BLOCKER_VIEW_ALPHA, i));
+            builder.play(ObjectAnimator.ofInt(this, QSB_BLOCKER_VIEW_ALPHA, i));
         }
     }
 

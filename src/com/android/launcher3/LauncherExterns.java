@@ -24,11 +24,9 @@ import android.content.SharedPreferences;
  */
 public interface LauncherExterns {
 
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks);
+    boolean setLauncherCallbacks(LauncherCallbacks callbacks);
 
-    public SharedPreferences getSharedPrefs();
+    SharedPreferences getSharedPrefs();
 
-    public void setLauncherOverlay(Launcher.LauncherOverlay overlay);
-
-    void clearTypedText();
+    void setLauncherOverlay(Launcher.LauncherOverlay overlay);
 }

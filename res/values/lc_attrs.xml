@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Pixel -->
+    <attr name="gIcon" format="reference" />
+    <attr name="micIcon" format="reference" />
+
+    <!-- Lawnchair -->
+    <declare-styleable name="SubPreference">
+        <attr name="content" format="reference" />
+        <attr name="longClickContent" format="reference" />
+        <attr name="hasPreview" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SeekbarPreference">
+        <attr name="minValue" format="float" />
+        <attr name="maxValue" format="float" />
+        <attr name="summaryFormat" format="string" />
+        <attr name="summaryMultiplier" format="integer" />
+        <attr name="defaultSeekbarValue" format="float" />
+        <attr name="steps" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="ColorPickerPreference">
+        <attr name="defaultColor" format="color" />
+        <attr name="colorMode" format="integer" >
+            <enum name="RGB" value="0" />
+            <enum name="ARGB" value="1" />
+            <!-- <enum name="HSV" value="2" /> -->
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PreviewPreference">
+        <attr name="previewLayout" format="float" />
+    </declare-styleable>
+
+    <!-- Custom -->
+    <attr name="bottomSheetNavBarColor" format="color" />
+    <attr name="useLightSystemBars" format="boolean" />
+    <attr name="settingsBackground" format="color" />
+</resources>

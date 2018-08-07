@@ -36,8 +36,8 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
             val launcherActivityInfo = getLauncherActivityInfo(info)
             val iconCache = LauncherAppState.getInstance(context).iconCache
             val drawable = iconCache.getFullResIcon(launcherActivityInfo, info, false)
-            val bitmap = LauncherIcons.createBadgedIconBitmap(drawable, info.user, context, Build.VERSION_CODES.O_MR1)
-            info.setIcon(context, bitmap)
+            val bitmap = LauncherIcons.obtain(context).createBadgedIconBitmap(drawable, info.user, Build.VERSION_CODES.O_MR1)
+            info.setIcon(context, bitmap.icon)
         } else {
             info.setIcon(context, null)
         }

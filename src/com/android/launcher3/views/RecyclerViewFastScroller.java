@@ -22,6 +22,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -45,6 +47,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 public class RecyclerViewFastScroller extends View implements ColorEngine.OnAccentChangeListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
+    private static final Rect sTempRect = new Rect();
 
     private static final Property<RecyclerViewFastScroller, Integer> TRACK_WIDTH =
             new Property<RecyclerViewFastScroller, Integer>(Integer.class, "width") {
@@ -100,6 +103,7 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     private String mPopupSectionName;
 
     protected BaseRecyclerView mRv;
+    private RecyclerView.OnScrollListener mOnScrollListener;
 
     private int mDownX;
     private int mDownY;
@@ -141,8 +145,12 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     }
 
     public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
+        if (mRv != null && mOnScrollListener != null) {
+            mRv.removeOnScrollListener(mOnScrollListener);
+        }
         mRv = rv;
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 mDy = dy;
@@ -200,9 +208,9 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
      * it is already showing).
      */
-    public boolean handleTouchEvent(MotionEvent ev) {
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
+    public boolean handleTouchEvent(MotionEvent ev, Point offset) {
+        int x = (int) ev.getX() - offset.x;
+        int y = (int) ev.getY() - offset.y;
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // Keep track of the down positions
@@ -256,7 +264,6 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
-        mRv.getParent().requestDisallowInterceptTouchEvent(true);
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
@@ -286,7 +293,7 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
             return;
         }
         int saveCount = canvas.save();
-        canvas.translate(getWidth() / 2, mRv.getPaddingTop());
+        canvas.translate(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
         canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
@@ -317,8 +324,8 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     /**
      * Returns whether the specified point is inside the thumb bounds.
      */
-    public boolean isNearThumb(int x, int y) {
-        int offset = y - mRv.getPaddingTop() - mThumbOffsetY;
+    private boolean isNearThumb(int x, int y) {
+        int offset = y - mThumbOffsetY;
 
         return x >= 0 && x < getWidth() && offset >= 0 && offset <= mThumbHeight;
     }
@@ -349,7 +356,7 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     private void updatePopupY(int lastTouchY) {
         int height = mPopupView.getHeight();
         float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height)
-                + mRv.getPaddingTop();
+                + mRv.getScrollBarTop();
         top = Utilities.boundToRange(top,
                 mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);
@@ -371,5 +378,24 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnAcce
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         ColorEngine.Companion.getInstance(getContext()).removeAccentChangeListener(this);
+    }
+
+    public boolean isHitInParent(float x, float y, Point outOffset) {
+        if (mThumbOffsetY < 0) {
+            return false;
+        }
+        getHitRect(sTempRect);
+        sTempRect.top += mRv.getScrollBarTop();
+        if (outOffset != null) {
+            outOffset.set(sTempRect.left, sTempRect.top);
+        }
+        return sTempRect.contains((int) x, (int) y);
+    }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        // There is actually some overlap between the track and the thumb. But since the track
+        // alpha is so low, it does not matter.
+        return false;
     }
 }

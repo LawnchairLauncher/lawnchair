@@ -142,6 +142,8 @@ public class ImportDataTask {
                 // First row of first screen is not empty
                 createEmptyRowOnFirstScreen = c.moveToNext();
             }
+        } else {
+            createEmptyRowOnFirstScreen = false;
         }
 
         ArrayList<ContentProviderOperation> insertOperations = new ArrayList<>(BATCH_INSERT_SIZE);

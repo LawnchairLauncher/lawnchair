@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -43,12 +44,12 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.PackageManagerHelper;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -153,10 +154,9 @@ public class LoaderCursor extends CursorWrapper {
         info.user = user;
         info.itemType = itemType;
         info.title = getTitle();
-        info.iconBitmap = loadIcon(info);
         // the fallback icon
-        if (info.iconBitmap == null) {
-            info.iconBitmap = mIconCache.getDefaultIcon(info.user);
+        if (!loadIcon(info)) {
+            mIconCache.getDefaultIcon(info.user).applyTo(info);
         }
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -167,8 +167,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
-    protected Bitmap loadIcon(ShortcutInfo info) {
-        Bitmap icon = null;
+    protected boolean loadIcon(ShortcutInfo info) {
         if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
             String packageName = getString(iconPackageIndex);
             String resourceName = getString(iconResourceIndex);
@@ -176,32 +175,33 @@ public class LoaderCursor extends CursorWrapper {
                 info.iconResource = new ShortcutIconResource();
                 info.iconResource.packageName = packageName;
                 info.iconResource.resourceName = resourceName;
-                icon = LauncherIcons.createIconBitmap(info.iconResource, mContext);
+                LauncherIcons li = LauncherIcons.obtain(mContext);
+                BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
+                li.recycle();
+                if (iconInfo != null) {
+                    iconInfo.applyTo(info);
+                    return true;
+                }
             }
         }
-        if (icon == null) {
-            // Failed to load from resource, try loading from DB.
-            byte[] data = getBlob(iconIndex);
-            try {
-                icon = LauncherIcons.createIconBitmap(
-                        BitmapFactory.decodeByteArray(data, 0, data.length), mContext);
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to load icon for info " + info, e);
-                return null;
-            }
+
+        // Failed to load from resource, try loading from DB.
+        byte[] data = getBlob(iconIndex);
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)).applyTo(info);
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load icon for info " + info, e);
+            return false;
         }
-        if (icon == null) {
-            Log.e(TAG, "Failed to load icon for info " + info);
-        }
-        return icon;
     }
 
     public Bitmap loadCustomIcon(ShortcutInfo info) {
         byte[] data = getBlob(customIconIndex);
         try {
             if (data != null) {
-                return LauncherIcons.createIconBitmap(
-                        BitmapFactory.decodeByteArray(data, 0, data.length), mContext);
+                return LauncherIcons.obtain(mContext).createIconBitmap(
+                        BitmapFactory.decodeByteArray(data, 0, data.length)).icon;
             } else {
                 return null;
             }
@@ -219,7 +219,6 @@ public class LoaderCursor extends CursorWrapper {
         return TextUtils.isEmpty(title) ? "" : Utilities.trim(title);
     }
 
-
     /**
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
@@ -229,9 +228,8 @@ public class LoaderCursor extends CursorWrapper {
         info.user = user;
         info.intent = intent;
 
-        info.iconBitmap = loadIcon(info);
         // the fallback icon
-        if (info.iconBitmap == null) {
+        if (!loadIcon(info)) {
             mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
         }
 
@@ -287,12 +285,11 @@ public class LoaderCursor extends CursorWrapper {
 
         mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.iconBitmap, user)) {
-            Bitmap icon = loadIcon(info);
-            info.iconBitmap = icon != null ? icon : info.iconBitmap;
+            loadIcon(info);
         }
 
-        if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
-            info.isDisabled = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+        if (lai != null) {
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, lai);
         }
 
         // from the db

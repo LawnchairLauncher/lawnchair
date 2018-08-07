@@ -16,11 +16,15 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import com.android.launcher3.util.UiThreadHelper;
 
 
 /**
@@ -102,8 +106,7 @@ public class ExtendedEditText extends EditText {
     }
 
     public void dispatchBackKey() {
-        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(getWindowToken(), 0);
+        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
         if (mBackKeyListener != null) {
             mBackKeyListener.onBackKey();
         }
@@ -120,5 +123,18 @@ public class ExtendedEditText extends EditText {
     @Override
     public boolean isSuggestionsEnabled() {
         return !mForceDisableSuggestions && super.isSuggestionsEnabled();
+    }
+
+    public void reset() {
+        if (!TextUtils.isEmpty(getText())) {
+            setText("");
+        }
+        if (isFocused()) {
+            View nextFocus = focusSearch(View.FOCUS_DOWN);
+            if (nextFocus != null) {
+                nextFocus.requestFocus();
+            }
+        }
+        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
     }
 }

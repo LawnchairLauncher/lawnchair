@@ -30,11 +30,6 @@ public class AppLaunchActivity extends BaseActivity {
                 }
                 View view = new View(this);
                 view.setTag(dVar);
-                int i = 2;
-                LauncherModel.Callbacks callback = LauncherAppState.getInstance(this).getModel().getCallback();
-                if (callback instanceof Launcher) {
-                    i = ((Launcher) callback).getWorkspace().getState().containerType;
-                }
                 String predictionRank = uri.getQueryParameter("predictionRank");
                 new LogContainerProvider(this, TextUtils.isEmpty(predictionRank) ? -1 : Integer.parseInt(predictionRank)).addView(view);
                 return;

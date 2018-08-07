@@ -213,7 +213,7 @@ public class AppSearchProvider extends ContentProvider
                 }
             }
 
-            Collections.sort(list, new AppInfoComparator(this.mApp.getContext(), false));
+            Collections.sort(list, new AppInfoComparator(this.mApp.getContext()));
             return list;
         }
 

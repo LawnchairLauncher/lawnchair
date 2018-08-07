@@ -22,7 +22,7 @@ open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : Ges
     override val displayName = context.getString(R.string.action_open_drawer)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-        controller.launcher.showAppsView(true, true)
+//        controller.launcher.showAppsView(true, true)
     }
 }
 
@@ -32,7 +32,7 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
     override val displayName = context.getString(R.string.action_open_widgets)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-        controller.launcher.showWidgetsView(true, true)
+//        controller.launcher.showWidgetsView(true, true)
     }
 }
 
@@ -54,7 +54,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val displayName = context.getString(R.string.action_open_overview)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-        controller.launcher.showOverviewPopup(false)
+//        controller.launcher.showOverviewPopup(false)
     }
 }
 
@@ -64,7 +64,7 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
     override val displayName = context.getString(R.string.action_global_search)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-        controller.launcher.startGlobalSearch(null,  false, null, null)
+//        controller.launcher.startGlobalSearch(null,  false, null, null)
     }
 }
 
@@ -74,7 +74,7 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Open
     override val displayName = context.getString(R.string.action_app_search)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-        controller.launcher.showAppsView(true, true, true)
+//        controller.launcher.showAppsView(true, true, true)
     }
 }
 

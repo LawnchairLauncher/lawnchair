@@ -78,7 +78,7 @@ public class SuperGContainerView extends BaseGContainerView {
             qsbWidth = size;
             marginStart = qsbOverlapMargin + getResources().getDimensionPixelSize(R.dimen.qsb_button_elevation);
         } else {
-            Rect workspacePadding = deviceProfile.getWorkspacePadding(sTempRect);
+            Rect workspacePadding = deviceProfile.workspacePadding;
             int fullWidth = size - workspacePadding.left - workspacePadding.right;
             qsbWidth = DeviceProfile.calculateCellWidth(fullWidth, deviceProfile.inv.numColumns) * deviceProfile.inv.numColumns;
             marginStart = qsbOverlapMargin + (workspacePadding.left + (fullWidth - qsbWidth) / 2);
@@ -107,7 +107,7 @@ public class SuperGContainerView extends BaseGContainerView {
         if (mTouchDelegate != null) {
             int leftPos = 0;
             if (Utilities.isRtl(getResources())) {
-                leftPos = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;
+                leftPos = mQsbView.getLeft() - mLauncher.getDeviceProfile().workspacePadding.left;
             }
             mTouchDelegate.setBounds(leftPos, mQsbView.getTop(), mQsbView.getWidth() + leftPos, mQsbView.getBottom());
         }

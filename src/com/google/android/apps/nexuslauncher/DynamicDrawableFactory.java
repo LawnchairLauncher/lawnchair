@@ -1,13 +1,13 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Process;
 
-import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
+import android.os.UserHandle;
+import com.android.launcher3.*;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
@@ -19,13 +19,22 @@ public class DynamicDrawableFactory extends DrawableFactory {
     }
 
     @Override
-    public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
-        if (info != null &&
-                Utilities.ATLEAST_OREO &&
-                info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                DynamicClock.DESK_CLOCK.equals(info.getTargetComponent()) &&
-                info.user.equals(Process.myUserHandle())) {
-            return mDynamicClockDrawer.drawIcon(icon);
+    public FastBitmapDrawable newIcon(ItemInfoWithIcon info) {
+        if (info == null || info.itemType != 0 ||
+                !DynamicClock.DESK_CLOCK.equals(info.getTargetComponent()) ||
+                !info.user.equals(Process.myUserHandle())) {
+            return super.newIcon(info);
+        }
+        FastBitmapDrawable dVar = mDynamicClockDrawer.drawIcon(info.iconBitmap);
+        dVar.setIsDisabled(info.isDisabled());
+        return dVar;
+    }
+
+    @Override
+    public FastBitmapDrawable newIcon(BitmapInfo icon, ActivityInfo info) {
+        if (DynamicClock.DESK_CLOCK.getPackageName().equals(info.packageName) &&
+                (!Utilities.ATLEAST_NOUGAT || UserHandle.getUserHandleForUid(info.applicationInfo.uid).equals(Process.myUserHandle()))) {
+            return mDynamicClockDrawer.drawIcon(icon.icon);
         }
         return super.newIcon(icon, info);
     }

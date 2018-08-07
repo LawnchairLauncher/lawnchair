@@ -9,8 +9,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class InsettableFrameLayout extends FrameLayout implements
-    ViewGroup.OnHierarchyChangeListener, Insettable {
+public class InsettableFrameLayout extends FrameLayout implements Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected Rect mInsets = new Rect();
@@ -21,7 +20,6 @@ public class InsettableFrameLayout extends FrameLayout implements
 
     public InsettableFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnHierarchyChangeListener(this);
     }
 
     public void setFrameLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
@@ -40,10 +38,6 @@ public class InsettableFrameLayout extends FrameLayout implements
 
     @Override
     public void setInsets(Rect insets) {
-        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
-        // modifying child layout params.
-        if (insets.equals(mInsets)) return;
-
         final int n = getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
@@ -95,12 +89,18 @@ public class InsettableFrameLayout extends FrameLayout implements
     }
 
     @Override
-    public void onChildViewAdded(View parent, View child) {
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         setFrameLayoutChildInsets(child, mInsets, new Rect());
     }
 
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
+    public static void dispatchInsets(ViewGroup parent, Rect insets) {
+        final int n = parent.getChildCount();
+        for (int i = 0; i < n; i++) {
+            final View child = parent.getChildAt(i);
+            if (child instanceof Insettable) {
+                ((Insettable) child).setInsets(insets);
+            }
+        }
     }
-
 }

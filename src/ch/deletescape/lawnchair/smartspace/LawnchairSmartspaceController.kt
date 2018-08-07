@@ -107,7 +107,8 @@ class LawnchairSmartspaceController(val context: Context) {
                     "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
             launcher.startActivitySafely(v, intent, null)
         } else {
-            Utilities.openURLinBrowser(launcher, weatherData!!.forecastUrl, launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v))
+            Utilities.openURLinBrowser(launcher, weatherData!!.forecastUrl,
+                    launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
         }
     }
 

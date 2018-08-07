@@ -201,7 +201,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         } catch (ActivityNotFoundException ignored) {
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
-                        mLauncher.getActivityLaunchOptions(mQsbView));
+                        mLauncher.getActivityLaunchOptions(mQsbView).toBundle());
             } catch (ActivityNotFoundException ignored2) {
             }
         }

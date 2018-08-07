@@ -13,11 +13,10 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.android.launcher3.*;
-import com.android.launcher3.DeviceProfile.LauncherLayoutChangeListener;
 import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
-public abstract class AbstractQsbLayout extends FrameLayout implements LauncherLayoutChangeListener, OnClickListener, OnSharedPreferenceChangeListener {
+public abstract class AbstractQsbLayout extends FrameLayout implements OnClickListener, OnSharedPreferenceChangeListener {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     protected final NexusLauncherActivity mActivity;
     protected int mColor;
@@ -51,7 +50,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mActivity.getDeviceProfile().addLauncherLayoutChangedListener(this);
+        // TODO: reimplement this
+//        mActivity.getDeviceProfile().addLauncherLayoutChangedListener(this);
         loadAndGetPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
 
     @Override
     protected void onDetachedFromWindow() {
-        this.mActivity.getDeviceProfile().removeLauncherLayoutChangedListener(this);
+//        this.mActivity.getDeviceProfile().removeLauncherLayoutChangedListener(this);
         Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         super.onDetachedFromWindow();
     }

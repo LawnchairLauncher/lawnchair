@@ -13,6 +13,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,10 +22,11 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,29 +88,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private void ensureFallbackView() {
         boolean isDarkTheme = Utilities.getLawnchairPrefs(getContext()).getDarkSearchbar();//Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
         if (mFallback == null) {
-            mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
+            mFallback = (FallbackAppsSearchView) LayoutInflater.from(getContext()).inflate(R.layout.all_apps_google_search_fallback, this, false);
             mFallback.initialize(this, mApps, mRecyclerView);
             addView(mFallback);
         }
         mFallback.setTextColor(getResources().getColor(isDarkTheme ? R.color.qsb_drawer_text_color_dark : R.color.qsb_drawer_text_color_normal));
         mFallback.setVisibility(View.VISIBLE);
-    }
-
-    public void addOnScrollRangeChangeListener(final SearchUiManager.OnScrollRangeChangeListener onScrollRangeChangeListener) {
-        mActivity.getHotseat().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-                    onScrollRangeChangeListener.onScrollRangeChanged(bottom);
-                } else {
-                    onScrollRangeChangeListener.onScrollRangeChanged(bottom
-                            - HotseatQsbWidget.getBottomMargin(mActivity)
-                            - (((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin
-                            + (Utilities.getLawnchairPrefs(mActivity).getDockSearchBar() ? 0 : mAdditionalTopMargin)
-                            + (int) getTranslationY() + getResources().getDimensionPixelSize(R.dimen.qsb_widget_height)));
-                }
-            }
-        });
     }
 
     void useAlpha(int newAlpha) {
@@ -143,24 +128,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         super.draw(canvas);
     }
 
-    public void initialize(AlphabeticalAppsList appsList, AllAppsRecyclerView recyclerView) {
-        mApps = appsList;
+    @Override
+    public void initialize(AllAppsContainerView containerView) {
 
-        recyclerView.setPadding(recyclerView.getPaddingLeft(),
-                getLayoutParams().height / 2 + getResources().getDimensionPixelSize(R.dimen.all_apps_extra_search_padding),
-                recyclerView.getPaddingRight(),
-                recyclerView.getPaddingBottom());
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                useAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
-            }
-        });
-
-        recyclerView.setVerticalFadingEdgeEnabled(true);
-
-        mRecyclerView = recyclerView;
     }
 
     public void setTopMargin(int topMargin) {
@@ -175,28 +145,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         onExtractedColorsChanged(instance);
         Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener( KEY_ALL_APPS_GOOGLE_SEARCH, this);
         ColorEngine.Companion.getInstance(getContext()).addAccentChangeListener(this);
-    }
-
-    @Override
-    public void startSearch() {
-        if (!Utilities.ATLEAST_NOUGAT || !mAllAppsGoogleSearch) {
-            searchFallback();
-            return;
-        }
-        final ConfigBuilder f = new ConfigBuilder(this, true);
-        if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
-            searchFallback();
-            if (mFallback != null) {
-                mFallback.setHint(null);
-            }
-        }
-    }
-
-    public void onClick(final View view) {
-        super.onClick(view);
-        if (view == this) {
-            startSearch();
-        }
     }
 
     protected void onDetachedFromWindow() {
@@ -222,18 +170,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void preDispatchKeyEvent(final KeyEvent keyEvent) {
     }
 
-    @Override
-    public void startAppsSearch() {
-        onClick(this);
-    }
-
     public void refreshSearchResult() {
         if (mFallback != null) {
             mFallback.refreshSearchResult();
         }
     }
 
-    public void reset() {
+    public void resetSearch() {
         useAlpha(0);
         if (mFallback != null) {
             mFallback.setText(null);
@@ -250,11 +193,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             removeView(mFallback);
             mFallback = null;
         }
-    }
-
-    @NonNull
-    public SpringAnimation getSpringForFling() {
-        return mSpring;
     }
 
     @Override

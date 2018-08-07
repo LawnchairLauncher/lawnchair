@@ -178,7 +178,9 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     private Bitmap addShadowToBitmap(Bitmap bitmap) {
-        return mEnableShadow ? ShadowGenerator.getInstance(getContext()).recreateIcon(bitmap, false) : bitmap;
+        // TODO: implement this properly
+//        return mEnableShadow ? ShadowGenerator.getInstance(getContext()).recreateIcon(bitmap, false) : bitmap;
+        return bitmap;
     }
 
     private void loadViews() {

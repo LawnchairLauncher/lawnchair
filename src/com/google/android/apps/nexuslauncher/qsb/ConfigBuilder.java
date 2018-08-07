@@ -24,7 +24,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
@@ -192,7 +192,7 @@ public class ConfigBuilder {
         AllAppsRecyclerView appsView = getAppsView();
         GridLayoutManager.SpanSizeLookup spanSizeLookup = ((GridLayoutManager) appsView.getLayoutManager())
                 .getSpanSizeLookup();
-        int allAppsCols = Math.min(mActivity.getDeviceProfile().allAppsNumCols, appsView.getChildCount());
+        int allAppsCols = Math.min(mActivity.getDeviceProfile().inv.numColumns, appsView.getChildCount());
         int childCount = appsView.getChildCount();
         BubbleTextView[] bubbleTextViewArr = new BubbleTextView[allAppsCols];
         int i4 = -1;
@@ -255,17 +255,17 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        List predictedApps = appsView.getApps().getPredictedApps();
-        int i = Math.min(predictedApps.size(), allAppsCols);
-        mNano.eo = new b_search[i];
-        for (int i2 = 0; i2 < i; i2++) {
-            mNano.eo[i2] = bZ((AppInfo) predictedApps.get(i2), i2);
-        }
+//        List predictedApps = appsView.getApps().getPredictedApps();
+//        int i = Math.min(predictedApps.size(), allAppsCols);
+//        mNano.eo = new b_search[i];
+//        for (int i2 = 0; i2 < i; i2++) {
+//            mNano.eo[i2] = bZ((AppInfo) predictedApps.get(i2), i2);
+//        }
     }
 
     private void cf() {
         int n2 = 0;
-        mNano.es = mActivity.getDeviceProfile().allAppsNumCols;
+        mNano.es = mActivity.getDeviceProfile().inv.numColumns;
         final int width = mActivity.getHotseat().getWidth();
         final int dimensionPixelSize = mActivity.getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         final a_search en = new a_search();
@@ -285,21 +285,6 @@ public class ConfigBuilder {
         mBubbleTextView.measure(View.MeasureSpec.makeMeasureSpec(layoutParams.width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(layoutParams.height, View.MeasureSpec.EXACTLY));
         mBubbleTextView.layout(0, 0, layoutParams.width, layoutParams.height);
         final ArrayList<b_search> list = new ArrayList<>(mNano.es);
-        for (ComponentKeyMapper<AppInfo> cmp : mActivity.getPredictedApps()) {
-            final AppInfo app = apps.findApp(cmp);
-            int n3;
-            if (app != null) {
-                list.add(bZ(app, n2));
-                n3 = n2 + 1;
-                if (n3 >= mNano.es) {
-                    break;
-                }
-            } else {
-                n3 = n2;
-            }
-            n2 = n3;
-        }
-
         mNano.eo = list.toArray(new b_search[list.size()]);
     }
 

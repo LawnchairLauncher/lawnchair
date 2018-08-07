@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.View;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
@@ -25,7 +25,6 @@ import com.google.android.libraries.gsa.launcherclient.StaticInteger;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class NexusLauncher {
     private final Launcher mLauncher;
@@ -67,16 +66,6 @@ public class NexusLauncher {
 
         public void finishBindingItems(final boolean b) {
         }
-
-        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-            return ((CustomAppPredictor) mLauncher.getUserEventDispatcher()).getPredictions();
-        }
-
-        @Override
-        public int getSearchBarHeight() {
-            return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-        }
-
         public boolean handleBackPressed() {
             return false;
         }
@@ -156,20 +145,12 @@ public class NexusLauncher {
             mClient.onDetachedFromWindow();
         }
 
-        public void onHomeIntent() {
+        @Override
+        public void onHomeIntent(boolean internalStateHandled) {
             mClient.hideOverlay(mFeedRunning);
         }
 
-        public void onInteractionBegin() {
-        }
-
-        public void onInteractionEnd() {
-        }
-
         public void onLauncherProviderChange() {
-        }
-
-        public void onNewIntent(final Intent intent) {
         }
 
         public void onPause() {
@@ -179,13 +160,6 @@ public class NexusLauncher {
             if (mSmartspace != null) {
                 mSmartspace.onPause();
             }
-        }
-
-        public void onPostCreate(final Bundle bundle) {
-        }
-
-        public boolean onPrepareOptionsMenu(final Menu menu) {
-            return false;
         }
 
         public void onRequestPermissionsResult(final int n, final String[] array, final int[] array2) {
@@ -230,36 +204,6 @@ public class NexusLauncher {
         public void onTrimMemory(int n) {
         }
 
-        public void onWindowFocusChanged(boolean hasFocus) {
-        }
-
-        public void onWorkspaceLockedChanged() {
-        }
-
-        public void populateCustomContentContainer() {
-        }
-
-        @Override
-        public View getQsbBar() {
-            return null;
-        }
-
-        @Override
-        public Bundle getAdditionalSearchWidgetOptions() {
-            return null;
-        }
-
-        public void preOnCreate() {
-            DrawableFactory.get(mLauncher);
-        }
-
-        public void preOnResume() {
-        }
-
-        public boolean shouldMoveToDefaultScreenOnHomeIntent() {
-            return true;
-        }
-
         public boolean startSearch(String s, boolean b, Bundle bundle) {
             View gIcon = mLauncher.findViewById(R.id.g_icon);
             while (gIcon != null && !gIcon.isClickable()) {
@@ -270,7 +214,7 @@ public class NexusLauncher {
                 }
             }
             if (gIcon != null && gIcon.performClick()) {
-                mExterns.clearTypedText();
+//                mExterns.clearTypedText();
                 return true;
             }
             return false;

@@ -17,10 +17,12 @@ import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
 import android.util.Log
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
+import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
@@ -32,12 +34,22 @@ import java.util.concurrent.Semaphore
 open class LawnchairLauncher : NexusLauncherActivity() {
 
     val gestureController by lazy { GestureController(this) }
+    val blurWallpaperProvider by lazy { BlurWallpaperProvider(this, isScreenshotMode) }
+    var updateWallpaper = true
+
+    protected open val isScreenshotMode = false
     private var prefCallback = LawnchairPreferencesChangeCallback(this)
+    private var paused = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this)
         }
+
+        val prefs = Utilities.getLawnchairPrefs(this)
+
+        ThemeManager.getInstance(this).addOverride(
+                if (prefs.allAppsSearch) ThemeOverride.LauncherQsb(this) else ThemeOverride.Launcher(this))
 
         super.onCreate(savedInstanceState)
 
@@ -48,18 +60,49 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         super.onResume()
 
         restartIfPending()
+
+        paused = false
+
+        if (updateWallpaper) {
+            updateWallpaper = false
+            blurWallpaperProvider.updateAsync()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        paused = true
     }
 
     open fun restartIfPending() {
-        if (Launcher.sRestart) {
+        if (sRestart) {
             lawnchairApp.restart(true)
         }
+    }
+
+    fun scheduleRestart() {
+        if (paused) {
+            sRestart = true
+        } else {
+            Utilities.restartLauncher(this)
+        }
+    }
+
+    fun refreshGrid() {
+        workspace.refreshChildren()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         Utilities.getLawnchairPrefs(this).unregisterCallback()
+
+        if (sRestart) {
+            sRestart = false
+            LauncherAppState.destroyInstance()
+            LawnchairPreferences.destroyInstance()
+        }
     }
 
     fun startEditIcon(itemInfo: ItemInfoWithIcon) {
@@ -76,10 +119,6 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         currentEditInfo = itemInfo
         val infoProvider = CustomInfoProvider.forItem<ItemInfo>(this, itemInfo) ?: return
         startActivityForResult(EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component), CODE_EDIT_ICON)
-    }
-
-    override fun onWorkspaceLongPress() {
-        gestureController.onLongPress()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,7 +145,11 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    fun shouldRecreate() = !sRestart
+
     class Screenshot : LawnchairLauncher() {
+
+        override val isScreenshotMode = true
 
         override fun onCreate(savedInstanceState: Bundle?) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -146,20 +189,18 @@ open class LawnchairLauncher : NexusLauncherActivity() {
             finish()
         }
 
-        override fun isScreenshotMode() = true
-
         override fun getLauncherTheme(): ThemeOverride {
             return ThemeOverride.LauncherScreenshot(this)
         }
 
         override fun restartIfPending() {
-            Launcher.sRestart = true
+            sRestart = true
         }
 
         override fun onDestroy() {
             super.onDestroy()
 
-            Launcher.sRestart = true
+            sRestart = true
         }
     }
 
@@ -167,6 +208,8 @@ open class LawnchairLauncher : NexusLauncherActivity() {
 
         const val REQUEST_PERMISSION_STORAGE_ACCESS = 666
         const val CODE_EDIT_ICON = 100
+
+        var sRestart = false
 
         var currentEditInfo: ItemInfo? = null
         var currentEditIcon: Drawable? = null
@@ -178,10 +221,10 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         fun takeScreenshotSync(context: Context): Uri? {
             var uri: Uri? = null
             val waiter = Semaphore(0)
-            takeScreenshot(context, uiWorkerHandler, {
+            takeScreenshot(context, uiWorkerHandler) {
                 uri = it
                 waiter.release()
-            })
+            }
             waiter.acquireUninterruptibly()
             waiter.release()
             return uri

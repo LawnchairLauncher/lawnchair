@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -32,6 +34,7 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.views.OptionsPopupView
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import java.lang.reflect.Field
 import java.util.concurrent.Callable
@@ -59,7 +62,7 @@ import kotlin.reflect.KProperty
 
 val Context.launcherAppState get() = LauncherAppState.getInstance(this)
 val Context.lawnchairPrefs get() = Utilities.getLawnchairPrefs(this)
-val Context.blurWallpaperProvider get() = launcherAppState.launcher.blurWallpaperProvider
+val Context.blurWallpaperProvider get() = LawnchairLauncher.getLauncher(launcherAppState.launcher).blurWallpaperProvider
 
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
@@ -264,20 +267,29 @@ fun AppCompatActivity.hookGoogleSansDialogTitle() {
     }
 }
 
-fun openPopupMenu(icon: BubbleTextView, vararg shortcuts: SystemShortcut) {
-    val launcher = Launcher.getLauncher(icon.context)
-    (launcher.layoutInflater.inflate(R.layout.popup_container,
-            launcher.dragLayer, false) as PopupContainerWithArrow).apply {
-        disableDividers()
-        visibility = View.INVISIBLE
-        launcher.dragLayer.addView(this)
-        populateAndShow(icon, emptyList(), emptyList(), listOf(*shortcuts), false)
-    }
+fun openPopupMenu(icon: BubbleTextView, vararg shortcuts: SystemShortcut<Launcher>) {
+    // TODO: make this work
+//    val launcher = Launcher.getLauncher(icon.context)
+//    (launcher.layoutInflater.inflate(R.layout.popup_container,
+//            launcher.dragLayer, false) as PopupContainerWithArrow).apply {
+//        disableDividers()
+//        visibility = View.INVISIBLE
+//        launcher.dragLayer.addView(this)
+//        populateAndShow(icon, emptyList(), emptyList(), listOf(*shortcuts), false)
+//    }
 }
 
 fun Context.getLauncherOrNull(): Launcher? {
     return try {
         Launcher.getLauncher(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
+
+fun Context.getBaseDraggingActivityOrNull(): BaseDraggingActivity? {
+    return try {
+        BaseDraggingActivity.fromContext(this)
     } catch (e: ClassCastException) {
         null
     }

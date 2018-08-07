@@ -1,6 +1,8 @@
 
 package com.android.launcher3.model;
 
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -15,6 +17,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -22,10 +25,14 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.widget.WidgetItemComparator;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -42,8 +49,26 @@ public class WidgetsModel {
 
     private AppFilter mAppFilter;
 
-    public synchronized MultiHashMap<PackageItemInfo, WidgetItem> getWidgetsMap() {
-        return mWidgetsList.clone();
+    /**
+     * Returns a list of {@link WidgetListRowEntry}. All {@link WidgetItem} in a single row
+     * are sorted (based on label and user), but the overall list of {@link WidgetListRowEntry}s
+     * is not sorted. This list is sorted at the UI when using
+     * {@link com.android.launcher3.widget.WidgetsDiffReporter}
+     *
+     * @see com.android.launcher3.widget.WidgetsListAdapter#setWidgets(ArrayList)
+     */
+    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(Context context) {
+        ArrayList<WidgetListRowEntry> result = new ArrayList<>();
+        AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
+
+        WidgetItemComparator widgetComparator = new WidgetItemComparator();
+        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : mWidgetsList.entrySet()) {
+            WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
+            row.titleSectionName = indexer.computeSectionName(row.pkgItem.title);
+            Collections.sort(row.widgets, widgetComparator);
+            result.add(row);
+        }
+        return result;
     }
 
     /**
@@ -130,6 +155,11 @@ public class WidgetsModel {
         // add and update.
         for (WidgetItem item : rawWidgetsShortcuts) {
             if (item.widgetInfo != null) {
+                if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
+                    // Widget is hidden from picker
+                    continue;
+                }
+
                 // Ensure that all widgets we show can be added on a workspace of this size
                 int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
                 int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);

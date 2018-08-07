@@ -5,7 +5,7 @@ import android.support.annotation.Keep
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.getColorAccent
 import com.android.launcher3.R
-import com.android.launcher3.dynamicui.WallpaperColorInfo
+import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 @Keep
 class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {

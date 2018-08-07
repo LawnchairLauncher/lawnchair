@@ -109,7 +109,7 @@ class IconPackManager(private val context: Context) {
             = IconPackImpl(context, name).also { if (register) registerReceiverForPack(it) }
 
     private fun registerReceiverForPack(iconPack: IconPack) {
-        updateReceivers.getOrPut(iconPack, {
+        updateReceivers.getOrPut(iconPack) {
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent?) {
                     onPackUpdated()
@@ -120,7 +120,7 @@ class IconPackManager(private val context: Context) {
                         Intent.ACTION_PACKAGE_REPLACED,
                         Intent.ACTION_PACKAGE_FULLY_REMOVED))
             }
-        })
+        }
     }
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,

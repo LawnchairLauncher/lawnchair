@@ -154,7 +154,7 @@ public class AllAppsList {
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
             if (matcher.matches(info, info.componentName)) {
-                info.isDisabled = op.apply(info.isDisabled);
+                info.runtimeStatusFlags = op.apply(info.runtimeStatusFlags);
                 modified.add(info);
             }
         }

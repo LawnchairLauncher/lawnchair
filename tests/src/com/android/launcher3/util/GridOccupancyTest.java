@@ -1,15 +1,23 @@
 package com.android.launcher3.util;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link GridOccupancy}
  */
 @SmallTest
-public class GridOccupancyTest extends TestCase {
+@RunWith(AndroidJUnit4.class)
+public class GridOccupancyTest {
 
+    @Test
     public void testFindVacantCell() {
         GridOccupancy grid = initGrid(4,
                 1, 1, 1, 0, 0,
@@ -30,6 +38,7 @@ public class GridOccupancyTest extends TestCase {
         assertFalse(grid.findVacantCell(vacant, 3, 3));
     }
 
+    @Test
     public void testIsRegionVacant() {
         GridOccupancy grid = initGrid(4,
                 1, 1, 1, 0, 0,

@@ -29,6 +29,7 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -92,8 +93,12 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                 }
                 for (final ShortcutInfo shortcutInfo : shortcutInfos) {
                     shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    shortcutInfo.iconBitmap = LauncherIcons.createShortcutIcon(fullDetails, context,
-                            shortcutInfo.iconBitmap);
+                    // If the shortcut is pinned but no longer has an icon in the system,
+                    // keep the current icon instead of reverting to the default icon.
+                    LauncherIcons li = LauncherIcons.obtain(context);
+                    li.createShortcutIcon(fullDetails, true, Provider.of(shortcutInfo.iconBitmap))
+                            .applyTo(shortcutInfo);
+                    li.recycle();
                     updatedShortcutInfos.add(shortcutInfo);
                 }
             }

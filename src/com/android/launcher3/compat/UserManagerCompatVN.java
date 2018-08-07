@@ -19,7 +19,10 @@ package com.android.launcher3.compat;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Process;
 import android.os.UserHandle;
+
+import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVM {
@@ -44,6 +47,20 @@ public class UserManagerCompatVN extends UserManagerCompatVM {
         } catch (SecurityException ex) {
             return false;
         }
+    }
+
+    @Override
+    public boolean isAnyProfileQuietModeEnabled() {
+        List<UserHandle> userProfiles = getUserProfiles();
+        for (UserHandle userProfile : userProfiles) {
+            if (Process.myUserHandle().equals(userProfile)) {
+                continue;
+            }
+            if (isQuietModeEnabled(userProfile)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

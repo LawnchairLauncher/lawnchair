@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Looper
 import com.android.launcher3.MainThreadExecutor
 import com.android.launcher3.Utilities
-import com.android.launcher3.dynamicui.WallpaperColorInfo
+import com.android.launcher3.uioverrides.WallpaperColorInfo
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 
@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException
  * limitations under the License.
  */
 
-class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, WallpaperColorInfo.OnThemeChangeListener {
+class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, WallpaperColorInfo.OnChangeListener {
 
     private val application = context.applicationContext as Application
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
@@ -37,8 +37,8 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
 
     init {
         application.registerActivityLifecycleCallbacks(this)
-        wallpaperColorInfo.setOnThemeChangeListener(this)
-        onThemeChanged()
+        wallpaperColorInfo.addOnChangeListener(this)
+        onExtractedColorsChanged(null)
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
@@ -48,7 +48,7 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
         themeOverride.overrideTheme(themeFlags)
     }
 
-    override fun onThemeChanged() {
+    override fun onExtractedColorsChanged(ignore: WallpaperColorInfo?) {
         val theme = prefs.launcherTheme
         val supportsDarkText: Boolean
         val isDark: Boolean

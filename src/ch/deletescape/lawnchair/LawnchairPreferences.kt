@@ -66,7 +66,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", reloadIcons)
-    var launcherTheme by StringIntPref("pref_launcherTheme", 1, { ThemeManager.getInstance(context).onThemeChanged() })
+    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", false, reloadIcons)
     val accentColor by IntPref("pref_accentColor", context.resources.getColor(R.color.colorAccent), doNothing)
     val darkSearchbar by BooleanPref("pref_darkSearchbar", false, doNothing)
@@ -77,7 +77,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
-    val showTopShadow by BooleanPref("pref_showTopShadow", true, { onChangeCallback?.launcher?.dragLayer?.updateTopShadow() })
+    // TODO: implement this back
+//    val showTopShadow by BooleanPref("pref_showTopShadow", true, { onChangeCallback?.launcher?.dragLayer?.updateTopShadow() })
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", true)
