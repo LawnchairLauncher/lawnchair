@@ -111,7 +111,7 @@ public class OverviewCommandHelper {
         mContext = context;
         mAM = ActivityManagerWrapper.getInstance();
         mMainThreadExecutor = new MainThreadExecutor();
-        mRecentsModel = RecentsModel.getInstance(mContext);
+        mRecentsModel = RecentsModel.INSTANCE.get(mContext);
 
         Intent myHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)

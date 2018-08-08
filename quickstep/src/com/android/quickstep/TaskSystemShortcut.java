@@ -160,7 +160,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 boolean dockTopOrLeft = navBarPosition != WindowManagerWrapper.NAV_BAR_POS_LEFT;
                 if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                         ActivityOptionsCompat.makeSplitScreenOptions(dockTopOrLeft))) {
-                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+                    ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
                     try {
                         sysUiProxy.onSplitScreenInvoked();
                     } catch (RemoteException e) {
@@ -225,7 +225,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
-            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
             if (sysUiProxy == null) {
                 return null;
             }

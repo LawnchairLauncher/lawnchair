@@ -57,7 +57,7 @@ import java.util.zip.Deflater;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
+        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
                 .isSwipeUpGestureEnabled();
         if (!swipeUpEnabled) {
             return new TouchController[] {
@@ -80,7 +80,7 @@ public class UiFactory {
     }
 
     public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
-        OverviewInteractionState.getInstance(context).setOnSwipeUpSettingChangedListener(listener);
+        OverviewInteractionState.INSTANCE.get(context).setOnSwipeUpSettingChangedListener(listener);
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
@@ -100,7 +100,7 @@ public class UiFactory {
             shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(launcher,
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
         }
-        OverviewInteractionState.getInstance(launcher)
+        OverviewInteractionState.INSTANCE.get(launcher)
                 .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
     }
 
@@ -122,7 +122,7 @@ public class UiFactory {
 
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
-                    boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
+                    boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
                             .isSwipeUpGestureEnabled();
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
@@ -159,7 +159,7 @@ public class UiFactory {
     }
 
     public static void onStart(Context context) {
-        RecentsModel model = RecentsModel.getInstance(context);
+        RecentsModel model = RecentsModel.INSTANCE.get(context);
         if (model != null) {
             model.onStart();
         }
@@ -169,7 +169,7 @@ public class UiFactory {
         // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
         // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
         // enter overview
-        RecentsModel.getInstance(context).getRecentsTaskLoader()
+        RecentsModel.INSTANCE.get(context).getRecentsTaskLoader()
                 .getHighResThumbnailLoader().setVisible(true);
     }
 
@@ -187,7 +187,7 @@ public class UiFactory {
     }
 
     public static void onTrimMemory(Context context, int level) {
-        RecentsModel model = RecentsModel.getInstance(context);
+        RecentsModel model = RecentsModel.INSTANCE.get(context);
         if (model != null) {
             model.onTrimMemory(level);
         }

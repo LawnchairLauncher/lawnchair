@@ -277,7 +277,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mActivity = (T) BaseActivity.fromContext(context);
         mQuickScrubController = new QuickScrubController(mActivity, this);
-        mModel = RecentsModel.getInstance(context);
+        mModel = RecentsModel.INSTANCE.get(context);
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);

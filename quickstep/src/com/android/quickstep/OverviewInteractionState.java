@@ -25,20 +25,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Sets overview interaction flags, such as:
@@ -60,23 +57,8 @@ public class OverviewInteractionState {
             "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static OverviewInteractionState INSTANCE;
-
-    public static OverviewInteractionState getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new OverviewInteractionState(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(
-                            () -> OverviewInteractionState.getInstance(context)).get();
-                } catch (InterruptedException|ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
+    public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
+            new MainThreadInitializedObject<>((c) -> new OverviewInteractionState(c));
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;

@@ -121,7 +121,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         mTaskBeingDragged = view;
-                        if (!OverviewInteractionState.getInstance(mActivity)
+                        if (!OverviewInteractionState.INSTANCE.get(mActivity)
                                 .isSwipeUpGestureEnabled()) {
                             // Don't allow swipe down to open if we don't support swipe up
                             // to enter overview.
