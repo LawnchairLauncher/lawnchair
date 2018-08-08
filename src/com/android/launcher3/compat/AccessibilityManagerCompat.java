@@ -16,7 +16,6 @@
 
 package com.android.launcher3.compat;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -78,14 +77,8 @@ public class AccessibilityManagerCompat {
         // If not running in a test harness, don't participate in test exchanges.
         if (!Utilities.IS_RUNNING_IN_TEST_HARNESS) return null;
 
-        // Additional safety check: when running under UI Automation, accessibility is enabled,
-        // but the list of accessibility services is empty. Return null if this is not the case.
         final AccessibilityManager accessibilityManager = getManager(context);
-        if (!accessibilityManager.isEnabled() ||
-                accessibilityManager.getEnabledAccessibilityServiceList(
-                        AccessibilityServiceInfo.FEEDBACK_ALL_MASK).size() > 0) {
-            return null;
-        }
+        if (!accessibilityManager.isEnabled()) return null;
 
         return accessibilityManager;
     }
