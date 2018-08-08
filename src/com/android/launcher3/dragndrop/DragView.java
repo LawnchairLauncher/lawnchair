@@ -77,8 +77,6 @@ public class DragView extends View {
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
-    @Thunk static float sDragAlpha = 1f;
-
     private boolean mDrawBitmap = true;
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
@@ -143,22 +141,14 @@ public class DragView extends View {
         setScaleY(initialScale);
 
         // Animate the view into the correct position
-        mAnim = LauncherAnimUtils.ofFloat(0f, 1f);
+        mAnim = ValueAnimator.ofFloat(0f, 1f);
         mAnim.setDuration(VIEW_ZOOM_DURATION);
-        mAnim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float value = (Float) animation.getAnimatedValue();
-
-                setScaleX(initialScale + (value * (scale - initialScale)));
-                setScaleY(initialScale + (value * (scale - initialScale)));
-                if (sDragAlpha != 1f) {
-                    setAlpha(sDragAlpha * value + (1f - value));
-                }
-
-                if (getParent() == null) {
-                    animation.cancel();
-                }
+        mAnim.addUpdateListener(animation -> {
+            final float value = (Float) animation.getAnimatedValue();
+            setScaleX(initialScale + (value * (scale - initialScale)));
+            setScaleY(initialScale + (value * (scale - initialScale)));
+            if (!isAttachedToWindow()) {
+                animation.cancel();
             }
         });
 
@@ -479,15 +469,12 @@ public class DragView extends View {
     }
 
     public void crossFade(int duration) {
-        ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(Interpolators.DEACCEL_1_5);
-        va.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCrossFadeProgress = animation.getAnimatedFraction();
-                invalidate();
-            }
+        va.addUpdateListener(a -> {
+            mCrossFadeProgress = a.getAnimatedFraction();
+            invalidate();
         });
         va.start();
     }

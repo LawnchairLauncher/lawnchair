@@ -16,24 +16,21 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
-import com.android.launcher3.util.Thunk;
 
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import com.android.launcher3.util.Thunk;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
  *  For the first two frames, it adjusts the current play time of the animation to
  *  prevent jank at the beginning of the animation
  */
-public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
-    implements ValueAnimator.AnimatorUpdateListener {
+public class FirstFrameAnimatorHelper implements ValueAnimator.AnimatorUpdateListener {
     private static final String TAG = "FirstFrameAnimatorHlpr";
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
@@ -52,18 +49,6 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         animator.addUpdateListener(this);
     }
 
-    public FirstFrameAnimatorHelper(ViewPropertyAnimator vpa, View target) {
-        mTarget = target;
-        vpa.setListener(this);
-    }
-
-    // only used for ViewPropertyAnimators
-    public void onAnimationStart(Animator animation) {
-        final ValueAnimator va = (ValueAnimator) animation;
-        va.addUpdateListener(FirstFrameAnimatorHelper.this);
-        onAnimationUpdate(va);
-    }
-
     public static void setIsVisible(boolean visible) {
         sVisible = visible;
     }
@@ -78,6 +63,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         sVisible = true;
     }
 
+    @Override
     public void onAnimationUpdate(final ValueAnimator animation) {
         final long currentTime = System.currentTimeMillis();
         if (mStartTime == -1) {
@@ -115,11 +101,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 mAdjustedSecondFrameTime = true;
             } else {
                 if (frameNum > 1) {
-                    mTarget.post(new Runnable() {
-                            public void run() {
-                                animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
-                            }
-                        });
+                    mTarget.post(() -> animation.removeUpdateListener(this));
                 }
                 if (DEBUG) print(animation);
             }

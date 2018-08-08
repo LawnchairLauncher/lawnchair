@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
@@ -241,7 +240,7 @@ public class TaskMenuView extends AbstractFloatingView {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
             mOpenCloseAnimator.end();
         }
-        mOpenCloseAnimator = LauncherAnimUtils.createAnimatorSet();
+        mOpenCloseAnimator = new AnimatorSet();
 
         final Animator revealAnimator = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, closing);

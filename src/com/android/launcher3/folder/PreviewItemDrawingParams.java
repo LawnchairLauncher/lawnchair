@@ -40,8 +40,8 @@ class PreviewItemDrawingParams {
         // We ensure the update will not interfere with an animation on the layout params
         // If the final values differ, we cancel the animation.
         if (anim != null) {
-            if (anim.finalTransX == transX || anim.finalTransY == transY
-                    || anim.finalScale == scale) {
+            if (anim.finalState[1] == transX || anim.finalState[2] == transY
+                    || anim.finalState[0] == scale) {
                 return;
             }
             anim.cancel();
