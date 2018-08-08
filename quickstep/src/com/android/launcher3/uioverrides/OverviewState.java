@@ -31,6 +31,7 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
 /**
  * Definition for overview state
@@ -129,5 +130,15 @@ public class OverviewState extends LauncherState {
     public static float getDefaultSwipeHeight(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+    }
+
+    @Override
+    public void onBackPressed(Launcher launcher) {
+        TaskView taskView = launcher.<RecentsView>getOverviewPanel().getRunningTaskView();
+        if (taskView != null) {
+            taskView.launchTask(true);
+        } else {
+            super.onBackPressed(launcher);
+        }
     }
 }

@@ -1291,12 +1291,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    public void showOutlinesTemporarily() {
-        if (!mIsPageInTransition && !isTouchActive()) {
-            snapToPage(mCurrentPage);
-        }
-    }
-
     private void updatePageAlphaValues() {
         // We need to check the isDragging case because updatePageAlphaValues is called between
         // goToState(SPRING_LOADED) and onStartStateTransition.
