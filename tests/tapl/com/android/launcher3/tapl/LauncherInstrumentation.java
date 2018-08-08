@@ -87,6 +87,7 @@ public final class LauncherInstrumentation {
 
     private final UiDevice mDevice;
     private final boolean mSwipeUpEnabled;
+    private Boolean mSwipeUpEnabledOverride = null;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -103,12 +104,17 @@ public final class LauncherInstrumentation {
         assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
     }
 
+    // Used only by tests.
+    public void overrideSwipeUpEnabled(Boolean swipeUpEnabledOverride) {
+        mSwipeUpEnabledOverride = swipeUpEnabledOverride;
+    }
+
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
     }
 
     boolean isSwipeUpEnabled() {
-        return mSwipeUpEnabled;
+        return mSwipeUpEnabledOverride != null ? mSwipeUpEnabledOverride : mSwipeUpEnabled;
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {

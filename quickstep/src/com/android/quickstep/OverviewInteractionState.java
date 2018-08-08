@@ -185,14 +185,18 @@ public class OverviewInteractionState {
         return mSwipeGestureInitializing;
     }
 
+    public void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {
+        mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+        mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
+                sendToTarget();
+    }
+
     private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
-        private Handler mHandler;
         private ContentResolver mResolver;
         private final int defaultValue;
 
         SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
             super(handler);
-            mHandler = handler;
             mResolver = resolver;
             defaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue() ? 1 : 0;
         }
@@ -207,8 +211,7 @@ public class OverviewInteractionState {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            mHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-            mHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, getValue() ? 1 : 0, 0).sendToTarget();
+            notifySwipeUpSettingChanged(getValue());
         }
 
         private boolean getValue() {
