@@ -913,7 +913,7 @@ public class Launcher extends BaseActivity
         mShouldFadeInScrim = false;
 
         // Update theme if it changed
-        WallpaperManagerCompat.getInstance(Launcher.this).updateAllListeners();
+        WallpaperManagerCompat.getInstance(this).updateAllListeners();
     }
 
     @Override
@@ -2248,10 +2248,7 @@ public class Launcher extends BaseActivity
         } else if (mWorkspace.isInWidgetResizeMode()) {
             // TODO: Log this case.
             mWorkspace.exitWidgetResizeMode();
-
-            // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
-        } else if(this instanceof LawnchairLauncher) {
+        } else if (this instanceof LawnchairLauncher) {
             ((LawnchairLauncher) this).getGestureController().onPressBack();
         }
     }

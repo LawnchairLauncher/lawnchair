@@ -127,6 +127,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     private boolean mShouldAnimate = false;
     private boolean mDisableDividers;
+    private final Handler mHandler = new Handler();
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -854,10 +855,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (!success) {
             d.dragView.remove();
             mLauncher.getDropTargetBar().onDragEnd();
-            new Handler().postDelayed(new Runnable() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mLauncher.showWorkspace(true);
+                    mLauncher.getWorkspace().removeExtraEmptyScreen(true, true);
                 }
             }, 500);
         }
