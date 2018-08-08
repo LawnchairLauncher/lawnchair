@@ -474,10 +474,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onViewAdded(child);
     }
 
-    public boolean isTouchActive() {
-        return mTouchState != TOUCH_STATE_REST;
-    }
-
     /**
      * Initializes and binds the first page
      * @param qsb an existing qsb to recycle or null.

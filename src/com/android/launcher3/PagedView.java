@@ -63,7 +63,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
-    public static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
     // OverScroll constants
     private final static int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
@@ -109,13 +108,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mTotalMotionX;
 
     protected int[] mPageScrolls;
-
-    protected final static int TOUCH_STATE_REST = 0;
-    protected final static int TOUCH_STATE_SCROLLING = 1;
-    protected final static int TOUCH_STATE_PREV_PAGE = 2;
-    protected final static int TOUCH_STATE_NEXT_PAGE = 3;
-
-    protected int mTouchState = TOUCH_STATE_REST;
+    private boolean mIsBeingDragged;
 
     protected int mTouchSlop;
     private int mMaximumVelocity;
@@ -451,7 +444,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
             // We don't want to trigger a page end moving unless the page has settled
             // and the user has stopped scrolling
-            if (mTouchState == TOUCH_STATE_REST) {
+            if (!mIsBeingDragged) {
                 pageEndTransition();
             }
 
@@ -812,9 +805,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /** Returns whether x and y originated within the buffered viewport */
-    private boolean isTouchPointInViewportWithBuffer(int x, int y) {
+    private boolean isTouchPointInViewportWithBuffer(float x, float y) {
         sTmpRect.set(-getMeasuredWidth() / 2, 0, 3 * getMeasuredWidth() / 2, getMeasuredHeight());
-        return sTmpRect.contains(x, y);
+        return sTmpRect.contains((int) x, (int) y);
     }
 
     @Override
@@ -835,8 +828,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * motion.
          */
         final int action = ev.getAction();
-        if ((action == MotionEvent.ACTION_MOVE) &&
-                (mTouchState == TOUCH_STATE_SCROLLING)) {
+        if ((action == MotionEvent.ACTION_MOVE) && mIsBeingDragged) {
             return true;
         }
 
@@ -877,17 +869,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
 
                 if (finishedScrolling) {
-                    mTouchState = TOUCH_STATE_REST;
+                    mIsBeingDragged = false;
                     if (!mScroller.isFinished() && !mFreeScroll) {
                         setCurrentPage(getNextPage());
                         pageEndTransition();
                     }
                 } else {
-                    if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
-                        mTouchState = TOUCH_STATE_SCROLLING;
-                    } else {
-                        mTouchState = TOUCH_STATE_REST;
-                    }
+                    mIsBeingDragged = isTouchPointInViewportWithBuffer(mDownMotionX, mDownMotionY);
                 }
 
                 break;
@@ -908,11 +896,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * The only time we want to intercept motion events is if we are in the
          * drag mode.
          */
-        return mTouchState != TOUCH_STATE_REST;
+        return mIsBeingDragged;
     }
 
     public boolean isHandlingTouch() {
-        return mTouchState != TOUCH_STATE_REST;
+        return mIsBeingDragged;
     }
 
     protected void determineScrollingStart(MotionEvent ev) {
@@ -931,7 +919,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // Disallow scrolling if we started the gesture from outside the viewport
         final float x = ev.getX(pointerIndex);
         final float y = ev.getY(pointerIndex);
-        if (!isTouchPointInViewportWithBuffer((int) x, (int) y)) return;
+        if (!isTouchPointInViewportWithBuffer(x, y)) return;
 
         final int xDiff = (int) Math.abs(x - mLastMotionX);
 
@@ -940,7 +928,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (xMoved) {
             // Scroll if the user moved far enough along the X axis
-            mTouchState = TOUCH_STATE_SCROLLING;
+            mIsBeingDragged = true;
             mTotalMotionX += Math.abs(mLastMotionX - x);
             mLastMotionX = x;
             mLastMotionXRemainder = 0;
@@ -1077,14 +1065,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             mTotalMotionX = 0;
             mActivePointerId = ev.getPointerId(0);
 
-            if (mTouchState == TOUCH_STATE_SCROLLING) {
+            if (mIsBeingDragged) {
                 onScrollInteractionBegin();
                 pageBeginTransition();
             }
             break;
 
         case MotionEvent.ACTION_MOVE:
-            if (mTouchState == TOUCH_STATE_SCROLLING) {
+            if (mIsBeingDragged) {
                 // Scroll to follow the motion event
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
@@ -1111,7 +1099,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             break;
 
         case MotionEvent.ACTION_UP:
-            if (mTouchState == TOUCH_STATE_SCROLLING) {
+            if (mIsBeingDragged) {
                 final int activePointerId = mActivePointerId;
                 final int pointerIndex = ev.findPointerIndex(activePointerId);
                 final float x = ev.getX(pointerIndex);
@@ -1193,26 +1181,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     invalidate();
                 }
                 onScrollInteractionEnd();
-            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
-                // at this point we have not moved beyond the touch slop
-                // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
-                // we can just page
-                int nextPage = Math.max(0, mCurrentPage - 1);
-                if (nextPage != mCurrentPage) {
-                    snapToPage(nextPage);
-                } else {
-                    snapToDestination();
-                }
-            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
-                // at this point we have not moved beyond the touch slop
-                // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
-                // we can just page
-                int nextPage = Math.min(getChildCount() - 1, mCurrentPage + 1);
-                if (nextPage != mCurrentPage) {
-                    snapToPage(nextPage);
-                } else {
-                    snapToDestination();
-                }
             }
 
             // End any intermediate reordering states
@@ -1220,7 +1188,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             break;
 
         case MotionEvent.ACTION_CANCEL:
-            if (mTouchState == TOUCH_STATE_SCROLLING) {
+            if (mIsBeingDragged) {
                 snapToDestination();
                 onScrollInteractionEnd();
             }
@@ -1242,7 +1210,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void resetTouchState() {
         releaseVelocityTracker();
-        mTouchState = TOUCH_STATE_REST;
+        mIsBeingDragged = false;
         mActivePointerId = INVALID_POINTER;
     }
 

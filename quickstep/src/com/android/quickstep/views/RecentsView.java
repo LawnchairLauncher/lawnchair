@@ -415,7 +415,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             case MotionEvent.ACTION_DOWN:
                 // Touch down anywhere but the deadzone around the visible clear all button and
                 // between the task views will start home on touch up
-                if (mTouchState == TOUCH_STATE_REST) {
+                if (!isHandlingTouch()) {
                     updateDeadZoneRects();
                     final boolean clearAllButtonDeadZoneConsumed = mClearAllButton.getAlpha() == 1
                             && mClearAllButtonDeadZoneRect.contains(x, y);
@@ -560,7 +560,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         boolean scrolling = super.computeScrollHelper();
         boolean isFlingingFast = false;
         updateCurveProperties();
-        if (scrolling || (mTouchState == TOUCH_STATE_SCROLLING)) {
+        if (scrolling || isHandlingTouch()) {
             if (scrolling) {
                 // Check if we are flinging quickly to disable high res thumbnail loading
                 isFlingingFast = mScroller.getCurrVelocity() > mFastFlingVelocity;
