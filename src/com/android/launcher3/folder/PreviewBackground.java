@@ -38,6 +38,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -70,6 +71,7 @@ public class PreviewBackground {
     float mScale = 1f;
     private float mColorMultiplier = 1f;
     private int mBgColor;
+    private int mBadgeColor;
     private float mStrokeWidth;
     private int mStrokeAlpha = MAX_BG_OPACITY;
     private int mShadowAlpha = 255;
@@ -132,6 +134,7 @@ public class PreviewBackground {
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
         mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+        mBadgeColor = Themes.getAttrColor(launcher, R.attr.folderBadgeColor);
 
         DeviceProfile grid = launcher.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
@@ -198,7 +201,7 @@ public class PreviewBackground {
     }
 
     public int getBadgeColor() {
-        return mBgColor;
+        return mBadgeColor;
     }
 
     public void drawBackground(Canvas canvas) {
