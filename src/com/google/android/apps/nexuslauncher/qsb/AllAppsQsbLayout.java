@@ -264,7 +264,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             mAllAppsGoogleSearch = allAppsGoogleSearch;
             mSearchIcon.setImageResource(mAllAppsGoogleSearch ?
                     R.drawable.ic_super_g_color : R.drawable.ic_allapps_search);
-            mMicIconView.setImageResource(mAllAppsGoogleSearch ? R.drawable.ic_mic_color : 0);
             if (mAllAppsGoogleSearch) {
                 removeFallbackView();
                 mSearchIcon.clearColorFilter();
@@ -278,6 +277,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 ensureFallbackView();
             }
         }
+    }
+
+    @Override
+    protected int getMicResource(boolean colored) {
+        return mAllAppsGoogleSearch ? super.getMicResource(colored) : 0;
     }
 
     @Override

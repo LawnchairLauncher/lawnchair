@@ -77,6 +77,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements LawnchairPref
         bz(getResources().getColor(mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default));
     }
 
+    @Override
+    protected int getMicResource() {
+        return super.getMicResource(mIsGoogleColored);
+    }
+
     private void openQSB() {
         mSearchRequested = false;
         playAnimation(mGoogleHasFocus = true, true);

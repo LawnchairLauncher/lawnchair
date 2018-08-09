@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +27,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     private final Rect mSrcRect;
     protected Bitmap mShadowBitmap;
     protected final Paint mShadowPaint;
+
+    private boolean mShowAssistant;
 
     protected abstract int getWidth(int i);
 
@@ -160,7 +163,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
 
     public void onClick(View view) {
         if (view == mMicIconView) {
-            fallbackSearch("android.intent.action.VOICE_ASSIST");
+            fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
         }
     }
 
@@ -174,17 +177,31 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
         }
     }
 
+    protected @DrawableRes int getMicResource() {
+        return getMicResource(true);
+    }
+
+    protected @DrawableRes int getMicResource(boolean colored){
+        if(colored){
+            return mShowAssistant ? R.drawable.opa_assistant_logo : R.drawable.ic_mic_color;
+        } else {
+            return mShowAssistant ? R.drawable.opa_assistant_logo_shadow : R.drawable.ic_mic_shadow;
+        }
+    }
+
     protected void noGoogleAppSearch() {
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if ("opa_enabled".equals(str)) {
+        if ("opa_enabled".equals(str) || "opa_assistant".equals(str)) {
             loadPreferences(sharedPreferences);
         }
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
+        mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
         mMicIconView.setVisibility(!sharedPreferences.getBoolean("opa_enabled", false) ? View.GONE : View.VISIBLE);
+        mMicIconView.setImageResource(getMicResource());
         requestLayout();
     }
 }

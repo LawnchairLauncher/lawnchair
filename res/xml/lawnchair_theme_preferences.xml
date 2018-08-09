@@ -66,6 +66,14 @@
             android:title="@string/pref_show_assistant_title" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="opa_assistant"
+            android:persistent="true"
+            android:dependency="opa_enabled"
+            android:summary="@string/pref_show_as_assistant_summary"
+            android:title="@string/pref_show_as_assistant_title" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_enableBlur"
             android:persistent="true"
