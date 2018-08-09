@@ -12,7 +12,7 @@ import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.anim.Interpolators;
 
 public class QsbAnimationController implements WindowStateListener, StateListener {
-    AnimatorSet DP;
+    AnimatorSet mAnimatorSet;
     public boolean mGoogleHasFocus;
     private boolean mSearchRequested;
     private final Launcher mLauncher;
@@ -31,9 +31,10 @@ public class QsbAnimationController implements WindowStateListener, StateListene
         }
     }
 
-    private void openQsb() {
+    public AnimatorSet openQsb() {
         mSearchRequested = false;
         playAnimation(mGoogleHasFocus = true, true);
+        return mAnimatorSet;
     }
 
     public final void z(boolean z) {
@@ -61,9 +62,9 @@ public class QsbAnimationController implements WindowStateListener, StateListene
     }
 
     private void playAnimation(boolean z, boolean z2) {
-        if (DP != null) {
-            DP.cancel();
-            DP = null;
+        if (mAnimatorSet != null) {
+            mAnimatorSet.cancel();
+            mAnimatorSet = null;
         }
         View view = mLauncher.getDragLayer();
         if (mLauncher.isInState(LauncherState.ALL_APPS)) {
@@ -71,31 +72,31 @@ public class QsbAnimationController implements WindowStateListener, StateListene
             view.setTranslationY(0.0f);
             return;
         }
-        DP = new AnimatorSet();
-        DP.addListener(new AnimatorListenerAdapter() {
+        mAnimatorSet = new AnimatorSet();
+        mAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (animation == DP) {
-                    DP = null;
+                if (animation == mAnimatorSet) {
+                    mAnimatorSet = null;
                 }
             }
         });
         if (z) {
-            DP.play(ObjectAnimator.ofFloat(view, View.ALPHA, 0f));
+            mAnimatorSet.play(ObjectAnimator.ofFloat(view, View.ALPHA, 0f));
             Animator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, (float) ((-mLauncher.getHotseat().getHeight()) / 2));
             animator.setInterpolator(Interpolators.ACCEL);
-            DP.play(animator);
-            DP.setDuration(200);
+            mAnimatorSet.play(animator);
+            mAnimatorSet.setDuration(200);
         } else {
-            DP.play(ObjectAnimator.ofFloat(view, View.ALPHA, 1f));
+            mAnimatorSet.play(ObjectAnimator.ofFloat(view, View.ALPHA, 1f));
             Animator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0f);
             animator.setInterpolator(Interpolators.DEACCEL);
-            DP.play(animator);
-            DP.setDuration(200);
+            mAnimatorSet.play(animator);
+            mAnimatorSet.setDuration(200);
         }
-        DP.start();
+        mAnimatorSet.start();
         if (!z2) {
-            DP.end();
+            mAnimatorSet.end();
         }
     }
 

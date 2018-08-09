@@ -1,15 +1,12 @@
 package com.google.android.apps.nexuslauncher;
 
+import android.animation.AnimatorSet;
 import android.os.Bundle;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
-
-import java.util.List;
 
 public class NexusLauncherActivity extends Launcher {
     private NexusLauncher mLauncher;
@@ -47,5 +44,9 @@ public class NexusLauncherActivity extends Launcher {
 
     public void playQsbAnimation() {
         mLauncher.mQsbAnimationController.dZ();
+    }
+
+    public AnimatorSet openQsb() {
+        return mLauncher.mQsbAnimationController.openQsb();
     }
 }

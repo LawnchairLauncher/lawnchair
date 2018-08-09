@@ -22,7 +22,6 @@
             android:summary="%s"
             android:title="@string/icon_shape_override_label" />
 
-
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_enableLegacyTreatment"
@@ -49,35 +48,6 @@
             android:persistent="true"
             android:title="@string/pref_accent_color"
             app:defaultColor="@color/colorAccent"/>
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_darkSearchbar"
-            android:persistent="true"
-            android:title="@string/pref_dark_searchbar"
-            android:summary="-- temporary, rework this --"/>
-
-        <!-- TODO: Move somewhere more appropriate -->
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="opa_enabled"
-            android:persistent="true"
-            android:summary="@string/pref_show_assistant_summary"
-            android:title="@string/pref_show_assistant_title" />
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="opa_assistant"
-            android:persistent="true"
-            android:dependency="opa_enabled"
-            android:summary="@string/pref_show_as_assistant_summary"
-            android:title="@string/pref_show_as_assistant_title" />
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-          android:defaultValue="false"
-          android:key="pref_hideStatusBar"
-          android:persistent="true"
-          android:title="@string/pref_hide_statusbar"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"

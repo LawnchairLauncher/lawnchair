@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference
+        android:defaultValue="ch.deletescape.lawnchair.globalsearch.GoogleSearchProvider"
+        android:key="pref_globalSearchProvider"
+        android:title="@string/pref_global_search_provider" />
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:key="prefCat_searchbarAppearance"
+        android:title="@string/searchbar_appearance_title">
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="opa_enabled"
+            android:persistent="true"
+            android:summary="@string/pref_show_assistant_summary"
+            android:title="@string/pref_show_assistant_title" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="opa_assistant"
+            android:persistent="true"
+            android:dependency="opa_enabled"
+            android:summary="@string/pref_show_as_assistant_summary"
+            android:title="@string/pref_show_as_assistant_title" />
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:key="prefCat_dockSearchbar"
+        android:title="@string/dock_pref_title">
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_dockSearchBar"
+            android:title="@string/dock_search_bar"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_dockColoredGoogle"
+            android:title="@string/dock_colored_google"
+            android:dependency="pref_dockSearchBar"
+            android:defaultValue="false"
+            android:persistent="true" />
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:key="prefCat_drawerSearchbar"
+        android:title="@string/app_drawer_pref_title">
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_allAppsSearch"
+            android:title="@string/title_all_apps_search"
+            android:defaultValue="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_allAppsGoogleSearch"
+            android:title="@string/title_all_apps_google_search"
+            android:summary="@string/summary_all_apps_google_search"
+            android:dependency="pref_allAppsSearch"
+            android:disableDependentsState="true"
+            android:defaultValue="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_search_hidden_apps"
+            android:title="@string/title_search_hidden_apps"
+            android:summary="@string/summary_search_hidden_apps"
+            android:dependency="pref_allAppsGoogleSearch"
+            android:defaultValue="false" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_darkSearchbar"
+            android:persistent="true"
+            android:title="@string/pref_dark_searchbar"
+            android:summary="-- temporary, rework this --"/>
+
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

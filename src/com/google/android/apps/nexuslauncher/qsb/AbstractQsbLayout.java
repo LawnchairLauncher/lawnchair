@@ -1,26 +1,23 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
-import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Process;
-import android.provider.Settings.Secure;
-import android.support.annotation.DrawableRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -33,16 +30,21 @@ import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.android.launcher3.*;
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.NinePatchDrawHelper;
 import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
-@TargetApi(26)
 public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener, OnClickListener, OnLongClickListener, Insettable {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     private static final Rect CS = new Rect();
@@ -58,6 +60,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected int Dc;
     protected int Dd;
     protected float De;
+    private ImageView mLogoIconView;
     protected ImageView mMicIconView;
     protected String Dg;
     protected boolean Dh;
@@ -145,8 +148,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected final void dz() {
-        this.mMicIconView = findViewById(R.id.mic_icon);
-        this.mMicIconView.setOnClickListener(this);
+        mLogoIconView = findViewById(R.id.g_icon);
+        mMicIconView = findViewById(R.id.mic_icon);
+        mMicIconView.setOnClickListener(this);
     }
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
@@ -408,7 +412,21 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public void onClick(View view) {
         if (view == mMicIconView) {
-            fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
+            SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+            SearchProvider provider = controller.getSearchProvider();
+            if (controller.isGoogle()) {
+                fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
+            } else if(mShowAssistant && provider.getSupportsAssistant()) {
+                provider.startAssistant(intent -> {
+                    getContext().startActivity(intent);
+                    return null;
+                });
+            } else if(provider.getSupportsVoiceSearch()) {
+                provider.startVoiceSearch(intent -> {
+                    getContext().startActivity(intent);
+                    return null;
+                });
+            }
         }
     }
 
@@ -421,26 +439,40 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if ("opa_enabled".equals(str) || "opa_assistant".equals(str)) {
-            loadPreferences(sharedPreferences);
+        switch (str) {
+            case "opa_enabled":
+            case "opa_assistant":
+            case "pref_globalSearchProvider":
+                loadPreferences(sharedPreferences);
         }
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
         mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
+        mLogoIconView.setImageDrawable(getIcon());
         mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
-        mMicIconView.setImageResource(getMicResource());
+        mMicIconView.setImageDrawable(getMicIcon());
     }
 
-    protected int getMicResource() {
-        return getMicResource(true);
+    protected Drawable getIcon() {
+        return getIcon(true);
     }
 
-    protected int getMicResource(boolean colored) {
-        if (colored){
-            return mShowAssistant ? R.drawable.opa_assistant_logo : R.drawable.ic_mic_color;
+    protected Drawable getIcon(boolean colored) {
+        SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
+        return provider.getIcon(colored);
+    }
+
+    protected Drawable getMicIcon() {
+        return getMicIcon(true);
+    }
+
+    protected Drawable getMicIcon(boolean colored){
+        SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
+        if (mShowAssistant){
+            return provider.getSupportsAssistant() ? provider.getAssistantIcon(colored) : new ColorDrawable(Color.TRANSPARENT);
         } else {
-            return mShowAssistant ? R.drawable.opa_assistant_logo_shadow : R.drawable.ic_mic_shadow;
+            return provider.getSupportsVoiceSearch() ? provider.getVoiceIcon(colored) : new ColorDrawable(Color.TRANSPARENT);
         }
     }
 
@@ -474,7 +506,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setPackage(GOOGLE_QSB));
         } catch (ActivityNotFoundException e) {
-//            noGoogleAppSearch();
+            noGoogleAppSearch();
         }
+    }
+
+    protected void noGoogleAppSearch() {
     }
 }

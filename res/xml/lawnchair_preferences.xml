@@ -50,6 +50,14 @@
         app:content="@xml/lawnchair_app_drawer_preferences"
         android:layout="@layout/sub_preference" />
 
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_search"
+        android:summary="@string/search_pref_summary"
+        android:title="@string/search_pref_title"
+        app:content="@xml/lawnchair_search_preferences"
+        android:layout="@layout/sub_preference" />
+
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_gesture"
         android:summary="@string/gestures_pref_summary"

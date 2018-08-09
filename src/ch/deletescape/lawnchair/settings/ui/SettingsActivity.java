@@ -75,6 +75,8 @@ import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference;
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
+import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -413,6 +415,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
             } else if (preference instanceof IconPackPreference) {
                 f = IconPackDialogFragmentCompat.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof SearchProviderPreference) {
+                f = SelectSearchProviderFragment.Companion.newInstance((SearchProviderPreference) preference);
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;

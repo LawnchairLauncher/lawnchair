@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import com.android.launcher3.LauncherState
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -86,7 +87,9 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
     override val displayName = context.getString(R.string.action_global_search)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-//        controller.launcher.startGlobalSearch(null,  false, null, null)
+        SearchProviderController.getInstance(context).searchProvider.startSearch {
+            context.startActivity(it)
+        }
     }
 }
 

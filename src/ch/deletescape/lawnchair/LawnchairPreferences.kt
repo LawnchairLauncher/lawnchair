@@ -22,6 +22,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.support.annotation.ColorInt
+import ch.deletescape.lawnchair.globalsearch.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
@@ -145,6 +147,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
+
+    // Search
+    var searchProvider by StringPref("pref_globalSearchProvider", GoogleSearchProvider::class.java.name, doNothing)
 
     // Gestures
     val doubleTapDelay = 350L

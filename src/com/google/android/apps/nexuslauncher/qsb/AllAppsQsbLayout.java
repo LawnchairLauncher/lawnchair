@@ -1,6 +1,5 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -14,6 +13,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.globalsearch.AppSearchSearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -25,7 +27,6 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 
-@TargetApi(24)
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, OnChangeListener, o {
     private final k Ds;
     private final int Dt;
@@ -57,8 +58,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onFinishInflate() {
         super.onFinishInflate();
-        dz();
-        this.Dz = findViewById(R.id.qsb_hint);
+        Dz = findViewById(R.id.qsb_hint);
     }
 
     public void setInsets(Rect rect) {
@@ -70,7 +70,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             this.mActivity.mAllAppsController.setScrollRangeDelta(0.0f);
             return;
         }
-//        this.mActivity.mAllAppsController.setScrollRangeDelta(0.0f);
         this.mActivity.mAllAppsController.setScrollRangeDelta(((float) HotseatQsbWidget.c(this.mActivity)) + (((float) (marginLayoutParams.height + marginLayoutParams.topMargin)) + this.Dy));
     }
 
@@ -148,22 +147,38 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
+    public void startSearch() {
+        post(() -> startSearch("", Di));
+    }
+
+    @Override
     public final void startSearch(String str, int i) {
-        if (!Utilities.ATLEAST_NOUGAT || !Utilities.getLawnchairPrefs(getContext()).getAllAppsGoogleSearch()) {
-            searchFallback();
+        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        if (!Utilities.getLawnchairPrefs(getContext()).getAllAppsGoogleSearch() || provider instanceof AppSearchSearchProvider
+                || (!Utilities.ATLEAST_NOUGAT && controller.isGoogle())) {
+            searchFallback(str);
             return;
         }
-        final ConfigBuilder f = new ConfigBuilder(this, true);
-        if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
-            searchFallback();
-            if (mFallback != null) {
-                mFallback.setHint(null);
+        if (controller.isGoogle()) {
+            final ConfigBuilder f = new ConfigBuilder(this, true);
+            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+                searchFallback(str);
+                if (mFallback != null) {
+                    mFallback.setHint(null);
+                }
             }
+        } else {
+            provider.startSearch(intent -> {
+                mActivity.startActivity(intent);
+                return null;
+            });
         }
     }
 
-    public void searchFallback() {
+    public void searchFallback(String query) {
         ensureFallbackView();
+        mFallback.setText(query);
         mFallback.showKeyboard();
     }
 
@@ -240,7 +255,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mUseFallbackSearch) {
             removeFallbackView();
             this.mUseFallbackSearch = false;
-            ((ImageView) findViewById(R.id.g_icon)).setImageResource(R.drawable.ic_super_g_color);
             if (this.mUseFallbackSearch) {
                 ensureFallbackView();
             }
@@ -254,10 +268,5 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public void preDispatchKeyEvent(KeyEvent keyEvent) {
 
-    }
-
-    @Override
-    public void startSearch() {
-        post(this::performClick);
     }
 }

@@ -364,6 +364,8 @@
     <string name="pixel_ui_pref_summary">General appearance settings</string>
     <string name="app_drawer_pref_title">App drawer</string>
     <string name="app_drawer_pref_summary">Customize the app drawer</string>
+    <string name="search_pref_title">Search</string>
+    <string name="search_pref_summary">Customize the search experience</string>
     <string name="general_pref_title">Desktop</string>
     <string name="general_pref_summary">Customize the home screen</string>
     <string name="about_pref_summary">Get to know the Lawnchair team</string>
@@ -432,7 +434,7 @@
     <string name="blur_pref_summary">Apply a blur effect to parts of the interface. Not compatible with live wallpapers.</string>
     <string name="blur_radius_pref_title">Blur strength</string>
     <string name="blur_oom">Error while bluring wallpaper. Try lowering its resolution and try again.</string>
-    <string name="dock_colored_google">Colored Google icon</string>
+    <string name="dock_colored_google">Colored icons</string>
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_p_style">Android P style dock</string>
@@ -455,8 +457,8 @@
     <string name="hotseat_custom_opacity">Dock opacity</string>
     <string name="all_apps_uses_custom_opacity">Custom app drawer opacity</string>
     <string name="all_apps_opacity_pref_title">App drawer opacity</string>
-    <string name="title_all_apps_google_search">Google Search in app drawer</string>
-    <string name="summary_all_apps_google_search">Display Google Search bar instead of apps search</string>
+    <string name="title_all_apps_google_search">Global Search in app drawer</string>
+    <string name="summary_all_apps_google_search">Display Global Search bar instead of apps search</string>
     <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="add_settings_shortcut_title">Add settings shortcut to home screen</string>
@@ -551,9 +553,9 @@
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
     <string name="action_do_nothing_class" translatable="false">ch.deletescape.lawnchair.gestures.BlankGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
-    <string name="pref_show_assistant_summary">Display a voice search button in the Google search bar</string>
+    <string name="pref_show_assistant_summary">Display a voice search button in the search bar if supported</string>
     <string name="pref_show_as_assistant_title">Show as Assistant</string>
-    <string name="pref_show_as_assistant_summary">Display a Google Assistant button instead of voice search</string>
+    <string name="pref_show_as_assistant_summary">Display an Assistant button instead of voice search if supported</string>
     <string name="current_weather_provider">Current weather provider</string>
     <string name="smartspace_time_24_h">Show time in 24 hours</string>
     <string name="weather_provider_disabled">Disabled</string>
