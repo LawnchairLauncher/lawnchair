@@ -12,7 +12,7 @@ class WeatherIconProvider(private val context: Context) {
     fun getIcon(iconID: String?): Bitmap {
         var resID = iconID
         if (!ID_MAP.containsKey(resID)) {
-            Log.e("WeatherIconProvider", "No weather icon exists for condition: " + resID)
+            Log.e("WeatherIconProvider", "No weather icon exists for condition: $resID")
             resID = CONDITION_UNKNOWN
         }
 
@@ -34,25 +34,25 @@ class WeatherIconProvider(private val context: Context) {
         private val ID_MAP = HashMap<String, Int>()
 
         init {
-            ID_MAP.put("${CONDITION_CLEAR}d", R.drawable.weather_01)
-            ID_MAP.put("${CONDITION_CLEAR}n", R.drawable.weather_01n)
-            ID_MAP.put("${CONDITION_FEW_CLOUDS}d", R.drawable.weather_02)
-            ID_MAP.put("${CONDITION_FEW_CLOUDS}n", R.drawable.weather_02n)
-            ID_MAP.put("${CONDITION_CLOUDS}d", R.drawable.weather_03)
-            ID_MAP.put("${CONDITION_CLOUDS}n", R.drawable.weather_03n)
-            ID_MAP.put("${CONDITION_MOST_CLOUDS}d", R.drawable.weather_04)
-            ID_MAP.put("${CONDITION_MOST_CLOUDS}n", R.drawable.weather_04n)
-            ID_MAP.put("${CONDITION_SHOWERS}d", R.drawable.weather_09)
-            ID_MAP.put("${CONDITION_SHOWERS}n", R.drawable.weather_09)
-            ID_MAP.put("${CONDITION_RAIN}d", R.drawable.weather_10)
-            ID_MAP.put("${CONDITION_RAIN}n", R.drawable.weather_10n)
-            ID_MAP.put("${CONDITION_STORM}d", R.drawable.weather_11)
-            ID_MAP.put("${CONDITION_STORM}n", R.drawable.weather_11)
-            ID_MAP.put("${CONDITION_SNOW}d", R.drawable.weather_13)
-            ID_MAP.put("${CONDITION_SNOW}n", R.drawable.weather_13)
-            ID_MAP.put("${CONDITION_MIST}d", R.drawable.weather_50)
-            ID_MAP.put("${CONDITION_MIST}n", R.drawable.weather_50)
-            ID_MAP.put(CONDITION_UNKNOWN, R.drawable.weather_none_available)
+            ID_MAP["${CONDITION_CLEAR}d"] = R.drawable.weather_01
+            ID_MAP["${CONDITION_CLEAR}n"] = R.drawable.weather_01n
+            ID_MAP["${CONDITION_FEW_CLOUDS}d"] = R.drawable.weather_02
+            ID_MAP["${CONDITION_FEW_CLOUDS}n"] = R.drawable.weather_02n
+            ID_MAP["${CONDITION_CLOUDS}d"] = R.drawable.weather_03
+            ID_MAP["${CONDITION_CLOUDS}n"] = R.drawable.weather_03n
+            ID_MAP["${CONDITION_MOST_CLOUDS}d"] = R.drawable.weather_04
+            ID_MAP["${CONDITION_MOST_CLOUDS}n"] = R.drawable.weather_04n
+            ID_MAP["${CONDITION_SHOWERS}d"] = R.drawable.weather_09
+            ID_MAP["${CONDITION_SHOWERS}n"] = R.drawable.weather_09
+            ID_MAP["${CONDITION_RAIN}d"] = R.drawable.weather_10
+            ID_MAP["${CONDITION_RAIN}n"] = R.drawable.weather_10n
+            ID_MAP["${CONDITION_STORM}d"] = R.drawable.weather_11
+            ID_MAP["${CONDITION_STORM}n"] = R.drawable.weather_11
+            ID_MAP["${CONDITION_SNOW}d"] = R.drawable.weather_13
+            ID_MAP["${CONDITION_SNOW}n"] = R.drawable.weather_13
+            ID_MAP["${CONDITION_MIST}d"] = R.drawable.weather_50
+            ID_MAP["${CONDITION_MIST}n"] = R.drawable.weather_50
+            ID_MAP[CONDITION_UNKNOWN] = R.drawable.weather_none_available
         }
     }
 }
