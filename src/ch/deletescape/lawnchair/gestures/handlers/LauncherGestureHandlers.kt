@@ -176,3 +176,14 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
         }
     }
 }
+
+
+@Keep
+class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_assistant)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        Utilities.startAssistant(context)
+    }
+}

@@ -991,4 +991,8 @@ public final class Utilities {
         }
         return resizedBitmap;
     }
+
+    public static void startAssistant(Context context) {
+        context.startActivity(new Intent(Intent.ACTION_VOICE_COMMAND));
+    }
 }
