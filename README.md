@@ -67,7 +67,7 @@ Google Calendar’s icon changes with the date.
 - When long pressing an app there will be static shortcuts in the popup.
 
 ### Nougat
-- A light theme is applied when the wallpaper is light enough. This has a dark status bar, navigation bar and text.
+- A light theme is applied when the wallpaper is light enough. This has a dark status bar and text.
 
 ### Nougat 7.1
 - When long pressing an app there will be static and dynamic shortcuts in the popup.
@@ -77,6 +77,7 @@ Google Calendar’s icon changes with the date.
 - Google Clock shows the current time and changes in real time.
 - The Google Now feed uses the same theme as the launcher.
 - Adaptive icon shape options include Squircle, Square, Rounded Square, Circle and Teardrop.
+- The light theme used when the wallpaper is light will also has dark navigation bar.
 
 **Custom**
 
@@ -90,7 +91,7 @@ https://github.com/amirzaidi/GoogleIcons/releases
 ## Magisk
 There is also a module for Pixel users if they grew bored of the default launcher and want to try out my launcher.
 
-Disable this launcher and switch to different launcher before enabling or disabling the module. Not doing so could result in a “0.0dip has stopped working" bug. If you do encourage this bug, try installing the real Pixel Launcher from the app store.
+Disable this launcher and switch to different launcher before enabling or disabling the module. Not doing so could result in a “0.0dip has stopped working" bug. If you do encounter this bug, try installing the real Pixel Launcher from the app store.
 
 ## Credits
 Before I talk about the things I used for the creation, I want to put a disclaimer that I did not simply copy and paste what the developers did. I looked at their code to spare myself time in researching the places where changes are necessary for a feature, and then made my own implementation. Still, I want to credit these developers for the hard work they have done upon which others like me could build.
