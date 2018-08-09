@@ -22,7 +22,6 @@ import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Message;
@@ -51,10 +50,6 @@ public class OverviewInteractionState {
     private static final String TAG = "OverviewFlags";
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
-    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
-            "config_swipe_up_gesture_setting_available";
-    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
-            "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
@@ -88,13 +83,13 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME)) {
+        if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
             mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
                     context.getContentResolver());
             mSwipeUpSettingObserver.register();
         } else {
             mSwipeUpSettingObserver = null;
-            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
+            mSwipeUpEnabled = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         }
     }
 
@@ -199,7 +194,7 @@ public class OverviewInteractionState {
             super(handler);
             mHandler = handler;
             mResolver = resolver;
-            defaultValue = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME) ? 1 : 0;
+            defaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue() ? 1 : 0;
         }
 
         public void register() {
@@ -218,18 +213,6 @@ public class OverviewInteractionState {
 
         private boolean getValue() {
             return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
-        }
-    }
-
-    private boolean getSystemBooleanRes(String resName) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return false;
         }
     }
 

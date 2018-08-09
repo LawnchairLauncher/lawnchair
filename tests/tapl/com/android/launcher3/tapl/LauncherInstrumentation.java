@@ -22,7 +22,6 @@ import static org.junit.Assert.fail;
 
 import android.app.ActivityManager;
 import android.app.UiAutomation;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -34,6 +33,8 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 import android.view.accessibility.AccessibilityEvent;
+
+import com.android.quickstep.SwipeUpSetting;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
@@ -78,10 +79,6 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     static final String LAUNCHER_PKG = "com.google.android.apps.nexuslauncher";
     static final int WAIT_TIME_MS = 60000;
-    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
-            "config_swipe_up_gesture_setting_available";
-    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
-            "config_swipe_up_gesture_default";
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -95,20 +92,13 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(UiDevice device) {
         mDevice = device;
         final boolean swipeUpEnabledDefault =
-                !getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME) ||
-                        getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
+                !SwipeUpSetting.isSwipeUpSettingAvailable() ||
+                        SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         mSwipeUpEnabled = Settings.Secure.getInt(
                 InstrumentationRegistry.getTargetContext().getContentResolver(),
                 "swipe_up_to_switch_apps_enabled",
                 swipeUpEnabledDefault ? 1 : 0) == 1;
         assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
-    }
-
-    private boolean getSystemBooleanRes(String resName) {
-        final Resources res = Resources.getSystem();
-        final int resId = res.getIdentifier(resName, "bool", "android");
-        assertTrue("Resource not found: " + resName, resId != 0);
-        return res.getBoolean(resId);
     }
 
     void setActiveContainer(VisibleContainer container) {
