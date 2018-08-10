@@ -33,7 +33,8 @@ class SearchProviderController(private val context: Context) {
                 SesameSearchProvider(context),
                 AppSearchSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
-                BingSearchProvider(context)
+                BingSearchProvider(context),
+                GoogleGoSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }

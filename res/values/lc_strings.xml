@@ -8,6 +8,7 @@
     <string name="pref_global_search_provider">Global search provider</string>
     <string name="searchbar_appearance_title">Appearance</string>
     <string name="search_provider_google">Google</string>
+    <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_sesame">Sesame</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
