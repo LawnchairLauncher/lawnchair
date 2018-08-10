@@ -26,7 +26,7 @@ class AppSearchSearchProvider(context: Context) : SearchProvider(context) {
         }
     }
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_search).apply {
+    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_search).mutate().apply {
              setTint(if(colored) ColorEngine.getInstance(context).accent else Color.WHITE)
     }
 

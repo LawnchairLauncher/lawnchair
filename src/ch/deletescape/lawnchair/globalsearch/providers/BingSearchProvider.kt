@@ -27,12 +27,12 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.VoiceActivity").setPackage(PACKAGE))
     override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE_CORTANA, "com.microsoft.bing.dss.assist.AssistProxyActivity").setPackage(PACKAGE_CORTANA))
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_bing).apply {
-             if (!colored) { setTint(Color.WHITE) }
+    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_bing).mutate().apply {
+             if(!colored){ setTint(Color.WHITE) }
          }
 
     override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_color).mutate().apply {
-         setTint(if (colored) Color.parseColor("#00897B") else Color.WHITE)
+         setTint(if(colored) Color.parseColor("#00897B") else Color.WHITE)
     }
 
     override fun getAssistantIcon(colored: Boolean): Drawable = context.getDrawable(if(colored) {

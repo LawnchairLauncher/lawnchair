@@ -6,22 +6,31 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.Uri;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
-public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener {
+public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
 
     private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator(); //mArgbEvaluator
@@ -41,6 +50,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     public BaseGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
         mLauncher = Launcher.getLauncher(paramContext);
+        Utilities.getPrefs(paramContext).registerOnSharedPreferenceChangeListener(this);
     }
 
     public void applyOpaPreference() {
@@ -60,6 +70,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
             }
             mQsbView.setOnClickListener(this);
         }
+        loadIcon();
     }
 
     @Override
@@ -83,22 +94,34 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     }
 
     public void onClick(View paramView) {
-        getContext().sendOrderedBroadcast(getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
-                null,
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if (getResultCode() == 0) {
-                            startQsbActivity(BaseGContainerView.TEXT_ASSIST);
-                        } else {
-                            loadWindowFocus();
+        SearchProviderController controller = SearchProviderController.Companion.getInstance(getContext());
+        if (controller.isGoogle()) {
+            getContext().sendOrderedBroadcast(getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
+                    null,
+                    new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (getResultCode() == 0) {
+                                startQsbActivity(BaseGContainerView.TEXT_ASSIST);
+                            } else {
+                                loadWindowFocus();
+                            }
                         }
-                    }
-                },
-                null,
-                0,
-                null,
-                null);
+                    },
+                    null,
+                    0,
+                    null,
+                    null);
+        } else {
+            SearchProvider provider = controller.getSearchProvider();
+            provider.startSearch(new Function1<Intent, Unit>() {
+                @Override
+                public Unit invoke(Intent intent) {
+                    getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
+                    return null;
+                }
+            });
+        }
     }
 
     private Intent getPillAnimationIntent(String action) {
@@ -216,5 +239,18 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         if (mConnectorView != null) {
             mConnectorView.setVisibility(visibility);
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if ("pref_globalSearchProvider".equals(s)) {
+            loadIcon();
+        }
+    }
+
+    private void loadIcon() {
+        SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
+        ImageView gIcon = mQsbView.findViewById(R.id.g_icon);
+        gIcon.setImageDrawable(provider.getIcon(true));
     }
 }
