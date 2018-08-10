@@ -493,7 +493,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int delta = scroll - getScrollX();
         if (delta != 0) {
             mScroller.setInterpolator(Interpolators.DEACCEL);
-            mScroller.startScroll(getScrollX(), 0, delta, 0, Folder.SCROLL_HINT_DURATION);
+            mScroller.startScroll(getScrollX(), delta, Folder.SCROLL_HINT_DURATION);
             invalidate();
         }
     }
