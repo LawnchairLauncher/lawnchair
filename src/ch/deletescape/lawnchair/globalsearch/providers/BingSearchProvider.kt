@@ -12,18 +12,20 @@ import com.android.launcher3.util.PackageManagerHelper
 class BingSearchProvider(context: Context) : SearchProvider(context) {
 
     private val PACKAGE = "com.microsoft.bing"
+    private val PACKAGE_CORTANA = "com.microsoft.cortana"
 
     override val name = context.getString(R.string.search_provider_bing)!!
     override val supportsVoiceSearch: Boolean
         get() = true
     override val supportsAssistant: Boolean
-        get() = false
+        get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE_CORTANA, 0)
 
     override val isAvailable: Boolean
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.WidgetSearchActivity").setPackage(PACKAGE))
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.VoiceActivity").setPackage(PACKAGE))
+    override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE_CORTANA, "com.microsoft.bing.dss.assist.AssistProxyActivity").setPackage(PACKAGE_CORTANA))
 
     override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_bing).apply {
              if (!colored) { setTint(Color.WHITE) }
@@ -32,4 +34,10 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
     override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_color).mutate().apply {
          setTint(if (colored) Color.parseColor("#00897B") else Color.WHITE)
     }
+
+    override fun getAssistantIcon(colored: Boolean): Drawable = context.getDrawable(if(colored) {
+        R.drawable.ic_cortana
+    } else {
+        R.drawable.ic_cortana_shadow
+    })
 }
