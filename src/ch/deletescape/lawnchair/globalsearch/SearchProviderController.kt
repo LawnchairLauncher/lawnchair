@@ -31,9 +31,9 @@ class SearchProviderController(private val context: Context) {
 
     companion object : SingletonHolder<SearchProviderController, Context>(ensureOnMainThread(useApplicationContext(::SearchProviderController))) {
         fun getSearchProviders(context: Context) = listOf(
+                AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
                 SesameSearchProvider(context),
-                AppSearchSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 BingSearchProvider(context),
                 GoogleGoSearchProvider(context),
