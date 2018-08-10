@@ -35,7 +35,7 @@ include $(BUILD_PACKAGE)
 # Build rule for Tapl library.
 #
 include $(CLEAR_VARS)
-LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator libSharedSystemUI
 
 LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
   ../quickstep/src/com/android/quickstep/SwipeUpSetting.java

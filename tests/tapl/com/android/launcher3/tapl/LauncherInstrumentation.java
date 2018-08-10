@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -96,7 +98,7 @@ public final class LauncherInstrumentation {
                         SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         mSwipeUpEnabled = Settings.Secure.getInt(
                 InstrumentationRegistry.getTargetContext().getContentResolver(),
-                "swipe_up_to_switch_apps_enabled",
+                SWIPE_UP_SETTING_NAME,
                 swipeUpEnabledDefault ? 1 : 0) == 1;
         assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
     }
