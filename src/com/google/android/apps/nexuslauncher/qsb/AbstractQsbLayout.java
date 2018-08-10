@@ -469,10 +469,12 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected Drawable getMicIcon(boolean colored){
         SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
-        if (mShowAssistant){
-            return provider.getSupportsAssistant() ? provider.getAssistantIcon(colored) : new ColorDrawable(Color.TRANSPARENT);
+        if (mShowAssistant && provider.getSupportsAssistant()){
+            return provider.getAssistantIcon(colored);
+        } else if (provider.getSupportsVoiceSearch()) {
+            return provider.getVoiceIcon(colored);
         } else {
-            return provider.getSupportsVoiceSearch() ? provider.getVoiceIcon(colored) : new ColorDrawable(Color.TRANSPARENT);
+            return new ColorDrawable(Color.TRANSPARENT);
         }
     }
 
