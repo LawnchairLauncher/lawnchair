@@ -22,8 +22,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
-import android.support.annotation.ColorInt
-import ch.deletescape.lawnchair.globalsearch.GoogleSearchProvider
+import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize

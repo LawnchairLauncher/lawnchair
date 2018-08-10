@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.globalsearch
 
 import android.content.Context
 import ch.deletescape.lawnchair.ensureOnMainThread
+import ch.deletescape.lawnchair.globalsearch.providers.*
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Utilities
