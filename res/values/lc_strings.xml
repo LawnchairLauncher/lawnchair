@@ -12,5 +12,6 @@
     <string name="search_provider_sesame">Sesame</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
+    <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">App search</string>
 </resources>

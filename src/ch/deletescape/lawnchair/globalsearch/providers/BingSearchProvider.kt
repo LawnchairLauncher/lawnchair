@@ -24,7 +24,7 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.WidgetSearchActivity").setPackage(PACKAGE))
-    override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.VoiceActivity").setPackage(PACKAGE))
+    override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).setPackage(PACKAGE))
     override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE_CORTANA, "com.microsoft.bing.dss.assist.AssistProxyActivity").setPackage(PACKAGE_CORTANA))
 
     override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_bing).mutate().apply {

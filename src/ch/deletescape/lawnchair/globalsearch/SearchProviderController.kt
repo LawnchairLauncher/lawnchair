@@ -36,7 +36,8 @@ class SearchProviderController(private val context: Context) {
                 AppSearchSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 BingSearchProvider(context),
-                GoogleGoSearchProvider(context)
+                GoogleGoSearchProvider(context),
+                BaiduSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }
