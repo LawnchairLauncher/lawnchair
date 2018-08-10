@@ -27,7 +27,7 @@
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
-        android:key="prefCat_dockSearchbar"
+        android:key="prefCat_searchbarDock"
         android:title="@string/dock_pref_title">
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
@@ -45,7 +45,7 @@
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
-        android:key="prefCat_drawerSearchbar"
+        android:key="prefCat_searchbarDrawer"
         android:title="@string/app_drawer_pref_title">
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
