@@ -19,7 +19,9 @@ package com.android.launcher3;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
@@ -81,13 +83,33 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @Override
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+        updateTheme();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateTheme();
+    }
+
+    private void updateTheme() {
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         if (mThemeRes != getThemeRes(wallpaperColorInfo)) {
             recreate();
         }
     }
 
     protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
-        if (wallpaperColorInfo.isDark()) {
+        boolean darkTheme;
+        if (Utilities.ATLEAST_Q) {
+            Configuration configuration = getResources().getConfiguration();
+            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+        } else {
+            darkTheme = wallpaperColorInfo.isDark();
+        }
+
+        if (darkTheme) {
             return wallpaperColorInfo.supportsDarkText() ?
                     R.style.AppTheme_Dark_DarkText : R.style.AppTheme_Dark;
         } else {
