@@ -90,6 +90,7 @@ public class LauncherIcons implements AutoCloseable {
         synchronized (sPoolSync) {
             // Clear any temporary state variables
             mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+            mDisableColorExtractor = false;
 
             next = sPool;
             sPool = this;
@@ -105,6 +106,8 @@ public class LauncherIcons implements AutoCloseable {
     private final Context mContext;
     private final Canvas mCanvas;
     private final PackageManager mPm;
+    private final ColorExtractor mColorExtractor;
+    private boolean mDisableColorExtractor;
 
     private final int mFillResIconDpi;
     private final int mIconBitmapSize;
@@ -121,6 +124,7 @@ public class LauncherIcons implements AutoCloseable {
     private LauncherIcons(Context context) {
         mContext = context.getApplicationContext();
         mPm = mContext.getPackageManager();
+        mColorExtractor = new ColorExtractor();
 
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         mFillResIconDpi = idp.fillResIconDpi;
@@ -196,7 +200,7 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp, float [] scale) {
+            boolean isInstantApp, float[] scale) {
         if (scale == null) {
             scale = new float[1];
         }
@@ -223,7 +227,7 @@ public class LauncherIcons implements AutoCloseable {
         } else {
             result = bitmap;
         }
-        return BitmapInfo.fromBitmap(result);
+        return BitmapInfo.fromBitmap(result, mDisableColorExtractor ? null : mColorExtractor);
     }
 
     /**
@@ -243,6 +247,14 @@ public class LauncherIcons implements AutoCloseable {
      */
     public void setWrapperBackgroundColor(int color) {
         mWrapperBackgroundColor = (Color.alpha(color) < 255) ? DEFAULT_WRAPPER_BACKGROUND : color;
+    }
+
+    /**
+     * Disables the dominant color extraction for all icons loaded through this session (until
+     * this instance is recycled).
+     */
+    public void disableColorExtraction() {
+        mDisableColorExtractor = true;
     }
 
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,

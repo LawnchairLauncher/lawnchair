@@ -35,9 +35,15 @@ public class BitmapInfo {
     }
 
     public static BitmapInfo fromBitmap(Bitmap bitmap) {
+        return fromBitmap(bitmap, null);
+    }
+
+    public static BitmapInfo fromBitmap(Bitmap bitmap, ColorExtractor dominantColorExtractor) {
         BitmapInfo info = new BitmapInfo();
         info.icon = bitmap;
-        info.color = ColorExtractor.findDominantColorByHue(bitmap);
+        info.color = dominantColorExtractor != null
+                ? dominantColorExtractor.findDominantColorByHue(bitmap)
+                : 0;
         return info;
     }
 }

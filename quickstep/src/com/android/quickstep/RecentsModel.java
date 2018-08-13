@@ -94,7 +94,9 @@ public class RecentsModel extends TaskStackChangeListener {
             protected IconLoader createNewIconLoader(Context context,
                     TaskKeyLruCache<Drawable> iconCache,
                     LruCache<ComponentName, ActivityInfo> activityInfoCache) {
-                return new NormalizedIconLoader(context, iconCache, activityInfoCache);
+                // Disable finding the dominant color since we don't need to use it
+                return new NormalizedIconLoader(context, iconCache, activityInfoCache,
+                        true /* disableColorExtraction */);
             }
         };
         mRecentsTaskLoader.startLoader(mContext);
