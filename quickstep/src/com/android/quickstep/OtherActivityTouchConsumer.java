@@ -78,6 +78,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final MainThreadExecutor mMainThreadExecutor;
     private final Choreographer mBackgroundThreadChoreographer;
     private final OverviewCallbacks mOverviewCallbacks;
+    private final TaskOverlayFactory mTaskOverlayFactory;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -99,7 +100,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
             @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
-            VelocityTracker velocityTracker) {
+            TaskOverlayFactory taskOverlayFactory, VelocityTracker velocityTracker) {
         super(base);
 
         mRunningTask = runningTaskInfo;
@@ -111,6 +112,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
         mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
         mOverviewCallbacks = overviewCallbacks;
+        mTaskOverlayFactory = taskOverlayFactory;
     }
 
     @Override
@@ -233,14 +235,22 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
-        Runnable startActivity = () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                mHomeIntent,
+
+        AssistDataReceiver assistDataReceiver = !mTaskOverlayFactory.needAssist() ? null :
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {
-                        mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
+                        if (mInteractionHandler == null) {
+                            // Interaction is probably complete
+                            mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
+                        } else if (handler == mInteractionHandler) {
+                            handler.onAssistDataReceived(bundle);
+                        }
                     }
-                }, animationState, null, null);
+                };
+
+        Runnable startActivity = () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                mHomeIntent, assistDataReceiver, animationState, null, null);
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             startActivity.run();

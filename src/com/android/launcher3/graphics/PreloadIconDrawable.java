@@ -77,7 +77,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private final Matrix mTmpMatrix = new Matrix();
     private final PathMeasure mPathMeasure = new PathMeasure();
 
-    private final Context mContext;
+    private final ItemInfoWithIcon mItem;
 
     // Path in [0, 100] bounds.
     private final Path mProgressPath;
@@ -106,7 +106,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      */
     public PreloadIconDrawable(ItemInfoWithIcon info, Path progressPath, Context context) {
         super(info);
-        mContext = context;
+        mItem = info;
         mProgressPath = progressPath;
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
@@ -274,7 +274,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             mTrackAlpha = MAX_PAINT_ALPHA;
             setIsDisabled(true);
         } else if (progress >= 1) {
-            setIsDisabled(false);
+            setIsDisabled(mItem.isDisabled());
             mScaledTrackPath.set(mScaledProgressPath);
             float fraction = (progress - 1) / COMPLETE_ANIM_FRACTION;
 

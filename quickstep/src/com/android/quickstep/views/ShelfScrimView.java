@@ -15,11 +15,10 @@
  */
 package com.android.quickstep.views;
 
-import static android.support.v4.graphics.ColorUtils.compositeColors;
 import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
-
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -32,7 +31,8 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -45,22 +45,30 @@ import com.android.launcher3.views.ScrimView;
  */
 public class ShelfScrimView extends ScrimView {
 
+    // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
+    // cover the whole screen
+    private static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
+
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
 
     // For shelf mode
     private final int mEndAlpha;
-    private final int mThresholdAlpha;
     private final float mRadius;
-    private final float mMaxScrimAlpha;
+    private final int mMaxScrimAlpha;
     private final Paint mPaint;
 
-    // Max vertical progress after which the scrim stops moving.
-    private float mMoveThreshold;
-    // Minimum visible size of the scrim.
-    private int mMinSize;
+    // Mid point where the alpha changes
+    private int mMidAlpha;
+    private float mMidProgress;
 
-    private float mScrimMoveFactor = 0;
+    private float mShiftRange;
+
+    private final float mShelfOffset;
+    private float mTopOffset;
+    private float mShelfTop;
+    private float mShelfTopAtThreshold;
+
     private int mShelfColor;
     private int mRemainingScreenColor;
 
@@ -70,13 +78,13 @@ public class ShelfScrimView extends ScrimView {
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mMaxScrimAlpha = OVERVIEW.getWorkspaceScrimAlpha(mLauncher);
+        mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
-        mThresholdAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        mShelfOffset = context.getResources().getDimension(R.dimen.shelf_surface_offset);
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
     }
@@ -93,10 +101,15 @@ public class ShelfScrimView extends ScrimView {
         mDrawingFlatColor = dp.isVerticalBarLayout();
 
         if (!mDrawingFlatColor) {
-            float swipeLength = OverviewState.getDefaultSwipeHeight(mLauncher);
-            mMoveThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
-            mMinSize = dp.hotseatBarSizePx + dp.getInsets().bottom;
             mRemainingScreenPathValid = false;
+            mShiftRange = mLauncher.getAllAppsController().getShiftRange();
+
+            mMidProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            mMidAlpha = mMidProgress >= 1 ? 0
+                    : Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
+
+            mTopOffset = dp.getInsets().top - mShelfOffset;
+            mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
             updateColors();
         }
         updateDragHandleAlpha();
@@ -107,82 +120,80 @@ public class ShelfScrimView extends ScrimView {
     public void updateColors() {
         super.updateColors();
         if (mDrawingFlatColor) {
+            mDragHandleOffset = 0;
             return;
         }
 
-        if (mProgress >= mMoveThreshold) {
-            mScrimMoveFactor = 1;
-
-            if (mProgress >= 1) {
-                mShelfColor = 0;
-            } else {
-                int alpha = Math.round(mThresholdAlpha * ACCEL_2.getInterpolation(
-                        (1 - mProgress) / (1 - mMoveThreshold)));
-                mShelfColor = setAlphaComponent(mEndScrim, alpha);
-            }
-
-            mRemainingScreenColor = 0;
-        } else if (mProgress <= 0) {
-            mScrimMoveFactor = 0;
-            mShelfColor = mCurrentFlatColor;
-            mRemainingScreenColor = 0;
-
+        mDragHandleOffset = mShelfOffset - mDragHandleSize;
+        if (mProgress >= SCRIM_CATCHUP_THRESHOLD) {
+            mShelfTop = mShiftRange * mProgress + mTopOffset;
         } else {
-            mScrimMoveFactor = mProgress / mMoveThreshold;
-            mRemainingScreenColor = setAlphaComponent(mScrimColor,
-                    Math.round((1 - mScrimMoveFactor) * mMaxScrimAlpha * 255));
+            mShelfTop = Utilities.mapRange(mProgress / SCRIM_CATCHUP_THRESHOLD, -mRadius,
+                    mShelfTopAtThreshold);
+        }
 
-            // Merge the remainingScreenColor and shelfColor in one to avoid overdraw.
-            int alpha = mEndAlpha - Math.round((mEndAlpha - mThresholdAlpha) * mScrimMoveFactor);
-            mShelfColor = compositeColors(setAlphaComponent(mEndScrim, alpha),
-                    mRemainingScreenColor);
+        if (mProgress >= 1) {
+            mRemainingScreenColor = 0;
+            mShelfColor = 0;
+        } else if (mProgress >= mMidProgress) {
+            mRemainingScreenColor = 0;
+
+            int alpha = Math.round(Utilities.mapToRange(
+                    mProgress, mMidProgress, 1, mMidAlpha, 0, ACCEL));
+            mShelfColor = setAlphaComponent(mEndScrim, alpha);
+        } else {
+            mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
+
+            // Note that these ranges and interpolators are inverted because progress goes 1 to 0.
+            int alpha = Math.round(
+                    Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
+                            (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
+            mShelfColor = setAlphaComponent(mEndScrim, alpha);
+
+            int remainingScrimAlpha = Math.round(
+                    Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
+                            (float) 0, LINEAR));
+            mRemainingScreenColor = setAlphaComponent(mScrimColor, remainingScrimAlpha);
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float translate = drawBackground(canvas);
-
-        if (mDragHandle != null) {
-            canvas.translate(0, -translate);
-            mDragHandle.draw(canvas);
-            canvas.translate(0, translate);
-        }
+        drawBackground(canvas);
+        drawDragHandle(canvas);
     }
 
-    private float drawBackground(Canvas canvas) {
+    private void drawBackground(Canvas canvas) {
         if (mDrawingFlatColor) {
             if (mCurrentFlatColor != 0) {
                 canvas.drawColor(mCurrentFlatColor);
             }
-            return 0;
+            return;
         }
 
-        if (mShelfColor == 0) {
-            return 0;
-        } else if (mScrimMoveFactor <= 0) {
+        if (Color.alpha(mShelfColor) == 0) {
+            return;
+        } else if (mProgress <= 0) {
             canvas.drawColor(mShelfColor);
-            return getHeight();
+            return;
         }
 
-        float minTop = getHeight() - mMinSize;
-        float top = minTop * mScrimMoveFactor - mDragHandleSize;
-
+        int height = getHeight();
+        int width = getWidth();
         // Draw the scrim over the remaining screen if needed.
         if (mRemainingScreenColor != 0) {
             if (!mRemainingScreenPathValid) {
                 mTempPath.reset();
                 // Using a arbitrary '+10' in the bottom to avoid any left-overs at the
                 // corners due to rounding issues.
-                mTempPath.addRoundRect(0, minTop, getWidth(), getHeight() + mRadius + 10,
+                mTempPath.addRoundRect(0, height - mRadius, width, height + mRadius + 10,
                         mRadius, mRadius, Direction.CW);
-
                 mRemainingScreenPath.reset();
-                mRemainingScreenPath.addRect(0, 0, getWidth(), getHeight(), Direction.CW);
+                mRemainingScreenPath.addRect(0, 0, width, height, Direction.CW);
                 mRemainingScreenPath.op(mTempPath, Op.DIFFERENCE);
             }
 
-            float offset = minTop - top;
+            float offset = height - mRadius - mShelfTop;
             canvas.translate(0, -offset);
             mPaint.setColor(mRemainingScreenColor);
             canvas.drawPath(mRemainingScreenPath, mPaint);
@@ -190,8 +201,6 @@ public class ShelfScrimView extends ScrimView {
         }
 
         mPaint.setColor(mShelfColor);
-        canvas.drawRoundRect(0, top, getWidth(), getHeight() + mRadius,
-                mRadius, mRadius, mPaint);
-        return minTop - mDragHandleSize - top;
+        canvas.drawRoundRect(0, mShelfTop, width, height + mRadius, mRadius, mRadius, mPaint);
     }
 }

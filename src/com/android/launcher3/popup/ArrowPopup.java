@@ -266,11 +266,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
 
         // Insets are added later, so subtract them now.
-        if (mIsRtl) {
-            x += insets.right;
-        } else {
-            x -= insets.left;
-        }
+        x -= insets.left;
         y -= insets.top;
 
         mGravity = 0;
