@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -34,11 +35,13 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Property;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -243,7 +246,7 @@ public class CellLayout extends ViewGroup {
 
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
-                new InterruptibleInOutAnimator(this, duration, fromAlphaValue, toAlphaValue);
+                new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
             anim.getAnimator().setInterpolator(mEaseOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
@@ -877,7 +880,7 @@ public class CellLayout extends ViewGroup {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -1884,6 +1887,19 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    private static final Property<ReorderPreviewAnimation, Float> ANIMATION_PROGRESS =
+            new Property<ReorderPreviewAnimation, Float>(float.class, "animationProgress") {
+                @Override
+                public Float get(ReorderPreviewAnimation anim) {
+                    return anim.animationProgress;
+                }
+
+                @Override
+                public void set(ReorderPreviewAnimation anim, Float progress) {
+                    anim.setAnimationProgress(progress);
+                }
+            };
+
     // Class which represents the reorder preview animations. These animations show that an item is
     // in a temporary state, and hint at where the item will return to.
     class ReorderPreviewAnimation {
@@ -1904,6 +1920,7 @@ public class CellLayout extends ViewGroup {
         public static final int MODE_HINT = 0;
         public static final int MODE_PREVIEW = 1;
 
+        float animationProgress = 0;
         Animator a;
 
         public ReorderPreviewAnimation(View child, int mode, int cellX0, int cellY0, int cellX1,
@@ -1974,7 +1991,7 @@ public class CellLayout extends ViewGroup {
             if (noMovement) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = ObjectAnimator.ofFloat(this, ANIMATION_PROGRESS, 0, 1);
             a = va;
 
             // Animations are disabled in power save mode, causing the repeated animation to jump
@@ -1987,20 +2004,6 @@ public class CellLayout extends ViewGroup {
 
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
-            va.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = (Float) animation.getAnimatedValue();
-                    float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
-                    float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
-                    float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-                    child.setTranslationX(x);
-                    child.setTranslationY(y);
-                    float s = r * finalScale + (1 - r) * initScale;
-                    child.setScaleX(s);
-                    child.setScaleY(s);
-                }
-            });
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
                     // We make sure to end only after a full period
@@ -2010,6 +2013,18 @@ public class CellLayout extends ViewGroup {
             });
             mShakeAnimators.put(child, this);
             va.start();
+        }
+
+        private void setAnimationProgress(float progress) {
+            animationProgress = progress;
+            float r1 = (mode == MODE_HINT && repeating) ? 1.0f : animationProgress;
+            float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
+            float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
+            child.setTranslationX(x);
+            child.setTranslationY(y);
+            float s = animationProgress * finalScale + (1 - animationProgress) * initScale;
+            child.setScaleX(s);
+            child.setScaleY(s);
         }
 
         private void cancel() {

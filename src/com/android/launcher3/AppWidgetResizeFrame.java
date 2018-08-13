@@ -433,22 +433,18 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
             requestLayout();
         } else {
-            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", lp.width, newWidth);
-            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", lp.height,
-                    newHeight);
-            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
-            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
-            ObjectAnimator oa =
-                    LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
-            oa.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    requestLayout();
-                }
-            });
-            AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
+            ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(lp, this,
+                    PropertyValuesHolder.ofInt("width", lp.width, newWidth),
+                    PropertyValuesHolder.ofInt("height", lp.height, newHeight),
+                    PropertyValuesHolder.ofInt("x", lp.x, newX),
+                    PropertyValuesHolder.ofInt("y", lp.y, newY));
+            oa.addUpdateListener(a -> requestLayout());
+
+            AnimatorSet set = new AnimatorSet();
             set.play(oa);
             for (int i = 0; i < HANDLE_COUNT; i++) {
-                set.play(LauncherAnimUtils.ofFloat(mDragHandles[i], ALPHA, 1.0f));
+                set.play(LauncherAnimUtils.ofPropertyValuesHolder(mDragHandles[i],
+                        PropertyValuesHolder.ofFloat(ALPHA, 1f)));
             }
 
             set.setDuration(SNAP_DURATION);

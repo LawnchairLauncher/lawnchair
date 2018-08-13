@@ -27,7 +27,6 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.graphics.ColorUtils;
@@ -38,7 +37,6 @@ import android.view.animation.AnimationUtils;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
@@ -170,7 +168,7 @@ public class FolderAnimationManager {
         float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
-        AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
+        AnimatorSet a = new AnimatorSet();
 
         // Initialize the Folder items' text.
         PropertyResetListener colorResetListener =

@@ -340,7 +340,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     private void animateOpen() {
         setVisibility(View.VISIBLE);
 
-        final AnimatorSet openAnim = LauncherAnimUtils.createAnimatorSet();
+        final AnimatorSet openAnim = new AnimatorSet();
         final Resources res = getResources();
         final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
         final TimeInterpolator revealInterpolator = new AccelerateDecelerateInterpolator();
@@ -388,7 +388,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
         mIsOpen = false;
 
-        final AnimatorSet closeAnim = LauncherAnimUtils.createAnimatorSet();
+        final AnimatorSet closeAnim = new AnimatorSet();
         // Hide the arrow
         closeAnim.play(ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 0));
         closeAnim.play(ObjectAnimator.ofFloat(mArrow, ALPHA, 0));
