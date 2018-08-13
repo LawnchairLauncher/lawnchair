@@ -17,7 +17,9 @@ package com.android.quickstep;
 
 import android.content.Context;
 
+import android.support.v4.content.ContextCompat;
 import com.android.launcher3.MainProcessInitializer;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
@@ -30,6 +32,6 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         super.init(context);
 
         // Elevate GPU priority for Quickstep and Remote animations.
-        ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+//        ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
     }
 }

@@ -102,6 +102,7 @@
         <activity
             android:name="ch.deletescape.lawnchair.LawnchairLauncher"
             android:clearTaskOnLaunch="true"
+            android:launchMode="singleTask"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="unspecified"

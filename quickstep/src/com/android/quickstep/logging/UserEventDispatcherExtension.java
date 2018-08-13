@@ -43,8 +43,8 @@ public class UserEventDispatcherExtension extends UserEventDispatcher {
     public void logStateChangeAction(int action, int dir, int srcChildTargetType,
                                      int srcParentContainerType, int dstContainerType,
                                      int pageIndex) {
-        new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
-                dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
+//        new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
+//                dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
         super.logStateChangeAction(action, dir, srcChildTargetType, srcParentContainerType,
                 dstContainerType, pageIndex);
     }

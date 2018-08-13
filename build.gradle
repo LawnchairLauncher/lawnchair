@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.2.51'
+    ext.kotlin_version = '1.2.60'
     repositories {
         google()
         mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha12'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha05'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -156,6 +156,12 @@ android {
             res.srcDirs = ['quickstep/res']
             java.srcDirs = ['src_flags', 'quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs.add('-Xbootclasspath/p:libs/framework.jar')
         }
     }
 }

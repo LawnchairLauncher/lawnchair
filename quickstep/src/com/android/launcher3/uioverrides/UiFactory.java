@@ -27,11 +27,14 @@ import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
+import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.CancellationSignal;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -170,9 +173,11 @@ public class UiFactory {
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
         LauncherState state = launcher.getStateManager().getState();
         DeviceProfile profile = launcher.getDeviceProfile();
-        WindowManagerWrapper.getInstance().setShelfHeight(
-                state != ALL_APPS && launcher.isUserActive() && !profile.isVerticalBarLayout(),
-                profile.hotseatBarSizePx);
+        if (ContextCompat.checkSelfPermission(launcher, Manifest.permission.STATUS_BAR) == PackageManager.PERMISSION_GRANTED) {
+            WindowManagerWrapper.getInstance().setShelfHeight(
+                    state != ALL_APPS && launcher.isUserActive() && !profile.isVerticalBarLayout(),
+                    profile.hotseatBarSizePx);
+        }
 
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
