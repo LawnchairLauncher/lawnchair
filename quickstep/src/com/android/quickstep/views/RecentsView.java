@@ -1269,11 +1269,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - taskIndex);
             if (otherAdjacentTaskIndex >= 0 && otherAdjacentTaskIndex < getPageCount()) {
-                anim.play(ObjectAnimator.ofPropertyValuesHolder(getPageAt(otherAdjacentTaskIndex),
-                        new PropertyListBuilder()
-                                .translationX(mIsRtl ? -displacementX : displacementX)
-                                .scale(1)
-                                .build()));
+                anim.play(new PropertyListBuilder()
+                        .translationX(mIsRtl ? -displacementX : displacementX)
+                        .scale(1)
+                        .build(getPageAt(otherAdjacentTaskIndex)));
             }
         }
         return anim;
@@ -1282,11 +1281,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private Animator createAnimForChild(TaskView child, float[] toScaleAndTranslation) {
         AnimatorSet anim = new AnimatorSet();
         anim.play(ObjectAnimator.ofFloat(child, TaskView.ZOOM_SCALE, toScaleAndTranslation[0]));
-        anim.play(ObjectAnimator.ofPropertyValuesHolder(child,
-                        new PropertyListBuilder()
-                                .translationX(toScaleAndTranslation[1])
-                                .translationY(toScaleAndTranslation[2])
-                                .build()));
+        anim.play(new PropertyListBuilder()
+                .translationX(toScaleAndTranslation[1])
+                .translationY(toScaleAndTranslation[2])
+                .build(child));
         return anim;
     }
 

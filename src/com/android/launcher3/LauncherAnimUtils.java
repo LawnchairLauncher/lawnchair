@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.view.View;
@@ -34,18 +32,6 @@ public class LauncherAnimUtils {
 
     // The progress of an animation to all apps must be at least this far along to snap to all apps.
     public static final float MIN_PROGRESS_TO_ALL_APPS = 0.5f;
-
-    public static ObjectAnimator ofPropertyValuesHolder(View target,
-            PropertyValuesHolder... values) {
-        return ofPropertyValuesHolder(target, target, values);
-    }
-
-    public static ObjectAnimator ofPropertyValuesHolder(Object target,
-            View view, PropertyValuesHolder... values) {
-        ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
-        new FirstFrameAnimatorHelper(anim, view);
-        return anim;
-    }
 
     public static final Property<Drawable, Integer> DRAWABLE_ALPHA =
             new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
