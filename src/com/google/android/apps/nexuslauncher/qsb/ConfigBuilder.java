@@ -25,7 +25,6 @@ import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
@@ -35,7 +34,6 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.c_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConfigBuilder {
     private final c_search mNano;

@@ -298,7 +298,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onAttachedToWindow();
         updateTaskStackListenerState();
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
+        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
+        }
     }
 
     @Override
@@ -306,7 +308,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
+        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+            ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
+        }
     }
 
     @Override

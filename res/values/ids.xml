@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="message_search" type="id" />
+    <item name="hotseat_qsb_menu_item" type="id" />
 </resources>

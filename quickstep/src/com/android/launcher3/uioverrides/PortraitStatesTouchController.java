@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;

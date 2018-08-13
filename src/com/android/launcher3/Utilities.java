@@ -842,4 +842,8 @@ public final class Utilities {
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
     }
+
+    public static boolean shouldRegisterTaskStackChangeListener() {
+        return Utilities.ATLEAST_P;
+    }
 }

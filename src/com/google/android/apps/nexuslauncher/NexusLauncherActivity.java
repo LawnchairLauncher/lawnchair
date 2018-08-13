@@ -44,4 +44,8 @@ public class NexusLauncherActivity extends Launcher {
     public LauncherClient getGoogleNow() {
         return mLauncher.mClient;
     }
+
+    public void playQsbAnimation() {
+        mLauncher.mQsbAnimationController.dZ();
+    }
 }

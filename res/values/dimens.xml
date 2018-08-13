@@ -36,9 +36,9 @@
     <dimen name="v1_dynamic_grid_hotseat_top_padding">4dp</dimen>
     <dimen name="v1_dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="v1_dynamic_grid_hotseat_size">80dp</dimen>
-    <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
-    <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">72dp</dimen>
+    <dimen name="dynamic_grid_hotseat_size">70dp</dimen>
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Hotseat/all-apps scrim -->
@@ -275,4 +275,11 @@
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
     <dimen name="options_menu_thumb_size">32dp</dimen>
+    <dimen name="qsb_doodle_tap_target_logo_width">106dp</dimen>
+    <dimen name="qsb_mic_width">56dp</dimen>
+    <dimen name="qsb_text_spacing">20dp</dimen>
+    <dimen name="qsb_two_bubble_gap">8dp</dimen>
+    <dimen name="qsb_hint_text_size">13sp</dimen>
+    <dimen name="qsb_max_hint_length">130dp</dimen>
+    <dimen name="qsb_margin_top_adjusting">20dp</dimen>
 </resources>

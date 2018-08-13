@@ -38,6 +38,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.IconLoader;
@@ -114,7 +115,9 @@ public class RecentsModel extends TaskStackChangeListener {
             }
         };
         mRecentsTaskLoader.startLoader(mContext);
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        }
 
         mTaskChangeId = 1;
         loadTasks(-1, null);

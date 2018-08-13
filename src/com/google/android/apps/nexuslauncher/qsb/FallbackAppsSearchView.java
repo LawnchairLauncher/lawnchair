@@ -1,66 +1,92 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.google.android.apps.nexuslauncher.search.SearchThread;
+import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 
-public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsSearchBarController.Callbacks {
-    private AllAppsQsbLayout mQsbLayout;
-    private AllAppsGridAdapter mAdapter;
-    private AlphabeticalAppsList mApps;
-    private AllAppsRecyclerView mAppsRecyclerView;
-    private final AllAppsSearchBarController mSearchBarController;
+public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdateListener, Callbacks {
+    final AllAppsSearchBarController DI;
+    AllAppsQsbLayout DJ;
+    AlphabeticalAppsList mApps;
+    AllAppsContainerView mAppsView;
 
     public FallbackAppsSearchView(Context context) {
         this(context, null);
     }
 
-    public FallbackAppsSearchView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public FallbackAppsSearchView(Context context, AttributeSet attributeSet) {
+        this(context, attributeSet, 0);
     }
 
-    public FallbackAppsSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mSearchBarController = new AllAppsSearchBarController();
+    public FallbackAppsSearchView(Context context, AttributeSet attributeSet, int i) {
+        super(context, attributeSet, i);
+        this.DI = new AllAppsSearchBarController();
     }
 
-    private void notifyResultChanged() {
-        mQsbLayout.useAlpha(0);
-        mAppsRecyclerView.onSearchResultsChanged();
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Launcher.getLauncher(getContext()).getAppsView().getAppsStore().addUpdateListener(this);
     }
 
-    public void initialize(AllAppsQsbLayout qsbLayout, AlphabeticalAppsList apps, AllAppsRecyclerView appsRecyclerView) {
-        mQsbLayout = qsbLayout;
-        mApps = apps;
-        mAppsRecyclerView = appsRecyclerView;
-        mAdapter = (AllAppsGridAdapter) appsRecyclerView.getAdapter();
-        mSearchBarController.initialize(new SearchThread(getContext()), this, Launcher.getLauncher(getContext()), this);
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Launcher.getLauncher(getContext()).getAppsView().getAppsStore().removeUpdateListener(this);
     }
 
-    public void clearSearchResult() {
-        if (getParent() != null && mApps.setOrderedFilter(null)) {
-            notifyResultChanged();
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
+        if (apps != null && getParent() != null) {
+            mApps.setOrderedFilter(apps);
+            dV();
+            x(true);
+            mAppsView.setLastSearchQuery(query);
         }
     }
 
-    public void onSearchResult(final String lastSearchQuery, final ArrayList orderedFilter) {
-        if (orderedFilter != null && getParent() != null) {
-            mApps.setOrderedFilter(orderedFilter);
-            notifyResultChanged();
-            mAdapter.setLastSearchQuery(lastSearchQuery);
+    public final void clearSearchResult() {
+        if (getParent() != null) {
+            if (this.mApps.setOrderedFilter(null)) {
+                dV();
+            }
+            x(false);
+            mAppsView.onClearSearchResult();
         }
     }
 
-    public void refreshSearchResult() {
-        mSearchBarController.refreshSearchResult();
+    public void onAppsUpdated() {
+        this.DI.refreshSearchResult();
+    }
+
+    private void x(boolean z) {
+//        PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) this.mAppsView.getFloatingHeaderView();
+//        if (predictionsFloatingHeader != null && z != predictionsFloatingHeader.AI) {
+//            predictionsFloatingHeader.AI = z;
+//            ActionsRowView actionsRowView = predictionsFloatingHeader.Bo;
+//            if (z != actionsRowView.AI) {
+//                actionsRowView.AI = z;
+//                actionsRowView.da();
+//            }
+//            PredictionRowView predictionRowView = predictionsFloatingHeader.Bn;
+//            if (z != predictionRowView.AI) {
+//                predictionRowView.AI = z;
+//                predictionRowView.da();
+//            }
+//            predictionsFloatingHeader.dh();
+//        }
+    }
+
+    private void dV() {
+        this.DJ.aD(0);
+        mAppsView.onSearchResultsChanged();
     }
 }

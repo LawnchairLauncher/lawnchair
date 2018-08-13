@@ -634,4 +634,5 @@
     <string name="work_mode_off_label">Notifications and apps are off</string>
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
+    <string name="hotseat_qsb_preferences">Preferences</string>
 </resources>
