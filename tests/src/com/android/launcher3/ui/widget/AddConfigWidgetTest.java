@@ -126,12 +126,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
             // Verify that the widget id is deleted.
-            assertTrue(Wait.atMost(new Condition() {
-                @Override
-                public boolean isTrue() throws Throwable {
-                    return mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null;
-                }
-            }, DEFAULT_ACTIVITY_TIMEOUT));
+            assertTrue(Wait.atMost(() -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+                    DEFAULT_ACTIVITY_TIMEOUT));
         }
     }
 
@@ -145,8 +141,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     /**
      * Condition for searching widget id
      */
-    private class WidgetSearchCondition extends Condition
-            implements Workspace.ItemOperator {
+    private class WidgetSearchCondition implements Condition, Workspace.ItemOperator {
 
         @Override
         public boolean isTrue() throws Throwable {
