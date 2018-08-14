@@ -9,14 +9,17 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class HotseatQsbWidget extends AbstractQsbLayout implements o {
+public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairPreferences.OnPreferenceChangeListener {
+    public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     private final BroadcastReceiver DK;
     private boolean mIsGoogleColored;
     private final k Ds;
@@ -49,8 +52,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o {
     }
 
     protected void onAttachedToWindow() {
-        this.mIsGoogleColored = isGoogleColored();
-        setColors();
+        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
         dW();
         super.onAttachedToWindow();
         getContext().registerReceiver(this.DK, new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
@@ -61,8 +63,15 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o {
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        Utilities.getLawnchairPrefs(getContext()).removeOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
         getContext().unregisterReceiver(this.DK);
         this.Ds.b((o) this);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+        mIsGoogleColored = isGoogleColored();
+        dM();
     }
 
     public final void dM() {
