@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
@@ -33,6 +32,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import androidx.annotation.Nullable;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.

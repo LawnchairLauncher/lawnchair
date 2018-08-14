@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -46,6 +45,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.

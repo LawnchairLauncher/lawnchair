@@ -18,11 +18,14 @@ package com.android.quickstep.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
+
 import com.android.launcher3.FastBitmapDrawable;
+
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
 
 /**
  * A view which draws a drawable stretched to fit its size. Unlike ImageView, it avoids relayout

@@ -18,7 +18,6 @@ package com.android.launcher3.accessibility;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -31,6 +30,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.dragndrop.DragLayer;
+
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 /**
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD on workspace.

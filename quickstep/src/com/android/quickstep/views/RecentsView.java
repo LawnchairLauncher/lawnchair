@@ -44,7 +44,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -94,6 +93,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+
+import androidx.annotation.Nullable;
 
 /**
  * A list of recent tasks.

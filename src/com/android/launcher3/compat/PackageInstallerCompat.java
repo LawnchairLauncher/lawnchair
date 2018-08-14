@@ -19,10 +19,11 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
-import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public abstract class PackageInstallerCompat {
 

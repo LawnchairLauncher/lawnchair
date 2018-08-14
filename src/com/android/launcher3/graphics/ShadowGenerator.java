@@ -27,9 +27,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.support.v4.graphics.ColorUtils;
 
 import com.android.launcher3.LauncherAppState;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Utility class to add shadows to bitmaps.

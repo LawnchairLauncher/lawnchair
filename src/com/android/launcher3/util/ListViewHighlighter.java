@@ -21,7 +21,6 @@ import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.widget.AbsListView;
@@ -30,6 +29,8 @@ import android.widget.AbsListView.RecyclerListener;
 import android.widget.ListView;
 
 import com.android.launcher3.R;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Utility class to scroll and highlight a list view item

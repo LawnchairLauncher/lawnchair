@@ -38,8 +38,6 @@ import android.os.Handler;
 import android.os.Process;
 import android.os.SystemClock;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -62,6 +60,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.

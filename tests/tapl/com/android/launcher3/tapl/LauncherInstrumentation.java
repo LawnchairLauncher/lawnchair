@@ -26,8 +26,6 @@ import android.app.ActivityManager;
 import android.app.UiAutomation;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
@@ -40,6 +38,9 @@ import com.android.quickstep.SwipeUpSetting;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It

@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.annotation.IntDef;
 import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
@@ -40,6 +39,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
+
+import androidx.annotation.IntDef;
 
 public abstract class BaseActivity extends Activity implements UserEventDelegate{
 

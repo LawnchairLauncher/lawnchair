@@ -19,8 +19,6 @@ package com.android.launcher3.accessibility;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.support.v4.widget.ExploreByTouchHelper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
@@ -30,6 +28,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 import java.util.List;
+
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
 
 /**
  * Helper class to make drag-and-drop in a {@link CellLayout} accessible.

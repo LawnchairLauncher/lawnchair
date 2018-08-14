@@ -22,7 +22,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
-import android.support.annotation.VisibleForTesting;
 import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.Display;
@@ -39,6 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import androidx.annotation.VisibleForTesting;
 
 public class InvariantDeviceProfile {
 

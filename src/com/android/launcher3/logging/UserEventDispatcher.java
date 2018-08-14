@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
@@ -54,6 +53,8 @@ import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.Locale;
 import java.util.UUID;
+
+import androidx.annotation.Nullable;
 
 /**
  * Manages the creation of {@link LauncherEvent}.

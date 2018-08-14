@@ -29,7 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
@@ -51,6 +50,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+
+import androidx.annotation.WorkerThread;
 
 /**
  * Singleton class to load and manage recents model.
