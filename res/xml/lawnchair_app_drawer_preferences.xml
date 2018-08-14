@@ -73,7 +73,7 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_separateWorkApps"
             android:title="@string/separate_work_apps_pref_title"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat

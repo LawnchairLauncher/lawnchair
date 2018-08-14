@@ -144,7 +144,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void onAppsUpdated() {
-        if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
+        if (FeatureFlags.ALL_APPS_TABS_ENABLED && Utilities.getLawnchairPrefs(getContext()).getSeparateWorkApps()) {
             boolean hasWorkApps = false;
             for (AppInfo app : mAllAppsStore.getApps()) {
                 if (mWorkMatcher.matches(app, null)) {
