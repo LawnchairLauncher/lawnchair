@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -1921,7 +1923,7 @@ public class CellLayout extends ViewGroup {
         public static final int MODE_PREVIEW = 1;
 
         float animationProgress = 0;
-        Animator a;
+        ValueAnimator a;
 
         public ReorderPreviewAnimation(View child, int mode, int cellX0, int cellY0, int cellX1,
                 int cellY1, int spanX, int spanY) {
@@ -2039,14 +2041,14 @@ public class CellLayout extends ViewGroup {
             }
 
             setInitialAnimationValues(true);
-            a = LauncherAnimUtils.ofPropertyValuesHolder(child,
-                    new PropertyListBuilder()
-                            .scale(initScale)
-                            .translationX(initDeltaX)
-                            .translationY(initDeltaY)
-                            .build())
+            a = new PropertyListBuilder()
+                    .scale(initScale)
+                    .translationX(initDeltaX)
+                    .translationY(initDeltaY)
+                    .build(child)
                     .setDuration(REORDER_ANIMATION_DURATION);
-            a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
+            mLauncher.getDragController().addFirstFrameAnimationHelper(a);
+            a.setInterpolator(DEACCEL_1_5);
             a.start();
         }
     }

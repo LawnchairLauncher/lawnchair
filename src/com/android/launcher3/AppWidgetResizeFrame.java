@@ -3,8 +3,6 @@ package com.android.launcher3;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -39,6 +37,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private final Launcher mLauncher;
     private final DragViewStateAnnouncer mStateAnnouncer;
+    private final FirstFrameAnimatorHelper mFirstFrameAnimatorHelper;
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
 
@@ -101,6 +100,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mBackgroundPadding = getResources()
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
+        mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
     }
 
     @Override
@@ -368,12 +368,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDeltaX = 0;
         mDeltaY = 0;
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                snapToWidget(true);
-            }
-        });
+        post(() -> snapToWidget(true));
     }
 
     /**
@@ -433,20 +428,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
             requestLayout();
         } else {
-            ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(lp, this,
+            ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp,
                     PropertyValuesHolder.ofInt("width", lp.width, newWidth),
                     PropertyValuesHolder.ofInt("height", lp.height, newHeight),
                     PropertyValuesHolder.ofInt("x", lp.x, newX),
                     PropertyValuesHolder.ofInt("y", lp.y, newY));
-            oa.addUpdateListener(a -> requestLayout());
+            mFirstFrameAnimatorHelper.addTo(oa).addUpdateListener(a -> requestLayout());
 
             AnimatorSet set = new AnimatorSet();
             set.play(oa);
             for (int i = 0; i < HANDLE_COUNT; i++) {
-                set.play(LauncherAnimUtils.ofPropertyValuesHolder(mDragHandles[i],
-                        PropertyValuesHolder.ofFloat(ALPHA, 1f)));
+                set.play(mFirstFrameAnimatorHelper.addTo(
+                        ObjectAnimator.ofFloat(mDragHandles[i], ALPHA, 1f)));
             }
-
             set.setDuration(SNAP_DURATION);
             set.start();
         }

@@ -31,7 +31,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -79,6 +78,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
@@ -740,8 +740,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     protected void onStop() {
         super.onStop();
-        FirstFrameAnimatorHelper.setIsVisible(false);
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
@@ -762,8 +760,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     protected void onStart() {
         super.onStart();
-        FirstFrameAnimatorHelper.setIsVisible(true);
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
@@ -1131,7 +1127,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onAttachedToWindow();
         }
@@ -1839,7 +1834,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
         // Get the list of added items and intersect them with the set of items here
-        final AnimatorSet anim = new AnimatorSet();
         final Collection<Animator> bounceAnims = new ArrayList<>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
@@ -1911,34 +1905,31 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         }
 
-        if (animateIcons) {
-            // Animate to the correct page
-            if (newItemsScreenId > -1) {
-                long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
-                final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
-                final Runnable startBounceAnimRunnable = new Runnable() {
-                    public void run() {
-                        anim.playTogether(bounceAnims);
-                        anim.start();
-                    }
-                };
-                if (newItemsScreenId != currentScreenId) {
-                    // We post the animation slightly delayed to prevent slowdowns
-                    // when we are loading right after we return to launcher.
-                    mWorkspace.postDelayed(new Runnable() {
-                        public void run() {
-                            if (mWorkspace != null) {
-                                AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+        // Animate to the correct page
+        if (animateIcons && newItemsScreenId > -1) {
+            AnimatorSet anim = new AnimatorSet();
+            anim.playTogether(bounceAnims);
 
-                                mWorkspace.snapToPage(newScreenIndex);
-                                mWorkspace.postDelayed(startBounceAnimRunnable,
-                                        NEW_APPS_ANIMATION_DELAY);
-                            }
+            long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
+            final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
+            final Runnable startBounceAnimRunnable = anim::start;
+
+            if (newItemsScreenId != currentScreenId) {
+                // We post the animation slightly delayed to prevent slowdowns
+                // when we are loading right after we return to launcher.
+                mWorkspace.postDelayed(new Runnable() {
+                    public void run() {
+                        if (mWorkspace != null) {
+                            AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+
+                            mWorkspace.snapToPage(newScreenIndex);
+                            mWorkspace.postDelayed(startBounceAnimRunnable,
+                                    NEW_APPS_ANIMATION_DELAY);
                         }
-                    }, NEW_APPS_PAGE_MOVE_DELAY);
-                } else {
-                    mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
-                }
+                    }
+                }, NEW_APPS_PAGE_MOVE_DELAY);
+            } else {
+                mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
             }
         }
         workspace.requestLayout();
@@ -2161,11 +2152,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
-        ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f));
-        bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
+        ValueAnimator bounceAnim = new PropertyListBuilder().alpha(1).scale(1).build(v)
+                .setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;

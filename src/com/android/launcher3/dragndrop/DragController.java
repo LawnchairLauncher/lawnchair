@@ -20,6 +20,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
 
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -224,6 +225,12 @@ public class DragController implements DragDriver.EventListener, TouchController
         mIsInPreDrag = false;
         for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
+        }
+    }
+
+    public void addFirstFrameAnimationHelper(ValueAnimator anim) {
+        if (mDragObject != null && mDragObject.dragView != null) {
+            mDragObject.dragView.mFirstFrameAnimatorHelper.addTo(anim);
         }
     }
 
