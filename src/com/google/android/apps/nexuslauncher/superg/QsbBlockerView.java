@@ -178,7 +178,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     @Override
     public boolean onLongClick(View v) {
         // TODO: move it to below the widget view
-        LawnchairUtilsKt.openPopupMenu(mDummyBubbleTextView, new SmartspacePreferencesShortcut());
+        LawnchairUtilsKt.openPopupMenu(mView, null, new SmartspacePreferencesShortcut());
         return true;
     }
 

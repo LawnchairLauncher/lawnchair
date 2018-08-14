@@ -267,16 +267,9 @@ fun AppCompatActivity.hookGoogleSansDialogTitle() {
     }
 }
 
-fun openPopupMenu(icon: BubbleTextView, vararg shortcuts: SystemShortcut<Launcher>) {
-    // TODO: make this work
-//    val launcher = Launcher.getLauncher(icon.context)
-//    (launcher.layoutInflater.inflate(R.layout.popup_container,
-//            launcher.dragLayer, false) as PopupContainerWithArrow).apply {
-//        disableDividers()
-//        visibility = View.INVISIBLE
-//        launcher.dragLayer.addView(this)
-//        populateAndShow(icon, emptyList(), emptyList(), listOf(*shortcuts), false)
-//    }
+fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.OptionItem) {
+    val launcher = Launcher.getLauncher(view.context)
+    OptionsPopupView.show(launcher, rect ?: RectF(launcher.getViewBounds(view)), items.toList())
 }
 
 fun Context.getLauncherOrNull(): Launcher? {

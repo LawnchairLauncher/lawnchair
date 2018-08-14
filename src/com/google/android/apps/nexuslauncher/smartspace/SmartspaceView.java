@@ -4,6 +4,9 @@ import android.animation.ValueAnimator;
 import android.content.*;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
@@ -26,6 +29,7 @@ import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.OptionsPopupView;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import org.jetbrains.annotations.NotNull;
@@ -290,7 +294,27 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     public boolean onLongClick(final View view) {
-        LawnchairUtilsKt.openPopupMenu(dr, new SmartspacePreferencesShortcut());
+        TextView textView;
+        if (mClockView == null || mClockView.getVisibility() != View.VISIBLE) {
+            textView = mTitleText;
+        } else {
+            textView = mClockView;
+        }
+        if (view == null) {
+            return false;
+        }
+        Rect rect = new Rect();
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.getDragLayer().getDescendantRectRelativeToSelf(view, rect);
+        Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
+        float tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        RectF rectF = new RectF();
+        float exactCenterX = rect.exactCenterX();
+        rectF.right = exactCenterX;
+        rectF.left = exactCenterX;
+        rectF.top = 0.0f;
+        rectF.bottom = ((float) rect.bottom) - tmp;
+        LawnchairUtilsKt.openPopupMenu(this, rectF, new SmartspacePreferencesShortcut());
         return true;
     }
 
