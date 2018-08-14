@@ -200,7 +200,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
     /**
      * Condition for for an item
      */
-    private class ItemSearchCondition extends Condition {
+    private class ItemSearchCondition implements Condition {
 
         private final ItemOperator mOp;
 
