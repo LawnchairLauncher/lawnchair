@@ -18,8 +18,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3.tests">
 
-    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"/>
-
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
 
@@ -31,6 +29,17 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/appwidget_no_config" />
+        </receiver>
+
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWdigetHidden"
+            android:label="Hidden widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_hidden" />
         </receiver>
 
         <receiver

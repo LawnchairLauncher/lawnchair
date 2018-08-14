@@ -20,7 +20,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
 
     <!--
     The manifest defines the common entries that should be present in any derivative of Launcher3.
@@ -43,6 +42,7 @@
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -80,21 +80,17 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.android.launcher3.dynamicui.ColorExtractionService"
-            android:exported="false"
-            android:process=":wallpaper_chooser"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
-
         <service
-            android:name="com.android.launcher3.compat.WallpaperManagerCompatVL$ColorExtractionService"
+            android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             android:exported="false"
             android:process=":wallpaper_chooser"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service android:name="com.android.launcher3.notification.NotificationListener"
-                 android:enabled="@bool/notification_badging_enabled"
-                 android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+        <service
+            android:name="com.android.launcher3.notification.NotificationListener"
+            android:label="@string/icon_badging_service_title"
+            android:enabled="@bool/notification_badging_enabled"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>

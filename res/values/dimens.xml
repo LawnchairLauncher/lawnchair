@@ -15,17 +15,13 @@
 -->
 
 <resources>
-<!-- Dynamic Grid -->
+
+    <dimen name="click_shadow_elevation">4dp</dimen>
+
+    <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
-    <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">0dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
-    <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
@@ -39,22 +35,19 @@
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
-
+    <!-- Hotseat/all-apps scrim -->
+    <dimen name="all_apps_scrim_radius">8dp</dimen>
+    <dimen name="all_apps_scrim_margin">8dp</dimen>
+    <dimen name="all_apps_scrim_blur">4dp</dimen>
+    <dimen name="vertical_drag_handle_size">24dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
-    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
-    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
+    <dimen name="drop_target_vertical_gap">20dp</dimen>
 
 <!-- App Widget resize frame -->
-    <dimen name="default_widget_padding">8dp</dimen>
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
 
@@ -82,15 +75,18 @@
     <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
-    <dimen name="all_apps_search_bar_height">60dp</dimen>
+    <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
-    <dimen name="all_apps_caret_stroke_width">2dp</dimen>
-    <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
-    <dimen name="all_apps_caret_size">13dp</dimen>
-    <dimen name="all_apps_caret_workspace_offset">18dp</dimen>
+    <dimen name="all_apps_header_tab_height">50dp</dimen>
+    <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
+    <dimen name="all_apps_header_top_padding">36dp</dimen>
+    <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
+    <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
+    <dimen name="all_apps_tabs_side_padding">12dp</dimen>
+    <dimen name="all_apps_divider_height">1dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
@@ -141,8 +137,6 @@
     <dimen name="spring_loaded_panel_border">1dp</dimen>
 
 <!-- Folders -->
-    <!-- The size of the padding on the preview background drawable -->
-    <dimen name="folder_preview_padding">10dp</dimen>
     <dimen name="page_indicator_dot_size">8dp</dimen>
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
@@ -180,6 +174,7 @@
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">10dp</dimen>
     <dimen name="popup_arrow_height">8dp</dimen>
     <dimen name="popup_arrow_vertical_offset">-2dp</dimen>
@@ -187,10 +182,6 @@
     <dimen name="popup_arrow_horizontal_center_start">28dp</dimen>
     <!-- popup_padding_end + deep_shortcut_drag_handle_size / 2 -->
     <dimen name="popup_arrow_horizontal_center_end">24dp</dimen>
-    <!-- popup_arrow_center_start - popup_arrow_width / 2-->
-    <dimen name="popup_arrow_horizontal_offset_start">23dp</dimen>
-    <!-- popup_arrow_center_end - popup_arrow_width / 2-->
-    <dimen name="popup_arrow_horizontal_offset_end">19dp</dimen>
     <dimen name="popup_arrow_corner_radius">2dp</dimen>
     <!-- popup_padding_start + icon_size + 10dp -->
     <dimen name="deep_shortcuts_text_padding_start">56dp</dimen>
@@ -204,12 +195,8 @@
     <!-- (touch_size - icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
 
-<!-- Icon badges (with notification counts) -->
-    <dimen name="badge_small_padding">0dp</dimen>
-    <dimen name="badge_large_padding">3dp</dimen>
-
 <!-- Notifications -->
-    <dimen name="bg_round_rect_radius">12dp</dimen>
+    <dimen name="bg_round_rect_radius">8dp</dimen>
     <dimen name="notification_padding_start">16dp</dimen>
     <dimen name="notification_padding_end">12dp</dimen>
     <!-- notification_padding_end + (icon_size - footer_icon_size) / 2 -->
@@ -227,14 +214,13 @@
     <dimen name="notification_footer_icon_size">18dp</dimen>
     <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
     <dimen name="notification_main_text_padding_end">52dp</dimen>
-    <dimen name="notification_elevation">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
     <!-- arrow_horizontal_offset_start - (ellipsis_size - arrow_width) / 2 -->
     <dimen name="horizontal_ellipsis_offset">19dp</dimen>
     <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
-<!-- Other -->
-    <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
-    <dimen name="status_bar_height">24dp</dimen>
+<!-- Overview -->
+    <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_thumb_size">32dp</dimen>
 </resources>

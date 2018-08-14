@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
@@ -46,7 +47,7 @@ public class PromiseAppInfo extends AppInfo {
         return shortcut;
     }
 
-    public Intent getMarketIntent() {
-        return PackageManagerHelper.getMarketIntent(componentName.getPackageName());
+    public Intent getMarketIntent(Context context) {
+        return new PackageManagerHelper(context).getMarketIntent(componentName.getPackageName());
     }
 }

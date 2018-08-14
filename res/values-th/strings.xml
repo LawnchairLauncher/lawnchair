@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ไม่พบแอปที่ตรงกับ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ค้นหาแอปเพิ่มเติม"</string>
     <string name="notifications_header" msgid="1404149926117359025">"การแจ้งเตือน"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"แตะค้างไว้เพื่อเลือกทางลัด"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"แตะสองครั้งค้างไว้เพื่อเลือกทางลัดหรือใช้การกระทำที่กำหนดเอง"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ไม่มีที่ว่างในหน้าจอหลักนี้"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ไม่มีพื้นที่เหลือในถาดรายการโปรด"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"รายชื่อแอป"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"รายการแอปส่วนตัว"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"รายการแอปสำหรับทำงาน"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"หน้าแรก"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"นำออก"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ถอนการติดตั้ง"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ข้อมูลแอป"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"ติดตั้ง"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ติดตั้งทางลัด"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"อนุญาตให้แอปเพิ่มทางลัดโดยไม่ต้องให้ผู้ใช้จัดการ"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"อ่านการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"นี่เป็นแอประบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"โฟลเดอร์ที่ไม่มีชื่อ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"ปิดใช้ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> มีการแจ้งเตือน <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> รายการ</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> มีการแจ้งเตือน <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> รายการ</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"หน้า %1$d จาก %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"หน้าจอหลัก %1$d จาก %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"หน้าใหม่ในหน้าจอหลัก"</string>
@@ -72,19 +81,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าแรก"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"ภาพรวม"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"อนุญาตให้หมุนหน้าจอหลัก"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"เมื่อหมุนโทรศัพท์"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"การตั้งค่าการแสดงผลปัจจุบันไม่อนุญาตให้มีการหมุน"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"จุดแจ้งเตือน"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"เปิด"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ปิด"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ต้องได้รับสิทธิ์เข้าถึงการแจ้งเตือน"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"เปิดการแจ้งเตือนแอปของ <xliff:g id="NAME">%1$s</xliff:g> เพื่อแสดงจุดแจ้งเตือน"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"เปลี่ยนการตั้งค่า"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"แสดงจุดแจ้งเตือน"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"เพิ่มไอคอนในหน้าจอหลัก"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"สำหรับแอปใหม่"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"เปลี่ยนรูปร่างไอคอน"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"ในหน้าจอหลัก"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ใช้ค่าเริ่มต้นของระบบ"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"สี่เหลี่ยมจัตุรัส"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"สี่เหลี่ยมขอบมน"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"กำลังดาวน์โหลด <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> กำลังรอติดตั้ง"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"วิดเจ็ตของ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"รายการวิดเจ็ต"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"ปิดรายการวิดเจ็ตแล้ว"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"เพิ่มลงในหน้าแรก"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ย้ายรายการมาที่นี่"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"เพิ่มรายการไปยังหน้าจอหลักแล้ว"</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"สร้างโฟลเดอร์ด้วย: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"สร้างโฟลเดอร์แล้ว"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"ย้ายไปที่หน้าจอหลัก"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"เลื่อนหน้าจอไปทางซ้าย"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"เลื่อนหน้าจอไปทางขวา"</string>
-    <string name="screen_moved" msgid="266230079505650577">"ย้ายหน้าจอแล้ว"</string>
     <string name="action_resize" msgid="1802976324781771067">"ปรับขนาด"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"เพิ่มความกว้าง"</string>
     <string name="action_increase_height" msgid="459390020612501122">"เพิ่มความสูง"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ลดความสูง"</string>
     <string name="widget_resized" msgid="9130327887929620">"ปรับขนาดของวิดเจ็ตเป็นกว้าง <xliff:g id="NUMBER_0">%1$s</xliff:g> สูง <xliff:g id="NUMBER_1">%2$s</xliff:g> แล้ว"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ทางลัด"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ทางลัดสำหรับ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ทางลัด <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> รายการและการแจ้งเตือน <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> รายการสำหรับ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ทางลัดและการแจ้งเตือน"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ปิด"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ปิดการแจ้งเตือนแล้ว"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"ส่วนตัว"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"งาน"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"โปรไฟล์งาน"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"หาแอปงานที่นี่"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"แอปงานแต่ละแอปมีป้ายและได้รับการรักษาความปลอดภัยจากองค์กรของคุณ ย้ายแอปไปยังหน้าจอหลักเพื่อให้เข้าถึงได้ง่ายขึ้น"</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"จัดการโดยองค์กร"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"ปิดการแจ้งเตือนและแอปอยู่"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ปิด"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ปิด"</string>
 </resources>
