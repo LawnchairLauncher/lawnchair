@@ -1242,6 +1242,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         boolean internalStateHandled = InternalStateHandler
                 .handleNewIntent(this, intent, isStarted());
 
+        boolean handled = false;
+
         if (isActionMain) {
             if (!internalStateHandled) {
                 // Note: There should be at most one log per method call. This is enforced
@@ -1250,6 +1252,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
                 if (topOpenView != null) {
                     topOpenView.logActionCommand(Action.Command.HOME_INTENT);
+                    handled = true;
                 } else if (alreadyOnHome) {
                     Target target = newContainerTarget(mStateManager.getState().containerType);
                     target.pageIndex = mWorkspace.getCurrentPage();
@@ -1264,14 +1267,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
                     mStateManager.goToState(NORMAL);
+                    handled = true;
                 }
 
                 // Reset the apps view
                 if (!alreadyOnHome) {
                     mAppsView.reset(isStarted() /* animate */);
+                    handled = true;
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
+                    if (mWorkspace.getCurrentPage() != 0) {
+                        handled = true;
+                    }
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
                 }
             }
@@ -1279,6 +1287,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
                 UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
+            }
+
+            if (!handled && this instanceof LawnchairLauncher) {
+                ((LawnchairLauncher) this).getGestureController().onPressHome();
             }
 
             if (mLauncherCallbacks != null) {
@@ -1638,6 +1650,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
+
+            if (this instanceof LawnchairLauncher) {
+                ((LawnchairLauncher) this).getGestureController().onPressBack();
+            }
         }
     }
 
