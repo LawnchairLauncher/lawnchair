@@ -20,7 +20,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -35,6 +34,8 @@ import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Popup for showing the full list of available widgets

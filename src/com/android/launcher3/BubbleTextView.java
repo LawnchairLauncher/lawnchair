@@ -27,7 +27,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -51,6 +50,8 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan

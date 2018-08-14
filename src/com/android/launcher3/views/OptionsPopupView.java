@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
@@ -43,6 +42,8 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Popup shown on long pressing an empty space in launcher

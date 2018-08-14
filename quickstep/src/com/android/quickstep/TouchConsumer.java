@@ -17,13 +17,14 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.annotation.IntDef;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
+
+import androidx.annotation.IntDef;
 
 @TargetApi(Build.VERSION_CODES.O)
 @FunctionalInterface

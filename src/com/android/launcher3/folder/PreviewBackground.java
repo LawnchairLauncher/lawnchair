@@ -30,7 +30,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 
@@ -39,6 +38,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement

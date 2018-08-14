@@ -18,7 +18,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.provider.ProviderTestRule;
 
@@ -48,6 +47,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base class for writing tests for Model update tasks.

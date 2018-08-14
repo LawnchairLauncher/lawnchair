@@ -41,7 +41,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -56,6 +55,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
+
+import androidx.annotation.Nullable;
 
 /**
  * Helper methods for generating various launcher icons

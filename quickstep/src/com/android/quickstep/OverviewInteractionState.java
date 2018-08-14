@@ -27,7 +27,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.Settings;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
@@ -35,6 +34,8 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+
+import androidx.annotation.WorkerThread;
 
 /**
  * Sets overview interaction flags, such as:

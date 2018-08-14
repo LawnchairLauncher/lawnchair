@@ -95,7 +95,7 @@
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
 # support jar.
--keep class android.support.v7.widget.RecyclerView { *; }
+-keep class androidx.recyclerview.widget.RecyclerView { *; }
 
 # Preference fragments
 -keep class ** extends android.preference.PreferenceFragment {

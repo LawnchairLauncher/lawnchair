@@ -41,7 +41,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
 
@@ -50,6 +49,8 @@ import com.android.launcher3.graphics.ColorExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 

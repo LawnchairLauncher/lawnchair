@@ -24,7 +24,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -35,9 +34,10 @@ import android.widget.TextView;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * The track and scrollbar that shows when you scroll the list.

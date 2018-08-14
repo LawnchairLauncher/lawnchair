@@ -28,15 +28,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.UiThread;
 import android.util.ArrayMap;
 import android.util.Log;
+
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
 import com.android.launcher3.util.ResourceBasedOverride;
+
+import androidx.annotation.UiThread;
 
 /**
  * Factory for creating new drawables.

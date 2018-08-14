@@ -29,7 +29,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -50,6 +49,8 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiFunction;
+
+import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation

@@ -16,8 +16,9 @@
 
 package com.android.launcher3.tapl;
 
-import android.support.annotation.NonNull;
 import android.support.test.uiautomator.UiObject2;
+
+import androidx.annotation.NonNull;
 
 /**
  * Operations on the home screen.

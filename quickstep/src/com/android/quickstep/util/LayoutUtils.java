@@ -20,13 +20,14 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.annotation.AnyThread;
-import android.support.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 
 import java.lang.annotation.Retention;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.IntDef;
 
 public class LayoutUtils {
 
