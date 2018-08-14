@@ -420,7 +420,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                         z = ActivityManagerWrapper.getInstance().showVoiceSession(null, null, 5);
                     }
                     if (!z) {
-                        k("android.intent.action.VOICE_ASSIST");
+                        k(Intent.ACTION_VOICE_COMMAND);
                     }
                 }
                 pkg = "com.google.android.googlequicksearchbox";
@@ -433,7 +433,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                 z = ActivityManagerWrapper.getInstance().showVoiceSession(null, null, 5);
             }
             if (!z) {
-                k("android.intent.action.VOICE_ASSIST");
+                k(Intent.ACTION_VOICE_COMMAND);
             }
         }
     }
