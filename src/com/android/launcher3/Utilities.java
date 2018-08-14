@@ -846,4 +846,8 @@ public final class Utilities {
     public static boolean shouldRegisterTaskStackChangeListener() {
         return Utilities.ATLEAST_P;
     }
+
+    public static void startAssistant(Context context) {
+        context.startActivity(new Intent(Intent.ACTION_VOICE_COMMAND));
+    }
 }

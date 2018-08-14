@@ -10,6 +10,7 @@ import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -178,5 +179,16 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                         .startShortcut(packageName, id, intent, null, user)
             }
         }
+    }
+}
+
+
+@Keep
+class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_assistant)!!
+
+    override fun onGestureTrigger(controller: GestureController) {
+        Utilities.startAssistant(context)
     }
 }

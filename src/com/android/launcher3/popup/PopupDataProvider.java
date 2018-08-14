@@ -173,7 +173,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
 
-        if (Utilities.ATLEAST_MARSHMALLOW && !Utilities.ATLEAST_NOUGAT_MR1) {
+        if (!Utilities.ATLEAST_NOUGAT_MR1) {
             List<String> ids = new ArrayList<>();
             for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
                     (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),

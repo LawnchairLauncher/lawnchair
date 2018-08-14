@@ -76,9 +76,15 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
 
         mEnabled = !xmlData.containsKey("enabled") || xmlData.get("enabled").toLowerCase().equals("true");
 
-        mIcon = xmlData.containsKey("icon") ?
-                Integer.valueOf(xmlData.get("icon").substring(1)) :
-                0;
+        if (xmlData.containsKey("icon")) {
+            String icon = xmlData.get("icon");
+            int resId = resources.getIdentifier(icon, null, packageName);
+            mIcon = resId == 0
+                    ? Integer.parseInt(icon.substring(1))
+                    : resId;
+        } else {
+            mIcon = 0;
+        }
 
         mShortLabel = xmlData.containsKey("shortcutShortLabel") ?
                 resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1))) :
