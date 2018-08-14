@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -40,7 +44,6 @@ import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
@@ -52,10 +55,6 @@ import org.junit.runner.RunWith;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Test to verify pin item request flow.
  */
@@ -63,7 +62,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class RequestPinItemTest  extends AbstractLauncherUiTest {
 
-    @Rule public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
     @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
     @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 

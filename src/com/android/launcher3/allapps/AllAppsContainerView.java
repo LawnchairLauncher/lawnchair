@@ -390,6 +390,26 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    // Used by tests only
+    private boolean isDescendantViewVisible(int viewId) {
+        final View view = findViewById(viewId);
+        if (view == null) return false;
+
+        if (!view.isShown()) return false;
+
+        return view.getGlobalVisibleRect(new Rect());
+    }
+
+    // Used by tests only
+    public boolean isPersonalTabVisible() {
+        return isDescendantViewVisible(R.id.tab_personal);
+    }
+
+    // Used by tests only
+    public boolean isWorkTabVisible() {
+        return isDescendantViewVisible(R.id.tab_work);
+    }
+
     public AlphabeticalAppsList getApps() {
         return mAH[AdapterHolder.MAIN].appsList;
     }

@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.ui;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -36,24 +39,30 @@ import android.support.test.uiautomator.Until;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
+import com.android.launcher3.util.Condition;
+import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.LauncherActivityRule;
 
 import org.junit.Before;
+import org.junit.Rule;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -65,19 +74,23 @@ public abstract class AbstractLauncherUiTest {
 
     public static final long SHORT_UI_TIMEOUT= 300;
     public static final long DEFAULT_UI_TIMEOUT = 3000;
-    public static final long LARGE_UI_TIMEOUT = 10000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected UiDevice mDevice;
+    protected LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
 
     private static final String TAG = "AbstractLauncherUiTest";
 
+    @Rule
+    public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+
     @Before
     public void setUp() throws Exception {
         mDevice = UiDevice.getInstance(getInstrumentation());
+        mLauncher = new LauncherInstrumentation(mDevice);
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
     }
@@ -234,6 +247,33 @@ public abstract class AbstractLauncherUiTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected <T> T getFromLauncher(Function<Launcher, T> f) {
+        return getOnUiThread(() -> f.apply(mActivityMonitor.getActivity()));
+    }
+
+    protected void executeOnLauncher(Consumer<Launcher> f) {
+        getFromLauncher(launcher -> {
+            f.accept(launcher);
+            return null;
+        });
+    }
+
+    // Cannot be used between a Tapl call injecting a gesture and a tapl call expecting the
+    // results of that gesture because the wait can hide flakeness.
+    protected boolean waitForState(LauncherState state) {
+        return waitForLauncherCondition(launcher -> launcher.getStateManager().getState() == state);
+    }
+
+    // Cannot be used after injecting any gesture using Tapl because this can hide flakiness.
+    protected boolean waitForLauncherCondition(Function<Launcher, Boolean> condition) {
+        return Wait.atMost(new Condition() {
+            @Override
+            public boolean isTrue() {
+                return getFromLauncher(condition);
+            }
+        }, DEFAULT_ACTIVITY_TIMEOUT);
     }
 
     /**
