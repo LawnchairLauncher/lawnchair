@@ -37,4 +37,6 @@ public interface SearchUiManager {
      * some UI beforehand.
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
+
+    void startSearch();
 }

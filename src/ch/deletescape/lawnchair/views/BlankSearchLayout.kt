@@ -34,4 +34,8 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
     override fun preDispatchKeyEvent(keyEvent: KeyEvent?) {
 
     }
+
+    override fun startSearch() {
+
+    }
 }

@@ -255,4 +255,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void preDispatchKeyEvent(KeyEvent keyEvent) {
 
     }
+
+    @Override
+    public void startSearch() {
+        post(this::performClick);
+    }
 }

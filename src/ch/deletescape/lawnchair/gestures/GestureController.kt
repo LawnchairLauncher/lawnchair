@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.gestures
 
 import android.content.Context
+import android.graphics.PointF
 import android.text.TextUtils
 import android.util.Log
 import android.view.MotionEvent
@@ -23,6 +24,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
     val verticalSwipeGesture = VerticalSwipeGesture(this)
 
+    var touchDownPoint = PointF()
+
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         return false
     }
@@ -31,8 +34,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         return false
     }
 
-    fun onBlankAreaTouch(ev: MotionEvent) {
-        doubleTapGesture.isEnabled && doubleTapGesture.onTouchEvent(ev)
+    fun onBlankAreaTouch(ev: MotionEvent): Boolean {
+        return doubleTapGesture.isEnabled && doubleTapGesture.onTouchEvent(ev)
     }
 
     fun onLongPress() {

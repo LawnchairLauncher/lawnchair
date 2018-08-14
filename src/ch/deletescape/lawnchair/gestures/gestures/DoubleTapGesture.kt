@@ -17,11 +17,12 @@ class DoubleTapGesture(controller: GestureController) : Gesture(controller) {
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (ev.actionMasked) {
             MotionEvent.ACTION_UP -> {
-                lastDown = if (ev.eventTime - lastDown <= delay) {
+                if (ev.eventTime - lastDown <= delay) {
                     handler.onGestureTrigger(controller)
-                    0L
+                    lastDown = 0L
+                    return true
                 } else {
-                    ev.downTime
+                    lastDown = ev.downTime
                 }
             }
         }

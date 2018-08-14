@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import ch.deletescape.lawnchair.touch.GestureTouchListener;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -43,7 +44,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
  */
-public class WorkspaceTouchListener implements OnTouchListener, Runnable {
+public class WorkspaceTouchListener extends GestureTouchListener implements OnTouchListener, Runnable {
 
     /**
      * STATE_PENDING_PARENT_INFORM is the state between longPress performed & the next motionEvent.
@@ -64,12 +65,19 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
     private int mLongPressState = STATE_CANCELLED;
 
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+        super(launcher);
         mLauncher = launcher;
         mWorkspace = workspace;
+        setTouchDownPoint(mTouchDownPoint);
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent ev) {
+        mTouchDownPoint.set(ev.getX(), ev.getY());
+        if (super.onTouch(view, ev)) {
+            cancelLongPress();
+            return true;
+        }
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             // Check if we can handle long press.
@@ -90,7 +98,6 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
             cancelLongPress();
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
-                mTouchDownPoint.set(ev.getX(), ev.getY());
                 mWorkspace.postDelayed(this, getLongPressTimeout());
             }
 
@@ -162,7 +169,7 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                         Action.Direction.NONE, ContainerType.WORKSPACE,
                         mWorkspace.getCurrentPage());
-                OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+                onLongPress();
             } else {
                 cancelLongPress();
             }

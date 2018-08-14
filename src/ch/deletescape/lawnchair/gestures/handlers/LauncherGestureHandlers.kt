@@ -8,12 +8,14 @@ import android.widget.Toast
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.views.OptionsPopupView
+import com.android.launcher3.widget.WidgetsFullSheet
 import org.json.JSONObject
 
 @Keep
@@ -22,8 +24,10 @@ open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : Ges
     override val displayName = context.getString(R.string.action_open_drawer)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-//        controller.launcher.showAppsView(true, true)
+        controller.launcher.stateManager.goToState(LauncherState.ALL_APPS, true, getOnCompleteRunnable(controller))
     }
+
+    open fun getOnCompleteRunnable(controller: GestureController): Runnable? = null
 }
 
 @Keep
@@ -32,7 +36,7 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
     override val displayName = context.getString(R.string.action_open_widgets)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-//        controller.launcher.showWidgetsView(true, true)
+        WidgetsFullSheet.show(controller.launcher, true)
     }
 }
 
@@ -54,7 +58,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val displayName = context.getString(R.string.action_open_overview)!!
 
     override fun onGestureTrigger(controller: GestureController) {
-//        controller.launcher.showOverviewPopup(false)
+        OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
     }
 }
 
@@ -73,8 +77,8 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Open
 
     override val displayName = context.getString(R.string.action_app_search)!!
 
-    override fun onGestureTrigger(controller: GestureController) {
-//        controller.launcher.showAppsView(true, true, true)
+    override fun getOnCompleteRunnable(controller: GestureController): Runnable? {
+        return Runnable { controller.launcher.appsView.searchUiManager.startSearch() }
     }
 }
 

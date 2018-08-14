@@ -344,9 +344,6 @@ public class CellLayout extends ViewGroup {
                 && mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }
-        if (mLauncher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) mLauncher).getGestureController().onBlankAreaTouch(ev);
-        }
         return handled;
     }
 
