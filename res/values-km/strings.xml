@@ -40,13 +40,18 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"រកមិនឃើញកម្មវិធី​ដែលត្រូវគ្នាជាមួយ \"<xliff:g id="QUERY">%1$s</xliff:g>\" ទេ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ស្វែងរកកម្មវិធីច្រើនទៀត"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ចុច​ឱ្យ​ជាប់​ដើម្បី​ជ្រើស​រើស​ផ្លូវកាត់​មួយ។"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ចុច​ពីរ​ដង ហើយ​ចុច​ឱ្យ​ជាប់​ដើម្បី​ជ្រើសរើស​ផ្លូវកាត់​មួយ ឬ​ប្រើ​សកម្មភាព​ផ្ទាល់ខ្លួន។"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"បញ្ជី​កម្មវិធី​ការងារ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ដើម"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"លុបការដំឡើង"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ព័ត៌មាន​កម្មវិធី"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"ដំឡើង"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ដំឡើង​ផ្លូវកាត់"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​បន្ថែម​ផ្លូវកាត់​ ដោយ​មិន​ចាំបាច់​​អំពើ​ពី​អ្នក​ប្រើ។"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"អាន​ការ​កំណត់​ និង​ផ្លូវកាត់​​អេក្រង់​ដើម"</string>
@@ -59,6 +64,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ថត​គ្មាន​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> មាន​ការ​ជូន​ដំណឹង <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g></item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> មាន​ការ​ជូន​ដំណឹង <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g></item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"ទំព័រ %1$d នៃ %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ទំព័រអេក្រង់ដើមថ្មី"</string>
@@ -72,19 +81,19 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"សង្ខេប"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"ស្លាកជូនដំណឹង"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"បើក"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"បិទ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"តម្រូវ​ឲ្យមាន​សិទ្ធិចូល​ប្រើប្រាស់​ការជូនដំណឹង"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ដើម្បីបង្ហាញស្លាកជូនដំណឹង សូមបើកការជូនដំណឹងកម្មវិធីសម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ប្ដូរ​ការកំណត់"</string>
+    <string name="icon_badging_service_title" msgid="2309733118428242174">"បង្ហាញ​ស្លាក​ជូនដំណឹង"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"បញ្ចូល​រូបតំណាង​ទៅ​អេក្រង់​ដើម"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ប្តូររូបរាងរូបតំណាង"</string>
+    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"នៅ​លើ​អេក្រង់​ដើម"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ប្រើលំនាំដើមរបស់ប្រព័ន្ធ"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ការ៉េ"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ការ៉េជ្រុងកោង"</string>
@@ -99,6 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"កំពុងដោនឡូត <xliff:g id="NAME">%1$s</xliff:g> បានបញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> កំពុងរង់ចាំការដំឡើង"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"ធាតុ​ក្រាហ្វិក <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_list" msgid="796804551140113767">"បញ្ជីធាតុ​ក្រាហ្វិក"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"បាន​បិទ​បញ្ជីធាតុ​ក្រាហ្វិក"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"បន្ថែមទៅអេក្រង់ដើម"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ផ្លាស់ធាតុមកទីនេះ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ធាតុដែលត្រូវបានបន្ថែមទៅអេក្រង់ដើម"</string>
@@ -114,9 +125,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"បង្កើតថតឯកសារជាមួយ៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"បានបង្កើតថតឯកសារ"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"ផ្លាស់ទៅអេក្រង់ដើម"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"រំកិលអេក្រង់ទៅខាងឆ្វេង"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"រំកិលអេក្រង់ទៅខាងស្តាំ"</string>
-    <string name="screen_moved" msgid="266230079505650577">"អេក្រង់ដែលបានផ្លាស់ទី"</string>
     <string name="action_resize" msgid="1802976324781771067">"ប្ដូរទំហំ"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"បង្កើនទទឹង"</string>
     <string name="action_increase_height" msgid="459390020612501122">"បង្កើនកម្ពស់"</string>
@@ -124,8 +132,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ផ្លូវកាត់សម្រាប់ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ផ្លូវកាត់ចំនួន <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> និង​ការជូនដំណឹងចំនួន <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> សម្រាប់ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"បដិសេធ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ស្វែង​រក​កម្មវិធី​ការងារ​នៅទីនេះ"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"កម្មវិធី​ការងារ​នីមួយៗ​មាន​ស្លាកមួយ និងត្រូវ​បានរក្សាទុក​យ៉ាងមានសុវត្ថិភាព​ដោយស្ថាប័ន​របស់អ្នក។ សូម​ផ្លាស់ទី​កម្មវិធី​ទៅកាន់​អេក្រង់​ដើម​របស់អ្នក​ ដើម្បី​ងាយស្រួល​ចូលប្រើជាងមុន។"</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"គ្រប់គ្រងដោយ​ស្ថាប័ន​របស់អ្នក"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"ការជូនដំណឹង​ និងកម្មវិធី​ត្រូវបានបិទ"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"បិទ"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"បានបិទ"</string>
 </resources>

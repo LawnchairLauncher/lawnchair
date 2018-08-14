@@ -16,24 +16,27 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
+import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 
-import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.folder.Folder;
+import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -41,7 +44,7 @@ import java.util.UUID;
 /**
  * {@link DragSource} for handling drop from a different window.
  */
-public abstract class BaseItemDragListener implements
+public abstract class BaseItemDragListener extends InternalStateHandler implements
         View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
     private static final String TAG = "BaseItemDragListener";
@@ -69,27 +72,20 @@ public abstract class BaseItemDragListener implements
         mId = UUID.randomUUID().toString();
     }
 
-    protected BaseItemDragListener(Parcel parcel) {
-        mPreviewRect = Rect.CREATOR.createFromParcel(parcel);
-        mPreviewBitmapWidth = parcel.readInt();
-        mPreviewViewWidth = parcel.readInt();
-        mId = parcel.readString();
-    }
-
-    protected void writeToParcel(Parcel parcel, int i) {
-        mPreviewRect.writeToParcel(parcel, i);
-        parcel.writeInt(mPreviewBitmapWidth);
-        parcel.writeInt(mPreviewViewWidth);
-        parcel.writeString(mId);
-    }
-
     public String getMimeType() {
         return MIME_TYPE_PREFIX + mId;
     }
 
-    public void setLauncher(Launcher launcher) {
+    @Override
+    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
+        launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
+        launcher.getDragLayer().setOnDragListener(this);
+        launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+
         mLauncher = launcher;
         mDragController = launcher.getDragController();
+        return false;
     }
 
     @Override
@@ -141,7 +137,7 @@ public abstract class BaseItemDragListener implements
     }
 
     @Override
-    public void onPreDragStart(DropTarget.DragObject dragObject) {
+    public void onPreDragStart(DragObject dragObject) {
         // The predrag starts when the workspace is not yet loaded. In some cases we set
         // the dragLayer alpha to 0 to have a nice fade-in animation. But that will prevent the
         // dragView from being visible. Instead just skip the fade-in animation here.
@@ -152,45 +148,19 @@ public abstract class BaseItemDragListener implements
     }
 
     @Override
-    public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+    public void onPreDragEnd(DragObject dragObject, boolean dragStarted) {
         if (dragStarted) {
             dragObject.dragView.setColor(0);
         }
     }
 
     @Override
-    public boolean supportsAppInfoDropTarget() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 1f;
-    }
-
-    @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-
-        if (!success) {
-            d.deferDragViewCleanupPostAnimation = false;
-        }
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         postCleanup();
     }
 
-    private void postCleanup() {
+    protected void postCleanup() {
+        clearReference();
         if (mLauncher != null) {
             // Remove any drag params from the launcher intent since the drag operation is complete.
             Intent newIntent = new Intent(mLauncher.getIntent());
@@ -198,16 +168,12 @@ public abstract class BaseItemDragListener implements
             mLauncher.setIntent(newIntent);
         }
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                removeListener();
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(this::removeListener);
     }
 
     public void removeListener() {
         if (mLauncher != null) {
+            mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
             mLauncher.getDragLayer().setOnDragListener(null);
         }
     }

@@ -45,7 +45,7 @@ public abstract class PackageInstallerCompat {
     /**
      * @return a map of active installs to their progress
      */
-    public abstract HashMap<String, Integer> updateAndGetActiveSessionCache();
+    public abstract HashMap<String, PackageInstaller.SessionInfo> updateAndGetActiveSessionCache();
 
     public abstract void onStop();
 

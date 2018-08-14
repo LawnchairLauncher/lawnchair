@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <drawable name="ic_info_shadow">@drawable/ic_info_no_shadow</drawable>
+    <drawable name="ic_setup_shadow">@drawable/ic_setting</drawable>
     <drawable name="ic_remove_shadow">@drawable/ic_remove_no_shadow</drawable>
     <drawable name="ic_uninstall_shadow">@drawable/ic_uninstall_no_shadow</drawable>
 </resources>

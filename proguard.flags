@@ -39,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
+-keep class com.android.launcher3.views.BaseDragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -86,14 +86,36 @@
   public <init>(...);
 }
 
+# The support library contains references to newer platform versions.
+# Don't warn about those in case this app is linking against an older
+# platform version.  We know about them, and they are safe.
+-dontwarn android.support.**
+
 # Proguard will strip methods required for talkback to properly scroll to
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
 # support jar.
-#-keep,allowoptimization,allowshrinking class android.support.** {
-#  *;
-#}
 -keep class android.support.v7.widget.RecyclerView { *; }
+
+# LauncherAppTransitionManager
+-keep class com.android.launcher3.LauncherAppTransitionManagerImpl {
+    public <init>(...);
+}
+
+# InstantAppResolver
+-keep class com.android.quickstep.InstantAppResolverImpl {
+    public <init>(...);
+}
+
+# MainProcessInitializer
+-keep class com.android.quickstep.QuickstepProcessInitializer {
+    public <init>(...);
+}
+
+# UserEventDispatcherExtension
+-keep class com.android.quickstep.logging.UserEventDispatcherExtension {
+    public <init>(...);
+}
 
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
@@ -102,3 +124,14 @@
 -keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
   *;
 }
+
+# Discovery bounce animation
+-keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
+  public void setProgress(float);
+  public float getProgress();
+}
+
+# BUG(70852369): Surpress additional warnings after changing from Proguard to R8
+-dontwarn android.app.**
+-dontwarn android.view.**
+-dontwarn android.os.**
