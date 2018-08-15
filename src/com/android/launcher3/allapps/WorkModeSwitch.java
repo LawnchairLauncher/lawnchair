@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.Switch;
 
 import com.android.launcher3.compat.UserManagerCompat;
@@ -59,6 +60,11 @@ public class WorkModeSwitch extends Switch {
         UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
         setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
         setEnabled(true);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return ev.getActionMasked() == MotionEvent.ACTION_MOVE || super.onTouchEvent(ev);
     }
 
     private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
