@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -35,7 +37,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -66,7 +67,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     protected final Launcher mLauncher;
     protected final boolean mIsRtl;
 
-    private final int mArrayOffset;
+    private final int mArrowOffset;
     private final View mArrow;
 
     protected boolean mIsLeftAligned;
@@ -99,7 +100,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         mArrow = new View(context);
         mArrow.setLayoutParams(new DragLayer.LayoutParams(arrowWidth, arrowHeight));
-        mArrayOffset = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
+        mArrowOffset = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
     }
 
     public ArrowPopup(Context context, AttributeSet attrs) {
@@ -187,11 +188,17 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));
             mArrow.setBackground(arrowDrawable);
+            // Clip off the part of the arrow that is underneath the popup.
+            if (mIsAboveIcon) {
+                mArrow.setClipBounds(new Rect(0, -mArrowOffset, arrowLp.width, arrowLp.height));
+            } else {
+                mArrow.setClipBounds(new Rect(0, 0, arrowLp.width, arrowLp.height + mArrowOffset));
+            }
             mArrow.setElevation(getElevation());
         }
 
         mArrow.setPivotX(arrowLp.width / 2);
-        mArrow.setPivotY(mIsAboveIcon ? 0 : arrowLp.height);
+        mArrow.setPivotY(mIsAboveIcon ? arrowLp.height : 0);
 
         animateOpen();
     }
@@ -220,7 +227,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     protected void orientAboutObject() {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = getMeasuredWidth();
-        int extraVerticalSpace = mArrow.getLayoutParams().height + mArrayOffset
+        int extraVerticalSpace = mArrow.getLayoutParams().height + mArrowOffset
                 + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
         int height = getMeasuredHeight() + extraVerticalSpace;
 
@@ -309,11 +316,11 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         if (mIsAboveIcon) {
             arrowLp.gravity = lp.gravity = Gravity.BOTTOM;
             lp.bottomMargin = getPopupContainer().getHeight() - y - getMeasuredHeight() - insets.top;
-            arrowLp.bottomMargin = lp.bottomMargin - arrowLp.height - mArrayOffset - insets.bottom;
+            arrowLp.bottomMargin = lp.bottomMargin - arrowLp.height - mArrowOffset - insets.bottom;
         } else {
             arrowLp.gravity = lp.gravity = Gravity.TOP;
             lp.topMargin = y + insets.top;
-            arrowLp.topMargin = lp.topMargin - insets.top - arrowLp.height - mArrayOffset;
+            arrowLp.topMargin = lp.topMargin - insets.top - arrowLp.height - mArrowOffset;
         }
     }
 
@@ -343,7 +350,8 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         final AnimatorSet openAnim = new AnimatorSet();
         final Resources res = getResources();
         final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
-        final TimeInterpolator revealInterpolator = new AccelerateDecelerateInterpolator();
+        final long arrowDuration = res.getInteger(R.integer.config_popupArrowOpenCloseDuration);
+        final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
 
         // Rectangular reveal.
         final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
@@ -351,16 +359,21 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         revealAnim.setDuration(revealDuration);
         revealAnim.setInterpolator(revealInterpolator);
 
-        Animator fadeIn = ObjectAnimator.ofFloat(this, ALPHA, 0, 1);
-        fadeIn.setDuration(revealDuration);
+        ValueAnimator fadeIn = ValueAnimator.ofFloat(0, 1);
+        fadeIn.setDuration(revealDuration + arrowDuration);
         fadeIn.setInterpolator(revealInterpolator);
+        fadeIn.addUpdateListener(anim -> {
+            float alpha = (float) anim.getAnimatedValue();
+            mArrow.setAlpha(alpha);
+            setAlpha(revealAnim.isStarted() ? alpha : 0);
+        });
         openAnim.play(fadeIn);
 
         // Animate the arrow.
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
         Animator arrowScale = ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 1)
-                .setDuration(res.getInteger(R.integer.config_popupArrowOpenDuration));
+                .setDuration(arrowDuration);
 
         openAnim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -371,7 +384,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         });
 
         mOpenCloseAnimator = openAnim;
-        openAnim.playSequentially(revealAnim, arrowScale);
+        openAnim.playSequentially(arrowScale, revealAnim);
         openAnim.start();
     }
 
@@ -388,26 +401,35 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
         mIsOpen = false;
 
-        final AnimatorSet closeAnim = new AnimatorSet();
-        // Hide the arrow
-        closeAnim.play(ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 0));
-        closeAnim.play(ObjectAnimator.ofFloat(mArrow, ALPHA, 0));
 
+        final AnimatorSet closeAnim = new AnimatorSet();
         final Resources res = getResources();
-        final TimeInterpolator revealInterpolator = new AccelerateDecelerateInterpolator();
+        final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
+        final long revealDuration = res.getInteger(R.integer.config_popupOpenCloseDuration);
+        final long arrowDuration = res.getInteger(R.integer.config_popupArrowOpenCloseDuration);
+
+        // Hide the arrow
+        Animator scaleArrow = ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 0)
+                .setDuration(arrowDuration);
 
         // Rectangular reveal (reversed).
         final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, true);
+        revealAnim.setDuration(revealDuration);
         revealAnim.setInterpolator(revealInterpolator);
-        closeAnim.play(revealAnim);
+        closeAnim.playSequentially(revealAnim, scaleArrow);
 
-        Animator fadeOut = ObjectAnimator.ofFloat(this, ALPHA, 0);
+        ValueAnimator fadeOut = ValueAnimator.ofFloat(getAlpha(), 0);
+        fadeOut.setDuration(revealDuration + arrowDuration);
         fadeOut.setInterpolator(revealInterpolator);
+        fadeOut.addUpdateListener(anim -> {
+            float alpha = (float) anim.getAnimatedValue();
+            mArrow.setAlpha(alpha);
+            setAlpha(scaleArrow.isStarted() ? 0 : alpha);
+        });
         closeAnim.play(fadeOut);
 
         onCreateCloseAnimation(closeAnim);
-        closeAnim.setDuration((long) res.getInteger(R.integer.config_popupOpenCloseDuration));
         closeAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -429,21 +451,25 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     protected void onCreateCloseAnimation(AnimatorSet anim) { }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        int arrowCenterX = getResources().getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
+        Resources res = getResources();
+        int arrowCenterX = res.getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
                 R.dimen.popup_arrow_horizontal_center_start:
                 R.dimen.popup_arrow_horizontal_center_end);
+        int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
+        float arrowCornerRadius = res.getDimension(R.dimen.popup_arrow_corner_radius);
         if (!mIsLeftAligned) {
             arrowCenterX = getMeasuredWidth() - arrowCenterX;
         }
         int arrowCenterY = mIsAboveIcon ? getMeasuredHeight() : 0;
 
-        mStartRect.set(arrowCenterX, arrowCenterY, arrowCenterX, arrowCenterY);
+        mStartRect.set(arrowCenterX - halfArrowWidth, arrowCenterY, arrowCenterX + halfArrowWidth,
+                arrowCenterY);
         if (mEndRect.isEmpty()) {
             mEndRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         }
 
         return new RoundedRectRevealOutlineProvider
-                (mOutlineRadius, mOutlineRadius, mStartRect, mEndRect);
+                (arrowCornerRadius, mOutlineRadius, mStartRect, mEndRect);
     }
 
     /**

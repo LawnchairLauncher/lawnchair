@@ -122,7 +122,7 @@
 
 <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenDuration">80</integer>
+    <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->
