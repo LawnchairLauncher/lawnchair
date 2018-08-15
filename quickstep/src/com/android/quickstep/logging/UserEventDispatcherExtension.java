@@ -28,17 +28,20 @@ import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.system.MetricsLoggerCompat;
+import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 
 /**
  * This class handles AOSP MetricsLogger function calls and logging around
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
-public class UserEventDispatcherExtension extends UserEventDispatcher {
+public class UserEventDispatcherExtension extends CustomAppPredictor {
 
     private static final String TAG = "UserEventDispatcher";
 
-    public UserEventDispatcherExtension(Context context) { }
+    public UserEventDispatcherExtension(Context context) {
+        super(context);
+    }
 
     public void logStateChangeAction(int action, int dir, int srcChildTargetType,
                                      int srcParentContainerType, int dstContainerType,

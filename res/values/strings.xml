@@ -638,4 +638,5 @@
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
     <string name="hotseat_qsb_preferences">Preferences</string>
+    <string name="title_app_suggestions_in_search">App suggestions</string>
 </resources>

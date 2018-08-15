@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.allapps.FloatingHeaderView
+<com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/all_apps_header"
     android:layout_width="match_parent"
@@ -22,6 +22,12 @@
     android:clipToPadding="false"
     android:paddingTop="@dimen/all_apps_header_top_padding"
     android:orientation="vertical" >
+
+    <com.google.android.apps.nexuslauncher.allapps.PredictionRowView
+        android:id="@+id/prediction_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:accessibilityPaneTitle="@string/title_app_suggestions_in_search" />
 
     <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
         android:id="@+id/tabs"
@@ -55,4 +61,4 @@
             android:textColor="@color/all_apps_tab_text"
             android:textSize="14sp" />
     </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
-</com.android.launcher3.allapps.FloatingHeaderView>
+</com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader>

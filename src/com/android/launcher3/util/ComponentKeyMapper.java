@@ -47,4 +47,8 @@ public class ComponentKeyMapper<T> {
         return mComponentKey.toString();
     }
 
+    public ComponentKey getKey() {
+        return mComponentKey;
+    }
+
 }

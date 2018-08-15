@@ -21,7 +21,6 @@ import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,12 +71,15 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             "com.google.android.talk"
     };
 
+    private final UiManager mUiManager;
+
     public CustomAppPredictor(Context context) {
         mContext = context;
         mAppFilter = AppFilter.newInstance(mContext);
         mPrefs = Utilities.getPrefs(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mPackageManager = context.getPackageManager();
+        mUiManager = new UiManager(this);
     }
 
     List<ComponentKeyMapper<AppInfo>> getPredictions() {
@@ -87,12 +89,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
             List<String> predictionList = new ArrayList<>(getStringSetCopy());
 
-            Collections.sort(predictionList, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return Integer.compare(getLaunchCount(o2), getLaunchCount(o1));
-                }
-            });
+            Collections.sort(predictionList, (o1, o2) -> Integer.compare(getLaunchCount(o2), getLaunchCount(o1)));
 
             for (String prediction : predictionList) {
                 list.add(getComponentFromString(prediction));
@@ -106,7 +103,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                     if (componentInfo != null) {
                         ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
                         if (!predictionList.contains(key.toString())) {
-                            list.add(new ComponentKeyMapper<AppInfo>(key));
+                            list.add(new ComponentKeyMapper<>(key));
                         }
                     }
                 }
@@ -135,6 +132,8 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
                 edit.putStringSet(PREDICTION_SET, predictionSet);
                 edit.apply();
+
+                mUiManager.onPredictionsUpdated();
             }
         }
     }
@@ -186,16 +185,20 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(SettingsActivity.SHOW_PREDICTIONS_PREF) && !isPredictorEnabled()) {
-            Set<String> predictionSet = getStringSetCopy();
+        if (key.equals(SettingsActivity.SHOW_PREDICTIONS_PREF)) {
+            if (!isPredictorEnabled()) {
+                Set<String> predictionSet = getStringSetCopy();
 
-            SharedPreferences.Editor edit = mPrefs.edit();
-            for (String prediction : predictionSet) {
-                Log.i("Predictor", "Clearing " + prediction + " at " + getLaunchCount(prediction));
-                edit.remove(PREDICTION_PREFIX + prediction);
+                SharedPreferences.Editor edit = mPrefs.edit();
+                for (String prediction : predictionSet) {
+                    Log.i("Predictor", "Clearing " + prediction + " at " + getLaunchCount(prediction));
+                    edit.remove(PREDICTION_PREFIX + prediction);
+                }
+                edit.putStringSet(PREDICTION_SET, EMPTY_SET);
+                edit.apply();
             }
-            edit.putStringSet(PREDICTION_SET, EMPTY_SET);
-            edit.apply();
+
+            mUiManager.onPredictionsUpdated();
         }
     }
 
@@ -222,8 +225,48 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private Set<String> getStringSetCopy() {
-        Set<String> set = new HashSet<>();
-        set.addAll(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
-        return set;
+        return new HashSet<>(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
+    }
+
+    public UiManager getUiManager() {
+        return mUiManager;
+    }
+
+    public static class UiManager {
+
+        private final CustomAppPredictor mPredictor;
+        private final List<Listener> mListeners = new ArrayList<>();
+
+        private UiManager(CustomAppPredictor predictor) {
+            mPredictor = predictor;
+        }
+
+        public void addListener(Listener listener) {
+            mListeners.add(listener);
+            listener.onPredictionsUpdated();
+        }
+
+        public void removeListener(Listener listener) {
+            mListeners.remove(listener);
+        }
+
+        public boolean isEnabled() {
+            return mPredictor.isPredictorEnabled();
+        }
+
+        public List<ComponentKeyMapper<AppInfo>> getPredictions() {
+            return mPredictor.getPredictions();
+        }
+
+        void onPredictionsUpdated() {
+            for (Listener listener : mListeners) {
+                listener.onPredictionsUpdated();
+            }
+        }
+
+        public interface Listener {
+
+            void onPredictionsUpdated();
+        }
     }
 }

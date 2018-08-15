@@ -18,22 +18,22 @@ package com.android.quickstep;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.util.FloatProperty;
+import android.util.Property;
 
 /**
  * A mutable float which allows animating the value
  */
 public class AnimatedFloat {
 
-    public static FloatProperty<AnimatedFloat> VALUE = new FloatProperty<AnimatedFloat>("value") {
+    public static Property<AnimatedFloat, Float> VALUE = new Property<AnimatedFloat, Float>(Float.class, "value") {
         @Override
-        public void setValue(AnimatedFloat obj, float v) {
-            obj.updateValue(v);
+        public void set(AnimatedFloat object, Float value) {
+            object.updateValue(value);
         }
 
         @Override
-        public Float get(AnimatedFloat obj) {
-            return obj.value;
+        public Float get(AnimatedFloat animatedFloat) {
+            return animatedFloat.value;
         }
     };
 
