@@ -108,13 +108,18 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         mSwipeDetector.onTouchEvent(ev);
-        if (ev.getAction() == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState()) {
+        if (ev.getAction() == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState()
+                && !isOpeningAnimationRunning()) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
             if (!getPopupContainer().isEventOverView(mContent, ev)) {
                 close(true);
             }
         }
         return true;
+    }
+
+    private boolean isOpeningAnimationRunning() {
+        return mIsOpen && mOpenCloseAnimator.isRunning();
     }
 
     /* SwipeDetector.Listener */
@@ -154,7 +159,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
             onCloseComplete();
             return;
         }
-        if (!mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (!mIsOpen) {
             return;
         }
         mOpenCloseAnimator.setValues(
