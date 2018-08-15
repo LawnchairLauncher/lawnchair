@@ -18,7 +18,7 @@ package com.android.launcher3.util.rule;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.os.ParcelFileDescriptor;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
