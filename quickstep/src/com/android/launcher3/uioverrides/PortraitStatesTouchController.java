@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -205,6 +206,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
+        } else if (mStartState == NORMAL && targetState == ALL_APPS) {
+            LawnchairLauncher.Companion.getLauncher(mLauncher).getGestureController()
+                    .getVerticalSwipeGesture().onSwipeUpAllAppsComplete();
         }
     }
 

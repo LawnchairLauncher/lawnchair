@@ -27,4 +27,10 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
     fun onSwipeDown() {
         swipeDownHandler.onGestureTrigger(controller)
     }
+
+    fun onSwipeUpAllAppsComplete() {
+        if (swipeUpAppsSearch) {
+            controller.launcher.appsView.searchUiManager.startSearch()
+        }
+    }
 }

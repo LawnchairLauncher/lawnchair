@@ -37,6 +37,7 @@ import android.os.CancellationSignal;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 
+import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -67,18 +68,21 @@ public class UiFactory {
         if (!swipeUpEnabled) {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new VerticalSwipeGestureController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LauncherTaskViewController(launcher)};
         }
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new VerticalSwipeGestureController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LandscapeEdgeSwipeController(launcher),
                     new LauncherTaskViewController(launcher)};
         } else {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new VerticalSwipeGestureController(launcher),
                     new PortraitStatesTouchController(launcher),
                     new LauncherTaskViewController(launcher)};
         }
