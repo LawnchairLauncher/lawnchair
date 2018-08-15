@@ -23,6 +23,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 
 public class AccessibilityManagerCompat {
@@ -95,7 +96,7 @@ public class AccessibilityManagerCompat {
             final Bundle response = new Bundle();
             responseFiller.accept(response);
             AccessibilityManagerCompat.sendEventToTest(
-                    accessibilityManager, eventTag + "_RESPONSE", response);
+                    accessibilityManager, eventTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX, response);
             return true;
         }
         return false;

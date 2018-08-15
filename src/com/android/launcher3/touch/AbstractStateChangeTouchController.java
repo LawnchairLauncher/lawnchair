@@ -39,6 +39,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -517,7 +518,8 @@ public abstract class AbstractStateChangeTouchController
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
 
-            AccessibilityManagerCompat.sendEventToTest(mLauncher, "TAPL_WENT_TO_STATE");
+            AccessibilityManagerCompat.sendEventToTest(
+                    mLauncher, TestProtocol.SWITCHED_TO_STATE_MESSAGE);
         }
     }
 

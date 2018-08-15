@@ -24,6 +24,8 @@ import android.support.test.uiautomator.UiObject2;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.TestProtocol;
+
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
@@ -96,8 +98,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     }
 
     private int getScroll(UiObject2 allAppsContainer) {
-        return mLauncher.getAnswerFromLauncher(allAppsContainer, "TAPL_GET_SCROLL").
-                getInt("scrollY", -1);
+        return mLauncher.getAnswerFromLauncher(allAppsContainer, TestProtocol.GET_SCROLL_MESSAGE).
+                getInt(TestProtocol.SCROLL_Y_FIELD, -1);
     }
 
     private void ensureIconVisible(UiObject2 appIcon, UiObject2 allAppsContainer) {

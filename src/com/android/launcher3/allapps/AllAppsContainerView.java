@@ -42,6 +42,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -576,9 +577,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (AccessibilityManagerCompat.processTestRequest(
-                mLauncher, "TAPL_GET_SCROLL", action, arguments,
+                mLauncher, TestProtocol.GET_SCROLL_MESSAGE, action, arguments,
                 response ->
-                        response.putInt("scrollY", getActiveRecyclerView().getCurrentScrollY()))) {
+                        response.putInt(TestProtocol.SCROLL_Y_FIELD,
+                                getActiveRecyclerView().getCurrentScrollY()))) {
             return true;
         }
 

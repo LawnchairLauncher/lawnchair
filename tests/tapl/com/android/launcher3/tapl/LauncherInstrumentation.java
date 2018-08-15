@@ -34,6 +34,7 @@ import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.android.launcher3.TestProtocol;
 import com.android.quickstep.SwipeUpSetting;
 
 import java.lang.ref.WeakReference;
@@ -174,7 +175,7 @@ public final class LauncherInstrumentation {
 
     Bundle getAnswerFromLauncher(UiObject2 view, String requestTag) {
         // Send a fake set-text request to Launcher to initiate a response with requested data.
-        final String responseTag = requestTag + "_RESPONSE";
+        final String responseTag = requestTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX;
         return executeAndWaitForEvent(
                 () -> view.setText(requestTag),
                 event -> responseTag.equals(event.getClassName()),
@@ -338,7 +339,7 @@ public final class LauncherInstrumentation {
     void swipe(int startX, int startY, int endX, int endY) {
         executeAndWaitForEvent(
                 () -> mDevice.swipe(startX, startY, endX, endY, 60),
-                event -> "TAPL_WENT_TO_STATE".equals(event.getClassName()),
+                event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
     }
