@@ -266,7 +266,7 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
                 ((BubbleTextView) getChildAt(i2)).setTextColor(f);
             }
         }
-        i = ColorUtils.setAlphaComponent(this.AZ, Math.round(((float) (Color.alpha(this.AZ) * i)) / 1132396544));
+        i = ColorUtils.setAlphaComponent(this.AZ, Math.round(((float) (Color.alpha(this.AZ) * i)) / 255f));
         if (i != this.mPaint.getColor()) {
             this.mPaint.setColor(i);
             this.AY = Math.round((float) ((this.AX * this.AU) / this.AT));
