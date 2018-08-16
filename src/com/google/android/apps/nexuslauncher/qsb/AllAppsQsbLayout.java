@@ -36,6 +36,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private float Dy;
     private TextView Dz;
     private AllAppsContainerView mAppsView;
+    boolean mDoNotRemoveFallback;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -163,7 +164,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void searchFallback() {
         ensureFallbackView();
-        mFallback.setText("");
         mFallback.showKeyboard();
     }
 
@@ -171,7 +171,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         aD(0);
         if (mUseFallbackSearch) {
             resetFallbackView();
-        } else {
+        } else if (!mDoNotRemoveFallback) {
             removeFallbackView();
         }
     }
@@ -188,8 +188,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private void removeFallbackView() {
-        resetFallbackView();
         if (mFallback != null) {
+            mFallback.clearSearchResult();
             setOnClickListener(this);
             removeView(mFallback);
             mFallback = null;

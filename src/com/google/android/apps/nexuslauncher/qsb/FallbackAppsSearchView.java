@@ -63,7 +63,9 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
                 dV();
             }
             x(false);
+            DJ.mDoNotRemoveFallback = true;
             mAppsView.onClearSearchResult();
+            DJ.mDoNotRemoveFallback = false;
         }
     }
 
