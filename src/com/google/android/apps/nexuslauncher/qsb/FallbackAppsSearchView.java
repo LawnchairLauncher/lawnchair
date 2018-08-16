@@ -12,6 +12,8 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
 import com.android.launcher3.util.ComponentKey;
+import com.google.android.apps.nexuslauncher.allapps.PredictionRowView;
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
         Launcher.getLauncher(getContext()).getAppsView().getAppsStore().removeUpdateListener(this);
     }
 
+    @Override
     public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null && getParent() != null) {
             mApps.setOrderedFilter(apps);
@@ -53,9 +56,10 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
         }
     }
 
+    @Override
     public final void clearSearchResult() {
         if (getParent() != null) {
-            if (this.mApps.setOrderedFilter(null)) {
+            if (mApps.setOrderedFilter(null)) {
                 dV();
             }
             x(false);
@@ -68,21 +72,16 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     private void x(boolean z) {
-//        PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) this.mAppsView.getFloatingHeaderView();
-//        if (predictionsFloatingHeader != null && z != predictionsFloatingHeader.AI) {
-//            predictionsFloatingHeader.AI = z;
-//            ActionsRowView actionsRowView = predictionsFloatingHeader.Bo;
-//            if (z != actionsRowView.AI) {
-//                actionsRowView.AI = z;
-//                actionsRowView.da();
-//            }
-//            PredictionRowView predictionRowView = predictionsFloatingHeader.Bn;
-//            if (z != predictionRowView.AI) {
-//                predictionRowView.AI = z;
-//                predictionRowView.da();
-//            }
-//            predictionsFloatingHeader.dh();
-//        }
+        PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) mAppsView.getFloatingHeaderView();
+        if (predictionsFloatingHeader != null && z != predictionsFloatingHeader.AI) {
+            predictionsFloatingHeader.AI = z;
+            PredictionRowView predictionRowView = predictionsFloatingHeader.Bn;
+            if (z != predictionRowView.AI) {
+                predictionRowView.AI = z;
+                predictionRowView.da();
+            }
+            predictionsFloatingHeader.updateLayout();
+        }
     }
 
     private void dV() {
