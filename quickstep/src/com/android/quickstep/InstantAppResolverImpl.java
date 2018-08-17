@@ -47,7 +47,11 @@ public class InstantAppResolverImpl extends InstantAppResolver {
 
     @Override
     public boolean isInstantApp(ApplicationInfo info) {
-        return info.isInstantApp();
+        try {
+            return info.isInstantApp();
+        } catch (NoSuchMethodError e) {
+            return super.isInstantApp(info);
+        }
     }
 
     @Override
@@ -71,6 +75,7 @@ public class InstantAppResolverImpl extends InstantAppResolver {
             Log.w(TAG, "getInstantApps failed. Launcher may not be the default home app.", se);
         } catch (Exception e) {
             Log.e(TAG, "Error calling API: getInstantApps", e);
+        } catch (NoSuchMethodError e) {
         }
         return super.getInstantApps();
     }

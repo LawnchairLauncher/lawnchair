@@ -298,7 +298,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onAttachedToWindow();
         updateTaskStackListenerState();
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+        if (Utilities.isRecentsEnabled()) {
             ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
         }
     }
@@ -308,7 +308,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+        if (Utilities.isRecentsEnabled()) {
             ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
         }
     }
@@ -621,6 +621,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Unloads any associated data from the currently visible tasks
      */
     private void unloadVisibleTaskData() {
+        if (!Utilities.isRecentsEnabled()) return;
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
             if (mHasVisibleTaskData.valueAt(i)) {

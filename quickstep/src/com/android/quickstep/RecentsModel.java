@@ -63,6 +63,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private static RecentsModel INSTANCE;
 
     public static RecentsModel getInstance(final Context context) {
+        if (!Utilities.isRecentsEnabled()) return null;
         if (INSTANCE == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 INSTANCE = new RecentsModel(context.getApplicationContext());
@@ -115,7 +116,7 @@ public class RecentsModel extends TaskStackChangeListener {
             }
         };
         mRecentsTaskLoader.startLoader(mContext);
-        if (Utilities.shouldRegisterTaskStackChangeListener()) {
+        if (Utilities.isRecentsEnabled()) {
             ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
         }
 

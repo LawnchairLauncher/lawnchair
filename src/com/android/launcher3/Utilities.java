@@ -843,7 +843,7 @@ public final class Utilities {
         handler.sendMessage(msg);
     }
 
-    public static boolean shouldRegisterTaskStackChangeListener() {
+    public static boolean isRecentsEnabled() {
         return Utilities.ATLEAST_P;
     }
 
