@@ -353,6 +353,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
         UiFactory.onEnterAnimationComplete(this);
+        mAllAppsController.highlightWorkTabIfNecessary();
     }
 
     @Override

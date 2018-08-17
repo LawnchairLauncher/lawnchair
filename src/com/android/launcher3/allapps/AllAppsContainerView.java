@@ -486,8 +486,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void onScrollUpEnd() {
+        highlightWorkTabIfNecessary();
+    }
+
+    void highlightWorkTabIfNecessary() {
         if (mUsingTabs) {
-            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).highlightWorkTabIfNecessary();
+            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs))
+                    .highlightWorkTabIfNecessary();
         }
     }
 
