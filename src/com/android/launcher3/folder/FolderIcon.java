@@ -20,6 +20,7 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_I
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -32,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -106,9 +108,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
 
+    @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mBadgeScale;
+    private Animator mBadgeScaleAnim;
     private Point mTempSpaceForBadgeOffset = new Point();
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
@@ -393,15 +398,30 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float newBadgeScale = isBadged ? 1f : 0f;
         // Animate when a badge is first added or when it is removed.
         if ((wasBadged ^ isBadged) && isShown()) {
-            createBadgeScaleAnimator(newBadgeScale).start();
+            animateBadgeScale(newBadgeScale);
         } else {
+            cancelBadgeScaleAnim();
             mBadgeScale = newBadgeScale;
             invalidate();
         }
     }
 
-    public Animator createBadgeScaleAnimator(float... badgeScales) {
-        return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+    private void cancelBadgeScaleAnim() {
+        if (mBadgeScaleAnim != null) {
+            mBadgeScaleAnim.cancel();
+        }
+    }
+
+    public void animateBadgeScale(float... badgeScales) {
+        cancelBadgeScaleAnim();
+        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBadgeScaleAnim = null;
+            }
+        });
+        mBadgeScaleAnim.start();
     }
 
     public boolean hasBadge() {

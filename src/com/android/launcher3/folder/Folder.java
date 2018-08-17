@@ -644,7 +644,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
                 mFolderIcon.mBackground.animateBackgroundStroke();
                 mFolderIcon.onFolderClose(mContent.getCurrentPage());
                 if (mFolderIcon.hasBadge()) {
-                    mFolderIcon.createBadgeScaleAnimator(0f, 1f).start();
+                    mFolderIcon.animateBadgeScale(0f, 1f);
                 }
                 mFolderIcon.requestFocus();
             }
