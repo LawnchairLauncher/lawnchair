@@ -16,6 +16,8 @@
 
 package com.android.launcher3.badge;
 
+import android.view.ViewDebug;
+
 import com.android.launcher3.Utilities;
 
 /**
@@ -56,6 +58,7 @@ public class FolderBadgeInfo extends BadgeInfo {
         return 0;
     }
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     public boolean hasBadge() {
         return mNumNotifications > 0;
     }

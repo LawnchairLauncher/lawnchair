@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -112,10 +114,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTextAlpha = 1;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
     private int mBadgeColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mBadgeScale;
+    private Animator mBadgeScaleAnim;
     private boolean mForceHideBadge;
     private Point mTempSpaceForBadgeOffset = new Point();
     private Rect mTempIconBounds = new Rect();
@@ -188,8 +193,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public void reset() {
         mBadgeInfo = null;
         mBadgeColor = Color.TRANSPARENT;
+        cancelBadgeScaleAnim();
         mBadgeScale = 0f;
         mForceHideBadge = false;
+    }
+
+    private void cancelBadgeScaleAnim() {
+        if (mBadgeScaleAnim != null) {
+            mBadgeScaleAnim.cancel();
+        }
+    }
+
+    private void animateBadgeScale(float... badgeScales) {
+        cancelBadgeScaleAnim();
+        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBadgeScaleAnim = null;
+            }
+        });
+        mBadgeScaleAnim.start();
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
@@ -378,7 +402,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (forceHideBadge) {
             invalidate();
         } else if (hasBadge()) {
-            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, 0, 1).start();
+            animateBadgeScale(0, 1);
         }
     }
 
@@ -524,8 +548,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             if (wasBadged || isBadged) {
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
-                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+                    animateBadgeScale(newBadgeScale);
                 } else {
+                    cancelBadgeScaleAnim();
                     mBadgeScale = newBadgeScale;
                     invalidate();
                 }
