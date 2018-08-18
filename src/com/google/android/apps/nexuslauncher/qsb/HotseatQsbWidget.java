@@ -190,6 +190,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
         }
     }
 
+    @Override
+    protected int getMicResource() {
+        return getMicResource(mIsGoogleColored);
+    }
+
     static int c(Launcher launcher) {
         Resources resources = launcher.getResources();
         DeviceProfile profile = launcher.getDeviceProfile();

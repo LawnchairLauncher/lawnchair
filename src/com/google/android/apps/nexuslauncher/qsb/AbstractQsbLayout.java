@@ -20,6 +20,7 @@ import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Process;
 import android.provider.Settings.Secure;
+import android.support.annotation.DrawableRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -56,7 +58,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected int Dc;
     protected int Dd;
     protected float De;
-    protected View mMicIconView;
+    protected ImageView mMicIconView;
     protected String Dg;
     protected boolean Dh;
     protected int Di;
@@ -68,6 +70,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     private final boolean Do;
     protected final boolean mIsRtl;
     protected Bitmap mShadowBitmap;
+    private boolean mShowAssistant;
 
     public abstract void startSearch(String str, int i);
 
@@ -136,9 +139,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected final SharedPreferences dy() {
         dz();
-        SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
-        hideMicIcon();
-        c(devicePrefs);
+        SharedPreferences devicePrefs = Utilities.getPrefs(getContext());
+        loadPreferences(devicePrefs);
         return devicePrefs;
     }
 
@@ -159,7 +161,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected void onDetachedFromWindow() {
-        Utilities.getDevicePrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         super.onDetachedFromWindow();
     }
 
@@ -405,36 +407,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public void onClick(View view) {
-        if (view == this.mMicIconView) {
-            ComponentName unflattenFromString;
-            ContentResolver contentResolver = view.getContext().getContentResolver();
-            String string = Secure.getString(contentResolver, "assistant");
-            String pkg;
-            boolean z = false;
-            if (TextUtils.isEmpty(string)) {
-                String string2 = Secure.getString(contentResolver, "voice_interaction_service");
-                if (TextUtils.isEmpty(string2)) {
-                    ResolveInfo info = view.getContext().getPackageManager()
-                            .resolveActivity(new Intent("android.intent.action.ASSIST"), PackageManager.MATCH_DEFAULT_ONLY);
-                    if (info == null || !"com.google.android.googlequicksearchbox".equals(info.resolvePackageName)) {
-                        z = ActivityManagerWrapper.getInstance().showVoiceSession(null, null, 5);
-                    }
-                    if (!z) {
-                        k(Intent.ACTION_VOICE_COMMAND);
-                    }
-                }
-                pkg = "com.google.android.googlequicksearchbox";
-                unflattenFromString = ComponentName.unflattenFromString(string2);
-            } else {
-                pkg = "com.google.android.googlequicksearchbox";
-                unflattenFromString = ComponentName.unflattenFromString(string);
-            }
-            if (!pkg.equals(unflattenFromString.getPackageName())) {
-                z = ActivityManagerWrapper.getInstance().showVoiceSession(null, null, 5);
-            }
-            if (!z) {
-                k(Intent.ACTION_VOICE_COMMAND);
-            }
+        if (view == mMicIconView) {
+            fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
         }
     }
 
@@ -447,22 +421,27 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if ("opa_enabled".equals(str)) {
-            hideMicIcon();
-            return;
-        }
-        if ("pref_persistent_flags".equals(str)) {
-            c(sharedPreferences);
+        if ("opa_enabled".equals(str) || "opa_assistant".equals(str)) {
+            loadPreferences(sharedPreferences);
         }
     }
 
-    private void hideMicIcon() {
-//        this.mMicIconView.setVisibility(View.GONE);
-//        setTouchDelegate(null);
-//        requestLayout();
+    private void loadPreferences(SharedPreferences sharedPreferences) {
+        mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
+        mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
+        mMicIconView.setImageResource(getMicResource());
     }
 
-    protected void c(SharedPreferences sharedPreferences) {
+    protected int getMicResource() {
+        return getMicResource(true);
+    }
+
+    protected int getMicResource(boolean colored) {
+        if (colored){
+            return mShowAssistant ? R.drawable.opa_assistant_logo : R.drawable.ic_mic_color;
+        } else {
+            return mShowAssistant ? R.drawable.opa_assistant_logo_shadow : R.drawable.ic_mic_shadow;
+        }
     }
 
     public boolean onLongClick(View view) {
