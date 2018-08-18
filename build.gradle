@@ -85,7 +85,7 @@ android {
 
         quickstep {
             dimension "default"
-            applicationId 'com.android.launcher3'
+            applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
 
