@@ -134,6 +134,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Gestures
     val doubleTapDelay = 350L
 
+    // Quickstep
+    val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
+
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()

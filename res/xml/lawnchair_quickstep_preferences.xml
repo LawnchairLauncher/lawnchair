@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="pref_swipe_up_to_switch_apps_enabled"
+        android:persistent="true"
+        android:title="@string/swipe_up_to_switch_apps_title" />
+</android.support.v7.preference.PreferenceScreen>

@@ -32,11 +32,13 @@ import android.provider.Settings;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 
@@ -49,7 +51,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
  */
-public class OverviewInteractionState {
+public class OverviewInteractionState implements LawnchairPreferences.OnPreferenceChangeListener {
 
     private static final String TAG = "OverviewFlags";
 
@@ -104,14 +106,8 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME)) {
-            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
-                    context.getContentResolver());
-            mSwipeUpSettingObserver.register();
-        } else {
-            mSwipeUpSettingObserver = null;
-            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
-        }
+        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
+        mSwipeUpSettingObserver = null;
     }
 
     public boolean isSwipeUpGestureEnabled() {
@@ -248,5 +244,11 @@ public class OverviewInteractionState {
                     .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
                     .apply();
         }
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+        mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+        mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
     }
 }

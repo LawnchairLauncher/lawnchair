@@ -64,6 +64,7 @@ import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
+import com.android.quickstep.TouchInteractionService;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -249,6 +250,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
             Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsReallyEnabled", this);
+            if (!TouchInteractionService.isConnected()) {
+                getPreferenceScreen().removePreference(findPreference("quickstep"));
+            }
         }
 
         @Override

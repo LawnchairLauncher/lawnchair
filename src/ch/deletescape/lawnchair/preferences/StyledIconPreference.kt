@@ -13,7 +13,7 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
     }
 
     override fun onAccentChange(color: Int, foregroundColor: Int) {
-        icon.setTint(color)
+        icon?.setTint(color)
     }
 
     override fun onDetached() {
