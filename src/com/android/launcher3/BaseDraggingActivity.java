@@ -32,6 +32,8 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.theme.ThemeManager;
+import ch.deletescape.lawnchair.theme.ThemeOverride;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -71,14 +73,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
-        // Update theme
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.addOnChangeListener(this);
-        int themeRes = getThemeRes(wallpaperColorInfo);
-        if (themeRes != mThemeRes) {
-            mThemeRes = themeRes;
-            setTheme(themeRes);
-        }
+        // Register theme override
+        ThemeOverride themeOverride = Utilities.getLawnchairPrefs(this).getAllAppsSearch() ?
+                new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this);
+        ThemeManager.Companion.getInstance(this).addOverride(themeOverride);
     }
 
     @Override
