@@ -39,6 +39,7 @@ import android.util.DisplayMetrics;
 import android.util.Property;
 import android.view.View;
 
+import ch.deletescape.lawnchair.theme.ThemeManager;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -149,7 +150,7 @@ public class WorkspaceAndHotseatScrim implements
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
 
-        mHasSysUiScrim = !mWallpaperColorInfo.supportsDarkText();
+        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText();
         if (mHasSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();

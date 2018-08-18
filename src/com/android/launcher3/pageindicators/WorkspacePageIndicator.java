@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.theme.ThemeManager;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -123,7 +124,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         mLauncher = Launcher.getLauncher(context);
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
 
-        boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
+        boolean darkText = ThemeManager.Companion.getInstance(context).getSupportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
     }

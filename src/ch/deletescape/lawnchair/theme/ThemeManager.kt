@@ -35,6 +35,9 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
     private val prefs = Utilities.getLawnchairPrefs(context)
     private var themeFlags = 0
 
+    val isDark get() = themeFlags and THEME_DARK != 0
+    val supportsDarkText get() = themeFlags and THEME_DARK_TEXT != 0
+
     init {
         application.registerActivityLifecycleCallbacks(this)
         wallpaperColorInfo.addOnChangeListener(this)
