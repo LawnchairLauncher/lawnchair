@@ -58,6 +58,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
 
+    private boolean mStartedFromHotseat;
+
 
     public PortraitStatesTouchController(Launcher l) {
         super(l, SwipeDetector.VERTICAL);
@@ -83,7 +85,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             // For all other states, only listen if the event originated below the hotseat height
             DeviceProfile dp = mLauncher.getDeviceProfile();
             int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-            if (ev.getY() < (mLauncher.getDragLayer().getHeight() - hotseatHeight)) {
+            mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
+            if (!mStartedFromHotseat && !mLauncher.isInState(NORMAL)) {
                 return false;
             }
         }
@@ -102,7 +105,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? ALL_APPS : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
-            return TouchInteractionService.isConnected() ? OVERVIEW : ALL_APPS;
+            return TouchInteractionService.isConnected() && mStartedFromHotseat ? OVERVIEW : ALL_APPS;
         }
         return fromState;
     }
