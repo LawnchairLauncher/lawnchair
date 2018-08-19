@@ -19,11 +19,14 @@ class SearchProviderController(private val context: Context) {
         get() {
             val curr = prefs.searchProvider
             if (cache == null || cached != curr) {
-                cache = try {
-                    Class.forName(prefs.searchProvider).getConstructor(Context::class.java).newInstance(context) as SearchProvider
-                } catch (e: Exception) {
-                    GoogleSearchProvider(context)
-                }
+                cache = null
+                try {
+                    val prov = Class.forName(prefs.searchProvider).getConstructor(Context::class.java).newInstance(context) as SearchProvider
+                    if(prov.isAvailable) {
+                        cache = prov
+                    }
+                } catch (ignored: Exception) { }
+                if(cache == null) cache = GoogleSearchProvider(context)
                 cached = curr
             }
             return cache!!
