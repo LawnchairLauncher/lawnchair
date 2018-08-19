@@ -23,6 +23,7 @@ import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.c;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.e;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.i;
 import com.google.android.apps.nexuslauncher.utils.ColorManipulation;
+import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 import java.net.URISyntaxException;
 
@@ -296,6 +297,9 @@ public class SmartspaceCard {
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setSourceBounds(launcher.getViewBounds(view));
+                if (LauncherClient.BRIDGE_USE) {
+                    intent.setPackage(LauncherClient.BRIDGE_PACKAGE);
+                }
                 view.getContext().sendBroadcast(intent);
                 break;
             }

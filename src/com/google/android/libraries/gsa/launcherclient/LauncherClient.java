@@ -25,6 +25,9 @@ import com.google.android.libraries.launcherclient.ILauncherOverlayCallback;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {
+    public final static boolean BRIDGE_USE = true;
+    public final static String BRIDGE_PACKAGE = "com.google.android.apps.nexuslauncher";
+
     private static int apiVersion = -1;
 
     private ILauncherOverlay mOverlay;
@@ -364,7 +367,7 @@ public class LauncherClient {
     static Intent getIntent(Context context, boolean proxy) {
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-                .setPackage(proxy ? "amirz.aidlbridge" : "com.google.android.googlequicksearchbox")
+                .setPackage(proxy ? BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
                 .setData(Uri.parse(new StringBuilder(pkg.length() + 18)
                             .append("app://")
                             .append(pkg)

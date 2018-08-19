@@ -358,4 +358,10 @@
 
     <!-- Custom -->
     <string name="app_name_rootless_pixel_launcher">Rootless Pixel Launcher</string>
+    <string name="bridge_missing_title">Rootless Pixel Bridge</string>
+    <string name="bridge_missing_message">
+        The bridge to connect to the Google Feed could not be found,
+        or needs to be updated. Do you want to install the latest version?
+    </string>
+    <string name="bridge_install">Install</string>
 </resources>
