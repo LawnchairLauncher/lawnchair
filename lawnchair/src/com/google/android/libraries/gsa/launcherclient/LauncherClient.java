@@ -117,7 +117,7 @@ public class LauncherClient {
     public LauncherClient(Activity activity, IScrollCallback scrollCallback, StaticInteger flags) {
         mActivity = activity;
         mScrollCallback = scrollCallback;
-        mBaseService = new BaseClientService(activity, 65);
+        mBaseService = new BaseClientService(activity, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
         mFlags = flags.mData;
 
         mLauncherService = LauncherClientService.getInstance(activity);
@@ -361,10 +361,10 @@ public class LauncherClient {
         }
     }
 
-    static Intent getIntent(Context context) {
+    static Intent getIntent(Context context, boolean proxy) {
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(proxy ? "amirz.aidlbridge" : "com.google.android.googlequicksearchbox")
                 .setData(Uri.parse(new StringBuilder(pkg.length() + 18)
                             .append("app://")
                             .append(pkg)
@@ -378,7 +378,7 @@ public class LauncherClient {
     }
 
     private static void loadApiVersion(Context context) {
-        ResolveInfo resolveService = context.getPackageManager().resolveService(getIntent(context), PackageManager.GET_META_DATA);
+        ResolveInfo resolveService = context.getPackageManager().resolveService(getIntent(context, false), PackageManager.GET_META_DATA);
         apiVersion = resolveService == null || resolveService.serviceInfo.metaData == null ?
                 1 :
                 resolveService.serviceInfo.metaData.getInt("service.api.version", 1);

@@ -3,8 +3,8 @@ package com.google.android.libraries.gsa.launcherclient;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.IBinder;
+
 import com.google.android.libraries.launcherclient.ILauncherOverlay;
-import com.google.android.libraries.launcherclient.ILauncherOverlay.Stub;
 import java.lang.ref.WeakReference;
 
 public class LauncherClientService extends BaseClientService {
@@ -31,7 +31,7 @@ public class LauncherClientService extends BaseClientService {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        setClient(Stub.asInterface(service));
+        setClient(ILauncherOverlay.Stub.asInterface(service));
     }
 
     @Override
