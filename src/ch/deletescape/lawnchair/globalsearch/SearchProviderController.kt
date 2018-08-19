@@ -27,7 +27,7 @@ class SearchProviderController(private val context: Context) {
                     }
                 } catch (ignored: Exception) { }
                 if(cache == null) cache = GoogleSearchProvider(context)
-                cached = curr
+                cached = cache!!::class.java.name
             }
             return cache!!
         }
