@@ -27,6 +27,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -38,18 +42,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
         }
+
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard.flags'
+        }
     }
 
     productFlavors {
         aosp {
-            applicationId 'com.google.android.apps.nexuslauncher'
-            testApplicationId 'com.google.android.apps.nexuslauncher.tests'
+            applicationId 'amirz.rootless.nexuslauncher'
+            testApplicationId 'amirz.rootless.nexuslauncher.tests'
             flavorDimensions 'default'
         }
 
         l3go {
-            applicationId 'com.google.android.apps.nexuslauncher'
-            testApplicationId 'com.google.android.apps.nexuslauncher.tests'
+            applicationId 'amirz.rootless.nexuslauncher'
+            testApplicationId 'amirz.rootless.nexuslauncher.tests'
             flavorDimensions 'default'
         }
     }

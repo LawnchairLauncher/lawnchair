@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.allapps.AppInfoComparator;
@@ -75,7 +76,7 @@ public class AppSearchProvider extends ContentProvider
     public static Uri buildUri(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
         return new Uri.Builder()
                 .scheme("content")
-                .authority("com.google.android.apps.nexuslauncher.appssearch")
+                .authority(BuildConfig.APPLICATION_ID + ".appssearch")
                 .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
                 .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
                 .build();
