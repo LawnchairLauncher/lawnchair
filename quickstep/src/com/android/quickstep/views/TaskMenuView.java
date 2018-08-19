@@ -20,11 +20,14 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.TaskLauncherActivityInfo;
 import android.graphics.Outline;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -33,6 +36,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.IconProvider;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -42,6 +46,8 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
+
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -141,7 +147,11 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void addMenuOptions(TaskView taskView) {
-        Drawable icon = taskView.getTask().icon.getConstantState().newDrawable();
+        IconProvider provider = IconProvider.getInstance(getContext());
+        LauncherActivityInfo info = new TaskLauncherActivityInfo(taskView.getTask(), getContext());
+        DisplayMetrics dm = new DisplayMetrics();
+        getDisplay().getMetrics(dm);
+        Drawable icon = provider.getIcon(info, dm.densityDpi, true);
         int iconSize = getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         icon.setBounds(0, 0, iconSize, iconSize);
         mTaskIconAndName.setCompoundDrawables(null, icon, null, null);

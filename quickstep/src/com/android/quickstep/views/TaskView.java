@@ -26,11 +26,14 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.TaskLauncherActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Property;
@@ -42,6 +45,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.IconProvider;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -55,6 +59,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.function.Consumer;
+
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 
 /**
  * A task in the Recents view.
@@ -181,7 +187,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
-        mIconView.setDrawable(task.icon);
+        IconProvider provider = IconProvider.getInstance(getContext());
+        LauncherActivityInfo info = new TaskLauncherActivityInfo(task, getContext());
+        DisplayMetrics dm = new DisplayMetrics();
+        getDisplay().getMetrics(dm);
+        mIconView.setDrawable(provider.getIcon(info, dm.densityDpi, true));
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
