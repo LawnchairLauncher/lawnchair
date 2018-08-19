@@ -335,7 +335,8 @@
     <string name="title_app_suggestions">Display app suggestions</string>
     <string name="summary_app_suggestions">At the top of your All Apps list</string>
     <string name="about_app_version">Version</string>
-    <string name="app_releases_url">https://github.com/amirzaidi/launcher3/releases</string>
+    <string name="app_releases_url">https://play.google.com/store/apps/details?id=amirz.rootless.nexuslauncher</string>
+    <string name="app_donate_url">https://play.google.com/store/apps/details?id=amirz.donation</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
     <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
@@ -358,6 +359,7 @@
 
     <!-- Custom -->
     <string name="app_name_rootless_pixel_launcher">Rootless Pixel Launcher</string>
+    <string name="about_donate">Donate</string>
     <string name="bridge_missing_title">Rootless Pixel Bridge</string>
     <string name="bridge_missing_message">
         The bridge to connect to the Google Feed could not be found,
