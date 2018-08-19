@@ -355,4 +355,7 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Open source licenses</string>
+
+    <!-- Custom -->
+    <string name="app_name_rootless_pixel_launcher">Rootless Pixel Launcher</string>
 </resources>
