@@ -7,19 +7,25 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class BaseClientService implements ServiceConnection {
+    private static final boolean PROXY = true;
+
     private boolean mConnected;
     private final Context mContext;
     private final int mFlags;
+    private final ServiceConnection mBridge;
 
     BaseClientService(Context context, int flags) {
         mContext = context;
         mFlags = flags;
+        mBridge = PROXY
+                ? new LauncherClientBridge(this)
+                : this;
     }
 
     public final boolean connect() {
         if (!mConnected) {
             try {
-                mConnected = mContext.bindService(LauncherClient.getIntent(mContext), this, mFlags);
+                mConnected = mContext.bindService(LauncherClient.getIntent(mContext, PROXY), mBridge, mFlags);
             } catch (Throwable e) {
                 Log.e("LauncherClient", "Unable to connect to overlay service", e);
             }
@@ -29,7 +35,7 @@ public class BaseClientService implements ServiceConnection {
 
     public final void disconnect() {
         if (mConnected) {
-            mContext.unbindService(this);
+            mContext.unbindService(mBridge);
             mConnected = false;
         }
     }
