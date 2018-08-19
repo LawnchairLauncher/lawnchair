@@ -38,12 +38,14 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
         Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE_ALEXA)
     })
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_bing).mutate().apply {
-             if(!colored){ setTint(Color.WHITE) }
-         }
+    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(if (colored) {
+        R.drawable.ic_bing
+    } else {
+        R.drawable.ic_bing_shadow
+    })
 
-    override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_color).mutate().apply {
-         setTint(if(colored) Color.parseColor("#00897B") else Color.WHITE)
+    override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_shadow).mutate().apply {
+        if(colored)  { setTint(Color.parseColor("#00897B")) }
     }
 
     override fun getAssistantIcon(colored: Boolean): Drawable = context.getDrawable(if (cortanaInstalled) {
