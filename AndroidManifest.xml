@@ -83,6 +83,7 @@
     <application
         android:name="ch.deletescape.lawnchair.LawnchairApp"
         android:backupAgent=".LauncherBackupAgent"
+        android:excludeFromRecents="true"
         android:fullBackupContent="@xml/backupscheme"
         android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
