@@ -43,6 +43,7 @@
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderBadgeColor">?android:attr/colorPrimary</item>
+        <item name="loadingIconColor">#FFF</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
@@ -73,6 +74,7 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderBadgeColor">#FF464646</item>
         <item name="isMainColorDark">true</item>
+        <item name="loadingIconColor">#000</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">

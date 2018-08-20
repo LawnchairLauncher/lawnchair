@@ -742,7 +742,7 @@ public class LoaderTask implements Runnable {
 
                 int numItemsInPreview = 0;
                 for (ShortcutInfo info : folder.contents) {
-                    if (info.usingLowResIcon
+                    if (info.usingLowResIcon()
                             && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                             && verifier.isItemInPreview(info.rank)) {
                         mIconCache.getTitleAndIcon(info, false);
