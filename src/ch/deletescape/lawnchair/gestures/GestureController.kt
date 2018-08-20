@@ -70,8 +70,9 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
                 // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
-                    return Class.forName(className).getConstructor(Context::class.java, JSONObject::class.java)
+                    val handler =  Class.forName(className).getConstructor(Context::class.java, JSONObject::class.java)
                             .newInstance(context, configValue) as GestureHandler
+                    if(handler.isAvailable) return handler
                 } catch (t: Throwable) {
                     Log.e(TAG, "can't create gesture handler", t)
                 }
@@ -102,7 +103,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 NotificationsOpenGestureHandler(context, null),
                 OpenOverlayGestureHandler(context, null),
                 StartAssistantGestureHandler(context, null),
-                StartAppGestureHandler(context, null)
-        )
+                StartAppGestureHandler(context, null),
+                OpenRecentsGestureHandler(context, null)
+        ).filter { it.isAvailable }
     }
 }
