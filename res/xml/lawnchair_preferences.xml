@@ -61,6 +61,7 @@
         android:key="quickstep"
         android:summary="@string/quickstep_pref_summary"
         android:title="@string/quickstep_pref_title"
+        android:icon="@drawable/ic_lawnstep"
         app:content="@xml/lawnchair_quickstep_preferences"
         android:layout="@layout/sub_preference" />
 

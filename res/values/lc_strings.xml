@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="quickstep_pref_title">Quickstep</string>
+    <string name="quickstep_pref_title">Lawnstep</string>
     <string name="quickstep_pref_summary">Customize the recent apps screen</string>
     <string name="swipe_up_to_switch_apps_title">Swipe up to switch apps</string>
 </resources>
