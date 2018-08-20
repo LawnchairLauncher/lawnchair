@@ -115,7 +115,7 @@ public final class LauncherInstrumentation {
         sActiveContainer = new WeakReference<>(container);
     }
 
-    boolean isSwipeUpEnabled() {
+    public boolean isSwipeUpEnabled() {
         return mSwipeUpEnabledOverride != null ? mSwipeUpEnabledOverride : mSwipeUpEnabled;
     }
 
