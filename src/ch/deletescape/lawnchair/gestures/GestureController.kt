@@ -104,7 +104,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 OpenOverlayGestureHandler(context, null),
                 StartAssistantGestureHandler(context, null),
                 StartAppGestureHandler(context, null),
-                OpenRecentsGestureHandler(context, null)
+                OpenRecentsGestureHandler(context, null),
+                LaunchMostRecentTaskGestureHandler(context, null)
         ).filter { it.isAvailable }
     }
 }
