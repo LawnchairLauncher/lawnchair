@@ -18,31 +18,63 @@ package com.android.launcher3.uioverrides;
 import android.content.Context;
 import android.os.Handler;
 
+import android.view.OrientationEventListener;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.RotationWatcher;
 
 /**
  * Utility class for listening for rotation changes
  */
-public class DisplayRotationListener extends RotationWatcher {
+public interface DisplayRotationListener {
 
-    private final Runnable mCallback;
-    private Handler mHandler;
-
-    public DisplayRotationListener(Context context, Runnable callback) {
-        super(context);
-        mCallback = callback;
-    }
-
-    @Override
-    public void enable() {
-        if (mHandler == null) {
-            mHandler = new Handler();
+    static DisplayRotationListener create(Context context, Runnable callback) {
+        if (Utilities.ATLEAST_OREO && Utilities.HIDDEN_APIS_ALLOWED) {
+            return new DisplayRotationListenerRW(context, callback);
+        } else {
+            return new DisplayRotationListenerOEL(context, callback);
         }
-        super.enable();
     }
 
-    @Override
-    protected void onRotationChanged(int i) {
-        mHandler.post(mCallback);
+    void enable();
+    void disable();
+
+    class DisplayRotationListenerRW extends RotationWatcher implements DisplayRotationListener {
+
+        private final Runnable mCallback;
+        private Handler mHandler;
+
+        private DisplayRotationListenerRW(Context context, Runnable callback) {
+            super(context);
+            mCallback = callback;
+        }
+
+        @Override
+        public void enable() {
+            if (mHandler == null) {
+                mHandler = new Handler();
+            }
+            super.enable();
+        }
+
+        @Override
+        protected void onRotationChanged(int i) {
+            mHandler.post(mCallback);
+        }
     }
+
+    class DisplayRotationListenerOEL extends OrientationEventListener implements DisplayRotationListener {
+
+        private final Runnable mCallback;
+
+        private DisplayRotationListenerOEL(Context context, Runnable callback) {
+            super(context);
+            mCallback = callback;
+        }
+
+        @Override
+        public void onOrientationChanged(int i) {
+            mCallback.run();
+        }
+    }
+
 }
