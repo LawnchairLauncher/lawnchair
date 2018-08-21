@@ -154,8 +154,8 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         }
     }
 
-    override fun finishBindingItems() {
-        super.finishBindingItems()
+    override fun finishBindingItems(currentScreen: Int) {
+        super.finishBindingItems(currentScreen)
         Utilities.onLauncherStart()
     }
 
@@ -348,8 +348,8 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             findViewById<LauncherRootView>(R.id.launcher).setHideContent(true)
         }
 
-        override fun finishBindingItems() {
-            super.finishBindingItems()
+        override fun finishBindingItems(currentScreen: Int) {
+            super.finishBindingItems(currentScreen)
 
             findViewById<LauncherRootView>(R.id.launcher).post(::takeScreenshot)
         }

@@ -23,10 +23,11 @@ import android.view.View;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
@@ -81,11 +82,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     private void setTextBasedOnDragSource(ItemInfo item) {
         if (!TextUtils.isEmpty(mText)) {
-            mText = getResources().getString(item.id != ItemInfo.NO_ID
+            mText = getResources().getString(canRemove(item)
                     ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
             requestLayout();
         }
+    }
+
+    private boolean canRemove(ItemInfo item) {
+        return item.id != ItemInfo.NO_ID;
     }
 
     /**
@@ -97,10 +102,21 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
+    public void onDrop(DragObject d, DragOptions options) {
+        if (canRemove(d.dragInfo)) {
+            mLauncher.getModelWriter().prepareToUndoDelete();
+        }
+        super.onDrop(d, options);
+    }
+
+    @Override
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
-        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
+        if (canRemove(item)) {
             onAccessibilityDrop(null, item);
+            ModelWriter modelWriter = mLauncher.getModelWriter();
+            Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
+                    modelWriter::commitDelete, modelWriter::abortDelete);
         }
     }
 

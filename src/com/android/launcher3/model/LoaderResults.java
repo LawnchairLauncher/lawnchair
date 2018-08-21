@@ -181,7 +181,7 @@ public class LoaderResults {
             public void run() {
                 Callbacks callbacks = mCallbacks.get();
                 if (callbacks != null) {
-                    callbacks.finishBindingItems();
+                    callbacks.finishBindingItems(currentScreen);
                 }
             }
         };

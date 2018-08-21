@@ -153,9 +153,10 @@ public class LauncherModel extends BroadcastReceiver
         public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
-        public void finishBindingItems();
+        public void finishBindingItems(int currentScreen);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
+        public void preAddApps();
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
                                   ArrayList<ItemInfo> addAnimated);
@@ -205,6 +206,10 @@ public class LauncherModel extends BroadcastReceiver
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(List<Pair<ItemInfo, Object>> itemList) {
+        Callbacks callbacks = getCallback();
+        if (callbacks != null) {
+            callbacks.preAddApps();
+        }
         enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 

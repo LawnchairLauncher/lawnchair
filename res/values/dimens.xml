@@ -300,4 +300,10 @@
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
     <dimen name="all_apps_search_vertical_offset">30dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
+
+<!-- Snackbar -->
+    <dimen name="snackbar_height">48dp</dimen>
+    <dimen name="snackbar_content_height">32dp</dimen>
+    <dimen name="snackbar_padding">8dp</dimen>
+    <dimen name="snackbar_margin">16dp</dimen>
 </resources>
