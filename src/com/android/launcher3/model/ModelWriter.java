@@ -28,16 +28,25 @@ import android.util.Log;
 
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import com.android.launcher3.*;
+import com.android.launcher3.FolderInfo;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetHost;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -55,6 +64,10 @@ public class ModelWriter {
     private final Executor mWorkerExecutor;
     private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
+
+    // Keep track of delete operations that occur when an Undo option is present; we may not commit.
+    private final List<Runnable> mDeleteRunnables = new ArrayList<>();
+    private boolean mPreparingToUndo;
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
             boolean hasVerticalHotseat, boolean verifyChanges) {
@@ -153,7 +166,7 @@ public class ModelWriter {
                 .put(Favorites.RANK, item.rank)
                 .put(Favorites.SCREEN, item.screenId);
 
-        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+        enqueueDeleteRunnable(new UpdateItemRunnable(item, writer));
     }
 
     /**
@@ -177,7 +190,7 @@ public class ModelWriter {
 
             contentValues.add(values);
         }
-        mWorkerExecutor.execute(new UpdateItemsRunnable(items, contentValues));
+        enqueueDeleteRunnable(new UpdateItemsRunnable(items, contentValues));
     }
 
     /**
@@ -281,7 +294,7 @@ public class ModelWriter {
     public void deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
         ModelVerifier verifier = new ModelVerifier();
 
-        mWorkerExecutor.execute(() -> {
+        enqueueDeleteRunnable(() -> {
             for (ItemInfo item : items) {
                 final Uri uri = Favorites.getContentUri(item.id);
                 mContext.getContentResolver().delete(uri, null, null);
@@ -298,8 +311,7 @@ public class ModelWriter {
     public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
         ModelVerifier verifier = new ModelVerifier();
 
-        mWorkerExecutor.execute(() -> {
-            info.clearCustomIcon(mContext);
+        enqueueDeleteRunnable(() -> {
             ContentResolver cr = mContext.getContentResolver();
             cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                     LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
@@ -310,6 +322,63 @@ public class ModelWriter {
             mBgDataModel.removeItem(mContext, info);
             verifier.verifyModel();
         });
+    }
+
+    /**
+     * Deletes the widget info and the widget id.
+     */
+    public void deleteWidgetInfo(final LauncherAppWidgetInfo info, LauncherAppWidgetHost host) {
+        if (host != null && !info.isCustomWidget() && info.isWidgetIdAllocated()) {
+            // Deleting an app widget ID is a void call but writes to disk before returning
+            // to the caller...
+            enqueueDeleteRunnable(() -> host.deleteAppWidgetId(info.appWidgetId));
+        }
+        deleteItemFromDatabase(info);
+    }
+
+    /**
+     * Delete operations tracked using {@link #enqueueDeleteRunnable} will only be called
+     * if {@link #commitDelete} is called. Note that one of {@link #commitDelete()} or
+     * {@link #abortDelete()} MUST be called after this method, or else all delete
+     * operations will remain uncommitted indefinitely.
+     */
+    public void prepareToUndoDelete() {
+        if (!mPreparingToUndo) {
+            if (!mDeleteRunnables.isEmpty() && FeatureFlags.IS_DOGFOOD_BUILD) {
+                throw new IllegalStateException("There are still uncommitted delete operations!");
+            }
+            mDeleteRunnables.clear();
+            mPreparingToUndo = true;
+        }
+    }
+
+    /**
+     * If {@link #prepareToUndoDelete} has been called, we store the Runnable to be run when
+     * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete()} is called).
+     * Otherwise, we run the Runnable immediately.
+     */
+    public void enqueueDeleteRunnable(Runnable r) {
+        if (mPreparingToUndo) {
+            mDeleteRunnables.add(r);
+        } else {
+            mWorkerExecutor.execute(r);
+        }
+    }
+
+    public void commitDelete() {
+        mPreparingToUndo = false;
+        for (Runnable runnable : mDeleteRunnables) {
+            mWorkerExecutor.execute(runnable);
+        }
+        mDeleteRunnables.clear();
+    }
+
+    public void abortDelete() {
+        mPreparingToUndo = false;
+        mDeleteRunnables.clear();
+        // We do a full reload here instead of just a rebind because Folders change their internal
+        // state when dragging an item out, which clobbers the rebind unless we load from the DB.
+        mModel.forceReload();
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
