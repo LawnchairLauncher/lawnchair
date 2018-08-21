@@ -387,7 +387,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     @Override
     public void onDriverDragEnd(float x, float y) {
         DropTarget dropTarget;
-        Runnable flingAnimation = mFlingToDeleteHelper.getFlingAnimation(mDragObject);
+        Runnable flingAnimation = mFlingToDeleteHelper.getFlingAnimation(mDragObject, mOptions);
         if (flingAnimation != null) {
             dropTarget = mFlingToDeleteHelper.getDropTarget();
         } else {
