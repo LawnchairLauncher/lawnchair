@@ -29,6 +29,9 @@ import android.graphics.Point;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.util.Log;
+import android.view.MotionEvent;
+
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -36,8 +39,6 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-import android.util.Log;
-import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -90,7 +91,7 @@ public abstract class AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         mDevice = UiDevice.getInstance(getInstrumentation());
-        mLauncher = new LauncherInstrumentation(mDevice);
+        mLauncher = new LauncherInstrumentation(getInstrumentation());
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
     }
