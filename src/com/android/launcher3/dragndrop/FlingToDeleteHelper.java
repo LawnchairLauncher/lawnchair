@@ -91,12 +91,13 @@ public class FlingToDeleteHelper {
         return mDropTarget;
     }
 
-    public Runnable getFlingAnimation(DropTarget.DragObject dragObject) {
+    public Runnable getFlingAnimation(DropTarget.DragObject dragObject, DragOptions options) {
         PointF vel = isFlingingToDelete();
-        if (vel == null) {
+        options.isFlingToDelete = vel != null;
+        if (!options.isFlingToDelete) {
             return null;
         }
-        return new FlingAnimation(dragObject, vel, mDropTarget, mLauncher);
+        return new FlingAnimation(dragObject, vel, mDropTarget, mLauncher, options);
     }
 
     /**

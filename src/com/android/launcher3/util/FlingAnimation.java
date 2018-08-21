@@ -14,6 +14,7 @@ import com.android.launcher3.ButtonDropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 
 public class FlingAnimation implements AnimatorUpdateListener, Runnable {
@@ -28,6 +29,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
     private final Launcher mLauncher;
 
     protected final DragObject mDragObject;
+    protected final DragOptions mDragOptions;
     protected final DragLayer mDragLayer;
     protected final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(0.75f);
     protected final float mUX, mUY;
@@ -39,13 +41,15 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
 
     protected float mAX, mAY;
 
-    public FlingAnimation(DragObject d, PointF vel, ButtonDropTarget dropTarget, Launcher launcher) {
+    public FlingAnimation(DragObject d, PointF vel, ButtonDropTarget dropTarget, Launcher launcher,
+            DragOptions options) {
         mDropTarget = dropTarget;
         mLauncher = launcher;
         mDragObject = d;
         mUX = vel.x / 1000;
         mUY = vel.y / 1000;
         mDragLayer = mLauncher.getDragLayer();
+        mDragOptions = options;
     }
 
     @Override
@@ -102,6 +106,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
             }
         };
 
+        mDropTarget.onDrop(mDragObject, mDragOptions);
         mDragLayer.animateView(mDragObject.dragView, this, duration, tInterpolator,
                 onAnimationEndRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
