@@ -17,7 +17,7 @@
 package com.android.launcher3.popup;
 
 import android.content.pm.ShortcutInfo;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 

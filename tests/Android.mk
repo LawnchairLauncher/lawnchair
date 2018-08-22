@@ -18,8 +18,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := tests
 LOCAL_STATIC_JAVA_LIBRARIES := \
-	android-support-test \
-	ub-uiautomator \
+	androidx-test \
+	androidx.test.uiautomator_uiautomator \
 	mockito-target-minus-junit4 \
 	ub-launcher-aosp-tapl
 
@@ -41,8 +41,8 @@ include $(BUILD_PACKAGE)
 include $(CLEAR_VARS)
 LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
-	android-support-test \
-	ub-uiautomator \
+	androidx-test \
+	androidx.test.uiautomator_uiautomator \
 	libSharedSystemUI
 
 LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \

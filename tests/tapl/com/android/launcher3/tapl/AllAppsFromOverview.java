@@ -17,7 +17,7 @@
 package com.android.launcher3.tapl;
 
 import android.graphics.Point;
-import android.support.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObject2;
 
 import androidx.annotation.NonNull;
 

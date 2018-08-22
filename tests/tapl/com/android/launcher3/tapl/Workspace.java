@@ -19,8 +19,8 @@ package com.android.launcher3.tapl;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiObject2;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;

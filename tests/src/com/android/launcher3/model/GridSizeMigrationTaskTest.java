@@ -7,10 +7,10 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.MediumTest;
-import android.support.test.rule.provider.ProviderTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.MediumTest;
+import androidx.test.rule.provider.ProviderTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;

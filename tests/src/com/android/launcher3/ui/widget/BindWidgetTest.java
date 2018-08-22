@@ -30,9 +30,9 @@ import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.UiSelector;
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.UiSelector;
 
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetInfo;

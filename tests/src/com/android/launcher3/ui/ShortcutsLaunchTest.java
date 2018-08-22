@@ -5,11 +5,11 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Point;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.Until;
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 import android.view.MotionEvent;
 
 import com.android.launcher3.R;
