@@ -995,8 +995,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mPendingAnimation = pendingAnimation;
         mPendingAnimation.addEndListener((onEndListener) -> {
             if (onEndListener.isSuccess) {
-                // Remove all the task views now
-                ActivityManagerWrapper.getInstance().removeAllRecentTasks();
+                int taskViewCount = getTaskViewCount();
+                for (int i = 0; i < taskViewCount; i++) {
+                    removeTask(getTaskViewAt(i).getTask(), -1, onEndListener, false);
+                }
                 removeAllViews();
                 onAllTasksRemoved();
             }
