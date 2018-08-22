@@ -23,25 +23,25 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import android.app.ActivityManager;
+import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.test.InstrumentationRegistry;
+import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.TestProtocol;
 import com.android.quickstep.SwipeUpSetting;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -90,17 +90,19 @@ public final class LauncherInstrumentation {
     private final UiDevice mDevice;
     private final boolean mSwipeUpEnabled;
     private Boolean mSwipeUpEnabledOverride = null;
+    private final Instrumentation mInstrumentation;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
-    public LauncherInstrumentation(UiDevice device) {
-        mDevice = device;
+    public LauncherInstrumentation(Instrumentation instrumentation) {
+        mInstrumentation = instrumentation;
+        mDevice = UiDevice.getInstance(instrumentation);
         final boolean swipeUpEnabledDefault =
                 !SwipeUpSetting.isSwipeUpSettingAvailable() ||
                         SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         mSwipeUpEnabled = Settings.Secure.getInt(
-                InstrumentationRegistry.getTargetContext().getContentResolver(),
+                instrumentation.getTargetContext().getContentResolver(),
                 SWIPE_UP_SETTING_NAME,
                 swipeUpEnabledDefault ? 1 : 0) == 1;
         assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
@@ -162,9 +164,8 @@ public final class LauncherInstrumentation {
             UiAutomation.AccessibilityEventFilter eventFilter, String message) {
         try {
             final AccessibilityEvent event =
-                    InstrumentationRegistry.getInstrumentation().getUiAutomation()
-                            .executeAndWaitForEvent(
-                                    command, eventFilter, WAIT_TIME_MS);
+                    mInstrumentation.getUiAutomation().executeAndWaitForEvent(
+                            command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             return (Bundle) event.getParcelableData();
         } catch (TimeoutException e) {
