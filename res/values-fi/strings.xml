@@ -159,4 +159,5 @@
     <string name="theme_dark">Tumma</string>
     <string name="theme_transparent">Läpinäkyvä</string>
     <string name="pref_open_source_licenses_title">Avoimen lähdekoodin käyttöluvat</string>
+    <string name="about_donate">Lahjoittaa</string>
 </resources>

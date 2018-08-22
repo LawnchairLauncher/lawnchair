@@ -154,4 +154,5 @@
     <string name="theme_dark">गाढा</string>
     <string name="theme_transparent">पारदर्शी</string>
     <string name="pref_open_source_licenses_title">खुला स्रोतका इजाजतपत्रहरू</string>
+    <string name="about_donate">दान गर्नुहोस्</string>
 </resources>

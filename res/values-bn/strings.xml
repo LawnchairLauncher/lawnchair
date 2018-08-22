@@ -154,4 +154,5 @@
     <string name="theme_dark">অন্ধকার</string>
     <string name="theme_transparent">স্বচ্ছ</string>
     <string name="pref_open_source_licenses_title">ওপেন সোর্স লাইসেন্স</string>
+    <string name="about_donate">দান করা</string>
 </resources>

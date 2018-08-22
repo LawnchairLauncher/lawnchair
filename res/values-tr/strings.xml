@@ -155,8 +155,9 @@
     <string name="theme_title">Tema</string>
     <string name="theme_automatic">Otomatik</string>
     <string name="theme_default">Varsayılan</string>
-    <string name="theme_light">Işık</string>
+    <string name="theme_light">Aydınlık</string>
     <string name="theme_dark">Karanlık</string>
     <string name="theme_transparent">Şeffaf</string>
     <string name="pref_open_source_licenses_title">Açık kaynak lisansları</string>
+    <string name="about_donate">Bağış Yap</string>
 </resources>

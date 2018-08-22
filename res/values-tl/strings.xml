@@ -157,4 +157,5 @@
     <string name="theme_dark">Madilim</string>
     <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Mga open source na lisensya</string>
+    <string name="about_donate">Mag-donate</string>
 </resources>

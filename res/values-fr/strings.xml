@@ -159,4 +159,5 @@
     <string name="theme_dark">Foncé</string>
     <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Licences Open Source</string>
+    <string name="about_donate">Faire un don</string>
 </resources>

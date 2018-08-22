@@ -158,4 +158,5 @@
     <string name="theme_dark">Темно</string>
     <string name="theme_transparent">Прозорий</string>
     <string name="pref_open_source_licenses_title">Ліцензії відкритого коду</string>
+    <string name="about_donate">Пожертвувати</string>
 </resources>

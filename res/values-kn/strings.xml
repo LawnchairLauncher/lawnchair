@@ -157,4 +157,5 @@
     <string name="theme_dark">ಡಾರ್ಕ್</string>
     <string name="theme_transparent">ಪಾರದರ್ಶಕ</string>
     <string name="pref_open_source_licenses_title">ಓಪನ್ ಸೋರ್ಸ್ ಪರವಾನಗಿಗಳು</string>
+    <string name="about_donate">ದಾನ</string>
 </resources>

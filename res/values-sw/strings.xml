@@ -156,4 +156,5 @@
     <string name="theme_dark">Giza</string>
     <string name="theme_transparent">Uwazi</string>
     <string name="pref_open_source_licenses_title">Leseni za programu huria</string>
+    <string name="about_donate">Msaidie</string>
 </resources>
