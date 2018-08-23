@@ -262,8 +262,8 @@ public abstract class AbstractLauncherUiTest {
         });
     }
 
-    // Cannot be used between a Tapl call injecting a gesture and a tapl call expecting the
-    // results of that gesture because the wait can hide flakeness.
+    // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call expecting
+    // the results of that gesture because the wait can hide flakeness.
     protected boolean waitForState(LauncherState state) {
         return waitForLauncherCondition(launcher -> launcher.getStateManager().getState() == state);
     }
@@ -271,12 +271,19 @@ public abstract class AbstractLauncherUiTest {
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
     protected boolean waitForLauncherCondition(Function<Launcher, Boolean> condition) {
+        return waitForLauncherCondition(condition, DEFAULT_ACTIVITY_TIMEOUT);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
+    protected boolean waitForLauncherCondition(
+            Function<Launcher, Boolean> condition, long timeout) {
         return Wait.atMost(new Condition() {
             @Override
             public boolean isTrue() {
                 return getFromLauncher(condition);
             }
-        }, DEFAULT_ACTIVITY_TIMEOUT);
+        }, timeout);
     }
 
     /**
