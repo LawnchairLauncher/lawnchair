@@ -4,19 +4,12 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 
 import java.util.Locale;
 
 public class IconProvider {
 
     protected String mSystemState;
-    private static IconProvider instance;
-
-    public static IconProvider getInstance(Context context) {
-        if(instance == null) instance = newInstance(context);
-        return instance;
-    }
 
     public static IconProvider newInstance(Context context) {
         IconProvider provider = Utilities.getOverrideObject(
