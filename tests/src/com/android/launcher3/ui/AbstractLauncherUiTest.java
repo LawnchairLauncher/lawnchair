@@ -268,7 +268,8 @@ public abstract class AbstractLauncherUiTest {
         return waitForLauncherCondition(launcher -> launcher.getStateManager().getState() == state);
     }
 
-    // Cannot be used after injecting any gesture using Tapl because this can hide flakiness.
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
     protected boolean waitForLauncherCondition(Function<Launcher, Boolean> condition) {
         return Wait.atMost(new Condition() {
             @Override
