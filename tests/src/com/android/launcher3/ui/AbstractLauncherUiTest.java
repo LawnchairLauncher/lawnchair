@@ -141,7 +141,8 @@ public abstract class AbstractLauncherUiTest {
             // findObject can only execute after spring settles.
             mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
             UiObject2 widget = container.findObject(condition);
-            if (widget != null) {
+            if (widget != null && widget.getVisibleBounds().intersects(
+                    0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight())) {
                 return widget;
             }
         } while (container.scroll(Direction.DOWN, 1f));
