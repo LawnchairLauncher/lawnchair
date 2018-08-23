@@ -110,8 +110,9 @@ public final class Utilities {
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
      */
-    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug")
-            || Build.TYPE.toLowerCase().equals("eng");
+    public static final boolean IS_DEBUG_DEVICE =
+            Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
+            Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
