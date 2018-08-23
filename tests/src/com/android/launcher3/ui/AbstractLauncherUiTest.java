@@ -296,11 +296,6 @@ public abstract class AbstractLauncherUiTest {
                         Process.myUserHandle()).get(0);
     }
 
-    protected LauncherActivityInfo getChromeApp() {
-        return LauncherAppsCompat.getInstance(mTargetContext)
-                .getActivityList("com.android.chrome", Process.myUserHandle()).get(0);
-    }
-
     /**
      * Broadcast receiver which blocks until the result is received.
      */
