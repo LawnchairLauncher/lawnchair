@@ -48,6 +48,11 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            if (System.getenv("TRAVIS") == "true") {
+                if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                    signingConfig signingConfigs.travis
+                }
+            }
         }
 
         optimized {
