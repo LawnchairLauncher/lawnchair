@@ -79,6 +79,8 @@ class BlurDrawable internal constructor(
     private var mBottomRoundBitmap: Bitmap? = null
     private var mBottomCanvas = Canvas()
 
+    private var mAlpha = 255
+
     init {
         initializeRenderScript(mProvider.context)
     }
@@ -297,9 +299,11 @@ class BlurDrawable internal constructor(
         }
 
     override fun setAlpha(alpha: Int) {
-        mShouldDraw = alpha > 0
-        mPaint.alpha = alpha
-        mCornerPaint.alpha = alpha
+        if (mAlpha != alpha) {
+            mAlpha = alpha
+            mShouldDraw = alpha > 0
+            mPaint.alpha = alpha
+        }
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {

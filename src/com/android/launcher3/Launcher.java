@@ -376,6 +376,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             // TODO: We can probably avoid rebind when only screen size changed.
             rebindModel();
+
+            onRotationChanged();
         }
 
         mOldConfig.setTo(newConfig);
@@ -2451,6 +2453,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public boolean useVerticalBarLayout() {
         return mDeviceProfile.isVerticalBarLayout();
+    }
+
+    protected void onRotationChanged() {
+
     }
 
     public static Launcher getLauncher(Context context) {

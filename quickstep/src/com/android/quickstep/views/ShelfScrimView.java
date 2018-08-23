@@ -46,21 +46,21 @@ import com.android.launcher3.views.ScrimView;
 public class ShelfScrimView extends ScrimView {
 
     // In transposed layout, we simply draw a flat color.
-    private boolean mDrawingFlatColor;
+    protected boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
-    private final int mThresholdAlpha;
-    private final float mRadius;
+    protected final int mEndAlpha;
+    protected final int mThresholdAlpha;
+    protected final float mRadius;
     private final float mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Max vertical progress after which the scrim stops moving.
-    private float mMoveThreshold;
+    protected float mMoveThreshold;
     // Minimum visible size of the scrim.
     private int mMinSize;
 
-    private float mScrimMoveFactor = 0;
+    protected float mScrimMoveFactor = 0;
     private int mShelfColor;
     private int mRemainingScreenColor;
 
@@ -152,6 +152,7 @@ public class ShelfScrimView extends ScrimView {
 
     private float drawBackground(Canvas canvas) {
         if (mDrawingFlatColor) {
+            onDrawFlatColor(canvas);
             if (mCurrentFlatColor != 0) {
                 canvas.drawColor(mCurrentFlatColor);
             }
@@ -161,6 +162,7 @@ public class ShelfScrimView extends ScrimView {
         if (mShelfColor == 0) {
             return 0;
         } else if (mScrimMoveFactor <= 0) {
+            onDrawFlatColor(canvas);
             canvas.drawColor(mShelfColor);
             return getHeight();
         }
@@ -190,8 +192,14 @@ public class ShelfScrimView extends ScrimView {
         }
 
         mPaint.setColor(mShelfColor);
-        canvas.drawRoundRect(0, top, getWidth(), getHeight() + mRadius,
+        onDrawRoundRect(canvas, 0, top, getWidth(), getHeight() + mRadius,
                 mRadius, mRadius, mPaint);
         return minTop - mDragHandleSize - top;
+    }
+
+    @Override
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom, float rx, float ry, Paint paint) {
+        canvas.drawRoundRect(0, top, getWidth(), getHeight() + mRadius,
+                mRadius, mRadius, mPaint);
     }
 }

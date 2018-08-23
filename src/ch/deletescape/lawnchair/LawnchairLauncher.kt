@@ -145,6 +145,11 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    override fun onRotationChanged() {
+        super.onRotationChanged()
+        blurWallpaperProvider.updateAsync()
+    }
+
     fun shouldRecreate() = !sRestart
 
     class Screenshot : LawnchairLauncher() {

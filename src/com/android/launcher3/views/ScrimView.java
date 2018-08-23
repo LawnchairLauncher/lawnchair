@@ -32,10 +32,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.RectEvaluator;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -427,5 +424,13 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     public int getDragHandleSize() {
         return mDragHandleSize;
+    }
+
+    protected void onDrawFlatColor(Canvas canvas) {
+
+    }
+
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom, float rx, float ry, Paint paint) {
+
     }
 }
