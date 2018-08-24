@@ -155,4 +155,9 @@
     <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licencias de código abierto</string>
     <string name="about_donate">Donar</string>
+    <string name="bridge_missing_message">
+        El puente para conectar con Google Feed no se encuentra o necesita ser actualizado.
+        ¿Deseas instalar la última versión?
+    </string>
+    <string name="bridge_install">Instalar</string>
 </resources>

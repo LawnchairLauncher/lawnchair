@@ -157,4 +157,9 @@
     <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças de código aberto</string>
     <string name="about_donate">Doar</string>
+    <string name="bridge_missing_message">
+        Não foi possível encontrar o bridge para se conectar ao Feed do Google,
+        ou precisa ser atualizado. Você quer instalar a versão mais recente?
+    </string>
+    <string name="bridge_install">Instalar</string>
 </resources>
