@@ -1284,15 +1284,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     }
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
                 }
+
+                if (!handled && this instanceof LawnchairLauncher) {
+                    ((LawnchairLauncher) this).getGestureController().onPressHome();
+                }
             }
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
                 UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
-            }
-
-            if (!handled && this instanceof LawnchairLauncher) {
-                ((LawnchairLauncher) this).getGestureController().onPressHome();
             }
 
             if (mLauncherCallbacks != null) {
