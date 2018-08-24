@@ -77,8 +77,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
-    // TODO: implement this back
-//    val showTopShadow by BooleanPref("pref_showTopShadow", true, { onChangeCallback?.launcher?.dragLayer?.updateTopShadow() })
+    val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", true)

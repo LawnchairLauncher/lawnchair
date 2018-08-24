@@ -150,7 +150,8 @@ public class WorkspaceAndHotseatScrim implements
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
 
-        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText();
+        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
+                && Utilities.getLawnchairPrefs(mLauncher).getShowTopShadow();
         if (mHasSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();
