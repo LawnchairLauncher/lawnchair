@@ -9,6 +9,7 @@ import android.util.Log
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
+import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.anim.Interpolators.ACCEL_2
 import com.android.quickstep.views.ShelfScrimView
 
@@ -37,7 +38,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
 
             override fun invalidateDrawable(who: Drawable?) {
-                invalidate()
+                runOnMainThread { invalidate() }
             }
 
             override fun scheduleDrawable(who: Drawable?, what: Runnable?, `when`: Long) {
