@@ -1,5 +1,12 @@
 package com.android.launcher3.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+
+import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.AppInfo;
@@ -13,15 +20,10 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-
 /**
  * Tests for {@link CacheDataUpdatedTask}
  */
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
 
