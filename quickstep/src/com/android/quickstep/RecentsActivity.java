@@ -266,7 +266,6 @@ public class RecentsActivity extends BaseDraggingActivity {
     @Override
     public void onBackPressed() {
         // TODO: Launch the task we came from
-        // This is already the case, we never even get here
         startHome();
     }
 
