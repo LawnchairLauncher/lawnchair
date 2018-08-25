@@ -58,7 +58,7 @@ open class LawnchairLauncher : NexusLauncherActivity() {
     }
 
     override fun onBackPressed() {
-        if (isInState(LauncherState.OVERVIEW) && getOverviewPanel<LauncherRecentsView>().showRunningTask()) {
+        if (isInState(LauncherState.OVERVIEW) && getOverviewPanel<LauncherRecentsView>().onBackPressed()) {
             // Handled
             return
         }

@@ -58,12 +58,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
-import com.android.launcher3.PagedView;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.*;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
@@ -94,7 +89,7 @@ import java.util.function.Consumer;
  * A list of recent tasks.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable {
+public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedView implements Insettable {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -727,7 +722,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    public boolean showRunningTask() {
+    public boolean onBackPressed() {
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+        if (topView instanceof TaskMenuView && topView.onBackPressed()) {
+            return true;
+        }
+
         TaskView runningTaskView = getTaskView(mRunningTaskId);
         if (runningTaskView == null) {
             // Go home

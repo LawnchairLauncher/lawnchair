@@ -265,7 +265,7 @@ public class RecentsActivity extends BaseDraggingActivity {
 
     @Override
     public void onBackPressed() {
-        if (!mFallbackRecentsView.showRunningTask()) {
+        if (!mFallbackRecentsView.onBackPressed()) {
             startHome();
         }
     }
