@@ -1,10 +1,16 @@
 package com.google.android.apps.nexuslauncher.clock;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
+import android.os.Process;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.LauncherIcons;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -19,7 +25,9 @@ public class ClockLayers {
     int mDefaultHour;
     int mDefaultMinute;
     int mDefaultSecond;
+    int offset;
     float scale;
+    public Bitmap iconBitmap;
 
     ClockLayers() {
         mCurrentTime = Calendar.getInstance();
@@ -39,12 +47,27 @@ public class ClockLayers {
         clone.mDefaultHour = mDefaultHour;
         clone.mDefaultMinute = mDefaultMinute;
         clone.mDefaultSecond = mDefaultSecond;
+        clone.iconBitmap = iconBitmap;
+        clone.offset = offset;
         clone.mDrawable = mDrawable.getConstantState().newDrawable();
         clone.mLayerDrawable = clone.getLayerDrawable();
         if (clone.mLayerDrawable != null) {
             ret = clone;
         }
         return ret;
+    }
+
+    void setupBackground(Context context) {
+        LauncherIcons launcherIcons = LauncherIcons.obtain(context);
+        float[] tmp = new float[1];
+        Drawable icon = getBackground().getConstantState().newDrawable();
+        if (Utilities.ATLEAST_OREO) {
+            icon = new AdaptiveIconDrawable(icon, null);
+        }
+        iconBitmap = launcherIcons.createBadgedIconBitmap(icon, Process.myUserHandle(), 26, false, tmp).icon;
+        scale = tmp[0];
+        offset = (int) Math.ceil((double) (0.0104167f * ((float) LauncherAppState.getInstance(context).getInvariantDeviceProfile().iconBitmapSize)));
+        launcherIcons.recycle();
     }
 
     boolean updateAngles() {
@@ -82,5 +105,27 @@ public class ClockLayers {
             }
         }
         return null;
+    }
+
+    Drawable getBackground() {
+        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
+            return ((AdaptiveIconDrawable) mDrawable).getBackground();
+        } else {
+            return mDrawable;
+        }
+    }
+
+    void clipToMask(Canvas canvas) {
+        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
+            canvas.clipPath(((AdaptiveIconDrawable) mDrawable).getIconMask());
+        }
+    }
+
+    void drawForeground(Canvas canvas) {
+        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
+            ((AdaptiveIconDrawable) mDrawable).getForeground().draw(canvas);
+        } else {
+            mDrawable.draw(canvas);
+        }
     }
 }

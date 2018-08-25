@@ -173,8 +173,12 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp) {
-        float[] scale = new float[1];
+                                             boolean isInstantApp) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, new float[1]);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
+            boolean isInstantApp, float[] scale) {
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {

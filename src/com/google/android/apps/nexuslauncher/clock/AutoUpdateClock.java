@@ -40,14 +40,16 @@ public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
 
     @Override
     public void drawInternal(Canvas canvas, Rect bounds) {
-        super.drawInternal(canvas, bounds);
-        if (mLayers == null) {
-            return;
+        if (mLayers != null) {
+            canvas.drawBitmap(mLayers.iconBitmap, null, bounds, mPaint);
+            mLayers.updateAngles();
+            canvas.scale(mLayers.scale, mLayers.scale, bounds.exactCenterX() + ((float) mLayers.offset), bounds.exactCenterY() + ((float) mLayers.offset));
+            mLayers.clipToMask(canvas);
+            mLayers.drawForeground(canvas);
+            rescheduleUpdate();
+        } else {
+            super.drawInternal(canvas, bounds);
         }
-        mLayers.updateAngles();
-        canvas.scale(mLayers.scale, mLayers.scale, bounds.exactCenterX(), bounds.exactCenterY());
-        mLayers.mDrawable.draw(canvas);
-        rescheduleUpdate();
     }
 
     @Override
