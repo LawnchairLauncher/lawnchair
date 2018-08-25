@@ -727,6 +727,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    public boolean showRunningTask() {
+        TaskView runningTaskView = getTaskView(mRunningTaskId);
+        if (runningTaskView == null) {
+            // Go home
+            return false;
+        } else {
+            // Launch the running task
+            int runningTaskIndex = indexOfChild(runningTaskView);
+            ((TaskView) getChildAt(runningTaskIndex)).launchTask(true /* animate */);
+            return true;
+        }
+    }
+
     public QuickScrubController getQuickScrubController() {
         return mQuickScrubController;
     }

@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
+import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -54,6 +55,14 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         super.onCreate(savedInstanceState)
 
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
+    }
+
+    override fun onBackPressed() {
+        if (isInState(LauncherState.OVERVIEW) && getOverviewPanel<LauncherRecentsView>().showRunningTask()) {
+            // Handled
+            return
+        }
+        super.onBackPressed()
     }
 
     override fun onResume() {
