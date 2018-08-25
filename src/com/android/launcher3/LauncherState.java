@@ -25,6 +25,8 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import android.graphics.Rect;
 import android.view.animation.Interpolator;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.FastOverviewState;
@@ -33,12 +35,13 @@ import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
  * Base state for various states used for the Launcher
  */
-public class LauncherState {
+public class LauncherState implements LawnchairPreferences.OnPreferenceChangeListener {
 
 
     /**
@@ -148,9 +151,11 @@ public class LauncherState {
      * True if the back button should be hidden when in this state (assuming no floating views are
      * open, launcher has window focus, etc).
      */
-    public final boolean hideBackButton;
+    public boolean hideBackButton;
 
     public final boolean hasSysUiScrim;
+
+    private LawnchairLauncher mLauncher;
 
     public LauncherState(int id, int containerType, int transitionDuration, int flags) {
         this.containerType = containerType;
@@ -169,8 +174,23 @@ public class LauncherState {
         this.hideBackButton = (flags & FLAG_HIDE_BACK_BUTTON) != 0;
         this.hasSysUiScrim = (flags & FLAG_HAS_SYS_UI_SCRIM) != 0;
 
+        if (id == 0 && hideBackButton) {
+            mLauncher = ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate()
+                .getLauncher());
+            Utilities.getLawnchairPrefs(mLauncher)
+                .addOnPreferenceChangeListener("pref_gesture_press_back", this);
+        }
+
         this.ordinal = id;
         sAllStates[id] = this;
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+        boolean force) {
+        if ("pref_gesture_press_back".equals(key)) {
+            hideBackButton = !mLauncher.getGestureController().getHasBackGesture();
+        }
     }
 
     public static LauncherState[] values() {

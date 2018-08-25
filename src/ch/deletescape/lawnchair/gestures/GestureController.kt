@@ -39,6 +39,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     private val pressBackGesture = PressBackGesture(this)
     private val longPressGesture = LongPressGesture(this)
 
+    val hasBackGesture
+        get() = pressBackGesture?.handler !is BlankGestureHandler
     val verticalSwipeGesture = VerticalSwipeGesture(this)
 
     var touchDownPoint = PointF()
