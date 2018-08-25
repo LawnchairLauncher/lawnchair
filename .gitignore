@@ -1,6 +1,7 @@
 db_files
 *.iml
 .project
+.settings
 .classpath
 .project.properties
 gen/
@@ -8,9 +9,16 @@ tests/stress/gen/
 WallpaperPicker/gen/
 WallpaperPicker/.project.properties
 bin/
-.idea/
 .gradle/
 local.properties
 build/
 .DS_Store
 captures/
+!/.idea/copyright
+!/.idea/codeStyles
+/.idea/dictionaries
+/.idea/inspectionProfiles
+/.idea/libraries
+/.idea/caches
+/.idea/markdown-navigator
+/.idea/*.xml
