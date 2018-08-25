@@ -642,4 +642,5 @@
     <string name="hotseat_qsb_preferences">Preferences</string>
     <string name="title_app_suggestions_in_search">App suggestions</string>
     <string name="pref_hide_statusbar">Hide status bar</string>
+    <string name="pref_recents_radius">Task radius</string>
 </resources>

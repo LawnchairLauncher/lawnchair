@@ -40,9 +40,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.TaskSystemShortcut;
@@ -55,6 +57,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A task in the Recents view.
@@ -120,7 +123,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getComponentKeyForTask(getTask().key));
         });
-        setOutlineProvider(new TaskOutlineProvider(getResources()));
+        setOutlineProvider(new TaskOutlineProvider(getContext()));
     }
 
     @Override
@@ -288,17 +291,18 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
         private final int mMarginTop;
-        private final float mRadius;
+        private final Context mContext;
 
-        TaskOutlineProvider(Resources res) {
-            mMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-            mRadius = res.getDimension(R.dimen.task_corner_radius);
+        TaskOutlineProvider(Context context) {
+            mMarginTop = context.getResources()
+                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+            mContext = context;
         }
 
         @Override
         public void getOutline(View view, Outline outline) {
             outline.setRoundRect(0, mMarginTop, view.getWidth(),
-                    view.getHeight(), mRadius);
+                view.getHeight(), Utilities.getLawnchairPrefs(mContext).getRecentsRadius());
         }
     }
 

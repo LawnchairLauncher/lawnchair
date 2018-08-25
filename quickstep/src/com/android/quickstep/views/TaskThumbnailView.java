@@ -35,6 +35,7 @@ import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -46,11 +47,13 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A task in the Recents view.
  */
-public class TaskThumbnailView extends View {
+public class TaskThumbnailView extends View implements
+    LawnchairPreferences.OnPreferenceChangeListener {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
     private static final LightingColorFilter[] sHighlightFilterCache = new LightingColorFilter[256];
@@ -68,7 +71,7 @@ public class TaskThumbnailView extends View {
                 }
             };
 
-    private final float mCornerRadius;
+    private float mCornerRadius;
 
     private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
@@ -97,12 +100,22 @@ public class TaskThumbnailView extends View {
 
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
         mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
+        Utilities.getLawnchairPrefs(context)
+            .addOnPreferenceChangeListener("pref_recents_radius", this);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+        boolean force) {
+        mCornerRadius = Utilities.getLawnchairPrefs(getContext()).getRecentsRadius();
+        if (!force) {
+            invalidate();
+        }
     }
 
     public void bind() {
