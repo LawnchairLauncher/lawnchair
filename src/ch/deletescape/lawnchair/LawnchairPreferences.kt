@@ -87,6 +87,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", false, reloadIcons)
     val accentColor by IntPref("pref_accentColor", context.resources.getColor(R.color.colorAccent), doNothing)
     val darkSearchbar by BooleanPref("pref_darkSearchbar", false, doNothing)
+    val hideStatusBar by BooleanPref("pref_hideStatusBar", false, doNothing)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop

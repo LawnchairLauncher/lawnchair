@@ -33,7 +33,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
-import android.util.Log
+import android.view.WindowManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
@@ -49,8 +49,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Semaphore
 
-open class LawnchairLauncher : NexusLauncherActivity() {
-
+open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnPreferenceChangeListener {
+    val hideStatusBarKey = "pref_hideStatusBar"
     val gestureController by lazy { GestureController(this) }
     val blurWallpaperProvider by lazy { BlurWallpaperProvider(this, isScreenshotMode) }
     var updateWallpaper = true
@@ -63,7 +63,6 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this)
         }
-
         val prefs = Utilities.getLawnchairPrefs(this)
 
         ThemeManager.getInstance(this).addOverride(
@@ -72,6 +71,17 @@ open class LawnchairLauncher : NexusLauncherActivity() {
         super.onCreate(savedInstanceState)
 
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
+        Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
+    }
+
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        if (key == hideStatusBarKey) {
+            if (prefs.hideStatusBar) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            } else if (!force) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+        }
     }
 
     override fun onBackPressed() {
