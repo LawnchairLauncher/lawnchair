@@ -22,8 +22,12 @@ import android.content.SharedPreferences
 import android.content.res.TypedArray
 import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
+import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
+import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
+import ch.deletescape.lawnchair.gestures.GestureHandler
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
 class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -33,6 +37,23 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
 
     private val blankGestureHandler = BlankGestureHandler(context, null)
     private val handler get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
+    private val gesture: Gesture?
+
+    init {
+        val ta = context.obtainStyledAttributes(attrs, R.styleable.GesturePreference)
+        val className = ta.getString(R.styleable.GesturePreference_gestureClass) ?: ""
+        val controller = (LauncherAppState.getInstanceNoCreate().launcher as LawnchairLauncher).gestureController
+        gesture = if (className.isNotBlank()) {
+            Class.forName(className).getConstructor(GestureController::class.java).newInstance(controller) as Gesture
+        } else {
+            null
+        }
+        ta.recycle()
+    }
+
+    override fun getShouldDisableView(): Boolean {
+        return !(gesture?.isEnabled ?: true)
+    }
 
     override fun onAttached() {
         super.onAttached()
