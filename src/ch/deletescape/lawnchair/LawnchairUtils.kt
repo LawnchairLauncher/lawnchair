@@ -21,6 +21,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.RectF
@@ -37,6 +38,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Property
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -394,4 +396,8 @@ class ViewPagerAdapter(private val pages: List<Pair<String, View>>) : PagerAdapt
     override fun isViewFromObject(view: View, obj: Any) = (view === obj)
 
     override fun getPageTitle(position: Int) = pages[position].first
+}
+
+fun dpToPx(size: Float): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
 }

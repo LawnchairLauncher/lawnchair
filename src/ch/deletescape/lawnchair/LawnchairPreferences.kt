@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
-import android.support.annotation.ColorInt
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
@@ -31,7 +30,6 @@ import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.Themes
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -153,7 +151,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Quickstep
     val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
-    val recentsRadius by FloatPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
+    val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
@@ -403,6 +401,16 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         override fun onSetValue(value: Int) {
             edit { putFloat(getKey(), value.toFloat() / 255) }
+        }
+    }
+
+    open inner class DimensionPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Float>(key, defaultValue, onChange) {
+
+        override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
+
+        override fun onSetValue(value: Float) {
+            TODO("not implemented")
         }
     }
 
