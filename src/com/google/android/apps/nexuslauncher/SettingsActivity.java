@@ -112,8 +112,10 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             mIconPackPref.reloadIconPacks();
 
             SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
-            minusOne.setChecked(Utilities.getPrefs(getActivity())
-                    .getBoolean(ENABLE_MINUS_ONE_PREF, true));
+            if (minusOne != null) {
+                minusOne.setChecked(Utilities.getPrefs(getActivity())
+                        .getBoolean(ENABLE_MINUS_ONE_PREF, true));
+            }
         }
 
         @Override
