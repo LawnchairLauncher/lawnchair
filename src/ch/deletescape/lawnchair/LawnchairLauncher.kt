@@ -63,15 +63,19 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this)
         }
-        val prefs = Utilities.getLawnchairPrefs(this)
-
-        ThemeManager.getInstance(this).addOverride(
-                if (prefs.allAppsSearch) ThemeOverride.LauncherQsb(this) else ThemeOverride.Launcher(this))
 
         super.onCreate(savedInstanceState)
 
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
         Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
+    }
+
+    override fun getLauncherThemeSet(): ThemeOverride.ThemeSet {
+        return if (Utilities.getLawnchairPrefs(this).allAppsSearch) {
+            ThemeOverride.LauncherQsb()
+        } else {
+            ThemeOverride.Launcher()
+        }
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
@@ -173,7 +177,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
                 AlertDialog.Builder(this)
                         .setTitle(R.string.title_storage_permission_required)
                         .setMessage(R.string.content_storage_permission_required)
-                        .setPositiveButton(android.R.string.ok, { _, _ -> Utilities.requestStoragePermission(this@LawnchairLauncher) })
+                        .setPositiveButton(android.R.string.ok) { _, _ -> Utilities.requestStoragePermission(this@LawnchairLauncher) }
                         .setCancelable(false)
                         .show()
                 }
@@ -230,8 +234,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
             finish()
         }
 
-        override fun getLauncherTheme(): ThemeOverride {
-            return ThemeOverride.LauncherScreenshot(this)
+        override fun getLauncherThemeSet(): ThemeOverride.ThemeSet {
+            return ThemeOverride.LauncherScreenshot()
         }
 
         override fun restartIfPending() {

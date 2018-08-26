@@ -26,12 +26,11 @@ import com.android.launcher3.*
 
 class ApplyIconPackActivity : Activity() {
     private val prefs by lazy { Utilities.getLawnchairPrefs(this) }
-    private val themeOverride: ThemeOverride get() = ThemeOverride.SettingsTransparent(this)
-
+    private val themeSet: ThemeOverride.ThemeSet get() = ThemeOverride.SettingsTransparent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeManager.getInstance(this).addOverride(themeOverride)
+        ThemeManager.getInstance(this).addOverride(ThemeOverride(themeSet, this))
 
         prefs.iconPack = intent.getStringExtra("packageName")
         reloadIcons(this)

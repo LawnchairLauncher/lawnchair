@@ -53,6 +53,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
@@ -129,11 +130,11 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     @NotNull
     @Override
-    protected ThemeOverride getThemeOverride() {
+    protected ThemeSet getThemeSet() {
         if (getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false)) {
-            return new ThemeOverride.SettingsTransparent(this);
+            return new ThemeOverride.SettingsTransparent();
         } else {
-            return super.getThemeOverride();
+            return super.getThemeSet();
         }
     }
 

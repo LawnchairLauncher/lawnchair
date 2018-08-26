@@ -359,11 +359,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Utilities.checkRestoreSuccess(this);
     }
 
-    @NonNull
-    protected ThemeOverride getLauncherTheme() {
-        return new ThemeOverride.LauncherQsb(this);
-    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);

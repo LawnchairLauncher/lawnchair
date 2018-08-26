@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.theme
 import android.app.Activity
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import java.lang.ref.WeakReference
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -37,33 +38,32 @@ import com.android.launcher3.Utilities
  * limitations under the License.
  */
 
-abstract class ThemeOverride(val activity: Activity) {
+class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideListener) {
 
-    abstract val lightTheme: Int
-    abstract val darkTextTheme: Int
-    abstract val darkTheme: Int
-    abstract val blackTheme: Int
+    constructor(themeSet: ThemeSet, activity: Activity) : this(themeSet, ActivityListener(activity))
 
-    fun overrideTheme(themeFlags: Int) {
+    val isAlive get() = listener.isAlive
+
+    fun applyTheme(themeFlags: Int) {
         if (ThemeManager.isDark(themeFlags)) {
             if (ThemeManager.isBlack(themeFlags)) {
-                activity.setTheme(blackTheme)
+                listener.applyTheme(themeSet.blackTheme)
             } else {
-                activity.setTheme(darkTheme)
+                listener.applyTheme(themeSet.darkTheme)
             }
         } else if (ThemeManager.isDarkText(themeFlags) && Utilities.ATLEAST_NOUGAT) {
-            activity.setTheme(darkTextTheme)
+            listener.applyTheme(themeSet.darkTextTheme)
         } else {
-            activity.setTheme(lightTheme)
+            listener.applyTheme(themeSet.lightTheme)
         }
     }
 
     fun onThemeChanged(themeFlags: Int) {
-        overrideTheme(themeFlags)
-        activity.recreate()
+        applyTheme(themeFlags)
+        listener.reloadTheme()
     }
 
-    class Launcher(activity: Activity) : ThemeOverride(activity) {
+    class Launcher : ThemeSet {
 
         override val lightTheme = R.style.LauncherTheme
         override val darkTextTheme = R.style.LauncherTheme_DarkText
@@ -71,7 +71,7 @@ abstract class ThemeOverride(val activity: Activity) {
         override val blackTheme = R.style.LauncherThemeBlack
     }
 
-    class LauncherQsb(activity: Activity) : ThemeOverride(activity) {
+    class LauncherQsb : ThemeSet {
 
         override val lightTheme = R.style.GoogleSearchLauncherTheme
         override val darkTextTheme = R.style.GoogleSearchLauncherThemeDarkText
@@ -79,7 +79,7 @@ abstract class ThemeOverride(val activity: Activity) {
         override val blackTheme = R.style.GoogleSearchLauncherThemeBlack
     }
 
-    class LauncherScreenshot(activity: Activity) : ThemeOverride(activity) {
+    class LauncherScreenshot : ThemeSet {
 
         override val lightTheme = R.style.ScreenshotLauncherTheme
         override val darkTextTheme = R.style.ScreenshotLauncherThemeDarkText
@@ -87,7 +87,7 @@ abstract class ThemeOverride(val activity: Activity) {
         override val blackTheme = R.style.ScreenshotLauncherThemeBlack
     }
 
-    class Settings(activity: Activity) : ThemeOverride(activity) {
+    class Settings : ThemeSet {
 
         override val lightTheme = R.style.SettingsTheme_V2
         override val darkTextTheme = R.style.SettingsTheme_V2
@@ -95,11 +95,41 @@ abstract class ThemeOverride(val activity: Activity) {
         override val blackTheme = R.style.SettingsTheme_V2_Black
     }
 
-    class SettingsTransparent(activity: Activity) : ThemeOverride(activity) {
+    class SettingsTransparent : ThemeSet {
 
         override val lightTheme = R.style.SettingsTheme_V2_Transparent
         override val darkTextTheme = R.style.SettingsTheme_V2_DarkText_Transparent
         override val darkTheme = R.style.SettingsTheme_V2_Dark_Transparent
         override val blackTheme = R.style.SettingsTheme_V2_Black_Transparent
+    }
+
+    interface ThemeSet {
+
+        val lightTheme: Int
+        val darkTextTheme: Int
+        val darkTheme: Int
+        val blackTheme: Int
+    }
+
+    interface ThemeOverrideListener {
+
+        val isAlive: Boolean
+
+        fun applyTheme(themeRes: Int)
+        fun reloadTheme()
+    }
+
+    class ActivityListener(activity: Activity) : ThemeOverrideListener {
+
+        private val activityRef = WeakReference(activity)
+        override val isAlive = activityRef.get() != null
+
+        override fun applyTheme(themeRes: Int) {
+            activityRef.get()?.setTheme(themeRes)
+        }
+
+        override fun reloadTheme() {
+            activityRef.get()?.recreate()
+        }
     }
 }

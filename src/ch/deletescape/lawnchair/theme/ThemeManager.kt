@@ -17,16 +17,12 @@
 
 package ch.deletescape.lawnchair.theme
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
-import android.os.Bundle
-import android.os.Looper
-import com.android.launcher3.MainThreadExecutor
+import ch.deletescape.lawnchair.ensureOnMainThread
+import ch.deletescape.lawnchair.useApplicationContext
+import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
-import java.util.concurrent.Callable
-import java.util.concurrent.ExecutionException
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -44,11 +40,10 @@ import java.util.concurrent.ExecutionException
  * limitations under the License.
  */
 
-class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, WallpaperColorInfo.OnChangeListener {
+class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
 
-    private val application = context.applicationContext as Application
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
-    private val listeners = HashMap<Activity, ThemeOverride>()
+    private val listeners = HashSet<ThemeOverride>()
     private val prefs = Utilities.getLawnchairPrefs(context)
     private var themeFlags = 0
 
@@ -56,16 +51,25 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
     val supportsDarkText get() = themeFlags and THEME_DARK_TEXT != 0
 
     init {
-        application.registerActivityLifecycleCallbacks(this)
         wallpaperColorInfo.addOnChangeListener(this)
         onExtractedColorsChanged(null)
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
         synchronized(listeners) {
-            listeners[themeOverride.activity] = themeOverride
+            removeDeadListeners()
+            listeners.add(themeOverride)
         }
-        themeOverride.overrideTheme(themeFlags)
+        themeOverride.applyTheme(themeFlags)
+    }
+
+    private fun removeDeadListeners() {
+        val it = listeners.iterator()
+        while (it.hasNext()) {
+            if (!it.next().isAlive) {
+                it.remove()
+            }
+        }
     }
 
     override fun onExtractedColorsChanged(ignore: WallpaperColorInfo?) {
@@ -85,29 +89,12 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
         if (isDark) themeFlags = themeFlags or THEME_DARK
         if (isBlack) themeFlags = themeFlags or THEME_USE_BLACK
         synchronized(listeners) {
-            listeners.values.forEach { it.onThemeChanged(themeFlags) }
+            removeDeadListeners()
+            listeners.forEach { it.onThemeChanged(themeFlags) }
         }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
-        synchronized(listeners) {
-            listeners.remove(activity)
-        }
-    }
-
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
-
-    override fun onActivityPaused(activity: Activity?) {}
-
-    override fun onActivityResumed(activity: Activity?) {}
-
-    override fun onActivityStarted(activity: Activity?) {}
-
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-
-    override fun onActivityStopped(activity: Activity?) {}
-
-    companion object {
+    companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
         private const val THEME_AUTO = 1
         private const val THEME_DARK_TEXT = 1 shl 1
@@ -117,25 +104,5 @@ class ThemeManager(context: Context) : Application.ActivityLifecycleCallbacks, W
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0
         fun isDark(flags: Int) = (flags and THEME_DARK) != 0
         fun isBlack(flags: Int) = (flags and THEME_USE_BLACK) != 0
-
-        private var INSTANCE: ThemeManager? = null
-
-        fun getInstance(context: Context): ThemeManager {
-            if (INSTANCE == null) {
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    INSTANCE = ThemeManager(context.applicationContext)
-                } else {
-                    try {
-                        return MainThreadExecutor().submit(Callable { ThemeManager.getInstance(context) }).get()
-                    } catch (e: InterruptedException) {
-                        throw RuntimeException(e)
-                    } catch (e: ExecutionException) {
-                        throw RuntimeException(e)
-                    }
-
-                }
-            }
-            return INSTANCE!!
-        }
     }
 }

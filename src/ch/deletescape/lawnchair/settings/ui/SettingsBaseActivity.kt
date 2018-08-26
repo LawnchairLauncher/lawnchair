@@ -36,11 +36,11 @@ import com.android.launcher3.Utilities
 open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChangeListener {
     val decorLayout by lazy { DecorLayout(this, window) }
 
-    protected open val themeOverride: ThemeOverride get() = ThemeOverride.Settings(this)
+    protected open val themeSet: ThemeOverride.ThemeSet get() = ThemeOverride.Settings()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         hookGoogleSansDialogTitle()
-        ThemeManager.getInstance(this).addOverride(themeOverride)
+        ThemeManager.getInstance(this).addOverride(ThemeOverride(themeSet, this))
 
         super.onCreate(savedInstanceState)
         super.setContentView(decorLayout)

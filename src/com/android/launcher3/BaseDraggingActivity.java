@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Surface;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.theme.ThemeManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
+import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -74,9 +76,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mRotationListener = DisplayRotationListener.create(this, this::onDeviceRotationChanged);
 
         // Register theme override
-        ThemeOverride themeOverride = Utilities.getLawnchairPrefs(this).getAllAppsSearch() ?
-                new ThemeOverride.LauncherQsb(this) : new ThemeOverride.Launcher(this);
+        ThemeOverride themeOverride = new ThemeOverride(getLauncherThemeSet(), this);
         ThemeManager.Companion.getInstance(this).addOverride(themeOverride);
+    }
+
+    @NonNull
+    protected ThemeSet getLauncherThemeSet() {
+        return new ThemeOverride.LauncherQsb();
     }
 
     @Override
