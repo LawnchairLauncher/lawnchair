@@ -19,9 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -122,14 +120,9 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
-  @SuppressLint("NewApi")
-  protected void drawInternal(Canvas canvas, Rect bounds) {
-    if (Utilities.ATLEAST_OREO && mBitmap.getConfig().equals(Config.HARDWARE) && !canvas
-        .isHardwareAccelerated()) {
-      mBitmap = mBitmap.copy(Config.ARGB_8888, mBitmap.isMutable());
+    protected void drawInternal(Canvas canvas, Rect bounds) {
+        canvas.drawBitmap(mBitmap, null, bounds, mPaint);
     }
-    canvas.drawBitmap(mBitmap, null, bounds, mPaint);
-  }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
