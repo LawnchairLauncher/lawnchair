@@ -2,6 +2,6 @@
 <resources>
     <integer name="bridge_signature_hash">0xB662CC2F</integer>
     <string name="bridge_download_url" translatable="false">https://github.com/amirzaidi/AIDLBridge/releases/download</string>
-    <string name="bridge_download_version" translatable="false">v1</string>
+    <string name="bridge_download_version" translatable="false">v2</string>
     <string name="bridge_download_file" translatable="false">pixelbridge.apk</string>
 </resources>
