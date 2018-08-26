@@ -32,33 +32,28 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "com.microsoft.clients.bing.activities.WidgetSearchActivity").setPackage(PACKAGE))
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).setPackage(PACKAGE))
-    override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(if(cortanaInstalled) {
+    override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(if (cortanaInstalled) {
         Intent().setClassName(PACKAGE_CORTANA, "com.microsoft.bing.dss.assist.AssistProxyActivity").setPackage(PACKAGE_CORTANA)
     } else {
         Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE_ALEXA)
     })
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(if (colored) {
-        R.drawable.ic_bing
-    } else {
-        R.drawable.ic_bing_shadow
-    })
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_bing)!!
 
-    override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_shadow).mutate().apply {
-        if(colored)  { setTint(Color.parseColor("#00897B")) }
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
+        setTint(Color.parseColor("#00897B"))
     }
 
-    override fun getAssistantIcon(colored: Boolean): Drawable = context.getDrawable(if (cortanaInstalled) {
-        if (colored) {
-            R.drawable.ic_cortana
-        } else {
-            R.drawable.ic_cortana_shadow
-        }
+    override fun getAssistantIcon(): Drawable = context.getDrawable(if (cortanaInstalled) {
+        R.drawable.ic_cortana
     } else {
-        if (colored) {
-            R.drawable.ic_alexa
-        } else {
-            R.drawable.ic_alexa_shadow
+        R.drawable.ic_alexa
+    })!!
+
+    override fun getShadowAssistantIcon(): Drawable? {
+        if (cortanaInstalled) {
+            return wrapInShadowDrawable(context.getDrawable(R.drawable.ic_cortana_shadow)!!)
         }
-    })
+        return super.getShadowAssistantIcon()
+    }
 }

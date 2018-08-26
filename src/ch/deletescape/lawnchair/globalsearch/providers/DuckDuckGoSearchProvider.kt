@@ -26,10 +26,6 @@ class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE))
 
-    override fun getIcon(colored: Boolean): Drawable  = context.getDrawable(if (colored) {
-        R.drawable.ic_ddg
-    } else {
-        R.drawable.ic_ddg_shadow
-    })
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_ddg)
 
 }

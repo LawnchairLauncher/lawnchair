@@ -25,13 +25,9 @@ class BaiduSearchProvider(context: Context) : SearchProvider(context) {
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE))
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setPackage(PACKAGE))
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(if (colored) {
-        R.drawable.ic_baidu
-    } else {
-        R.drawable.ic_baidu_shadow
-    })
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_baidu)!!
 
-    override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(R.drawable.ic_mic_shadow).mutate().apply {
-        if(colored) { setTint(Color.parseColor("#2d03e4")) }
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
+        setTint(Color.parseColor("#2d03e4"))
     }
 }

@@ -182,6 +182,10 @@ public class ShadowDrawable extends Drawable {
         }
     }
 
+    public Drawable setChild(Drawable newDrawable) {
+        return (new ShadowDrawableState(mState, newDrawable)).newDrawable();
+    }
+
     private static class ShadowDrawableState extends ConstantState {
 
         int mChangingConfigurations;
@@ -195,6 +199,24 @@ public class ShadowDrawable extends Drawable {
         boolean mIsDark;
         Bitmap mLastDrawnBitmap;
         ConstantState mChildState;
+
+        private ShadowDrawableState() {
+
+        }
+
+        private ShadowDrawableState(ShadowDrawableState oldState, Drawable newDrawable) {
+            mChangingConfigurations = newDrawable.getChangingConfigurations();
+            mIntrinsicWidth = newDrawable.getIntrinsicWidth() + 2 * oldState.mShadowSize;
+            mIntrinsicHeight = newDrawable.getIntrinsicHeight() + 2 * oldState.mShadowSize;
+
+            mShadowColor = oldState.mShadowColor;
+            mShadowSize = oldState.mShadowSize;
+            mDarkTintColor = oldState.mDarkTintColor;
+
+            mIsDark = oldState.mIsDark;
+            mLastDrawnBitmap = null;
+            mChildState = newDrawable.getConstantState();
+        }
 
         @Override
         public Drawable newDrawable() {

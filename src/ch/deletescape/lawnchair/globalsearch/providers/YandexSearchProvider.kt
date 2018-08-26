@@ -23,17 +23,9 @@ class YandexSearchProvider(context: Context) : SearchProvider(context) {
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE))
     override fun startAssistant(callback: (intent: Intent) -> Unit) = startVoiceSearch(callback)
 
-    override fun getIcon(colored: Boolean): Drawable = context.getDrawable(if (colored) {
-        R.drawable.ic_yandex
-    } else {
-        R.drawable.ic_yandex_shadow
-    })
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_yandex)!!
 
-    override fun getVoiceIcon(colored: Boolean): Drawable = context.getDrawable(if (colored) {
-        R.drawable.ic_alisa_yandex
-    } else {
-        R.drawable.ic_alisa_yandex_shadow
-    })
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_alisa_yandex)!!
 
-    override fun getAssistantIcon(colored: Boolean): Drawable = getVoiceIcon(colored)
+    override fun getAssistantIcon(): Drawable = getVoiceIcon()
 }
