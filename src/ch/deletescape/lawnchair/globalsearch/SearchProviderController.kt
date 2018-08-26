@@ -1,8 +1,11 @@
 package ch.deletescape.lawnchair.globalsearch
 
 import android.content.Context
+import android.support.v7.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
+import ch.deletescape.lawnchair.theme.ThemeManager
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Utilities
@@ -13,7 +16,13 @@ class SearchProviderController(private val context: Context) {
     private var cache: SearchProvider? = null
     private var cached: String = ""
 
+    private var themeRes: Int = 0
+
     val isGoogle get() = searchProvider is GoogleSearchProvider
+
+    init {
+        ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.LauncherQsb(), ThemeListener()))
+    }
 
     val searchProvider: SearchProvider
         get() {
@@ -21,8 +30,10 @@ class SearchProviderController(private val context: Context) {
             if (cache == null || cached != curr) {
                 cache = null
                 try {
-                    val prov = Class.forName(prefs.searchProvider).getConstructor(Context::class.java).newInstance(context) as SearchProvider
-                    if(prov.isAvailable) {
+                    val constructor = Class.forName(prefs.searchProvider).getConstructor(Context::class.java)
+                    val themedContext = ContextThemeWrapper(context, themeRes)
+                    val prov = constructor.newInstance(themedContext) as SearchProvider
+                    if (prov.isAvailable) {
                         cache = prov
                     }
                 } catch (ignored: Exception) { }
@@ -31,6 +42,19 @@ class SearchProviderController(private val context: Context) {
             }
             return cache!!
         }
+
+    inner class ThemeListener : ThemeOverride.ThemeOverrideListener {
+
+        override val isAlive = true
+
+        override fun applyTheme(themeRes: Int) {
+            this@SearchProviderController.themeRes = themeRes
+        }
+
+        override fun reloadTheme() {
+            cache = null
+        }
+    }
 
     companion object : SingletonHolder<SearchProviderController, Context>(ensureOnMainThread(useApplicationContext(::SearchProviderController))) {
         fun getSearchProviders(context: Context) = listOf(
