@@ -24,8 +24,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
+import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.a_search;
@@ -34,6 +37,7 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.c_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigBuilder {
     private final c_search mNano;
@@ -165,24 +169,46 @@ public class ConfigBuilder {
                 R.id.mic_icon :
                 0;
         final a_search viewBounds = getViewBounds(mActivity.getDragLayer());
-        int eg = mNano.en.eg;
-        if (!co) {
-            eg += mNano.en.ee;
-        }
-        viewBounds.eg += eg;
-        viewBounds.ee -= eg;
+        final int topShift = mNano.en.eg + (co ? 0 : mNano.en.ee);
+        viewBounds.eg += topShift;
+        viewBounds.ee -= topShift;
         mNano.et = viewBounds;
-        final Bitmap bitmap = Bitmap.createBitmap(viewBounds.eh, viewBounds.ee, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(bitmap);
-        canvas.translate(0f, (float)-eg);
-        final AllAppsRecyclerView appsView = getAppsView();
+        if (viewBounds.eh > 0 && viewBounds.ee > 0) {
+            Bitmap bitmap = BitmapRenderer.createHardwareBitmap(viewBounds.eh, viewBounds.ee, out -> a(topShift, out));
+            mBundle.putParcelable(mNano.eu, bitmap);
+        } else {
+            String stringBuilder = "Invalid preview bitmap size. width: " +
+                    viewBounds.eh +
+                    "hight: " +
+                    viewBounds.ee +
+                    " top shift: " +
+                    topShift;
+            Log.e("ConfigBuilder", stringBuilder);
+            viewBounds.ee = 0;
+            viewBounds.ef = 0;
+            viewBounds.eg = 0;
+            viewBounds.eh = 0;
+            Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            bitmap.setPixel(0, 0, 0);
+            mBundle.putParcelable(mNano.eu, bitmap);
+        }
+    }
+
+    private /* synthetic */ void a(int i, Canvas canvas) {
+        int save = canvas.save();
+        canvas.translate(0.0f, (float) (-i));
+        a(canvas, mActivity.getAppsView().getRecyclerViewContainer());
+        a(canvas, mActivity.getAppsView().getFloatingHeaderView());
+        canvas.restoreToCount(save);
+    }
+
+    private void a(Canvas canvas, View view) {
         final int[] array = {0, 0};
-        mActivity.getDragLayer().mapCoordInSelfToDescendant(appsView, array);
-        canvas.translate((float)-array[0], (float)-array[1]);
-        appsView.draw(canvas);
-        canvas.setBitmap(null);
-        mNano.eu = "preview_bitmap";
-        mBundle.putParcelable(mNano.eu, bitmap);
+        mActivity.getDragLayer().mapCoordInSelfToDescendant(mActivity.getAppsView(), array);
+        mActivity.getDragLayer().mapCoordInSelfToDescendant(view, array);
+        canvas.translate((float) (-array[0]), (float) (-array[1]));
+        view.draw(canvas);
+        canvas.translate((float) array[0], (float) array[1]);
     }
 
     private void ce() {
@@ -253,12 +279,12 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-//        List predictedApps = appsView.getApps().getPredictedApps();
-//        int i = Math.min(predictedApps.size(), allAppsCols);
-//        mNano.eo = new b_search[i];
-//        for (int i2 = 0; i2 < i; i2++) {
-//            mNano.eo[i2] = bZ((AppInfo) predictedApps.get(i2), i2);
-//        }
+        List<ComponentKeyMapper<AppInfo>> predictedApps = ((CustomAppPredictor) mActivity.getUserEventDispatcher()).getUiManager().getPredictions();
+        int i = Math.min(predictedApps.size(), allAppsCols);
+        mNano.eo = new b_search[i];
+        for (int i2 = 0; i2 < i; i2++) {
+            mNano.eo[i2] = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i2).getKey()), i2);
+        }
     }
 
     private void cf() {
