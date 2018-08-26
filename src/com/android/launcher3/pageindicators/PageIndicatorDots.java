@@ -244,7 +244,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
 
         float x = startX + mDotRadius;
-        float y = canvas.getHeight() / 2;
+        float y = getHeight() / 2;
 
         if (mEntryAnimationRadiusFactors != null) {
             // During entry animation, only draw the circles
