@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
@@ -38,6 +39,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -68,6 +70,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private final Context mContext;
     private final RecentsTaskLoader mRecentsTaskLoader;
     private final MainThreadExecutor mMainThreadExecutor;
+    private final Handler mBgHandler;
 
     private RecentsTaskLoadPlan mLastLoadPlan;
     private int mLastLoadPlanId;
@@ -85,6 +88,7 @@ public class RecentsModel extends TaskStackChangeListener {
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         mIsLowRamDevice = activityManager.isLowRamDevice();
         mMainThreadExecutor = new MainThreadExecutor();
+        mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper());
 
         Resources res = context.getResources();
         mRecentsTaskLoader = new RecentsTaskLoader(mContext,
@@ -226,7 +230,7 @@ public class RecentsModel extends TaskStackChangeListener {
             // We already stop the loader in UI_HIDDEN, so stop the high res loader as well
             mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
         }
-        mRecentsTaskLoader.onTrimMemory(level);
+        mBgHandler.post(() -> mRecentsTaskLoader.onTrimMemory(level));
     }
 
     public void onOverviewShown(boolean fromHome, String tag) {
