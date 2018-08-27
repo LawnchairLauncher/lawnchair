@@ -49,7 +49,7 @@ public class NormalizedIconLoader extends IconLoader {
             LruCache<ComponentName, ActivityInfo> activityInfoCache,
             boolean disableColorExtraction) {
         super(context, iconCache, activityInfoCache);
-        mDrawableFactory = DrawableFactory.get(context);
+        mDrawableFactory = DrawableFactory.INSTANCE.get(context);
         mDisableColorExtraction = disableColorExtraction;
     }
 
@@ -96,6 +96,6 @@ public class NormalizedIconLoader extends IconLoader {
                 userId,
                 desc.getPrimaryColor(),
                 activityInfo.applicationInfo.isInstantApp());
-        return mDrawableFactory.newIcon(bitmapInfo, activityInfo);
+        return mDrawableFactory.newIcon(mContext, bitmapInfo, activityInfo);
     }
 }

@@ -152,8 +152,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
-                mEmptySearchBackground = DrawableFactory.get(getContext())
-                        .getAllAppsBackground(getContext());
+                mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);
                 updateEmptySearchBackgroundBounds();

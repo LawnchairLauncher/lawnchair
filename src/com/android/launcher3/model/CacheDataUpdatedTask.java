@@ -64,7 +64,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
                     if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                             && isValidShortcut(si) && cn != null
                             && mPackages.contains(cn.getPackageName())) {
-                        iconCache.getTitleAndIcon(si, si.usingLowResIcon);
+                        iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                         updatedShortcuts.add(si);
                     }
                 }

@@ -92,7 +92,7 @@ public class AllAppsList {
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
-            mIconCache.getTitleAndIcon(info, info.usingLowResIcon);
+            mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
             data.add(info);
             added.add(info);
         }
