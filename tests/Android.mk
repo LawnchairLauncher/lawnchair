@@ -21,7 +21,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx-test \
 	androidx.test.uiautomator_uiautomator \
 	mockito-target-minus-junit4 \
-	ub-launcher-aosp-tapl
+	launcher-aosp-tapl
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
@@ -50,6 +50,6 @@ LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
   ../src/com/android/launcher3/TestProtocol.java
 
 LOCAL_SDK_VERSION := current
-LOCAL_MODULE := ub-launcher-aosp-tapl
+LOCAL_MODULE := launcher-aosp-tapl
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
