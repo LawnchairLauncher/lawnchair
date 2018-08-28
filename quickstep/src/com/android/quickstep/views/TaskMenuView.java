@@ -22,7 +22,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -34,15 +33,15 @@ import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.views.IconView.OnScaleUpdateListener;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -59,14 +58,42 @@ public class TaskMenuView extends AbstractFloatingView {
             new TaskSystemShortcut.Install(),
     };
 
+    private final OnScaleUpdateListener mTaskViewIconScaleListener = new OnScaleUpdateListener() {
+        @Override
+        public void onScaleUpdate(float scale) {
+            final Drawable drawable = mTaskIcon.getDrawable();
+            if (drawable instanceof FastBitmapDrawable) {
+                if (scale != ((FastBitmapDrawable) drawable).getScale()) {
+                    mMenuIconDrawable.setScale(scale);
+                }
+            }
+        }
+    };
+
+    private final OnScaleUpdateListener mMenuIconScaleListener = new OnScaleUpdateListener() {
+        @Override
+        public void onScaleUpdate(float scale) {
+            final Drawable taskViewDrawable = mTaskView.getIconView().getDrawable();
+            if (taskViewDrawable instanceof FastBitmapDrawable) {
+                final float currentScale = ((FastBitmapDrawable) taskViewDrawable).getScale();
+                if (currentScale != scale) {
+                    ((FastBitmapDrawable) taskViewDrawable).setScale(scale);
+                }
+            }
+        }
+    };
+
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
 
+    private final float mThumbnailTopMargin;
     private BaseDraggingActivity mActivity;
-    private TextView mTaskIconAndName;
+    private TextView mTaskName;
+    private IconView mTaskIcon;
     private AnimatorSet mOpenCloseAnimator;
     private TaskView mTaskView;
     private LinearLayout mOptionLayout;
+    private FastBitmapDrawable mMenuIconDrawable;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -76,12 +103,14 @@ public class TaskMenuView extends AbstractFloatingView {
         super(context, attrs, defStyleAttr);
 
         mActivity = BaseDraggingActivity.fromContext(context);
+        mThumbnailTopMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTaskIconAndName = findViewById(R.id.task_icon_and_name);
+        mTaskName = findViewById(R.id.task_name);
+        mTaskIcon = findViewById(R.id.task_icon);
         mOptionLayout = findViewById(R.id.menu_option_layout);
     }
 
@@ -113,15 +142,29 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // Remove all scale listeners when menu is removed
+        mTaskView.getIconView().removeUpdateScaleListener(mTaskViewIconScaleListener);
+        mTaskIcon.removeUpdateScaleListener(mMenuIconScaleListener);
+    }
+
+    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_TASK_MENU) != 0;
     }
 
-    public static boolean showForTask(TaskView taskView) {
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y + mThumbnailTopMargin);
+    }
+
+    public static TaskMenuView showForTask(TaskView taskView) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
-        return taskMenuView.populateAndShowForTask(taskView);
+        return taskMenuView.populateAndShowForTask(taskView) ? taskMenuView : null;
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
@@ -138,17 +181,21 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void addMenuOptions(TaskView taskView) {
         Drawable icon = taskView.getTask().icon.getConstantState().newDrawable();
-        int iconSize = getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
-        icon.setBounds(0, 0, iconSize, iconSize);
-        mTaskIconAndName.setCompoundDrawables(null, icon, null, null);
-        mTaskIconAndName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
-        mTaskIconAndName.setOnClickListener(v -> close(true));
+        mTaskIcon.setDrawable(icon);
+        mTaskIcon.setOnClickListener(v -> close(true));
+        mTaskName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
+        mTaskName.setOnClickListener(v -> close(true));
+
+        // Set the icons to match scale by listening to each other's changes
+        mMenuIconDrawable = icon instanceof FastBitmapDrawable ? (FastBitmapDrawable) icon : null;
+        taskView.getIconView().addUpdateScaleListener(mTaskViewIconScaleListener);
+        mTaskIcon.addUpdateScaleListener(mMenuIconScaleListener);
 
         // Move the icon and text up half an icon size to lay over the TaskView
         LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams) mTaskIconAndName.getLayoutParams();
-        params.topMargin = (int) -getResources().getDimension(R.dimen.task_thumbnail_top_margin);
-        mTaskIconAndName.setLayoutParams(params);
+                (LinearLayout.LayoutParams) mTaskIcon.getLayoutParams();
+        params.topMargin = (int) -mThumbnailTopMargin;
+        mTaskIcon.setLayoutParams(params);
 
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, taskView);
@@ -172,12 +219,12 @@ public class TaskMenuView extends AbstractFloatingView {
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
-        params.width = sTempRect.width();
-        params.gravity = Gravity.LEFT;
+        params.width = taskView.getMeasuredWidth();
+        params.gravity = Gravity.START;
         setLayoutParams(params);
-        setX(sTempRect.left - insets.left);
-        setY(sTempRect.top + getResources().getDimension(R.dimen.task_thumbnail_top_margin)
-                - insets.top);
+        setScaleX(taskView.getScaleX());
+        setScaleY(taskView.getScaleY());
+        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top);
     }
 
     private void animateOpen() {
@@ -191,9 +238,9 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void animateOpenOrClosed(boolean closing) {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
-            return;
+            mOpenCloseAnimator.end();
         }
-        mOpenCloseAnimator = LauncherAnimUtils.createAnimatorSet();
+        mOpenCloseAnimator = new AnimatorSet();
 
         final Animator revealAnimator = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, closing);

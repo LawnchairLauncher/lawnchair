@@ -28,8 +28,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -41,7 +39,8 @@ import java.util.ArrayList;
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
  */
-public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends InsettableFrameLayout {
+public abstract class BaseDragLayer<T extends Context & ActivityContext>
+        extends InsettableFrameLayout {
 
     protected final int[] mTmpXY = new int[2];
     protected final Rect mHitRect = new Rect();
@@ -55,7 +54,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
 
     public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
-        mActivity = (T) BaseActivity.fromContext(context);
+        mActivity = (T) ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
 

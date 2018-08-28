@@ -15,14 +15,23 @@
  */
 package com.android.quickstep;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+
+import android.view.MotionEvent;
+
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
@@ -42,6 +51,27 @@ public class RecentsAnimationWrapper {
 
     private final ExecutorService mExecutorService =
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
+
+    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    private InputConsumerController mInputConsumer =
+            InputConsumerController.getRecentsAnimationInputConsumer();
+    private final Supplier<TouchConsumer> mTouchProxySupplier;
+
+    private boolean mInputConsumerUnregistered;
+    private boolean mTouchProxyEnabled;
+
+    private TouchConsumer mTouchConsumer;
+    private boolean mTouchInProgress;
+    private boolean mInputConsumerUnregisterPending;
+
+    private boolean mFinishPending;
+
+    public RecentsAnimationWrapper(Supplier<TouchConsumer> touchProxySupplier) {
+        // Register the input consumer on the UI thread, to ensure that it runs after any pending
+        // unregister calls
+        mTouchProxySupplier = touchProxySupplier;
+        mMainThreadExecutor.execute(mInputConsumer::registerInputConsumer);
+    }
 
     public synchronized void setController(
             RecentsAnimationControllerCompat controller, RemoteAnimationTargetSet targetSet) {
@@ -77,19 +107,35 @@ public class RecentsAnimationWrapper {
      *                         on the background thread.
      */
     public void finish(boolean toHome, Runnable onFinishComplete) {
-        mExecutorService.submit(() -> {
-            RecentsAnimationControllerCompat controller = mController;
-            mController = null;
-            TraceHelper.endSection("RecentsController",
-                    "Finish " + controller + ", toHome=" + toHome);
-            if (controller != null) {
-                controller.setInputConsumerEnabled(false);
-                controller.finish(toHome);
+        if (!toHome) {
+            mExecutorService.submit(() -> finishBg(false, onFinishComplete));
+        }
+
+        mMainThreadExecutor.execute(() -> {
+            if (mTouchInProgress) {
+                mFinishPending = true;
+                // Execute the callback
                 if (onFinishComplete != null) {
                     onFinishComplete.run();
                 }
+            } else {
+                mExecutorService.submit(() -> finishBg(true, onFinishComplete));
             }
         });
+    }
+
+    protected void finishBg(boolean toHome, Runnable onFinishComplete) {
+        RecentsAnimationControllerCompat controller = mController;
+        mController = null;
+        TraceHelper.endSection("RecentsController", "Finish " + controller + ", toHome=" + toHome);
+        if (controller != null) {
+            controller.setInputConsumerEnabled(false);
+            controller.finish(toHome);
+
+            if (onFinishComplete != null) {
+                onFinishComplete.run();
+            }
+        }
     }
 
     public void enableInputConsumer() {
@@ -104,6 +150,54 @@ public class RecentsAnimationWrapper {
                 }
             });
         }
+    }
+
+    public void unregisterInputConsumer() {
+        mMainThreadExecutor.execute(this::unregisterInputConsumerUi);
+    }
+
+    private void unregisterInputConsumerUi() {
+        if (mTouchProxyEnabled && mTouchInProgress) {
+            mInputConsumerUnregisterPending = true;
+        } else {
+            mInputConsumerUnregistered = true;
+            mInputConsumer.unregisterInputConsumer();
+        }
+    }
+
+    public void enableTouchProxy() {
+        mMainThreadExecutor.execute(this::enableTouchProxyUi);
+    }
+
+    private void enableTouchProxyUi() {
+        if (!mInputConsumerUnregistered) {
+            mTouchProxyEnabled = true;
+            mInputConsumer.setTouchListener(this::onInputConsumerTouch);
+        }
+    }
+
+    private boolean onInputConsumerTouch(MotionEvent ev) {
+        int action = ev.getAction();
+        if (action == ACTION_DOWN) {
+            mTouchInProgress = true;
+            mTouchConsumer = mTouchProxySupplier.get();
+        } else if (action == ACTION_CANCEL || action == ACTION_UP) {
+            // Finish any pending actions
+            mTouchInProgress = false;
+            if (mInputConsumerUnregisterPending) {
+                mInputConsumerUnregisterPending = false;
+                mInputConsumer.unregisterInputConsumer();
+            }
+            if (mFinishPending) {
+                mFinishPending = false;
+                mExecutorService.submit(() -> finishBg(true, null));
+            }
+        }
+        if (mTouchConsumer != null) {
+            mTouchConsumer.accept(ev);
+        }
+
+        return true;
     }
 
     public void setAnimationTargetsBehindSystemBars(boolean behindSystemBars) {

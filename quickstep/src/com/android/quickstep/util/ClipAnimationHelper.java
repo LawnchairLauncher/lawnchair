@@ -29,8 +29,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
-import android.view.Surface;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -50,8 +48,9 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.Surfac
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+
+import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation
@@ -260,7 +259,7 @@ public class ClipAnimationHelper {
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
-        ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+        ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
         if (sysUiProxy != null) {
             try {
                 mSourceStackBounds.set(sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds());

@@ -5,14 +5,16 @@ import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import com.android.launcher3.util.ResourceBasedOverride;
+
 import java.util.Locale;
 
-public class IconProvider {
+public class IconProvider implements ResourceBasedOverride {
 
     protected String mSystemState;
 
     public static IconProvider newInstance(Context context) {
-        IconProvider provider = Utilities.getOverrideObject(
+        IconProvider provider = Overrides.getObject(
                 IconProvider.class, context, R.string.icon_provider_class);
         provider.updateSystemStateString(context);
         return provider;

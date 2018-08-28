@@ -27,7 +27,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
@@ -44,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -197,7 +198,7 @@ public class NotificationListener extends NotificationListenerService {
         mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
             @Override
             public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled && sIsConnected) {
                     requestUnbind();
                 }
             }

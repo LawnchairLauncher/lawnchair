@@ -18,7 +18,9 @@ package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA_MULTIPLIER;
+import static com.android.launcher3.BaseActivity.fromContext;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -43,6 +45,7 @@ import android.widget.Toast;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.TaskSystemShortcut;
@@ -94,12 +97,43 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 }
             };
 
+    private static FloatProperty<TaskView> FOCUS_TRANSITION =
+            new FloatProperty<TaskView>("focusTransition") {
+        @Override
+        public void setValue(TaskView taskView, float v) {
+            taskView.setIconAndDimTransitionProgress(v);
+        }
+
+        @Override
+        public Float get(TaskView taskView) {
+            return taskView.mFocusTransitionProgress;
+        }
+    };
+
+    private final OnAttachStateChangeListener mTaskMenuStateListener =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                    if (mMenuView != null) {
+                        mMenuView.removeOnAttachStateChangeListener(this);
+                        mMenuView = null;
+                    }
+                }
+            };
+
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
+    private TaskMenuView mMenuView;
     private IconView mIconView;
     private float mCurveScale;
     private float mZoomScale;
-    private Animator mDimAlphaAnim;
+
+    private Animator mIconAndDimAnimator;
+    private float mFocusTransitionProgress = 1;
 
     public TaskView(Context context) {
         this(context, null);
@@ -116,7 +150,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 return;
             }
             launchTask(true /* animate */);
-            BaseActivity.fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+            fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
         });
@@ -168,7 +202,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                opts = BaseDraggingActivity.fromContext(getContext())
+                opts = ((BaseDraggingActivity) fromContext(getContext()))
                         .getActivityLaunchOptions(this);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
@@ -182,11 +216,20 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setDrawable(task.icon);
-        mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
+        mIconView.setOnClickListener(icon -> showTaskMenu());
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
-            return TaskMenuView.showForTask(this);
+            return showTaskMenu();
         });
+    }
+
+    private boolean showTaskMenu() {
+        getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+        mMenuView = TaskMenuView.showForTask(this);
+        if (mMenuView != null) {
+            mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
+        }
+        return mMenuView != null;
     }
 
     @Override
@@ -201,28 +244,35 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         // Do nothing
     }
 
-    public void animateIconToScaleAndDim(float scale) {
-        mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
-        mDimAlphaAnim = ObjectAnimator.ofFloat(mSnapshotView, DIM_ALPHA_MULTIPLIER, 1 - scale,
-                scale);
-        mDimAlphaAnim.setDuration(DIM_ANIM_DURATION);
-        mDimAlphaAnim.addListener(new AnimatorListenerAdapter() {
+    private void setIconAndDimTransitionProgress(float progress) {
+        mFocusTransitionProgress = progress;
+        mSnapshotView.setDimAlphaMultipler(progress);
+        float scale = FAST_OUT_SLOW_IN.getInterpolation(Utilities.boundToRange(
+                progress * DIM_ANIM_DURATION / SCALE_ICON_DURATION,  0, 1));
+        mIconView.setScaleX(scale);
+        mIconView.setScaleY(scale);
+    }
+
+    public void animateIconScaleAndDimIntoView() {
+        if (mIconAndDimAnimator != null) {
+            mIconAndDimAnimator.cancel();
+        }
+        mIconAndDimAnimator = ObjectAnimator.ofFloat(this, FOCUS_TRANSITION, 1);
+        mIconAndDimAnimator.setDuration(DIM_ANIM_DURATION).setInterpolator(LINEAR);
+        mIconAndDimAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mDimAlphaAnim = null;
+                mIconAndDimAnimator = null;
             }
         });
-        mDimAlphaAnim.start();
+        mIconAndDimAnimator.start();
     }
 
     protected void setIconScaleAndDim(float iconScale) {
-        mIconView.animate().cancel();
-        mIconView.setScaleX(iconScale);
-        mIconView.setScaleY(iconScale);
-        if (mDimAlphaAnim != null) {
-            mDimAlphaAnim.cancel();
+        if (mIconAndDimAnimator != null) {
+            mIconAndDimAnimator.cancel();
         }
-        mSnapshotView.setDimAlphaMultipler(iconScale);
+        setIconAndDimTransitionProgress(iconScale);
     }
 
     public void resetVisualProperties() {
@@ -241,6 +291,12 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
+
+        if (mMenuView != null) {
+            mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
+            mMenuView.setScaleX(getScaleX());
+            mMenuView.setScaleY(getScaleY());
+        }
     }
 
     @Override
@@ -311,7 +367,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                         getContext().getText(R.string.accessibility_close_task)));
 
         final Context context = getContext();
-        final BaseDraggingActivity activity = BaseDraggingActivity.fromContext(context);
+        final BaseDraggingActivity activity = fromContext(context);
         for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
             if (onClickListener != null) {
@@ -339,7 +395,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
             if (action == menuOption.labelResId) {
                 OnClickListener onClickListener = menuOption.getOnClickListener(
-                        BaseDraggingActivity.fromContext(getContext()), this);
+                        fromContext(getContext()), this);
                 if (onClickListener != null) {
                     onClickListener.onClick(this);
                 }

@@ -35,7 +35,7 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
 
     public BackButtonAlphaHandler(Launcher launcher) {
         mLauncher = launcher;
-        mOverviewInteractionState = OverviewInteractionState.getInstance(mLauncher);
+        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(mLauncher);
     }
 
     @Override

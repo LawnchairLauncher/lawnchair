@@ -261,7 +261,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
                             if (isNewApkAvailable &&
                                     si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                                iconCache.getTitleAndIcon(si, si.usingLowResIcon);
+                                iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                                 infoUpdated = true;
                             }
 

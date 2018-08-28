@@ -30,7 +30,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -41,6 +40,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LooperExecutor;
 
 import java.lang.reflect.Field;
+
+import androidx.annotation.NonNull;
 
 /**
  * Utility class to override shape of {@link android.graphics.drawable.AdaptiveIconDrawable}.

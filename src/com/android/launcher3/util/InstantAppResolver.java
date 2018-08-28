@@ -23,7 +23,6 @@ import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +30,10 @@ import java.util.List;
 /**
  * A wrapper class to access instant app related APIs.
  */
-public class InstantAppResolver {
+public class InstantAppResolver implements ResourceBasedOverride {
 
     public static InstantAppResolver newInstance(Context context) {
-        return Utilities.getOverrideObject(
+        return Overrides.getObject(
                 InstantAppResolver.class, context, R.string.instant_app_resolver_class);
     }
 

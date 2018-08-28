@@ -18,33 +18,33 @@ package com.android.launcher3;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements WallpaperColorInfo.OnChangeListener {
+        implements WallpaperColorInfo.OnChangeListener, ActivityContext {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -83,13 +83,33 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @Override
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+        updateTheme();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateTheme();
+    }
+
+    private void updateTheme() {
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         if (mThemeRes != getThemeRes(wallpaperColorInfo)) {
             recreate();
         }
     }
 
     protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
-        if (wallpaperColorInfo.isDark()) {
+        boolean darkTheme;
+        if (Utilities.ATLEAST_Q) {
+            Configuration configuration = getResources().getConfiguration();
+            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+        } else {
+            darkTheme = wallpaperColorInfo.isDark();
+        }
+
+        if (darkTheme) {
             return wallpaperColorInfo.supportsDarkText() ?
                     R.style.AppTheme_Dark_DarkText : R.style.AppTheme_Dark;
         } else {
@@ -110,6 +130,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mCurrentActionMode = null;
     }
 
+    @Override
     public boolean finishAutoCancelActionMode() {
         if (mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag()) {
             mCurrentActionMode.finish();
@@ -127,13 +148,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
     public abstract BadgeInfo getBadgeInfoForItem(ItemInfo info);
 
     public abstract void invalidateParent(ItemInfo info);
-
-    public static BaseDraggingActivity fromContext(Context context) {
-        if (context instanceof BaseDraggingActivity) {
-            return (BaseDraggingActivity) context;
-        }
-        return ((BaseDraggingActivity) ((ContextWrapper) context).getBaseContext());
-    }
 
     public Rect getViewBounds(View v) {
         int[] pos = new int[2];

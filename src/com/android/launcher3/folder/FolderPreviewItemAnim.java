@@ -17,22 +17,41 @@ package com.android.launcher3.folder;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.animation.FloatArrayEvaluator;
+import android.animation.ObjectAnimator;
+import android.util.Property;
 
-import com.android.launcher3.LauncherAnimUtils;
+import java.util.Arrays;
 
 /**
  * Animates a Folder preview item.
  */
 class FolderPreviewItemAnim {
 
+    private static final Property<FolderPreviewItemAnim, float[]> PARAMS =
+            new Property<FolderPreviewItemAnim, float[]>(float[].class, "params") {
+                @Override
+                public float[] get(FolderPreviewItemAnim anim) {
+                    sTempParamsArray[0] = anim.mParams.scale;
+                    sTempParamsArray[1] = anim.mParams.transX;
+                    sTempParamsArray[2] = anim.mParams.transY;
+                    return sTempParamsArray;
+                }
+
+                @Override
+                public void set(FolderPreviewItemAnim anim, float[] value) {
+                    anim.setParams(value);
+                }
+            };
+
     private static PreviewItemDrawingParams sTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private static final float[] sTempParamsArray = new float[3];
 
-    private ValueAnimator mValueAnimator;
+    private final ObjectAnimator mAnimator;
+    private final PreviewItemManager mItemManager;
+    private final PreviewItemDrawingParams mParams;
 
-    float finalScale;
-    float finalTransX;
-    float finalTransY;
+    public final float[] finalState;
 
     /**
      * @param params layout params to animate
@@ -43,33 +62,21 @@ class FolderPreviewItemAnim {
      * @param duration duration in ms of the animation
      * @param onCompleteRunnable runnable to execute upon animation completion
      */
-    FolderPreviewItemAnim(final PreviewItemManager previewItemManager,
-            final PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
+    FolderPreviewItemAnim(PreviewItemManager itemManager,
+            PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
             int duration, final Runnable onCompleteRunnable) {
-        previewItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
+        mItemManager = itemManager;
+        mParams = params;
 
-        finalScale = sTmpParams.scale;
-        finalTransX = sTmpParams.transX;
-        finalTransY = sTmpParams.transY;
+        mItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
+        finalState = new float[] {sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
 
-        previewItemManager.computePreviewItemDrawingParams(index0, items0, sTmpParams);
+        mItemManager.computePreviewItemDrawingParams(index0, items0, sTmpParams);
+        float[] startState = new float[] {sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
 
-        final float scale0 = sTmpParams.scale;
-        final float transX0 = sTmpParams.transX;
-        final float transY0 = sTmpParams.transY;
-
-        mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
-        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float progress = animation.getAnimatedFraction();
-
-                params.transX = transX0 + progress * (finalTransX - transX0);
-                params.transY = transY0 + progress * (finalTransY - transY0);
-                params.scale = scale0 + progress * (finalScale - scale0);
-                previewItemManager.onParamsChanged();
-            }
-        });
-        mValueAnimator.addListener(new AnimatorListenerAdapter() {
+        mAnimator = ObjectAnimator.ofObject(this, PARAMS, new FloatArrayEvaluator(),
+                startState, finalState);
+        mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (onCompleteRunnable != null) {
@@ -78,20 +85,26 @@ class FolderPreviewItemAnim {
                 params.anim = null;
             }
         });
-        mValueAnimator.setDuration(duration);
+        mAnimator.setDuration(duration);
+    }
+
+    private void setParams(float[] values) {
+        mParams.scale = values[0];
+        mParams.transX = values[1];
+        mParams.transY = values[2];
+        mItemManager.onParamsChanged();
     }
 
     public void start() {
-        mValueAnimator.start();
+        mAnimator.start();
     }
 
     public void cancel() {
-        mValueAnimator.cancel();
+        mAnimator.cancel();
     }
 
     public boolean hasEqualFinalState(FolderPreviewItemAnim anim) {
-        return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX &&
-                finalScale == anim.finalScale;
+        return Arrays.equals(finalState, anim.finalState);
 
     }
 }

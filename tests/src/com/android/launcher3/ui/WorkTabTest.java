@@ -15,15 +15,13 @@
  */
 package com.android.launcher3.ui;
 
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.Until;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 
-import com.android.launcher3.R;
-import com.android.launcher3.util.Condition;
-import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.LauncherActivityRule;
+import static org.junit.Assert.assertTrue;
+
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.After;
@@ -32,13 +30,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
-
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class WorkTabTest extends AbstractLauncherUiTest {
-    @Rule
-    public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
     @Rule
     public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
@@ -66,17 +60,13 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     public void workTabExists() {
         mActivityMonitor.startLauncher();
 
-        // Open all apps and wait for load complete
-        final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
-                LARGE_UI_TIMEOUT));
+        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
 
         /*
-        assertTrue("Personal tab is missing",
-                mDevice.wait(Until.hasObject(getSelectorForId(R.id.tab_personal)),
-                        LARGE_UI_TIMEOUT));
-        assertTrue("Work tab is missing",
-                mDevice.wait(Until.hasObject(getSelectorForId(R.id.tab_work)), LARGE_UI_TIMEOUT));
+        assertTrue("Personal tab is missing", waitForLauncherCondition(
+                launcher -> launcher.getAppsView().isPersonalTabVisible()));
+        assertTrue("Work tab is missing", waitForLauncherCondition(
+                launcher -> launcher.getAppsView().isWorkTabVisible()));
         */
     }
 }

@@ -32,12 +32,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
@@ -51,9 +49,12 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.Locale;
 import java.util.UUID;
+
+import androidx.annotation.Nullable;
 
 /**
  * Manages the creation of {@link LauncherEvent}.
@@ -61,7 +62,7 @@ import java.util.UUID;
  *
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
-public class UserEventDispatcher {
+public class UserEventDispatcher implements ResourceBasedOverride {
 
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
 
@@ -70,7 +71,7 @@ public class UserEventDispatcher {
             FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
-    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp,
+    public static UserEventDispatcher newInstance(Context context,
             UserEventDelegate delegate) {
         SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
         String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
@@ -78,18 +79,16 @@ public class UserEventDispatcher {
             uuidStr = UUID.randomUUID().toString();
             sharedPrefs.edit().putString(UUID_STORAGE, uuidStr).apply();
         }
-        UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
+        UserEventDispatcher ued = Overrides.getObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
         ued.mDelegate = delegate;
-        ued.mIsInLandscapeMode = dp.isVerticalBarLayout();
-        ued.mIsInMultiWindowMode = dp.isMultiWindowMode;
         ued.mUuidStr = uuidStr;
         ued.mInstantAppResolver = InstantAppResolver.newInstance(context);
         return ued;
     }
 
-    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp) {
-        return newInstance(context, dp, null);
+    public static UserEventDispatcher newInstance(Context context) {
+        return newInstance(context, null);
     }
 
     public interface UserEventDelegate {
@@ -139,8 +138,6 @@ public class UserEventDispatcher {
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
-    private boolean mIsInMultiWindowMode;
-    private boolean mIsInLandscapeMode;
     private String mUuidStr;
     protected InstantAppResolver mInstantAppResolver;
     private boolean mAppOrTaskLaunch;
@@ -434,8 +431,6 @@ public class UserEventDispatcher {
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
         mAppOrTaskLaunch = false;
-        ev.isInLandscapeMode = mIsInLandscapeMode;
-        ev.isInMultiWindowMode = mIsInMultiWindowMode;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
 
@@ -455,8 +450,6 @@ public class UserEventDispatcher {
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis);
-        log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
-        log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
         log += "\n\n";
         Log.d(TAG, log);
     }

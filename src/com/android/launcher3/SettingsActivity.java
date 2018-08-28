@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -53,7 +54,8 @@ import java.util.Objects;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends Activity
+        implements PreferenceFragment.OnPreferenceStartFragmentCallback {
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
@@ -71,15 +73,32 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
+            Fragment f = Fragment.instantiate(this, getString(R.string.settings_fragment_name));
             // Display the fragment as the main content.
             getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, getNewFragment())
+                    .replace(android.R.id.content, f)
                     .commit();
         }
     }
 
     protected PreferenceFragment getNewFragment() {
         return new LauncherSettingsFragment();
+    }
+
+    @Override
+    public boolean onPreferenceStartFragment(
+            PreferenceFragment preferenceFragment, Preference pref) {
+        Fragment f = Fragment.instantiate(this, pref.getFragment(), pref.getExtras());
+        if (f instanceof DialogFragment) {
+            ((DialogFragment) f).show(getFragmentManager(), pref.getKey());
+        } else {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(android.R.id.content, f)
+                    .addToBackStack(pref.getKey())
+                    .commit();
+        }
+        return true;
     }
 
     /**

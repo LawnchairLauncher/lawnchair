@@ -1,5 +1,11 @@
 package com.android.launcher3.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+
 import android.content.ComponentName;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -7,8 +13,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.support.test.runner.AndroidJUnit4;
 import android.util.Pair;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherProvider;
@@ -25,15 +33,10 @@ import org.mockito.ArgumentCaptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-
 /**
  * Tests for {@link AddWorkspaceItemsTask}
  */
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 

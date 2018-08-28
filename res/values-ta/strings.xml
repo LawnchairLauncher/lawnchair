@@ -108,10 +108,8 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> விட்ஜெட்டுகள்"</string>
-    <!-- no translation found for widgets_list (796804551140113767) -->
-    <skip />
-    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
-    <skip />
+    <string name="widgets_list" msgid="796804551140113767">"விட்ஜெட்கள் பட்டியல்"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"விட்ஜெட்கள் பட்டியல் மூடப்பட்டது"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"முகப்புத் திரையில் சேர்"</string>
     <string name="action_move_here" msgid="2170188780612570250">"இங்கு நகர்த்து"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>

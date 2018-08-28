@@ -16,55 +16,51 @@
 
 package com.android.launcher3.tapl;
 
+import static org.junit.Assert.assertNotEquals;
+
 import android.graphics.Point;
-import android.support.annotation.NonNull;
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiObject2;
 
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * Overview pane.
  */
-public final class Overview {
+public final class Overview extends LauncherInstrumentation.VisibleContainer {
     private static final int DEFAULT_FLING_SPEED = 15000;
 
-    private final Launcher mLauncher;
-
-    Overview(Launcher launcher) {
-        mLauncher = launcher;
-        assertState();
+    Overview(LauncherInstrumentation launcher) {
+        super(launcher);
+        verifyActiveContainer();
     }
 
-    /**
-     * Asserts that we are in overview.
-     *
-     * @return Overview panel.
-     */
-    @NonNull
-    private UiObject2 assertState() {
-        return mLauncher.assertState(Launcher.State.OVERVIEW);
+    @Override
+    protected LauncherInstrumentation.ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.OVERVIEW;
     }
 
     /**
      * Flings forward (left) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 overview = assertState();
+        final UiObject2 overview = verifyActiveContainer();
         overview.fling(Direction.LEFT, DEFAULT_FLING_SPEED);
         mLauncher.waitForIdle();
-        assertState();
+        verifyActiveContainer();
     }
 
     /**
      * Flings backward (right) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 overview = assertState();
+        final UiObject2 overview = verifyActiveContainer();
         overview.fling(Direction.RIGHT, DEFAULT_FLING_SPEED);
         mLauncher.waitForIdle();
-        assertState();
+        verifyActiveContainer();
     }
 
     /**
@@ -74,10 +70,10 @@ public final class Overview {
      */
     @NonNull
     public OverviewTask getCurrentTask() {
-        assertState();
+        verifyActiveContainer();
         final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                Launcher.getLauncherObjectSelector("snapshot"));
-        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+                LauncherInstrumentation.getLauncherObjectSelector("snapshot"));
+        assertNotEquals("Unable to find a task", 0, taskViews.size());
 
         // taskViews contains up to 3 task views: the 'main' (having the widest visible
         // part) one in the center, and parts of its right and left siblings. Find the
@@ -86,7 +82,7 @@ public final class Overview {
                 (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
                         t2.getVisibleBounds().width()));
 
-        return new OverviewTask(mLauncher, widestTask);
+        return new OverviewTask(mLauncher, widestTask, this);
     }
 
     /**
@@ -96,15 +92,12 @@ public final class Overview {
      */
     @NonNull
     public AllAppsFromOverview switchToAllApps() {
-        assertState();
+        verifyActiveContainer();
 
-        // Swipe from the hotseat to near the top, e.g. 10% of the screen.
-        final UiObject2 predictionRow = mLauncher.waitForLauncherObject(
-                "prediction_row");
-        final Point start = predictionRow.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.1f);
-        mLauncher.swipe(
-                start.x, start.y, start.x, endY, (start.y - endY) / 100); // 100 px/step
+        // Swipe from navbar to the top.
+        final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
+        final Point start = navBar.getVisibleCenter();
+        mLauncher.swipe(start.x, start.y, start.x, 0);
 
         return new AllAppsFromOverview(mLauncher);
     }

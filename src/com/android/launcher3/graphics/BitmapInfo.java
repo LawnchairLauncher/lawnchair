@@ -16,10 +16,13 @@
 package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 
 import com.android.launcher3.ItemInfoWithIcon;
 
 public class BitmapInfo {
+
+    public static final Bitmap LOW_RES_ICON = Bitmap.createBitmap(1, 1, Config.ALPHA_8);
 
     public Bitmap icon;
     public int color;
@@ -35,9 +38,15 @@ public class BitmapInfo {
     }
 
     public static BitmapInfo fromBitmap(Bitmap bitmap) {
+        return fromBitmap(bitmap, null);
+    }
+
+    public static BitmapInfo fromBitmap(Bitmap bitmap, ColorExtractor dominantColorExtractor) {
         BitmapInfo info = new BitmapInfo();
         info.icon = bitmap;
-        info.color = ColorExtractor.findDominantColorByHue(bitmap);
+        info.color = dominantColorExtractor != null
+                ? dominantColorExtractor.findDominantColorByHue(bitmap)
+                : 0;
         return info;
     }
 }

@@ -249,11 +249,21 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.setVisibility(View.INVISIBLE);
             mAppsView.reset(false /* animate */);
-        } else if (Float.compare(mProgress, 0f) == 0) {
+        } else if (isAllAppsExpanded()) {
             mAppsView.setVisibility(View.VISIBLE);
             mAppsView.onScrollUpEnd();
         } else {
             mAppsView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isAllAppsExpanded() {
+        return Float.compare(mProgress, 0f) == 0;
+    }
+
+    public void highlightWorkTabIfNecessary() {
+        if (isAllAppsExpanded()) {
+            mAppsView.highlightWorkTabIfNecessary();
         }
     }
 }

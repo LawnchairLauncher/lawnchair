@@ -125,7 +125,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
                 .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
                 .put(LauncherSettings.Favorites.RESTORED, status);
 
-        if (!usingLowResIcon) {
+        if (!usingLowResIcon()) {
             writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {

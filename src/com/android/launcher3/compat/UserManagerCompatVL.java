@@ -120,6 +120,16 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
+    public boolean hasWorkProfile() {
+        synchronized (this) {
+            if (mUsers != null) {
+                return mUsers.size() > 1;
+            }
+        }
+        return getUserProfiles().size() > 1;
+    }
+
+    @Override
     public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
         if (user == null) {
             return label;

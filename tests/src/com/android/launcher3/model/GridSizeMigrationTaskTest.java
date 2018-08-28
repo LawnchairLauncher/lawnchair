@@ -7,16 +7,15 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.MediumTest;
-import android.support.test.rule.provider.ProviderTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.MediumTest;
+import androidx.test.rule.provider.ProviderTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.TestLauncherProvider;
 
@@ -87,13 +86,8 @@ public class GridSizeMigrationTaskTest {
         mIdp.numHotseatIcons = 3;
         new GridSizeMigrationTask(mContext, mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // First item is dropped as it has the least weight.
-            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
-        } else {
-            // First & last items are dropped as they have the least weight.
-            verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
-        }
+        // First item is dropped as it has the least weight.
+        verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
     }
 
     @Test
@@ -109,13 +103,8 @@ public class GridSizeMigrationTaskTest {
         mIdp.numHotseatIcons = 3;
         new GridSizeMigrationTask(mContext, mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // First item is dropped as it has the least weight.
-            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
-        } else {
-            // First & third items are dropped as they have the least weight.
-            verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);
-        }
+        // First item is dropped as it has the least weight.
+        verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
     }
 
     private void verifyHotseat(long... sortedIds) {

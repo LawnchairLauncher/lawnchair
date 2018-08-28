@@ -16,50 +16,43 @@
 
 package com.android.launcher3.tapl;
 
-import android.support.annotation.NonNull;
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiObject2;
 
 /**
  * All widgets container.
  */
-public final class Widgets {
+public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     private static final int FLING_SPEED = 12000;
 
-    private final Launcher mLauncher;
-
-    Widgets(Launcher launcher) {
-        mLauncher = launcher;
-        assertState();
+    Widgets(LauncherInstrumentation launcher) {
+        super(launcher);
+        verifyActiveContainer();
     }
 
     /**
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 widgetsContainer = assertState();
+        final UiObject2 widgetsContainer = verifyActiveContainer();
+        widgetsContainer.setGestureMargin(100);
         widgetsContainer.fling(Direction.DOWN, FLING_SPEED);
-        mLauncher.waitForIdle();
-        assertState();
+        verifyActiveContainer();
     }
 
     /**
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 widgetsContainer = assertState();
+        final UiObject2 widgetsContainer = verifyActiveContainer();
+        widgetsContainer.setGestureMargin(100);
         widgetsContainer.fling(Direction.UP, FLING_SPEED);
         mLauncher.waitForIdle();
-        assertState();
+        verifyActiveContainer();
     }
 
-    /**
-     * Asserts that we are in widgets.
-     *
-     * @return Widgets container.
-     */
-    @NonNull
-    private UiObject2 assertState() {
-        return mLauncher.assertState(Launcher.State.WIDGETS);
+    @Override
+    protected LauncherInstrumentation.ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.WIDGETS;
     }
 }

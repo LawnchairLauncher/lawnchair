@@ -162,7 +162,7 @@ public class ItemClickHandler {
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
      */
-    private static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher) {
+    public static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher) {
         if (shortcut.isDisabled()) {
             final int disabledFlags = shortcut.runtimeStatusFlags & ShortcutInfo.FLAG_DISABLED_MASK;
             if ((disabledFlags &
@@ -218,7 +218,7 @@ public class ItemClickHandler {
         if (item instanceof ShortcutInfo) {
             ShortcutInfo si = (ShortcutInfo) item;
             if (si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)
-                    && intent.getAction() == Intent.ACTION_VIEW) {
+                    && Intent.ACTION_VIEW.equals(intent.getAction())) {
                 // make a copy of the intent that has the package set to null
                 // we do this because the platform sometimes disables instant
                 // apps temporarily (triggered by the user) and fallbacks to the

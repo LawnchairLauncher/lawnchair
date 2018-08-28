@@ -15,14 +15,18 @@
  */
 package com.android.launcher3.widget;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 import android.view.LayoutInflater;
 
 import com.android.launcher3.IconCache;
@@ -43,10 +47,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import androidx.recyclerview.widget.RecyclerView;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

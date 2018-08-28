@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -17,6 +16,8 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
+
+import androidx.annotation.WorkerThread;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 

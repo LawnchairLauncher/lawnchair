@@ -18,8 +18,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
-import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.ValueAnimator;
@@ -30,7 +28,6 @@ import android.content.pm.PackageManager;
 import android.graphics.RectF;
 import android.os.UserHandle;
 import android.util.Log;
-import android.view.Surface;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -92,10 +89,11 @@ public class TaskUtils {
      */
     public static TaskView findTaskViewToLaunch(
             BaseDraggingActivity activity, View v, RemoteAnimationTargetCompat[] targets) {
-        if (v instanceof TaskView) {
-            return (TaskView) v;
-        }
         RecentsView recentsView = activity.getOverviewPanel();
+        if (v instanceof TaskView) {
+            TaskView taskView = (TaskView) v;
+            return recentsView.isTaskViewVisible(taskView) ? taskView : null;
+        }
 
         // It's possible that the launched view can still be resolved to a visible task view, check
         // the task id of the opening task and see if we can find a match.

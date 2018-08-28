@@ -47,7 +47,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 
 import org.json.JSONException;
@@ -486,13 +485,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 if (Looper.myLooper() == LauncherModel.getWorkerLooper()) {
                     app.getIconCache().getTitleAndIcon(si, activityInfo, false /* useLowResIcon */);
                 } else {
-                    app.getModel().updateAndBindShortcutInfo(new Provider<ShortcutInfo>() {
-                        @Override
-                        public ShortcutInfo get() {
-                            app.getIconCache().getTitleAndIcon(
-                                    si, activityInfo, false /* useLowResIcon */);
-                            return si;
-                        }
+                    app.getModel().updateAndBindShortcutInfo(() -> {
+                        app.getIconCache().getTitleAndIcon(
+                                si, activityInfo, false /* useLowResIcon */);
+                        return si;
                     });
                 }
                 return Pair.create((ItemInfo) si, (Object) activityInfo);

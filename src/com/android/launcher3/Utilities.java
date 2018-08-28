@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,7 +56,6 @@ import com.android.launcher3.config.FeatureFlags;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
@@ -82,6 +82,10 @@ public final class Utilities {
     private static final float[] sPoint = new float[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
+
+    public static final boolean ATLEAST_Q = Build.VERSION.CODENAME.length() == 1
+            && Build.VERSION.CODENAME.charAt(0) >= 'Q'
+            && Build.VERSION.CODENAME.charAt(0) <= 'Z';
 
     public static final boolean ATLEAST_P =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
@@ -131,6 +135,9 @@ public final class Utilities {
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+    public static final boolean IS_RUNNING_IN_TEST_HARNESS =
+                    ActivityManager.isRunningInTestHarness();
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -582,25 +589,6 @@ public final class Utilities {
                 || e.getCause() instanceof DeadObjectException;
     }
 
-    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
-        String className = context.getString(resId);
-        if (!TextUtils.isEmpty(className)) {
-            try {
-                Class<?> cls = Class.forName(className);
-                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-                Log.e(TAG, "Bad overriden class", e);
-            }
-        }
-
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Returns a HashSet with a single element. We use this instead of Collections.singleton()
      * because HashSet ensures all operations, such as remove, are supported.
@@ -618,5 +606,9 @@ public final class Utilities {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
+    }
+
+    public interface Consumer<T> {
+        void accept(T var1);
     }
 }

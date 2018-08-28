@@ -95,32 +95,21 @@
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
 # support jar.
--keep class android.support.v7.widget.RecyclerView { *; }
+-keep class androidx.recyclerview.widget.RecyclerView { *; }
 
-# LauncherAppTransitionManager
--keep class com.android.launcher3.LauncherAppTransitionManagerImpl {
+# Preference fragments
+-keep class ** extends android.preference.PreferenceFragment {
     public <init>(...);
 }
 
-# InstantAppResolver
--keep class com.android.quickstep.InstantAppResolverImpl {
-    public <init>(...);
-}
-
-# MainProcessInitializer
--keep class com.android.quickstep.QuickstepProcessInitializer {
-    public <init>(...);
-}
-
-# UserEventDispatcherExtension
--keep class com.android.quickstep.logging.UserEventDispatcherExtension {
+## Prevent obfuscating various overridable objects
+-keep class ** implements com.android.launcher3.util.ResourceBasedOverride {
     public <init>(...);
 }
 
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }
-
 -keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
   *;
 }

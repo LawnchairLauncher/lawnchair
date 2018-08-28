@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -45,6 +46,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -96,9 +98,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             }
             return false;
         }
+        RecentsView recentsView = mLauncher.getOverviewPanel();
         if (mLauncher.isInState(ALL_APPS)) {
             // In all-apps only listen if the container cannot scroll itself
             if (!mLauncher.getAppsView().shouldContainerScroll(ev)) {
+                return false;
+            }
+        } else if (mLauncher.isInState(OVERVIEW) && recentsView.getChildCount() > 0) {
+            // Allow swiping up in the gap between the hotseat and overview.
+            if (ev.getY() < recentsView.getChildAt(0).getBottom()) {
                 return false;
             }
         } else {
@@ -109,7 +117,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         }
-        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+        if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, TYPE_ACCESSIBLE) != null) {
             return false;
         }
         return true;
@@ -196,7 +204,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             // Reset the state manager, when changing the interaction mode
             mLauncher.getStateManager().goToState(OVERVIEW, false /* animate */);
             mPendingAnimation = recentsView.createTaskLauncherAnimation(taskView, maxAccuracy);
-            mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
+            mPendingAnimation.anim.setInterpolator(Interpolators.LINEAR);
 
             Runnable onCancelRunnable = () -> {
                 cancelPendingAnim();
@@ -205,6 +213,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy,
                     onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
+            totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher.getDeviceProfile());
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
                     .createAnimationToNewWorkspace(mToState, builder, maxAccuracy, this::clearState,
@@ -255,7 +264,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
-            RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
+            RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
     }
 

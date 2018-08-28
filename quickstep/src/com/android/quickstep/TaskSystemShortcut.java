@@ -30,7 +30,6 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -133,7 +132,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             public void onLayoutChange(View v, int l, int t, int r, int b,
                                     int oldL, int oldT, int oldR, int oldB) {
                                 taskView.getRootView().removeOnLayoutChangeListener(this);
-                                recentsView.removeIgnoreResetTask(taskView);
+                                recentsView.clearIgnoreResetTask(taskId);
 
                                 // Start animating in the side pages once launcher has been resized
                                 recentsView.dismissTask(taskView, false, false);
@@ -161,7 +160,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 boolean dockTopOrLeft = navBarPosition != WindowManagerWrapper.NAV_BAR_POS_LEFT;
                 if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                         ActivityOptionsCompat.makeSplitScreenOptions(dockTopOrLeft))) {
-                    ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+                    ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
                     try {
                         sysUiProxy.onSplitScreenInvoked();
                     } catch (RemoteException e) {
@@ -178,7 +177,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         // Hide the task view and wait for the window to be resized
                         // TODO: Consider animating in launcher and do an in-place start activity
                         //       afterwards
-                        recentsView.addIgnoreResetTask(taskView);
+                        recentsView.setIgnoreResetTask(taskId);
                         taskView.setAlpha(0f);
                     };
 
@@ -226,7 +225,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
-            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(activity).getSystemUiProxy();
+            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
             if (sysUiProxy == null) {
                 return null;
             }
@@ -269,10 +268,5 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             }
             return null;
         }
-    }
-
-    private static void dismissTaskMenuView(BaseDraggingActivity activity) {
-        AbstractFloatingView.closeOpenViews(activity, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }

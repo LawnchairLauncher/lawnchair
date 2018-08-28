@@ -54,19 +54,6 @@ public class TaskThumbnailView extends View {
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
     private static final LightingColorFilter[] sHighlightFilterCache = new LightingColorFilter[256];
 
-    public static final Property<TaskThumbnailView, Float> DIM_ALPHA_MULTIPLIER =
-            new FloatProperty<TaskThumbnailView>("dimAlphaMultiplier") {
-                @Override
-                public void setValue(TaskThumbnailView thumbnail, float dimAlphaMultiplier) {
-                    thumbnail.setDimAlphaMultipler(dimAlphaMultiplier);
-                }
-
-                @Override
-                public Float get(TaskThumbnailView thumbnailView) {
-                    return thumbnailView.mDimAlphaMultiplier;
-                }
-            };
-
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
                 @Override

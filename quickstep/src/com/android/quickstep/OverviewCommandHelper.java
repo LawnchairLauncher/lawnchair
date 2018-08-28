@@ -49,7 +49,6 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -112,7 +111,7 @@ public class OverviewCommandHelper {
         mContext = context;
         mAM = ActivityManagerWrapper.getInstance();
         mMainThreadExecutor = new MainThreadExecutor();
-        mRecentsModel = RecentsModel.getInstance(mContext);
+        mRecentsModel = RecentsModel.INSTANCE.get(mContext);
 
         Intent myHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
@@ -197,14 +196,8 @@ public class OverviewCommandHelper {
     }
 
     public void onTip(int actionType, int viewType) {
-        mMainThreadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                UserEventDispatcher.newInstance(mContext,
-                        new InvariantDeviceProfile(mContext).getDeviceProfile(mContext))
-                        .logActionTip(actionType, viewType);
-            }
-        });
+        mMainThreadExecutor.execute(() ->
+                UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));
     }
 
     public ActivityControlHelper getActivityControlHelper() {
@@ -289,7 +282,7 @@ public class OverviewCommandHelper {
             }
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
-            mRecentsView.setRunningTaskIconScaledDown(true /* isScaledDown */, false /* animate */);
+            mRecentsView.setRunningTaskIconScaledDown(true);
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(Action.Command.RECENTS_BUTTON,
                         mHelper.getContainerType(), ContainerType.TASKSWITCHER);
@@ -312,8 +305,7 @@ public class OverviewCommandHelper {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     if (mRecentsView != null) {
-                        mRecentsView.setRunningTaskIconScaledDown(false /* isScaledDown */,
-                                true /* animate */);
+                        mRecentsView.animateUpRunningTaskIconScale();
                     }
                 }
             });

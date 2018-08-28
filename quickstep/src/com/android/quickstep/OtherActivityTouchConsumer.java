@@ -444,7 +444,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             } else {
                 TraceHelper.partitionSection("RecentsController", "Received");
                 mInteractionHandler.onRecentsAnimationStart(mController, mTargets,
-                        mHomeContentInsets, mMinimizedHomeBounds);
+                        mHomeContentInsets, mMinimizedHomeBounds, mDownPos);
             }
         }
     }

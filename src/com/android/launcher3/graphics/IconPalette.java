@@ -19,11 +19,12 @@ package com.android.launcher3.graphics;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Contains colors based on the dominant color of an icon.

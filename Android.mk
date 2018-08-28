@@ -37,9 +37,8 @@ LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
-    android-support-v4 \
-    android-support-v7-recyclerview \
-    android-support-dynamic-animation
+    androidx.recyclerview_recyclerview \
+    androidx.dynamicanimation_dynamicanimation
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
@@ -193,7 +192,8 @@ LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
     $(LOCAL_PATH)/go/res
 
-LOCAL_PROGUARD_ENABLED := disabled
+LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_PROGUARD_ENABLED := full
 
 LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26

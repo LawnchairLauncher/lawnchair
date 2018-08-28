@@ -21,13 +21,25 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.FastBitmapDrawable;
+
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+
 /**
  * A view which draws a drawable stretched to fit its size. Unlike ImageView, it avoids relayout
  * when the drawable changes.
  */
 public class IconView extends View {
 
+    public interface OnScaleUpdateListener {
+        public void onScaleUpdate(float scale);
+    }
+
     private Drawable mDrawable;
+
+    private ArrayList<OnScaleUpdateListener> mScaleListeners;
 
     public IconView(Context context) {
         super(context);
@@ -51,6 +63,10 @@ public class IconView extends View {
             mDrawable.setBounds(0, 0, getWidth(), getHeight());
         }
         invalidate();
+    }
+
+    public Drawable getDrawable() {
+        return mDrawable;
     }
 
     @Override
@@ -78,6 +94,16 @@ public class IconView extends View {
     }
 
     @Override
+    public void invalidateDrawable(@NonNull Drawable drawable) {
+        super.invalidateDrawable(drawable);
+        if (drawable instanceof FastBitmapDrawable && mScaleListeners != null) {
+            for (OnScaleUpdateListener listener : mScaleListeners) {
+                listener.onScaleUpdate(((FastBitmapDrawable) drawable).getScale());
+            }
+        }
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (mDrawable != null) {
             mDrawable.draw(canvas);
@@ -87,5 +113,21 @@ public class IconView extends View {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    public void addUpdateScaleListener(OnScaleUpdateListener listener) {
+        if (mScaleListeners == null) {
+            mScaleListeners = new ArrayList<>();
+        }
+        mScaleListeners.add(listener);
+        if (mDrawable instanceof FastBitmapDrawable) {
+            listener.onScaleUpdate(((FastBitmapDrawable) mDrawable).getScale());
+        }
+    }
+
+    public void removeUpdateScaleListener(OnScaleUpdateListener listener) {
+        if (mScaleListeners != null) {
+            mScaleListeners.remove(listener);
+        }
     }
 }

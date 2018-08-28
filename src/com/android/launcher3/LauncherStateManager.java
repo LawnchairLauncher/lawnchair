@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -34,7 +35,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.IntDef;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -46,6 +46,8 @@ import com.android.launcher3.uioverrides.UiFactory;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -306,7 +308,13 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState fromState, LauncherState state, long duration) {
+        // Since we are creating a state animation to a different state, temporarily prevent state
+        // change as part of config reset.
+        LauncherState originalRestState = mRestState;
+        mRestState = state;
         mConfig.reset();
+        mRestState = originalRestState;
+
         for (StateHandler handler : getStateHandlers()) {
             handler.setState(fromState);
         }

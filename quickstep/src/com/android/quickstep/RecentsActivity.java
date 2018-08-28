@@ -42,7 +42,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAnimationRunner;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.badge.BadgeInfo;
@@ -131,21 +130,13 @@ public class RecentsActivity extends BaseDraggingActivity {
     }
 
     private void initDeviceProfile() {
-        // In case we are reusing IDP, create a copy so that we dont conflict with Launcher
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
+
+        // In case we are reusing IDP, create a copy so that we don't conflict with Launcher
         // activity.
-        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (isInMultiWindowModeCompat()) {
-            InvariantDeviceProfile idp = appState == null
-                    ? new InvariantDeviceProfile(this) : appState.getInvariantDeviceProfile();
-            DeviceProfile dp = idp.getDeviceProfile(this);
-            mDeviceProfile = mRecentsRootView == null ? dp.copy(this)
-                    : dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize());
-        } else {
-            // If we are reusing the Invariant device profile, make a copy.
-            mDeviceProfile = appState == null
-                    ? new InvariantDeviceProfile(this).getDeviceProfile(this)
-                    : appState.getInvariantDeviceProfile().getDeviceProfile(this).copy(this);
-        }
+        mDeviceProfile = (mRecentsRootView != null) && isInMultiWindowModeCompat()
+                ? dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize())
+                : dp.copy(this);
         onDeviceProfileInitiated();
     }
 
@@ -238,6 +229,12 @@ public class RecentsActivity extends BaseDraggingActivity {
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        UiFactory.onEnterAnimationComplete(this);
     }
 
     @Override

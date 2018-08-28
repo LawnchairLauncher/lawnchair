@@ -124,7 +124,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             ClipAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
-        if (!OverviewInteractionState.getInstance(mActivity).isSwipeUpGestureEnabled()) {
+        if (!OverviewInteractionState.INSTANCE.get(mActivity).isSwipeUpGestureEnabled()) {
             // Hotseat doesn't move when opening recents with the button,
             // so don't animate it here either.
             return anim;
