@@ -51,7 +51,7 @@ public class ShelfScrimView extends ScrimView {
     // For shelf mode
     protected final int mEndAlpha;
     protected final int mThresholdAlpha;
-    protected final float mRadius;
+    protected float mRadius;
     private final float mMaxScrimAlpha;
     private final Paint mPaint;
 

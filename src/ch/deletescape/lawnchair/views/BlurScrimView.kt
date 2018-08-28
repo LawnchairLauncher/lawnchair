@@ -23,10 +23,13 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
+import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.runOnMainThread
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
 import com.android.quickstep.views.ShelfScrimView
 
@@ -46,7 +49,13 @@ import com.android.quickstep.views.ShelfScrimView
  * limitations under the License.
  */
 
-class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs) {
+class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+
+    private val key_radius = "pref_dockRadius"
+
+    init {
+        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius)
+    }
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -90,6 +99,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onAttachedToWindow()
 
         blurDrawable?.startListening()
+    }
+
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        if (key == key_radius) {
+            mRadius = dpToPx(prefs.dockRadius)
+        }
     }
 
     override fun onDetachedFromWindow() {
