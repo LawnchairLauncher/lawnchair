@@ -34,6 +34,8 @@ import com.android.launcher3.graphics.IconNormalizer;
 
 public class DeviceProfile {
 
+    private Context mContext;
+
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -148,6 +150,7 @@ public class DeviceProfile {
         context = getContext(context, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
+        mContext = context;
         res = context.getResources();
 
 
@@ -183,7 +186,8 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         hotseatBarSizePx = isVerticalBarLayout()
                 ? Utilities.pxFromDp(inv.iconSize, dm)
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size) * Utilities
+                        .getLawnchairPrefs(context).getDockRowsCount()
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
         // Determine sizes.
@@ -327,7 +331,8 @@ public class DeviceProfile {
 
         // Hotseat
         if (isVerticalLayout) {
-            hotseatBarSizePx = iconSizePx;
+            hotseatBarSizePx =
+                    iconSizePx * Utilities.getLawnchairPrefs(mContext).getDockRowsCount();
         }
         hotseatCellHeightPx = iconSizePx;
 
