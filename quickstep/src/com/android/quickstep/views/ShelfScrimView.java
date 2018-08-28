@@ -32,6 +32,7 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
@@ -94,7 +95,11 @@ public class ShelfScrimView extends ScrimView {
 
         if (!mDrawingFlatColor) {
             float swipeLength = OverviewState.getDefaultSwipeHeight(mLauncher);
-            mMoveThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
+            if (Utilities.getLawnchairPrefs(getContext()).getDockGradientStyle()) {
+                mMoveThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
+            } else {
+                mMoveThreshold = 1f;
+            }
             mMinSize = dp.hotseatBarSizePx + dp.getInsets().bottom;
             mRemainingScreenPathValid = false;
             updateColors();
@@ -110,7 +115,7 @@ public class ShelfScrimView extends ScrimView {
             return;
         }
 
-        if (mProgress >= mMoveThreshold) {
+        if (mProgress > mMoveThreshold) {
             mScrimMoveFactor = 1;
 
             if (mProgress >= 1) {

@@ -52,9 +52,10 @@ import com.android.quickstep.views.ShelfScrimView
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val key_radius = "pref_dockRadius"
+    private val key_gradient = "pref_dockGradient"
 
     init {
-        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius)
+        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius, key_gradient)
     }
 
     private val blurDrawableCallback by lazy {
@@ -102,8 +103,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        if (key == key_radius) {
-            mRadius = dpToPx(prefs.dockRadius)
+        when (key) {
+            key_radius -> {
+                mRadius = dpToPx(prefs.dockRadius)
+            }
+            key_gradient -> if (!force) {
+                reInitUi()
+            }
         }
     }
 
