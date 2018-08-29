@@ -891,6 +891,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mStateManager.getState() == state;
     }
 
+    public boolean isInOverview() {
+        LauncherState state = mStateManager.getState();
+        LauncherState toState = mStateManager.getToState();
+        return (state == LauncherState.OVERVIEW && toState != LauncherState.NORMAL)
+                || state == LauncherState.FAST_OVERVIEW;
+    }
+
     /**
      * Restores the previous state, if it exists.
      *

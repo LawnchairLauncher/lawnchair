@@ -114,6 +114,7 @@ public class LauncherStateManager {
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
+    private LauncherState mToState = mState;
 
     private LauncherState mLastStableState = NORMAL;
     private LauncherState mCurrentStableState = NORMAL;
@@ -127,6 +128,10 @@ public class LauncherStateManager {
 
     public LauncherState getState() {
         return mState;
+    }
+
+    public LauncherState getToState() {
+        return mToState;
     }
 
     public StateHandler[] getStateHandlers() {
@@ -223,6 +228,7 @@ public class LauncherStateManager {
 
         // Cancel the current animation. This will reset mState to mCurrentStableState, so store it.
         LauncherState fromState = mState;
+        mToState = state;
         mConfig.reset();
 
         if (!animated) {

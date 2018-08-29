@@ -115,6 +115,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     private int mDragHandleAlpha = 255;
 
+    protected boolean mHide = false;
+
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLauncher = Launcher.getLauncher(context);
@@ -197,6 +199,12 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected void updateColors() {
         mCurrentFlatColor = mProgress >= 1 ? 0 : setAlphaComponent(
                 mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
+    }
+
+    public void hide() {
+        mHide = true;
+        reInitUi();
+        mHide = false;
     }
 
     protected void updateDragHandleAlpha() {

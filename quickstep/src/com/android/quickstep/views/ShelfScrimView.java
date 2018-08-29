@@ -46,6 +46,8 @@ import com.android.launcher3.views.ScrimView;
  */
 public class ShelfScrimView extends ScrimView {
 
+    private final float PROGRESS_WORKSPACE = 1f;
+
     // In transposed layout, we simply draw a flat color.
     protected boolean mDrawingFlatColor;
 
@@ -58,6 +60,7 @@ public class ShelfScrimView extends ScrimView {
 
     // Max vertical progress after which the scrim stops moving.
     protected float mMoveThreshold;
+    protected float mCalcThreshold;
     // Minimum visible size of the scrim.
     private int mMinSize;
 
@@ -95,11 +98,7 @@ public class ShelfScrimView extends ScrimView {
 
         if (!mDrawingFlatColor) {
             float swipeLength = OverviewState.getDefaultSwipeHeight(mLauncher);
-            if (Utilities.getLawnchairPrefs(getContext()).getDockGradientStyle()) {
-                mMoveThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
-            } else {
-                mMoveThreshold = 1f;
-            }
+            mCalcThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
             mMinSize = dp.hotseatBarSizePx + dp.getInsets().bottom;
             mRemainingScreenPathValid = false;
             updateColors();
@@ -113,6 +112,17 @@ public class ShelfScrimView extends ScrimView {
         super.updateColors();
         if (mDrawingFlatColor) {
             return;
+        }
+
+        if (mHide) {
+            mMoveThreshold = mCalcThreshold;
+        } else if (mProgress >= PROGRESS_WORKSPACE) {
+            if (mLauncher.isInOverview() || Utilities.getLawnchairPrefs(getContext())
+                    .getDockGradientStyle()) {
+                mMoveThreshold = mCalcThreshold;
+            } else {
+                mMoveThreshold = PROGRESS_WORKSPACE;
+            }
         }
 
         if (mProgress > mMoveThreshold) {
@@ -173,6 +183,13 @@ public class ShelfScrimView extends ScrimView {
         }
 
         float minTop = getHeight() - mMinSize;
+        if (mProgress < mMoveThreshold) {
+            if (mCalcThreshold < mProgress) {
+                mScrimMoveFactor = 1f;
+            } else {
+                mScrimMoveFactor = mProgress / mCalcThreshold;
+            }
+        }
         float top = minTop * mScrimMoveFactor - mDragHandleSize;
 
         // Draw the scrim over the remaining screen if needed.
