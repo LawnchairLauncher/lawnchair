@@ -165,7 +165,7 @@
         <item></item>
         <item>0</item>
         <item>2</item>
-        <item>4</item>
+        <item>256</item>
     </string-array>
 
     <string-array translatable="false" name="theme_override_names">
