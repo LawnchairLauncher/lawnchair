@@ -37,6 +37,7 @@ public class CustomIconUtils {
     private final static String[] ICON_INTENTS = new String[] {
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",
+            "com.novalauncher.THEME",
             "com.teslacoilsw.launcher.THEME",
             "com.gau.go.launcherex.theme",
             "org.adw.launcher.THEMES",
