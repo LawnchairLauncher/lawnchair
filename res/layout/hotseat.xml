@@ -25,12 +25,4 @@
         android:layout_gravity="center"
         launcher:containerType="hotseat"
         android:importantForAccessibility="no" />
-
-    <com.google.android.apps.nexuslauncher.qsb.HotseatQsbWidget
-        android:id="@id/search_container_hotseat"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/qsb_widget_height"
-        android:layout_gravity="bottom|center"
-        android:background="@drawable/bg_qsb_click_feedback"
-        android:contentDescription="@string/label_search" />
 </com.android.launcher3.Hotseat>

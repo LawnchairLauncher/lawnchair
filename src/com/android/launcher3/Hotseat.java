@@ -83,6 +83,16 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        if (Utilities.getLawnchairPrefs(getContext()).getDockSearchBar()) {
+            inflate(getContext(), R.layout.search_container_hotseat, this);
+        } else {
+            View v = this.findViewById(R.id.search_container_hotseat);
+            if (v != null) {
+                removeView(v);
+            }
+        }
+
         mContent = findViewById(R.id.layout);
     }
 
