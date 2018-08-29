@@ -26,6 +26,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.WallpaperManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -70,7 +71,11 @@ public class NexusLauncherActivity extends Launcher {
     @Override
     public void onStart() {
         super.onStart();
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace() || !mThemeHints.equals(themeHints())) {
+        boolean themeChanged = !mThemeHints.equals(themeHints());
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace() || themeChanged) {
+            if (themeChanged) {
+                WallpaperManagerCompat.getInstance(this).updateAllListeners();
+            }
             Utilities.getPrefs(this).edit().putBoolean(PREF_IS_RELOAD, true).apply();
             recreate();
         } else {

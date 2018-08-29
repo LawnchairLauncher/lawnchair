@@ -940,9 +940,6 @@ public class Launcher extends BaseActivity
             mScrimAnimator.start();
         }
         mShouldFadeInScrim = false;
-
-        // Update theme if it changed
-        WallpaperManagerCompat.getInstance(this).updateAllListeners();
     }
 
     @Override
