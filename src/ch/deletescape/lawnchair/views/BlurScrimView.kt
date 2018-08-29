@@ -141,7 +141,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         if (useFlatColor) {
             blurDrawable?.alpha = ((1 - mProgress) * 255).toInt()
         } else {
-            if (mProgress >= mMoveThreshold) {
+            if (mProgress > mMoveThreshold) {
                 blurDrawable?.alpha = Math.round(255 * ACCEL_2.getInterpolation(
                         (1 - mProgress) / (1 - mMoveThreshold)))
             } else {
