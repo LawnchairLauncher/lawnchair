@@ -24,6 +24,7 @@ import androidx.test.uiautomator.Until;
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
+    static final int FLING_SPEED = 3000;
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -45,7 +46,7 @@ public final class OverviewTask {
     public void dismiss() {
         verifyActiveContainer();
         // Dismiss the task via flinging it up.
-        mTask.fling(Direction.DOWN);
+        mTask.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
     }
 
