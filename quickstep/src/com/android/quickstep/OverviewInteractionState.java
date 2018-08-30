@@ -175,7 +175,7 @@ public class OverviewInteractionState {
         }
     }
 
-    public void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {
+    private void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {
         mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
         mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
                 sendToTarget();
