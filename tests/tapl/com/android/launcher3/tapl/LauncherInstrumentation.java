@@ -70,6 +70,7 @@ public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
+    private static final int GESTURE_STEP_MS = 16;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -359,7 +360,7 @@ public final class LauncherInstrumentation {
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
                 final Point displaySize = getRealDisplaySize();
 
-                swipe(
+                swipeViaMovePointer(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
                         finalState, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
@@ -543,8 +544,28 @@ public final class LauncherInstrumentation {
     }
 
     void swipe(int startX, int startY, int endX, int endY, int expectedState, int steps) {
+        changeStateViaGesture(startX, startY, endX, endY, expectedState,
+                () -> mDevice.swipe(startX, startY, endX, endY, steps));
+    }
+
+    void swipeViaMovePointer(
+            int startX, int startY, int endX, int endY, int expectedState, int steps) {
+        changeStateViaGesture(startX, startY, endX, endY, expectedState, () -> {
+            final long downTime = SystemClock.uptimeMillis();
+            final Point start = new Point(startX, startY);
+            final Point end = new Point(endX, endY);
+            sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+            final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start,
+                    end);
+            sendPointer(
+                    downTime, endTime, MotionEvent.ACTION_UP, end);
+        });
+    }
+
+    private void changeStateViaGesture(int startX, int startY, int endX, int endY,
+            int expectedState, Runnable gesture) {
         final Bundle parcel = (Bundle) executeAndWaitForEvent(
-                () -> mDevice.swipe(startX, startY, endX, endY, steps),
+                gesture,
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
@@ -589,21 +610,22 @@ public final class LauncherInstrumentation {
         event.recycle();
     }
 
-    void movePointer(long downTime, long duration, Point from, Point to) {
+    long movePointer(long downTime, long startTime, long duration, Point from, Point to) {
         final Point point = new Point();
-        final long startTime = SystemClock.uptimeMillis();
-        for (; ; ) {
-            sleep(16);
+        long steps = duration / GESTURE_STEP_MS;
+        long currentTime = startTime;
+        for (long i = 0; i < steps; ++i) {
+            sleep(GESTURE_STEP_MS);
 
-            final long currentTime = SystemClock.uptimeMillis();
+            currentTime += GESTURE_STEP_MS;
             final float progress = (currentTime - startTime) / (float) duration;
-            if (progress > 1) return;
 
             point.x = from.x + (int) (progress * (to.x - from.x));
             point.y = from.y + (int) (progress * (to.y - from.y));
 
             sendPointer(downTime, currentTime, MotionEvent.ACTION_MOVE, point);
         }
+        return currentTime;
     }
 
     public static boolean isGesturalMode(Context context) {

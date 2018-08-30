@@ -78,7 +78,8 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
                 final long downTime = SystemClock.uptimeMillis();
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-                mLauncher.movePointer(downTime, ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION, start, end);
+                mLauncher.movePointer(
+                        downTime, downTime, ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION, start, end);
                 LauncherInstrumentation.sleep(ZERO_BUTTON_SWIPE_UP_HOLD_DURATION);
                 mLauncher.sendPointer(
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end);
