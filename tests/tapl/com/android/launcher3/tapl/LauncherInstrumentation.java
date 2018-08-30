@@ -26,6 +26,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -159,6 +160,10 @@ public final class LauncherInstrumentation {
 
     public NavigationModel getNavigationModel() {
         return isSwipeUpEnabled() ? NavigationModel.TWO_BUTTON : NavigationModel.THREE_BUTTON;
+    }
+
+    static boolean needSlowGestures() {
+        return Build.MODEL.contains("Cuttlefish");
     }
 
     private boolean isSwipeUpEnabled() {

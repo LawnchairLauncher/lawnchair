@@ -29,7 +29,7 @@ import com.android.launcher3.TestProtocol;
 public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
     private static final int MIN_INTERACT_SIZE = 100;
-    private static final int FLING_SPEED = 3000;
+    private static final int FLING_SPEED = LauncherInstrumentation.needSlowGestures() ? 1000 : 3000;
 
     private final int mHeight;
 

@@ -36,7 +36,7 @@ import com.android.launcher3.TestProtocol;
 public final class Workspace extends Home {
     private static final float FLING_SPEED = 3500.0F;
     private final UiObject2 mHotseat;
-    private final int ICON_DRAG_SPEED = 2000;
+    private final int ICON_DRAG_SPEED = LauncherInstrumentation.needSlowGestures() ? 100 : 570;
 
     Workspace(LauncherInstrumentation launcher) {
         super(launcher);
@@ -107,7 +107,7 @@ public final class Workspace extends Home {
                     getHotseatAppIcon("Messages"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
                             workspace.getVisibleBounds().centerY()),
-                    ICON_DRAG_SPEED);
+                    (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
             verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
