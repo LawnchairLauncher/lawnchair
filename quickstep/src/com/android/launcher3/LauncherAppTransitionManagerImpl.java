@@ -427,8 +427,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
-            mFloatingView.setBackground(
-                    DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
+            mFloatingView.setBackground(DrawableFactory.INSTANCE.get(mLauncher)
+                    .newIcon(v.getContext(), (ItemInfoWithIcon) v.getTag()));
         }
 
         // Position the floating view exactly on top of the original
@@ -537,6 +537,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Reset launcher to normal state
+                if (isBubbleTextView) {
+                    ((BubbleTextView) v).setStayPressed(false);
+                }
                 v.setVisibility(View.VISIBLE);
                 ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
             }

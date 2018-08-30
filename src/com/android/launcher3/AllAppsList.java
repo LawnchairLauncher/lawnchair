@@ -22,8 +22,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -34,6 +32,9 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 /**
@@ -91,7 +92,7 @@ public class AllAppsList {
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
-            mIconCache.getTitleAndIcon(info, info.usingLowResIcon);
+            mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
             data.add(info);
             added.add(info);
         }

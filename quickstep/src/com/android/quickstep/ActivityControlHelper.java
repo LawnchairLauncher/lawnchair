@@ -16,13 +16,13 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
-
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
@@ -37,12 +37,11 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -52,10 +51,12 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -74,6 +75,9 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -96,8 +100,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
+    default int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+            @InteractionType int interactionType, TransformedRect outRect) {
+        return getSwipeUpDestinationAndLength(dp, context, interactionType, outRect, null);
+    }
+
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect);
+            @InteractionType int interactionType, TransformedRect outRect, PointF touchTown);
 
     void onSwipeUpComplete(T activity);
 
@@ -133,7 +142,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     /**
      * Must return a non-null controller is supportsLongSwipe was true.
      */
-    LongSwipeHelper getLongSwipeController(T activity, RemoteAnimationTargetSet targetSet);
+    LongSwipeHelper getLongSwipeController(T activity, int runningTaskId);
 
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
@@ -156,6 +165,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
             controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this);
+
+            // For the duration of the gesture, lock the screen orientation to ensure that we do not
+            // rotate mid-quickscrub
+            activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
         }
 
         @Override
@@ -177,7 +190,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect) {
+                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
             if (interactionType == INTERACTION_QUICK_SCRUB) {
                 outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context);
@@ -187,9 +200,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + hotseatInset;
             } else {
-                int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-                // Track slightly below the top of the shelf (between top and content).
-                return shelfHeight - dp.edgeMarginPx * 2;
+                int swipeLength = LayoutUtils.getShelfTrackingDistance(dp);
+                if (touchDown != null) {
+                    // We are already partway through based on where we touched the nav bar.
+                    swipeLength -= dp.heightPx - touchDown.y;
+                }
+                return swipeLength;
             }
         }
 
@@ -225,6 +241,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
                 // Optimization, hide the all apps view to prevent layout while initializing
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
+
+                AccessibilityManagerCompat.sendEventToTest(
+                        activity, TestProtocol.SWITCHED_TO_STATE_MESSAGE);
             }
 
             return new AnimationFactory() {
@@ -294,6 +313,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
             RecentsView recentsView = launcher.getOverviewPanel();
             TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+            if (v == null) {
+                return;
+            }
             ClipAnimationHelper clipHelper = new ClipAnimationHelper();
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
@@ -379,12 +401,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public LongSwipeHelper getLongSwipeController(Launcher activity,
-                RemoteAnimationTargetSet targetSet) {
+        public LongSwipeHelper getLongSwipeController(Launcher activity, int runningTaskId) {
             if (activity.getDeviceProfile().isVerticalBarLayout()) {
                 return null;
             }
-            return new LongSwipeHelper(activity, targetSet);
+            return new LongSwipeHelper(activity, runningTaskId);
         }
 
         @Override
@@ -443,7 +464,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect) {
+                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
             LayoutUtils.calculateFallbackTaskSize(context, dp, outRect.rect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
@@ -566,8 +587,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         @Override
-        public LongSwipeHelper getLongSwipeController(RecentsActivity activity,
-                RemoteAnimationTargetSet targetSet) {
+        public LongSwipeHelper getLongSwipeController(RecentsActivity activity, int runningTaskId) {
             return null;
         }
 

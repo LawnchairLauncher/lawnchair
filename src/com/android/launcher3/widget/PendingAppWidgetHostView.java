@@ -17,7 +17,6 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -37,15 +36,12 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfoWithIcon;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
@@ -137,19 +133,19 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
-            DrawableFactory drawableFactory = DrawableFactory.get(getContext());
+            DrawableFactory drawableFactory = DrawableFactory.INSTANCE.get(getContext());
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(info);
+                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(getContext(), info);
                 disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = drawableFactory.newIcon(info);
+                mCenterDrawable = drawableFactory.newIcon(getContext(), info);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.iconColor);
             } else {
-                mCenterDrawable = DrawableFactory.get(getContext())
-                        .newPendingIcon(info, getContext());
+                mCenterDrawable = DrawableFactory.INSTANCE.get(getContext())
+                        .newPendingIcon(getContext(), info);
                 mSettingIconDrawable = null;
                 applyState();
             }

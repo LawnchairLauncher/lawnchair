@@ -179,8 +179,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap,
-                    DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
+            mWidgetImage.setBitmap(bitmap, DrawableFactory.INSTANCE.get(getContext())
+                    .getBadgeForUser(mItem.user, getContext()));
             if (mAnimatePreview) {
                 mWidgetImage.setAlpha(0f);
                 ViewPropertyAnimator anim = mWidgetImage.animate();

@@ -28,7 +28,7 @@
     <instrumentation
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:name="android.support.test.runner.AndroidJUnitRunner"
+        android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.android.launcher3" >
     </instrumentation>
 </manifest>

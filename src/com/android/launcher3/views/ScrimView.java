@@ -16,14 +16,15 @@
 package com.android.launcher3.views;
 
 import static android.content.Context.ACCESSIBILITY_SERVICE;
-import static android.support.v4.graphics.ColorUtils.compositeColors;
-import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
 import static android.view.MotionEvent.ACTION_DOWN;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+
+import static androidx.core.graphics.ColorUtils.compositeColors;
+import static androidx.core.graphics.ColorUtils.setAlphaComponent;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -38,12 +39,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
-import android.support.v4.widget.ExploreByTouchHelper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.KeyEvent;
@@ -67,6 +62,13 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
 
 /**
  * Simple scrim which draws a flat color

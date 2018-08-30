@@ -1,6 +1,9 @@
 package com.android.launcher3.model;
 
-import android.support.test.runner.AndroidJUnit4;
+import static org.junit.Assert.assertEquals;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -15,11 +18,10 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * Tests for {@link PackageInstallStateChangedTask}
  */
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestCase {
 

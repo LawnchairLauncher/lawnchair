@@ -40,10 +40,6 @@ public class LauncherLayoutListener extends AbstractFloatingView
         super(launcher, null);
         mLauncher = launcher;
         setVisibility(INVISIBLE);
-
-        // For the duration of the gesture, lock the screen orientation to ensure that we do not
-        // rotate mid-quickscrub
-        launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
     }
 
     @Override

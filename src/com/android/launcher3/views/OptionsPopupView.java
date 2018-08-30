@@ -43,6 +43,8 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.VisibleForTesting;
+
 /**
  * Popup shown on long pressing an empty space in launcher
  */
@@ -94,7 +96,7 @@ public class OptionsPopupView extends ArrowPopup
         if (ev.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
-        if (mLauncher.getDragLayer().isEventOverView(this, ev)) {
+        if (getPopupContainer().isEventOverView(this, ev)) {
             return false;
         }
         close(true);
@@ -131,6 +133,11 @@ public class OptionsPopupView extends ArrowPopup
             popup.mItemMap.put(view, item);
         }
         popup.reorderAndShow(popup.getChildCount());
+    }
+
+    @VisibleForTesting
+    public static OptionsPopupView getOptionsPopup(Launcher launcher) {
+        return launcher.findViewById(R.id.deep_shortcuts_container);
     }
 
     public static void showDefaultOptions(Launcher launcher, float x, float y) {

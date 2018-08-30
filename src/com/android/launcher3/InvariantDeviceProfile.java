@@ -22,13 +22,13 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
-import android.support.annotation.VisibleForTesting;
 import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -39,10 +39,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import androidx.annotation.VisibleForTesting;
+
 public class InvariantDeviceProfile {
 
-    // This is a static that we use for the default icon size on a 4/5-inch phone
-    private static float DEFAULT_ICON_SIZE_DP = 60;
+    // We do not need any synchronization for this variable as its only written on UI thread.
+    public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
+            new MainThreadInitializedObject<>((c) -> {
+                new ConfigMonitor(c).register();
+                return new InvariantDeviceProfile(c);
+            });
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -118,7 +124,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    public InvariantDeviceProfile(Context context) {
+    private InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -306,17 +312,6 @@ public class InvariantDeviceProfile {
         landscapeIconSize *= w;
         iconTextSize *= w;
         return this;
-    }
-
-    public int getAllAppsButtonRank() {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
-            throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
-        }
-        return numHotseatIcons / 2;
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        return rank == getAllAppsButtonRank();
     }
 
     public DeviceProfile getDeviceProfile(Context context) {

@@ -18,22 +18,32 @@ package com.android.launcher3.graphics;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.SparseArray;
+import java.util.Arrays;
 
 /**
  * Utility class for extracting colors from a bitmap.
  */
 public class ColorExtractor {
 
-    public static int findDominantColorByHue(Bitmap bitmap) {
-        return findDominantColorByHue(bitmap, 20);
+    private final int NUM_SAMPLES = 20;
+    private final float[] mTmpHsv = new float[3];
+    private final float[] mTmpHueScoreHistogram = new float[360];
+    private final int[] mTmpPixels = new int[NUM_SAMPLES];
+    private final SparseArray<Float> mTmpRgbScores = new SparseArray<>();
+
+    /**
+     * This picks a dominant color, looking for high-saturation, high-value, repeated hues.
+     * @param bitmap The bitmap to scan
+     */
+    public int findDominantColorByHue(Bitmap bitmap) {
+        return findDominantColorByHue(bitmap, NUM_SAMPLES);
     }
 
     /**
      * This picks a dominant color, looking for high-saturation, high-value, repeated hues.
      * @param bitmap The bitmap to scan
-     * @param samples The approximate max number of samples to use.
      */
-    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -42,15 +52,18 @@ public class ColorExtractor {
         }
 
         // This is an out-param, for getting the hsv values for an rgb
-        float[] hsv = new float[3];
+        float[] hsv = mTmpHsv;
+        Arrays.fill(hsv, 0);
 
         // First get the best hue, by creating a histogram over 360 hue buckets,
         // where each pixel contributes a score weighted by saturation, value, and alpha.
-        float[] hueScoreHistogram = new float[360];
+        float[] hueScoreHistogram = mTmpHueScoreHistogram;
+        Arrays.fill(hueScoreHistogram, 0);
         float highScore = -1;
         int bestHue = -1;
 
-        int[] pixels = new int[samples];
+        int[] pixels = mTmpPixels;
+        Arrays.fill(pixels, 0);
         int pixelCount = 0;
 
         for (int y = 0; y < height; y += sampleStride) {
@@ -82,7 +95,8 @@ public class ColorExtractor {
             }
         }
 
-        SparseArray<Float> rgbScores = new SparseArray<>();
+        SparseArray<Float> rgbScores = mTmpRgbScores;
+        rgbScores.clear();
         int bestColor = 0xff000000;
         highScore = -1;
         // Go back over the RGB colors that match the winning hue,

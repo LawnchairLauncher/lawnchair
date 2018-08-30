@@ -28,7 +28,6 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -41,6 +40,8 @@ import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {

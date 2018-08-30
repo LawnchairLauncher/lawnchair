@@ -138,10 +138,7 @@ public class GridSizeMigrationTask {
      */
     protected boolean migrateHotseat() throws Exception {
         ArrayList<DbEntry> items = loadHotseatEntries();
-
-        int requiredCount = FeatureFlags.NO_ALL_APPS_ICON ? mDestHotseatSize : mDestHotseatSize - 1;
-
-        while (items.size() > requiredCount) {
+        while (items.size() > mDestHotseatSize) {
             // Pick the center item by default.
             DbEntry toRemove = items.get(items.size() / 2);
 
@@ -171,9 +168,6 @@ public class GridSizeMigrationTask {
             }
 
             newScreenId++;
-            if (!FeatureFlags.NO_ALL_APPS_ICON && mIdp.isAllAppsButtonRank(newScreenId)) {
-                newScreenId++;
-            }
         }
 
         return applyOperations();

@@ -27,10 +27,9 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
@@ -38,7 +37,9 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -50,8 +51,9 @@ import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+
+import androidx.annotation.WorkerThread;
 
 /**
  * Singleton class to load and manage recents model.
@@ -59,23 +61,8 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel extends TaskStackChangeListener {
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static RecentsModel INSTANCE;
-
-    public static RecentsModel getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new RecentsModel(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(
-                            () -> RecentsModel.getInstance(context)).get();
-                } catch (InterruptedException|ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
+    public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
+            new MainThreadInitializedObject<>(c -> new RecentsModel(c));
 
     private final SparseArray<Bundle> mCachedAssistData = new SparseArray<>(1);
     private final ArrayList<AssistDataListener> mAssistDataListeners = new ArrayList<>();
@@ -83,6 +70,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private final Context mContext;
     private final RecentsTaskLoader mRecentsTaskLoader;
     private final MainThreadExecutor mMainThreadExecutor;
+    private final Handler mBgHandler;
 
     private RecentsTaskLoadPlan mLastLoadPlan;
     private int mLastLoadPlanId;
@@ -100,6 +88,7 @@ public class RecentsModel extends TaskStackChangeListener {
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         mIsLowRamDevice = activityManager.isLowRamDevice();
         mMainThreadExecutor = new MainThreadExecutor();
+        mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper());
 
         Resources res = context.getResources();
         mRecentsTaskLoader = new RecentsTaskLoader(mContext,
@@ -110,7 +99,9 @@ public class RecentsModel extends TaskStackChangeListener {
             protected IconLoader createNewIconLoader(Context context,
                     TaskKeyLruCache<Drawable> iconCache,
                     LruCache<ComponentName, ActivityInfo> activityInfoCache) {
-                return new NormalizedIconLoader(context, iconCache, activityInfoCache);
+                // Disable finding the dominant color since we don't need to use it
+                return new NormalizedIconLoader(context, iconCache, activityInfoCache,
+                        true /* disableColorExtraction */);
             }
         };
         mRecentsTaskLoader.startLoader(mContext);
@@ -232,7 +223,6 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public void onStart() {
         mRecentsTaskLoader.startLoader(mContext);
-        mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(true);
     }
 
     public void onTrimMemory(int level) {
@@ -240,7 +230,7 @@ public class RecentsModel extends TaskStackChangeListener {
             // We already stop the loader in UI_HIDDEN, so stop the high res loader as well
             mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(false);
         }
-        mRecentsTaskLoader.onTrimMemory(level);
+        mBgHandler.post(() -> mRecentsTaskLoader.onTrimMemory(level));
     }
 
     public void onOverviewShown(boolean fromHome, String tag) {

@@ -184,8 +184,8 @@ message LauncherEvent {
   optional int64 elapsed_container_millis = 5;
   optional int64 elapsed_session_millis = 6;
 
-  optional bool is_in_multi_window_mode = 7;
-  optional bool is_in_landscape_mode = 8;
+  optional bool is_in_multi_window_mode = 7 [deprecated = true];
+  optional bool is_in_landscape_mode = 8 [deprecated = true];
 
   optional LauncherEventExtension extension = 9;
 }

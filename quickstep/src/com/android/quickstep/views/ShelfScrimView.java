@@ -15,10 +15,11 @@
  */
 package com.android.quickstep.views;
 
-import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+
+import static androidx.core.graphics.ColorUtils.setAlphaComponent;
 
 import android.content.Context;
 import android.graphics.Canvas;

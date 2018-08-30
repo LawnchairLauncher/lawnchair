@@ -18,6 +18,9 @@
     <!-- String representing the intent to delete a package.-->
     <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
+    <!-- String representing the fragment class for settings activity.-->
+    <string name="settings_fragment_name" translatable="false">com.android.launcher3.SettingsActivity$LauncherSettingsFragment</string>
+
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
     <string-array translatable="false" name="icon_shape_override_paths_values">
@@ -92,9 +95,6 @@
     <!-- Name of an app transition manager class. -->
     <string name="app_transition_manager_class" translatable="false"></string>
 
-    <!-- Name of a color extraction implementation class. -->
-    <string name="color_extraction_impl_class" translatable="false"></string>
-
     <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
     <string name="instant_app_resolver_class" translatable="false"></string>
 
@@ -122,7 +122,7 @@
 
 <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenDuration">80</integer>
+    <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->
@@ -148,6 +148,4 @@
     <item type="id" name="overview_panel"/>
     <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
     <integer name="config_recentsMaxIconCacheSize">12</integer>
-
-    <item name="workspace_page_container" type="id" />
 </resources>

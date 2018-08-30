@@ -41,7 +41,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -56,6 +55,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
+
+import androidx.annotation.Nullable;
 
 /**
  * Helper methods for generating various launcher icons
@@ -90,6 +91,7 @@ public class LauncherIcons implements AutoCloseable {
         synchronized (sPoolSync) {
             // Clear any temporary state variables
             mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+            mDisableColorExtractor = false;
 
             next = sPool;
             sPool = this;
@@ -105,6 +107,8 @@ public class LauncherIcons implements AutoCloseable {
     private final Context mContext;
     private final Canvas mCanvas;
     private final PackageManager mPm;
+    private final ColorExtractor mColorExtractor;
+    private boolean mDisableColorExtractor;
 
     private final int mFillResIconDpi;
     private final int mIconBitmapSize;
@@ -121,6 +125,7 @@ public class LauncherIcons implements AutoCloseable {
     private LauncherIcons(Context context) {
         mContext = context.getApplicationContext();
         mPm = mContext.getPackageManager();
+        mColorExtractor = new ColorExtractor();
 
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         mFillResIconDpi = idp.fillResIconDpi;
@@ -196,7 +201,7 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp, float [] scale) {
+            boolean isInstantApp, float[] scale) {
         if (scale == null) {
             scale = new float[1];
         }
@@ -223,7 +228,7 @@ public class LauncherIcons implements AutoCloseable {
         } else {
             result = bitmap;
         }
-        return BitmapInfo.fromBitmap(result);
+        return BitmapInfo.fromBitmap(result, mDisableColorExtractor ? null : mColorExtractor);
     }
 
     /**
@@ -243,6 +248,14 @@ public class LauncherIcons implements AutoCloseable {
      */
     public void setWrapperBackgroundColor(int color) {
         mWrapperBackgroundColor = (Color.alpha(color) < 255) ? DEFAULT_WRAPPER_BACKGROUND : color;
+    }
+
+    /**
+     * Disables the dominant color extraction for all icons loaded through this session (until
+     * this instance is recycled).
+     */
+    public void disableColorExtraction() {
+        mDisableColorExtractor = true;
     }
 
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,

@@ -20,21 +20,20 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_I
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -70,6 +69,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
@@ -77,7 +78,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
-    @Thunk static boolean sStaticValuesDirty = true;
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
@@ -108,9 +108,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
 
+    @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mBadgeScale;
+    private Animator mBadgeScaleAnim;
     private Point mTempSpaceForBadgeOffset = new Point();
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
@@ -183,12 +186,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        sStaticValuesDirty = true;
-        return super.onSaveInstanceState();
     }
 
     public Folder getFolder() {
@@ -401,15 +398,30 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float newBadgeScale = isBadged ? 1f : 0f;
         // Animate when a badge is first added or when it is removed.
         if ((wasBadged ^ isBadged) && isShown()) {
-            createBadgeScaleAnimator(newBadgeScale).start();
+            animateBadgeScale(newBadgeScale);
         } else {
+            cancelBadgeScaleAnim();
             mBadgeScale = newBadgeScale;
             invalidate();
         }
     }
 
-    public Animator createBadgeScaleAnimator(float... badgeScales) {
-        return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+    private void cancelBadgeScaleAnim() {
+        if (mBadgeScaleAnim != null) {
+            mBadgeScaleAnim.cancel();
+        }
+    }
+
+    public void animateBadgeScale(float... badgeScales) {
+        cancelBadgeScaleAnim();
+        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBadgeScaleAnim = null;
+            }
+        });
+        mBadgeScaleAnim.start();
     }
 
     public boolean hasBadge() {
@@ -490,10 +502,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void drawBadge(Canvas canvas) {
         if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-            int offsetX = mBackground.getOffsetX();
-            int offsetY = mBackground.getOffsetY();
-            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
-            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+            BubbleTextView.getIconBounds(this, mTempBounds, mLauncher.getDeviceProfile().iconSizePx);
 
             // If we are animating to the accepting state, animate the badge out.
             float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());

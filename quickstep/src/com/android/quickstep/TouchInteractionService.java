@@ -21,7 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+
+import static com.android.systemui.shared.system.ActivityManagerWrapper
+        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
@@ -33,7 +35,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
@@ -79,7 +80,7 @@ public class TouchInteractionService extends Service {
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         @Override
-        public void onPreMotionEvent(@HitTarget int downHitTarget) throws RemoteException {
+        public void onPreMotionEvent(@HitTarget int downHitTarget) {
             TraceHelper.beginSection("SysUiBinder");
             setupTouchConsumer(downHitTarget);
             TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
@@ -89,7 +90,14 @@ public class TouchInteractionService extends Service {
         public void onMotionEvent(MotionEvent ev) {
             mEventQueue.queue(ev);
 
-            String name = sMotionEventNames.get(ev.getActionMasked());
+            int action = ev.getActionMasked();
+            if (action == ACTION_DOWN) {
+                mOverviewInteractionState.setSwipeGestureInitializing(true);
+            } else if (action == ACTION_UP || action == ACTION_CANCEL) {
+                mOverviewInteractionState.setSwipeGestureInitializing(false);
+            }
+
+            String name = sMotionEventNames.get(action);
             if (name != null){
                 TraceHelper.partitionSection("SysUiBinder", name);
             }
@@ -105,6 +113,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
+            mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
@@ -145,8 +154,8 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickStep(MotionEvent motionEvent) {
             mEventQueue.onQuickStep(motionEvent);
+            mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.endSection("SysUiBinder", "onQuickStep");
-
         }
 
         @Override
@@ -154,8 +163,6 @@ public class TouchInteractionService extends Service {
             mOverviewCommandHelper.onTip(actionType, viewType);
         }
     };
-
-    private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
 
     private static boolean sConnected = false;
 
@@ -180,13 +187,13 @@ public class TouchInteractionService extends Service {
     public void onCreate() {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
-        mRecentsModel = RecentsModel.getInstance(this);
+        mRecentsModel = RecentsModel.INSTANCE.get(this);
         mRecentsModel.setPreloadTasksInBackground(true);
         mMainThreadExecutor = new MainThreadExecutor();
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();
-        mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
-        mOverviewInteractionState = OverviewInteractionState.getInstance(this);
+        mEventQueue = new MotionEventQueue(mMainThreadChoreographer, TouchConsumer.NO_OP);
+        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.get(this);
 
@@ -229,10 +236,11 @@ public class TouchInteractionService extends Service {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
 
         if (runningTaskInfo == null && !forceToLauncher) {
-            return mNoOpTouchConsumer;
+            return TouchConsumer.NO_OP;
         } else if (forceToLauncher ||
                 runningTaskInfo.topActivity.equals(mOverviewCommandHelper.overviewComponent)) {
-            return getOverviewConsumer();
+            return OverviewTouchConsumer.newInstance(
+                    mOverviewCommandHelper.getActivityControlHelper(), false);
         } else {
             if (tracker == null) {
                 tracker = VelocityTracker.obtain();
@@ -245,16 +253,16 @@ public class TouchInteractionService extends Service {
         }
     }
 
-    private TouchConsumer getOverviewConsumer() {
-        ActivityControlHelper activityHelper = mOverviewCommandHelper.getActivityControlHelper();
-        BaseDraggingActivity activity = activityHelper.getCreatedActivity();
-        if (activity == null) {
-            return mNoOpTouchConsumer;
+    private void initBackgroundChoreographer() {
+        if (sRemoteUiThread == null) {
+            sRemoteUiThread = new HandlerThread("remote-ui");
+            sRemoteUiThread.start();
         }
-        return new OverviewTouchConsumer(activityHelper, activity);
+        new Handler(sRemoteUiThread.getLooper()).post(() ->
+                mBackgroundThreadChoreographer = ChoreographerCompat.getSfInstance());
     }
 
-    private static class OverviewTouchConsumer<T extends BaseDraggingActivity>
+    public static class OverviewTouchConsumer<T extends BaseDraggingActivity>
             implements TouchConsumer {
 
         private final ActivityControlHelper<T> mActivityHelper;
@@ -265,6 +273,8 @@ public class TouchInteractionService extends Service {
         private final int mTouchSlop;
         private final QuickScrubController mQuickScrubController;
 
+        private final boolean mStartingInActivityBounds;
+
         private boolean mTrackingStarted = false;
         private boolean mInvalidated = false;
 
@@ -272,11 +282,13 @@ public class TouchInteractionService extends Service {
         private boolean mStartPending = false;
         private boolean mEndPending = false;
 
-        OverviewTouchConsumer(ActivityControlHelper<T> activityHelper, T activity) {
+        OverviewTouchConsumer(ActivityControlHelper<T> activityHelper, T activity,
+                boolean startingInActivityBounds) {
             mActivityHelper = activityHelper;
             mActivity = activity;
             mTarget = activity.getDragLayer();
             mTouchSlop = ViewConfiguration.get(mTarget.getContext()).getScaledTouchSlop();
+            mStartingInActivityBounds = startingInActivityBounds;
 
             mQuickScrubController = mActivity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
@@ -289,6 +301,10 @@ public class TouchInteractionService extends Service {
             }
             int action = ev.getActionMasked();
             if (action == ACTION_DOWN) {
+                if (mStartingInActivityBounds) {
+                    startTouchTracking(ev, false /* updateLocationOffset */);
+                    return;
+                }
                 mTrackingStarted = false;
                 mDownPos.set(ev.getX(), ev.getY());
             } else if (!mTrackingStarted) {
@@ -299,17 +315,15 @@ public class TouchInteractionService extends Service {
                             mInvalidated = true;
                         }
                         break;
+                    case ACTION_CANCEL:
+                    case ACTION_UP:
+                        startTouchTracking(ev, true /* updateLocationOffset */);
+                        break;
                     case ACTION_MOVE: {
                         float displacement = ev.getY() - mDownPos.y;
                         if (Math.abs(displacement) >= mTouchSlop) {
-                            mTarget.getLocationOnScreen(mLocationOnScreen);
-
-                            // Send a down event only when mTouchSlop is crossed.
-                            MotionEvent down = MotionEvent.obtain(ev);
-                            down.setAction(ACTION_DOWN);
-                            sendEvent(down);
-                            down.recycle();
-                            mTrackingStarted = true;
+                            // Start tracking only when mTouchSlop is crossed.
+                            startTouchTracking(ev, true /* updateLocationOffset */);
                         }
                     }
                 }
@@ -324,9 +338,23 @@ public class TouchInteractionService extends Service {
             }
         }
 
+        private void startTouchTracking(MotionEvent ev, boolean updateLocationOffset) {
+            if (updateLocationOffset) {
+                mTarget.getLocationOnScreen(mLocationOnScreen);
+            }
+
+            // Send down touch event
+            MotionEvent down = MotionEvent.obtain(ev);
+            down.setAction(ACTION_DOWN);
+            sendEvent(down);
+            down.recycle();
+
+            mTrackingStarted = true;
+        }
+
         private void sendEvent(MotionEvent ev) {
             int flags = ev.getEdgeFlags();
-            ev.setEdgeFlags(flags | EDGE_NAV_BAR);
+            ev.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
             ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
             if (!mTrackingStarted) {
                 mTarget.onInterceptTouchEvent(ev);
@@ -401,14 +429,13 @@ public class TouchInteractionService extends Service {
             mQuickScrubController.onQuickScrubProgress(progress);
         }
 
-    }
-
-    private void initBackgroundChoreographer() {
-        if (sRemoteUiThread == null) {
-            sRemoteUiThread = new HandlerThread("remote-ui");
-            sRemoteUiThread.start();
+        public static TouchConsumer newInstance(
+                ActivityControlHelper activityHelper, boolean startingInActivityBounds) {
+            BaseDraggingActivity activity = activityHelper.getCreatedActivity();
+            if (activity == null) {
+                return TouchConsumer.NO_OP;
+            }
+            return new OverviewTouchConsumer(activityHelper, activity, startingInActivityBounds);
         }
-        new Handler(sRemoteUiThread.getLooper()).post(() ->
-                mBackgroundThreadChoreographer = ChoreographerCompat.getSfInstance());
     }
 }

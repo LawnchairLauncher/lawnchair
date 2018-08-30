@@ -54,6 +54,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -286,7 +287,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mInsets.set(insets);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
+        mMaxDistanceForFolderCreation = grid.isTablet
+                ? 0.75f * grid.iconSizePx
+                : 0.55f * grid.iconSizePx;
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
         Rect padding = grid.workspacePadding;
@@ -471,10 +474,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onViewAdded(child);
     }
 
-    public boolean isTouchActive() {
-        return mTouchState != TOUCH_STATE_REST;
-    }
-
     /**
      * Initializes and binds the first page
      * @param qsb an existing qsb to recycle or null.
@@ -547,7 +546,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
-        newScreen.getShortcutsAndWidgets().setId(R.id.workspace_page_container);
         int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
         int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
@@ -1034,7 +1032,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     protected void onScrollInteractionBegin() {
-        super.onScrollInteractionEnd();
+        super.onScrollInteractionBegin();
         mScrollInteractionBegan = true;
     }
 
@@ -1098,7 +1096,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    protected void overScroll(float amount) {
+    protected void overScroll(int amount) {
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
@@ -1111,7 +1109,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mLauncherOverlay.onScrollInteractionBegin();
             }
 
-            mLastOverlayScroll = Math.abs(amount / getMeasuredWidth());
+            mLastOverlayScroll = Math.abs(((float) amount) / getMeasuredWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
         } else {
             dampedOverScroll(amount);
@@ -1286,12 +1284,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Don't announce if apps is on top of us.
         if (!mLauncher.isInState(ALL_APPS)) {
             super.announceForAccessibility(text);
-        }
-    }
-
-    public void showOutlinesTemporarily() {
-        if (!mIsPageInTransition && !isTouchActive()) {
-            snapToPage(mCurrentPage);
         }
     }
 
@@ -1491,6 +1483,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
             setImportantForAccessibility(accessibilityFlag);
         }
+    }
+
+    @Override
+    public AccessibilityNodeInfo createAccessibilityNodeInfo() {
+        if (getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS) {
+            // TAPL tests verify that workspace is not present in Overview and AllApps states.
+            // TAPL can work only if UIDevice is set up as setCompressedLayoutHeirarchy(false).
+            // Hiding workspace from the tests when it's
+            // IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS.
+            return null;
+        }
+        return super.createAccessibilityNodeInfo();
     }
 
     private void updateAccessibilityFlags(int accessibilityFlag, CellLayout page) {
@@ -2019,22 +2023,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void onNoCellFound(View dropTargetLayout) {
-        if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-            Hotseat hotseat = mLauncher.getHotseat();
-            boolean droppedOnAllAppsIcon = !FeatureFlags.NO_ALL_APPS_ICON
-                    && mTargetCell != null && !mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
-                    hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]));
-            if (!droppedOnAllAppsIcon) {
-                // Only show message when hotseat is full and drop target was not AllApps button
-                showOutOfSpaceMessage(true);
-            }
-        } else {
-            showOutOfSpaceMessage(false);
-        }
-    }
-
-    private void showOutOfSpaceMessage(boolean isHotseatLayout) {
-        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
+        int strId = mLauncher.isHotseatLayout(dropTargetLayout)
+                ? R.string.hotseat_out_of_space : R.string.out_of_space;
         Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
     }
 
@@ -2630,16 +2620,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                if (info.container == NO_ID) {
+                if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
-                    if (info instanceof AppInfo) {
-                        info = ((AppInfo) info).makeShortcut();
-                        d.dragInfo = info;
-                    } else if (info instanceof ShortcutInfo) {
-                        info = new ShortcutInfo((ShortcutInfo) info);
-                        d.dragInfo = info;
-                    }
-
+                    info = ((AppInfo) info).makeShortcut();
+                    d.dragInfo = info;
                 }
                 view = mLauncher.createShortcut(cellLayout, (ShortcutInfo) info);
                 break;
@@ -3030,16 +3014,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             @Override
             public boolean evaluate(ItemInfo info, View v) {
                 return info != null && info.id == id;
-            }
-        });
-    }
-
-    public View getViewForTag(final Object tag) {
-        return getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return info == tag;
             }
         });
     }

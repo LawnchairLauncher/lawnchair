@@ -31,7 +31,6 @@
                        android:resource="@xml/appwidget_no_config" />
         </receiver>
 
-
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWdigetHidden"
             android:label="Hidden widget">

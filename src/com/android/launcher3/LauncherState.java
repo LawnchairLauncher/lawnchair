@@ -30,6 +30,7 @@ import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
@@ -248,6 +249,16 @@ public class LauncherState {
         if (this == NORMAL) {
             // Clear any rotation locks when going to normal state
             launcher.getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
+        }
+    }
+
+    public void onBackPressed(Launcher launcher) {
+        if (this != NORMAL) {
+            LauncherStateManager lsm = launcher.getStateManager();
+            LauncherState lastState = lsm.getLastState();
+            launcher.getUserEventDispatcher().logActionCommand(Action.Command.BACK,
+                    containerType, lastState.containerType);
+            lsm.goToState(lastState);
         }
     }
 

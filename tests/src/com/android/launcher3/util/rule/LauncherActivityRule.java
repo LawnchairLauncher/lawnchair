@@ -20,7 +20,7 @@ import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace.ItemOperator;

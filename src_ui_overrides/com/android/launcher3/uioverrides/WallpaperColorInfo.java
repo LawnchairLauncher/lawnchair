@@ -56,7 +56,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private WallpaperColorInfo(Context context) {
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
-        mExtractionType = ColorExtractionAlgorithm.newInstance(context);
+        mExtractionType = new ColorExtractionAlgorithm();
         update(mWallpaperManager.getWallpaperColors(FLAG_SYSTEM));
     }
 

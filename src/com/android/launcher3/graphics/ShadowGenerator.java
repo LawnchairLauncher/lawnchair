@@ -27,9 +27,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.support.v4.graphics.ColorUtils;
 
 import com.android.launcher3.LauncherAppState;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Utility class to add shadows to bitmaps.
@@ -120,19 +121,19 @@ public class ShadowGenerator {
         }
 
         public Builder setupBlurForSize(int height) {
-            shadowBlur = height * 1f / 32;
+            shadowBlur = height * 1f / 24;
             keyShadowDistance = height * 1f / 16;
             return this;
         }
 
         public Bitmap createPill(int width, int height) {
-            radius = height / 2;
+            radius = height / 2f;
 
-            int centerX = Math.round(width / 2 + shadowBlur);
+            int centerX = Math.round(width / 2f + shadowBlur);
             int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
             int center = Math.max(centerX, centerY);
             bounds.set(0, 0, width, height);
-            bounds.offsetTo(center - width / 2, center - height / 2);
+            bounds.offsetTo(center - width / 2f, center - height / 2f);
 
             int size = center * 2;
             Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);

@@ -26,7 +26,6 @@ import android.animation.ValueAnimator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -41,7 +40,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FlingBlockCheck;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -56,15 +54,15 @@ public class LongSwipeHelper {
             Math.min(1 / MIN_PROGRESS_TO_ALL_APPS, 1 / (1 - MIN_PROGRESS_TO_ALL_APPS));
 
     private final Launcher mLauncher;
-    private final RemoteAnimationTargetSet mTargetSet;
+    private final int mRunningTaskId;
 
     private float mMaxSwipeDistance = 1;
     private AnimatorPlaybackController mAnimator;
     private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
-    LongSwipeHelper(Launcher launcher, RemoteAnimationTargetSet targetSet) {
+    LongSwipeHelper(Launcher launcher, int runningTaskId) {
         mLauncher = launcher;
-        mTargetSet = targetSet;
+        mRunningTaskId = runningTaskId;
         init();
     }
 
@@ -151,10 +149,16 @@ public class LongSwipeHelper {
     }
 
     private void onSwipeAnimationComplete(boolean toAllApps, boolean isFling, Runnable callback) {
+        RecentsView rv = mLauncher.getOverviewPanel();
+        if (!toAllApps) {
+            rv.setIgnoreResetTask(mRunningTaskId);
+        }
+
         mLauncher.getStateManager().goToState(toAllApps ? ALL_APPS : OVERVIEW, false);
         if (!toAllApps) {
             DiscoveryBounce.showForOverviewIfNeeded(mLauncher);
-            mLauncher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(true);
+            rv.animateUpRunningTaskIconScale();
+            rv.setSwipeDownShouldLaunchApp(true);
         }
 
         mLauncher.getUserEventDispatcher().logStateChangeAction(
@@ -164,13 +168,5 @@ public class LongSwipeHelper {
                 0);
 
         callback.run();
-    }
-
-    public float getTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
-        if (!(app.isNotInRecents
-                || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME)) {
-            return 0;
-        }
-        return expectedAlpha;
     }
 }

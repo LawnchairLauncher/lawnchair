@@ -24,6 +24,7 @@
 
     <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="28"/>
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -59,10 +60,10 @@
             android:resumeWhilePausing="true"
             android:taskAffinity="" />
 
-        <!-- Content provider to settings search -->
+        <!-- Content provider to settings search. The autority should be same as the packageName -->
         <provider
             android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-            android:authorities="com.android.launcher3"
+            android:authorities="${packageName}"
             android:grantUriPermissions="true"
             android:multiprocess="true"
             android:permission="android.permission.READ_SEARCH_INDEXABLES"
@@ -71,7 +72,6 @@
                 <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
             </intent-filter>
         </provider>
-
 
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"

@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -27,7 +29,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -51,6 +52,8 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -111,10 +114,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTextAlpha = 1;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
     private int mBadgeColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mBadgeScale;
+    private Animator mBadgeScaleAnim;
     private boolean mForceHideBadge;
     private Point mTempSpaceForBadgeOffset = new Point();
     private Rect mTempIconBounds = new Rect();
@@ -187,8 +193,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public void reset() {
         mBadgeInfo = null;
         mBadgeColor = Color.TRANSPARENT;
+        cancelBadgeScaleAnim();
         mBadgeScale = 0f;
         mForceHideBadge = false;
+    }
+
+    private void cancelBadgeScaleAnim() {
+        if (mBadgeScaleAnim != null) {
+            mBadgeScaleAnim.cancel();
+        }
+    }
+
+    private void animateBadgeScale(float... badgeScales) {
+        cancelBadgeScaleAnim();
+        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBadgeScaleAnim = null;
+            }
+        });
+        mBadgeScaleAnim.start();
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
@@ -231,7 +256,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
+        FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
+                .newIcon(getContext(), info);
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
@@ -377,7 +403,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (forceHideBadge) {
             invalidate();
         } else if (hasBadge()) {
-            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, 0, 1).start();
+            animateBadgeScale(0, 1);
         }
     }
 
@@ -386,10 +412,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void getIconBounds(Rect outBounds) {
-        int top = getPaddingTop();
-        int left = (getWidth() - mIconSize) / 2;
-        int right = left + mIconSize;
-        int bottom = top + mIconSize;
+        getIconBounds(this, outBounds, mIconSize);
+    }
+
+    public static void getIconBounds(View iconView, Rect outBounds, int iconSize) {
+        int top = iconView.getPaddingTop();
+        int left = (iconView.getWidth() - iconSize) / 2;
+        int right = left + iconSize;
+        int bottom = top + iconSize;
         outBounds.set(left, top, right, bottom);
     }
 
@@ -498,8 +528,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                     preloadDrawable.setLevel(progressLevel);
                 } else {
-                    preloadDrawable = DrawableFactory.get(getContext())
-                            .newPendingIcon(info, getContext());
+                    preloadDrawable = DrawableFactory.INSTANCE.get(getContext())
+                            .newPendingIcon(getContext(), info);
                     preloadDrawable.setLevel(progressLevel);
                     setIcon(preloadDrawable);
                 }
@@ -519,8 +549,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             if (wasBadged || isBadged) {
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
-                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+                    animateBadgeScale(newBadgeScale);
                 } else {
+                    cancelBadgeScaleAnim();
                     mBadgeScale = newBadgeScale;
                     invalidate();
                 }
@@ -609,7 +640,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            if (info.usingLowResIcon) {
+            if (info.usingLowResIcon()) {
                 mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);
             }

@@ -308,9 +308,6 @@ public class ImportDataTask {
 
         LongArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
         int myHotseatCount = LauncherAppState.getIDP(mContext).numHotseatIcons;
-        if (!FeatureFlags.NO_ALL_APPS_ICON) {
-            myHotseatCount--;
-        }
         if (hotseatItems.size() < myHotseatCount) {
             // Insufficient hotseat items. Add a few more.
             HotseatParserCallback parserCallback = new HotseatParserCallback(

@@ -60,6 +60,7 @@ public class BadgeRenderer {
 
         int size = (int) (DOT_SCALE * mDotCenterOffset);
         ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.TRANSPARENT);
+        builder.ambientShadowAlpha = 88;
         mBackgroundWithShadow = builder.setupBlurForSize(size).createPill(size, size);
         mCircleRadius = builder.radius;
 

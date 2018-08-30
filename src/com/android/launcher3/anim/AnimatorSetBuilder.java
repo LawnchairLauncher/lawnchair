@@ -20,8 +20,6 @@ import android.animation.AnimatorSet;
 import android.util.SparseArray;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.LauncherAnimUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +54,7 @@ public class AnimatorSetBuilder {
     }
 
     public AnimatorSet build() {
-        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+        AnimatorSet anim = new AnimatorSet();
         anim.playTogether(mAnims);
         if (!mOnFinishRunnables.isEmpty()) {
             anim.addListener(new AnimationSuccessListener() {

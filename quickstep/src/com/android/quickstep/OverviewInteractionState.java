@@ -22,23 +22,20 @@ import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.Settings;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
-import java.util.concurrent.ExecutionException;
+import androidx.annotation.WorkerThread;
 
 /**
  * Sets overview interaction flags, such as:
@@ -54,29 +51,10 @@ public class OverviewInteractionState {
     private static final String TAG = "OverviewFlags";
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
-    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
-            "config_swipe_up_gesture_setting_available";
-    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
-            "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static OverviewInteractionState INSTANCE;
-
-    public static OverviewInteractionState getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new OverviewInteractionState(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(
-                            () -> OverviewInteractionState.getInstance(context)).get();
-                } catch (InterruptedException|ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
+    public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
+            new MainThreadInitializedObject<>((c) -> new OverviewInteractionState(c));
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
@@ -87,6 +65,8 @@ public class OverviewInteractionState {
     private final Context mContext;
     private final Handler mUiHandler;
     private final Handler mBgHandler;
+
+    private boolean mSwipeGestureInitializing = false;
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
@@ -104,13 +84,13 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME)) {
+        if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
             mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
                     context.getContentResolver());
             mSwipeUpSettingObserver.register();
         } else {
             mSwipeUpSettingObserver = null;
-            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
+            mSwipeUpEnabled = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         }
     }
 
@@ -197,16 +177,29 @@ public class OverviewInteractionState {
         }
     }
 
+    @WorkerThread
+    public void setSwipeGestureInitializing(boolean swipeGestureInitializing) {
+        mSwipeGestureInitializing = swipeGestureInitializing;
+    }
+
+    public boolean swipeGestureInitializing() {
+        return mSwipeGestureInitializing;
+    }
+
+    public void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {
+        mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+        mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
+                sendToTarget();
+    }
+
     private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
-        private Handler mHandler;
         private ContentResolver mResolver;
         private final int defaultValue;
 
         SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
             super(handler);
-            mHandler = handler;
             mResolver = resolver;
-            defaultValue = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME) ? 1 : 0;
+            defaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue() ? 1 : 0;
         }
 
         public void register() {
@@ -219,24 +212,11 @@ public class OverviewInteractionState {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            mHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-            mHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, getValue() ? 1 : 0, 0).sendToTarget();
+            notifySwipeUpSettingChanged(getValue());
         }
 
         private boolean getValue() {
             return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
-        }
-    }
-
-    private boolean getSystemBooleanRes(String resName) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return false;
         }
     }
 

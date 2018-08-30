@@ -30,15 +30,16 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -70,6 +71,7 @@ public class PreviewBackground {
     float mScale = 1f;
     private float mColorMultiplier = 1f;
     private int mBgColor;
+    private int mBadgeColor;
     private float mStrokeWidth;
     private int mStrokeAlpha = MAX_BG_OPACITY;
     private int mShadowAlpha = 255;
@@ -132,6 +134,7 @@ public class PreviewBackground {
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
         mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+        mBadgeColor = Themes.getAttrColor(launcher, R.attr.folderBadgeColor);
 
         DeviceProfile grid = launcher.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
@@ -198,7 +201,7 @@ public class PreviewBackground {
     }
 
     public int getBadgeColor() {
-        return mBgColor;
+        return mBadgeColor;
     }
 
     public void drawBackground(Canvas canvas) {
@@ -365,7 +368,7 @@ public class PreviewBackground {
             mScaleAnimator.cancel();
         }
 
-        mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
+        mScaleAnimator = ValueAnimator.ofFloat(0f, 1.0f);
 
         mScaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -397,37 +400,19 @@ public class PreviewBackground {
         mScaleAnimator.start();
     }
 
-    public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
-        animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
+    public void animateToAccept(CellLayout cl, int cellX, int cellY) {
+        animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER,
+                () -> delegateDrawing(cl, cellX, cellY), null);
     }
 
     public void animateToRest() {
         // This can be called multiple times -- we need to make sure the drawing delegate
         // is saved and restored at the beginning of the animation, since cancelling the
         // existing animation can clear the delgate.
-        final CellLayout cl = mDrawingDelegate;
-        final int cellX = delegateCellX;
-        final int cellY = delegateCellY;
-
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
-        Runnable onEnd = new Runnable() {
-            @Override
-            public void run() {
-                clearDrawingDelegate();
-            }
-        };
-        animateScale(1f, 1f, onStart, onEnd);
+        CellLayout cl = mDrawingDelegate;
+        int cellX = delegateCellX;
+        int cellY = delegateCellY;
+        animateScale(1f, 1f, () -> delegateDrawing(cl, cellX, cellY), this::clearDrawingDelegate);
     }
 
     public int getBackgroundAlpha() {

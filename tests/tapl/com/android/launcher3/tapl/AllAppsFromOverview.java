@@ -17,29 +17,18 @@
 package com.android.launcher3.tapl;
 
 import android.graphics.Point;
-import android.support.annotation.NonNull;
-import android.support.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObject2;
+
+import androidx.annotation.NonNull;
 
 /**
  * Operations on AllApps opened from Overview.
- * Scroll gestures that are OK for {@link AllAppsFromHome} may close it, so they are not supported.
  */
-public final class AllAppsFromOverview {
-    private final Launcher mLauncher;
+public final class AllAppsFromOverview extends AllApps {
 
-    AllAppsFromOverview(Launcher launcher) {
-        mLauncher = launcher;
-        assertState();
-    }
-
-    /**
-     * Asserts that we are in all apps.
-     *
-     * @return All apps container.
-     */
-    @NonNull
-    private UiObject2 assertState() {
-        return mLauncher.assertState(Launcher.State.ALL_APPS);
+    AllAppsFromOverview(LauncherInstrumentation launcher) {
+        super(launcher);
+        verifyActiveContainer();
     }
 
     /**
@@ -49,13 +38,13 @@ public final class AllAppsFromOverview {
      */
     @NonNull
     public Overview switchBackToOverview() {
-        final UiObject2 allAppsContainer = assertState();
+        final UiObject2 allAppsContainer = verifyActiveContainer();
         // Swipe from the search box to the bottom.
         final UiObject2 qsb = mLauncher.waitForObjectInContainer(
                 allAppsContainer, "search_container_all_apps");
         final Point start = qsb.getVisibleCenter();
         final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.6);
-        mLauncher.swipe(start.x, start.y, start.x, endY, (endY - start.y) / 100);  // 100 px/step
+        mLauncher.swipe(start.x, start.y, start.x, endY);
 
         return new Overview(mLauncher);
     }

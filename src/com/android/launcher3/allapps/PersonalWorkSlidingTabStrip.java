@@ -19,8 +19,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +30,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
@@ -39,7 +40,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
-    private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
+    public static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
 
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;

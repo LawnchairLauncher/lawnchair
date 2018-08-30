@@ -16,8 +16,17 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
+import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.content.pm.ShortcutInfo;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
@@ -28,15 +37,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
-import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests the sorting and filtering of shortcuts in {@link PopupPopulator}.
  */
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class PopupPopulatorTest {
 

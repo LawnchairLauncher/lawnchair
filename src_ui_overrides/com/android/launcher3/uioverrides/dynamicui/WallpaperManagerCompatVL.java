@@ -18,7 +18,6 @@ package com.android.launcher3.uioverrides.dynamicui;
 import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.graphics.ColorExtractor.findDominantColorByHue;
 
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
@@ -42,14 +41,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.ColorExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
@@ -169,6 +170,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
         private HandlerThread mWorkerThread;
         private Handler mWorkerHandler;
+        private ColorExtractor mColorExtractor;
 
         @Override
         public void onCreate() {
@@ -176,6 +178,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             mWorkerThread = new HandlerThread("ColorExtractionService");
             mWorkerThread.start();
             mWorkerHandler = new Handler(mWorkerThread.getLooper());
+            mColorExtractor = new ColorExtractor();
         }
 
         @Override
@@ -258,7 +261,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             String value = VERSION_PREFIX + wallpaperId;
 
             if (bitmap != null) {
-                int color = findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
+                int color = mColorExtractor.findDominantColorByHue(bitmap,
+                        MAX_WALLPAPER_EXTRACTION_AREA);
                 value += "," + color;
             }
 
