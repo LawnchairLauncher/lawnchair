@@ -344,7 +344,8 @@ public class TouchInteractionService extends Service {
                         startTouchTracking(ev, true /* updateLocationOffset */);
                         break;
                     case ACTION_MOVE: {
-                        float displacement = ev.getY() - mDownPos.y;
+                        float displacement = mActivity.getDeviceProfile().isLandscape ?
+                                ev.getX() - mDownPos.x : ev.getY() - mDownPos.y;
                         if (Math.abs(displacement) >= mTouchSlop) {
                             // Start tracking only when mTouchSlop is crossed.
                             startTouchTracking(ev, true /* updateLocationOffset */);
