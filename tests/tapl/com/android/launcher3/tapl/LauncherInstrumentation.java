@@ -26,6 +26,7 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -160,14 +161,14 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private Bundle executeAndWaitForEvent(Runnable command,
+    private Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, String message) {
         try {
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
                             command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
-            return (Bundle) event.getParcelableData();
+            return event.getParcelableData();
         } catch (TimeoutException e) {
             fail(message);
             return null;
@@ -177,7 +178,7 @@ public final class LauncherInstrumentation {
     Bundle getAnswerFromLauncher(UiObject2 view, String requestTag) {
         // Send a fake set-text request to Launcher to initiate a response with requested data.
         final String responseTag = requestTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX;
-        return executeAndWaitForEvent(
+        return (Bundle) executeAndWaitForEvent(
                 () -> view.setText(requestTag),
                 event -> responseTag.equals(event.getClassName()),
                 "Launcher didn't respond to request: " + requestTag);
