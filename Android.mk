@@ -127,7 +127,7 @@ LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SysUISharedLib
+  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
   LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI
@@ -190,7 +190,7 @@ LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SysUISharedLib
+  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
   LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI
