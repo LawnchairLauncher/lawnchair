@@ -18,11 +18,10 @@ package com.android.launcher3.tapl;
 
 import static org.junit.Assert.assertTrue;
 
+import androidx.annotation.NonNull;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
-
-import androidx.annotation.NonNull;
 
 import com.android.launcher3.TestProtocol;
 
@@ -134,17 +133,5 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         allAppsContainer.setGestureMargins(0, mHeight / 2, 0, 0);
         allAppsContainer.fling(Direction.UP, FLING_SPEED);
         verifyActiveContainer();
-    }
-
-    /**
-     * Gets the UI object for AllApps.
-     * Used by NexusLauncherStrategy.openAllApps(). No one else should use it.
-     *
-     * @return container object.
-     */
-    @Deprecated
-    @NonNull
-    public UiObject2 getObjectDeprecated() {
-        return verifyActiveContainer();
     }
 }
