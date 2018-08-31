@@ -155,6 +155,7 @@ public class FolderAnimationManager {
         final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
         final int initialColor =
                 ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
+        mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
         // Set up the reveal animation that clips the Folder.
