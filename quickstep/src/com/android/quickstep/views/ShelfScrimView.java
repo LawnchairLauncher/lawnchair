@@ -52,10 +52,10 @@ public class ShelfScrimView extends ScrimView {
     protected boolean mDrawingFlatColor;
 
     // For shelf mode
-    protected final int mEndAlpha;
-    protected final int mThresholdAlpha;
+    protected int mEndAlpha;
+    protected int mThresholdAlpha;
     protected float mRadius;
-    private final float mMaxScrimAlpha;
+    protected float mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Max vertical progress after which the scrim stops moving.
@@ -148,9 +148,11 @@ public class ShelfScrimView extends ScrimView {
                     Math.round((1 - mScrimMoveFactor) * mMaxScrimAlpha * 255));
 
             // Merge the remainingScreenColor and shelfColor in one to avoid overdraw.
-            int alpha = mEndAlpha - Math.round((mEndAlpha - mThresholdAlpha) * mScrimMoveFactor);
-            mShelfColor = compositeColors(setAlphaComponent(mEndScrim, alpha),
-                    mRemainingScreenColor);
+            int alpha = mEndFlatColorAlpha - Math
+                    .round((mEndFlatColorAlpha - mThresholdAlpha) * mScrimMoveFactor);
+            mShelfColor = setAlphaComponent(
+                    compositeColors(mEndFlatColor > 0 ? mEndFlatColor : mEndScrim,
+                            mRemainingScreenColor), alpha);
         }
     }
 

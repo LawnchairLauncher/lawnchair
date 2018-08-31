@@ -19,8 +19,10 @@ package ch.deletescape.lawnchair.views
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
@@ -29,8 +31,11 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.runOnMainThread
+import com.android.launcher3.LauncherState.OVERVIEW
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
 
 /*
@@ -53,9 +58,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val key_radius = "pref_dockRadius"
     private val key_gradient = "pref_dockGradient"
+    private val key_opacity = "pref_allAppsOpacitySB"
+    private val key_dock_opacity = "pref_hotseatCustomOpacity"
 
     init {
-        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius, key_gradient)
+        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius, key_gradient, key_opacity, key_dock_opacity)
     }
 
     private val blurDrawableCallback by lazy {
@@ -106,6 +113,15 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         when (key) {
             key_radius -> {
                 mRadius = dpToPx(prefs.dockRadius)
+            }
+            key_opacity -> {
+                mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: Color.alpha(mEndScrim)
+                mEndScrim = ColorUtils.setAlphaComponent(mEndScrim, mEndAlpha)
+                mEndFlatColorAlpha = mEndAlpha
+                mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(mScrimColor, Math.round(mMaxScrimAlpha * 255)))
+            }
+            key_dock_opacity -> {
+                mThresholdAlpha = prefs.dockOpacity.takeIf { it >= 0 } ?: Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha)
             }
             key_gradient -> if (!force) {
                 reInitUi()

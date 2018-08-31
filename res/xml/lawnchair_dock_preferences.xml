@@ -40,7 +40,7 @@
             app:defaultSeekbarValue="8"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
+        <ch.deletescape.lawnchair.preferences.DockAutoModeSeekbarPreference
             android:key="opacityPref"
             android:title="@string/hotseat_custom_opacity"
             android:dependency="pref_dockPreset"
@@ -48,7 +48,6 @@
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultSeekbarValue="0.39"
             android:persistent="true" />
  
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference

@@ -35,14 +35,14 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, ColorEngine.OnAccentChangeListener {
 
     private var mSeekbar: SeekBar? = null
-    private var mValueText: TextView? = null
-    private var min: Float = 0.toFloat()
-    private var max: Float = 0.toFloat()
+    protected var mValueText: TextView? = null
+    protected var min: Float = 0.toFloat()
+    protected var max: Float = 0.toFloat()
     protected var current: Float = 0.toFloat()
-    private var defaultValue: Float = 0.toFloat()
+    protected var defaultValue: Float = 0.toFloat()
     private var multiplier: Int = 0
     private var format: String? = null
-    private var steps: Int = 100
+    protected var steps: Int = 100
 
     open val allowResetToDefault = true
 
@@ -115,7 +115,7 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         persistFloat(current)
     }
 
-    private fun updateSummary() {
+    protected open fun updateSummary() {
         mValueText!!.text = String.format(format!!, current * multiplier)
     }
 

@@ -5,13 +5,12 @@
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerTheme"
         android:title="@string/pref_category_theme">
-        
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+
+        <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
             android:key="pref_allAppsOpacitySB"
             android:title="@string/all_apps_opacity_pref_title"
             app:minValue="0"
             app:maxValue="1"
-            app:defaultSeekbarValue="0.92"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
