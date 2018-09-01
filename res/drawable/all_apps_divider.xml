@@ -15,6 +15,6 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
-    <solid android:color="?android:attr/colorControlHighlight" />
-    <size android:height="1dp" />
+    <solid android:color="?attr/popupColorTertiary" />
+    <size android:height="@dimen/popup_item_divider_height" />
 </shape>
