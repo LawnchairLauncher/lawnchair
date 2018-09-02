@@ -225,4 +225,10 @@
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
     <dimen name="options_menu_thumb_size">32dp</dimen>
+
+<!-- Snackbar -->
+    <dimen name="snackbar_height">48dp</dimen>
+    <dimen name="snackbar_content_height">32dp</dimen>
+    <dimen name="snackbar_padding">8dp</dimen>
+    <dimen name="snackbar_margin">16dp</dimen>
 </resources>

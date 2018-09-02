@@ -264,6 +264,10 @@ public abstract class ButtonDropTarget extends TextView
      */
     @Override
     public void onDrop(final DragObject d, final DragOptions options) {
+        if (options.isFlingToDelete) {
+            // FlingAnimation handles the animation and then calls completeDrop().
+            return;
+        }
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
