@@ -161,8 +161,7 @@
     <string name="pref_open_source_licenses_title">ओपन सोर्स लाइसेंस</string>
     <string name="about_donate">दान करना</string>
     <string name="bridge_missing_message">
-        गुगल सुची से सपर्क करने वाला सेतु अनुपलब्ध है,
-        या फिर अपडेटेड नहीं है। क्या आप लेटेस्ट वर्जन इंस्टाल करना चाहते है?
+        गुगल सुची से सपर्क करने वाला सेतु अनुपलब्ध नहीं है,
+        या फिर अपडेटेड नहीं है।
     </string>
-    <string name="bridge_install">इंस्टाल</string>
 </resources>

@@ -162,7 +162,6 @@
     <string name="about_donate">Bağış Yap</string>
     <string name="bridge_missing_message">
         Google Feed sayfasına bağlanmak için gerekli eklenti bulunamadı ya da güncellenmesi
-        gerekmekte. Son sürümü yüklemek istiyormusunuz?
+        gerekmekte.
     </string>
-    <string name="bridge_install">Yükle</string>
 </resources>

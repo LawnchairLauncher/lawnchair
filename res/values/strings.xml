@@ -363,7 +363,6 @@
     <string name="bridge_missing_title">Rootless Pixel Bridge</string>
     <string name="bridge_missing_message">
         The bridge to connect to the Google Feed could not be found,
-        or needs to be updated. Do you want to install the latest version?
+        or needs to be updated.
     </string>
-    <string name="bridge_install">Install</string>
 </resources>

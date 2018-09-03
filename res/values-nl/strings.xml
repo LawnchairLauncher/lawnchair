@@ -162,7 +162,6 @@
     <string name="about_donate">Doneer</string>
     <string name="bridge_missing_message">
         De app die nodig is om de Google pagina te laten zien kon niet worden gevonden,
-        of moet worden geupdate. Wil je de nieuwste versie installeren?
+        of moet worden geupdate.
     </string>
-    <string name="bridge_install">Installeer</string>
 </resources>

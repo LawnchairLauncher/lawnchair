@@ -162,7 +162,6 @@
     <string name="about_donate">Προσφέρω</string>
     <string name="bridge_missing_message">
         Η εφαρμογή γέφυρας για να συνδεθείτε στο Google Feed δεν βρέθηκε
-        ή χρειάζεται αναβάθμιση. Θέλετε να εγκαταστήσετε την πιο πρόσφατη έκδοση;
+        ή χρειάζεται αναβάθμιση.
     </string>
-    <string name="bridge_install">Εγκατάσταση</string>
 </resources>

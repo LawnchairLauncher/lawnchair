@@ -159,7 +159,6 @@
     <string name="about_donate">Doar</string>
     <string name="bridge_missing_message">
         Não foi possível encontrar o bridge para se conectar ao Feed do Google,
-        ou precisa ser atualizado. Você quer instalar a versão mais recente?
+        ou precisa ser atualizado.
     </string>
-    <string name="bridge_install">Instalar</string>
 </resources>

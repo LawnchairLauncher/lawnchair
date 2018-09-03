@@ -159,7 +159,5 @@
     <string name="about_donate">Menyumbangkan</string>
     <string name="bridge_missing_message">
         Jembatan penghubung Google Feed tidak ditemukan, atau perlu diperbaharui.
-        Apakah anda ingin memasang versi yang terbaru?
     </string>
-    <string name="bridge_install">Pasang</string>
 </resources>

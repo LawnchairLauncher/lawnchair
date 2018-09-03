@@ -162,7 +162,5 @@
     <string name="about_donate">Donare</string>
     <string name="bridge_missing_message">
         Il ponte per connettersi al Google Feed non è stato trovato o deve essere aggiornato.
-        Vuoi installare l\'ultima versione?
     </string>
-    <string name="bridge_install">Installa</string>
 </resources>

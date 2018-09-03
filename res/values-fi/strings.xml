@@ -162,7 +162,6 @@
     <string name="about_donate">Lahjoittaa</string>
     <string name="bridge_missing_message">
         Google Feed:iin yhdistettävää siltaa ei löytynyt,
-        tai se vaatii päivityksen. Haluatko asentaa uusimman version?
+        tai se vaatii päivityksen.
     </string>
-    <string name="bridge_install">Asenna</string>
 </resources>
