@@ -31,7 +31,6 @@ import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
@@ -273,19 +272,6 @@ public final class LauncherInstrumentation {
         return new AllAppsFromOverview(this);
     }
 
-    /**
-     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
-     * from workspace. Returns null if launcher is not in that state. Please don't call this method
-     * if App Apps was opened by swiping up from Overview, as it won't fail and will return an
-     * incorrect object.
-     *
-     * @return All Aps object or null.
-     */
-    @Nullable
-    public AllApps tryGetAllApps() {
-        return tryGetLauncherObject(APPS_RES_ID) != null ? getAllApps() : null;
-    }
-
     private void waitUntilGone(String resId) {
         assertTrue("Unexpected launcher object visible: " + resId,
                 mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
@@ -304,11 +290,6 @@ public final class LauncherInstrumentation {
         final UiObject2 object = container.findObject(selector);
         assertNotNull("Can't find an object with selector: " + selector, object);
         return object;
-    }
-
-    @Nullable
-    private UiObject2 tryGetLauncherObject(String resName) {
-        return mDevice.findObject(getLauncherObjectSelector(resName));
     }
 
     @NonNull
