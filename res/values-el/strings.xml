@@ -159,7 +159,7 @@
     <string name="theme_dark">Σκοτεινό</string>
     <string name="theme_transparent">Διάφανο</string>
     <string name="pref_open_source_licenses_title">Άδειες λογισμικού ανοικτού κώδικα</string>
-    <string name="about_donate">Προσφέρω</string>
+    <string name="about_donate">Δωρεά</string>
     <string name="bridge_missing_message">
         Η εφαρμογή γέφυρας για να συνδεθείτε στο Google Feed δεν βρέθηκε
         ή χρειάζεται αναβάθμιση.
