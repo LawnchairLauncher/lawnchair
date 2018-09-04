@@ -114,6 +114,8 @@
     <string name="action_move_here" msgid="2170188780612570250">"Obyektni bu yerga ko‘chirish"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Obyekt bosh ekranga qo‘shildi"</string>
     <string name="item_removed" msgid="851119963877842327">"Obyekt o‘chirib tashlandi"</string>
+    <!-- no translation found for undo (4151576204245173321) -->
+    <skip />
     <string name="action_move" msgid="4339390619886385032">"Obyektni ko‘chirib o‘tkazish"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g> katakka ko‘chirib o‘tkazish"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>-joyga ko‘chirib o‘tkazish"</string>
