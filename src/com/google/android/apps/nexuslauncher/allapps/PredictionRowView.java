@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.*;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -162,7 +163,10 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
             return 0;
         }
         DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
-        if (Utilities.getLawnchairPrefs(getContext()).getDockSearchBar()) {
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        if (prefs.getDockHide()) {
+            return dp.allAppsCellHeightPx;
+        } else if (prefs.getDockSearchBar()) {
             return dp.allAppsCellHeightPx + getPaddingTop() + getPaddingBottom();
         } else {
             return dp.hotseatBarSizePx;

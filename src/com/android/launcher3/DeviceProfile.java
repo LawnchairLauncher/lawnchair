@@ -74,7 +74,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public final int workspaceSpringLoadedBottomSpace;
 
     // Drag handle
-    public final int verticalDragHandleSizePx;
+    public int verticalDragHandleSizePx;
 
     // Workspace icons
     public int iconSizePx;
@@ -103,6 +103,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
+    public int shelfBarSizePx;
     public int hotseatBarTopPaddingPx;
     public int hotseatBarBottomPaddingPx;
     public int hotseatBarSidePaddingPx;
@@ -242,6 +243,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         boolean fullWidthWidgets = Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets();
         boolean dockSearchBar = prefs.getDockSearchBar();
+        boolean dockHidden = prefs.getDockHide();
         int dockRows = prefs.getDockRowsCount();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
@@ -287,13 +289,21 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             hotseatBarSizePx += extraSpace - verticalDragHandleSizePx;
 
             int qsbWidgetHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-            if (!dockSearchBar) {
+            if (!dockSearchBar || dockHidden) {
                 hotseatBarSizePx -= qsbWidgetHeight;
             }
-            
+
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
+        shelfBarSizePx = hotseatBarSizePx;
+        if (dockHidden) {
+            hotseatBarSizePx = 0;
+            verticalDragHandleSizePx = 0;
+
+            updateAvailableDimensions(dm, res);
+        }
+
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
@@ -332,6 +342,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
+        boolean dockVisible = !Utilities.getLawnchairPrefs(mContext).getDockHide();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
@@ -371,7 +382,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         hotseatCellHeightPx = iconSizePx;
 
         if (!isVerticalLayout) {
-            int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
+            int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)
                     - verticalDragHandleSizePx - topWorkspacePadding;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
@@ -461,6 +472,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
      * new workspace padding
      */
     private void updateWorkspacePadding() {
+        boolean dockVisible = !Utilities.getLawnchairPrefs(mContext).getDockHide();
         Rect padding = workspacePadding;
         if (isVerticalBarLayout()) {
             padding.top = 0;
@@ -468,14 +480,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             padding.left = hotseatBarSidePaddingPx;
             padding.right = hotseatBarSidePaddingPx;
             if (isSeascape()) {
-                padding.left += hotseatBarSizePx;
+                padding.left += dockVisible ? hotseatBarSizePx : 0;
                 padding.right += verticalDragHandleSizePx;
             } else {
                 padding.left += verticalDragHandleSizePx;
-                padding.right += hotseatBarSizePx;
+                padding.right += dockVisible ? hotseatBarSizePx : 0;
             }
         } else {
-            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx;
+            int paddingBottom = (dockVisible ? hotseatBarSizePx : 0) + verticalDragHandleSizePx;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons

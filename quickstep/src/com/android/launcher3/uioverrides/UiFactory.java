@@ -180,7 +180,7 @@ public class UiFactory {
         if (ContextCompat.checkSelfPermission(launcher, Manifest.permission.STATUS_BAR) == PackageManager.PERMISSION_GRANTED) {
             WindowManagerWrapper.getInstance().setShelfHeight(
                     state != ALL_APPS && launcher.isUserActive() && !profile.isVerticalBarLayout(),
-                    profile.hotseatBarSizePx);
+                    profile.shelfBarSizePx);
         }
 
         if (state == NORMAL) {

@@ -289,7 +289,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             }
         } else {
             left = (width - mDragHandleSize) / 2;
-            topMargin = grid.hotseatBarSizePx;
+            topMargin = grid.shelfBarSizePx;
         }
         mDragHandleBounds.offsetTo(left, top - topMargin);
         mHitRect.set(mDragHandleBounds);

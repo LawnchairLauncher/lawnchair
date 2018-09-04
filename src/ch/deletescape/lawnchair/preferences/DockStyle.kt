@@ -46,7 +46,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
     private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true)
     private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager)
     private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultOpacity = 0)
-    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultHide = true){
+    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultGradient = true, defaultHide = true) {
         override var enableArrow
             get() = showArrowProperty.get()
             set(value) { setProp(showArrowProperty, value, defaultArrow) }

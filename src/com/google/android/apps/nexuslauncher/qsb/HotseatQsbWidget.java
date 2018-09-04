@@ -21,6 +21,7 @@ import java.util.List;
 public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairPreferences.OnPreferenceChangeListener {
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
+    public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
     private final BroadcastReceiver DK;
     private boolean mIsGoogleColored;
     private final k Ds;
@@ -77,8 +78,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
         if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
             mIsGoogleColored = isGoogleColored();
             dM();
-        } else if (key.equals(KEY_DOCK_SEARCHBAR)) {
-            setVisibility(prefs.getDockSearchBar() ? View.VISIBLE : View.GONE);
+        } else if (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE)) {
+            boolean visible = prefs.getDockSearchBar() && !prefs.getDockHide();
+            setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 

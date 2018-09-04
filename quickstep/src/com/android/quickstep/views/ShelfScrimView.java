@@ -96,7 +96,7 @@ public class ShelfScrimView extends ScrimView {
         DeviceProfile dp = mLauncher.getDeviceProfile();
         mDrawingFlatColor = dp.isVerticalBarLayout();
 
-        mMinSize = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        mMinSize = dp.shelfBarSizePx + dp.getInsets().bottom;
         if (!mDrawingFlatColor) {
             float swipeLength = OverviewState.getDefaultSwipeHeight(mLauncher);
             mCalcThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
