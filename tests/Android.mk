@@ -14,26 +14,6 @@
 #
 
 LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE_TAGS := tests
-LOCAL_STATIC_JAVA_LIBRARIES := \
-	androidx-test \
-	androidx.test.uiautomator_uiautomator \
-	mockito-target-minus-junit4 \
-	launcher-aosp-tapl
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src)
-LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
-
-LOCAL_SDK_VERSION := 28
-LOCAL_MIN_SDK_VERSION := 21
-
-LOCAL_PACKAGE_NAME := Launcher3Tests
-
-LOCAL_INSTRUMENTATION_FOR := Launcher3
-
-include $(BUILD_PACKAGE)
 
 #
 # Build rule for Tapl library.
@@ -50,6 +30,35 @@ LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
   ../src/com/android/launcher3/TestProtocol.java
 
 LOCAL_SDK_VERSION := current
-LOCAL_MODULE := launcher-aosp-tapl
+LOCAL_MODULE := ub-launcher-aosp-tapl
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
+
+#
+# Build rule for Launcher3Tests
+#
+include $(CLEAR_VARS)
+
+LOCAL_MODULE_TAGS := tests
+LOCAL_STATIC_JAVA_LIBRARIES := \
+	androidx-test \
+	androidx.test.uiautomator_uiautomator \
+	mockito-target-minus-junit4
+
+ifneq (,$(wildcard frameworks/base))
+  LOCAL_PRIVATE_PLATFORM_APIS := true
+  LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
+else
+  LOCAL_SDK_VERSION := 28
+  LOCAL_MIN_SDK_VERSION := 21
+  LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
+endif
+
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
+
+LOCAL_PACKAGE_NAME := Launcher3Tests
+
+LOCAL_INSTRUMENTATION_FOR := Launcher3
+
+include $(BUILD_PACKAGE)
