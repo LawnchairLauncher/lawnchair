@@ -24,6 +24,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
@@ -95,6 +96,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
     private boolean mIsGoingToHome;
+    private final @HitTarget int mDownHitTarget;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
@@ -113,6 +115,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
+        mDownHitTarget = downHitTarget;
     }
 
     @Override
@@ -122,7 +125,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void accept(MotionEvent ev) {
-        if (mVelocityTracker == null) {
+        if (mVelocityTracker == null || mDownHitTarget == HIT_TARGET_NONE) {
             return;
         }
         switch (ev.getActionMasked()) {
@@ -279,6 +282,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
+        if (mDownHitTarget == HIT_TARGET_NONE) return;
+
         if (mPassedInitialSlop && mInteractionHandler != null) {
             mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
 
@@ -351,6 +356,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onQuickStep(MotionEvent ev) {
+        if (mDownHitTarget == HIT_TARGET_NONE) return;
+
         if (mIsDeferredDownTarget) {
             // Deferred gesture, start the animation and gesture tracking once we pass the actual
             // touch slop
@@ -444,7 +451,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             } else {
                 TraceHelper.partitionSection("RecentsController", "Received");
                 mInteractionHandler.onRecentsAnimationStart(mController, mTargets,
-                        mHomeContentInsets, mMinimizedHomeBounds, mDownPos);
+                        mHomeContentInsets, mMinimizedHomeBounds,
+                        mDownHitTarget != HIT_TARGET_NONE ? mDownPos : null);
             }
         }
     }
