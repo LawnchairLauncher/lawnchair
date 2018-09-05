@@ -118,6 +118,8 @@
     <string name="action_move_here" msgid="2170188780612570250">"نقل العنصر إلى هنا"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"تمت إضافة العنصر إلى الشاشة الرئيسية"</string>
     <string name="item_removed" msgid="851119963877842327">"تم حذف العنصر"</string>
+    <!-- no translation found for undo (4151576204245173321) -->
+    <skip />
     <string name="action_move" msgid="4339390619886385032">"نقل العنصر"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"نقل إلى الصف <xliff:g id="NUMBER_0">%1$s</xliff:g> العمود <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"نقل إلى الموضع <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
