@@ -80,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ajustes de la pantalla de inicio"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitada por el administrador"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Burbujas de notificación"</string>
