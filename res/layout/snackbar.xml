@@ -25,17 +25,23 @@
         android:gravity="center_vertical"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:textSize="14sp"
-        android:textColor="?android:attr/textColorPrimary"/>
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/snackbar_max_text_size"
+        android:textColor="?android:attr/textColorPrimary"
+        android:theme="@style/TextTitle"/>
     <TextView
         android:id="@+id/action"
         android:layout_height="@dimen/snackbar_content_height"
         android:layout_width="wrap_content"
         android:layout_weight="0"
         android:gravity="center"
-        android:padding="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:textStyle="bold"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textAllCaps="true"/>
+        android:textSize="@dimen/snackbar_max_text_size"
+        android:textColor="?android:attr/colorAccent"
+        android:theme="@style/TextTitle"
+        android:capitalize="sentences"/>
 </merge>
