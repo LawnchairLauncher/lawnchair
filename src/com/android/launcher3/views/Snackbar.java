@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -60,7 +61,7 @@ public class Snackbar extends AbstractFloatingView {
         snackbar.setOrientation(HORIZONTAL);
         snackbar.setGravity(Gravity.CENTER_VERTICAL);
         Resources res = launcher.getResources();
-        snackbar.setElevation(res.getDimension(R.dimen.deep_shortcuts_elevation));
+        snackbar.setElevation(res.getDimension(R.dimen.snackbar_elevation));
         int padding = res.getDimensionPixelSize(R.dimen.snackbar_padding);
         snackbar.setPadding(padding, padding, padding, padding);
         snackbar.setBackgroundResource(R.drawable.round_rect_primary);
@@ -72,14 +73,45 @@ public class Snackbar extends AbstractFloatingView {
         DragLayer.LayoutParams params = (DragLayer.LayoutParams) snackbar.getLayoutParams();
         params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         params.height = res.getDimensionPixelSize(R.dimen.snackbar_height);
-        int margin = res.getDimensionPixelSize(R.dimen.snackbar_margin);
+        int maxMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_max_margin_left_right);
+        int minMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_min_margin_left_right);
+        int marginBottom = res.getDimensionPixelSize(R.dimen.snackbar_margin_bottom);
         Rect insets = launcher.getDeviceProfile().getInsets();
-        params.width = dragLayer.getWidth() - margin * 2 -  insets.left - insets.right;
-        params.setMargins(0, margin + insets.top, 0, margin + insets.bottom);
+        int maxWidth = dragLayer.getWidth() - minMarginLeftRight * 2 - insets.left - insets.right;
+        int minWidth = dragLayer.getWidth() - maxMarginLeftRight * 2 - insets.left - insets.right;
+        params.width = minWidth;
+        params.setMargins(0, 0, 0, marginBottom + insets.bottom);
 
-        ((TextView) snackbar.findViewById(R.id.label)).setText(labelStringResId);
-        ((TextView) snackbar.findViewById(R.id.action)).setText(actionStringResId);
-        snackbar.findViewById(R.id.action).setOnClickListener(v -> {
+        TextView labelView = snackbar.findViewById(R.id.label);
+        TextView actionView = snackbar.findViewById(R.id.action);
+        String labelText = res.getString(labelStringResId);
+        String actionText = res.getString(actionStringResId);
+        int totalContentWidth = (int) (labelView.getPaint().measureText(labelText)
+                + actionView.getPaint().measureText(actionText))
+                + labelView.getPaddingRight() + labelView.getPaddingLeft()
+                + actionView.getPaddingRight() + actionView.getPaddingLeft()
+                + padding * 2;
+        if (totalContentWidth > params.width) {
+            // The text doesn't fit in our standard width so update width to accommodate.
+            if (totalContentWidth <= maxWidth) {
+                params.width = totalContentWidth;
+            } else {
+                // One line will be cut off, fallback to 2 lines and smaller font. (This should only
+                // happen in some languages if system display and font size are set to largest.)
+                int textHeight = res.getDimensionPixelSize(R.dimen.snackbar_content_height);
+                float textSizePx = res.getDimension(R.dimen.snackbar_min_text_size);
+                labelView.setLines(2);
+                labelView.getLayoutParams().height = textHeight * 2;
+                actionView.getLayoutParams().height = textHeight * 2;
+                labelView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx);
+                actionView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx);
+                params.height += textHeight;
+                params.width = maxWidth;
+            }
+        }
+        labelView.setText(labelText);
+        actionView.setText(actionText);
+        actionView.setOnClickListener(v -> {
             if (onActionClicked != null) {
                 onActionClicked.run();
             }
