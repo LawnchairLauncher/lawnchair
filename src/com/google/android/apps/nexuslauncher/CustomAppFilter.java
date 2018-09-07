@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.UserHandle;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
@@ -25,6 +26,9 @@ public class CustomAppFilter extends NexusAppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
+        if (componentName.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
+            return false;
+        }
         if (CustomIconUtils.usingValidPack(mContext)) {
             return !isHiddenApp(mContext, new ComponentKey(componentName, user));
         }
