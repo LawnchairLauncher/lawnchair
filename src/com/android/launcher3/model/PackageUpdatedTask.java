@@ -227,16 +227,13 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     isTargetValid = LauncherAppsCompat.getInstance(context)
                                             .isActivityEnabledForProfile(cn, mUser);
                                 }
-
-                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
-                                    // Auto install icon
-                                    if (!isTargetValid) {
-                                        if (updateShortcutIntent(context, si, packageName)) {
-                                            infoUpdated = true;
-                                        } else if (si.hasPromiseIconUi()) {
-                                            removedShortcuts.put(si.id, true);
-                                            continue;
-                                        }
+                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)
+                                        && !isTargetValid) {
+                                    if (updateShortcutIntent(context, si, packageName)) {
+                                        infoUpdated = true;
+                                    } else if (si.hasPromiseIconUi()) {
+                                        removedShortcuts.put(si.id, true);
+                                        continue;
                                     }
                                 } else if (!isTargetValid) {
                                     removedShortcuts.put(si.id, true);
