@@ -418,7 +418,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
-                mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
+                mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {

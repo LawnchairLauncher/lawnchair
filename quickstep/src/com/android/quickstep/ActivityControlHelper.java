@@ -106,7 +106,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     void onSwipeUpComplete(T activity);
 
     AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,
-            Consumer<AnimatorPlaybackController> callback);
+            boolean animateActivity, Consumer<AnimatorPlaybackController> callback);
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
@@ -214,7 +214,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
-                Consumer<AnimatorPlaybackController> callback) {
+                boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
             final LauncherState startState = activity.getStateManager().getState();
 
             LauncherState resetState = startState;
@@ -228,8 +228,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 // Since the launcher is not visible, we can safely reset the scroll position.
                 // This ensures then the next swipe up to all-apps starts from scroll 0.
                 activity.getAppsView().reset(false /* animate */);
-                fromState = BACKGROUND_APP;
-                activity.getStateManager().goToState(BACKGROUND_APP, false);
+                fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
+                activity.getStateManager().goToState(fromState, false);
 
                 // Optimization, hide the all apps view to prevent layout while initializing
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
@@ -266,6 +266,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
                 callback.accept(activity.getStateManager()
                         .createAnimationToNewWorkspace(fromState, endState, accuracy));
+                return;
+            }
+            if (fromState == endState) {
                 return;
             }
 
@@ -470,7 +473,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
-                Consumer<AnimatorPlaybackController> callback) {
+                boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
             if (activityVisible) {
                 return (transitionLength, interactionType) -> { };
             }
