@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-android_library {
+java_library {
     name: "launcher-aosp-tapl",
     static_libs: [
         "androidx.annotation_annotation",
