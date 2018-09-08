@@ -72,7 +72,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         mPredictionsEnabled = Bl.isEnabled();
         int i = 0;
         DividerType dividerType = DividerType.NONE;
-        if (this.AF && this.mTabsHidden) {
+        if (Utilities.ATLEAST_MARSHMALLOW && this.mTabsHidden) {
             dividerType = DividerType.ALL_APPS_LABEL;
         } else if (this.mTabsHidden) {
             dividerType = DividerType.LINE;
