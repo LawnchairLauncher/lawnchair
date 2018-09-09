@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertySetter;
 
 public class FloatingHeaderView extends LinearLayout implements
@@ -154,12 +153,11 @@ public class FloatingHeaderView extends LinearLayout implements
     protected void applyScroll(int uncappedY, int currentY) { }
 
     protected void apply() {
-        int maxTranslation = mMaxTranslation - mCurrentRV.getCurrentScrollY();
         int uncappedTranslationY = mTranslationY;
-        mTranslationY = Math.max(mTranslationY, -maxTranslation);
+        mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
         applyScroll(uncappedTranslationY, mTranslationY);
         mTabLayout.setTranslationY(mTranslationY);
-        mClip.top = maxTranslation + mTranslationY;
+        mClip.top = mMaxTranslation + mTranslationY;
         // clipping on a draw might cause additional redraw
         mMainRV.setClipBounds(mClip);
         if (mWorkRV != null) {
@@ -182,9 +180,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
-        if(!Utilities.getLawnchairPrefs(getContext()).getSaveScrollPosition()){
-            mCurrentRV.scrollToTop();
-        }
+        mCurrentRV.scrollToTop();
     }
 
     public boolean isExpanded() {

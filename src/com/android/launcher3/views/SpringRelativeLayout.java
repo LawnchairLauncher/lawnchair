@@ -87,11 +87,15 @@ public class SpringRelativeLayout extends RelativeLayout {
 
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        if (mDampedScrollShift != 0 && mSpringViews.get(child.getId())) {
-            canvas.translate(0, mDampedScrollShift);
-            boolean result = super.drawChild(canvas, child, drawingTime);
-            canvas.translate(0, -mDampedScrollShift);
-            return result;
+        if (mSpringViews.get(child.getId())) {
+            if (child instanceof SpringChild) {
+                ((SpringChild) child).setShift(mDampedScrollShift);
+            } else if (mDampedScrollShift != 0) {
+                canvas.translate(0, mDampedScrollShift);
+                boolean result = super.drawChild(canvas, child, drawingTime);
+                canvas.translate(0, -mDampedScrollShift);
+                return result;
+            }
         }
         return super.drawChild(canvas, child, drawingTime);
     }
@@ -174,5 +178,10 @@ public class SpringRelativeLayout extends RelativeLayout {
             mDistance = 0;
             finishScrollWithVelocity(0);
         }
+    }
+
+    public interface SpringChild {
+
+        void setShift(float shift);
     }
 }

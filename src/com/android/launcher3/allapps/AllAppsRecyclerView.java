@@ -39,12 +39,14 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
+import com.android.launcher3.views.SpringRelativeLayout.SpringChild;
 import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider {
+public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider,
+        SpringChild {
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
@@ -57,6 +59,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     // The empty-search result background
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
+
+    private float mSpringShift;
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -418,5 +422,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    public void setShift(float shift) {
+        mSpringShift = shift;
+        invalidate();
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (mSpringShift != 0) {
+            canvas.translate(0, mSpringShift);
+            super.draw(canvas);
+            canvas.translate(0, -mSpringShift);
+        } else {
+            super.draw(canvas);
+        }
     }
 }
