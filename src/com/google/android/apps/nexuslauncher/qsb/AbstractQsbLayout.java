@@ -1,6 +1,8 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Process;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -486,12 +490,29 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected boolean dK() {
-        Intent createSettingsIntent = createSettingsIntent();
-        if (createSettingsIntent == null) {
+        String clipboardText = getClipboardText();
+        Intent settingsIntent = createSettingsIntent();
+        if (settingsIntent == null && clipboardText == null) {
             return false;
         }
-        startActionMode(new b(this, null, createSettingsIntent), 1);
+        startActionMode(new b(this, clipboardText, settingsIntent), 1);
         return true;
+    }
+
+    @Nullable
+    protected String getClipboardText() {
+        ClipboardManager clipboardManager = ContextCompat
+                .getSystemService(getContext(), ClipboardManager.class);
+        ClipData primaryClip = clipboardManager.getPrimaryClip();
+        if (primaryClip != null) {
+            for (int i = 0; i < primaryClip.getItemCount(); i++) {
+                CharSequence text = primaryClip.getItemAt(i).coerceToText(getContext());
+                if (!TextUtils.isEmpty(text)) {
+                    return text.toString();
+                }
+            }
+        }
+        return null;
     }
 
     protected Intent createSettingsIntent() {

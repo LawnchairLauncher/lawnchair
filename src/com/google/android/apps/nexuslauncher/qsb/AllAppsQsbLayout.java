@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
+import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -154,12 +156,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public final void startSearch(String str, int i) {
         SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
-        if (!Utilities.getLawnchairPrefs(getContext()).getAllAppsGoogleSearch() || provider instanceof AppSearchSearchProvider
-                || (!Utilities.ATLEAST_NOUGAT && controller.isGoogle())) {
+        if (shouldUseFallbackSearch(provider)) {
             searchFallback(str);
-            return;
-        }
-        if (controller.isGoogle()) {
+        } else if (controller.isGoogle()) {
             final ConfigBuilder f = new ConfigBuilder(this, true);
             if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
                 searchFallback(str);
@@ -173,6 +172,18 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 return null;
             });
         }
+    }
+
+    private boolean shouldUseFallbackSearch() {
+        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        return shouldUseFallbackSearch(provider);
+    }
+
+    private boolean shouldUseFallbackSearch(SearchProvider provider) {
+        return !Utilities
+                .getLawnchairPrefs(getContext()).getAllAppsGoogleSearch() || provider instanceof AppSearchSearchProvider
+                || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 
     public void searchFallback(String query) {
@@ -267,5 +278,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public void preDispatchKeyEvent(KeyEvent keyEvent) {
 
+    }
+
+    @Nullable
+    @Override
+    protected String getClipboardText() {
+        return shouldUseFallbackSearch() ? super.getClipboardText() : null;
     }
 }

@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Process;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
@@ -284,5 +285,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
                 ((((((float) (profile.hotseatBarSizePx + rect.bottom)) - f2) - f) - resources
                         .getDimension(R.dimen.qsb_widget_height))
                         - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
+    }
+
+    @Nullable
+    @Override
+    protected String getClipboardText() {
+        return null;
     }
 }
