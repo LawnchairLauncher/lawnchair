@@ -19,9 +19,13 @@ package ch.deletescape.lawnchair
 
 import android.app.Activity
 import android.app.Application
+import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.Keep
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
+import com.android.launcher3.Utilities
+import com.android.quickstep.RecentsActivity
 
 class LawnchairApp : Application() {
 
@@ -29,6 +33,7 @@ class LawnchairApp : Application() {
     val fontLoader by lazy { FontLoader(this) }
     val smartspace by lazy { LawnchairSmartspaceController(this) }
     val bugReporter = LawnchairBugReporter(this, Thread.getDefaultUncaughtExceptionHandler())
+    val recentsEnabled by lazy { checkRecentsComponent() }
 
     init {
         Thread.setDefaultUncaughtExceptionHandler(bugReporter)
@@ -77,6 +82,19 @@ class LawnchairApp : Application() {
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             activities.add(activity)
         }
+    }
+
+    @Keep
+    fun checkRecentsComponent(): Boolean {
+        if (!Utilities.ATLEAST_P) return false
+        if (!Utilities.HIDDEN_APIS_ALLOWED) return false
+
+        val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
+        if (resId == 0) return false
+        val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
+                ?: return false
+        return recentsComponent.packageName == packageName
+                && recentsComponent.className == RecentsActivity::class.java.name
     }
 }
 

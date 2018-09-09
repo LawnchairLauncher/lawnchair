@@ -63,6 +63,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import ch.deletescape.lawnchair.LawnchairApp;
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
@@ -846,7 +848,8 @@ public final class Utilities {
     }
 
     public static boolean isRecentsEnabled() {
-        return Utilities.ATLEAST_P;
+        Context context = LauncherAppState.getInstanceNoCreate().getContext();
+        return LawnchairAppKt.getLawnchairApp(context).getRecentsEnabled();
     }
 
     public static void startAssistant(Context context) {
