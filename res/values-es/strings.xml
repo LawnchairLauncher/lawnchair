@@ -80,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ajustes de la pantalla de inicio"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitada por el administrador"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Burbujas de notificación"</string>
@@ -114,6 +114,8 @@
     <string name="action_move_here" msgid="2170188780612570250">"Mover elemento aquí"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elemento añadido a la pantalla de inicio"</string>
     <string name="item_removed" msgid="851119963877842327">"Elemento eliminado"</string>
+    <!-- no translation found for undo (4151576204245173321) -->
+    <skip />
     <string name="action_move" msgid="4339390619886385032">"Mover elemento"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Mover a la fila <xliff:g id="NUMBER_0">%1$s</xliff:g>, columna <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g>"</string>

@@ -114,6 +114,8 @@
     <string name="action_move_here" msgid="2170188780612570250">"ንጥልን ወደዚህ ውሰድ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ወደ መነሻ ማያ ገጽ ንጥል ታክሏል"</string>
     <string name="item_removed" msgid="851119963877842327">"ንጥል ነገር ተንቀሳቅሷል"</string>
+    <!-- no translation found for undo (4151576204245173321) -->
+    <skip />
     <string name="action_move" msgid="4339390619886385032">"ንጥልን አንቀሳቅስ"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ወደ አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
