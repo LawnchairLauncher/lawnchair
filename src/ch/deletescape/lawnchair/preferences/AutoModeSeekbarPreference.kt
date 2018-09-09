@@ -25,14 +25,17 @@ import com.android.launcher3.R
 @Keep
 open class AutoModeSeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SeekbarPreference(context, attrs, defStyleAttr) {
 
+    private val low: Float
+
     init {
+        low = min
         min -= (max - min) / steps
         steps += 1
         defaultValue = min
     }
 
     override fun updateSummary() {
-        if (current <= min) {
+        if (current < low) {
             mValueText!!.text = context.getString(R.string.automatic_short)
         } else {
             super.updateSummary()
