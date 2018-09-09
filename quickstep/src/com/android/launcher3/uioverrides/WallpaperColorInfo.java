@@ -23,7 +23,13 @@ public abstract class WallpaperColorInfo {
 
     public abstract int getMainColor();
 
+    public abstract int getActualMainColor();
+
     public abstract int getSecondaryColor();
+
+    public abstract int getActualSecondaryColor();
+
+    public abstract int getTertiaryColor();
 
     public abstract boolean isDark();
 

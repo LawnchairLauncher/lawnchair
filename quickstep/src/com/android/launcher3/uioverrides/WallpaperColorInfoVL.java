@@ -33,6 +33,9 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
     private final ColorExtractionAlgorithm mExtractionType;
     private int mMainColor;
     private int mSecondaryColor;
+    private int mActualMainColor;
+    private int mActualSecondaryColor;
+    private int mTertiaryColor;
     private boolean mIsDark;
     private boolean mSupportsDarkText;
 
@@ -50,9 +53,25 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
         return mMainColor;
     }
 
+
+    @Override
+    public int getActualMainColor() {
+        return mActualMainColor;
+    }
+
     @Override
     public int getSecondaryColor() {
         return mSecondaryColor;
+    }
+
+    @Override
+    public int getActualSecondaryColor() {
+        return mActualSecondaryColor;
+    }
+
+    @Override
+    public int getTertiaryColor() {
+        return mTertiaryColor;
     }
 
     @Override
@@ -74,6 +93,9 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
     }
 
     private void update(WallpaperColorsCompat wallpaperColors) {
+        mActualMainColor = wallpaperColors.getPrimaryColor();
+        mActualSecondaryColor = wallpaperColors.getSecondaryColor();
+        mTertiaryColor = wallpaperColors.getTertiaryColor();
         Pair<Integer, Integer> colors = mExtractionType.extractInto(wallpaperColors);
         if (colors != null) {
             mMainColor = colors.first;
