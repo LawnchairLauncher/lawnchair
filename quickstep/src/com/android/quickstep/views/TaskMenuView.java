@@ -42,6 +42,7 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -141,11 +142,12 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void addMenuOptions(TaskView taskView) {
-        Drawable icon = taskView.getTask().icon.getConstantState().newDrawable();
+        Task task = taskView.getTask();
+        Drawable icon = Utilities.getIconForTask(getContext(), task).mutate();
         int iconSize = getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         icon.setBounds(0, 0, iconSize, iconSize);
         mTaskIconAndName.setCompoundDrawables(null, icon, null, null);
-        mTaskIconAndName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
+        mTaskIconAndName.setText(TaskUtils.getTitle(getContext(), task));
         mTaskIconAndName.setOnClickListener(v -> close(true));
 
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {

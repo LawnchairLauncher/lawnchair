@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -42,6 +43,7 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -63,8 +65,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 
+import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -72,6 +76,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -851,5 +856,17 @@ public final class Utilities {
 
     public static void startAssistant(Context context) {
         context.startActivity(new Intent(Intent.ACTION_VOICE_COMMAND));
+    }
+
+    public static Drawable getIconForTask(Context context, Task task) {
+        IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
+        LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
+        String packageName = task.key.getComponent().getPackageName();
+        List<LauncherActivityInfo> al = lac.getActivityList(packageName, Process.myUserHandle());
+        if (!al.isEmpty()) {
+            return ic.getFullResIcon(al.get(0));
+        } else {
+            return task.icon;
+        }
     }
 }
