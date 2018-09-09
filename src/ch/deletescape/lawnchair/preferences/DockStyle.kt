@@ -42,7 +42,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
         get() = opacity.toFloat() / 255f
         set(value) { opacity = (value * 255f).roundToInt() }
 
-    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = true, defaultRadius = 8f, defaultArrow = false)
+    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = true, defaultRadius = 16f, defaultArrow = false)
     private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true)
     private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager)
     private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultOpacity = 0)
@@ -120,7 +120,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
         var dockPreset by prefs.StringIntPref("pref_dockPreset", 1, onChangeListener)
         val dockDefaultOpacity = -1
         var dockOpacity by prefs.AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, onChangeListener)
-        var dockRadius by prefs.FloatPref("pref_dockRadius", 8f, onChangeListener)
+        var dockRadius by prefs.FloatPref("pref_dockRadius", 16f, onChangeListener)
         var dockShadow by prefs.BooleanPref("pref_dockShadow", true, onChangeListener)
         var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", false, onChangeListener)
         var dockGradient by prefs.BooleanPref("pref_dockGradient", false, onChangeListener)
