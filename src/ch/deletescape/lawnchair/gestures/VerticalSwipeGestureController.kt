@@ -52,7 +52,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             if (noIntercept) {
                 return false
             }
-            detector.setDetectableScrollConditions(getSwipeDirection(), false)
+            detector.setDetectableScrollConditions(getSwipeDirection(ev), false)
         } else if (ev.pointerCount > 1) {
             noIntercept = true
         }
@@ -69,7 +69,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private fun canInterceptTouch(ev: MotionEvent): Boolean {
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
-                launcher.isInState(LauncherState.NORMAL) && !isOverHotseat(ev)
+                launcher.isInState(LauncherState.NORMAL)
     }
 
     private fun isOverHotseat(ev: MotionEvent): Boolean {
@@ -78,8 +78,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return ev.y >= launcher.dragLayer.height - hotseatHeight
     }
 
-    private fun getSwipeDirection(): Int {
-        return if (gesture.customSwipeUp) SwipeDetector.DIRECTION_BOTH
+    private fun getSwipeDirection(ev: MotionEvent): Int {
+        return if (gesture.customSwipeUp && !isOverHotseat(ev)) SwipeDetector.DIRECTION_BOTH
         else SwipeDetector.DIRECTION_NEGATIVE
     }
 
