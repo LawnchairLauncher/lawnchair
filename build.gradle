@@ -139,6 +139,10 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
 
+        optimized {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
