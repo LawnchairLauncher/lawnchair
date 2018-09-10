@@ -50,6 +50,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.views.RecentsView;
@@ -132,7 +133,7 @@ public class UiFactory {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
-                            .isSwipeUpGestureEnabled();
+                            .isSwipeUpGestureEnabled() && TouchInteractionService.isConnected();
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
