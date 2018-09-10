@@ -49,19 +49,20 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
+        <include
+            android:id="@+id/drop_target_bar"
+            layout="@layout/drop_target_bar"/>
+
+        <include
+            android:id="@+id/scrim_view"
+            layout="@layout/scrim_view"/>
+
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_gravity="bottom|center_horizontal"
             android:theme="@style/HomeScreenElementTheme" />
-
-        <include
-            android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar" />
-
-        <include android:id="@+id/scrim_view"
-            layout="@layout/scrim_view" />
 
         <include
             android:id="@+id/apps_view"

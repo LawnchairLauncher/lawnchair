@@ -82,6 +82,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import java.util.StringJoiner;
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -379,6 +380,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
+
+        ((NexusLauncherActivity) mActivity).getGoogleNow().hideOverlay(false);
 
         mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
                 mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);

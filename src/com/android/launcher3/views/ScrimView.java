@@ -94,7 +94,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected final Launcher mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final AccessibilityManager mAM;
-    protected final int mEndScrim;
+    protected int mEndScrim;
 
     protected float mMaxScrimAlpha;
 
@@ -114,6 +114,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected Drawable mDragHandle;
 
     private int mDragHandleAlpha = 255;
+
+    protected boolean mHide = false;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -199,6 +201,12 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
                 mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
     }
 
+    public void hide() {
+        mHide = true;
+        reInitUi();
+        mHide = false;
+    }
+
     protected void updateDragHandleAlpha() {
         if (mDragHandle != null) {
             mDragHandle.setAlpha(mDragHandleAlpha);
@@ -281,7 +289,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             }
         } else {
             left = (width - mDragHandleSize) / 2;
-            topMargin = grid.hotseatBarSizePx;
+            topMargin = grid.shelfBarSizePx;
         }
         mDragHandleBounds.offsetTo(left, top - topMargin);
         mHitRect.set(mDragHandleBounds);

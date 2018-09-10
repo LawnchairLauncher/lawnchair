@@ -318,7 +318,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 Preference rotationPref = findPreference(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY);
                 if (getResources().getBoolean(R.bool.allow_rotation)) {
                     // Launcher supports rotation by default. No need to show this setting.
-                    getPreferenceScreen().removePreference(rotationPref);
+                    rotationPref.getParent().removePreference(rotationPref);
                 } else {
                     // Initialize the UI once
                     rotationPref.setDefaultValue(RotationHelper.getAllowRotationDefaultValue());
@@ -327,11 +327,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 ButtonPreference iconBadgingPref =
                         (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
                 if (!Utilities.ATLEAST_OREO) {
-                    getPreferenceScreen().removePreference(
-                            findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+                    Preference addIconPref = findPreference(
+                            SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY);
+                    addIconPref.getParent().removePreference(addIconPref);
                 }
                 if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                    getPreferenceScreen().removePreference(iconBadgingPref);
+                    iconBadgingPref.getParent().removePreference(iconBadgingPref);
                 } else {
                     // Listen to system notification badge settings while this UI is active.
                     mIconBadgingObserver = new IconBadgingObserver(
@@ -346,9 +347,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         iconShapeOverride.setEntryValues(R.array.alt_icon_shape_override_paths_values);
                     }
                     if (IconShapeOverride.isSupported(getActivity())) {
-                        IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
+                        IconShapeOverride.handlePreferenceUi(iconShapeOverride);
                     } else {
-                        getPreferenceScreen().removePreference(iconShapeOverride);
+                        iconShapeOverride.getParent().removePreference(iconShapeOverride);
                     }
                 }
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
@@ -361,6 +362,14 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
                 findPreference("screenshot").setOnPreferenceClickListener(this);
+            } else if (getContent() == R.xml.lawnchair_gesture_preferences) {
+                int count = getPreferenceScreen().getPreferenceCount();
+                for (int i = count - 1; i >= 0; i--) {
+                    Preference pref = getPreferenceScreen().getPreference(i);
+                    if (pref instanceof GesturePreference && pref.getShouldDisableView()) {
+                        getPreferenceScreen().removePreference(pref);
+                    }
+                }
             }
         }
 

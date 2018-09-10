@@ -92,7 +92,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
-    private boolean mSwipeUpEnabled = true;
+    private boolean mSwipeUpEnabled = false;
     private float mBackButtonAlpha = 1;
 
     private Runnable mOnSwipeUpSettingChangedListener;

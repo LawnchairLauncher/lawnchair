@@ -19,15 +19,23 @@ package ch.deletescape.lawnchair.views
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.util.Log
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
+import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.runOnMainThread
+import com.android.launcher3.LauncherState.OVERVIEW
+import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
 
 /*
@@ -46,7 +54,16 @@ import com.android.quickstep.views.ShelfScrimView
  * limitations under the License.
  */
 
-class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs) {
+class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+
+    private val key_radius = "pref_dockRadius"
+    private val key_gradient = "pref_dockGradient"
+    private val key_opacity = "pref_allAppsOpacitySB"
+    private val key_dock_opacity = "pref_hotseatCustomOpacity"
+
+    init {
+        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius, key_gradient, key_opacity, key_dock_opacity)
+    }
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -92,6 +109,26 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable?.startListening()
     }
 
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        when (key) {
+            key_radius -> {
+                mRadius = dpToPx(prefs.dockRadius)
+            }
+            key_opacity -> {
+                mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: Color.alpha(mEndScrim)
+                mEndScrim = ColorUtils.setAlphaComponent(mEndScrim, mEndAlpha)
+                mEndFlatColorAlpha = mEndAlpha
+                mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(mScrimColor, Math.round(mMaxScrimAlpha * 255)))
+            }
+            key_dock_opacity -> {
+                mThresholdAlpha = prefs.dockOpacity.takeIf { it >= 0 } ?: Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha)
+            }
+            key_gradient -> if (!force) {
+                reInitUi()
+            }
+        }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
@@ -120,7 +157,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         if (useFlatColor) {
             blurDrawable?.alpha = ((1 - mProgress) * 255).toInt()
         } else {
-            if (mProgress >= mMoveThreshold) {
+            if (mProgress > mMoveThreshold) {
                 blurDrawable?.alpha = Math.round(255 * ACCEL_2.getInterpolation(
                         (1 - mProgress) / (1 - mMoveThreshold)))
             } else {

@@ -119,18 +119,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow
+    val dockOpacity get() = dockStyles.currentStyle.opacity
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockHide get() = dockStyles.currentStyle.hide
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
     val dockGridSize by dockGridSizeDelegate
-    val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
+    val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
-    val allAppsDefaultOpacity = 235
-    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", allAppsDefaultOpacity, doNothing)
+    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, doNothing)
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)

@@ -543,6 +543,8 @@
     <string name="action_none">Do nothing</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
+    <string name="gesture_press_recents">Recents button</string>
+    <string name="gesture_press_recents_global">Recents button in other apps</string>
     <string name="gesture_double_tap">Double tap</string>
     <string name="gesture_long_press">Long press</string>
     <string name="gesture_swipe_down">Swipe down</string>
@@ -551,6 +553,7 @@
     <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
+    <string name="action_open_recents_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenRecentsGestureHandler</string>
     <string name="action_do_nothing_class" translatable="false">ch.deletescape.lawnchair.gestures.BlankGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
     <string name="pref_show_assistant_summary">Display a voice search button in the search bar if supported</string>
@@ -618,8 +621,9 @@
     <string name="color_pixel_accent">Pixel blue</string>
     <string name="color_presets">Presets</string>
     <string name="color_custom">Custom</string>
-    <string name="color_wallpaper_main">Wallpaper main</string>
+    <string name="color_wallpaper_main">Wallpaper primary</string>
     <string name="color_wallpaper_secondary">Wallpaper secondary</string>
+    <string name="color_wallpaper_tertiary">Wallpaper tertiary</string>
     <string name="pref_dark_searchbar">Use dark searchbar</string>
 
     <!-- Label of tab to indicate personal apps -->
@@ -645,4 +649,5 @@
     <string name="title_app_suggestions_in_search">App suggestions</string>
     <string name="pref_hide_statusbar">Hide status bar</string>
     <string name="pref_recents_radius">Task radius</string>
+    <string name="automatic_short">Auto</string>
 </resources>

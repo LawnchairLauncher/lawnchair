@@ -23,6 +23,7 @@ import android.app.WallpaperColors;
 import android.app.WallpaperManager;
 import android.app.WallpaperManager.OnColorsChangedListener;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +40,7 @@ public class WallpaperColorInfoVOMR1 extends WallpaperColorInfo implements OnCol
     private final WallpaperManager mWallpaperManager;
     private final TonalCompat mTonalCompat;
 
+    private WallpaperColors mColors;
     private ExtractionInfo mExtractionInfo;
 
     private OnChangeListener[] mTempListeners = new OnChangeListener[0];
@@ -57,8 +59,25 @@ public class WallpaperColorInfoVOMR1 extends WallpaperColorInfo implements OnCol
     }
 
     @Override
+    public int getActualMainColor() {
+        return mColors == null ? -1 : mColors.getPrimaryColor().toArgb();
+    }
+
+    @Override
     public int getSecondaryColor() {
         return mExtractionInfo.secondaryColor;
+    }
+
+    @Override
+    public int getActualSecondaryColor() {
+        Color secondary = mColors == null ? null : mColors.getSecondaryColor();
+        return secondary == null ? -1 : secondary.toArgb();
+    }
+
+    @Override
+    public int getTertiaryColor() {
+        Color tertiary = mColors == null ? null : mColors.getTertiaryColor();
+        return tertiary == null ? -1 : tertiary.toArgb();
     }
 
     @Override
@@ -80,6 +99,7 @@ public class WallpaperColorInfoVOMR1 extends WallpaperColorInfo implements OnCol
     }
 
     private void update(WallpaperColors wallpaperColors) {
+        mColors = wallpaperColors;
         mExtractionInfo = mTonalCompat.extractDarkColors(wallpaperColors);
     }
 

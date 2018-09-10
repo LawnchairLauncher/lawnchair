@@ -17,7 +17,7 @@
 <com.google.android.apps.nexuslauncher.qsb.HotseatQsbWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/search_container_hotseat"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/qsb_widget_height"
     android:layout_gravity="bottom|center"
     android:background="@drawable/bg_qsb_click_feedback"

@@ -81,6 +81,14 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             if (!mLauncher.getAppsView().shouldContainerScroll(ev)) {
                 return false;
             }
+        } else if (mLauncher.isInState(OVERVIEW)) {
+            // For overview, only listen if the event originated below the shelf height
+            DeviceProfile dp = mLauncher.getDeviceProfile();
+            int shelfHeight = dp.shelfBarSizePx;
+            mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - shelfHeight);
+            if (!mStartedFromHotseat && !mLauncher.isInState(NORMAL)) {
+                return false;
+            }
         } else {
             // For all other states, only listen if the event originated below the hotseat height
             DeviceProfile dp = mLauncher.getDeviceProfile();

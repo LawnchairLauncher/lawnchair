@@ -426,5 +426,6 @@
     <style name="Widget.Settings.Tabs" parent="@style/Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/TextAppearance.Settings.Tab</item>
         <item name="tabIndicator">@drawable/tab_indicator</item>
+        <item name="android:background">?colorBackgroundFloating</item>
     </style>
 </resources>

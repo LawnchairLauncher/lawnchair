@@ -30,6 +30,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -83,6 +84,19 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        if (prefs.getDockHide()) {
+            setVisibility(GONE);
+        } else if (prefs.getDockSearchBar()) {
+            inflate(getContext(), R.layout.search_container_hotseat, this);
+        } else {
+            View v = this.findViewById(R.id.search_container_hotseat);
+            if (v != null) {
+                removeView(v);
+            }
+        }
+
         mContent = findViewById(R.id.layout);
     }
 

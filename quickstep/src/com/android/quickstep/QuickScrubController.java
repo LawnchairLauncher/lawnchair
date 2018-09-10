@@ -25,9 +25,11 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.OnAlarmListener;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -86,6 +88,11 @@ public class QuickScrubController implements OnAlarmListener {
         mQuickScrubSection = 0;
         mFinishedTransitionToQuickScrub = false;
         mActivityControlHelper = controlHelper;
+
+        if (startingFromHome) {
+            ScrimView scrim = mActivity.findViewById(R.id.scrim_view);
+            scrim.hide();
+        }
 
         snapToNextTaskIfAvailable();
         mActivity.getUserEventDispatcher().resetActionDurationMillis();

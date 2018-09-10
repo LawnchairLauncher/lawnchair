@@ -32,6 +32,7 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
@@ -45,18 +46,21 @@ import com.android.launcher3.views.ScrimView;
  */
 public class ShelfScrimView extends ScrimView {
 
+    private final float PROGRESS_WORKSPACE = 1f;
+
     // In transposed layout, we simply draw a flat color.
     protected boolean mDrawingFlatColor;
 
     // For shelf mode
-    protected final int mEndAlpha;
-    protected final int mThresholdAlpha;
-    protected final float mRadius;
-    private final float mMaxScrimAlpha;
+    protected int mEndAlpha;
+    protected int mThresholdAlpha;
+    protected float mRadius;
+    protected float mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Max vertical progress after which the scrim stops moving.
     protected float mMoveThreshold;
+    protected float mCalcThreshold;
     // Minimum visible size of the scrim.
     private int mMinSize;
 
@@ -92,10 +96,10 @@ public class ShelfScrimView extends ScrimView {
         DeviceProfile dp = mLauncher.getDeviceProfile();
         mDrawingFlatColor = dp.isVerticalBarLayout();
 
+        mMinSize = dp.shelfBarSizePx + dp.getInsets().bottom;
         if (!mDrawingFlatColor) {
             float swipeLength = OverviewState.getDefaultSwipeHeight(mLauncher);
-            mMoveThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
-            mMinSize = dp.hotseatBarSizePx + dp.getInsets().bottom;
+            mCalcThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
             mRemainingScreenPathValid = false;
             updateColors();
         }
@@ -110,7 +114,18 @@ public class ShelfScrimView extends ScrimView {
             return;
         }
 
-        if (mProgress >= mMoveThreshold) {
+        if (mHide) {
+            mMoveThreshold = mCalcThreshold;
+        } else if (mProgress >= PROGRESS_WORKSPACE) {
+            if (mLauncher.isInOverview() || Utilities.getLawnchairPrefs(getContext())
+                    .getDockGradientStyle()) {
+                mMoveThreshold = mCalcThreshold;
+            } else {
+                mMoveThreshold = PROGRESS_WORKSPACE;
+            }
+        }
+
+        if (mProgress > mMoveThreshold) {
             mScrimMoveFactor = 1;
 
             if (mProgress >= 1) {
@@ -133,9 +148,11 @@ public class ShelfScrimView extends ScrimView {
                     Math.round((1 - mScrimMoveFactor) * mMaxScrimAlpha * 255));
 
             // Merge the remainingScreenColor and shelfColor in one to avoid overdraw.
-            int alpha = mEndAlpha - Math.round((mEndAlpha - mThresholdAlpha) * mScrimMoveFactor);
-            mShelfColor = compositeColors(setAlphaComponent(mEndScrim, alpha),
-                    mRemainingScreenColor);
+            int alpha = mEndFlatColorAlpha - Math
+                    .round((mEndFlatColorAlpha - mThresholdAlpha) * mScrimMoveFactor);
+            mShelfColor = setAlphaComponent(
+                    compositeColors(mEndFlatColor > 0 ? mEndFlatColor : mEndScrim,
+                            mRemainingScreenColor), alpha);
         }
     }
 
@@ -168,6 +185,13 @@ public class ShelfScrimView extends ScrimView {
         }
 
         float minTop = getHeight() - mMinSize;
+        if (mProgress < mMoveThreshold) {
+            if (mCalcThreshold < mProgress) {
+                mScrimMoveFactor = 1f;
+            } else {
+                mScrimMoveFactor = mProgress / mCalcThreshold;
+            }
+        }
         float top = minTop * mScrimMoveFactor - mDragHandleSize;
 
         // Draw the scrim over the remaining screen if needed.

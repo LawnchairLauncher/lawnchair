@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairPreferences.OnPreferenceChangeListener {
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
+    public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
+    public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
     private final BroadcastReceiver DK;
     private boolean mIsGoogleColored;
     private final k Ds;
@@ -67,7 +69,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     }
 
     protected void onAttachedToWindow() {
-        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
+        Utilities.getLawnchairPrefs(getContext())
+                .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
         dW();
         super.onAttachedToWindow();
         getContext().registerReceiver(this.DK, new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
@@ -78,15 +81,22 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Utilities.getLawnchairPrefs(getContext()).removeOnPreferenceChangeListener(KEY_DOCK_COLORED_GOOGLE, this);
+        Utilities.getLawnchairPrefs(getContext())
+                .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
+                        KEY_DOCK_SEARCHBAR);
         getContext().unregisterReceiver(this.DK);
         this.Ds.b(this);
     }
 
     @Override
     public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
-        mIsGoogleColored = isGoogleColored();
-        dM();
+        if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
+            mIsGoogleColored = isGoogleColored();
+            dM();
+        } else if (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE)) {
+            boolean visible = prefs.getDockSearchBar() && !prefs.getDockHide();
+            setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override

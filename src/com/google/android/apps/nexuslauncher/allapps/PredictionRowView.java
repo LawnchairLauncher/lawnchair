@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.text.Layout;
@@ -16,6 +15,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.*;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -125,6 +125,7 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
         super.onAttachedToWindow();
         dd().addUpdateListener(this);
         dd().registerIconContainer(this);
+        measure(MeasureSpec.EXACTLY, MeasureSpec.EXACTLY);
     }
 
     private AllAppsStore dd() {
@@ -161,7 +162,15 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
         if (getVisibility() == View.GONE) {
             return 0;
         }
-        return (Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx + getPaddingTop()) + getPaddingBottom();
+        DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        if (prefs.getDockHide()) {
+            return dp.allAppsCellHeightPx;
+        } else if (prefs.getDockSearchBar()) {
+            return dp.allAppsCellHeightPx + getPaddingTop() + getPaddingBottom();
+        } else {
+            return dp.hotseatBarSizePx;
+        }
     }
 
     public void onDeviceProfileChanged(DeviceProfile deviceProfile) {
