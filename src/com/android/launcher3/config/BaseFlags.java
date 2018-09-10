@@ -36,6 +36,10 @@ abstract class BaseFlags {
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
+
+    //Feature flag to enable pulling down navigation shade from workspace.
+    public static final boolean PULL_DOWN_STATUS_BAR = true;
+
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = true;
 
