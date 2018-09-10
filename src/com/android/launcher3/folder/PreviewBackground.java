@@ -30,6 +30,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Region;
 import android.graphics.Shader;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -100,6 +102,8 @@ public class PreviewBackground {
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
 
+    private Path mShapePath;
+
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
             new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
                 @Override
@@ -150,6 +154,8 @@ public class PreviewBackground {
                 new float[] {radius / shadowRadius, 1},
                 Shader.TileMode.CLAMP);
 
+        mShapePath = createShapePath();
+
         invalidate();
     }
 
@@ -175,6 +181,18 @@ public class PreviewBackground {
      */
     float getScaleProgress() {
         return (mScale - 1f) / (ACCEPT_SCALE_FACTOR - 1f);
+    }
+
+    private Path createShapePath() {
+        if (Utilities.ATLEAST_OREO_MR1) {
+            try {
+                return new AdaptiveIconDrawable(null, null).getIconMask();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     void invalidate() {
@@ -241,7 +259,17 @@ public class PreviewBackground {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            canvas.drawCircle(radius + offsetX, radius + offsetY, radius, mPaint);
+            if (mShapePath != null) {
+                int count = canvas.save();
+                float scale = (radius * 2) / 100.0f;
+
+                canvas.scale(scale, scale);
+                canvas.translate(getOffsetX() / scale, getOffsetY() / scale);
+                canvas.drawPath(mShapePath, mPaint);
+                canvas.restoreToCount(count);
+            } else {
+                canvas.drawCircle(radius + offsetX, radius + offsetY, radius, mPaint);
+            }
             mPaint.setXfermode(null);
         }
 
@@ -299,15 +327,34 @@ public class PreviewBackground {
     }
 
     private void drawCircle(Canvas canvas,float deltaRadius) {
+        mPath.reset();
         float radius = getScaledRadius();
-        canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
-                radius - deltaRadius, mPaint);
+        if (mShapePath != null) {
+            int count = canvas.save();
+            float scale = (radius * 2) / 100.0f;
+
+            canvas.scale(scale, scale);
+            canvas.translate(getOffsetX() / scale, getOffsetY() / scale);
+            canvas.drawPath(mShapePath, mPaint);
+            canvas.restoreToCount(count);
+        } else {
+            canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
+                    radius - deltaRadius, mPaint);
+        }
     }
 
     public Path getClipPath() {
         mPath.reset();
         float r = getScaledRadius();
-        mPath.addCircle(r + getOffsetX(), r + getOffsetY(), r, Path.Direction.CW);
+        if (mShapePath != null) {
+            Matrix m = new Matrix();
+            float scale = (r * 2) / 100.0f;
+            m.setScale(scale, scale);
+            m.postTranslate(getOffsetX(), getOffsetY());
+            mShapePath.transform(m, mPath);
+        } else {
+            mPath.addCircle(r + getOffsetX(), r + getOffsetY(), r, Path.Direction.CW);
+        }
         return mPath;
     }
 
