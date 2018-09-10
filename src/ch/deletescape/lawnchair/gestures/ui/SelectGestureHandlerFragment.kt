@@ -40,6 +40,7 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
 
     private val key by lazy { arguments!!.getString("key") }
     private val value by lazy { arguments!!.getString("value") }
+    private val isSwipeUp by lazy { arguments!!.getBoolean("isSwipeUp") }
     private val currentClass by lazy { GestureController.getClassName(value) }
 
     private var selectedHandler: GestureHandler? = null
@@ -86,7 +87,7 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
 
     inner class HandlerListAdapter(private val context: Context) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
 
-        val handlers = GestureController.getGestureHandlers(context)
+        val handlers = GestureController.getGestureHandlers(context, isSwipeUp)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
             return Holder(LayoutInflater.from(context).inflate(R.layout.gesture_item, parent, false))
@@ -115,6 +116,7 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
             arguments = Bundle(2).apply {
                 putString("key", preference.key)
                 putString("value", preference.value)
+                putBoolean("isSwipeUp", preference.isSwipeUp)
             }
         }
     }

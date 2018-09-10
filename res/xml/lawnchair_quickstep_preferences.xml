@@ -8,15 +8,42 @@
         android:persistent="true"
         android:title="@string/swipe_up_to_switch_apps_title" />
 
-
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
-      android:key="pref_recents_radius"
-      android:title="@string/pref_recents_radius"
-      app:minValue="0"
-      app:maxValue="60"
-      app:steps="60"
-      app:summaryFormat="%.0fdp"
-      app:summaryMultiplier="1"
-      app:defaultSeekbarValue="@integer/task_corner_radius"
-      android:persistent="true"/>
+        android:key="pref_recents_radius"
+        android:title="@string/pref_recents_radius"
+        app:minValue="0"
+        app:maxValue="60"
+        app:steps="60"
+        app:summaryFormat="%.0fdp"
+        app:summaryMultiplier="1"
+        app:defaultSeekbarValue="@integer/task_corner_radius"
+        android:persistent="true"/>
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:title="@string/pref_category_nav_swipe_up_gestures">
+
+        <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_switch_apps_class"
+            android:key="pref_gesture_nav_swipe_up_left"
+            android:persistent="true"
+            android:title="@string/gesture_nav_swipe_up_left"
+            android:dependency="pref_swipe_up_to_switch_apps_enabled"
+            app:gestureClass="ch.deletescape.lawnchair.gestures.NavSwipeUpGesture"/>
+
+        <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_switch_apps_class"
+            android:key="pref_gesture_nav_swipe_up_center"
+            android:persistent="true"
+            android:title="@string/gesture_nav_swipe_up_center"
+            android:dependency="pref_swipe_up_to_switch_apps_enabled"
+            app:gestureClass="ch.deletescape.lawnchair.gestures.NavSwipeUpGesture"/>
+
+        <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_switch_apps_class"
+            android:key="pref_gesture_nav_swipe_up_right"
+            android:persistent="true"
+            android:title="@string/gesture_nav_swipe_up_right"
+            android:dependency="pref_swipe_up_to_switch_apps_enabled"
+            app:gestureClass="ch.deletescape.lawnchair.gestures.NavSwipeUpGesture"/>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

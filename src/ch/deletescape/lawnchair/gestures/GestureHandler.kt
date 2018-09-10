@@ -43,6 +43,8 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     }
 
+    open fun isAvailableForSwipeUp(isSwipeUp: Boolean) = isAvailable
+
     override fun toString(): String {
         return JSONObject().apply {
             put("class", this@GestureHandler::class.java.name)

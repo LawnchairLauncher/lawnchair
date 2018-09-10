@@ -41,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import ch.deletescape.lawnchair.gestures.NavigationBarGestureConsumer;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
@@ -222,6 +223,12 @@ public class TouchInteractionService extends Service {
     }
 
     private TouchConsumer getCurrentTouchConsumer(
+            @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
+        TouchConsumer consumer = getCurrentTouchConsumerImpl(downHitTarget, forceToLauncher, tracker);
+        return new NavigationBarGestureConsumer(this, consumer);
+    }
+
+    private TouchConsumer getCurrentTouchConsumerImpl(
             @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
 

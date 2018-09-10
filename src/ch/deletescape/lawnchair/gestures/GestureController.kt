@@ -44,6 +44,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     val verticalSwipeGesture = VerticalSwipeGesture(this)
     val pressRecentsGesture = PressRecentsGesture(this)
     val pressRecentsGlobalGesture = PressRecentsGlobalGesture(this)
+    val navSwipeUpGesture = NavSwipeUpGesture(this)
 
     var touchDownPoint = PointF()
 
@@ -118,7 +119,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
             return config?.getString("class") ?: jsonString
         }
 
-        fun getGestureHandlers(context: Context) = listOf(
+        fun getGestureHandlers(context: Context, isSwipeUp: Boolean) = listOf(
+                SwitchAppsGestureHandler(context, null),
                 BlankGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 SleepGestureHandlerRoot(context, null),
@@ -135,6 +137,6 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null),
                 LaunchMostRecentTaskGestureHandler(context, null)
-        ).filter { it.isAvailable }
+        ).filter { it.isAvailableForSwipeUp(isSwipeUp) }
     }
 }
