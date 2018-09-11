@@ -45,6 +45,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.TransactionTooLargeException;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -70,6 +71,8 @@ import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 
+import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -865,9 +868,19 @@ public final class Utilities {
         IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
         LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
         String packageName = task.key.getComponent().getPackageName();
-        List<LauncherActivityInfo> al = lac.getActivityList(packageName, Process.myUserHandle());
+        UserHandle user = UserHandle.of(task.key.userId);
+        List<LauncherActivityInfo> al = lac.getActivityList(packageName, user);
         if (!al.isEmpty()) {
-            return ic.getFullResIcon(al.get(0));
+            Drawable fullResIcon = ic.getFullResIcon(al.get(0));
+            if (user == Process.myUserHandle()) {
+                return fullResIcon;
+            } else {
+                LauncherIcons li = LauncherIcons.obtain(context);
+                BitmapInfo bitmapInfo = li.createBadgedIconBitmap(fullResIcon, user, 24);
+                li.recycle();
+
+                return new BitmapDrawable(context.getResources(), bitmapInfo.icon);
+            }
         } else {
             return task.icon;
         }
