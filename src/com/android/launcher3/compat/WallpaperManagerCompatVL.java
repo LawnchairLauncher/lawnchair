@@ -148,7 +148,12 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
     private static final int getWallpaperId(Context context) {
         if (!Utilities.ATLEAST_NOUGAT) {
-            Drawable wallpaper = WallpaperManager.getInstance(context).getDrawable();
+            Drawable wallpaper = null;
+            try {
+                wallpaper = WallpaperManager.getInstance(context).getDrawable();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Failed to create a wallpaper ID", e);
+            }
             if (wallpaper != null) {
                 Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
                 Canvas cv = new Canvas(bm);
@@ -261,12 +266,16 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                         Rect region = new Rect(0, 0, decoder.getWidth(), decoder.getHeight());
                         bitmap = decoder.decodeRegion(region, options);
                         decoder.recycle();
-                    } catch (IOException | NullPointerException e) {
+                    } catch (IOException | RuntimeException e) {
                         Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
                     }
                 }
                 if (bitmap == null) {
-                    drawable = wm.getDrawable();
+                    try {
+                        drawable = wm.getDrawable();
+                    } catch (RuntimeException e) {
+                        Log.e(TAG, "Failed to extract the wallpaper drawable", e);
+                    }
                 }
             }
 
