@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.assertNotEquals;
-
 import android.graphics.Point;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
@@ -73,7 +71,7 @@ public final class Overview extends LauncherInstrumentation.VisibleContainer {
         verifyActiveContainer();
         final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
                 LauncherInstrumentation.getLauncherObjectSelector("snapshot"));
-        assertNotEquals("Unable to find a task", 0, taskViews.size());
+        LauncherInstrumentation.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
         // taskViews contains up to 3 task views: the 'main' (having the widest visible
         // part) one in the center, and parts of its right and left siblings. Find the

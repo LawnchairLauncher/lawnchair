@@ -381,24 +381,16 @@ public class LoaderTask implements Runnable {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {
-                                    if (c.hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
-                                        // We allow auto install apps to have their intent
-                                        // updated after an install.
-                                        intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
-                                        if (intent != null) {
-                                            c.restoreFlag = 0;
-                                            c.updater().put(
-                                                    LauncherSettings.Favorites.INTENT,
-                                                    intent.toUri(0)).commit();
-                                            cn = intent.getComponent();
-                                        } else {
-                                            c.markDeleted("Unable to find a launch target");
-                                            continue;
-                                        }
+                                    // Gracefully try to find a fallback activity.
+                                    intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
+                                    if (intent != null) {
+                                        c.restoreFlag = 0;
+                                        c.updater().put(
+                                                LauncherSettings.Favorites.INTENT,
+                                                intent.toUri(0)).commit();
+                                        cn = intent.getComponent();
                                     } else {
-                                        // The app is installed but the component is no
-                                        // longer available.
-                                        c.markDeleted("Invalid component removed: " + cn);
+                                        c.markDeleted("Unable to find a launch target");
                                         continue;
                                     }
                                 }
