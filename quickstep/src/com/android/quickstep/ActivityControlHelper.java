@@ -161,9 +161,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                     .getQuickScrubController();
             controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this);
 
-            // For the duration of the gesture, lock the screen orientation to ensure that we do not
-            // rotate mid-quickscrub
-            activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+            if (!activityVisible) {
+                // For the duration of the gesture, lock the screen orientation to ensure that we
+                // do not rotate mid-quickscrub
+                activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+            }
         }
 
         @Override
