@@ -18,10 +18,6 @@ package com.android.launcher3.tapl;
 
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
@@ -39,6 +35,8 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.TestProtocol;
 import com.android.quickstep.SwipeUpSetting;
+
+import org.junit.Assert;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
@@ -119,6 +117,30 @@ public final class LauncherInstrumentation {
 
     public boolean isSwipeUpEnabled() {
         return mSwipeUpEnabledOverride != null ? mSwipeUpEnabledOverride : mSwipeUpEnabled;
+    }
+
+    private static void fail(String message) {
+        Assert.fail("http://go/tapl : " + message);
+    }
+
+    static void assertTrue(String message, boolean condition) {
+        if (!condition) {
+            fail(message);
+        }
+    }
+
+    static void assertNotNull(String message, Object object) {
+        assertTrue(message, object != null);
+    }
+
+    static private void failEquals(String message, Object actual) {
+        fail(message + ". " + "Actual: " + actual);
+    }
+
+    static void assertNotEquals(String message, int unexpected, int actual) {
+        if (unexpected == actual) {
+            failEquals(message, actual);
+        }
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
