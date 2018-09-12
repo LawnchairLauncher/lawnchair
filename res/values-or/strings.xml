@@ -114,8 +114,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"ଆଇଟମ୍‌କୁ ଏଠାକୁ ଘୁଞ୍ଚାନ୍ତୁ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ହୋମ୍‌ ସ୍କ୍ରୀନରେ ଆଇଟମ୍‌ ଯୋଡ଼ାଗଲା"</string>
     <string name="item_removed" msgid="851119963877842327">"ଆଇଟମ୍‌ ବାହାର କରାଗଲା"</string>
-    <!-- no translation found for undo (4151576204245173321) -->
-    <skip />
+    <string name="undo" msgid="4151576204245173321">"ପୂର୍ବବତ୍‍"</string>
     <string name="action_move" msgid="4339390619886385032">"ଆଇଟମ୍‌ ଘୁଞ୍ଚାନ୍ତୁ"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"ଧାଡ଼ି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ନିଅନ୍ତୁ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ସ୍ଥିତିକୁ ନିଅନ୍ତୁ"</string>

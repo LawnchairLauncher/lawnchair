@@ -113,8 +113,7 @@ public class LayoutUtils {
     }
 
     public static int getShelfTrackingDistance(DeviceProfile dp) {
-        int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        // Track slightly below the top of the shelf (between top and content).
-        return shelfHeight - dp.edgeMarginPx * 2;
+        // Start from a third of bottom inset to provide some shelf overlap.
+        return dp.hotseatBarSizePx + dp.getInsets().bottom / 3 - dp.edgeMarginPx * 2;
     }
 }

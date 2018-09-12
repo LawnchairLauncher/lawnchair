@@ -17,20 +17,23 @@ package com.android.quickstep;
 
 import android.util.SparseArray;
 
+import com.android.launcher3.Utilities.Consumer;
+
 /**
  * Utility class to help manage multiple callbacks based on different states.
  */
 public class MultiStateCallback {
 
     private final SparseArray<Runnable> mCallbacks = new SparseArray<>();
+    private final SparseArray<Consumer<Boolean>> mStateChangeHandlers = new SparseArray<>();
 
     private int mState = 0;
 
     /**
      * Adds the provided state flags to the global state and executes any callbacks as a result.
-     * @param stateFlag
      */
     public void setState(int stateFlag) {
+        int oldState = mState;
         mState = mState | stateFlag;
 
         int count = mCallbacks.size();
@@ -46,6 +49,30 @@ public class MultiStateCallback {
                 }
             }
         }
+        notifyStateChangeHandlers(oldState);
+    }
+
+    /**
+     * Adds the provided state flags to the global state and executes any change handlers
+     * as a result.
+     */
+    public void clearState(int stateFlag) {
+        int oldState = mState;
+        mState = mState & ~stateFlag;
+        notifyStateChangeHandlers(oldState);
+    }
+
+    private void notifyStateChangeHandlers(int oldState) {
+        int count = mStateChangeHandlers.size();
+        for (int i = 0; i < count; i++) {
+            int state = mStateChangeHandlers.keyAt(i);
+            boolean wasOn = (state & oldState) == state;
+            boolean isOn = (state & mState) == state;
+
+            if (wasOn != isOn) {
+                mStateChangeHandlers.valueAt(i).accept(isOn);
+            }
+        }
     }
 
     /**
@@ -54,6 +81,13 @@ public class MultiStateCallback {
      */
     public void addCallback(int stateMask, Runnable callback) {
         mCallbacks.put(stateMask, callback);
+    }
+
+    /**
+     * Sets the handler to be called when the provided states are enabled or disabled.
+     */
+    public void addChangeHandler(int stateMask, Consumer<Boolean> handler) {
+        mStateChangeHandlers.put(stateMask, handler);
     }
 
     public int getState() {

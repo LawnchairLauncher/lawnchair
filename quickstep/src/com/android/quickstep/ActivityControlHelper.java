@@ -16,8 +16,10 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
+
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -37,7 +39,6 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -54,7 +55,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -100,18 +100,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
-    default int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect) {
-        return getSwipeUpDestinationAndLength(dp, context, interactionType, outRect, null);
-    }
-
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect, PointF touchTown);
+            @InteractionType int interactionType, TransformedRect outRect);
 
     void onSwipeUpComplete(T activity);
 
     AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,
-            Consumer<AnimatorPlaybackController> callback);
+            boolean animateActivity, Consumer<AnimatorPlaybackController> callback);
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
@@ -166,9 +161,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                     .getQuickScrubController();
             controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this);
 
-            // For the duration of the gesture, lock the screen orientation to ensure that we do not
-            // rotate mid-quickscrub
-            activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+            if (!activityVisible) {
+                // For the duration of the gesture, lock the screen orientation to ensure that we
+                // do not rotate mid-quickscrub
+                activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
+            }
         }
 
         @Override
@@ -190,7 +187,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
+                @InteractionType int interactionType, TransformedRect outRect) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
             if (interactionType == INTERACTION_QUICK_SCRUB) {
                 outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context);
@@ -200,12 +197,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + hotseatInset;
             } else {
-                int swipeLength = LayoutUtils.getShelfTrackingDistance(dp);
-                if (touchDown != null) {
-                    // We are already partway through based on where we touched the nav bar.
-                    swipeLength -= dp.heightPx - touchDown.y;
-                }
-                return swipeLength;
+                return LayoutUtils.getShelfTrackingDistance(dp);
             }
         }
 
@@ -224,7 +216,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
-                Consumer<AnimatorPlaybackController> callback) {
+                boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
             final LauncherState startState = activity.getStateManager().getState();
 
             LauncherState resetState = startState;
@@ -233,24 +225,28 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
             activity.getStateManager().setRestState(resetState);
 
+            final LauncherState fromState;
             if (!activityVisible) {
                 // Since the launcher is not visible, we can safely reset the scroll position.
                 // This ensures then the next swipe up to all-apps starts from scroll 0.
                 activity.getAppsView().reset(false /* animate */);
-                activity.getStateManager().goToState(OVERVIEW, false);
+                fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
+                activity.getStateManager().goToState(fromState, false);
 
                 // Optimization, hide the all apps view to prevent layout while initializing
                 activity.getAppsView().getContentView().setVisibility(View.GONE);
 
                 AccessibilityManagerCompat.sendEventToTest(
                         activity, TestProtocol.SWITCHED_TO_STATE_MESSAGE);
+            } else {
+                fromState = startState;
             }
 
             return new AnimationFactory() {
                 @Override
                 public void createActivityController(long transitionLength,
                         @InteractionType int interactionType) {
-                    createActivityControllerInternal(activity, activityVisible, startState,
+                    createActivityControllerInternal(activity, activityVisible, fromState,
                             transitionLength, interactionType, callback);
                 }
 
@@ -262,7 +258,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
-                LauncherState startState, long transitionLength,
+                LauncherState fromState, long transitionLength,
                 @InteractionType int interactionType,
                 Consumer<AnimatorPlaybackController> callback) {
             LauncherState endState = interactionType == INTERACTION_QUICK_SCRUB
@@ -271,31 +267,21 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 DeviceProfile dp = activity.getDeviceProfile();
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
                 callback.accept(activity.getStateManager()
-                        .createAnimationToNewWorkspace(startState, endState, accuracy));
+                        .createAnimationToNewWorkspace(fromState, endState, accuracy));
+                return;
+            }
+            if (fromState == endState) {
                 return;
             }
 
             AnimatorSet anim = new AnimatorSet();
-
             if (!activity.getDeviceProfile().isVerticalBarLayout()) {
                 AllAppsTransitionController controller = activity.getAllAppsController();
-                float scrollRange = Math.max(controller.getShiftRange(), 1);
-                float progressDelta = (transitionLength / scrollRange);
-
-                float endProgress = endState.getVerticalProgress(activity);
-                float startProgress = endProgress + progressDelta;
-                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(
-                        controller, ALL_APPS_PROGRESS, startProgress, endProgress);
+                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
+                        fromState.getVerticalProgress(activity),
+                        endState.getVerticalProgress(activity));
                 shiftAnim.setInterpolator(LINEAR);
                 anim.play(shiftAnim);
-
-                // Since we are changing the start position of the UI, reapply the state, at the end
-                anim.addListener(new AnimationSuccessListener() {
-                    @Override
-                    public void onAnimationSuccess(Animator animator) {
-                        activity.getStateManager().reapplyState();
-                    }
-                });
             }
 
             if (interactionType == INTERACTION_NORMAL) {
@@ -304,7 +290,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             anim.setDuration(transitionLength * 2);
             activity.getStateManager().setCurrentAnimation(anim);
-            callback.accept(AnimatorPlaybackController.wrap(anim, transitionLength * 2));
+            AnimatorPlaybackController controller =
+                    AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+
+            // Since we are changing the start position of the UI, reapply the state, at the end
+            controller.setEndAction(() ->
+                activity.getStateManager().goToState(
+                        controller.getProgressFraction() > 0.5 ? endState : fromState, false));
+            callback.accept(controller);
         }
 
         /**
@@ -464,7 +457,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-                @InteractionType int interactionType, TransformedRect outRect, PointF touchDown) {
+                @InteractionType int interactionType, TransformedRect outRect) {
             LayoutUtils.calculateFallbackTaskSize(context, dp, outRect.rect);
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();
@@ -482,7 +475,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
-                Consumer<AnimatorPlaybackController> callback) {
+                boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
             if (activityVisible) {
                 return (transitionLength, interactionType) -> { };
             }

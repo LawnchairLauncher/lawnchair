@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -37,6 +38,8 @@ import com.android.quickstep.views.TaskView;
  * Definition for overview state
  */
 public class OverviewState extends LauncherState {
+
+    protected static final Rect sTempRect = new Rect();
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;

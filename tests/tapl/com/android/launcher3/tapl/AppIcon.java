@@ -16,13 +16,12 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.assertTrue;
+import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-import android.widget.TextView;
 
 /**
  * App icon, whether in all apps or in workspace/
@@ -44,7 +43,8 @@ public final class AppIcon {
      * Clicks the icon to launch its app.
      */
     public Background launch() {
-        assertTrue("Launching an app didn't open a new window: " + mIcon.getText(),
+        LauncherInstrumentation.assertTrue(
+                "Launching an app didn't open a new window: " + mIcon.getText(),
                 mIcon.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);
     }

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.assertTrue;
-
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -56,7 +54,7 @@ public final class OverviewTask {
      */
     public Background open() {
         verifyActiveContainer();
-        assertTrue("Launching task didn't open a new window: " +
+        LauncherInstrumentation.assertTrue("Launching task didn't open a new window: " +
                         mTask.getParent().getContentDescription(),
                 mTask.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);

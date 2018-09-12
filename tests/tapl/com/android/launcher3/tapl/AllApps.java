@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.assertTrue;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -62,7 +60,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             int attempts = 0;
             while (!allAppsContainer.hasObject(appIconSelector) &&
                     allAppsContainer.scroll(Direction.DOWN, 0.8f)) {
-                assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
+                LauncherInstrumentation.assertTrue(
+                        "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
                 verifyActiveContainer();
             }
@@ -85,9 +84,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         for (int scroll = getScroll(allAppsContainer);
                 scroll != 0;
                 scroll = getScroll(allAppsContainer)) {
-            assertTrue("Negative scroll position", scroll > 0);
+            LauncherInstrumentation.assertTrue("Negative scroll position", scroll > 0);
 
-            assertTrue("Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
+            LauncherInstrumentation.assertTrue(
+                    "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                     ++attempts <= MAX_SCROLL_ATTEMPTS);
 
             allAppsContainer.scroll(Direction.UP, 1);

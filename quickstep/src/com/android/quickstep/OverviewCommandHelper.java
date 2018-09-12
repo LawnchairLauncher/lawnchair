@@ -269,7 +269,7 @@ public class OverviewCommandHelper {
             activity.<RecentsView>getOverviewPanel().setCurrentTask(mRunningTaskId);
             AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
             AnimationFactory factory = mHelper.prepareRecentsUI(activity, wasVisible,
-                    (controller) -> {
+                    false /* animate activity */, (controller) -> {
                         controller.dispatchOnStart();
                         ValueAnimator anim = controller.getAnimationPlayer()
                                 .setDuration(RECENTS_LAUNCH_DURATION);
@@ -277,9 +277,7 @@ public class OverviewCommandHelper {
                         anim.start();
                 });
             factory.onRemoteAnimationReceived(null);
-            if (wasVisible) {
-                factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
-            }
+            factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
             mRecentsView.setRunningTaskIconScaledDown(true);
