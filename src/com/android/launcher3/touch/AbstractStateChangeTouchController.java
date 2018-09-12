@@ -256,7 +256,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
         float progress = deltaProgress + mStartProgress;
         updateProgress(progress);

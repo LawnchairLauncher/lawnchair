@@ -128,7 +128,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     public void onDragStart(boolean start) { }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         float range = mContent.getHeight();
         displacement = Utilities.boundToRange(displacement, 0, range);
         setTranslationShift(displacement / range);
