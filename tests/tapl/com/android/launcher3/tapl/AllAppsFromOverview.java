@@ -17,9 +17,9 @@
 package com.android.launcher3.tapl;
 
 import android.graphics.Point;
-import androidx.test.uiautomator.UiObject2;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.UiObject2;
 
 /**
  * Operations on AllApps opened from Overview.
@@ -44,6 +44,7 @@ public final class AllAppsFromOverview extends AllApps {
                 allAppsContainer, "search_container_all_apps");
         final Point start = qsb.getVisibleCenter();
         final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.6);
+        LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
         mLauncher.swipe(start.x, start.y, start.x, endY);
 
         return new Overview(mLauncher);

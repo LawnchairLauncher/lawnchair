@@ -17,13 +17,13 @@
 package com.android.launcher3.tapl;
 
 import android.graphics.Point;
+
+import androidx.annotation.NonNull;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * Overview pane.
@@ -46,6 +46,7 @@ public final class Overview extends LauncherInstrumentation.VisibleContainer {
      */
     public void flingForward() {
         final UiObject2 overview = verifyActiveContainer();
+        LauncherInstrumentation.log("Overview.flingForward before fling");
         overview.fling(Direction.LEFT, DEFAULT_FLING_SPEED);
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -56,6 +57,7 @@ public final class Overview extends LauncherInstrumentation.VisibleContainer {
      */
     public void flingBackward() {
         final UiObject2 overview = verifyActiveContainer();
+        LauncherInstrumentation.log("Overview.flingBackward before fling");
         overview.fling(Direction.RIGHT, DEFAULT_FLING_SPEED);
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -95,6 +97,7 @@ public final class Overview extends LauncherInstrumentation.VisibleContainer {
         // Swipe from navbar to the top.
         final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
         final Point start = navBar.getVisibleCenter();
+        LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
         mLauncher.swipe(start.x, start.y, start.x, 0);
 
         return new AllAppsFromOverview(mLauncher);

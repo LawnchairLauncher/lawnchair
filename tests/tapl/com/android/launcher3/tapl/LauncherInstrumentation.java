@@ -24,6 +24,7 @@ import android.app.UiAutomation;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
@@ -46,6 +47,8 @@ import java.util.concurrent.TimeoutException;
  * produces all other objects.
  */
 public final class LauncherInstrumentation {
+
+    private static final String TAG = "Tapl";
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -119,6 +122,10 @@ public final class LauncherInstrumentation {
         return mSwipeUpEnabledOverride != null ? mSwipeUpEnabledOverride : mSwipeUpEnabled;
     }
 
+    static void log(String message) {
+        Log.d(TAG, message);
+    }
+
     private static void fail(String message) {
         Assert.fail("http://go/tapl : " + message);
     }
@@ -144,6 +151,7 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
+        log("verifyContainerType: " + containerType);
         switch (containerType) {
             case WORKSPACE: {
                 waitUntilGone(APPS_RES_ID);
