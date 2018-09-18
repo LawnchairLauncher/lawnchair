@@ -18,8 +18,10 @@ package com.android.quickstep;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -27,9 +29,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import android.view.View.OnClickListener;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -263,6 +267,32 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 return mSystemShortcut.createOnClickListener(activity, itemInfo);
             }
             return null;
+        }
+    }
+
+    public static class ForceStop extends TaskSystemShortcut {
+
+        public ForceStop() {
+            super(R.drawable.ic_remove_no_shadow, R.string.recent_task_option_force_stop);
+        }
+
+        @Override
+        protected OnClickListener getOnClickListenerForTask(BaseDraggingActivity activity,
+                Task task, ItemInfo dummyInfo) {
+            if (ContextCompat.checkSelfPermission(activity,
+                    "android.permission.FORCE_STOP_PACKAGES") == PackageManager.PERMISSION_GRANTED) {
+                return v -> {
+                    try {
+                        ActivityManager.getService()
+                                .forceStopPackage(task.key.getPackageName(), task.key.userId);
+                        AbstractFloatingView.closeAllOpenViews(activity);
+                    } catch (RemoteException e) {
+                        
+                    }
+                };
+            } else {
+                return null;
+            }
         }
     }
 }

@@ -22,4 +22,5 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">App search</string>
+    <string name="recent_task_option_force_stop">Force stop</string>
 </resources>
