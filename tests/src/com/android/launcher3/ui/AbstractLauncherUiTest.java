@@ -56,6 +56,7 @@ import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -94,6 +95,12 @@ public abstract class AbstractLauncherUiTest {
         mLauncher = new LauncherInstrumentation(getInstrumentation());
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 0");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 1");
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
