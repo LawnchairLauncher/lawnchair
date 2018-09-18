@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 
 public class LauncherAnimUtils {
     /**
@@ -64,4 +65,30 @@ public class LauncherAnimUtils {
     public static int blockedFlingDurationFactor(float velocity) {
         return (int) Utilities.boundToRange(Math.abs(velocity) / 2, 2f, 6f);
     }
+
+    public static final Property<LayoutParams, Integer> LAYOUT_WIDTH =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "width") {
+                @Override
+                public Integer get(LayoutParams lp) {
+                    return lp.width;
+                }
+
+                @Override
+                public void set(LayoutParams lp, Integer width) {
+                    lp.width = width;
+                }
+            };
+
+    public static final Property<LayoutParams, Integer> LAYOUT_HEIGHT =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "height") {
+                @Override
+                public Integer get(LayoutParams lp) {
+                    return lp.height;
+                }
+
+                @Override
+                public void set(LayoutParams lp, Integer height) {
+                    lp.height = height;
+                }
+            };
 }
