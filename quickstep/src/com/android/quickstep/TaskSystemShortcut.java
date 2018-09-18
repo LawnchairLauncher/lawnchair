@@ -19,7 +19,9 @@ package com.android.quickstep;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -36,10 +38,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.InstantAppResolver;
@@ -279,15 +283,35 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         @Override
         protected OnClickListener getOnClickListenerForTask(BaseDraggingActivity activity,
                 Task task, ItemInfo dummyInfo) {
-            if (ContextCompat.checkSelfPermission(activity,
-                    "android.permission.FORCE_STOP_PACKAGES") == PackageManager.PERMISSION_GRANTED) {
+            if (Utilities.hasPermission(activity, "android.permission.FORCE_STOP_PACKAGES")) {
+                PackageManager pm = activity.getPackageManager();
+                DevicePolicyManager dpm = (DevicePolicyManager) activity
+                        .getSystemService(Context.DEVICE_POLICY_SERVICE);
+                String packageName = task.key.getPackageName();
+                int userId = task.key.userId;
+                // TODO: This workaround for dynamic labels hurts and I feel like it might actually
+                // be smarter to make a seperate shortcut for when the task is Lawnchair
+                labelResId = R.string.recent_task_option_force_stop;
+                iconResId = R.drawable.ic_remove_no_shadow;
+                // If this is Lawnchair itself we simply ignore device admin state
+                if (BuildConfig.APPLICATION_ID.equals(packageName)) {
+                    labelResId = R.string.restart_lawnchair_pref_title;
+                    iconResId = R.drawable.ic_restart;
+                } else if (dpm.packageHasActiveAdmins(packageName)) {
+                    return null;
+                } else if (
+                        Utilities.hasPermission(activity, "android.permission.MANAGE_DEVICE_ADMINS")
+                                && pm.isPackageStateProtected(packageName, userId)) {
+                    return null;
+                } else if (InstantAppResolver.newInstance(activity)
+                        .isInstantApp(activity, packageName)) {
+                    return null;
+                }
                 return v -> {
                     try {
-                        ActivityManager.getService()
-                                .forceStopPackage(task.key.getPackageName(), task.key.userId);
+                        ActivityManager.getService().forceStopPackage(packageName, userId);
                         AbstractFloatingView.closeAllOpenViews(activity);
-                    } catch (RemoteException e) {
-                        
+                    } catch (RemoteException ignored) {
                     }
                 };
             } else {

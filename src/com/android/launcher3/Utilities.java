@@ -738,7 +738,12 @@ public final class Utilities {
     }
 
     public static boolean hasStoragePermission(Context context) {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return hasPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    public static boolean hasPermission(Context context, String permission) {
+        return ContextCompat.checkSelfPermission(context, permission)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestStoragePermission(Activity activity) {

@@ -29,8 +29,9 @@ import java.util.List;
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  */
 public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo {
-    public final int iconResId;
-    public final int labelResId;
+
+    public int iconResId;
+    public int labelResId;
 
     public SystemShortcut(int iconResId, int labelResId) {
         this.iconResId = iconResId;

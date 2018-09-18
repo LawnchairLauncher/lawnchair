@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.CREATE_USERS"/>
     <uses-permission android:name="android.permission.MANAGE_USERS"/>
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
+    <uses-permission android:name="android.permission.MANAGE_DEVICE_ADMINS"/>
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
