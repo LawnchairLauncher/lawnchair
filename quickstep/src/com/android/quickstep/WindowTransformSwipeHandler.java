@@ -381,7 +381,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             return;
         }
 
-        ((NexusLauncherActivity) mActivity).getGoogleNow().hideOverlay(false);
+        if (mActivity instanceof NexusLauncherActivity) {
+            ((NexusLauncherActivity) mActivity).getGoogleNow().hideOverlay(false);
+        }
 
         mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
                 mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
