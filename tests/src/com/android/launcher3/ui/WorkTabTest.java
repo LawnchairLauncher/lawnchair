@@ -54,6 +54,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     @After
     public void removeWorkProfile() throws Exception {
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+        super.tearDown();
     }
 
     @Test

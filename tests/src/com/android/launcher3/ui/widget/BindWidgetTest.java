@@ -103,6 +103,8 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         if (mSessionId > -1) {
             mTargetContext.getPackageManager().getPackageInstaller().abandonSession(mSessionId);
         }
+
+        super.tearDown();
     }
 
     @Test
