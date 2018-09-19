@@ -181,6 +181,8 @@ public class ClipAnimationHelper {
                 }
 
                 alpha = mTaskAlphaCallback.apply(app, alpha);
+            } else {
+                crop = null;
             }
 
             params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop,
