@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -100,7 +101,9 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        if (!mLauncher.isInState(LauncherState.NORMAL)) {
+        if (!mLauncher.isInState(LauncherState.NORMAL) ||
+                AbstractFloatingView.getTopOpenViewWithType(mLauncher,
+                        AbstractFloatingView.TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW) != null) {
             return false;
         } else {
             // For NORMAL state, only listen if the event originated above the navbar height
