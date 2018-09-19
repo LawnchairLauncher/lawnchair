@@ -225,7 +225,10 @@ public final class LauncherInstrumentation {
         // otherwise waitForIdle may return immediately in case when there was a big enough pause in
         // accessibility events prior to pressing Home.
         executeAndWaitForEvent(
-                () -> getSystemUiObject("home").click(),
+                () -> {
+                    log("LauncherInstrumentation.pressHome before clicking");
+                    getSystemUiObject("home").click();
+                },
                 event -> true,
                 "Pressing Home didn't produce any events");
         mDevice.waitForIdle();
