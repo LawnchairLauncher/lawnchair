@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
-
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
@@ -58,6 +57,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -192,7 +192,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 @InteractionType int interactionType, TransformedRect outRect) {
             LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
             if (interactionType == INTERACTION_QUICK_SCRUB) {
-                outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context);
+                outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context,
+                        FeatureFlags.QUICK_SWITCH.get());
             }
             if (dp.isVerticalBarLayout()) {
                 Rect targetInsets = dp.getInsets();

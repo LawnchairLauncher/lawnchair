@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
+import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -59,6 +60,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -979,12 +981,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         setStateOnUiThread(STATE_QUICK_SCRUB_START | STATE_GESTURE_COMPLETED);
 
         // Start the window animation without waiting for launcher.
-        animateToProgress(mCurrentShift.value, 1f, QUICK_SCRUB_FROM_APP_START_DURATION, LINEAR,
-                true /* goingToHome */);
+        long duration = FeatureFlags.QUICK_SWITCH.get()
+                ? QUICK_SWITCH_FROM_APP_START_DURATION
+                : QUICK_SCRUB_FROM_APP_START_DURATION;
+        animateToProgress(mCurrentShift.value, 1f, duration, LINEAR, true /* goingToHome */);
     }
 
     private void onQuickScrubStartUi() {
-        if (!mQuickScrubController.prepareQuickScrub(TAG)) {
+        if (!mQuickScrubController.prepareQuickScrub(TAG, FeatureFlags.QUICK_SWITCH.get())) {
             mQuickScrubBlocked = true;
             setStateOnUiThread(STATE_RESUME_LAST_TASK | STATE_HANDLER_INVALIDATED);
             return;
@@ -1008,6 +1012,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mQuickScrubController.onFinishedTransitionToQuickScrub();
 
         mRecentsView.animateUpRunningTaskIconScale();
+        if (mQuickScrubController.isQuickSwitch()) {
+            TaskView runningTask = mRecentsView.getRunningTaskView();
+            if (runningTask != null) {
+                runningTask.setTranslationY(-mActivity.getResources().getDimension(
+                        R.dimen.task_thumbnail_half_top_margin) * 1f / mRecentsView.getScaleX());
+            }
+        }
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
     }
 
