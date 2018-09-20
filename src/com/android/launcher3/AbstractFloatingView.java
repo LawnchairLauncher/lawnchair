@@ -91,6 +91,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_ACCESSIBLE = TYPE_ALL
             & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_QUICKSTEP_PREVIEW;
 
+    // These view all have particular operation associated with swipe down interaction.
+    public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
+            TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
+            TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU ;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {
