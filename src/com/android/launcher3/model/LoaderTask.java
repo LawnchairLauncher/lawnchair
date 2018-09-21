@@ -43,7 +43,8 @@ import android.util.MutableInt;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
-import com.android.launcher3.IconCache;
+import com.android.launcher3.icons.IconCacheUpdateHandler;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
@@ -182,7 +183,7 @@ public class LoaderTask implements Runnable {
 
             // second step
             TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
-            loadAllApps();
+            List<List<LauncherActivityInfo>> activityListPerUser = loadAllApps();
 
             TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
@@ -190,7 +191,9 @@ public class LoaderTask implements Runnable {
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
-            updateIconCache();
+            IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
+            setIgnorePackages(updateHandler);
+            updateIconCacheForApps(updateHandler, activityListPerUser);
 
             // Take a break
             TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
@@ -774,7 +777,7 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    private void updateIconCache() {
+    private void setIgnorePackages(IconCacheUpdateHandler updateHandler) {
         // Ignore packages which have a promise icon.
         HashSet<String> packagesToIgnore = new HashSet<>();
         synchronized (mBgDataModel) {
@@ -792,12 +795,20 @@ public class LoaderTask implements Runnable {
                 }
             }
         }
-        mIconCache.updateDbIcons(packagesToIgnore);
+        updateHandler.setPackagesToIgnore(Process.myUserHandle(), packagesToIgnore);
     }
 
-    private void loadAllApps() {
-        final List<UserHandle> profiles = mUserManager.getUserProfiles();
+    private void updateIconCacheForApps(IconCacheUpdateHandler updateHandler,
+            List<List<LauncherActivityInfo>> activityListPerUser) {
+        int userCount = activityListPerUser.size();
+        for (int i = 0; i < userCount; i++) {
+            updateHandler.updateIcons(activityListPerUser.get(i));
+        }
+    }
 
+    private List<List<LauncherActivityInfo>> loadAllApps() {
+        final List<UserHandle> profiles = mUserManager.getUserProfiles();
+        List<List<LauncherActivityInfo>> activityListPerUser = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
         for (UserHandle user : profiles) {
@@ -806,7 +817,7 @@ public class LoaderTask implements Runnable {
             // Fail if we don't have any apps
             // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
-                return;
+                return activityListPerUser;
             }
             boolean quietMode = mUserManager.isQuietModeEnabled(user);
             // Create the ApplicationInfos
@@ -815,6 +826,7 @@ public class LoaderTask implements Runnable {
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
             }
+            activityListPerUser.add(apps);
         }
 
         if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
@@ -827,6 +839,7 @@ public class LoaderTask implements Runnable {
         }
 
         mBgAllAppsList.added = new ArrayList<>();
+        return activityListPerUser;
     }
 
     private void loadDeepShortcuts() {

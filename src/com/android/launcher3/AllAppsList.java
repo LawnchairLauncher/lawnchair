@@ -26,6 +26,7 @@ import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 
