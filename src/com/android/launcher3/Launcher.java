@@ -867,17 +867,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public boolean hasSettings() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasSettings();
-        } else {
-            // On O and above we there is always some setting present settings (add icon to
-            // home screen or icon badging). On earlier APIs we will have the allow rotation
-            // setting, on devices with a locked orientation,
-            return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
-        }
-    }
-
     public boolean isInState(LauncherState state) {
         return mStateManager.getState() == state;
     }

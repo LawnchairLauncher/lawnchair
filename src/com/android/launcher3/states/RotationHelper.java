@@ -56,7 +56,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     private final Activity mActivity;
     private final SharedPreferences mPrefs;
 
-    private final boolean mIgnoreAutoRotateSettings;
+    private boolean mIgnoreAutoRotateSettings;
     private boolean mAutoRotateEnabled;
 
     /**
@@ -108,6 +108,13 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             mCurrentStateRequest = request;
             notifyChange();
         }
+    }
+
+    // Used by tests only.
+    public void forceAllowRotationForTesting(boolean allowRotation) {
+        mIgnoreAutoRotateSettings =
+                allowRotation || mActivity.getResources().getBoolean(R.bool.allow_rotation);
+        notifyChange();
     }
 
     public void initialize() {
