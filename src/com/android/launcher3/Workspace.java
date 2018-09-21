@@ -671,9 +671,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
             final boolean stripEmptyScreens) {
         // XXX: Do we need to update LM workspace screens below?
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
-        PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
-
         final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
 
         mRemoveEmptyScreenRunnable = new Runnable() {
@@ -692,7 +689,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         };
 
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(cl, alpha, bgAlpha);
+        ObjectAnimator oa = ObjectAnimator.ofFloat(cl, ALPHA, 0f);
         oa.setDuration(duration);
         oa.setStartDelay(delay);
         oa.addListener(new AnimatorListenerAdapter() {

@@ -1,5 +1,10 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
+import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
+import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
+import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -429,10 +434,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             requestLayout();
         } else {
             ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp,
-                    PropertyValuesHolder.ofInt("width", lp.width, newWidth),
-                    PropertyValuesHolder.ofInt("height", lp.height, newHeight),
-                    PropertyValuesHolder.ofInt("x", lp.x, newX),
-                    PropertyValuesHolder.ofInt("y", lp.y, newY));
+                    PropertyValuesHolder.ofInt(LAYOUT_WIDTH, lp.width, newWidth),
+                    PropertyValuesHolder.ofInt(LAYOUT_HEIGHT, lp.height, newHeight),
+                    PropertyValuesHolder.ofInt(LAYOUT_X, lp.x, newX),
+                    PropertyValuesHolder.ofInt(LAYOUT_Y, lp.y, newY));
             mFirstFrameAnimatorHelper.addTo(oa).addUpdateListener(a -> requestLayout());
 
             AnimatorSet set = new AnimatorSet();
