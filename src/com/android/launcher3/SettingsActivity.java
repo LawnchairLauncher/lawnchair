@@ -88,6 +88,11 @@ public class SettingsActivity extends Activity
     @Override
     public boolean onPreferenceStartFragment(
             PreferenceFragment preferenceFragment, Preference pref) {
+        if (getFragmentManager().isStateSaved()) {
+            // Sometimes onClick can come after onPause because of being posted on the handler.
+            // Skip starting new fragments in that case.
+            return false;
+        }
         Fragment f = Fragment.instantiate(this, pref.getFragment(), pref.getExtras());
         if (f instanceof DialogFragment) {
             ((DialogFragment) f).show(getFragmentManager(), pref.getKey());
@@ -241,8 +246,7 @@ public class SettingsActivity extends Activity
      * Content observer which listens for system badging setting changes,
      * and updates the launcher badging setting subtext accordingly.
      */
-    private static class IconBadgingObserver extends SettingsObserver.Secure
-            implements Preference.OnPreferenceClickListener {
+    private static class IconBadgingObserver extends SettingsObserver.Secure {
 
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
@@ -275,15 +279,10 @@ public class SettingsActivity extends Activity
                 }
             }
             mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
-            mBadgingPref.setOnPreferenceClickListener(serviceEnabled ? null : this);
+            mBadgingPref.setFragment(
+                    serviceEnabled ? null : NotificationAccessConfirmation.class.getName());
             mBadgingPref.setSummary(summary);
 
-        }
-
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            new NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
-            return true;
         }
     }
 
