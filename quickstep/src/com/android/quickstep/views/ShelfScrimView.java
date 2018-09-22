@@ -154,6 +154,7 @@ public class ShelfScrimView extends ScrimView {
                     compositeColors(mEndFlatColor > 0 ? mEndFlatColor : mEndScrim,
                             mRemainingScreenColor), alpha);
         }
+        mDragHandle.setCaretProgress(mProgress);
     }
 
     @Override
@@ -192,7 +193,7 @@ public class ShelfScrimView extends ScrimView {
                 mScrimMoveFactor = mProgress / mCalcThreshold;
             }
         }
-        float top = minTop * mScrimMoveFactor - mDragHandleSize;
+        float top = minTop * mScrimMoveFactor - (mDragHandle.isHidden() ? mDragHandleSize : 0);
 
         // Draw the scrim over the remaining screen if needed.
         if (mRemainingScreenColor != 0) {
@@ -218,7 +219,7 @@ public class ShelfScrimView extends ScrimView {
         mPaint.setColor(mShelfColor);
         onDrawRoundRect(canvas, 0, top, getWidth(), getHeight() + mRadius,
                 mRadius, mRadius, mPaint);
-        return minTop - mDragHandleSize - top;
+        return minTop - (mDragHandle.isHidden() ? mDragHandleSize : 0) - top;
     }
 
     @Override

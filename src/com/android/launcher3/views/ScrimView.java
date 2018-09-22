@@ -49,6 +49,8 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeListener;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.preferences.CaretDrawable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -64,12 +66,14 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Simple scrim which draws a flat color
  */
 public class ScrimView extends View implements Insettable, OnChangeListener,
-        AccessibilityStateChangeListener, StateListener {
+        AccessibilityStateChangeListener, StateListener,
+        LawnchairPreferences.OnPreferenceChangeListener {
 
     public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
             new Property<ScrimView, Integer>(Integer.TYPE, "dragHandleAlpha") {
@@ -110,12 +114,13 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     private final RectF mHitRect = new RectF();
 
     private final AccessibilityHelper mAccessibilityHelper;
-    @Nullable
-    protected Drawable mDragHandle;
+    protected final CaretDrawable mDragHandle;
 
     private int mDragHandleAlpha = 255;
 
     protected boolean mHide = false;
+
+    protected final LawnchairPreferences prefs;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -125,8 +130,15 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
         mMaxScrimAlpha = 0.7f;
 
-        mDragHandleSize = context.getResources()
+        prefs = Utilities.getLawnchairPrefs(context);
+        prefs.addOnPreferenceChangeListener("pref_hotseatShowArrow", this);
+
+        int caretSize = mLauncher.getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_caret_size);
+        int dragHandleSize = mLauncher.getResources()
                 .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
+
+        mDragHandleSize = prefs.getDockShowArrow() ? caretSize : dragHandleSize;
         mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
 
         mAccessibilityHelper = createAccessibilityHelper();
@@ -134,6 +146,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
         mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
         setFocusable(false);
+
+        mDragHandle = new CaretDrawable(context);
     }
 
     @NonNull
@@ -241,7 +255,6 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
                 && mHitRect.contains(event.getX(), event.getY())) {
 
             final Drawable drawable = mDragHandle;
-            mDragHandle = null;
             drawable.setBounds(mDragHandleBounds);
 
             Rect topBounds = new Rect(mDragHandleBounds);
@@ -316,17 +329,16 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     }
 
     private void updateDragHandleVisibility(Drawable recycle) {
-        boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
-        boolean wasVisible = mDragHandle != null;
+        boolean visible =
+                mLauncher.getDeviceProfile().isVerticalBarLayout() || prefs
+                        .getDockShowArrow(); // || mAM.isEnabled(); // nani tf google
+        boolean wasVisible = !mDragHandle.isHidden();
         if (visible != wasVisible) {
+            mDragHandle.setHidden(!visible);
             if (visible) {
-                mDragHandle = recycle != null ? recycle :
-                        mLauncher.getDrawable(R.drawable.drag_handle_indicator);
                 mDragHandle.setBounds(mDragHandleBounds);
 
                 updateDragHandleAlpha();
-            } else {
-                mDragHandle = null;
             }
             invalidate();
         }
@@ -362,6 +374,13 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         setImportantForAccessibility(state == ALL_APPS
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+            boolean force) {
+        updateDragHandleBounds();
+        updateDragHandleVisibility(mDragHandle);
     }
 
     protected class AccessibilityHelper extends ExploreByTouchHelper {

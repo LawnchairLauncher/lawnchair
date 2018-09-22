@@ -30,9 +30,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
 public class CaretDrawable extends Drawable {
-    public static final float PROGRESS_CARET_POINTING_UP = -1f;
-    public static final float PROGRESS_CARET_POINTING_DOWN = 1f;
-    public static final float PROGRESS_CARET_NEUTRAL = 0;
+
+    public static final float PROGRESS_CARET_POINTING_UP = 1f;
+    public static final float PROGRESS_CARET_POINTING_DOWN = 0;
+    public static final float PROGRESS_CARET_NEUTRAL = 0.5f;
 
     private float mCaretProgress = PROGRESS_CARET_NEUTRAL;
 
@@ -165,6 +166,10 @@ public class CaretDrawable extends Drawable {
 
     public void setHidden(boolean hidden) {
         mHidden = hidden;
+    }
+
+    public boolean isHidden() {
+        return mHidden;
     }
 
     public void setForceDark(boolean forceDark) {

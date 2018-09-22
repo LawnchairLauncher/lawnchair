@@ -182,7 +182,7 @@ open class AppsAdapterWithShortcuts(
         private val icon: ImageView = itemView.findViewById(R.id.icon)
         private val caretContainer: View = itemView.findViewById(R.id.caretContainer)
         private val caretView: ImageView = itemView.findViewById(R.id.caretImageView)
-        private val caretDrawable = CaretDrawable(context).apply { caretProgress = 1f }
+        private val caretDrawable = CaretDrawable(context).apply { caretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN }
         private var caretPointingUp = false
             set(value) {
                 animator?.cancel()
@@ -207,7 +207,7 @@ open class AppsAdapterWithShortcuts(
             icon.setImageDrawable(app.iconDrawable)
             caretContainer.isVisible = app.hasShortcuts
             caretPointingUp = app.expanded
-            caretDrawable.caretProgress = if (caretPointingUp) -1f else 1f
+            caretDrawable.caretProgress = if (caretPointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN
         }
 
         override fun onClick(v: View) {
@@ -221,7 +221,7 @@ open class AppsAdapterWithShortcuts(
 
         private fun animateCaretPointingUp(pointingUp: Boolean) {
             caretPointingUp = pointingUp
-            animator = ObjectAnimator.ofFloat(caretDrawable.caretProgress, if (pointingUp) -1f else 1f)
+            animator = ObjectAnimator.ofFloat(caretDrawable.caretProgress, if (pointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN)
                     .setDuration(200)
         }
 
