@@ -93,9 +93,18 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
     }
 
     private void update(WallpaperColorsCompat wallpaperColors) {
-        mActualMainColor = wallpaperColors.getPrimaryColor();
-        mActualSecondaryColor = wallpaperColors.getSecondaryColor();
-        mTertiaryColor = wallpaperColors.getTertiaryColor();
+        if (wallpaperColors != null) {
+            mActualMainColor = wallpaperColors.getPrimaryColor();
+            mActualSecondaryColor = wallpaperColors.getSecondaryColor();
+            mTertiaryColor = wallpaperColors.getTertiaryColor();
+            mSupportsDarkText = (wallpaperColors.getColorHints()
+                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
+            mIsDark = (wallpaperColors.getColorHints()
+                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
+        } else {
+            mActualMainColor = mActualSecondaryColor = mTertiaryColor = FALLBACK_COLOR;
+            mSupportsDarkText = mIsDark = false;
+        }
         Pair<Integer, Integer> colors = mExtractionType.extractInto(wallpaperColors);
         if (colors != null) {
             mMainColor = colors.first;
@@ -104,12 +113,6 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
             mMainColor = FALLBACK_COLOR;
             mSecondaryColor = FALLBACK_COLOR;
         }
-        mSupportsDarkText = wallpaperColors != null
-                ? (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0 : false;
-        mIsDark = wallpaperColors != null
-                ? (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0 : false;
     }
 
     @Override
