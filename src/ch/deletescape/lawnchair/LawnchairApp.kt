@@ -21,7 +21,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import com.android.launcher3.Utilities
@@ -34,6 +36,7 @@ class LawnchairApp : Application() {
     val smartspace by lazy { LawnchairSmartspaceController(this) }
     val bugReporter = LawnchairBugReporter(this, Thread.getDefaultUncaughtExceptionHandler())
     val recentsEnabled by lazy { checkRecentsComponent() }
+    var accessibilityService: LawnchairAccessibilityService? = null
 
     init {
         Thread.setDefaultUncaughtExceptionHandler(bugReporter)
@@ -42,6 +45,16 @@ class LawnchairApp : Application() {
 
     fun restart(recreateLauncher: Boolean = true) {
         activityHandler.finishAll(recreateLauncher)
+    }
+
+    fun performGlobalAction(action: Int): Boolean {
+        return if (accessibilityService != null) {
+            accessibilityService!!.performGlobalAction(action)
+        } else {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            false
+        }
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {

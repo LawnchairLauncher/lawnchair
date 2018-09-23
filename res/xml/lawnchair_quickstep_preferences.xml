@@ -8,6 +8,12 @@
         android:persistent="true"
         android:title="@string/swipe_up_to_switch_apps_title" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="pref_swipe_left_to_go_back"
+        android:persistent="true"
+        android:title="@string/swipe_left_to_go_back_title" />
+
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_recents_radius"
         android:title="@string/pref_recents_radius"

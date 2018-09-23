@@ -121,6 +121,8 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     public void setBackButtonAlpha(float alpha, boolean animate) {
         if (!mSwipeUpEnabled) {
             alpha = 1;
+        } else if (Utilities.getLawnchairPrefs(mContext).getSwipeLeftToGoBack()) {
+            alpha = 0;
         }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
         mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)

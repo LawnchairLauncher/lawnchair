@@ -31,6 +31,7 @@ import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
+import com.android.quickstep.OverviewInteractionState
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -156,6 +157,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Quickstep
     val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
     val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
+    val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
+        OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
+    }
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {

@@ -17,17 +17,20 @@
 
 package ch.deletescape.lawnchair.gestures
 
+import android.accessibilityservice.AccessibilityService
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
+import android.media.AudioManager
 import android.os.Build
 import android.support.annotation.Keep
-import android.view.MotionEvent
-import android.view.Surface
-import android.view.WindowManager
+import android.support.v4.content.ContextCompat
+import android.view.*
 import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.quickstep.OverviewInteractionState
@@ -37,7 +40,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper
 import org.json.JSONObject
 
 @TargetApi(Build.VERSION_CODES.P)
-class NavigationBarGestureConsumer(private val context: Context, target: TouchConsumer) :
+class NavigationBarGestureConsumer(private val context: Context, target: TouchConsumer,
+                                   @NavigationBarCompat.HitTarget private val downTarget: Int) :
         PassThroughTouchConsumer(target) {
 
     private val launcher get() = LauncherAppState.getInstance(context).launcher as? LawnchairLauncher
@@ -59,50 +63,65 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
 
     private var passedInitialSlop = false
     private var quickStepDragSlop = 0
+    private var quickScrubDragSlop = 0
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
+    private val isRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+    private val swipeForBack = downTarget == NavigationBarCompat.HIT_TARGET_HOME &&
+            launcher != null && context.lawnchairPrefs.swipeLeftToGoBack
 
     override fun accept(ev: MotionEvent) {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
-            gestureHandler = null
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                gestureHandler = null
 
-            if (controller == null) {
-                super.accept(ev)
-                return
+                if (controller == null) {
+                    super.accept(ev)
+                    return
+                }
+
+                activePointerId = ev.getPointerId(0)
+                passedInitialSlop = false
+                quickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx()
+                quickScrubDragSlop = NavigationBarCompat.getQuickScrubDragSlopPx()
+
+                downPos.set(ev.x, ev.y)
+                lastPos.set(downPos)
+
+                val display = context.getSystemService<WindowManager>(WindowManager::class.java)!!.defaultDisplay
+                display.getSize(tmpPoint)
+                displayRotation = display.rotation
+                WindowManagerWrapper.getInstance().getStableInsets(stableInsets)
+
+                navBarSize = if (isNavBarVertical) tmpPoint.y else tmpPoint.x
+                val downPosition = if (isNavBarVertical) ev.y else ev.x
+                downFraction = downPosition / navBarSize
+                if (isNavBarOnRight) downFraction = 1 - downFraction
+
+                gestureHandler = getGestureHandler()
             }
-
-            activePointerId = ev.getPointerId(0)
-            passedInitialSlop = false
-            quickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx()
-
-            downPos.set(ev.x, ev.y)
-            lastPos.set(downPos)
-
-            val display = context.getSystemService<WindowManager>(WindowManager::class.java)!!.defaultDisplay
-            display.getSize(tmpPoint)
-            displayRotation = display.rotation
-            WindowManagerWrapper.getInstance().getStableInsets(stableInsets)
-
-            navBarSize = if (isNavBarVertical) tmpPoint.y else tmpPoint.x
-            val downPosition = if (isNavBarVertical) ev.y else ev.x
-            downFraction = downPosition / navBarSize
-            if (isNavBarOnRight) downFraction = 1 - downFraction
-
-            gestureHandler = getGestureHandler()
-        }
-
-        if (!inQuickScrub && gestureHandler != null) {
-            if (ev.actionMasked == MotionEvent.ACTION_MOVE) {
+            MotionEvent.ACTION_MOVE -> {
                 val pointerIndex = ev.findPointerIndex(activePointerId)
                 if (pointerIndex == MotionEvent.INVALID_POINTER_ID) {
                     return
                 }
                 lastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex))
 
-                val displacement = getDisplacement(ev)
                 if (!passedInitialSlop) {
-                    if (Math.abs(displacement) > quickStepDragSlop) {
+                    if (Math.abs(getVerticalDisplacement(ev)) > quickStepDragSlop) {
                         passedInitialSlop = true
-                        gestureHandler?.onGestureTrigger(controller!!)
+
+                        if (!inQuickScrub && gestureHandler != null) {
+                            gestureHandler?.onGestureTrigger(controller!!)
+                        }
+                    } else if (swipeForBack && getHorizontalDisplacement(ev) > quickScrubDragSlop) {
+                        passedInitialSlop = true
+
+                        if (!inQuickScrub) {
+                            if (context.lawnchairApp.performGlobalAction(
+                                            AccessibilityService.GLOBAL_ACTION_BACK)) {
+                                playClickEffect()
+                            }
+                        }
                     }
                 }
             }
@@ -111,16 +130,25 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
         super.accept(ev)
     }
 
-    private fun getDisplacement(ev: MotionEvent): Float {
-        val eventX = ev.x
-        val eventY = ev.y
-        var displacement = eventY - downPos.y
-        if (isNavBarOnRight) {
-            displacement = eventX - downPos.x
-        } else if (isNavBarOnLeft) {
-            displacement = downPos.x - eventX
+    private fun playClickEffect() {
+        val audioManager = ContextCompat.getSystemService(context, AudioManager::class.java)
+        audioManager?.playSoundEffect(SoundEffectConstants.CLICK)
+    }
+
+    private fun getVerticalDisplacement(ev: MotionEvent): Float {
+        return when {
+            isNavBarOnRight -> ev.x - downPos.x
+            isNavBarOnLeft -> downPos.x - ev.x
+            else -> ev.y - downPos.y
         }
-        return displacement
+    }
+
+    private fun getHorizontalDisplacement(ev: MotionEvent): Float {
+        return when {
+            isNavBarOnRight -> ev.y - downPos.y
+            isNavBarOnLeft -> downPos.y - ev.y
+            else -> downPos.x - ev.x
+        }.let { if (isRtl) -it else it }
     }
 
     private fun getGestureHandler(): GestureHandler? {

@@ -225,7 +225,7 @@ public class TouchInteractionService extends Service {
     private TouchConsumer getCurrentTouchConsumer(
             @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
         TouchConsumer consumer = getCurrentTouchConsumerImpl(downHitTarget, forceToLauncher, tracker);
-        return new NavigationBarGestureConsumer(this, consumer);
+        return new NavigationBarGestureConsumer(this, consumer, downHitTarget);
     }
 
     private TouchConsumer getCurrentTouchConsumerImpl(

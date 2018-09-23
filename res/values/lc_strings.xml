@@ -4,6 +4,7 @@
     <string name="quickstep_pref_title">Lawnstep</string>
     <string name="quickstep_pref_summary">Customize the recent apps screen</string>
     <string name="swipe_up_to_switch_apps_title">Swipe up to switch apps</string>
+    <string name="swipe_left_to_go_back_title">Swipe left to go back</string>
     <string name="pref_category_nav_swipe_up_gestures">Swipe up gestures</string>
     <string name="gesture_nav_swipe_up_left">From the left side</string>
     <string name="gesture_nav_swipe_up_center">From the center</string>
