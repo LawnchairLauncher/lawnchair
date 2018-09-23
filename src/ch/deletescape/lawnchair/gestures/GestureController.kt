@@ -125,6 +125,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 SleepGestureHandlerTimeout(context, null),
                 SleepGestureHandlerRoot(context, null),
                 SleepGestureHandlerDeviceAdmin(context, null),
+                SleepGestureHandlerAccessibility(context, null),
                 OpenDrawerGestureHandler(context, null),
                 OpenWidgetsGestureHandler(context, null),
                 OpenSettingsGestureHandler(context, null),

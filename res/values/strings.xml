@@ -537,6 +537,7 @@
     <string name="action_sleep_timeout">Sleep using screen timeout</string>
     <string name="action_sleep_root">Sleep using root</string>
     <string name="action_sleep_device_admin">Sleep using device admin</string>
+    <string name="action_sleep_accessibility">Sleep using accessibility service</string>
     <string name="action_open_app">Open app</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Select app</string>

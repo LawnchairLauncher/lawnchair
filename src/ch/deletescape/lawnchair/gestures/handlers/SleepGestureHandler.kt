@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.accessibilityservice.AccessibilityService
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
@@ -29,6 +30,7 @@ import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
+import ch.deletescape.lawnchair.lawnchairApp
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.json.JSONObject
@@ -151,5 +153,16 @@ class SleepGestureHandlerDeviceAdmin(context: Context, config: JSONObject?) : Ge
         override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
             return context.getString(R.string.dt2s_admin_warning)
         }
+    }
+}
+
+@Keep
+class SleepGestureHandlerAccessibility(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val displayName = context.getString(R.string.action_sleep_accessibility)
+    override val isAvailable = Utilities.ATLEAST_P
+
+    override fun onGestureTrigger(controller: GestureController) {
+        context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
     }
 }
