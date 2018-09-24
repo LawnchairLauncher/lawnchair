@@ -78,6 +78,7 @@ import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -136,6 +137,7 @@ import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
 
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -862,12 +864,49 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         void onScrollChanged(float progress);
     }
 
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks, StateListener {
 
         public void onScrollChanged(float progress) {
+            addOrRemoveStateListener(progress);
             if (mWorkspace != null) {
                 mWorkspace.onOverlayScrollChanged(progress);
             }
+        }
+
+        private void addOrRemoveStateListener(float progress) {
+            if (Float.compare(progress, 1.0f) == 0) {
+                getStateManager().addStateListener(this);
+            } else if (Float.compare(progress, 0.0f) == 0) {
+                getStateManager().removeStateListener(this);
+            }
+        }
+
+        private void hideOverlay(LauncherState launcherState, boolean animate) {
+            if (launcherState == LauncherState.OVERVIEW || launcherState == LauncherState.FAST_OVERVIEW) {
+                hideOverlay(animate);
+            }
+        }
+
+        private void hideOverlay(boolean animate) {
+            Launcher launcher = Launcher.this;
+            if (launcher instanceof NexusLauncherActivity) {
+                ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
+            }
+        }
+
+        @Override
+        public void onStateSetImmediately(LauncherState state) {
+            hideOverlay(state, false);
+        }
+
+        @Override
+        public void onStateTransitionStart(LauncherState toState) {
+            hideOverlay(toState, true);
+        }
+
+        @Override
+        public void onStateTransitionComplete(LauncherState finalState) {
+
         }
     }
 
