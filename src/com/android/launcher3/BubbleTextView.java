@@ -272,8 +272,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Overrides the default long press timeout.
      */
-    public void setLongPressTimeout(int longPressTimeout) {
-        mLongPressHelper.setLongPressTimeout(longPressTimeout);
+    public void setLongPressTimeoutFactor(float longPressTimeoutFactor) {
+        mLongPressHelper.setLongPressTimeoutFactor(longPressTimeoutFactor);
     }
 
     @Override
