@@ -11,7 +11,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -24,6 +23,7 @@ import androidx.test.rule.provider.ProviderTestRule;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.icons.CachingLogic;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -203,9 +203,10 @@ public class BaseModelUpdateTaskTestCase {
         }
 
         @Override
-        protected CacheEntry cacheLocked(
+        protected <T> CacheEntry cacheLocked(
                 @NonNull ComponentName componentName,
-                @NonNull Provider<LauncherActivityInfo> infoProvider,
+                @NonNull Provider<T> infoProvider,
+                @NonNull CachingLogic<T> cachingLogic,
                 UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {

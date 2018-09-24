@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.icons.CachingLogic.LAUNCHER_ACTIVITY_INFO;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -802,7 +803,7 @@ public class LoaderTask implements Runnable {
             List<List<LauncherActivityInfo>> activityListPerUser) {
         int userCount = activityListPerUser.size();
         for (int i = 0; i < userCount; i++) {
-            updateHandler.updateIcons(activityListPerUser.get(i));
+            updateHandler.updateIcons(activityListPerUser.get(i), LAUNCHER_ACTIVITY_INFO);
         }
     }
 
