@@ -220,8 +220,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
+        sheet.attachToContainer();
         sheet.mIsOpen = true;
-        sheet.getPopupContainer().addView(sheet);
         sheet.open(animate);
         return sheet;
     }

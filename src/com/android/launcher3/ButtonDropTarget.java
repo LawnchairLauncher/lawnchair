@@ -33,6 +33,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +55,20 @@ import com.android.launcher3.util.Thunk;
  */
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
+
+    private static final Property<ButtonDropTarget, Integer> TEXT_COLOR =
+            new Property<ButtonDropTarget, Integer>(Integer.TYPE, "textColor") {
+
+                @Override
+                public Integer get(ButtonDropTarget target) {
+                    return target.getTextColor();
+                }
+
+                @Override
+                public void set(ButtonDropTarget target, Integer value) {
+                    target.setTextColor(value);
+                }
+            };
 
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
@@ -206,7 +221,7 @@ public abstract class ButtonDropTarget extends TextView
         });
 
         mCurrentColorAnim.play(anim1);
-        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, "textColor", targetColor));
+        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, TEXT_COLOR, targetColor));
         mCurrentColorAnim.start();
     }
 

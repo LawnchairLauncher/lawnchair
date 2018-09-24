@@ -184,17 +184,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return null;
         }
 
-        PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();
-        List<String> shortcutIds = popupDataProvider.getShortcutIdsForItem(itemInfo);
-        List<NotificationKeyData> notificationKeys = popupDataProvider
-                .getNotificationKeysForItem(itemInfo);
-        List<SystemShortcut> systemShortcuts = popupDataProvider
-                .getEnabledSystemShortcutsForItem(itemInfo);
-
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
-        container.populateAndShow(icon, shortcutIds, notificationKeys, systemShortcuts);
+        container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
         return container;
     }
 
@@ -217,6 +210,15 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 lastView.setDividerVisibility(INVISIBLE);
             }
         }
+    }
+
+    protected void populateAndShow(
+            BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
+        PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
+        populateAndShow(icon,
+                popupDataProvider.getShortcutIdsForItem(item),
+                popupDataProvider.getNotificationKeysForItem(item),
+                factory.getEnabledShortcuts(mLauncher, item));
     }
 
     @TargetApi(Build.VERSION_CODES.P)

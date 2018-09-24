@@ -42,6 +42,7 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -52,6 +53,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.zip.Deflater;
 
 public class UiFactory {
@@ -59,24 +61,25 @@ public class UiFactory {
     public static TouchController[] createTouchControllers(Launcher launcher) {
         boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
                 .isSwipeUpGestureEnabled();
-        if (!swipeUpEnabled) {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new OverviewToAllAppsTouchController(launcher),
-                    new LauncherTaskViewController(launcher)};
+        ArrayList<TouchController> list = new ArrayList<>();
+        list.add(launcher.getDragController());
+
+        if (!swipeUpEnabled || launcher.getDeviceProfile().isVerticalBarLayout()) {
+            list.add(new OverviewToAllAppsTouchController(launcher));
         }
+
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new OverviewToAllAppsTouchController(launcher),
-                    new LandscapeEdgeSwipeController(launcher),
-                    new LauncherTaskViewController(launcher)};
+            list.add(new LandscapeEdgeSwipeController(launcher));
         } else {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new PortraitStatesTouchController(launcher),
-                    new LauncherTaskViewController(launcher)};
+            list.add(new PortraitStatesTouchController(launcher));
         }
+        if (FeatureFlags.PULL_DOWN_STATUS_BAR && Utilities.IS_DEBUG_DEVICE
+                && !launcher.getDeviceProfile().isMultiWindowMode
+                && !launcher.getDeviceProfile().isVerticalBarLayout()) {
+            list.add(new StatusBarTouchController(launcher));
+        }
+        list.add(new LauncherTaskViewController(launcher));
+        return list.toArray(new TouchController[list.size()]);
     }
 
     public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {

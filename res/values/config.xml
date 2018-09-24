@@ -79,27 +79,15 @@
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
-    <!-- Name of a subclass of com.android.launcher3.AppFilter used to
-         filter the activities shown in the launcher. Can be empty. -->
+    <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false"></string>
-
-    <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false"></string>
-
-    <!-- Name of a drawable factory class. -->
     <string name="drawable_factory_class" translatable="false"></string>
-
-    <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false"></string>
-
-    <!-- Name of an app transition manager class. -->
     <string name="app_transition_manager_class" translatable="false"></string>
-
-    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
     <string name="instant_app_resolver_class" translatable="false"></string>
-
-    <!-- Name of a main process initializer class. -->
     <string name="main_process_initializer_class" translatable="false"></string>
+    <string name="system_shortcut_factory_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
@@ -112,9 +100,6 @@
 
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
-
-    <!-- Tag id used for view scrim -->
-    <item type="id" name="view_scrim" />
 
     <!-- View IDs to store item highlight information -->
     <item type="id" name="view_unhighlight_background" />

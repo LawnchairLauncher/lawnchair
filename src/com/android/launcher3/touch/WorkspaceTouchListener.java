@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.ViewConfiguration.getLongPressTimeout;
@@ -29,6 +30,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
@@ -60,12 +62,16 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
     private final PointF mTouchDownPoint = new PointF();
+    private final float mTouchSlop;
 
     private int mLongPressState = STATE_CANCELLED;
 
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
+        // Use twice the touch slop as we are looking for long press which is more
+        // likely to cause movement.
+        mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
     }
 
     @Override
@@ -115,6 +121,9 @@ public class WorkspaceTouchListener implements OnTouchListener, Runnable {
         } else if (mLongPressState == STATE_REQUESTED) {
             mWorkspace.onTouchEvent(ev);
             if (mWorkspace.isHandlingTouch()) {
+                cancelLongPress();
+            } else if (action == ACTION_MOVE && PointF.length(
+                    mTouchDownPoint.x - ev.getX(), mTouchDownPoint.y - ev.getY()) > mTouchSlop) {
                 cancelLongPress();
             }
 

@@ -50,13 +50,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final boolean LOGD = false;
     private static final String TAG = "PopupDataProvider";
 
-    /** Note that these are in order of priority. */
-    private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
-            new SystemShortcut.AppInfo(),
-            new SystemShortcut.Widgets(),
-            new SystemShortcut.Install()
-    };
-
     private final Launcher mLauncher;
 
     /** Maps launcher activity components to their list of shortcut ids. */
@@ -190,16 +183,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
                 : notificationListener.getNotificationsForKeys(notificationKeys);
-    }
-
-    public @NonNull List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
-        List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : SYSTEM_SHORTCUTS) {
-            if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
-                systemShortcuts.add(systemShortcut);
-            }
-        }
-        return systemShortcuts;
     }
 
     public void cancelNotification(String notificationKey) {
