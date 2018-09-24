@@ -44,6 +44,8 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "boolean", "FEATURE_QUINOA", "${!(System.getenv("TRAVIS") == "true" && System.getenv("DRONE_BRANCH") == "alpha")}"
     }
     buildTypes {
         debug {

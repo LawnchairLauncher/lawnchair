@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
@@ -171,9 +172,12 @@ public class DeepShortcutManager {
 
     @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        if (shortcutInfo instanceof SesameShortcutInfoCompat){
-            return ((SesameShortcutInfoCompat) shortcutInfo).getIcon(mContext, density);
-        } else if (Utilities.ATLEAST_NOUGAT_MR1) {
+        if (BuildConfig.FEATURE_QUINOA) {
+            if (shortcutInfo instanceof SesameShortcutInfoCompat) {
+                return ((SesameShortcutInfoCompat) shortcutInfo).getIcon(mContext, density);
+            }
+        }
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 Drawable icon = mLauncherApps.getShortcutIconDrawable(
                         shortcutInfo.getShortcutInfo(), density);
@@ -224,10 +228,13 @@ public class DeepShortcutManager {
     private List<ShortcutInfoCompat> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandle user) {
         List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>();
-        SesameDataProvider provider = SesameDataProvider.Companion.getInstance(mContext);
-        List<SesameDataProvider.SesameResult> results = provider.queryShortcutsForPackage(packageName);
-        for (SesameDataProvider.SesameResult result : results) {
-            shortcutInfoCompats.add( new SesameShortcutInfoCompat(result));
+        if (BuildConfig.FEATURE_QUINOA) {
+            SesameDataProvider provider = SesameDataProvider.Companion.getInstance(mContext);
+            List<SesameDataProvider.SesameResult> results = provider
+                    .queryShortcutsForPackage(packageName);
+            for (SesameDataProvider.SesameResult result : results) {
+                shortcutInfoCompats.add(new SesameShortcutInfoCompat(result));
+            }
         }
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             ShortcutQuery q = new ShortcutQuery();

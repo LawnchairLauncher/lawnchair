@@ -23,6 +23,7 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -186,8 +187,12 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             List<String> tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
             if(tmp != null) ids.addAll(tmp);
         }
-        for(SesameDataProvider.SesameResult result : SesameDataProvider.Companion.getInstance(mLauncher).queryShortcutsForPackage(info.getTargetComponent().getPackageName())){
-            ids.add(result.getUri());
+        if (BuildConfig.FEATURE_QUINOA) {
+            for (SesameDataProvider.SesameResult result : SesameDataProvider.Companion
+                    .getInstance(mLauncher)
+                    .queryShortcutsForPackage(info.getTargetComponent().getPackageName())) {
+                ids.add(result.getUri());
+            }
         }
         return ids;
     }

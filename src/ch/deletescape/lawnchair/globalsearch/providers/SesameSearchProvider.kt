@@ -8,7 +8,6 @@ import ch.deletescape.lawnchair.globalsearch.SearchProvider
 import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 
-@Keep
 class SesameSearchProvider(context: Context) : SearchProvider(context) {
 
     private val PACKAGE = "ninja.sesame.app.edge"

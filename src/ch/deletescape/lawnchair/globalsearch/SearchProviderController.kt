@@ -8,6 +8,7 @@ import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 
 class SearchProviderController(private val context: Context) {
@@ -60,7 +61,11 @@ class SearchProviderController(private val context: Context) {
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
-                SesameSearchProvider(context),
+                if (BuildConfig.FEATURE_QUINOA) {
+                    SesameSearchProvider(context)
+                } else {
+                    DisabledDummySearchProvider(context)
+                },
                 DuckDuckGoSearchProvider(context),
                 BingSearchProvider(context),
                 GoogleGoSearchProvider(context),
