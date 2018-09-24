@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.icons;
 
 import static com.android.launcher3.graphics.BitmapInfo.LOW_RES_ICON;
 
@@ -38,11 +38,19 @@ import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Handler;
 import android.os.Process;
-import android.os.SystemClock;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconProvider;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.BitmapInfo;
@@ -54,14 +62,9 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
-import com.android.launcher3.util.Thunk;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
@@ -81,8 +84,6 @@ public class IconCache {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_IGNORE_CACHE = false;
 
-    @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
-
     public static class CacheEntry extends BitmapInfo {
         public CharSequence title = "";
         public CharSequence contentDescription = "";
@@ -93,20 +94,21 @@ public class IconCache {
     }
 
     private final HashMap<UserHandle, BitmapInfo> mDefaultIcons = new HashMap<>();
-    @Thunk final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
-    private final Context mContext;
-    private final PackageManager mPackageManager;
-    private final IconProvider mIconProvider;
-    @Thunk final UserManagerCompat mUserManager;
-    private final LauncherAppsCompat mLauncherApps;
+    final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    final Context mContext;
+    final PackageManager mPackageManager;
+    final IconProvider mIconProvider;
+    final UserManagerCompat mUserManager;
+    final LauncherAppsCompat mLauncherApps;
+
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     private final InstantAppResolver mInstantAppResolver;
     private final int mIconDpi;
-    @Thunk final IconDB mIconDb;
 
-    @Thunk final Handler mWorkerHandler;
+    final IconDB mIconDb;
+    final Handler mWorkerHandler;
 
     private final BitmapFactory.Options mDecodeOptions;
 
@@ -247,115 +249,9 @@ public class IconCache {
                 new String[]{packageName + "/%", Long.toString(userSerial)});
     }
 
-    public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
-        // Remove all active icon update tasks.
-        mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
-
+    public IconCacheUpdateHandler getUpdateHandler() {
         mIconProvider.updateSystemStateString(mContext);
-        for (UserHandle user : mUserManager.getUserProfiles()) {
-            // Query for the set of apps
-            final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
-            // Fail if we don't have any apps
-            // TODO: Fix this. Only fail for the current user.
-            if (apps == null || apps.isEmpty()) {
-                return;
-            }
-
-            // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
-            // is called by the icon cache when the job is complete.
-            updateDBIcons(user, apps, Process.myUserHandle().equals(user)
-                    ? ignorePackagesForMainUser : Collections.<String>emptySet());
-        }
-    }
-
-    /**
-     * Updates the persistent DB, such that only entries corresponding to {@param apps} remain in
-     * the DB and are updated.
-     * @return The set of packages for which icons have updated.
-     */
-    private void updateDBIcons(UserHandle user, List<LauncherActivityInfo> apps,
-            Set<String> ignorePackages) {
-        long userSerial = mUserManager.getSerialNumberForUser(user);
-        PackageManager pm = mContext.getPackageManager();
-        HashMap<String, PackageInfo> pkgInfoMap = new HashMap<>();
-        for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
-            pkgInfoMap.put(info.packageName, info);
-        }
-
-        HashMap<ComponentName, LauncherActivityInfo> componentMap = new HashMap<>();
-        for (LauncherActivityInfo app : apps) {
-            componentMap.put(app.getComponentName(), app);
-        }
-
-        HashSet<Integer> itemsToRemove = new HashSet<>();
-        Stack<LauncherActivityInfo> appsToUpdate = new Stack<>();
-
-        Cursor c = null;
-        try {
-            c = mIconDb.query(
-                    new String[]{IconDB.COLUMN_ROWID, IconDB.COLUMN_COMPONENT,
-                            IconDB.COLUMN_LAST_UPDATED, IconDB.COLUMN_VERSION,
-                            IconDB.COLUMN_SYSTEM_STATE},
-                    IconDB.COLUMN_USER + " = ? ",
-                    new String[]{Long.toString(userSerial)});
-
-            final int indexComponent = c.getColumnIndex(IconDB.COLUMN_COMPONENT);
-            final int indexLastUpdate = c.getColumnIndex(IconDB.COLUMN_LAST_UPDATED);
-            final int indexVersion = c.getColumnIndex(IconDB.COLUMN_VERSION);
-            final int rowIndex = c.getColumnIndex(IconDB.COLUMN_ROWID);
-            final int systemStateIndex = c.getColumnIndex(IconDB.COLUMN_SYSTEM_STATE);
-
-            while (c.moveToNext()) {
-                String cn = c.getString(indexComponent);
-                ComponentName component = ComponentName.unflattenFromString(cn);
-                PackageInfo info = pkgInfoMap.get(component.getPackageName());
-                if (info == null) {
-                    if (!ignorePackages.contains(component.getPackageName())) {
-                        remove(component, user);
-                        itemsToRemove.add(c.getInt(rowIndex));
-                    }
-                    continue;
-                }
-                if ((info.applicationInfo.flags & ApplicationInfo.FLAG_IS_DATA_ONLY) != 0) {
-                    // Application is not present
-                    continue;
-                }
-
-                long updateTime = c.getLong(indexLastUpdate);
-                int version = c.getInt(indexVersion);
-                LauncherActivityInfo app = componentMap.remove(component);
-                if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                        TextUtils.equals(c.getString(systemStateIndex),
-                                mIconProvider.getIconSystemState(info.packageName))) {
-                    continue;
-                }
-                if (app == null) {
-                    remove(component, user);
-                    itemsToRemove.add(c.getInt(rowIndex));
-                } else {
-                    appsToUpdate.add(app);
-                }
-            }
-        } catch (SQLiteException e) {
-            Log.d(TAG, "Error reading icon cache", e);
-            // Continue updating whatever we have read so far
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
-        if (!itemsToRemove.isEmpty()) {
-            mIconDb.delete(
-                    Utilities.createDbSelectionQuery(IconDB.COLUMN_ROWID, itemsToRemove), null);
-        }
-
-        // Insert remaining apps.
-        if (!componentMap.isEmpty() || !appsToUpdate.isEmpty()) {
-            Stack<LauncherActivityInfo> appsToAdd = new Stack<>();
-            appsToAdd.addAll(componentMap.values());
-            new SerializedIconUpdateTask(userSerial, pkgInfoMap,
-                    appsToAdd, appsToUpdate).scheduleNext();
-        }
+        return new IconCacheUpdateHandler(this);
     }
 
     /**
@@ -363,8 +259,9 @@ public class IconCache {
      * @param replaceExisting if true, it will recreate the bitmap even if it already exists in
      *                        the memory. This is useful then the previous bitmap was created using
      *                        old data.
+     * package private
      */
-    @Thunk synchronized void addIconToDBAndMemCache(LauncherActivityInfo app,
+    synchronized void addIconToDBAndMemCache(LauncherActivityInfo app,
             PackageInfo info, long userSerial, boolean replaceExisting) {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry = null;
@@ -744,81 +641,23 @@ public class IconCache {
         }
     }
 
-    /**
-     * A runnable that updates invalid icons and adds missing icons in the DB for the provided
-     * LauncherActivityInfo list. Items are updated/added one at a time, so that the
-     * worker thread doesn't get blocked.
-     */
-    @Thunk class SerializedIconUpdateTask implements Runnable {
-        private final long mUserSerial;
-        private final HashMap<String, PackageInfo> mPkgInfoMap;
-        private final Stack<LauncherActivityInfo> mAppsToAdd;
-        private final Stack<LauncherActivityInfo> mAppsToUpdate;
-        private final HashSet<String> mUpdatedPackages = new HashSet<>();
-
-        @Thunk SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
-                Stack<LauncherActivityInfo> appsToAdd,
-                Stack<LauncherActivityInfo> appsToUpdate) {
-            mUserSerial = userSerial;
-            mPkgInfoMap = pkgInfoMap;
-            mAppsToAdd = appsToAdd;
-            mAppsToUpdate = appsToUpdate;
-        }
-
-        @Override
-        public void run() {
-            if (!mAppsToUpdate.isEmpty()) {
-                LauncherActivityInfo app = mAppsToUpdate.pop();
-                String pkg = app.getComponentName().getPackageName();
-                PackageInfo info = mPkgInfoMap.get(pkg);
-                addIconToDBAndMemCache(app, info, mUserSerial, true /*replace existing*/);
-                mUpdatedPackages.add(pkg);
-
-                if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
-                    // No more app to update. Notify model.
-                    LauncherAppState.getInstance(mContext).getModel().onPackageIconsUpdated(
-                            mUpdatedPackages, mUserManager.getUserForSerialNumber(mUserSerial));
-                }
-
-                // Let it run one more time.
-                scheduleNext();
-            } else if (!mAppsToAdd.isEmpty()) {
-                LauncherActivityInfo app = mAppsToAdd.pop();
-                PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
-                // We do not check the mPkgInfoMap when generating the mAppsToAdd. Although every
-                // app should have package info, this is not guaranteed by the api
-                if (info != null) {
-                    addIconToDBAndMemCache(app, info, mUserSerial, false /*replace existing*/);
-                }
-
-                if (!mAppsToAdd.isEmpty()) {
-                    scheduleNext();
-                }
-            }
-        }
-
-        public void scheduleNext() {
-            mWorkerHandler.postAtTime(this, ICON_UPDATE_TOKEN, SystemClock.uptimeMillis() + 1);
-        }
-    }
-
-    private static final class IconDB extends SQLiteCacheHelper {
+    static final class IconDB extends SQLiteCacheHelper {
         private final static int RELEASE_VERSION = 25;
 
-        private final static String TABLE_NAME = "icons";
-        private final static String COLUMN_ROWID = "rowid";
-        private final static String COLUMN_COMPONENT = "componentName";
-        private final static String COLUMN_USER = "profileId";
-        private final static String COLUMN_LAST_UPDATED = "lastUpdated";
-        private final static String COLUMN_VERSION = "version";
-        private final static String COLUMN_ICON = "icon";
-        private final static String COLUMN_ICON_COLOR = "icon_color";
-        private final static String COLUMN_LABEL = "label";
-        private final static String COLUMN_SYSTEM_STATE = "system_state";
+        public final static String TABLE_NAME = "icons";
+        public final static String COLUMN_ROWID = "rowid";
+        public final static String COLUMN_COMPONENT = "componentName";
+        public final static String COLUMN_USER = "profileId";
+        public final static String COLUMN_LAST_UPDATED = "lastUpdated";
+        public final static String COLUMN_VERSION = "version";
+        public final static String COLUMN_ICON = "icon";
+        public final static String COLUMN_ICON_COLOR = "icon_color";
+        public final static String COLUMN_LABEL = "label";
+        public final static String COLUMN_SYSTEM_STATE = "system_state";
 
-        private final static String[] COLUMNS_HIGH_RES = new String[] {
+        public final static String[] COLUMNS_HIGH_RES = new String[] {
                 IconDB.COLUMN_ICON_COLOR, IconDB.COLUMN_LABEL, IconDB.COLUMN_ICON };
-        private final static String[] COLUMNS_LOW_RES = new String[] {
+        public final static String[] COLUMNS_LOW_RES = new String[] {
                 IconDB.COLUMN_ICON_COLOR, IconDB.COLUMN_LABEL };
 
         public IconDB(Context context, int iconPixelSize) {
