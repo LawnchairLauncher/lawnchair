@@ -523,7 +523,6 @@
 
     <!-- Gesture actions -->
     <string name="action_open_drawer">Open app drawer</string>
-    <string name="action_open_recents">Open task overview screen</string>
     <string name="action_last_task">Launch most recent task</string>
     <string name="action_open_widgets">Open widgets drawer</string>
     <string name="action_open_settings">Open launcher settings</string>

@@ -35,7 +35,7 @@ import org.json.JSONObject
 @Keep
 open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_recents)!!
+    override val displayName = context.getString(R.string.action_switch_apps)!!
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
 
