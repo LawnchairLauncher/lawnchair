@@ -37,6 +37,10 @@ public class BitmapInfo {
         info.color = color;
     }
 
+    public final boolean isLowRes() {
+        return LOW_RES_ICON == icon;
+    }
+
     public static BitmapInfo fromBitmap(Bitmap bitmap) {
         return fromBitmap(bitmap, null);
     }

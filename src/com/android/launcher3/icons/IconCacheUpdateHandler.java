@@ -17,7 +17,6 @@ package com.android.launcher3.icons;
 
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -29,7 +28,7 @@ import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.IconCache.IconDB;
+import com.android.launcher3.icons.BaseIconCache.IconDB;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,10 +47,10 @@ public class IconCacheUpdateHandler {
     private static final Object ICON_UPDATE_TOKEN = new Object();
 
     private final HashMap<String, PackageInfo> mPkgInfoMap;
-    private final IconCache mIconCache;
+    private final BaseIconCache mIconCache;
     private final HashMap<UserHandle, Set<String>> mPackagesToIgnore = new HashMap<>();
 
-    IconCacheUpdateHandler(IconCache cache) {
+    IconCacheUpdateHandler(BaseIconCache cache) {
         mIconCache = cache;
 
         mPkgInfoMap = new HashMap<>();
@@ -79,11 +78,11 @@ public class IconCacheUpdateHandler {
      * the DB and are updated.
      * @return The set of packages for which icons have updated.
      */
-    public void updateIcons(List<LauncherActivityInfo> apps) {
+    public <T> void updateIcons(List<T> apps, CachingLogic<T> cachingLogic) {
         if (apps.isEmpty()) {
             return;
         }
-        UserHandle user = apps.get(0).getUser();
+        UserHandle user = cachingLogic.getUser(apps.get(0));
 
         Set<String> ignorePackages = mPackagesToIgnore.get(user);
         if (ignorePackages == null) {
@@ -91,13 +90,13 @@ public class IconCacheUpdateHandler {
         }
 
         long userSerial = mIconCache.mUserManager.getSerialNumberForUser(user);
-        HashMap<ComponentName, LauncherActivityInfo> componentMap = new HashMap<>();
-        for (LauncherActivityInfo app : apps) {
-            componentMap.put(app.getComponentName(), app);
+        HashMap<ComponentName, T> componentMap = new HashMap<>();
+        for (T app : apps) {
+            componentMap.put(cachingLogic.getComponent(app), app);
         }
 
         HashSet<Integer> itemsToRemove = new HashSet<>();
-        Stack<LauncherActivityInfo> appsToUpdate = new Stack<>();
+        Stack<T> appsToUpdate = new Stack<>();
 
         try (Cursor c = mIconCache.mIconDb.query(
                 new String[]{IconDB.COLUMN_ROWID, IconDB.COLUMN_COMPONENT,
@@ -130,7 +129,7 @@ public class IconCacheUpdateHandler {
 
                 long updateTime = c.getLong(indexLastUpdate);
                 int version = c.getInt(indexVersion);
-                LauncherActivityInfo app = componentMap.remove(component);
+                T app = componentMap.remove(component);
                 if (version == info.versionCode && updateTime == info.lastUpdateTime &&
                         TextUtils.equals(c.getString(systemStateIndex),
                                 mIconCache.mIconProvider.getIconSystemState(info.packageName))) {
@@ -154,9 +153,10 @@ public class IconCacheUpdateHandler {
 
         // Insert remaining apps.
         if (!componentMap.isEmpty() || !appsToUpdate.isEmpty()) {
-            Stack<LauncherActivityInfo> appsToAdd = new Stack<>();
+            Stack<T> appsToAdd = new Stack<>();
             appsToAdd.addAll(componentMap.values());
-            new SerializedIconUpdateTask(userSerial, user, appsToAdd, appsToUpdate).scheduleNext();
+            new SerializedIconUpdateTask(userSerial, user, appsToAdd, appsToUpdate, cachingLogic)
+                    .scheduleNext();
         }
     }
 
@@ -166,29 +166,31 @@ public class IconCacheUpdateHandler {
      * LauncherActivityInfo list. Items are updated/added one at a time, so that the
      * worker thread doesn't get blocked.
      */
-    private class SerializedIconUpdateTask implements Runnable {
+    private class SerializedIconUpdateTask<T> implements Runnable {
         private final long mUserSerial;
         private final UserHandle mUserHandle;
-        private final Stack<LauncherActivityInfo> mAppsToAdd;
-        private final Stack<LauncherActivityInfo> mAppsToUpdate;
+        private final Stack<T> mAppsToAdd;
+        private final Stack<T> mAppsToUpdate;
+        private final CachingLogic<T> mCachingLogic;
         private final HashSet<String> mUpdatedPackages = new HashSet<>();
 
         SerializedIconUpdateTask(long userSerial, UserHandle userHandle,
-                Stack<LauncherActivityInfo> appsToAdd, Stack<LauncherActivityInfo> appsToUpdate) {
+                Stack<T> appsToAdd, Stack<T> appsToUpdate, CachingLogic<T> cachingLogic) {
             mUserHandle = userHandle;
             mUserSerial = userSerial;
             mAppsToAdd = appsToAdd;
             mAppsToUpdate = appsToUpdate;
+            mCachingLogic = cachingLogic;
         }
 
         @Override
         public void run() {
             if (!mAppsToUpdate.isEmpty()) {
-                LauncherActivityInfo app = mAppsToUpdate.pop();
-                String pkg = app.getComponentName().getPackageName();
+                T app = mAppsToUpdate.pop();
+                String pkg = mCachingLogic.getComponent(app).getPackageName();
                 PackageInfo info = mPkgInfoMap.get(pkg);
                 mIconCache.addIconToDBAndMemCache(
-                        app, info, mUserSerial, true /*replace existing*/);
+                        app, mCachingLogic, info, mUserSerial, true /*replace existing*/);
                 mUpdatedPackages.add(pkg);
 
                 if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
@@ -200,13 +202,13 @@ public class IconCacheUpdateHandler {
                 // Let it run one more time.
                 scheduleNext();
             } else if (!mAppsToAdd.isEmpty()) {
-                LauncherActivityInfo app = mAppsToAdd.pop();
-                PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
+                T app = mAppsToAdd.pop();
+                PackageInfo info = mPkgInfoMap.get(mCachingLogic.getComponent(app).getPackageName());
                 // We do not check the mPkgInfoMap when generating the mAppsToAdd. Although every
                 // app should have package info, this is not guaranteed by the api
                 if (info != null) {
-                    mIconCache.addIconToDBAndMemCache(
-                            app, info, mUserSerial, false /*replace existing*/);
+                    mIconCache.addIconToDBAndMemCache(app, mCachingLogic, info,
+                            mUserSerial, false /*replace existing*/);
                 }
 
                 if (!mAppsToAdd.isEmpty()) {
