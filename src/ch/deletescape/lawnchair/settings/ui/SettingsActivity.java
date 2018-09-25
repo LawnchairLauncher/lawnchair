@@ -362,14 +362,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
                 findPreference("screenshot").setOnPreferenceClickListener(this);
-            } else if (getContent() == R.xml.lawnchair_gesture_preferences) {
-                int count = getPreferenceScreen().getPreferenceCount();
-                for (int i = count - 1; i >= 0; i--) {
-                    Preference pref = getPreferenceScreen().getPreference(i);
-                    if (pref instanceof GesturePreference && pref.getShouldDisableView()) {
-                        getPreferenceScreen().removePreference(pref);
-                    }
-                }
             }
         }
 

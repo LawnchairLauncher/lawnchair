@@ -543,8 +543,6 @@
     <string name="action_none">Do nothing</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
-    <string name="gesture_press_recents">Recents button</string>
-    <string name="gesture_press_recents_global">Recents button in other apps</string>
     <string name="gesture_double_tap">Double tap</string>
     <string name="gesture_long_press">Long press</string>
     <string name="gesture_swipe_down">Swipe down</string>
@@ -553,7 +551,6 @@
     <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
-    <string name="action_open_recents_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenRecentsGestureHandler</string>
     <string name="action_do_nothing_class" translatable="false">ch.deletescape.lawnchair.gestures.BlankGestureHandler</string>
     <string name="pref_show_assistant_title">Show voice search button</string>
     <string name="pref_show_assistant_summary">Display a voice search button in the search bar if supported</string>

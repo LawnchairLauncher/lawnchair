@@ -22,14 +22,8 @@ import android.content.SharedPreferences
 import android.content.res.TypedArray
 import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.*
-import ch.deletescape.lawnchair.gestures.gestures.PressRecentsGesture
-import ch.deletescape.lawnchair.gestures.gestures.PressRecentsGlobalGesture
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.quickstep.TouchInteractionService
 
 class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -39,26 +33,15 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
     private val blankGestureHandler = BlankGestureHandler(context, null)
     private val handler get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
     internal var isSwipeUp = false
-    private var isRecents = false
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.GesturePreference)
         val className = ta.getString(R.styleable.GesturePreference_gestureClass) ?: ""
         when (className) {
             NavSwipeUpGesture::class.java.name -> isSwipeUp = true
-            PressRecentsGesture::class.java.name -> isRecents = true
-            PressRecentsGlobalGesture::class.java.name -> isRecents = true
         }
 
         ta.recycle()
-    }
-
-    override fun getShouldDisableView(): Boolean {
-        if (isRecents) {
-            val controller = (LauncherAppState.getInstanceNoCreate().launcher as LawnchairLauncher).gestureController
-            return !TouchInteractionService.isConnected() || Utilities.getLawnchairPrefs(controller.launcher).swipeUpToSwitchApps
-        }
-        return false
     }
 
     override fun onAttached() {

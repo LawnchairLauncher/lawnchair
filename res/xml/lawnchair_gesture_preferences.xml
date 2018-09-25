@@ -31,20 +31,6 @@
         app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.PressBackGesture"/>
 
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
-        android:defaultValue="@string/action_open_recents_class"
-        android:key="pref_gesture_press_recents"
-        android:persistent="true"
-        android:title="@string/gesture_press_recents"
-        app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.PressRecentsGesture"/>
-
-    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
-        android:defaultValue="@string/action_open_recents_class"
-        android:key="pref_gesture_press_recents_global"
-        android:persistent="true"
-        android:title="@string/gesture_press_recents_global"
-        app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.PressRecentsGlobalGesture"/>
-
-    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
         android:defaultValue="@string/action_open_notifications_class"
         android:key="pref_gesture_swipe_down"
         android:persistent="true"

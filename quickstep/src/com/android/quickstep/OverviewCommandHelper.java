@@ -47,13 +47,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.gestures.GestureController;
-import ch.deletescape.lawnchair.gestures.handlers.OpenRecentsGestureHandler;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -192,22 +188,6 @@ public class OverviewCommandHelper {
         }
 
         mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-        LawnchairLauncher launcher = (LawnchairLauncher) LauncherAppState.getInstanceNoCreate()
-                .getLauncher();
-        GestureController controller = launcher.getGestureController();
-        if (mAM.getRunningTask().baseActivity.getPackageName().equals(launcher.getPackageName())) {
-            if (!(controller.getPressRecentsGesture()
-                    .getHandler() instanceof OpenRecentsGestureHandler)) {
-                controller.onPressRecents();
-                return;
-            }
-        } else {
-            if (!(controller.getPressRecentsGlobalGesture()
-                    .getHandler() instanceof OpenRecentsGestureHandler)) {
-                controller.onPressRecentsGlobal();
-                return;
-            }
-        }
         mMainThreadExecutor.execute(new RecentsActivityCommand<>());
     }
 
