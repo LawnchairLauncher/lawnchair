@@ -186,3 +186,13 @@
 -dontwarn android.app.**
 -dontwarn android.view.**
 -dontwarn android.os.**
+
+-keep class com.android.quickstep.LauncherSearchIndexablesProvider { *; }
+
+-keep class com.android.launcher3.InvariantDeviceProfile {
+  float iconSizeOriginal;
+  float landscapeIconSizeOriginal;
+  int numHotseatIconsOriginal;
+  int numRowsOriginal;
+  int numColumnsOriginal;
+}
