@@ -125,6 +125,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 NotificationsOpenGestureHandler(context, null),
                 OpenOverlayGestureHandler(context, null),
                 StartAssistantGestureHandler(context, null),
+                PlayDespacitoGestureHandler(context, null),
                 StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null),
                 LaunchMostRecentTaskGestureHandler(context, null)

@@ -541,6 +541,7 @@
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Select app</string>
     <string name="action_none">Do nothing</string>
+    <string name="action_despacito">Play despacito</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
     <string name="gesture_double_tap">Double tap</string>
