@@ -373,7 +373,7 @@ public class DeviceProfile {
         updateFolderCellSize(1f, dm, res);
 
         // Don't let the folder get too close to the edges of the screen.
-        int folderMargin = edgeMarginPx;
+        int folderMargin = edgeMarginPx * 2;
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the icons fit within the available height.
