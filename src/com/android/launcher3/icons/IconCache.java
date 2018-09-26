@@ -16,6 +16,7 @@
 
 package com.android.launcher3.icons;
 
+import static com.android.launcher3.icons.CachingLogic.COMPONENT_WITH_LABEL;
 import static com.android.launcher3.icons.CachingLogic.LAUNCHER_ACTIVITY_INFO;
 
 import android.content.Context;
@@ -114,8 +115,8 @@ public class IconCache extends BaseIconCache {
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
         CacheEntry entry = cacheLocked(application.componentName,
-                Provider.of(null), LAUNCHER_ACTIVITY_INFO,
-                application.user, false, application.usingLowResIcon());
+                application.user, Provider.of(null), LAUNCHER_ACTIVITY_INFO,
+                false, application.usingLowResIcon());
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);
         }
@@ -148,6 +149,13 @@ public class IconCache extends BaseIconCache {
         }
     }
 
+    public synchronized String getTitleNoCache(ComponentWithLabel info) {
+        CacheEntry entry = cacheLocked(info.getComponent(), info.getUser(), Provider.of(info),
+                COMPONENT_WITH_LABEL, false /* usePackageIcon */, true /* useLowResIcon */,
+                false /* addToMemCache */);
+        return Utilities.trim(entry.title);
+    }
+
     /**
      * Fill in {@param shortcutInfo} with the icon and label for {@param info}
      */
@@ -155,8 +163,9 @@ public class IconCache extends BaseIconCache {
             @NonNull ItemInfoWithIcon infoInOut,
             @NonNull Provider<LauncherActivityInfo> activityInfoProvider,
             boolean usePkgIcon, boolean useLowResIcon) {
-        CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), activityInfoProvider,
-                LAUNCHER_ACTIVITY_INFO, infoInOut.user, usePkgIcon, useLowResIcon);
+        CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), infoInOut.user,
+                activityInfoProvider,
+                LAUNCHER_ACTIVITY_INFO, usePkgIcon, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
     }
 

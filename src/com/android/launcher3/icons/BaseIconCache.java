@@ -226,12 +226,12 @@ public class BaseIconCache {
             entry = new CacheEntry();
             cachingLogic.loadIcon(mContext, this, object, entry);
         }
-        entry.title = cachingLogic.getLabel(object);
+        entry.title = cachingLogic.getLabel(object, mPackageManager);
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
         mCache.put(key, entry);
 
-        ContentValues values = newContentValues(entry.icon, entry.color,
-                entry.title.toString(), componentName.getPackageName());
+        ContentValues values = newContentValues(entry, entry.title.toString(),
+                componentName.getPackageName());
         addIconToDB(values, componentName, info, userSerial);
     }
 
@@ -280,16 +280,25 @@ public class BaseIconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     protected <T> CacheEntry cacheLocked(
-            @NonNull ComponentName componentName,
-            @NonNull Provider<T> infoProvider,
-            @NonNull CachingLogic<T> cachingLogic,
-            UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
+            @NonNull ComponentName componentName, @NonNull UserHandle user,
+            @NonNull Provider<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
+            boolean usePackageIcon, boolean useLowResIcon) {
+        return cacheLocked(componentName, user, infoProvider, cachingLogic, usePackageIcon,
+                useLowResIcon, true);
+    }
+
+    protected <T> CacheEntry cacheLocked(
+            @NonNull ComponentName componentName, @NonNull UserHandle user,
+            @NonNull Provider<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
+            boolean usePackageIcon, boolean useLowResIcon, boolean addToMemCache) {
         Preconditions.assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowRes() && !useLowResIcon)) {
             entry = new CacheEntry();
-            mCache.put(cacheKey, entry);
+            if (addToMemCache) {
+                mCache.put(cacheKey, entry);
+            }
 
             // Check the DB first.
             T object = null;
@@ -327,7 +336,7 @@ public class BaseIconCache {
                     providerFetchedOnce = true;
                 }
                 if (object != null) {
-                    entry.title = cachingLogic.getLabel(object);
+                    entry.title = cachingLogic.getLabel(object, mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                 }
             }
@@ -413,8 +422,8 @@ public class BaseIconCache {
 
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
-                    ContentValues values = newContentValues(iconInfo.icon, entry.color,
-                            entry.title.toString(), packageName);
+                    ContentValues values = newContentValues(
+                            iconInfo, entry.title.toString(), packageName);
                     addIconToDB(values, cacheKey.componentName, info,
                             mUserManager.getSerialNumberForUser(user));
 
@@ -515,11 +524,11 @@ public class BaseIconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, int iconColor, String label,
-            String packageName) {
+    private ContentValues newContentValues(BitmapInfo bitmapInfo, String label, String packageName) {
         ContentValues values = new ContentValues();
-        values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
-        values.put(IconDB.COLUMN_ICON_COLOR, iconColor);
+        values.put(IconDB.COLUMN_ICON,
+                bitmapInfo.isLowRes() ? null : Utilities.flattenBitmap(bitmapInfo.icon));
+        values.put(IconDB.COLUMN_ICON_COLOR, bitmapInfo.color);
 
         values.put(IconDB.COLUMN_LABEL, label);
         values.put(IconDB.COLUMN_SYSTEM_STATE, mIconProvider.getIconSystemState(packageName));

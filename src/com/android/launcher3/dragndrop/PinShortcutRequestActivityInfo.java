@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.PinItemRequest;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -65,7 +66,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public CharSequence getLabel() {
+    public CharSequence getLabel(PackageManager pm) {
         return mInfo.getShortLabel();
     }
 

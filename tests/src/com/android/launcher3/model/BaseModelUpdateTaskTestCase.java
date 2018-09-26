@@ -205,9 +205,9 @@ public class BaseModelUpdateTaskTestCase {
         @Override
         protected <T> CacheEntry cacheLocked(
                 @NonNull ComponentName componentName,
-                @NonNull Provider<T> infoProvider,
+                UserHandle user, @NonNull Provider<T> infoProvider,
                 @NonNull CachingLogic<T> cachingLogic,
-                UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
+                boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
                 entry = new CacheEntry();

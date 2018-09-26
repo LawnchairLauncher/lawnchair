@@ -2,11 +2,15 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Parcel;
+import android.os.UserHandle;
+
+import com.android.launcher3.icons.ComponentWithLabel;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -14,7 +18,8 @@ import android.os.Parcel;
  * (who's implementation is owned by the launcher). This object represents a widget type / class,
  * as opposed to a widget instance, and so should not be confused with {@link LauncherAppWidgetInfo}
  */
-public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
+public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
+        implements ComponentWithLabel {
 
     public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
@@ -102,4 +107,14 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
             return 0;
         }
     }
- }
+
+    @Override
+    public final ComponentName getComponent() {
+        return provider;
+    }
+
+    @Override
+    public final UserHandle getUser() {
+        return getProfile();
+    }
+}
