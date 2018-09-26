@@ -67,9 +67,8 @@ public class IconCacheUpdateHandler {
 
     private void createPackageInfoMap() {
         PackageManager pm = mIconCache.mPackageManager;
-        HashMap<String, PackageInfo> pkgInfoMap = new HashMap<>();
         for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
-            pkgInfoMap.put(info.packageName, info);
+            mPkgInfoMap.put(info.packageName, info);
         }
     }
 
