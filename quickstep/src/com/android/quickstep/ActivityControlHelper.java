@@ -91,7 +91,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      * Updates the UI to indicate quick interaction.
      */
     void onQuickInteractionStart(T activity, @Nullable RunningTaskInfo taskInfo,
-            boolean activityVisible);
+            boolean activityVisible, TouchInteractionLog touchInteractionLog);
 
     float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
             Context context);
@@ -153,13 +153,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public void onQuickInteractionStart(Launcher activity, RunningTaskInfo taskInfo,
-                boolean activityVisible) {
+                boolean activityVisible, TouchInteractionLog touchInteractionLog) {
             LauncherState fromState = activity.getStateManager().getState();
             activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
 
             QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
-            controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this);
+            controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this,
+                    touchInteractionLog);
 
             if (!activityVisible) {
                 // For the duration of the gesture, lock the screen orientation to ensure that we
@@ -425,14 +426,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public void onQuickInteractionStart(RecentsActivity activity, RunningTaskInfo taskInfo,
-                boolean activityVisible) {
+                boolean activityVisible, TouchInteractionLog touchInteractionLog) {
             QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
 
             // TODO: match user is as well
             boolean startingFromHome = !activityVisible &&
                     (taskInfo == null || Objects.equals(taskInfo.topActivity, mHomeComponent));
-            controller.onQuickScrubStart(startingFromHome, this);
+            controller.onQuickScrubStart(startingFromHome, this, touchInteractionLog);
             if (activityVisible) {
                 mUiHandler.postDelayed(controller::onFinishedTransitionToQuickScrub,
                         OVERVIEW_TRANSITION_MS);

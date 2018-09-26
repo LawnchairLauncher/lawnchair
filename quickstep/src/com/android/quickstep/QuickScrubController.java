@@ -69,6 +69,7 @@ public class QuickScrubController implements OnAlarmListener {
     private boolean mFinishedTransitionToQuickScrub;
     private Runnable mOnFinishedTransitionToQuickScrubRunnable;
     private ActivityControlHelper mActivityControlHelper;
+    private TouchInteractionLog mTouchInteractionLog;
 
     public QuickScrubController(BaseActivity activity, RecentsView recentsView) {
         mActivity = activity;
@@ -79,13 +80,15 @@ public class QuickScrubController implements OnAlarmListener {
         }
     }
 
-    public void onQuickScrubStart(boolean startingFromHome, ActivityControlHelper controlHelper) {
+    public void onQuickScrubStart(boolean startingFromHome, ActivityControlHelper controlHelper,
+            TouchInteractionLog touchInteractionLog) {
         prepareQuickScrub(TAG);
         mInQuickScrub = true;
         mStartedFromHome = startingFromHome;
         mQuickScrubSection = 0;
         mFinishedTransitionToQuickScrub = false;
         mActivityControlHelper = controlHelper;
+        mTouchInteractionLog = touchInteractionLog;
 
         snapToNextTaskIfAvailable();
         mActivity.getUserEventDispatcher().resetActionDurationMillis();
@@ -101,7 +104,9 @@ public class QuickScrubController implements OnAlarmListener {
             TaskView taskView = mRecentsView.getTaskViewAt(page);
             if (taskView != null) {
                 mWaitingForTaskLaunch = true;
+                mTouchInteractionLog.launchTaskStart();
                 taskView.launchTask(true, (result) -> {
+                    mTouchInteractionLog.launchTaskEnd(result);
                     if (!result) {
                         taskView.notifyTaskLaunchFailed(TAG);
                         breakOutOfQuickScrub();
