@@ -40,8 +40,8 @@ import android.util.Pair;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;

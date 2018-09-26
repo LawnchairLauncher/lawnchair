@@ -34,7 +34,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts

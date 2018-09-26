@@ -45,7 +45,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.ColorExtractor;
+import com.android.launcher3.icons.ColorExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;

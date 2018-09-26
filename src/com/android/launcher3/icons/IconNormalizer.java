@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.graphics;
+package com.android.launcher3.icons;
 
 import android.content.Context;
 import android.graphics.Bitmap;

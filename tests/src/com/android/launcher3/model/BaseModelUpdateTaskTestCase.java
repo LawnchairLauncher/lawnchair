@@ -32,7 +32,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;

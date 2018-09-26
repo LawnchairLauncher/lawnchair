@@ -16,8 +16,6 @@
 
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.graphics.BitmapInfo.LOW_RES_ICON;
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -37,6 +35,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 

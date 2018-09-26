@@ -39,7 +39,7 @@ import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;

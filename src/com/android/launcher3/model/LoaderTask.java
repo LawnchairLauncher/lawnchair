@@ -61,7 +61,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
