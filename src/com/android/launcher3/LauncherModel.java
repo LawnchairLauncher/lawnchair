@@ -38,7 +38,7 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BaseModelUpdateTask;

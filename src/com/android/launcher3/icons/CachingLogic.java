@@ -20,9 +20,6 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.LauncherIcons;
-
 public interface CachingLogic<T> {
 
     ComponentName getComponent(T object);

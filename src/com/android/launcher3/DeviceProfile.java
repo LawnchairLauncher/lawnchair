@@ -30,7 +30,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.graphics.IconNormalizer;
+import com.android.launcher3.icons.IconNormalizer;
 
 public class DeviceProfile {
 

@@ -1,4 +1,4 @@
-package com.android.launcher3.graphics;
+package com.android.launcher3.icons;
 
 import android.annotation.TargetApi;
 import android.content.res.Resources;

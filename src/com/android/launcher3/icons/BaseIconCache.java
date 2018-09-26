@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.icons;
 
-import static com.android.launcher3.graphics.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -48,9 +48,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.BitmapRenderer;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
