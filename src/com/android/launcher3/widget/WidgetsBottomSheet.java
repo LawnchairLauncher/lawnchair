@@ -70,8 +70,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
                 R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
 
         onWidgetsBound();
-
-        getPopupContainer().addView(this);
+        attachToContainer();
         mIsOpen = false;
         animateOpen();
     }

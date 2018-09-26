@@ -239,7 +239,7 @@ public class ClipAnimationHelper {
             updateStackBoundsToMultiWindowTaskSize(activity);
         } else {
             mSourceStackBounds.set(mHomeStackBounds);
-            mSourceInsets.set(activity.getDeviceProfile().getInsets());
+            mSourceInsets.set(ttv.getInsets());
         }
 
         TransformedRect targetRect = new TransformedRect();

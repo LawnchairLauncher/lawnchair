@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Surface;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
@@ -92,6 +93,7 @@ public final class LauncherInstrumentation {
     private final boolean mSwipeUpEnabled;
     private Boolean mSwipeUpEnabledOverride = null;
     private final Instrumentation mInstrumentation;
+    private int mExpectedRotation = Surface.ROTATION_0;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -109,7 +111,7 @@ public final class LauncherInstrumentation {
         assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
     }
 
-    // Used only by tests.
+    // Used only by TaplTests.
     public void overrideSwipeUpEnabled(Boolean swipeUpEnabledOverride) {
         mSwipeUpEnabledOverride = swipeUpEnabledOverride;
     }
@@ -144,14 +146,30 @@ public final class LauncherInstrumentation {
         fail(message + ". " + "Actual: " + actual);
     }
 
+    static public void assertEquals(String message, int expected, int actual) {
+        if (expected != actual) {
+            fail(message + " expected: " + expected + " but was: " + actual);
+        }
+    }
+
     static void assertNotEquals(String message, int unexpected, int actual) {
         if (unexpected == actual) {
             failEquals(message, actual);
         }
     }
 
+    public void setExpectedRotation(int expectedRotation) {
+        mExpectedRotation = expectedRotation;
+    }
+
     private UiObject2 verifyContainerType(ContainerType containerType) {
+        assertEquals("Unexpected display rotation",
+                mExpectedRotation, mDevice.getDisplayRotation());
+        assertTrue("Presence of recents button doesn't match isSwipeUpEnabled()",
+                isSwipeUpEnabled() ==
+                        (mDevice.findObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")) == null));
         log("verifyContainerType: " + containerType);
+
         switch (containerType) {
             case WORKSPACE: {
                 waitUntilGone(APPS_RES_ID);
@@ -172,7 +190,11 @@ public final class LauncherInstrumentation {
                 return waitForLauncherObject(APPS_RES_ID);
             }
             case OVERVIEW: {
-                waitForLauncherObject(APPS_RES_ID);
+                if (mDevice.isNaturalOrientation()) {
+                    waitForLauncherObject(APPS_RES_ID);
+                } else {
+                    waitUntilGone(APPS_RES_ID);
+                }
                 waitUntilGone(WORKSPACE_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(OVERVIEW_RES_ID);
@@ -225,7 +247,10 @@ public final class LauncherInstrumentation {
         // otherwise waitForIdle may return immediately in case when there was a big enough pause in
         // accessibility events prior to pressing Home.
         executeAndWaitForEvent(
-                () -> getSystemUiObject("home").click(),
+                () -> {
+                    log("LauncherInstrumentation.pressHome before clicking");
+                    getSystemUiObject("home").click();
+                },
                 event -> true,
                 "Pressing Home didn't produce any events");
         mDevice.waitForIdle();

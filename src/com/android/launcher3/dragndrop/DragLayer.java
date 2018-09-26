@@ -47,7 +47,6 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.ViewScrim;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -122,15 +121,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        ViewScrim scrim = ViewScrim.get(child);
-        if (scrim != null) {
-            scrim.draw(canvas, getWidth(), getHeight());
-        }
-        return super.drawChild(canvas, child, drawingTime);
     }
 
     @Override

@@ -11,7 +11,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.IconCache;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;

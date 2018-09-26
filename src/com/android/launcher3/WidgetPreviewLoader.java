@@ -33,6 +33,7 @@ import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.ShadowGenerator;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;

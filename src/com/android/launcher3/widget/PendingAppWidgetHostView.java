@@ -33,8 +33,8 @@ import android.view.View.OnClickListener;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.IconCache;
-import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.R;

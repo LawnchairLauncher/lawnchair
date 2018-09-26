@@ -52,10 +52,10 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
-import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -78,22 +78,31 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-    protected UiDevice mDevice;
-    protected LauncherInstrumentation mLauncher;
+    protected final UiDevice mDevice;
+    protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
 
     private static final String TAG = "AbstractLauncherUiTest";
+
+    protected AbstractLauncherUiTest() {
+        mDevice = UiDevice.getInstance(getInstrumentation());
+        mLauncher = new LauncherInstrumentation(getInstrumentation());
+    }
 
     @Rule
     public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
     @Before
     public void setUp() throws Exception {
-        mDevice = UiDevice.getInstance(getInstrumentation());
-        mLauncher = new LauncherInstrumentation(getInstrumentation());
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 0");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 1");
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
@@ -278,12 +287,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected boolean waitForLauncherCondition(
             Function<Launcher, Boolean> condition, long timeout) {
-        return Wait.atMost(new Condition() {
-            @Override
-            public boolean isTrue() {
-                return getFromLauncher(condition);
-            }
-        }, timeout);
+        return Wait.atMost(() -> getFromLauncher(condition), timeout);
     }
 
     /**

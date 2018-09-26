@@ -27,7 +27,7 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.IconCache;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
