@@ -82,12 +82,17 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
+    protected final boolean mIsInLauncherProcess;
 
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
-        mDevice = UiDevice.getInstance(getInstrumentation());
-        mLauncher = new LauncherInstrumentation(getInstrumentation());
+        final Instrumentation instrumentation = getInstrumentation();
+        mDevice = UiDevice.getInstance(instrumentation);
+        mLauncher = new LauncherInstrumentation(instrumentation);
+
+        mIsInLauncherProcess = instrumentation.getTargetContext().getPackageName().equals(
+                mDevice.getLauncherPackageName());
     }
 
     @Rule
@@ -261,6 +266,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {
+        if (!mIsInLauncherProcess) return null;
         return getOnUiThread(() -> f.apply(mActivityMonitor.getActivity()));
     }
 
@@ -287,6 +293,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected boolean waitForLauncherCondition(
             Function<Launcher, Boolean> condition, long timeout) {
+        if (!mIsInLauncherProcess) return true;
         return Wait.atMost(() -> getFromLauncher(condition), timeout);
     }
 
