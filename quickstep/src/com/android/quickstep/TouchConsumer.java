@@ -43,7 +43,7 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default void reset() { }
 
-    default void updateTouchTracking(@InteractionType int interactionType) { }
+    default void onQuickScrubStart() { }
 
     default void onQuickScrubEnd() { }
 

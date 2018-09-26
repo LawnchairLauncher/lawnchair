@@ -146,7 +146,7 @@ public class MotionEventQueue {
                 if (event.getActionMasked() == ACTION_VIRTUAL) {
                     switch (event.getAction()) {
                         case ACTION_QUICK_SCRUB_START:
-                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
+                            mConsumer.onQuickScrubStart();
                             break;
                         case ACTION_QUICK_SCRUB_PROGRESS:
                             mConsumer.onQuickScrubProgress(event.getX());
@@ -162,7 +162,7 @@ public class MotionEventQueue {
                             break;
                         case ACTION_SHOW_OVERVIEW_FROM_ALT_TAB:
                             mConsumer.onShowOverviewFromAltTab();
-                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
+                            mConsumer.onQuickScrubStart();
                             break;
                         case ACTION_QUICK_STEP:
                             mConsumer.onQuickStep(event);
