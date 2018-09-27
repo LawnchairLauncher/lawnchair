@@ -400,9 +400,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (mShowEmptyMessage) {
-                    onAllTasksRemoved();
-                }
                 if (mTouchDownToStartHome) {
                     startHome();
                 }
@@ -413,7 +410,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Passing the touch slop will not allow dismiss to home
-                if (mTouchDownToStartHome && Math.hypot(mDownX - x, mDownY - y) > mTouchSlop) {
+                if (mTouchDownToStartHome &&
+                        (isHandlingTouch() || Math.hypot(mDownX - x, mDownY - y) > mTouchSlop)) {
                     mTouchDownToStartHome = false;
                 }
                 break;
@@ -421,12 +419,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 // Touch down anywhere but the deadzone around the visible clear all button and
                 // between the task views will start home on touch up
                 if (!isHandlingTouch()) {
-                    updateDeadZoneRects();
-                    final boolean clearAllButtonDeadZoneConsumed = mClearAllButton.getAlpha() == 1
-                            && mClearAllButtonDeadZoneRect.contains(x, y);
-                    if (!clearAllButtonDeadZoneConsumed
-                            && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
+                    if (mShowEmptyMessage) {
                         mTouchDownToStartHome = true;
+                    } else {
+                        updateDeadZoneRects();
+                        final boolean clearAllButtonDeadZoneConsumed =
+                                mClearAllButton.getAlpha() == 1
+                                        && mClearAllButtonDeadZoneRect.contains(x, y);
+                        if (!clearAllButtonDeadZoneConsumed
+                                && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
+                            mTouchDownToStartHome = true;
+                        }
                     }
                 }
                 mDownX = x;
@@ -664,10 +667,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         }
         mHasVisibleTaskData.clear();
-    }
-
-    protected void onAllTasksRemoved() {
-        startHome();
     }
 
     protected abstract void startHome();
@@ -973,7 +972,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
                if (getTaskViewCount() == 0) {
                    removeView(mClearAllButton);
-                   onAllTasksRemoved();
+                   startHome();
                } else {
                    snapToPageImmediately(pageToSnapTo);
                }
@@ -1002,7 +1001,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 // Remove all the task views now
                 ActivityManagerWrapper.getInstance().removeAllRecentTasks();
                 removeAllViews();
-                onAllTasksRemoved();
+                startHome();
             }
             mPendingAnimation = null;
         });
