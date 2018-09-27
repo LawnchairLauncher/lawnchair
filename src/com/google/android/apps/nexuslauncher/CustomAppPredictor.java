@@ -85,7 +85,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     List<ComponentKeyMapper<AppInfo>> getPredictions() {
         List<ComponentKeyMapper<AppInfo>> list = new ArrayList<>();
         if (isPredictorEnabled()) {
-            clearNonExistentPackages();
+            clearNonExistingComponents();
 
             List<String> predictionList = new ArrayList<>(getStringSetCopy());
 
@@ -118,7 +118,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
             if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
-                clearNonExistentPackages();
+                clearNonExistingComponents();
                 
                 Set<String> predictionSet = getStringSetCopy();
                 SharedPreferences.Editor edit = mPrefs.edit();
@@ -206,17 +206,26 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return new ComponentKeyMapper<>(new ComponentKey(mContext, str));
     }
 
-    private void clearNonExistentPackages() {
+    private void clearNonExistingComponents() {
         Set<String> originalSet = mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET);
         Set<String> predictionSet = new HashSet<>(originalSet);
 
         SharedPreferences.Editor edit = mPrefs.edit();
         for (String prediction : originalSet) {
+            ComponentName cn = new ComponentKey(mContext, prediction).componentName;
             try {
-                mPackageManager.getPackageInfo(new ComponentKey(mContext, prediction).componentName.getPackageName(), 0);
+                mPackageManager.getActivityInfo(cn, 0);
             } catch (PackageManager.NameNotFoundException e) {
                 predictionSet.remove(prediction);
                 edit.remove(PREDICTION_PREFIX + prediction);
+                Intent intent = mPackageManager.getLaunchIntentForPackage(cn.getPackageName());
+                if (intent != null) {
+                    ComponentName componentInfo = intent.getComponent();
+                    if (componentInfo != null) {
+                        ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
+                        predictionSet.add(key.toString());
+                    }
+                }
             }
         }
 
