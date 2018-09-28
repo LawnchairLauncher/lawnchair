@@ -56,7 +56,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override val entries get() = packComponents.values.toList()
 
     init {
-        Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper().thread.name}")
+        Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper().thread.name}", Throwable())
         executeLoadPack()
     }
 
@@ -152,7 +152,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
                          flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, iconProvider: LawnchairIconProvider?): Drawable {
+                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {
         ensureInitialLoadComplete()
 
         val component = launcherActivityInfo.componentName
@@ -178,12 +178,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
         }
 
-        return basePack.getIcon(launcherActivityInfo, iconDpi,
-                flattenDrawable, null, IconPackManager.getInstance(context).defaultPack, iconProvider)
+        return basePacks.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
+                basePacks, iconProvider)
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -201,8 +201,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 return FastBitmapDrawable(icon)
             }
         }
-        return basePack.newIcon(icon, itemInfo, null,
-                IconPackManager.getInstance(context).defaultPack, drawableFactory)
+        return basePacks.next().newIcon(icon, itemInfo, null,
+                basePacks, drawableFactory)
     }
 
     override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {

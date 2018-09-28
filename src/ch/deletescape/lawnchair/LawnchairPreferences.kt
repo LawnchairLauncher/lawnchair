@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.text.TextUtils
 import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
@@ -72,6 +73,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
     private val reloadIcons = { reloadIcons() }
+    private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
@@ -82,7 +84,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val blurRadius by FloatPref("pref_blurRadius", 75f, updateBlur)
 
     // Theme
-    var iconPack by StringPref("pref_icon_pack", "", reloadIcons)
+    var iconPack by StringPref("pref_icon_pack", "", reloadIconPacks)
+    val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
+            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
+
+        override fun unflattenValue(value: String) = value
+    }
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", false, reloadIcons)
     val accentColor by IntPref("pref_accentColor", context.resources.getColor(R.color.colorAccent), doNothing)
@@ -237,14 +244,16 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
                                             private val prefKey: String,
-                                            onChange: () -> Unit = doNothing) {
+                                            onChange: () -> Unit = doNothing,
+                                            default: List<T> = emptyList()) {
 
-        constructor(prefKey: String, onChange: () -> Unit = doNothing) : this(sharedPrefs, prefKey, onChange)
+        constructor(prefKey: String, onChange: () -> Unit = doNothing, default: List<T> = emptyList())
+                : this(sharedPrefs, prefKey, onChange, default)
 
         private val valueList = ArrayList<T>()
 
         init {
-            val arr = JSONArray(prefs.getString(prefKey, "[]"))
+            val arr = JSONArray(prefs.getString(prefKey, getJsonString(default)))
             (0 until arr.length()).mapTo(valueList) { unflattenValue(arr.getString(it)) }
             if (onChange != doNothing) {
                 onChangeMap[prefKey] = onChange
@@ -295,14 +304,20 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             saveChanges()
         }
 
+        fun getList() = valueList
+
         private fun saveChanges() {
-            val arr = JSONArray()
-            valueList.forEach { arr.put(flattenValue(it)) }
             @SuppressLint("CommitPrefEdits")
             val editor = prefs.edit()
-            editor.putString(prefKey, arr.toString())
+            editor.putString(prefKey, getJsonString(valueList))
             if (!bulkEditing)
                 commitOrApply(editor, blockingEditing)
+        }
+
+        private fun getJsonString(list: List<T>): String {
+            val arr = JSONArray()
+            list.forEach { arr.put(flattenValue(it)) }
+            return arr.toString()
         }
     }
 

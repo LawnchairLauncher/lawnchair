@@ -344,8 +344,6 @@ fun reloadIcons(context: Context) {
             model.onPackagesReload(user)
         }
 
-        IconPackManager.getInstance(context).onPackChanged()
-
         val shortcutManager = DeepShortcutManager.getInstance(context)
         val launcherApps = LauncherAppsCompat.getInstance(context)
         userManagerCompat.userProfiles.forEach { user ->

@@ -76,7 +76,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                          iconDpi: Int, flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, iconProvider: LawnchairIconProvider?): Drawable {
+                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {
         ensureInitialLoadComplete()
 
         val key: ComponentKey
@@ -99,7 +99,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {

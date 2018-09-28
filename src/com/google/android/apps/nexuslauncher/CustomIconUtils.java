@@ -43,64 +43,6 @@ public class CustomIconUtils {
         return packs;
     }
 
-    static boolean isPackProvider(Context context, String packageName) {
-        if (packageName != null && !packageName.isEmpty()) {
-            PackageManager pm = context.getPackageManager();
-            for (String intent : ICON_INTENTS) {
-                if (pm.queryIntentActivities(new Intent(intent).setPackage(packageName),
-                        PackageManager.GET_META_DATA).iterator().hasNext()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    static String getCurrentPack(Context context) {
-        return Utilities.getLawnchairPrefs(context).getIconPack();
-    }
-
-    static void setCurrentPack(Context context, String pack) {
-        Utilities.getLawnchairPrefs(context).setIconPack(pack);
-    }
-
-    public static boolean usingValidPack(Context context) {
-        return isPackProvider(context, getCurrentPack(context));
-    }
-
-    static void applyIconPackAsync(final Context context) {
-        new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-            @Override
-            public void run() {
-                UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
-                LauncherModel model = LauncherAppState.getInstance(context).getModel();
-
-                boolean noPack = CustomIconUtils.getCurrentPack(context).isEmpty();
-                Utilities.getPrefs(context).edit().putBoolean(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, !noPack).apply();
-                if (noPack) {
-                    CustomAppFilter.resetAppFilter(context);
-                }
-                for (UserHandle user : userManagerCompat.getUserProfiles()) {
-                    model.onPackagesReload(user);
-                }
-
-                IconPackManager.Companion.getInstance(context).onPackChanged();
-
-                DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
-                LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-                for (UserHandle user : userManagerCompat.getUserProfiles()) {
-                    HashSet<String> pkgsSet = new HashSet<>();
-                    for (LauncherActivityInfo info : launcherApps.getActivityList(null, user)) {
-                        pkgsSet.add(info.getComponentName().getPackageName());
-                    }
-                    for (String pkg : pkgsSet) {
-                        reloadIcon(shortcutManager, model, user, pkg);
-                    }
-                }
-            }
-        });
-    }
-
     public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
         model.onPackageChanged(pkg, user);
         List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);

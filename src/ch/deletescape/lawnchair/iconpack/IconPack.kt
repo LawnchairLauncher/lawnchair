@@ -35,12 +35,12 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     private val loadCompleteListeners = ArrayList<(IconPack) -> Unit>()
 
     fun executeLoadPack() {
-        LooperExecutor(LauncherModel.getIconPackLooper()).execute({
+        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
             loadPack()
             waiter?.release()
             loadCompleteListeners.forEach { it.invoke(this) }
             loadCompleteListeners.clear()
-        })
+        }
     }
 
     fun addOnLoadCompleteListener(listener: (IconPack) -> Unit) {
@@ -68,10 +68,10 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
 
     abstract fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                          iconDpi: Int, flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, iconProvider: LawnchairIconProvider?): Drawable
+                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable
 
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePack: IconPack, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable
+                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
         ensureInitialLoadComplete()
