@@ -117,12 +117,23 @@
             name="Abhijeet Bohra"
             avatar="https://avatars.githubusercontent.com/u/34155181"
             login="abhijeetbohra"
-            task="^@string/about_role_mod_support">
+            task="^@string/about_role_special_snowflake">
             <link
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
                 priority="3"
                 url="https://twitter.com/bohra_abhijeet" />
+        </contributor>
+        <contributor
+            name="Rhyse Simpson"
+            avatar="https://avatars.githubusercontent.com/u/7065700"
+            login="Skittles9823"
+            task="^@string/about_role_magisk_maintainer">
+            <link
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                priority="3"
+                url="https://twitter.com/skittles9823"/>
         </contributor>
     </contributors>
     <contributors
@@ -171,11 +182,6 @@
         <contributor
             name="Pratik"
             avatar="https://i.imgur.com/ZYTifu9.png"
-            task="^@string/about_role_family_member" />
-        <contributor
-            name="Rhyse Simpson"
-            avatar="https://avatars.githubusercontent.com/u/7065700"
-            login="Skittles9823"
             task="^@string/about_role_family_member" />
         <contributor
             name="Shubby"

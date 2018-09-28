@@ -509,6 +509,7 @@
     <string name="about_role_special_snowflake">PR Manager/Moderator</string>
     <string name="about_role_mod_support">Moderator/Support</string>
     <string name="about_role_family_member">Family Member</string>
+    <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
     <string name="about_bio_deletescape">Android developer &amp; enthusiast, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
     <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
