@@ -863,8 +863,12 @@ public final class Utilities {
     }
 
     public static boolean isRecentsEnabled() {
-        Context context = LauncherAppState.getInstanceNoCreate().getContext();
-        return LawnchairAppKt.getLawnchairApp(context).getRecentsEnabled();
+        LauncherAppState las = LauncherAppState.getInstanceNoCreate();
+        if (las != null) {
+            Context context = las.getContext();
+            return LawnchairAppKt.getLawnchairApp(context).getRecentsEnabled();
+        }
+        return false;
     }
 
     public static void startAssistant(Context context) {
