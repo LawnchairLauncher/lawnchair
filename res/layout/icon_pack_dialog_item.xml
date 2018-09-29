@@ -66,4 +66,19 @@
         android:duplicateParentState="true"
         android:focusable="false"
         android:gravity="end" />
+
+    <ImageView
+        android:id="@+id/drag_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/deep_shortcuts_drag_handle"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:clickable="false"
+        android:duplicateParentState="true"
+        android:focusable="false"
+        android:gravity="end"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </RelativeLayout>

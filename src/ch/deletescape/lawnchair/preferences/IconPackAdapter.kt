@@ -198,6 +198,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
             icon.setImageDrawable(packItem.info.displayIcon)
             title.text = packItem.info.displayName
             itemView.isClickable = !packItem.isStatic
+            itemView.findViewById<View>(R.id.drag_handle).isVisible = !packItem.isStatic
         }
 
         override fun onClick(v: View) {
