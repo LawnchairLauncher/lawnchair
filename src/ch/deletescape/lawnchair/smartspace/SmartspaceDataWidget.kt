@@ -118,8 +118,12 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?) {
         val weather = if (weatherIcon != null && temperature != null) {
-            val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
-            LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
+            try {
+                val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
+                LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
+            } catch (e: NumberFormatException) {
+                null
+            }
         } else {
             null
         }
