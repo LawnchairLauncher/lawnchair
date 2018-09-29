@@ -58,10 +58,10 @@ class BlankActivity : Activity() {
 
     companion object {
 
-        fun startActivityForResult(context: Context, intent: Intent, requestCode: Int, callback: (Int, Bundle?) -> Unit) {
-            val foreground = context.lawnchairApp.activityHandler.foregroundActivity ?: context
-            foreground.startActivity(Intent(context, BlankActivity::class.java).apply {
-                putExtra("intent", intent)
+        fun startActivityForResult(context: Context, targetIntent: Intent, requestCode: Int,
+                                   newTask: Boolean, callback: (Int, Bundle?) -> Unit) {
+            val intent = Intent(context, BlankActivity::class.java).apply {
+                putExtra("intent", targetIntent)
                 putExtra("requestCode", requestCode)
                 putExtra("callback", object : ResultReceiver(Handler()) {
 
@@ -69,7 +69,10 @@ class BlankActivity : Activity() {
                         callback(resultCode, resultData)
                     }
                 })
-            })
+                if (newTask) addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            val foreground = context.lawnchairApp.activityHandler.foregroundActivity ?: context
+            foreground.startActivity(intent)
         }
     }
 }

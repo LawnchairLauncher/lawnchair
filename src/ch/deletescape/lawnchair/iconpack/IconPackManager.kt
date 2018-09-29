@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.UserHandle
 import android.text.TextUtils
+import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider

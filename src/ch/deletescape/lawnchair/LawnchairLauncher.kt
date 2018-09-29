@@ -158,17 +158,18 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         }
         currentEditInfo = itemInfo
         val infoProvider = CustomInfoProvider.forItem<ItemInfo>(this, itemInfo) ?: return
-        startActivityForResult(EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component), CODE_EDIT_ICON)
+        val intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component)
+        BlankActivity.startActivityForResult(this, intent, CODE_EDIT_ICON,
+                true) { resultCode, data -> handleEditIconResult(resultCode, data) }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CODE_EDIT_ICON && resultCode == Activity.RESULT_OK) {
+    private fun handleEditIconResult(resultCode: Int, data: Bundle?) {
+        if (resultCode == Activity.RESULT_OK) {
             val itemInfo = currentEditInfo ?: return
-            val entryString = data?.getStringExtra(EditIconActivity.EXTRA_ENTRY)
+            val entryString = data?.getString(EditIconActivity.EXTRA_ENTRY)
             val customIconEntry = entryString?.let { IconPackManager.CustomIconEntry.fromString(it) }
             CustomInfoProvider.forItem<ItemInfo>(this, itemInfo)?.setIcon(itemInfo, customIconEntry)
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
