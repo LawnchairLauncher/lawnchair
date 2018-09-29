@@ -415,8 +415,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 f = DockGridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof GesturePreference) {
                 f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
-            } else if (preference instanceof IconPackPreference) {
-                f = IconPackDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion.newInstance((SearchProviderPreference) preference);
             } else {

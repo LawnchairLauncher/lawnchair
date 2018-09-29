@@ -217,7 +217,7 @@ class IconPackManager(private val context: Context) {
             return INSTANCE!!
         }
 
-        private val ICON_INTENTS = arrayOf(
+        val ICON_INTENTS = arrayOf(
                 "com.fede.launcher.THEME_ICONPACK",
                 "com.anddoes.launcher.THEME",
                 "com.teslacoilsw.launcher.THEME",

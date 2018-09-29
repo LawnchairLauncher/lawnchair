@@ -219,9 +219,11 @@ class EditIconActivity : SettingsBaseActivity() {
 
     inner class IconPackInfo(val name: String) {
 
-        val icon = getIconPack().displayIcon
-        val title = getIconPack().displayName
-        val packageName = getIconPack().packPackageName
+        val info = IconPackList.PackInfo.forPackage(this@EditIconActivity, name)
+
+        val icon = info.displayIcon
+        val title = info.displayName
+        val packageName = info.packageName
 
         var packRef: WeakReference<IconPack>? = null
 

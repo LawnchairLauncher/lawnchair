@@ -26,7 +26,7 @@ import ch.deletescape.lawnchair.LawnchairAppFilter
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class HiddenAppsFragment : Fragment(), SelectableAppsAdapter.Callback {
+class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callback {
 
     private lateinit var adapter: SelectableAppsAdapter
 
@@ -35,14 +35,8 @@ class HiddenAppsFragment : Fragment(), SelectableAppsAdapter.Callback {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(container!!.context).inflate(R.layout.preference_spring_recyclerview, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val context = view.context
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+    override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
+        val context = recyclerView.context
         adapter = SelectableAppsAdapter.ofProperty(context,
                 Utilities.getLawnchairPrefs(context)::hiddenAppSet, this, LawnchairAppFilter(context))
         recyclerView.setHasFixedSize(true)

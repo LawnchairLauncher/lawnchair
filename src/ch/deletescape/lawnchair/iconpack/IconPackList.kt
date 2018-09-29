@@ -20,8 +20,12 @@ package ch.deletescape.lawnchair.iconpack
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.google.android.apps.nexuslauncher.CustomIconUtils
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 
 class IconPackList(private val context: Context, private val manager: IconPackManager) {
@@ -29,7 +33,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     private val prefs = Utilities.getLawnchairPrefs(context)
 
     private val loadedPacks = HashMap<String, LoadedPack>()
-    private val appliedPacks = ArrayList<IconPack>()
+    val appliedPacks = ArrayList<IconPack>()
 
     init {
         reloadPacks()
@@ -46,7 +50,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
         val newPacks = HashMap<String, LoadedPack>()
         packs.forEach { pack ->
-            val loadedPack = loadedPacks.getOrElse(pack) { loadPack(pack).apply {
+            val loadedPack = loadedPacks.getOrPut(pack) { loadPack(pack).apply {
                 iconPack.ensureInitialLoadComplete()
                 register()
             } }
@@ -65,7 +69,9 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
     fun getPack(packageName: String, keep: Boolean): IconPack {
         if (keep) {
-            return loadedPacks.getOrPut(packageName) { loadPack(packageName) }.iconPack
+            return loadedPacks.getOrPut(packageName) {
+                loadPack(packageName).apply { register() }
+            }.iconPack
         }
         loadedPacks[packageName]?.let { return it.iconPack }
         return IconPackImpl(context, packageName)
@@ -76,12 +82,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     fun reloadPacks() {
-        val currentPack = prefs.iconPack
-        if (currentPack != "") {
-            setPackList(listOf(currentPack))
-        } else {
-            setPackList(emptyList())
-        }
+        setPackList(prefs.iconPacks.getList())
     }
 
     private fun setPackList(packs: List<String>) {
@@ -90,7 +91,70 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
     fun iterator() = appliedPacks.iterator()
 
-    fun currentPack() = iterator().next()
+    fun currentPack() = appliedPacks[0]
+
+    fun getAvailablePacks(): MutableSet<PackInfo> {
+        val pm = context.packageManager
+        val packs = HashSet<PackInfo>()
+        IconPackManager.ICON_INTENTS.forEach { intent ->
+            pm.queryIntentActivities(Intent(intent), 0)
+                    .mapTo(packs) { PackInfo.forPackage(context, it.activityInfo.packageName) }
+        }
+        return packs
+    }
+
+    abstract class PackInfo(val context: Context, val packageName: String) : Comparable<PackInfo> {
+
+        abstract val displayName: String
+        abstract val displayIcon: Drawable
+
+        abstract fun load() : IconPack
+
+        override fun equals(other: Any?): Boolean {
+            return other is PackInfo && packageName == other.packageName
+        }
+
+        override fun hashCode(): Int {
+            return packageName.hashCode()
+        }
+
+        override fun compareTo(other: PackInfo): Int {
+            return displayName.compareTo(other.displayName)
+        }
+
+        companion object {
+
+            fun forPackage(context: Context, packageName: String): PackInfo {
+                if (TextUtils.isEmpty(packageName)) return DefaultPackInfo(context)
+                return PackInfoImpl(context, packageName)
+            }
+        }
+    }
+
+    class DefaultPackInfo(context: Context) : PackInfo(context, "") {
+
+        override val displayIcon by lazy { context.getDrawable(R.mipmap.ic_launcher_round)!! }
+        override val displayName by lazy { context.resources.getString(R.string.icon_pack_default)!! }
+
+        override fun load() = IconPackManager.getInstance(context).defaultPack
+    }
+
+    class PackInfoImpl(context: Context, packageName: String) : PackInfo(context, packageName) {
+
+        private val applicationInfo by lazy {
+            context.packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+        }
+
+        override val displayIcon by lazy {
+            context.packageManager.getApplicationIcon(applicationInfo)!!
+        }
+
+        override val displayName by lazy {
+            context.packageManager.getApplicationLabel(applicationInfo).toString()
+        }
+
+        override fun load() = IconPackImpl(context, packageName)
+    }
 
     abstract inner class LoadedPack(protected var pack: IconPack) {
 

@@ -56,19 +56,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override val entries get() = packComponents.values.toList()
 
     init {
-        Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper().thread.name}", Throwable())
+        Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper()!!.thread.name}", Throwable())
         executeLoadPack()
     }
 
-    private val applicationInfo by lazy { context.packageManager.getApplicationInfo(packPackageName, PackageManager.GET_META_DATA) }
-
-    override val displayIcon by lazy {
-        context.packageManager.getApplicationIcon(applicationInfo)
-    }
-
-    override val displayName by lazy {
-        context.packageManager.getApplicationLabel(applicationInfo).toString()
-    }
+    override val packInfo = IconPackList.PackInfoImpl(context, packPackageName)
 
     override fun onDateChanged() {
         val apps = LauncherAppsCompat.getInstance(context)

@@ -24,4 +24,11 @@
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">App search</string>
     <string name="recent_task_option_force_stop">Force stop</string>
+
+    <!-- Icon packs -->
+    <string name="pref_icon_packs">Icon packs</string>
+    <string name="drag_to_enable_packs">Hold and drag to enable packs</string>
+    <string name="drag_to_disable_packs">Drag here to disable</string>
+    <string name="get_more_icon_packs">Get more packs</string>
+    <string name="enabled_icon_packs">Enabled packs</string>
 </resources>

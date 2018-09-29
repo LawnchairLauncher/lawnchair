@@ -57,8 +57,10 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
         }
     }
 
-    abstract val displayIcon: Drawable
-    abstract val displayName: String
+    val displayIcon get() = packInfo.displayIcon
+    val displayName get() = packInfo.displayName
+
+    abstract val packInfo: IconPackList.PackInfo
 
     abstract fun onDateChanged()
 

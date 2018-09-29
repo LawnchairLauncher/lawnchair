@@ -10,7 +10,7 @@
             android:defaultValue=""
             android:key="pref_icon_pack"
             android:persistent="true"
-            android:title="@string/pref_icon_pack" />
+            android:title="@string/pref_icon_packs" />
 
         <ListPreference
             android:defaultValue=""

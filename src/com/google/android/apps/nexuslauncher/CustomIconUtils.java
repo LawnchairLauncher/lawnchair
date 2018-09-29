@@ -32,7 +32,7 @@ public class CustomIconUtils {
             "org.adw.launcher.icons.ACTION_PICK_ICON"
     };
 
-    static HashMap<String, CharSequence> getPackProviders(Context context) {
+    public static HashMap<String, CharSequence> getPackProviders(Context context) {
         PackageManager pm = context.getPackageManager();
         HashMap<String, CharSequence> packs = new HashMap<>();
         for (String intent : ICON_INTENTS) {

@@ -54,8 +54,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         executeLoadPack()
     }
 
-    override val displayIcon by lazy { context.getDrawable(R.mipmap.ic_launcher_round)!! }
-    override val displayName by lazy { context.resources.getString(R.string.icon_pack_default)!! }
+    override val packInfo = IconPackList.DefaultPackInfo(context)
 
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model

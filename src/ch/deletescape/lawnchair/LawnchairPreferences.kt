@@ -84,7 +84,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val blurRadius by FloatPref("pref_blurRadius", 75f, updateBlur)
 
     // Theme
-    var iconPack by StringPref("pref_icon_pack", "", reloadIconPacks)
+    private var iconPack by StringPref("pref_icon_pack", "", reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
             if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
 
@@ -271,6 +271,13 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         operator fun set(position: Int, value: T) {
             valueList[position] = value
+            saveChanges()
+        }
+
+        fun setAll(value: List<T>) {
+            if (value == valueList) return
+            valueList.clear()
+            valueList.addAll(value)
             saveChanges()
         }
 

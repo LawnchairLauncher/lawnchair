@@ -19,7 +19,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:layout_toStartOf="@android:id/title"
-        android:scaleType="fitCenter"
+        android:scaleType="centerInside"
         tools:src="@mipmap/ic_launcher" />
 
     <LinearLayout
@@ -44,7 +44,7 @@
             tools:text="Icon pack" />
 
         <TextView
-            android:id="@android:id/text1"
+            android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
