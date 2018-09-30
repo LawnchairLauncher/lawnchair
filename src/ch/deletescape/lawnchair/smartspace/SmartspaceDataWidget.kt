@@ -83,7 +83,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-            BlankActivity.startActivityForResult(context, bindIntent, 1028, false) { resultCode, _ ->
+            BlankActivity.startActivityForResult(context, bindIntent, 1028, 0) { resultCode, _ ->
                 if (resultCode == Activity.RESULT_OK) {
                     startBinding()
                 } else {
