@@ -196,3 +196,5 @@
   int numRowsOriginal;
   int numColumnsOriginal;
 }
+
+-keep class com.android.systemui.shared.system.** { *; }
