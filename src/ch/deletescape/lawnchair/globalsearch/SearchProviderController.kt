@@ -70,7 +70,9 @@ class SearchProviderController(private val context: Context) {
                 BingSearchProvider(context),
                 GoogleGoSearchProvider(context),
                 BaiduSearchProvider(context),
-                YandexSearchProvider(context)
+                YandexSearchProvider(context),
+                SearchLiteSearchProvider(context),
+                CoolSearchSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }
