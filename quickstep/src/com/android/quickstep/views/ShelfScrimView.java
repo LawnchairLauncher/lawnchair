@@ -102,6 +102,8 @@ public class ShelfScrimView extends ScrimView {
             mCalcThreshold = 1 - swipeLength / mLauncher.getAllAppsController().getShiftRange();
             mRemainingScreenPathValid = false;
             updateColors();
+        } else {
+            mDragHandle.setCaretProgress(mProgress);
         }
         updateDragHandleAlpha();
         invalidate();

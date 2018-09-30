@@ -138,7 +138,9 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         int dragHandleSize = mLauncher.getResources()
                 .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
 
-        mDragHandleSize = prefs.getDockShowArrow() ? caretSize : dragHandleSize;
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mDragHandleSize = (prefs.getDockShowArrow() || grid.isVerticalBarLayout()) ? caretSize
+                : dragHandleSize;
         mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
 
         mAccessibilityHelper = createAccessibilityHelper();
