@@ -30,11 +30,11 @@ import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.graphics.NinePatchDrawHelper
 import com.android.launcher3.graphics.ShadowGenerator
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
@@ -174,16 +174,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             val f = paddingLeft.toFloat() - shadowBlur
             val f2 = scrimHeight - shadowBlur
             val f3 = shadowBlur + width
+            shadowHelper.paint.alpha = getShadowAlpha()
             if (paddingLeft <= 0 && paddingRight <= 0) {
                 shadowHelper.draw(shadowBitmap, canvas, f, f2, f3)
             } else {
-                val height3 = shadowBitmap.height
-                shadowHelper.mSrc.top = height3 - 5
-                shadowHelper.mSrc.bottom = height3
-                shadowHelper.mDst.top = f2 + height3.toFloat()
-                shadowHelper.mDst.bottom = scrimHeight
-                shadowHelper.draw3Patch(shadowBitmap, canvas, f, f3)
+                shadowHelper.drawVerticallyStretched(shadowBitmap, canvas, f, f2, f3, scrimHeight)
             }
+            shadowHelper.paint.alpha = 255
         }
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
     }
@@ -200,6 +197,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 blurDrawable?.alpha = 255
             }
         }
+    }
+
+    private fun getShadowAlpha(): Int {
+        if (!prefs.dockGradientStyle || mProgress <= mMoveThreshold) return 255
+        return Math.round(255 * ACCEL_2.getInterpolation(
+                (1 - mProgress) / (1 - mMoveThreshold)))
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
