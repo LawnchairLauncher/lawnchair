@@ -62,7 +62,7 @@ public class ShelfScrimView extends ScrimView {
     protected float mMoveThreshold;
     protected float mCalcThreshold;
     // Minimum visible size of the scrim.
-    private int mMinSize;
+    protected int mMinSize;
 
     protected float mScrimMoveFactor = 0;
     private int mShelfColor;

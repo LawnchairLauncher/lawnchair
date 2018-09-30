@@ -18,23 +18,24 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
-import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.dpToPx
+import ch.deletescape.lawnchair.graphics.NinePatchDrawHelper
 import ch.deletescape.lawnchair.runOnMainThread
-import com.android.launcher3.LauncherState.OVERVIEW
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.graphics.ShadowGenerator
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
 
@@ -85,6 +86,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
     private val blurRadius get() = if (useFlatColor) 0f else mRadius
     private var blurDrawable: BlurDrawable? = null
+    private val shadowHelper by lazy { NinePatchDrawHelper() }
+    private val shadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
+    private var shadowBitmap = generateShadowBitmap()
+
+    private val enableShadow get() = prefs.dockShadow
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
@@ -98,9 +104,23 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
+    private fun generateShadowBitmap(): Bitmap {
+        val tmp = mRadius + shadowBlur
+        val builder = ShadowGenerator.Builder(0)
+        builder.radius = mRadius
+        builder.shadowBlur = shadowBlur
+        val round = 2 * Math.round(tmp) + 20
+        val bitmap = Bitmap.createBitmap(round, round / 2, Bitmap.Config.ARGB_8888)
+        val f = 2.0f * tmp + 20.0f - shadowBlur
+        builder.bounds.set(shadowBlur, shadowBlur, f, f)
+        builder.drawShadow(Canvas(bitmap))
+        return bitmap
+    }
+
     override fun reInitUi() {
         super.reInitUi()
         blurDrawable = createBlurDrawable()
+        shadowBitmap = generateShadowBitmap()
     }
 
     override fun onAttachedToWindow() {
@@ -148,6 +168,22 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable?.run {
             setBounds(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
             draw(canvas)
+        }
+        if (enableShadow) {
+            val scrimHeight = ((height - mMinSize) * mScrimMoveFactor - if (mDragHandle.isHidden) mDragHandleSize else 0)
+            val f = paddingLeft.toFloat() - shadowBlur
+            val f2 = scrimHeight - shadowBlur
+            val f3 = shadowBlur + width
+            if (paddingLeft <= 0 && paddingRight <= 0) {
+                shadowHelper.draw(shadowBitmap, canvas, f, f2, f3)
+            } else {
+                val height3 = shadowBitmap.height
+                shadowHelper.mSrc.top = height3 - 5
+                shadowHelper.mSrc.bottom = height3
+                shadowHelper.mDst.top = f2 + height3.toFloat()
+                shadowHelper.mDst.bottom = scrimHeight
+                shadowHelper.draw3Patch(shadowBitmap, canvas, f, f3)
+            }
         }
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
     }
