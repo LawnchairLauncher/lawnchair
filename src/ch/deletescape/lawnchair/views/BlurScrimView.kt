@@ -200,7 +200,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     private fun getShadowAlpha(): Int {
-        if (!prefs.dockGradientStyle || mProgress <= mMoveThreshold) return 255
+        if (mProgress <= mMoveThreshold) return 255
         return Math.round(255 * ACCEL_2.getInterpolation(
                 (1 - mProgress) / (1 - mMoveThreshold)))
     }
