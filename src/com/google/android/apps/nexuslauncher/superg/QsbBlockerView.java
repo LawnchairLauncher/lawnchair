@@ -120,6 +120,10 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         final int oldState = mState;
         final View oldView = mView;
 
+        if (!Utilities.getLawnchairPrefs(getContext()).getUsePillQsb()) {
+            return;
+        }
+
         if (data.getWeather() == null) {
             mState = 1;
             mView = oldView != null && oldState == 1 ?
