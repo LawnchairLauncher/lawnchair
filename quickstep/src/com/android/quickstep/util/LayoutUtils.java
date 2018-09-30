@@ -100,8 +100,8 @@ public class LayoutUtils {
         float availableWidth = launcherVisibleWidth - paddingHorz;
 
         float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
-        float outWidth = scale * taskWidth;
-        float outHeight = scale * taskHeight;
+        float outWidth = (float) Math.round(scale * taskWidth);
+        float outHeight = (float) Math.round(scale * taskHeight);
 
         // Center in the visible space
         float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
