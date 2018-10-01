@@ -7,6 +7,7 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.util.AttributeSet;
 import android.util.Property;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.*;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.FloatingHeaderView;
@@ -131,7 +132,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             return;
         }
         Bn.setHidden(false);
-        Bn.Bc = uncappedY;
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        Bn.Bc = uncappedY - (prefs.getDockSearchBar() ? 0 : Bm);
         Bn.df();
     }
 

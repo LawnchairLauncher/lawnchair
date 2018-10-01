@@ -169,8 +169,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
-        verticalDragHandleSizePx = res.getDimensionPixelSize(
-                R.dimen.vertical_drag_handle_size);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =
@@ -185,7 +183,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         Utilities.getLawnchairPrefs(context)
                 .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                        "pref_twoRowDock");
+                        "pref_twoRowDock", "pref_compactDock");
     }
 
     public DeviceProfile copy(Context context) {
@@ -244,6 +242,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean fullWidthWidgets = Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets();
         boolean dockSearchBar = prefs.getDockSearchBar();
         boolean dockHidden = prefs.getDockHide();
+        boolean compactDock = prefs.getCompactDock();
         int dockRows = prefs.getDockRowsCount();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
@@ -264,6 +263,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                         R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
+        if (compactDock) {
+            verticalDragHandleSizePx /= 1.3;
+        }
+
 
         // Determine sizes.
         if (isLandscape) {
@@ -280,7 +285,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Now that we have all of the variables calculated, we can tune certain sizes.
         float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
+        if (!isVerticalBarLayout() && isPhone && isTallDevice && !compactDock) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.

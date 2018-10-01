@@ -21,10 +21,13 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.view.View;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -120,6 +123,14 @@ public class OverviewState extends LauncherState {
 
     public static float getDefaultSwipeHeight(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(launcher);
+        int qsbHeight = launcher.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+
+        if (prefs.getDockHide()) {
+            return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+        } else {
+            return dp.allAppsCellHeightPx - (prefs.getDockSearchBar() && prefs.getCompactDock()
+                    ? qsbHeight : 0) - dp.allAppsIconTextSizePx;
+        }
     }
 }

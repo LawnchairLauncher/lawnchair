@@ -164,12 +164,12 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
         }
         DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        int qsbWidgetHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
         if (prefs.getDockHide()) {
-            return dp.allAppsCellHeightPx;
-        } else if (prefs.getDockSearchBar()) {
-            return dp.allAppsCellHeightPx + getPaddingTop() + getPaddingBottom();
+            return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
         } else {
-            return dp.hotseatBarSizePx;
+            return dp.allAppsCellHeightPx - (prefs.getDockSearchBar() && prefs.getCompactDock()
+                    ? qsbWidgetHeight : 0) + getPaddingBottom() + getPaddingTop();
         }
     }
 
@@ -210,7 +210,7 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
                 bubbleTextView.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 bubbleTextView.setOnFocusChangeListener(this.AR);
                 LayoutParams layoutParams = (LayoutParams) bubbleTextView.getLayoutParams();
-                layoutParams.height = this.mLauncher.getDeviceProfile().allAppsCellHeightPx;
+                layoutParams.height = getExpectedHeight();
                 layoutParams.width = 0;
                 layoutParams.weight = 1.0f;
                 addView(bubbleTextView);

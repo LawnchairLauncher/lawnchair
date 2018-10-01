@@ -133,12 +133,11 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         prefs = Utilities.getLawnchairPrefs(context);
         prefs.addOnPreferenceChangeListener("pref_hotseatShowArrow", this);
 
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int caretSize = mLauncher.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_caret_size);
-        int dragHandleSize = mLauncher.getResources()
-                .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
+        int dragHandleSize = grid.verticalDragHandleSizePx;
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         mDragHandleSize = (prefs.getDockShowArrow() || grid.isVerticalBarLayout()) ? caretSize
                 : dragHandleSize;
         mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
