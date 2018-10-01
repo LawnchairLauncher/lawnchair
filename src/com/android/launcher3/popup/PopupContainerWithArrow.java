@@ -175,7 +175,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return null;
         }
         ItemInfo itemInfo = (ItemInfo) icon.getTag();
-        if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+        if (!DeepShortcutManager.supportsEdit(itemInfo)) {
             return null;
         }
 
