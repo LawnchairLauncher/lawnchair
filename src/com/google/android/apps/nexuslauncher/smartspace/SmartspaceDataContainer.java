@@ -1,8 +1,8 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
 public class SmartspaceDataContainer {
-    SmartspaceCard dO;
-    SmartspaceCard dP;
+    public SmartspaceCard dO;
+    public SmartspaceCard dP;
 
     public SmartspaceDataContainer() {
         dO = null;

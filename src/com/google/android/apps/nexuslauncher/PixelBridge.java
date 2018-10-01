@@ -5,14 +5,17 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.R;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 public class PixelBridge {
+
     public static boolean isInstalled(Context context) {
-        if (!LauncherClient.BRIDGE_USE) {
-            return true;
-        }
+        return !LauncherClient.BRIDGE_USE || isBridgeInstalled(context);
+    }
+
+    public static boolean isBridgeInstalled(Context context) {
         PackageManager manager = context.getPackageManager();
         try {
             PackageInfo info = manager.getPackageInfo(LauncherClient.BRIDGE_PACKAGE,
@@ -33,6 +36,8 @@ public class PixelBridge {
      * @return True if all signatures match the config, false if at least one does not match or the signatures array is empty.
      */
     private static boolean isSigned(Context context, Signature[] signatures) {
+        if (BuildConfig.FLAVOR_build.equals("dev"))
+            return true; // no normal users should be using this variant anyway 
         int hash = context.getResources().getInteger(R.integer.bridge_signature_hash);
         for (Signature signature : signatures) {
             if (signature.hashCode() != hash) {

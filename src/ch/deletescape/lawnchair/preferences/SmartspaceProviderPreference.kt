@@ -21,12 +21,10 @@ import android.content.Context
 import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.smartspace.BlankDataProvider
-import ch.deletescape.lawnchair.smartspace.FakeDataProvider
-import ch.deletescape.lawnchair.smartspace.OWMWeatherDataProvider
-import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
+import ch.deletescape.lawnchair.smartspace.*
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.google.android.apps.nexuslauncher.PixelBridge
 
 class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     : ListPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
@@ -52,6 +50,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
             list.add(SmartspaceDataWidget::class.java.name)
+        if (PixelBridge.isBridgeInstalled(context))
+            list.add(SmartspacePixelBridge::class.java.name)
         list.add(OWMWeatherDataProvider::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
@@ -63,6 +63,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
             list.add(SmartspaceDataWidget::class.java.name)
+        if (PixelBridge.isBridgeInstalled(context))
+            list.add(SmartspacePixelBridge::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
         return list
@@ -107,6 +109,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         val displayNames = mapOf(
                 Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
                 Pair(SmartspaceDataWidget::class.java.name, R.string.weather_provider_widget),
+                Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
                 Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }

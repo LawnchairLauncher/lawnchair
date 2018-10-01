@@ -1,7 +1,7 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
 public interface ISmartspace {
-    void cq();
+    void onGsaChanged();
 
     void cr(final SmartspaceDataContainer p0);
 }

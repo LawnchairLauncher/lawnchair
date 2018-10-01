@@ -298,7 +298,7 @@ public class SmartspaceCard {
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setSourceBounds(launcher.getViewBounds(view));
-                if (LauncherClient.BRIDGE_USE) {
+                if (LauncherClient.SMARTSPACE_BRIDGE_USE) {
                     intent.setPackage(LauncherClient.BRIDGE_PACKAGE);
                 }
                 view.getContext().sendBroadcast(intent);
@@ -316,7 +316,7 @@ public class SmartspaceCard {
         return ch != null && (this.cL(ch.cL) || this.cL(ch.cM));
     }
 
-    long cw() {
+    public long cw() {
         final c ch = this.cH();
         if (ch != null && this.cL(ch.cL)) {
             final e[] co = ch.cL.cO;

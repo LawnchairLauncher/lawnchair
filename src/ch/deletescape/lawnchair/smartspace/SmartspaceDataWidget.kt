@@ -117,16 +117,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     }
 
     fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?) {
-        val weather = if (weatherIcon != null && temperature != null) {
-            try {
-                val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
-                LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
-            } catch (e: NumberFormatException) {
-                null
-            }
-        } else {
-            null
-        }
+        val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
             LawnchairSmartspaceController.CardData(cardIcon,
                     title.text.toString(), title.ellipsize, subtitle.text.toString(), subtitle.ellipsize)
@@ -201,6 +192,19 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                     }
                 }
                 throw RuntimeException("smartspace widget not found")
+            }
+        }
+
+        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?): LawnchairSmartspaceController.WeatherData? {
+            return if (weatherIcon != null && temperature != null) {
+                try {
+                    val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
+                    LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
+                } catch (e: NumberFormatException) {
+                    null
+                }
+            } else {
+                null
             }
         }
     }

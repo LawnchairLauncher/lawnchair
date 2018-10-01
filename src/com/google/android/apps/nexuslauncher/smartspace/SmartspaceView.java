@@ -71,30 +71,24 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mController = LawnchairAppKt.getLawnchairApp(context).getSmartspace();
         mPrefs = Utilities.getLawnchairPrefs(context);
 
-        mCalendarClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Uri content_URI = CalendarContract.CONTENT_URI;
-                final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
-                ContentUris.appendId(appendPath, System.currentTimeMillis());
-                final Intent addFlags = new Intent(Intent.ACTION_VIEW)
-                        .setData(appendPath.build())
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                try {
-                    final Context context = getContext();
-                    Launcher.getLauncher(context).startActivitySafely(v, addFlags, null);
-                } catch (ActivityNotFoundException ex) {
-                    LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
-                }
+        mCalendarClickListener = v -> {
+            final Uri content_URI = CalendarContract.CONTENT_URI;
+            final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
+            ContentUris.appendId(appendPath, System.currentTimeMillis());
+            final Intent addFlags = new Intent(Intent.ACTION_VIEW)
+                    .setData(appendPath.build())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            try {
+                final Context context1 = getContext();
+                Launcher.getLauncher(context1).startActivitySafely(v, addFlags, null);
+            } catch (ActivityNotFoundException ex) {
+                LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         };
 
-        mWeatherClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mController != null)
-                    mController.openWeather(v);
-            }
+        mWeatherClickListener = v -> {
+            if (mController != null)
+                mController.openWeather(v);
         };
 
         dp = SmartspaceController.get(context);
@@ -224,7 +218,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         loadViews();
     }
 
-    public void cq() {
+    public void onGsaChanged() {
         ds = dp.cY();
         if (dq != null) {
             cr(dq);
@@ -249,7 +243,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        dp.da(this);
         if (mController != null && mFinishedInflate)
             mController.addListener(this);
     }
@@ -262,7 +255,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        SmartspaceController.get(getContext()).da(null);
         if (mController != null)
             mController.removeListener(this);
     }
