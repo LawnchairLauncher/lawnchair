@@ -16,6 +16,10 @@
 
 package com.android.launcher3.views;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 
 import android.content.Context;
@@ -79,6 +83,9 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     protected TouchController mActiveController;
     private TouchCompleteListener mTouchCompleteListener;
 
+    // Object controlling the current touch interaction
+    private Object mCurrentTouchOwner;
+
     public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
         mActivity = (T) ActivityContext.lookupContext(context);
@@ -94,7 +101,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -177,7 +184,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -190,6 +197,37 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             // In case no child view handled the touch event, we may not get onIntercept anymore
             return findActiveController(ev);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return verifyTouchDispatch(this, ev) && super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * Returns true if the {@param caller} is allowed to dispatch {@param ev} on this view,
+     * false otherwise.
+     */
+    public boolean verifyTouchDispatch(Object caller, MotionEvent ev) {
+        int action = ev.getAction();
+        if (action == ACTION_DOWN) {
+            if (mCurrentTouchOwner != null) {
+                // Another touch in progress.
+                ev.setAction(ACTION_CANCEL);
+                super.dispatchTouchEvent(ev);
+                ev.setAction(action);
+            }
+            mCurrentTouchOwner = caller;
+            return true;
+        }
+        if (mCurrentTouchOwner != caller) {
+            // Someone else is controlling the touch
+            return false;
+        }
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            mCurrentTouchOwner = null;
+        }
+        return true;
     }
 
     /**
