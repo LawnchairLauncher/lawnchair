@@ -70,4 +70,4 @@ pipeline:
       status: [ failure, success ]
 
 branches:
-  exclude: [ l10n_alpha2, v1-alpha ]
+  exclude: [ l10n_alpha2, lawnchair-v1 ]
