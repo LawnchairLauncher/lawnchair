@@ -1,8 +1,10 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.animation.AnimatorSet;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -18,6 +20,13 @@ public class NexusLauncherActivity extends Launcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         FeatureFlags.QSB_ON_FIRST_SCREEN = showSmartspace();
+        super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = Utilities.getPrefs(this);
+        if (!PixelBridge.isInstalled(this)) {
+            prefs.edit().putBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, false).apply();
+        }
+
         super.onCreate(savedInstanceState);
     }
 

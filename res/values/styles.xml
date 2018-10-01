@@ -428,4 +428,15 @@
         <item name="tabIndicator">@drawable/tab_indicator</item>
         <item name="android:background">?colorBackgroundFloating</item>
     </style>
+
+    <style name="DialogAlert" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/primary_text_material_light</item>
+        <item name="android:textColorSecondary">@color/secondary_text_material_light</item>
+        <item name="android:textColorPrimaryInverse">?android:attr/textColorPrimary</item>
+        <item name="android:textColorSecondaryInverse">?android:attr/textColorSecondary</item>
+
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

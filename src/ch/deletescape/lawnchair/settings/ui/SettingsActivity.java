@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,6 +55,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
@@ -66,6 +68,7 @@ import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
 import com.android.quickstep.TouchInteractionService;
+import com.google.android.apps.nexuslauncher.PixelBridge;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -75,7 +78,6 @@ import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
 import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference;
-import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
 import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
@@ -97,6 +99,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
+    private final static String BRIDGE_TAG = "tag_bridge";
 
     private LawnchairPreferences sharedPrefs;
     private int mAppBarHeight;
@@ -395,6 +398,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onResume() {
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
+
+            if (getContent() == R.xml.lawnchair_desktop_preferences) {
+                SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
+                if (minusOne != null && !PixelBridge.isInstalled(getActivity())) {
+                    minusOne.setChecked(false);
+                }
+            }
         }
 
         @Override
@@ -453,6 +463,16 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
+                    break;
+                case ENABLE_MINUS_ONE_PREF:
+                    if (PixelBridge.isInstalled(getActivity())) {
+                        return true;
+                    }
+                    FragmentManager fm = getFragmentManager();
+                    if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
+                        InstallFragment fragment = new InstallFragment();
+                        fragment.show(fm, BRIDGE_TAG);
+                    }
                     break;
             }
             return false;
@@ -598,6 +618,17 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
+        }
+    }
+
+    public static class InstallFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.bridge_missing_title)
+                    .setMessage(R.string.bridge_missing_message)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
         }
     }
 }

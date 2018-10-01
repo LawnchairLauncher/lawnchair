@@ -12,6 +12,7 @@ import com.android.launcher3.OnAlarmListener;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.i;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.apps.nexuslauncher.utils.ProtoStore;
+import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -64,7 +65,7 @@ public class SmartspaceController implements Handler.Callback {
 
     private Intent db() {
         return new Intent("com.google.android.apps.gsa.smartspace.SETTINGS")
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(LauncherClient.BRIDGE_USE ? LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
@@ -78,7 +79,7 @@ public class SmartspaceController implements Handler.Callback {
         if (cs && !this.dQ.cS()) {
             this.df(null, SmartspaceController.Store.CURRENT);
             this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.EXPIRE_EVENT")
-                    .setPackage("com.google.android.googlequicksearchbox")
+                    .setPackage(LauncherClient.BRIDGE_USE ? LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
@@ -92,7 +93,7 @@ public class SmartspaceController implements Handler.Callback {
 
     private void de() {
         this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.ENABLE_UPDATE")
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(LauncherClient.BRIDGE_USE ? LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

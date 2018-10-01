@@ -27,6 +27,7 @@ public class CustomIconUtils {
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",
             "com.novalauncher.THEME",
+            "com.teslacoilsw.launcher.THEME",
             "com.gau.go.launcherex.theme",
             "org.adw.launcher.THEMES",
             "org.adw.launcher.icons.ACTION_PICK_ICON"
