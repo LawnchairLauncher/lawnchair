@@ -227,8 +227,8 @@ public class LauncherIcons implements AutoCloseable {
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
             RectF outIconBounds, float[] outScale) {
         float scale = 1f;
-        if (Utilities.getLawnchairPrefs(mContext).getEnableLegacyTreatment() &&
-                Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
+        if (Utilities.getLawnchairPrefs(mContext).getEnableLegacyTreatment()
+                && Utilities.ATLEAST_OREO) {
             boolean[] outShape = new boolean[1];
             if (mWrapperIcon == null) {
                 mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
