@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.icons.CachingLogic.COMPONENT_WITH_LABEL;
 import static com.android.launcher3.icons.CachingLogic.LAUNCHER_ACTIVITY_INFO;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
@@ -44,6 +45,7 @@ import android.util.MutableInt;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
+import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCacheUpdateHandler;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -184,7 +186,7 @@ public class LoaderTask implements Runnable {
 
             // second step
             TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
-            List<List<LauncherActivityInfo>> activityListPerUser = loadAllApps();
+            List<LauncherActivityInfo> allActivityList = loadAllApps();
 
             TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
@@ -194,7 +196,8 @@ public class LoaderTask implements Runnable {
             TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
-            updateIconCacheForApps(updateHandler, activityListPerUser);
+            updateHandler.updateIcons(allActivityList, LAUNCHER_ACTIVITY_INFO,
+                    mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
             TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
@@ -216,11 +219,20 @@ public class LoaderTask implements Runnable {
 
             // fourth step
             TraceHelper.partitionSection(TAG, "step 4.1: loading widgets");
-            mBgDataModel.widgetsModel.update(mApp, null);
+            List<ComponentWithLabel> allWidgetsList = mBgDataModel.widgetsModel.update(mApp, null);
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 4.2: Binding widgets");
             mResults.bindWidgets();
+
+            verifyNotStopped();
+            TraceHelper.partitionSection(TAG, "step 4.3: Update icon cache");
+            updateHandler.updateIcons(allWidgetsList, COMPONENT_WITH_LABEL,
+                    mApp.getModel()::onWidgetLabelsUpdated);
+
+            verifyNotStopped();
+            TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
+            updateHandler.finish();
 
             transaction.commit();
         } catch (CancellationException e) {
@@ -799,17 +811,9 @@ public class LoaderTask implements Runnable {
         updateHandler.setPackagesToIgnore(Process.myUserHandle(), packagesToIgnore);
     }
 
-    private void updateIconCacheForApps(IconCacheUpdateHandler updateHandler,
-            List<List<LauncherActivityInfo>> activityListPerUser) {
-        int userCount = activityListPerUser.size();
-        for (int i = 0; i < userCount; i++) {
-            updateHandler.updateIcons(activityListPerUser.get(i), LAUNCHER_ACTIVITY_INFO);
-        }
-    }
-
-    private List<List<LauncherActivityInfo>> loadAllApps() {
+    private List<LauncherActivityInfo> loadAllApps() {
         final List<UserHandle> profiles = mUserManager.getUserProfiles();
-        List<List<LauncherActivityInfo>> activityListPerUser = new ArrayList<>();
+        List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
         for (UserHandle user : profiles) {
@@ -818,7 +822,7 @@ public class LoaderTask implements Runnable {
             // Fail if we don't have any apps
             // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
-                return activityListPerUser;
+                return allActivityList;
             }
             boolean quietMode = mUserManager.isQuietModeEnabled(user);
             // Create the ApplicationInfos
@@ -827,7 +831,7 @@ public class LoaderTask implements Runnable {
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
             }
-            activityListPerUser.add(apps);
+            allActivityList.addAll(apps);
         }
 
         if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
@@ -840,7 +844,7 @@ public class LoaderTask implements Runnable {
         }
 
         mBgAllAppsList.added = new ArrayList<>();
-        return activityListPerUser;
+        return allActivityList;
     }
 
     private void loadDeepShortcuts() {

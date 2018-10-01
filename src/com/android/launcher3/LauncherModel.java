@@ -599,6 +599,19 @@ public class LauncherModel extends BroadcastReceiver
                 CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
     }
 
+    /**
+     * Called when the labels for the widgets has updated in the icon cache.
+     */
+    public void onWidgetLabelsUpdated(HashSet<String> updatedPackages, UserHandle user) {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                dataModel.widgetsModel.onPackageIconsUpdated(updatedPackages, user, app);
+                bindUpdatedWidgets(dataModel);
+            }
+        });
+    }
+
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
         task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
         runOnWorkerThread(task);
