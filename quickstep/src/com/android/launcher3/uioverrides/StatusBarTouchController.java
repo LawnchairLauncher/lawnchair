@@ -84,7 +84,8 @@ public class StatusBarTouchController implements TouchController {
         }
         if (action == ACTION_MOVE) {
             float dy = ev.getY() - mTranslator.getDownY();
-            if (dy > mTouchSlop) {
+            float dx = ev.getX() - mTranslator.getDownX();
+            if (dy > mTouchSlop && dy > Math.abs(dx)) {
                 mTranslator.dispatchDownEvents(ev);
                 mTranslator.processMotionEvent(ev);
                 return true;
