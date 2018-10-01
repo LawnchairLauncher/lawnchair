@@ -220,3 +220,4 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 -keep class me.jfenn.** { *; }
+-keep class net.aksingh.owmjapis.** { *; }
