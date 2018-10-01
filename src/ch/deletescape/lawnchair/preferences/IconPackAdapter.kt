@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -48,6 +49,8 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     private val otherItems = ArrayList<IconPackItem>()
     private val divider = DividerItem(IconPackList.DefaultPackInfo(context))
     private var isDragging = false
+
+    var itemTouchHelper: ItemTouchHelper? = null
 
     init {
         allPacks.addAll(manager.packList.getAvailablePacks().map { IconPackItem(it) })
@@ -179,17 +182,18 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
         }
     }
 
-    open inner class IconPackHolder(itemView: View) : Holder(itemView), View.OnClickListener {
+    open inner class IconPackHolder(itemView: View) : Holder(itemView), View.OnClickListener, View.OnTouchListener {
 
         val icon: ImageView = itemView.findViewById(android.R.id.icon)
         val title: TextView = itemView.findViewById(android.R.id.title)
         val summary: TextView = itemView.findViewById(android.R.id.summary)
-        val packItem get() = adapterItems[adapterPosition] as? IconPackItem
+        private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
+        private val packItem get() = adapterItems[adapterPosition] as? IconPackItem
                 ?: throw IllegalArgumentException("item must be IconPackItem")
 
         init {
-            itemView.findViewById<View>(R.id.radio).isVisible = false
             itemView.setOnClickListener(this)
+            dragHandle.setOnTouchListener(this)
         }
 
         override fun bind(item: Item) {
@@ -198,7 +202,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
             icon.setImageDrawable(packItem.info.displayIcon)
             title.text = packItem.info.displayName
             itemView.isClickable = !packItem.isStatic
-            itemView.findViewById<View>(R.id.drag_handle).isVisible = !packItem.isStatic
+            dragHandle.isVisible = !packItem.isStatic
         }
 
         override fun onClick(v: View) {
@@ -215,6 +219,13 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
                 dividerIndex--
             }
             notifyItemChanged(dividerIndex)
+        }
+
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            if (v == dragHandle && event.actionMasked == MotionEvent.ACTION_DOWN) {
+                itemTouchHelper?.startDrag(this)
+            }
+            return false
         }
     }
 

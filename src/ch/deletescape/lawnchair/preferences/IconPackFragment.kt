@@ -31,7 +31,9 @@ class IconPackFragment : RecyclerViewFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
         (recyclerView.itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
-        ItemTouchHelper(adapter.TouchHelperCallback()).attachToRecyclerView(recyclerView)
+        adapter.itemTouchHelper = ItemTouchHelper(adapter.TouchHelperCallback()).apply {
+            attachToRecyclerView(recyclerView)
+        }
     }
 
     override fun onPause() {
