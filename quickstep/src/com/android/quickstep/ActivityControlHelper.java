@@ -319,7 +319,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             float prevRvScale = recentsView.getScaleX();
             float targetRvScale = endState.getOverviewScaleAndTranslationYFactor(launcher)[0];
             SCALE_PROPERTY.set(recentsView, targetRvScale);
-            ClipAnimationHelper clipHelper = new ClipAnimationHelper();
+            ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             SCALE_PROPERTY.set(recentsView, prevRvScale);
 

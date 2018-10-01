@@ -67,6 +67,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -286,7 +287,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 ? RECENTS_QUICKSCRUB_LAUNCH_DURATION
                 : RECENTS_LAUNCH_DURATION;
 
-        ClipAnimationHelper helper = new ClipAnimationHelper();
+        ClipAnimationHelper helper = new ClipAnimationHelper(mLauncher);
         target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
                 .setDuration(duration));
 
@@ -605,6 +606,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
 
+                // Animate window corner radius from 100% to windowCornerRadius.
+                float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher)
+                        .getWindowCornerRadius();
+                float circleRadius = scaledWindowWidth / 2f;
+                float windowRadius = Utilities.mapRange(easePercent, circleRadius,
+                        windowCornerRadius);
+
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
                 float cropHeight = windowHeight * easePercent + windowWidth * (1 - easePercent);
@@ -619,20 +627,24 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     RemoteAnimationTargetCompat target = targets[i];
 
                     Rect targetCrop;
-                    float alpha;
+                    final float alpha;
+                    final float cornerRadius;
                     if (target.mode == MODE_OPENING) {
                         matrix.setScale(scale, scale);
                         matrix.postTranslate(transX0, transY0);
                         targetCrop = crop;
                         alpha = mAlpha.value;
+                        cornerRadius = windowRadius;
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);
                         alpha = 1f;
                         targetCrop = target.sourceContainerBounds;
+                        cornerRadius = 0;
                     }
 
                     params[i] = new SurfaceParams(target.leash, alpha, matrix, targetCrop,
-                            RemoteAnimationProvider.getLayer(target, MODE_OPENING));
+                            RemoteAnimationProvider.getLayer(target, MODE_OPENING),
+                            cornerRadius);
                 }
                 surfaceApplier.scheduleApply(params);
             }
@@ -724,6 +736,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
+        float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
@@ -735,7 +748,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 SurfaceParams[] params = new SurfaceParams[targets.length];
                 for (int i = targets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = targets[i];
-                    float alpha;
+                    final float alpha;
+                    final float cornerRadius;
                     if (target.mode == MODE_CLOSING) {
                         matrix.setScale(mScale.value, mScale.value,
                                 target.sourceContainerBounds.centerX(),
@@ -743,13 +757,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         matrix.postTranslate(0, mDy.value);
                         matrix.postTranslate(target.position.x, target.position.y);
                         alpha = mAlpha.value;
+                        cornerRadius = windowCornerRadius;
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);
                         alpha = 1f;
+                        cornerRadius = 0f;
                     }
                     params[i] = new SurfaceParams(target.leash, alpha, matrix,
                             target.sourceContainerBounds,
-                            RemoteAnimationProvider.getLayer(target, MODE_CLOSING));
+                            RemoteAnimationProvider.getLayer(target, MODE_CLOSING),
+                            cornerRadius);
                 }
                 surfaceApplier.scheduleApply(params);
             }
