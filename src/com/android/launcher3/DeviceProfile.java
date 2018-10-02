@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.WindowManager;
-
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
@@ -370,9 +369,16 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         // All apps
         allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = iconSizePx;
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsCellHeightPx = getCellSize().y;
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
+        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+
+        int additionalPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding);
+        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx + textHeight
+                + additionalPadding;
+
+        // TODO: We might eventually also need some calculations to ensure that the label is close
+        // TODO: enough to the label, but I couldn't yet figure out how to make a variant of
+        // TODO: #getCellSize which properly works for all apps cells
 
         if (isVerticalLayout) {
             // Always hide the Workspace text with vertical bar layout.
