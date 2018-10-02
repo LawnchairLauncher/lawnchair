@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.animation.Interpolator;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -128,10 +129,17 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             mActionsRowView.setHidden(true);
             return;
         }
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        float translationY = uncappedY;
+        if (!prefs.getDockSearchBar() || prefs.getDockHide()) {
+            int qsbHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+            translationY -= mHeaderTopPadding;
+            translationY += qsbHeight / 2;
+        }
         mActionsRowView.setHidden(false);
-        mActionsRowView.setTranslationY(uncappedY);
+        mActionsRowView.setTranslationY(translationY);
         mPredictionRowView.setScrolledOut(false);
-        mPredictionRowView.setScrollTranslation(uncappedY);
+        mPredictionRowView.setScrollTranslation(translationY);
     }
 
     @Override
