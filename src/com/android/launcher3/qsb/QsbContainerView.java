@@ -162,7 +162,6 @@ public class QsbContainerView extends FrameLayout {
                         .getAppWidgetOptions(widgetId), opts)) {
                     mQsb.updateAppWidgetOptions(opts);
                 }
-                mQsb.setPadding(0, 0, 0, 0);
                 mQsbWidgetHost.startListening();
                 return mQsb;
             }
