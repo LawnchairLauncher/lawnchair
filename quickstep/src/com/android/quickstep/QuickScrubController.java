@@ -67,6 +67,7 @@ public class QuickScrubController implements OnAlarmListener {
     private int mQuickScrubSection;
     private boolean mStartedFromHome;
     private boolean mFinishedTransitionToQuickScrub;
+    private int mLaunchingTaskId;
     private Runnable mOnFinishedTransitionToQuickScrubRunnable;
     private ActivityControlHelper mActivityControlHelper;
     private TouchInteractionLog mTouchInteractionLog;
@@ -105,6 +106,7 @@ public class QuickScrubController implements OnAlarmListener {
             if (taskView != null) {
                 mWaitingForTaskLaunch = true;
                 mTouchInteractionLog.launchTaskStart();
+                mLaunchingTaskId = taskView.getTask().key.id;
                 taskView.launchTask(true, (result) -> {
                     mTouchInteractionLog.launchTaskEnd(result);
                     if (!result) {
@@ -146,6 +148,7 @@ public class QuickScrubController implements OnAlarmListener {
         mActivityControlHelper = null;
         mOnFinishedTransitionToQuickScrubRunnable = null;
         mRecentsView.setNextPageSwitchRunnable(null);
+        mLaunchingTaskId = 0;
     }
 
     /**
@@ -208,6 +211,18 @@ public class QuickScrubController implements OnAlarmListener {
         mOnFinishedTransitionToQuickScrubRunnable = null;
         if (action != null) {
             action.run();
+        }
+    }
+
+    public void onTaskRemoved(int taskId) {
+        if (mLaunchingTaskId == taskId) {
+            // The task has been removed mid-launch, break out of quickscrub and return the user
+            // to where they were before (and notify the launch failed)
+            TaskView taskView = mRecentsView.getTaskView(taskId);
+            if (taskView != null) {
+                taskView.notifyTaskLaunchFailed(TAG);
+            }
+            breakOutOfQuickScrub();
         }
     }
 
