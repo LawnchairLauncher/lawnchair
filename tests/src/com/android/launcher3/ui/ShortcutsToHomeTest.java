@@ -17,6 +17,7 @@ import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,12 +32,14 @@ public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
     @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
     @Test
+    @Ignore
     public void testDragIcon_portrait() throws Throwable {
         lockRotation(true);
         performTest();
     }
 
     @Test
+    @Ignore
     public void testDragIcon_landscape() throws Throwable {
         lockRotation(false);
         performTest();
