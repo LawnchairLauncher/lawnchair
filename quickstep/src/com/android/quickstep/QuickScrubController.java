@@ -91,7 +91,9 @@ public class QuickScrubController implements OnAlarmListener {
 
         if (startingFromHome) {
             ScrimView scrim = mActivity.findViewById(R.id.scrim_view);
-            scrim.hide();
+            if (scrim != null) {
+                scrim.hide();
+            }
         }
 
         snapToNextTaskIfAvailable();
