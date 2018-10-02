@@ -19,6 +19,17 @@
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerIcons"
         android:title="@string/pref_category_icons">
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconSize"
+            android:persistent="true"
+            android:title="@string/icon_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.5"
+            app:minValue="0.3"
+            app:steps="120"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
         
         <Preference
             android:key="pref_hiddenApps"

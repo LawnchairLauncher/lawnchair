@@ -77,6 +77,10 @@ public class InvariantDeviceProfile {
     public float iconSizeOriginal;
     public float landscapeIconSize;
     public float landscapeIconSizeOriginal;
+    public float allAppsIconSize;
+    public float allAppsIconSizeOriginal;
+    public float landscapeAllAppsIconSize;
+    public float landscapeAllAppsIconSizeOriginal;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
@@ -159,11 +163,16 @@ public class InvariantDeviceProfile {
         iconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         landscapeIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
+        allAppsIconSize = interpolatedDeviceProfileOut.iconSize;
+        allAppsIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
+        landscapeAllAppsIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        landscapeAllAppsIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         new IconScale(Utilities.getLawnchairPrefs(context), "iconSize", this);
+        new IconScale(Utilities.getLawnchairPrefs(context), "allAppsIconSize", this);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -311,12 +320,16 @@ public class InvariantDeviceProfile {
     private void add(InvariantDeviceProfile p) {
         iconSize += p.iconSize;
         landscapeIconSize += p.landscapeIconSize;
+        allAppsIconSize += p.allAppsIconSize;
+        landscapeAllAppsIconSize += p.landscapeAllAppsIconSize;
         iconTextSize += p.iconTextSize;
     }
 
     private InvariantDeviceProfile multiply(float w) {
         iconSize *= w;
         landscapeIconSize *= w;
+        allAppsIconSize *= w;
+        landscapeAllAppsIconSize *= w;
         iconTextSize *= w;
         return this;
     }

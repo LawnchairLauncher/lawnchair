@@ -368,8 +368,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
+        float invAllAppsIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
         allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * scale);
         allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
         int additionalPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding);
