@@ -1,12 +1,19 @@
 package com.google.android.apps.nexuslauncher.allapps;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.text.Layout;
+import android.text.Layout.Alignment;
+import android.text.StaticLayout.Builder;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -16,10 +23,21 @@ import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import com.android.launcher3.*;
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
@@ -29,53 +47,51 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
-import com.google.android.apps.nexuslauncher.CustomAppPredictor;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class PredictionRowView extends LinearLayout implements OnDeviceProfileChangeListener, OnUpdateListener, LogContainerProvider {
-    static final Property<PredictionRowView, Integer> AM = new Property<PredictionRowView, Integer>(Integer.class, "textAlpha") {
+public class PredictionRowView extends LinearLayout implements LogContainerProvider, OnUpdateListener, OnDeviceProfileChangeListener {
+    private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
+    private static final String TAG = "PredictionRowView";
+
+    private static final Property<PredictionRowView, Integer> TEXT_ALPHA = new Property<PredictionRowView, Integer>(Integer.class, "textAlpha") {
         @Override
-        public void set(PredictionRowView object, Integer value) {
-            object.ax(value);
+        public void set(PredictionRowView predictionRowView, Integer value) {
+            predictionRowView.setTextAlpha(value);
         }
 
         @Override
         public Integer get(PredictionRowView predictionRowView) {
-            return predictionRowView.AU;
+            return predictionRowView.mIconCurrentTextAlpha;
         }
     };
-    private static final Interpolator AN = PredictionRowView::interpolate;
-    PredictionsFloatingHeader AD;
-    Layout AG;
-    public boolean AI;
-    private final int AO;
-    public final List AP;
-    public final ArrayList<ItemInfoWithIcon> AQ;
-    private final FocusIndicatorHelper AR;
-    private final int AS;
-    final int AT;
-    int AU;
-    final TextPaint AV;
-    private final int AW;
-    private final int AX;
-    private int AY;
-    private final int AZ;
-    DividerType Ba;
-    private boolean mHidden;
-    float Bc;
-    final AnimatedFloat Bd;
-    final AnimatedFloat Be;
-    private View Bf;
-    private boolean Bg;
-    private final Launcher mLauncher;
-    private final Paint mPaint;
-    private CustomAppPredictor.UiManager mPredictor;
 
-    public void setPredictor(CustomAppPredictor.UiManager predictor) {
-        mPredictor = predictor;
-    }
+    private Layout mAllAppsLabelLayout;
+    @ColorInt
+    private final int mAllAppsLabelTextColor;
+    private int mAllAppsLabelTextCurrentAlpha;
+    private final int mAllAppsLabelTextFullAlpha;
+    private final TextPaint mAllAppsLabelTextPaint;
+    private final AnimatedFloat mContentAlphaFactor;
+    private DividerType mDividerType;
+    private final FocusIndicatorHelper mFocusHelper;
+    private int mIconCurrentTextAlpha;
+    private final int mIconFullTextAlpha;
+    private final int mIconTextColor;
+    private boolean mIsCollapsed;
+    private final Launcher mLauncher;
+    private View mLoadingProgress;
+    private final int mNumPredictedAppsPerRow;
+    private final AnimatedFloat mOverviewScrollFactor;
+    private final Paint mPaint;
+    private PredictionsFloatingHeader mParent;
+    private final List<ComponentKeyMapper> mPredictedAppComponents;
+    private final ArrayList<ItemInfoWithIcon> mPredictedApps;
+    private boolean mPredictionsEnabled;
+    private float mScrollTranslation;
+    private boolean mScrolledOut;
+    private final int mStrokeColor;
 
     public enum DividerType {
         NONE,
@@ -83,70 +99,75 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
         ALL_APPS_LABEL
     }
 
-    static /* synthetic */ float interpolate(float f) {
-        return f < 0.8f ? 0.0f : (f - 0.8f) / 0.2f;
+    public boolean hasOverlappingRendering() {
+        return false;
     }
 
-    public PredictionRowView(Context context) {
+    public PredictionRowView(@NonNull Context context) {
         this(context, null);
     }
 
-    public PredictionRowView(Context context, AttributeSet attributeSet) {
+    public PredictionRowView(@NonNull Context context, @Nullable AttributeSet attributeSet) {
         super(context, attributeSet);
-        this.AP = new ArrayList();
-        this.AQ = new ArrayList();
-        this.AV = new TextPaint();
-        this.Bc = 0f;
-        this.Bd = new AnimatedFloat(this::df);
-        this.Be = new AnimatedFloat(this::df);
-        this.AI = false;
-        this.Bg = false;
+        mPredictedAppComponents = new ArrayList<>();
+        mPredictedApps = new ArrayList<>();
+        mAllAppsLabelTextPaint = new TextPaint();
+        mScrollTranslation = 0f;
+        mContentAlphaFactor = new AnimatedFloat(this::updateTranslationAndAlpha);
+        mOverviewScrollFactor = new AnimatedFloat(this::updateTranslationAndAlpha);
+        mIsCollapsed = false;
+        mPredictionsEnabled = false;
         setOrientation(LinearLayout.HORIZONTAL);
         setWillNotDraw(false);
-        this.mPaint = new Paint();
-        this.mPaint.setColor(Themes.getAttrColor(context, 16843820));
-        this.mPaint.setStrokeWidth((float) getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
-        this.AZ = this.mPaint.getColor();
-        this.AR = new SimpleFocusIndicatorHelper(this);
-        this.AO = LauncherAppState.getInstance(context).getInvariantDeviceProfile().numColumns;
-        this.mLauncher = Launcher.getLauncher(context);
-        this.mLauncher.addOnDeviceProfileChangeListener(this);
-        this.AS = Themes.getAttrColor(context, 16842808);
-        this.AT = Color.alpha(this.AS);
-        this.AU = this.AT;
-        this.AV.setColor(ContextCompat.getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark) ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
-        this.AW = this.AV.getColor();
-        this.AX = Color.alpha(this.AW);
-        this.AY = this.AX;
-        da();
+        boolean isMainColorDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
+        mPaint = new Paint();
+        mPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_prediction_row_separator_dark : R.color.all_apps_prediction_row_separator));
+        mPaint.setStrokeWidth((float) getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+        mStrokeColor = this.mPaint.getColor();
+        mFocusHelper = new SimpleFocusIndicatorHelper(this);
+        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColumns;
+        mLauncher = Launcher.getLauncher(context);
+        mLauncher.addOnDeviceProfileChangeListener(this);
+        mIconTextColor = Themes.getAttrColor(context, 16842808);
+        mIconFullTextAlpha = Color.alpha(this.mIconTextColor);
+        mIconCurrentTextAlpha = this.mIconFullTextAlpha;
+        mAllAppsLabelTextPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
+        mAllAppsLabelTextColor = this.mAllAppsLabelTextPaint.getColor();
+        mAllAppsLabelTextFullAlpha = Color.alpha(this.mAllAppsLabelTextColor);
+        mAllAppsLabelTextCurrentAlpha = this.mAllAppsLabelTextFullAlpha;
+        updateVisibility();
     }
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        dd().addUpdateListener(this);
-        dd().registerIconContainer(this);
-        measure(MeasureSpec.EXACTLY, MeasureSpec.EXACTLY);
+        getAppsStore().addUpdateListener(this);
+        getAppsStore().registerIconContainer(this);
     }
 
-    private AllAppsStore dd() {
+    private AllAppsStore getAppsStore() {
         return this.mLauncher.getAppsView().getAppsStore();
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        dd().removeUpdateListener(this);
-        dd().unregisterIconContainer(this);
+        getAppsStore().removeUpdateListener(this);
+        getAppsStore().unregisterIconContainer(this);
     }
 
-    public final void s(boolean z) {
-        if (z != this.Bg) {
-            this.Bg = z;
-            da();
+    public void setup(PredictionsFloatingHeader predictionsFloatingHeader, boolean z) {
+        this.mParent = predictionsFloatingHeader;
+        setPredictionsEnabled(z);
+    }
+
+    private void setPredictionsEnabled(boolean z) {
+        if (z != this.mPredictionsEnabled) {
+            this.mPredictionsEnabled = z;
+            updateVisibility();
         }
     }
 
-    public final void da() {
-        setVisibility((!this.Bg || this.AI) ? View.GONE : View.VISIBLE);
+    private void updateVisibility() {
+        setVisibility((!this.mPredictionsEnabled || this.mIsCollapsed) ? View.GONE : View.VISIBLE);
     }
 
     protected void onMeasure(int i, int i2) {
@@ -154,11 +175,11 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
     }
 
     protected void dispatchDraw(Canvas canvas) {
-        this.AR.draw(canvas);
+        this.mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
 
-    public final int getExpectedHeight() {
+    public int getExpectedHeight() {
         if (getVisibility() == View.GONE) {
             return 0;
         }
@@ -173,42 +194,65 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
         }
     }
 
+    @SuppressLint("NewApi")
+    public void setDividerType(DividerType dividerType) {
+        int i = 0;
+        if (this.mDividerType != dividerType) {
+            if (dividerType == DividerType.ALL_APPS_LABEL) {
+                this.mAllAppsLabelTextPaint.setAntiAlias(true);
+                this.mAllAppsLabelTextPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                this.mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
+                CharSequence text = getResources().getText(R.string.all_apps_label);
+                this.mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), this.mAllAppsLabelTextPaint, Math.round(this.mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
+            } else {
+                this.mAllAppsLabelLayout = null;
+            }
+        }
+        this.mDividerType = dividerType;
+        if (this.mDividerType == DividerType.LINE) {
+            i = getResources().getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
+        } else if (this.mDividerType == DividerType.ALL_APPS_LABEL) {
+            i = getAllAppsLayoutFullHeight();
+        }
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), i);
+    }
+
+    public List<ItemInfoWithIcon> getPredictedApps() {
+        return this.mPredictedApps;
+    }
+
+    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+        setPredictionsEnabled(z);
+        this.mPredictedAppComponents.clear();
+        this.mPredictedAppComponents.addAll(list);
+        onAppsUpdated();
+    }
+
     public void onDeviceProfileChanged(DeviceProfile deviceProfile) {
         removeAllViews();
-        de();
+        applyPredictionApps();
     }
 
-    public void updatePredictions() {
-        ArrayList<ItemInfoWithIcon> predictions = new ArrayList<>();
-        for (ComponentKeyMapper mapper : mPredictor.getPredictions()) {
-            predictions.add(dd().getApp(mapper.getKey()));
-        }
-        if (!predictions.equals(AQ)) {
-            AQ.clear();
-            AQ.addAll(predictions);
-            de();
-        }
-    }
-
-    @Override
     public void onAppsUpdated() {
-        updatePredictions();
+        this.mPredictedApps.clear();
+        this.mPredictedApps.addAll(processPredictedAppComponents(this.mPredictedAppComponents));
+        applyPredictionApps();
     }
 
-    private void de() {
-        if (this.Bf != null) {
-            removeView(this.Bf);
+    private void applyPredictionApps() {
+        if (this.mLoadingProgress != null) {
+            removeView(this.mLoadingProgress);
         }
-        if (getChildCount() != this.AO) {
-            while (getChildCount() > this.AO) {
+        if (getChildCount() != this.mNumPredictedAppsPerRow) {
+            while (getChildCount() > this.mNumPredictedAppsPerRow) {
                 removeViewAt(0);
             }
-            while (getChildCount() < this.AO) {
+            while (getChildCount() < this.mNumPredictedAppsPerRow) {
                 BubbleTextView bubbleTextView = (BubbleTextView) this.mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
                 bubbleTextView.setOnClickListener(ItemClickHandler.INSTANCE);
                 bubbleTextView.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 bubbleTextView.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
-                bubbleTextView.setOnFocusChangeListener(this.AR);
+                bubbleTextView.setOnFocusChangeListener(this.mFocusHelper);
                 LayoutParams layoutParams = (LayoutParams) bubbleTextView.getLayoutParams();
                 layoutParams.height = getExpectedHeight();
                 layoutParams.width = 0;
@@ -216,88 +260,146 @@ public class PredictionRowView extends LinearLayout implements OnDeviceProfileCh
                 addView(bubbleTextView);
             }
         }
-        int size = this.AQ.size();
-        int f = ColorUtils.setAlphaComponent(this.AS, this.AU);
+        int size = this.mPredictedApps.size();
+        int alphaComponent = ColorUtils.setAlphaComponent(this.mIconTextColor, this.mIconCurrentTextAlpha);
         for (int i = 0; i < getChildCount(); i++) {
             BubbleTextView bubbleTextView2 = (BubbleTextView) getChildAt(i);
             bubbleTextView2.reset();
             if (size > i) {
                 bubbleTextView2.setVisibility(View.VISIBLE);
-                if (this.AQ.get(i) instanceof AppInfo) {
-                    bubbleTextView2.applyFromApplicationInfo((AppInfo) this.AQ.get(i));
-                } else if (this.AQ.get(i) instanceof ShortcutInfo) {
-                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) this.AQ.get(i), false);
+                if (this.mPredictedApps.get(i) instanceof AppInfo) {
+                    bubbleTextView2.applyFromApplicationInfo((AppInfo) this.mPredictedApps.get(i));
+                } else if (this.mPredictedApps.get(i) instanceof ShortcutInfo) {
+                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) this.mPredictedApps.get(i));
                 }
-                bubbleTextView2.setTextColor(f);
+                bubbleTextView2.setTextColor(alphaComponent);
             } else {
-                bubbleTextView2.setVisibility(size == 0 ? View.GONE : View.INVISIBLE);
+                bubbleTextView2.setVisibility(size == 0 ? View.GONE : View.VISIBLE);
             }
         }
         if (size == 0) {
-            if (this.Bf == null) {
-                this.Bf = LayoutInflater.from(getContext()).inflate(R.layout.prediction_load_progress, this, false);
+            if (this.mLoadingProgress == null) {
+                this.mLoadingProgress = LayoutInflater.from(getContext()).inflate(R.layout.prediction_load_progress, this, false);
             }
-            addView(this.Bf);
+            addView(this.mLoadingProgress);
         } else {
-            this.Bf = null;
+            this.mLoadingProgress = null;
         }
-        this.AD.updateLayout();
+        this.mParent.headerChanged();
+    }
+
+    private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> list) {
+        if (getAppsStore().getApps().isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ItemInfoWithIcon> arrayList = new ArrayList<>();
+        for (ComponentKeyMapper app : list) {
+            ItemInfoWithIcon app2 = app.getApp(getAppsStore());
+            if (app2 != null) {
+                arrayList.add(app2);
+            }
+            if (arrayList.size() == this.mNumPredictedAppsPerRow) {
+                break;
+            }
+        }
+        return arrayList;
     }
 
     protected void onDraw(Canvas canvas) {
-        if (this.Ba == DividerType.LINE) {
+        if (this.mDividerType == DividerType.LINE) {
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
             float height = (float) (getHeight() - (getPaddingBottom() / 2));
             Canvas canvas2 = canvas;
             float f = height;
             canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), f, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, this.mPaint);
-            return;
-        }
-        if (this.Ba == DividerType.ALL_APPS_LABEL) {
-            int dimensionPixelSize = (getWidth() / 2) - (this.AG.getWidth() / 2);
-            int height2 = (getHeight() - getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding)) - this.AG.getHeight();
-            canvas.translate((float) dimensionPixelSize, (float) height2);
-            this.AG.draw(canvas);
-            canvas.translate((float) (-dimensionPixelSize), (float) (-height2));
+        } else if (this.mDividerType == DividerType.ALL_APPS_LABEL) {
+            drawAllAppsHeader(canvas);
         }
     }
 
-    public final void setHidden(boolean z) {
-        this.mHidden = z;
-        df();
-    }
-
-    public final void ax(int i) {
-        this.AU = i;
-        int f = ColorUtils.setAlphaComponent(this.AS, this.AU);
-        if (this.Bf == null) {
-            for (int i2 = 0; i2 < getChildCount(); i2++) {
-                ((BubbleTextView) getChildAt(i2)).setTextColor(f);
+    public void fillInLogContainerData(View view, ItemInfo itemInfo, Target target, Target target2) {
+        for (int i = 0; i < this.mPredictedApps.size(); i++) {
+            if (this.mPredictedApps.get(i) == itemInfo) {
+                target2.containerType = 7;
+                target.predictedRank = i;
+                return;
             }
         }
-        i = ColorUtils.setAlphaComponent(this.AZ, Math.round(((float) (Color.alpha(this.AZ) * i)) / 255f));
+    }
+
+    public void setScrolledOut(boolean z) {
+        this.mScrolledOut = z;
+        updateTranslationAndAlpha();
+    }
+
+    public void setTextAlpha(int i) {
+        this.mIconCurrentTextAlpha = i;
+        int alphaComponent = ColorUtils.setAlphaComponent(this.mIconTextColor, this.mIconCurrentTextAlpha);
+        if (this.mLoadingProgress == null) {
+            for (int i2 = 0; i2 < getChildCount(); i2++) {
+                ((BubbleTextView) getChildAt(i2)).setTextColor(alphaComponent);
+            }
+        }
+        i = ColorUtils.setAlphaComponent(this.mStrokeColor, Math.round(((float) (Color.alpha(this.mStrokeColor) * i)) / 255f));
         if (i != this.mPaint.getColor()) {
             this.mPaint.setColor(i);
-            this.AY = Math.round((float) ((this.AX * this.AU) / this.AT));
-            this.AV.setColor(ColorUtils.setAlphaComponent(this.AW, this.AY));
-            if (this.Ba != DividerType.NONE) {
+            this.mAllAppsLabelTextCurrentAlpha = Math.round((float) ((this.mAllAppsLabelTextFullAlpha * this.mIconCurrentTextAlpha) / this.mIconFullTextAlpha));
+            this.mAllAppsLabelTextPaint.setColor(ColorUtils.setAlphaComponent(this.mAllAppsLabelTextColor, this.mAllAppsLabelTextCurrentAlpha));
+            if (this.mDividerType != DividerType.NONE) {
                 invalidate();
             }
         }
     }
 
-    public boolean hasOverlappingRendering() {
-        return false;
+    public void setScrollTranslation(float f) {
+        this.mScrollTranslation = f;
+        updateTranslationAndAlpha();
     }
 
-    void df() {
-        setTranslationY((1.0f - this.Be.value) * this.Bc);
-        float interpolation = AN.getInterpolation(this.Be.value);
-        setAlpha(this.Bd.value * (interpolation + ((1.0f - interpolation) * (this.mHidden ? 0f : 1f))));
+    private void updateTranslationAndAlpha() {
+        setTranslationY((1.0f - mOverviewScrollFactor.value) * mScrollTranslation);
+        float interpolation = ALPHA_FACTOR_INTERPOLATOR.getInterpolation(mOverviewScrollFactor.value);
+        setAlpha(mContentAlphaFactor.value * (interpolation + ((1.0f - interpolation) * (mScrolledOut ? 0f : 1f))));
     }
 
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
+        int i = 0;
+        boolean visible = getAlpha() > 0f;
+        if (!hasHeader) {
+            i = mIconCurrentTextAlpha;
+        } else if (hasContent) {
+            i = mIconFullTextAlpha;
+        }
+        if (!visible) {
+            setTextAlpha(i);
+        } else {
+            propertySetter.setInt(this, TEXT_ALPHA, i, interpolator);
+        }
+        hasContent = hasHeader && !hasContent;
+        propertySetter.setFloat(mOverviewScrollFactor, AnimatedFloat.VALUE, hasContent ? 1f : 0f, Interpolators.LINEAR);
+        propertySetter.setFloat(mContentAlphaFactor, AnimatedFloat.VALUE, hasHeader ? 1f : 0f, interpolator);
+    }
 
+    private void drawAllAppsHeader(Canvas canvas) {
+        drawAllAppsHeader(canvas, this, mAllAppsLabelLayout);
+    }
+
+    static void drawAllAppsHeader(Canvas canvas, View view, Layout allAppsLayout) {
+        int width = (view.getWidth() / 2) - (allAppsLayout.getWidth() / 2);
+        int height = view.getHeight() - view.getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding) - allAppsLayout.getHeight();
+        canvas.translate((float) width, (float) height);
+        allAppsLayout.draw(canvas);
+        canvas.translate((float) (-width), (float) (-height));
+    }
+
+    private int getAllAppsLayoutFullHeight() {
+        return (this.mAllAppsLabelLayout.getHeight() + getResources().getDimensionPixelSize(R.dimen.all_apps_label_top_padding)) + getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding);
+    }
+
+    public void setCollapsed(boolean z) {
+        if (z != this.mIsCollapsed) {
+            this.mIsCollapsed = z;
+            updateVisibility();
+        }
     }
 }

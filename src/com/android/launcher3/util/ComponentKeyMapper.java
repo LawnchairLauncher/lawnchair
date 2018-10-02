@@ -17,9 +17,8 @@ package com.android.launcher3.util;
  */
 
 import android.support.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.allapps.AllAppsStore;
 import java.util.Map;
 
 public class ComponentKeyMapper<T> {
@@ -49,6 +48,22 @@ public class ComponentKeyMapper<T> {
 
     public ComponentKey getKey() {
         return mComponentKey;
+    }
+
+    public ItemInfoWithIcon getApp(AllAppsStore allAppsStore) {
+        return allAppsStore.getApp(mComponentKey);
+
+        /*
+        TODO: implement this
+        if (getComponentClass().equals(InstantAppResolverImpl.COMPONENT_CLASS_MARKER)) {
+            allAppsStore = b.b(this.mContext);
+            return (a) allAppsStore.J.get(this.di.componentName.getPackageName());
+        } else if ((this.di instanceof ShortcutKey) == null) {
+            return null;
+        } else {
+            return (ShortcutInfo) com.google.android.apps.nexuslauncher.a.a.a(this.mContext).d.get((ShortcutKey) mComponentKey);
+        }
+        */
     }
 
 }

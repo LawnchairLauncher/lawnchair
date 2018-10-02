@@ -279,7 +279,7 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        List<ComponentKeyMapper<AppInfo>> predictedApps = ((CustomAppPredictor) mActivity.getUserEventDispatcher()).getUiManager().getPredictions();
+        List<ComponentKeyMapper> predictedApps = ((CustomAppPredictor) mActivity.getUserEventDispatcher()).getUiManager().getPredictions();
         int i = Math.min(predictedApps.size(), allAppsCols);
         mNano.eo = new b_search[i];
         for (int i2 = 0; i2 < i; i2++) {

@@ -82,8 +82,8 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         mUiManager = new UiManager(this);
     }
 
-    List<ComponentKeyMapper<AppInfo>> getPredictions() {
-        List<ComponentKeyMapper<AppInfo>> list = new ArrayList<>();
+    List<ComponentKeyMapper> getPredictions() {
+        List<ComponentKeyMapper> list = new ArrayList<>();
         if (isPredictorEnabled()) {
             clearNonExistingComponents();
 
@@ -263,7 +263,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             return mPredictor.isPredictorEnabled();
         }
 
-        public List<ComponentKeyMapper<AppInfo>> getPredictions() {
+        public List<ComponentKeyMapper> getPredictions() {
             return mPredictor.getPredictions();
         }
 

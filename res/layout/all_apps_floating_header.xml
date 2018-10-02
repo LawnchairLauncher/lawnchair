@@ -29,6 +29,14 @@
         android:layout_height="wrap_content"
         android:accessibilityPaneTitle="@string/title_app_suggestions_in_search" />
 
+    <com.google.android.apps.nexuslauncher.allapps.ActionsRowView
+        android:id="@+id/actions_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
     <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"

@@ -75,15 +75,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
 
     private void x(boolean z) {
         PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) mAppsView.getFloatingHeaderView();
-        if (predictionsFloatingHeader != null && z != predictionsFloatingHeader.AI) {
-            predictionsFloatingHeader.AI = z;
-            PredictionRowView predictionRowView = predictionsFloatingHeader.Bn;
-            if (z != predictionRowView.AI) {
-                predictionRowView.AI = z;
-                predictionRowView.da();
-            }
-            predictionsFloatingHeader.updateLayout();
-        }
+        predictionsFloatingHeader.setCollapsed(z);
     }
 
     private void dV() {
