@@ -183,6 +183,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (!mHandleTaskStackChanges) {
                 return;
             }
+
+            // Notify the quick scrub controller that a particular task has been removed
+            mQuickScrubController.onTaskRemoved(taskId);
+
             BackgroundExecutor.get().submit(() -> {
                 TaskView taskView = getTaskView(taskId);
                 if (taskView == null) {
