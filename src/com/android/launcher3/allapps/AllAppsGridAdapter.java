@@ -22,7 +22,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
@@ -252,7 +251,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(ItemClickHandler.INSTANCE);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
+                icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.

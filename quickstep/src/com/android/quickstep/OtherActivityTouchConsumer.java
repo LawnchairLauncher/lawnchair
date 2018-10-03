@@ -79,6 +79,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final Choreographer mBackgroundThreadChoreographer;
     private final OverviewCallbacks mOverviewCallbacks;
     private final TaskOverlayFactory mTaskOverlayFactory;
+    private final TouchInteractionLog mTouchInteractionLog;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -100,7 +101,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
             @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
-            TaskOverlayFactory taskOverlayFactory, VelocityTracker velocityTracker) {
+            TaskOverlayFactory taskOverlayFactory, VelocityTracker velocityTracker,
+            TouchInteractionLog touchInteractionLog) {
         super(base);
 
         mRunningTask = runningTaskInfo;
@@ -113,6 +115,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
+        mTouchInteractionLog = touchInteractionLog;
+        mTouchInteractionLog.setTouchConsumer(this);
     }
 
     @Override
@@ -125,6 +129,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mVelocityTracker == null) {
             return;
         }
+        mTouchInteractionLog.addMotionEvent(ev);
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
                 TraceHelper.beginSection("TouchInt");
@@ -215,10 +220,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
+        mTouchInteractionLog.startRecentsAnimation();
+
         // Create the shared handler
         RecentsAnimationState animationState = new RecentsAnimationState();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
-                animationState.id, mRunningTask, this, touchTimeMs, mActivityControlHelper);
+                animationState.id, mRunningTask, this, touchTimeMs, mActivityControlHelper,
+                mTouchInteractionLog);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
@@ -315,7 +323,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
-    public void updateTouchTracking(int interactionType) {
+    public Choreographer getIntrimChoreographer(MotionEventQueue queue) {
+        mEventQueue = queue;
+        return mBackgroundThreadChoreographer;
+    }
+
+    @Override
+    public void onQuickScrubStart() {
         if (!mPassedInitialSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
             // If we deferred starting the window animation on touch down, then
             // start tracking now
@@ -323,20 +337,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             mPassedInitialSlop = true;
         }
 
+        mTouchInteractionLog.startQuickScrub();
         if (mInteractionHandler != null) {
-            mInteractionHandler.updateInteractionType(interactionType);
+            mInteractionHandler.onQuickScrubStart();
         }
         notifyGestureStarted();
     }
 
     @Override
-    public Choreographer getIntrimChoreographer(MotionEventQueue queue) {
-        mEventQueue = queue;
-        return mBackgroundThreadChoreographer;
-    }
-
-    @Override
     public void onQuickScrubEnd() {
+        mTouchInteractionLog.endQuickScrub("onQuickScrubEnd");
         if (mInteractionHandler != null) {
             mInteractionHandler.onQuickScrubEnd();
         }
@@ -344,6 +354,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onQuickScrubProgress(float progress) {
+        mTouchInteractionLog.setQuickScrubProgress(progress);
         if (mInteractionHandler != null) {
             mInteractionHandler.onQuickScrubProgress(progress);
         }
@@ -351,6 +362,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onQuickStep(MotionEvent ev) {
+        mTouchInteractionLog.startQuickStep();
         if (mIsDeferredDownTarget) {
             // Deferred gesture, start the animation and gesture tracking once we pass the actual
             // touch slop

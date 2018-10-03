@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.Themes;
 
 /**

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.graphics.BitmapInfo.LOW_RES_ICON;
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -37,6 +35,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 
@@ -66,7 +65,7 @@ public class DrawableFactory implements ResourceBasedOverride {
      * Returns a FastBitmapDrawable with the icon.
      */
     public FastBitmapDrawable newIcon(Context context, ItemInfoWithIcon info) {
-        FastBitmapDrawable drawable = info.iconBitmap == LOW_RES_ICON
+        FastBitmapDrawable drawable = info.usingLowResIcon()
                 ? new PlaceHolderIconDrawable(info, getPreloadProgressPath(), context)
                 : new FastBitmapDrawable(info);
         drawable.setIsDisabled(info.isDisabled());
@@ -74,7 +73,7 @@ public class DrawableFactory implements ResourceBasedOverride {
     }
 
     public FastBitmapDrawable newIcon(Context context, BitmapInfo info, ActivityInfo target) {
-        return info.icon == LOW_RES_ICON
+        return info.isLowRes()
                 ? new PlaceHolderIconDrawable(info, getPreloadProgressPath(), context)
                 : new FastBitmapDrawable(info);
     }

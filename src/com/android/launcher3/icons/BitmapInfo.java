@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.graphics;
+package com.android.launcher3.icons;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -35,6 +35,10 @@ public class BitmapInfo {
     public void applyTo(BitmapInfo info) {
         info.icon = icon;
         info.color = color;
+    }
+
+    public final boolean isLowRes() {
+        return LOW_RES_ICON == icon;
     }
 
     public static BitmapInfo fromBitmap(Bitmap bitmap) {

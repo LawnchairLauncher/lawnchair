@@ -57,6 +57,7 @@ import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
+import com.android.systemui.shared.system.ActivityOptionsCompat;
 import java.util.function.Consumer;
 
 /**
@@ -204,11 +205,26 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             if (animate) {
                 opts = ((BaseDraggingActivity) fromContext(getContext()))
                         .getActivityLaunchOptions(this);
+                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
+                        opts, resultCallback, resultCallbackHandler);
             } else {
-                opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
+                opts = ActivityOptionsCompat.makeCustomAnimation(getContext(), 0, 0, () -> {
+                    if (resultCallback != null) {
+                        // Only post the animation start after the system has indicated that the
+                        // transition has started
+                        resultCallbackHandler.post(() -> resultCallback.accept(true));
+                    }
+                }, resultCallbackHandler);
+                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
+                        opts, (success) -> {
+                            if (resultCallback != null && !success) {
+                                // If the call to start activity failed, then post the result
+                                // immediately, otherwise, wait for the animation start callback
+                                // from the activity options above
+                                resultCallbackHandler.post(() -> resultCallback.accept(false));
+                            }
+                        }, resultCallbackHandler);
             }
-            ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
-                    opts, resultCallback, resultCallbackHandler);
         }
     }
 

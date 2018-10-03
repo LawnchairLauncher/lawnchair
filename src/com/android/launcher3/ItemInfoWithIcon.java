@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.graphics.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 
 import android.graphics.Bitmap;
 

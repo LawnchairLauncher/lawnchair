@@ -280,7 +280,6 @@ public class OverviewCommandHelper {
             factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
             mActivity = activity;
             mRecentsView = mActivity.getOverviewPanel();
-            mRecentsView.setRunningTaskIconScaledDown(true);
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(Action.Command.RECENTS_BUTTON,
                         mHelper.getContainerType(), ContainerType.TASKSWITCHER);
@@ -297,6 +296,9 @@ public class OverviewCommandHelper {
 
             if (mListener != null) {
                 mListener.unregister();
+            }
+            if (mRecentsView != null) {
+                mRecentsView.setRunningTaskIconScaledDown(true);
             }
             AnimatorSet anim = new AnimatorSet();
             anim.addListener(new AnimationSuccessListener() {

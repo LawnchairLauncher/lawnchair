@@ -32,6 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -46,6 +47,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
@@ -54,6 +56,8 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.Provider;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
@@ -78,7 +82,6 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     // Widget request specific options.
     private LauncherAppWidgetHost mAppWidgetHost;
     private AppWidgetManagerCompat mAppWidgetManager;
-    private PendingAddWidgetInfo mPendingWidgetInfo;
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
 
@@ -189,10 +192,9 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private void setupShortcut() {
         PinShortcutRequestActivityInfo shortcutInfo =
                 new PinShortcutRequestActivityInfo(mRequest, this);
-        WidgetItem item = new WidgetItem(shortcutInfo);
         mWidgetCell.getWidgetView().setTag(new PendingAddShortcutInfo(shortcutInfo));
-        mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-        mWidgetCell.ensurePreview();
+        applyWidgetItemAsync(
+                () -> new WidgetItem(shortcutInfo, mApp.getIconCache(), getPackageManager()));
     }
 
     private boolean setupWidget() {
@@ -207,16 +209,30 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
 
-        mPendingWidgetInfo = new PendingAddWidgetInfo(widgetInfo);
-        mPendingWidgetInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
-        mPendingWidgetInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
-        mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, mPendingWidgetInfo);
+        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);
+        pendingInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
+        pendingInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
+        mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+        mWidgetCell.getWidgetView().setTag(pendingInfo);
 
-        WidgetItem item = new WidgetItem(widgetInfo, getPackageManager(), mIdp);
-        mWidgetCell.getWidgetView().setTag(mPendingWidgetInfo);
-        mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-        mWidgetCell.ensurePreview();
+        applyWidgetItemAsync(() -> new WidgetItem(widgetInfo, mIdp, mApp.getIconCache()));
         return true;
+    }
+
+    private void applyWidgetItemAsync(final Provider<WidgetItem> itemProvider) {
+        new AsyncTask<Void, Void, WidgetItem>() {
+            @Override
+            protected WidgetItem doInBackground(Void... voids) {
+                return itemProvider.get();
+            }
+
+            @Override
+            protected void onPostExecute(WidgetItem item) {
+                mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
+                mWidgetCell.ensurePreview();
+            }
+        }.executeOnExecutor(new LooperExecutor(LauncherModel.getWorkerLooper()));
+        // TODO: Create a worker looper executor and reuse that everywhere.
     }
 
     /**

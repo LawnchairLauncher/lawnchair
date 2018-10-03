@@ -38,7 +38,7 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -597,6 +597,19 @@ public class LauncherModel extends BroadcastReceiver
         // update the corresponding shortcuts.
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
                 CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
+    }
+
+    /**
+     * Called when the labels for the widgets has updated in the icon cache.
+     */
+    public void onWidgetLabelsUpdated(HashSet<String> updatedPackages, UserHandle user) {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                dataModel.widgetsModel.onPackageIconsUpdated(updatedPackages, user, app);
+                bindUpdatedWidgets(dataModel);
+            }
+        });
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
