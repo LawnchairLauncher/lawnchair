@@ -34,6 +34,7 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -131,7 +132,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
     private void setResult(boolean success) {
 
-        getInstrumentation().getTargetContext().sendBroadcast(
+        TestHelpers.getInstrumentation().getTargetContext().sendBroadcast(
                 WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
                         success ? "clickOK" : "clickCancel"));
     }

@@ -32,6 +32,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -59,7 +60,13 @@ import com.android.launcher3.util.rule.LauncherActivityRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.runners.model.Statement;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -83,21 +90,65 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
-    protected final boolean mIsInLauncherProcess;
 
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
-        final Instrumentation instrumentation = getInstrumentation();
+        final Instrumentation instrumentation =TestHelpers.getInstrumentation();
         mDevice = UiDevice.getInstance(instrumentation);
+        try {
+            mDevice.setOrientationNatural();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         mLauncher = new LauncherInstrumentation(instrumentation);
-
-        mIsInLauncherProcess = instrumentation.getTargetContext().getPackageName().equals(
-                mDevice.getLauncherPackageName());
     }
 
     @Rule
     public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+
+    // Annotation for tests that need to be run in portrait and landscape modes.
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    protected @interface PortraitLandscape {
+    }
+
+    @Rule
+    public TestRule mPortraitLandscapeExecutor =
+            (base, description) -> false && description.getAnnotation(PortraitLandscape.class)
+                    != null ? new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    try {
+                        // Create launcher activity if necessary and bring it to the front.
+                        mDevice.pressHome();
+                        waitForLauncherCondition(launcher -> launcher != null);
+
+                        executeOnLauncher(launcher ->
+                                launcher.getRotationHelper().forceAllowRotationForTesting(true));
+
+                        evaluateInPortrait();
+                        evaluateInLandscape();
+                    } finally {
+                        mDevice.setOrientationNatural();
+                        executeOnLauncher(launcher ->
+                                launcher.getRotationHelper().forceAllowRotationForTesting(false));
+                        mLauncher.setExpectedRotation(Surface.ROTATION_0);
+                    }
+                }
+
+                private void evaluateInPortrait() throws Throwable {
+                    mDevice.setOrientationNatural();
+                    mLauncher.setExpectedRotation(Surface.ROTATION_0);
+                    base.evaluate();
+                }
+
+                private void evaluateInLandscape() throws Throwable {
+                    mDevice.setOrientationLeft();
+                    mLauncher.setExpectedRotation(Surface.ROTATION_90);
+                    base.evaluate();
+                }
+            } : base;
 
     @Before
     public void setUp() throws Exception {
@@ -117,10 +168,6 @@ public abstract class AbstractLauncherUiTest {
         } else {
             mDevice.setOrientationRight();
         }
-    }
-
-    protected Instrumentation getInstrumentation() {
-        return InstrumentationRegistry.getInstrumentation();
     }
 
     /**
@@ -231,7 +278,7 @@ public abstract class AbstractLauncherUiTest {
     protected void sendPointer(int action, Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
-        getInstrumentation().sendPointerSync(event);
+        TestHelpers.getInstrumentation().sendPointerSync(event);
         event.recycle();
     }
 
@@ -271,7 +318,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {
-        if (!mIsInLauncherProcess) return null;
+        if (!TestHelpers.isInLauncherProcess()) return null;
         return getOnUiThread(() -> f.apply(mActivityMonitor.getActivity()));
     }
 
@@ -298,7 +345,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected boolean waitForLauncherCondition(
             Function<Launcher, Boolean> condition, long timeout) {
-        if (!mIsInLauncherProcess) return true;
+        if (!TestHelpers.isInLauncherProcess()) return true;
         return Wait.atMost(() -> getFromLauncher(condition), timeout);
     }
 
@@ -311,7 +358,7 @@ public abstract class AbstractLauncherUiTest {
                 getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
             @Override
             public LauncherAppWidgetProviderInfo call() throws Exception {
-                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
+                ComponentName cn = new ComponentName(TestHelpers.getInstrumentation().getContext(),
                         hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
                 Log.d(TAG, "findWidgetProvider componentName=" + cn.flattenToString());
                 return AppWidgetManagerCompat.getInstance(mTargetContext)
