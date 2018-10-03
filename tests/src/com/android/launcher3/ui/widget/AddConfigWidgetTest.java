@@ -41,6 +41,7 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,6 +84,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testConfigCancelled_rotate() throws Throwable {
         runTest(true, false);
     }
