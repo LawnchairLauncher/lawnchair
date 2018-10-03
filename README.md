@@ -3,9 +3,13 @@ By Amir Zaidi
 
 ## Links
 
+Play Store release: https://play.google.com/store/apps/details?id=amirz.rootless.nexuslauncher
+
 Photos and videos: https://photos.app.goo.gl/qdcAcLOdiu8Kl1Bh1 
 
 APK Downloads: https://github.com/amirzaidi/launcher3/releases
+
+Rootless Pixel Bridge: https://github.com/amirzaidi/AIDLBridge/releases
 
 Magisk version (only for Pixel users): https://github.com/amirzaidi/launcher3magisk/releases 
 
@@ -172,9 +176,6 @@ They are two completely different projects. I started with AOSP Launcher3 in And
 
 ### Why do Pixel users need to use the Magisk module?
 Ironically, the “Rootless Pixel Launcher” requires root for Pixel users. The reason for this is that it uses the same name as the real Pixel Launcher. The real one cannot be removed or overwritten without root. Changing the name would break the Smartspace features, because Google hardcoded the Google App to only provide the features to the “real” Pixel Launcher.
-
-### Can you upload it to the Play Store?
-I do have a Play Store developer account, but Google does not allow uploading a duplicate application name. They already have the real Pixel Launcher on the Play Store and, like I said in the Magisk module question, I cannot change the name. Furthermore, my app is running as a “debug” app to get the Google Now feed without root. The only way around that is using a companion app like “Lawnfeed” or “Nova Companion” which runs in debug mode, but because I am not intending to upload it on the Play Store anyways I am fine with having the entire app run in debug mode.
 
 ### What is Launcher3?
 Launcher3 is the name that the default AOSP launcher uses. If you compile AOSP from sources directly, that is what you will get. My GitHub project is called Launcher3 because I forked from AOSP and did not change the name. Changing the GitHub project name now is possible, but unnecessary.
