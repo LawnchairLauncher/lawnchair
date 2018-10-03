@@ -9,8 +9,6 @@ APK Downloads: https://github.com/amirzaidi/launcher3/releases
 
 Magisk version (only for Pixel users): https://github.com/amirzaidi/launcher3magisk/releases 
 
-Telegram Group: https://t.me/launcherthree
-
 Alphas: https://t.me/appforks
 
 Contact: https://t.me/mirai
