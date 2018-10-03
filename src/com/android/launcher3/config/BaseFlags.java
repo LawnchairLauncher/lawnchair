@@ -19,14 +19,16 @@ package com.android.launcher3.config;
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
- * All the flags should be defined here with appropriate default values. To override a value,
- * redefine it in {@link FeatureFlags}.
+ * <p>All the flags should be defined here with appropriate default values.
  *
- * This class is kept package-private to prevent direct access.
+ * <p>This class is kept package-private to prevent direct access.
  */
 abstract class BaseFlags {
 
-    BaseFlags() {}
+    private static final String TAG = "FeatureFlags";
+
+    BaseFlags() {
+    }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
     public static final String AUTHORITY = "com.android.launcher3.settings".intern();
@@ -34,8 +36,10 @@ abstract class BaseFlags {
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
 
-    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
+    /** Feature flag to enable moving the QSB on the 0th screen of the workspace. */
+    public boolean isQsbOnFirstScreenEnabled() {
+        return true;
+    }
 
     //Feature flag to enable pulling down navigation shade from workspace.
     public static final boolean PULL_DOWN_STATUS_BAR = true;
