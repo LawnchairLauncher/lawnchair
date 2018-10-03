@@ -459,7 +459,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         }
 
         if (action == R.string.accessibility_app_usage_settings) {
-            openAppUsageSettings();
+            openAppUsageSettings(this);
             return true;
         }
 
@@ -481,14 +481,16 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         return super.performAccessibilityAction(action, arguments);
     }
 
-    private void openAppUsageSettings() {
+    private void openAppUsageSettings(View view) {
         final Intent intent = new Intent(SEE_TIME_IN_APP_TEMPLATE)
                 .putExtra(Intent.EXTRA_PACKAGE_NAME,
                         mTask.getTopComponent().getPackageName()).addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         try {
             final Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.startActivity(intent);
+            final ActivityOptions options = ActivityOptions.makeScaleUpAnimation(view, 0, 0,
+                    view.getWidth(), view.getHeight());
+            launcher.startActivity(intent, options.toBundle());
             launcher.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
                     LauncherLogProto.ControlType.APP_USAGE_SETTINGS, this);
         } catch (ActivityNotFoundException e) {
