@@ -49,6 +49,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -94,13 +95,14 @@ public abstract class AbstractLauncherUiTest {
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
-        final Instrumentation instrumentation =TestHelpers.getInstrumentation();
+        final Instrumentation instrumentation = TestHelpers.getInstrumentation();
         mDevice = UiDevice.getInstance(instrumentation);
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+        if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
         mLauncher = new LauncherInstrumentation(instrumentation);
     }
 

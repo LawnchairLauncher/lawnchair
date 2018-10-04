@@ -136,8 +136,12 @@ public final class Utilities {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    public static final boolean IS_RUNNING_IN_TEST_HARNESS =
+    public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
+
+    public static void enableRunningInTestHarnessForTests() {
+        IS_RUNNING_IN_TEST_HARNESS = true;
+    }
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
