@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
@@ -52,12 +53,6 @@ public class SwipeDetector {
      */
     public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
 
-    /**
-     * The time constant used to calculate dampening in the low-pass filter of scroll velocity.
-     * Cutoff frequency is set at 10 Hz.
-     */
-    public static final float SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * (float) Math.PI * 10);
-
     /* Scroll state, this is set to true during dragging and animation. */
     private ScrollState mState = ScrollState.IDLE;
 
@@ -75,6 +70,8 @@ public class SwipeDetector {
          * Distance in pixels a touch can wander before we think the user is scrolling.
          */
         abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
+
+        abstract float getVelocity(VelocityTracker tracker);
     }
 
     public static final Direction VERTICAL = new Direction() {
@@ -88,6 +85,11 @@ public class SwipeDetector {
         float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos) {
             return Math.abs(ev.getX(pointerIndex) - downPos.x);
         }
+
+        @Override
+        float getVelocity(VelocityTracker tracker) {
+            return tracker.getYVelocity();
+        }
     };
 
     public static final Direction HORIZONTAL = new Direction() {
@@ -100,6 +102,11 @@ public class SwipeDetector {
         @Override
         float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos) {
             return Math.abs(ev.getY(pointerIndex) - downPos.y);
+        }
+
+        @Override
+        float getVelocity(VelocityTracker tracker) {
+            return tracker.getXVelocity();
         }
     };
 
@@ -151,16 +158,16 @@ public class SwipeDetector {
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
-    private Direction mDir;
+    private final Direction mDir;
 
     private final float mTouchSlop;
+    private final float mMaxVelocity;
 
     /* Client of this gesture detector can register a callback. */
     private final Listener mListener;
 
-    private long mCurrentMillis;
+    private VelocityTracker mVelocityTracker;
 
-    private float mVelocity;
     private float mLastDisplacement;
     private float mDisplacement;
 
@@ -170,24 +177,22 @@ public class SwipeDetector {
     public interface Listener {
         void onDragStart(boolean start);
 
-        boolean onDrag(float displacement, float velocity);
+        boolean onDrag(float displacement);
 
         void onDragEnd(float velocity, boolean fling);
     }
 
     public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
-        this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
+        this(ViewConfiguration.get(context), l, dir);
     }
 
     @VisibleForTesting
-    protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
-        mTouchSlop = touchSlope;
+    protected SwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
+            @NonNull Direction dir) {
         mListener = l;
         mDir = dir;
-    }
-
-    public void updateDirection(Direction dir) {
-        mDir = dir;
+        mTouchSlop = config.getScaledTouchSlop();
+        mMaxVelocity = config.getScaledMaximumFlingVelocity();
     }
 
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
@@ -215,14 +220,22 @@ public class SwipeDetector {
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
-        switch (ev.getActionMasked()) {
+        int actionMasked = ev.getActionMasked();
+        if (actionMasked == MotionEvent.ACTION_DOWN && mVelocityTracker != null) {
+            mVelocityTracker.clear();
+        }
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+
+        switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mLastDisplacement = 0;
                 mDisplacement = 0;
-                mVelocity = 0;
 
                 if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
                     setState(ScrollState.DRAGGING);
@@ -247,8 +260,6 @@ public class SwipeDetector {
                     break;
                 }
                 mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
-                computeVelocity(mDir.getDisplacement(ev, pointerIndex, mLastPos),
-                        ev.getEventTime());
 
                 // handle state and listener calls.
                 if (mState != ScrollState.DRAGGING && shouldScrollStart(ev, pointerIndex)) {
@@ -265,6 +276,8 @@ public class SwipeDetector {
                 if (mState == ScrollState.DRAGGING) {
                     setState(ScrollState.SETTLING);
                 }
+                mVelocityTracker.recycle();
+                mVelocityTracker = null;
                 break;
             default:
                 break;
@@ -308,55 +321,24 @@ public class SwipeDetector {
     private boolean reportDragging() {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
-                Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
-                        mDisplacement, mVelocity));
+                Log.d(TAG, String.format("onDrag disp=%.1f", mDisplacement));
             }
 
             mLastDisplacement = mDisplacement;
-            return mListener.onDrag(mDisplacement - mSubtractDisplacement, mVelocity);
+            return mListener.onDrag(mDisplacement - mSubtractDisplacement);
         }
         return true;
     }
 
     private void reportDragEnd() {
+        mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
+        float velocity = mDir.getVelocity(mVelocityTracker) / 1000;
         if (DBG) {
             Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
-                    mDisplacement, mVelocity));
+                    mDisplacement, velocity));
         }
-        mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
 
-    }
-
-    /**
-     * Computes the damped velocity.
-     */
-    public float computeVelocity(float delta, long currentMillis) {
-        long previousMillis = mCurrentMillis;
-        mCurrentMillis = currentMillis;
-
-        float deltaTimeMillis = mCurrentMillis - previousMillis;
-        float velocity = (deltaTimeMillis > 0) ? (delta / deltaTimeMillis) : 0;
-        if (Math.abs(mVelocity) < 0.001f) {
-            mVelocity = velocity;
-        } else {
-            float alpha = computeDampeningFactor(deltaTimeMillis);
-            mVelocity = interpolate(mVelocity, velocity, alpha);
-        }
-        return mVelocity;
-    }
-
-    /**
-     * Returns a time-dependent dampening factor using delta time.
-     */
-    private static float computeDampeningFactor(float deltaTime) {
-        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
-    }
-
-    /**
-     * Returns the linear interpolation between two values
-     */
-    public static float interpolate(float from, float to, float alpha) {
-        return (1.0f - alpha) * from + alpha * to;
+        mListener.onDragEnd(velocity, Math.abs(velocity) > RELEASE_VELOCITY_PX_MS);
     }
 
     public static long calculateDuration(float velocity, float progressNeeded) {

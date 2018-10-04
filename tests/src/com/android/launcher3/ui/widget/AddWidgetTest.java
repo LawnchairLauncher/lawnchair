@@ -33,6 +33,7 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +48,14 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
     @Test
+    @Ignore
     public void testDragIcon_portrait() throws Throwable {
         lockRotation(true);
         performTest();
     }
 
     @Test
+    @Ignore
     public void testDragIcon_landscape() throws Throwable {
         lockRotation(false);
         performTest();

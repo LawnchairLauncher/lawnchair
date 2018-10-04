@@ -33,7 +33,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;

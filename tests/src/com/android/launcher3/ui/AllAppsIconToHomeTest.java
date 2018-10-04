@@ -42,7 +42,8 @@ public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
         LauncherActivityInfo settingsApp = getSettingsApp();
 
         clearHomescreen();
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
+        mDevice.waitForIdle();
 
         // Open all apps and wait for load complete.
         final UiObject2 appsContainer = openAllApps();

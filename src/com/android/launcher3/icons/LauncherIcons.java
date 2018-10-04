@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.graphics;
+package com.android.launcher3.icons;
 
 import static android.graphics.Paint.DITHER_FLAG;
 import static android.graphics.Paint.FILTER_BITMAP_FLAG;
 
-import static com.android.launcher3.graphics.ShadowGenerator.BLUR_FACTOR;
+import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -44,7 +44,7 @@ import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;

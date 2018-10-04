@@ -220,7 +220,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         float totalDisplacement = displacement + mDisplacementShift;
         boolean isGoingUp =
                 totalDisplacement == 0 ? mCurrentAnimationIsGoingUp : totalDisplacement < 0;

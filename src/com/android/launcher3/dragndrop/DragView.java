@@ -56,7 +56,7 @@ import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;

@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -74,7 +75,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
     public static final long SHORT_UI_TIMEOUT= 300;
-    public static final long DEFAULT_UI_TIMEOUT = 3000;
+    public static final long DEFAULT_UI_TIMEOUT = 10000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -82,12 +83,17 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
+    protected final boolean mIsInLauncherProcess;
 
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
-        mDevice = UiDevice.getInstance(getInstrumentation());
-        mLauncher = new LauncherInstrumentation(getInstrumentation());
+        final Instrumentation instrumentation = getInstrumentation();
+        mDevice = UiDevice.getInstance(instrumentation);
+        mLauncher = new LauncherInstrumentation(instrumentation);
+
+        mIsInLauncherProcess = instrumentation.getTargetContext().getPackageName().equals(
+                mDevice.getLauncherPackageName());
     }
 
     @Rule
@@ -146,16 +152,20 @@ public abstract class AbstractLauncherUiTest {
      * @return the matching object.
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
-        do {
+        container.setGestureMargins(0, 0, 0, 200);
+
+        int i = 0;
+        for (; ; ) {
             // findObject can only execute after spring settles.
             mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
             UiObject2 widget = container.findObject(condition);
             if (widget != null && widget.getVisibleBounds().intersects(
-                    0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight())) {
+                    0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight() - 200)) {
                 return widget;
             }
-        } while (container.scroll(Direction.DOWN, 1f));
-        return container.findObject(condition);
+            if (++i > 40) fail("Too many attempts");
+            container.scroll(Direction.DOWN, 1f);
+        }
     }
 
     /**
@@ -261,6 +271,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {
+        if (!mIsInLauncherProcess) return null;
         return getOnUiThread(() -> f.apply(mActivityMonitor.getActivity()));
     }
 
@@ -287,6 +298,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected boolean waitForLauncherCondition(
             Function<Launcher, Boolean> condition, long timeout) {
+        if (!mIsInLauncherProcess) return true;
         return Wait.atMost(() -> getFromLauncher(condition), timeout);
     }
 

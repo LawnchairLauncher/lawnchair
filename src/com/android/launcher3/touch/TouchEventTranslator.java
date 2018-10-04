@@ -19,7 +19,6 @@ import android.graphics.PointF;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
-import android.util.SparseLongArray;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
@@ -37,13 +36,15 @@ public class TouchEventTranslator {
 
     private class DownState {
         long timeStamp;
+        float downX;
         float downY;
-        public DownState(long timeStamp, float downY) {
+        public DownState(long timeStamp, float downX, float downY) {
             this.timeStamp = timeStamp;
+            this.downX = downX;
             this.downY = downY;
         }
     };
-    private final DownState ZERO = new DownState(0, 0f);
+    private final DownState ZERO = new DownState(0, 0f, 0f);
 
     private final Consumer<MotionEvent> mListener;
 
@@ -65,12 +66,16 @@ public class TouchEventTranslator {
         mFingers.clear();
     }
 
+    public float getDownX() {
+        return mDownEvents.get(0).downX;
+    }
+
     public float getDownY() {
         return mDownEvents.get(0).downY;
     }
 
     public void setDownParameters(int idx, MotionEvent e) {
-        DownState ev = new DownState(e.getEventTime(), e.getY(idx));
+        DownState ev = new DownState(e.getEventTime(), e.getX(idx), e.getY(idx));
         mDownEvents.append(idx, ev);
     }
 

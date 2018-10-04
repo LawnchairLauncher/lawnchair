@@ -17,7 +17,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.icons.BitmapInfo;
 
 import org.junit.Before;
 import org.junit.Test;

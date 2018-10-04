@@ -200,7 +200,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
                 pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
             if (packageUser == null || packageUser.mPackageName
                     .equals(info.activityInfo.packageName)) {
-                result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+                result.add(new ShortcutConfigActivityInfoVL(info.activityInfo));
             }
         }
         return result;

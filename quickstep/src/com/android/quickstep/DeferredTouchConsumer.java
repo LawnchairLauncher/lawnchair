@@ -49,8 +49,8 @@ public class DeferredTouchConsumer implements TouchConsumer {
     }
 
     @Override
-    public void updateTouchTracking(int interactionType) {
-        mTarget.updateTouchTracking(interactionType);
+    public void onQuickScrubStart() {
+        mTarget.onQuickScrubStart();
     }
 
     @Override
