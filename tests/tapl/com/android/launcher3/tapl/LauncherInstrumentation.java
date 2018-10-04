@@ -108,7 +108,15 @@ public final class LauncherInstrumentation {
                 instrumentation.getTargetContext().getContentResolver(),
                 SWIPE_UP_SETTING_NAME,
                 swipeUpEnabledDefault ? 1 : 0) == 1;
-        assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
+
+        // Launcher should run in test harness so that custom accessibility protocol between
+        // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
+        // into Launcher.
+        final boolean isInLauncherProcess =
+                instrumentation.getTargetContext().getPackageName().equals(
+                        UiDevice.getInstance(instrumentation).getLauncherPackageName());
+        assertTrue("Device must run in a test harness",
+                isInLauncherProcess || ActivityManager.isRunningInTestHarness());
     }
 
     // Used only by TaplTests.
