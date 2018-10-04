@@ -52,6 +52,7 @@ import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -80,6 +81,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final OverviewCallbacks mOverviewCallbacks;
     private final TaskOverlayFactory mTaskOverlayFactory;
     private final TouchInteractionLog mTouchInteractionLog;
+    private final InputConsumerController mInputConsumer;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -101,8 +103,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
             @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
-            TaskOverlayFactory taskOverlayFactory, VelocityTracker velocityTracker,
-            TouchInteractionLog touchInteractionLog) {
+            TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
+            VelocityTracker velocityTracker, TouchInteractionLog touchInteractionLog) {
         super(base);
 
         mRunningTask = runningTaskInfo;
@@ -117,6 +119,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mTaskOverlayFactory = taskOverlayFactory;
         mTouchInteractionLog = touchInteractionLog;
         mTouchInteractionLog.setTouchConsumer(this);
+        mInputConsumer = inputConsumer;
     }
 
     @Override
@@ -226,7 +229,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         RecentsAnimationState animationState = new RecentsAnimationState();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
                 animationState.id, mRunningTask, this, touchTimeMs, mActivityControlHelper,
-                mTouchInteractionLog);
+                mInputConsumer, mTouchInteractionLog);
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
