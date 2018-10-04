@@ -128,7 +128,7 @@ public class LauncherSettings {
          *
          * @return The unique content URL for the specified row.
          */
-        public static Uri getContentUri(long id) {
+        public static Uri getContentUri(int id) {
             return Uri.parse("content://" + LauncherProvider.AUTHORITY +
                     "/" + TABLE_NAME + "/" + id);
         }

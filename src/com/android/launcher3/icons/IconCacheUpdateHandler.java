@@ -29,6 +29,7 @@ import android.util.SparseBooleanArray;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BaseIconCache.IconDB;
+import com.android.launcher3.util.IntArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -205,7 +206,7 @@ public class IconCacheUpdateHandler {
 
     public void finish() {
         // Commit all deletes
-        ArrayList<Integer> deleteIds = new ArrayList<>();
+        IntArray deleteIds = new IntArray();
         int count = mItemsToDelete.size();
         for (int i = 0;  i < count; i++) {
             if (mItemsToDelete.valueAt(i)) {

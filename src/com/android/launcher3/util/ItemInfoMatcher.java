@@ -105,7 +105,7 @@ public interface ItemInfoMatcher {
                         keys.contains(ShortcutKey.fromItemInfo(info));
     }
 
-    static ItemInfoMatcher ofItemIds(LongArrayMap<Boolean> ids, Boolean matchDefault) {
+    static ItemInfoMatcher ofItemIds(IntSparseArrayMap<Boolean> ids, Boolean matchDefault) {
         return (info, cn) -> ids.get(info.id, matchDefault);
     }
 }

@@ -66,7 +66,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             }
             final ShortcutInfo info = ((DeepShortcutView) host.getParent()).getFinalInfo();
             final int[] coordinates = new int[2];
-            final long screenId = findSpaceOnWorkspace(item, coordinates);
+            final int screenId = findSpaceOnWorkspace(item, coordinates);
             Runnable onComplete = new Runnable() {
                 @Override
                 public void run() {

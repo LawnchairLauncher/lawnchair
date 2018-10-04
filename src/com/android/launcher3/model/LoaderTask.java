@@ -70,6 +70,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -155,7 +156,7 @@ public class LoaderTask implements Runnable {
             allItems.addAll(mBgDataModel.workspaceItems);
             allItems.addAll(mBgDataModel.appWidgets);
         }
-        long firstScreen = mBgDataModel.workspaceScreens.isEmpty()
+        int firstScreen = mBgDataModel.workspaceScreens.isEmpty()
                 ? -1 // In this case, we can still look at the items in the hotseat.
                 : mBgDataModel.workspaceScreens.get(0);
         filterCurrentWorkspaceItems(firstScreen, allItems, firstScreenItems,
@@ -719,11 +720,11 @@ public class LoaderTask implements Runnable {
             // Remove dead items
             if (c.commitDeleted()) {
                 // Remove any empty folder
-                ArrayList<Long> deletedFolderIds = (ArrayList<Long>) LauncherSettings.Settings
+                int[] deletedFolderIds = LauncherSettings.Settings
                         .call(contentResolver,
                                 LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
-                        .getSerializable(LauncherSettings.Settings.EXTRA_VALUE);
-                for (long folderId : deletedFolderIds) {
+                        .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
+                for (int folderId : deletedFolderIds) {
                     mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
                     mBgDataModel.folders.remove(folderId);
                     mBgDataModel.itemsIdMap.remove(folderId);
@@ -778,18 +779,18 @@ public class LoaderTask implements Runnable {
             }
 
             // Remove any empty screens
-            ArrayList<Long> unusedScreens = new ArrayList<>(mBgDataModel.workspaceScreens);
+            IntArray unusedScreens = mBgDataModel.workspaceScreens.clone();
             for (ItemInfo item: mBgDataModel.itemsIdMap) {
-                long screenId = item.screenId;
+                int screenId = item.screenId;
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                         unusedScreens.contains(screenId)) {
-                    unusedScreens.remove(screenId);
+                    unusedScreens.removeValue(screenId);
                 }
             }
 
             // If there are any empty screens remove them, and update.
             if (unusedScreens.size() != 0) {
-                mBgDataModel.workspaceScreens.removeAll(unusedScreens);
+                mBgDataModel.workspaceScreens.removeAllValues(unusedScreens);
                 LauncherModel.updateWorkspaceScreenOrder(context, mBgDataModel.workspaceScreens);
             }
         }
