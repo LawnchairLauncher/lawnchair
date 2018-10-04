@@ -53,24 +53,18 @@ public class RecentsAnimationWrapper {
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-    private InputConsumerController mInputConsumer =
-            InputConsumerController.getRecentsAnimationInputConsumer();
+    private final InputConsumerController mInputConsumer;
     private final Supplier<TouchConsumer> mTouchProxySupplier;
-
-    private boolean mInputConsumerUnregistered;
-    private boolean mTouchProxyEnabled;
 
     private TouchConsumer mTouchConsumer;
     private boolean mTouchInProgress;
-    private boolean mInputConsumerUnregisterPending;
 
     private boolean mFinishPending;
 
-    public RecentsAnimationWrapper(Supplier<TouchConsumer> touchProxySupplier) {
-        // Register the input consumer on the UI thread, to ensure that it runs after any pending
-        // unregister calls
+    public RecentsAnimationWrapper(InputConsumerController inputConsumer,
+            Supplier<TouchConsumer> touchProxySupplier) {
+        mInputConsumer = inputConsumer;
         mTouchProxySupplier = touchProxySupplier;
-        mMainThreadExecutor.execute(mInputConsumer::registerInputConsumer);
     }
 
     public synchronized void setController(
@@ -109,6 +103,7 @@ public class RecentsAnimationWrapper {
     public void finish(boolean toHome, Runnable onFinishComplete) {
         if (!toHome) {
             mExecutorService.submit(() -> finishBg(false, onFinishComplete));
+            return;
         }
 
         mMainThreadExecutor.execute(() -> {
@@ -152,28 +147,12 @@ public class RecentsAnimationWrapper {
         }
     }
 
-    public void unregisterInputConsumer() {
-        mMainThreadExecutor.execute(this::unregisterInputConsumerUi);
-    }
-
-    private void unregisterInputConsumerUi() {
-        if (mTouchProxyEnabled && mTouchInProgress) {
-            mInputConsumerUnregisterPending = true;
-        } else {
-            mInputConsumerUnregistered = true;
-            mInputConsumer.unregisterInputConsumer();
-        }
-    }
-
     public void enableTouchProxy() {
         mMainThreadExecutor.execute(this::enableTouchProxyUi);
     }
 
     private void enableTouchProxyUi() {
-        if (!mInputConsumerUnregistered) {
-            mTouchProxyEnabled = true;
-            mInputConsumer.setTouchListener(this::onInputConsumerTouch);
-        }
+        mInputConsumer.setTouchListener(this::onInputConsumerTouch);
     }
 
     private boolean onInputConsumerTouch(MotionEvent ev) {
@@ -184,10 +163,6 @@ public class RecentsAnimationWrapper {
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
-            if (mInputConsumerUnregisterPending) {
-                mInputConsumerUnregisterPending = false;
-                mInputConsumer.unregisterInputConsumer();
-            }
             if (mFinishPending) {
                 mFinishPending = false;
                 mExecutorService.submit(() -> finishBg(true, null));

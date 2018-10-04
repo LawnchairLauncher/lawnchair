@@ -51,6 +51,7 @@ import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ChoreographerCompat;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 import java.io.FileDescriptor;
@@ -185,6 +186,7 @@ public class TouchInteractionService extends Service {
     private OverviewCallbacks mOverviewCallbacks;
     private TaskOverlayFactory mTaskOverlayFactory;
     private TouchInteractionLog mTouchInteractionLog;
+    private InputConsumerController mInputConsumer;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -203,6 +205,8 @@ public class TouchInteractionService extends Service {
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.get(this);
         mTouchInteractionLog = new TouchInteractionLog();
+        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
+        mInputConsumer.registerInputConsumer();
 
         sConnected = true;
 
@@ -213,6 +217,7 @@ public class TouchInteractionService extends Service {
 
     @Override
     public void onDestroy() {
+        mInputConsumer.unregisterInputConsumer();
         mOverviewCommandHelper.onDestroy();
         sConnected = false;
         super.onDestroy();
@@ -256,7 +261,7 @@ public class TouchInteractionService extends Service {
                             mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                            mTaskOverlayFactory, tracker, mTouchInteractionLog);
+                            mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
         }
     }
 
