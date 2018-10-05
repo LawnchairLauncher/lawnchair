@@ -162,6 +162,8 @@ public abstract class AbstractLauncherUiTest {
     @After
     public void tearDown() throws Exception {
         mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 1");
+        // Limits UI tests affecting tests running after them.
+        resetLoaderState();
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
