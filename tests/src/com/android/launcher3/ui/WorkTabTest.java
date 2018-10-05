@@ -22,19 +22,14 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.util.rule.ShellCommandRule;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class WorkTabTest extends AbstractLauncherUiTest {
-    @Rule
-    public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
     private int mProfileUserId;
 

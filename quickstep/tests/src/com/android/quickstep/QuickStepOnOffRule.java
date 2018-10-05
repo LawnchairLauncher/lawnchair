@@ -16,10 +16,14 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.QuickStepOnOffRule.Mode.BOTH;
+import static com.android.quickstep.QuickStepOnOffRule.Mode.OFF;
+import static com.android.quickstep.QuickStepOnOffRule.Mode.ON;
+
 import androidx.test.InstrumentationRegistry;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.ui.TestHelpers;
+import com.android.launcher3.tapl.TestHelpers;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -36,10 +40,16 @@ import java.util.concurrent.Executor;
  * The test should be annotated with @QuickstepOnOff.
  */
 public class QuickStepOnOffRule implements TestRule {
+
+    public enum Mode {
+        ON, OFF, BOTH
+    }
+
     // Annotation for tests that need to be run with quickstep enabled and disabled.
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface QuickstepOnOff {
+        Mode mode() default BOTH;
     }
 
     private final Executor mMainThreadExecutor;
@@ -54,12 +64,17 @@ public class QuickStepOnOffRule implements TestRule {
     public Statement apply(Statement base, Description description) {
         if (TestHelpers.isInLauncherProcess() &&
                 description.getAnnotation(QuickstepOnOff.class) != null) {
+            Mode mode = description.getAnnotation(QuickstepOnOff.class).mode();
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
                     try {
-                        evaluateWithQuickstepOn();
-                        evaluateWithQuickstepOff();
+                        if (mode == ON || mode == BOTH) {
+                            evaluateWithQuickstepOn();
+                        }
+                        if (mode == OFF || mode == BOTH) {
+                            evaluateWithQuickstepOff();
+                        }
                     } finally {
                         overrideSwipeUpEnabled(null);
                     }

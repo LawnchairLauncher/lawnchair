@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -53,10 +55,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.LauncherActivityRule;
+import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -95,7 +99,7 @@ public abstract class AbstractLauncherUiTest {
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
-        final Instrumentation instrumentation = TestHelpers.getInstrumentation();
+        final Instrumentation instrumentation = getInstrumentation();
         mDevice = UiDevice.getInstance(instrumentation);
         try {
             mDevice.setOrientationNatural();
@@ -108,6 +112,11 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+
+    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
+
+    @Rule public ShellCommandRule mDisableHeadsUpNotification =
+            ShellCommandRule.disableHeadsUpNotification();
 
     // Annotation for tests that need to be run in portrait and landscape modes.
     @Retention(RetentionPolicy.RUNTIME)
@@ -156,12 +165,10 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
-        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 0");
     }
 
     @After
     public void tearDown() throws Exception {
-        mDevice.executeShellCommand("settings put global heads_up_notifications_enabled 1");
         // Limits UI tests affecting tests running after them.
         resetLoaderState();
     }
@@ -282,7 +289,7 @@ public abstract class AbstractLauncherUiTest {
     protected void sendPointer(int action, Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
-        TestHelpers.getInstrumentation().sendPointerSync(event);
+        getInstrumentation().sendPointerSync(event);
         event.recycle();
     }
 
@@ -374,7 +381,7 @@ public abstract class AbstractLauncherUiTest {
                 getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
             @Override
             public LauncherAppWidgetProviderInfo call() throws Exception {
-                ComponentName cn = new ComponentName(TestHelpers.getInstrumentation().getContext(),
+                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
                         hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
                 Log.d(TAG, "findWidgetProvider componentName=" + cn.flattenToString());
                 return AppWidgetManagerCompat.getInstance(mTargetContext)

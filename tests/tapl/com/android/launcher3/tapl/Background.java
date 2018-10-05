@@ -16,10 +16,22 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+
+import static org.junit.Assert.assertTrue;
+
+import static androidx.test.InstrumentationRegistry.getTargetContext;
+
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
 /**
- * Operations on a state when Launcher is inactive because some other app is active.
+ * Indicates the base state with a UI other than Overview running as foreground. It can also
+ * indicate Launcher as long as Launcher is not in Overview state.
  */
-public final class Background extends Home {
+public class Background extends LauncherInstrumentation.VisibleContainer {
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -28,5 +40,35 @@ public final class Background extends Home {
     @Override
     protected LauncherInstrumentation.ContainerType getContainerType() {
         return LauncherInstrumentation.ContainerType.BACKGROUND;
+    }
+
+    /**
+     * Swipes up or presses the square button to switch to Overview.
+     * Returns the base overview, which can be either in Launcher or the fallback recents.
+     *
+     * @return the Overview panel object.
+     */
+    @NonNull
+    public BaseOverview switchToOverview() {
+        verifyActiveContainer();
+        goToOverviewUnchecked();
+        assertTrue("Overview not visible", mLauncher.getDevice().wait(Until.hasObject(By.pkg(
+                getTargetContext().getPackageName())),
+                WAIT_TIME_MS));
+        return new BaseOverview(mLauncher);
+    }
+
+
+    protected void goToOverviewUnchecked() {
+        if (mLauncher.isSwipeUpEnabled()) {
+            final int height = mLauncher.getDevice().getDisplayHeight();
+            final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
+
+            mLauncher.swipe(
+                    navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                    navBar.getVisibleBounds().centerX(), height - 300);
+        } else {
+            mLauncher.getSystemUiObject("recent_apps").click();
+        }
     }
 }
