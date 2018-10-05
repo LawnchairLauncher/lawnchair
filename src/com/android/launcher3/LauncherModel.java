@@ -212,6 +212,11 @@ public class LauncherModel extends BroadcastReceiver
 
     static void checkItemInfoLocked(
             final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Checking item: " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent

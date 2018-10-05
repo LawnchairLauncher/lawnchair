@@ -296,6 +296,11 @@ public class LoaderResults {
             final ArrayList<LauncherAppWidgetInfo> appWidgets,
             final Executor executor) {
 
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
         // Bind the workspace items
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
