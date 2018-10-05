@@ -28,6 +28,35 @@ LOCAL_UNINSTALLABLE_MODULE := true
 LOCAL_SDK_VERSION := current
 include $(BUILD_PREBUILT)
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := libPluginCore
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/plugin_core.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := current
+include $(BUILD_PREBUILT)
+
+#
+# Build rule for plugin lib (needed to write a plugin).
+#
+include $(CLEAR_VARS)
+LOCAL_USE_AAPT2 := true
+LOCAL_AAPT2_ONLY := true
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_STATIC_JAVA_LIBRARIES := libPluginCore
+
+LOCAL_SRC_FILES := \
+    $(call all-java-files-under, src_plugins)
+
+LOCAL_SDK_VERSION := current
+LOCAL_MIN_SDK_VERSION := 28
+LOCAL_MODULE := LauncherPluginLib
+LOCAL_PRIVILEGED_MODULE := true
+
+include $(BUILD_STATIC_JAVA_LIBRARY)
+
 #
 # Build rule for Launcher3 dependencies lib.
 #
@@ -39,6 +68,8 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.recyclerview_recyclerview \
     androidx.dynamicanimation_dynamicanimation
+
+LOCAL_STATIC_JAVA_LIBRARIES := libPluginCore
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
