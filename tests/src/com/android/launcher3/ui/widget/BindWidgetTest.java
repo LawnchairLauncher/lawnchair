@@ -144,6 +144,10 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testPendingWidget_autoRestored() {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
 
@@ -152,10 +156,20 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID;
 
         setupAndVerifyContents(item, LauncherAppWidgetHostView.class, info.label);
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Test Ended @ " + android.util.Log.getStackTraceString(new Throwable()));
+        }
     }
 
     @Test
     public void testPendingWidget_withConfigScreen() throws Exception {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         // A non-restored widget with config screen get bound and shows a 'Click to setup' UI.
         LauncherAppWidgetProviderInfo info = findWidgetProvider(true);
 
@@ -176,6 +190,11 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         assertNotNull(AppWidgetManager.getInstance(mTargetContext)
                 .getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
                         LauncherSettings.Favorites.APPWIDGET_ID))));
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Test Ended @ " + android.util.Log.getStackTraceString(new Throwable()));
+        }
     }
 
     @Test @Ignore
