@@ -111,18 +111,18 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     }
 
     private static boolean matches(AppInfo info, String query, StringMatcher matcher, boolean normalize) {
-        int queryLength = query.length();
-
         String title = info.title.toString();
-        int titleLength = title.length();
-
-        if (titleLength < queryLength || queryLength <= 0) {
-            return false;
-        }
 
         if (normalize) {
             title = normalize(title);
             query = normalize(query);
+        }
+
+        int queryLength = query.length();
+        int titleLength = title.length();
+
+        if (titleLength < queryLength || queryLength <= 0) {
+            return false;
         }
 
         int lastType;
