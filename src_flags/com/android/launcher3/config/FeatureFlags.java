@@ -16,10 +16,17 @@
 
 package com.android.launcher3.config;
 
+import android.content.Context;
+
 /**
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
+    private static FeatureFlags instance = new FeatureFlags();
+
+    public static FeatureFlags getInstance(Context context) {
+        return instance;
+    }
 
     private FeatureFlags() {}
 }
