@@ -44,8 +44,8 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.FlagOp;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -171,7 +171,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             }
         }
 
-        final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
+        final IntSparseArrayMap<Boolean> removedShortcuts = new IntSparseArrayMap<>();
 
         // Update shortcut infos
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {

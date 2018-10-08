@@ -17,32 +17,29 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
-import com.android.launcher3.util.LongArrayMap;
+import android.util.LongSparseArray;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class UserManagerCompatVL extends UserManagerCompat {
-    private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
     protected final UserManager mUserManager;
     private final PackageManager mPm;
-    private final Context mContext;
 
-    protected LongArrayMap<UserHandle> mUsers;
-    // Create a separate reverse map as LongArrayMap.indexOfValue checks if objects are same
+    protected LongSparseArray<UserHandle> mUsers;
+    // Create a separate reverse map as LongSparseArray.indexOfValue checks if objects are same
     // and not {@link Object#equals}
     protected ArrayMap<UserHandle, Long> mUserToSerialMap;
 
     UserManagerCompatVL(Context context) {
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         mPm = context.getPackageManager();
-        mContext = context;
     }
 
     @Override
@@ -94,7 +91,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     @Override
     public void enableAndResetCache() {
         synchronized (this) {
-            mUsers = new LongArrayMap<>();
+            mUsers = new LongSparseArray<>();
             mUserToSerialMap = new ArrayMap<>();
             List<UserHandle> users = mUserManager.getUserProfiles();
             if (users != null) {

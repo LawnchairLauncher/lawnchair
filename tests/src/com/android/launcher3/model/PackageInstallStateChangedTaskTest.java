@@ -48,18 +48,18 @@ public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestC
     public void testSessionUpdate_shortcuts_updated() throws Exception {
         executeTaskForTest(newTask("app3", 30));
 
-        verifyProgressUpdate(30, 5L, 6L, 7L);
+        verifyProgressUpdate(30, 5, 6, 7);
     }
 
     @Test
     public void testSessionUpdate_widgets_updated() throws Exception {
         executeTaskForTest(newTask("app4", 30));
 
-        verifyProgressUpdate(30, 8L, 9L);
+        verifyProgressUpdate(30, 8, 9);
     }
 
-    private void verifyProgressUpdate(int progress, Long... idsUpdated) {
-        HashSet<Long> updates = new HashSet<>(Arrays.asList(idsUpdated));
+    private void verifyProgressUpdate(int progress, Integer... idsUpdated) {
+        HashSet<Integer> updates = new HashSet<>(Arrays.asList(idsUpdated));
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (info instanceof ShortcutInfo) {
                 assertEquals(updates.contains(info.id) ? progress: 0,

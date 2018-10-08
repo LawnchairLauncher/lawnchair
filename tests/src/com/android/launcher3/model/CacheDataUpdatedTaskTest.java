@@ -53,7 +53,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
 
         // Verify that only the app icons of app1 (id 1 & 2) are updated. Custom shortcut (id 7)
         // is not updated
-        verifyUpdate(1L, 2L);
+        verifyUpdate(1, 2);
 
         // Verify that only app1 var updated in allAppsList
         assertFalse(allAppsList.data.isEmpty());
@@ -80,11 +80,11 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
 
         // app3 has only restored apps (id 5, 6) and shortcuts (id 9). Verify that only apps were
         // were updated
-        verifyUpdate(5L, 6L);
+        verifyUpdate(5, 6);
     }
 
-    private void verifyUpdate(Long... idsUpdated) {
-        HashSet<Long> updates = new HashSet<>(Arrays.asList(idsUpdated));
+    private void verifyUpdate(Integer... idsUpdated) {
+        HashSet<Integer> updates = new HashSet<>(Arrays.asList(idsUpdated));
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (updates.contains(info.id)) {
                 assertEquals(NEW_LABEL_PREFIX + info.id, info.title);

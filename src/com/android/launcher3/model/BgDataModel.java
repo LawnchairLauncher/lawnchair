@@ -36,7 +36,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.MultiHashMap;
 import com.google.protobuf.nano.MessageNano;
 
@@ -62,7 +63,7 @@ public class BgDataModel {
      * Map of all the ItemInfos (shortcuts, folders, and widgets) created by
      * LauncherModel to their ids
      */
-    public final LongArrayMap<ItemInfo> itemsIdMap = new LongArrayMap<>();
+    public final IntSparseArrayMap<ItemInfo> itemsIdMap = new IntSparseArrayMap<>();
 
     /**
      * List of all the folders and shortcuts directly on the home screen (no widgets
@@ -78,12 +79,12 @@ public class BgDataModel {
     /**
      * Map of id to FolderInfos of all the folders created by LauncherModel
      */
-    public final LongArrayMap<FolderInfo> folders = new LongArrayMap<>();
+    public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
 
     /**
      * Ordered list of workspace screens ids.
      */
-    public final ArrayList<Long> workspaceScreens = new ArrayList<>();
+    public final IntArray workspaceScreens = new IntArray();
 
     /**
      * Map of ShortcutKey to the number of times it is pinned.
@@ -132,7 +133,7 @@ public class BgDataModel {
         writer.println(prefix + "Data Model:");
         writer.print(prefix + " ---- workspace screens: ");
         for (int i = 0; i < workspaceScreens.size(); i++) {
-            writer.print(" " + workspaceScreens.get(i).toString());
+            writer.print(" " + workspaceScreens.get(i));
         }
         writer.println();
         writer.println(prefix + " ---- workspace items ");
@@ -169,7 +170,7 @@ public class BgDataModel {
 
         // Add top parent nodes. (L1)
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
-        LongArrayMap<DumpTargetWrapper> workspaces = new LongArrayMap<>();
+        IntSparseArrayMap<DumpTargetWrapper> workspaces = new IntSparseArrayMap<>();
         for (int i = 0; i < workspaceScreens.size(); i++) {
             workspaces.put(workspaceScreens.get(i),
                     new DumpTargetWrapper(ContainerType.WORKSPACE, i));
@@ -346,7 +347,7 @@ public class BgDataModel {
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    public synchronized FolderInfo findOrMakeFolder(long id) {
+    public synchronized FolderInfo findOrMakeFolder(int id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {

@@ -33,6 +33,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SettingsObserver;
 
@@ -346,7 +347,7 @@ public class NotificationListener extends NotificationListenerService {
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
-        Set<Integer> removedNotifications = new ArraySet<>();
+        IntSet removedNotifications = new IntSet();
         for (int i = 0; i < notifications.length; i++) {
             if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);

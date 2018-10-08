@@ -40,6 +40,7 @@ import android.util.Patterns;
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -163,7 +164,7 @@ public class AutoInstallsLayout {
     private final int mRowCount;
     private final int mColumnCount;
 
-    private final long[] mTemp = new long[2];
+    private final int[] mTemp = new int[2];
     @Thunk final ContentValues mValues;
     protected final String mRootTag;
 
@@ -191,7 +192,7 @@ public class AutoInstallsLayout {
     /**
      * Loads the layout in the db and returns the number of entries added on the desktop.
      */
-    public int loadLayout(SQLiteDatabase db, ArrayList<Long> screenIds) {
+    public int loadLayout(SQLiteDatabase db, IntArray screenIds) {
         mDb = db;
         try {
             return parseLayout(mLayoutId, screenIds);
@@ -204,7 +205,7 @@ public class AutoInstallsLayout {
     /**
      * Parses the layout and returns the number of elements added on the homescreen.
      */
-    protected int parseLayout(int layoutId, ArrayList<Long> screenIds)
+    protected int parseLayout(int layoutId, IntArray screenIds)
             throws XmlPullParserException, IOException {
         XmlResourceParser parser = mSourceRes.getXml(layoutId);
         beginDocument(parser, mRootTag);
@@ -227,14 +228,14 @@ public class AutoInstallsLayout {
      * Parses container and screenId attribute from the current tag, and puts it in the out.
      * @param out array of size 2.
      */
-    protected void parseContainerAndScreen(XmlResourceParser parser, long[] out) {
+    protected void parseContainerAndScreen(XmlResourceParser parser, int[] out) {
         if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
             out[0] = Favorites.CONTAINER_HOTSEAT;
             // Hack: hotseat items are stored using screen ids
-            out[1] = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
+            out[1] = Integer.parseInt(getAttributeValue(parser, ATTR_RANK));
         } else {
             out[0] = Favorites.CONTAINER_DESKTOP;
-            out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
+            out[1] = Integer.parseInt(getAttributeValue(parser, ATTR_SCREEN));
         }
     }
 
@@ -242,9 +243,7 @@ public class AutoInstallsLayout {
      * Parses the current node and returns the number of elements added.
      */
     protected int parseAndAddNode(
-        XmlResourceParser parser,
-        ArrayMap<String, TagParser> tagParserMap,
-        ArrayList<Long> screenIds)
+            XmlResourceParser parser, ArrayMap<String, TagParser> tagParserMap, IntArray screenIds)
         throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
@@ -259,8 +258,8 @@ public class AutoInstallsLayout {
 
         mValues.clear();
         parseContainerAndScreen(parser, mTemp);
-        final long container = mTemp[0];
-        final long screenId = mTemp[1];
+        final int container = mTemp[0];
+        final int screenId = mTemp[1];
 
         mValues.put(Favorites.CONTAINER, container);
         mValues.put(Favorites.SCREEN, screenId);
@@ -275,7 +274,7 @@ public class AutoInstallsLayout {
             if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
             return 0;
         }
-        long newElementId = tagParser.parseAndAdd(parser);
+        int newElementId = tagParser.parseAndAdd(parser);
         if (newElementId >= 0) {
             // Keep track of the set of screens which need to be added to the db.
             if (!screenIds.contains(screenId) &&
@@ -287,8 +286,8 @@ public class AutoInstallsLayout {
         return 0;
     }
 
-    protected long addShortcut(String title, Intent intent, int type) {
-        long id = mCallback.generateNewItemId();
+    protected int addShortcut(String title, Intent intent, int type) {
+        int id = mCallback.generateNewItemId();
         mValues.put(Favorites.INTENT, intent.toUri(0));
         mValues.put(Favorites.TITLE, title);
         mValues.put(Favorites.ITEM_TYPE, type);
@@ -325,7 +324,7 @@ public class AutoInstallsLayout {
          * Parses the tag and adds to the db
          * @return the id of the row added or -1;
          */
-        long parseAndAdd(XmlResourceParser parser)
+        int parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException;
     }
 
@@ -335,7 +334,7 @@ public class AutoInstallsLayout {
     protected class AppShortcutParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlResourceParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
 
@@ -372,7 +371,7 @@ public class AutoInstallsLayout {
         /**
          * Helper method to allow extending the parser capabilities
          */
-        protected long invalidPackageOrClass(XmlResourceParser parser) {
+        protected int invalidPackageOrClass(XmlResourceParser parser) {
             Log.w(TAG, "Skipping invalid <favorite> with no component");
             return -1;
         }
@@ -384,7 +383,7 @@ public class AutoInstallsLayout {
     protected class AutoInstallParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlResourceParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
@@ -415,7 +414,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlResourceParser parser) {
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
 
@@ -471,7 +470,7 @@ public class AutoInstallsLayout {
     protected class PendingWidgetParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser)
+        public int parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
@@ -510,7 +509,7 @@ public class AutoInstallsLayout {
             return verifyAndInsert(new ComponentName(packageName, className), extras);
         }
 
-        protected long verifyAndInsert(ComponentName cn, Bundle extras) {
+        protected int verifyAndInsert(ComponentName cn, Bundle extras) {
             mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
             mValues.put(Favorites.RESTORED,
                     LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
@@ -521,7 +520,7 @@ public class AutoInstallsLayout {
                 mValues.put(Favorites.INTENT, new Intent().putExtras(extras).toUri(0));
             }
 
-            long insertedId = mCallback.insertAndCheck(mDb, mValues);
+            int insertedId = mCallback.insertAndCheck(mDb, mValues);
             if (insertedId < 0) {
                 return -1;
             } else {
@@ -542,7 +541,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser)
+        public int parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
@@ -557,14 +556,14 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.SPANX, 1);
             mValues.put(Favorites.SPANY, 1);
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
-            long folderId = mCallback.insertAndCheck(mDb, mValues);
+            int folderId = mCallback.insertAndCheck(mDb, mValues);
             if (folderId < 0) {
                 if (LOGD) Log.e(TAG, "Unable to add folder");
                 return -1;
             }
 
             final ContentValues myValues = new ContentValues(mValues);
-            ArrayList<Long> folderItems = new ArrayList<>();
+            IntArray folderItems = new IntArray();
 
             int type;
             int folderDepth = parser.getDepth();
@@ -580,7 +579,7 @@ public class AutoInstallsLayout {
 
                 TagParser tagParser = mFolderElements.get(parser.getName());
                 if (tagParser != null) {
-                    final long id = tagParser.parseAndAdd(parser);
+                    final int id = tagParser.parseAndAdd(parser);
                     if (id >= 0) {
                         folderItems.add(id);
                         rank++;
@@ -590,7 +589,7 @@ public class AutoInstallsLayout {
                 }
             }
 
-            long addedId = folderId;
+            int addedId = folderId;
 
             // We can only have folders with >= 2 items, so we need to remove the
             // folder and clean up if less than 2 items were included, or some
@@ -675,9 +674,9 @@ public class AutoInstallsLayout {
     }
 
     public interface LayoutParserCallback {
-        long generateNewItemId();
+        int generateNewItemId();
 
-        long insertAndCheck(SQLiteDatabase db, ContentValues values);
+        int insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
     @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {

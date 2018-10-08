@@ -52,6 +52,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.IntArray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -456,8 +457,8 @@ public final class Utilities {
                 size, metrics));
     }
 
-    public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
-        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
+    public static String createDbSelectionQuery(String columnName, IntArray values) {
+        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, values.toConcatString());
     }
 
     public static boolean isBootCompleted() {
@@ -512,13 +513,6 @@ public final class Utilities {
         spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
                 0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spanned;
-    }
-
-    /**
-     * Replacement for Long.compare() which was added in API level 19.
-     */
-    public static int longCompare(long lhs, long rhs) {
-        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
     }
 
     public static SharedPreferences getPrefs(Context context) {
