@@ -90,8 +90,6 @@ public class ClipAnimationHelper {
 
     // Whether to boost the opening animation target layers, or the closing
     private int mBoostModeTargetLayers = -1;
-    // Wether or not applyTransform has been called yet since prepareAnimation()
-    private boolean mIsFirstFrame = true;
 
     private BiFunction<RemoteAnimationTargetCompat, Float, Float> mTaskAlphaCallback =
             (t, a1) -> a1;
