@@ -69,6 +69,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testWidgetConfig() throws Throwable {
         runTest(false, true);
     }
@@ -79,6 +80,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testConfigCancelled() throws Throwable {
         runTest(false, false);
     }
