@@ -298,6 +298,11 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void resetLoaderState() {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "START " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         try {
             mMainThreadExecutor.execute(new Runnable() {
                 @Override
@@ -307,6 +312,13 @@ public abstract class AbstractLauncherUiTest {
             });
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
+        }
+        waitForLauncherCondition(launcher ->
+                LauncherAppState.getInstance(mTargetContext).getModel().isModelLoaded());
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "FINISH " + android.util.Log.getStackTraceString(new Throwable()));
         }
     }
 

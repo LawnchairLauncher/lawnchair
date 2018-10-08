@@ -84,6 +84,11 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Override
     @Before
     public void setUp() throws Exception {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
         super.setUp();
 
         mResolver = mTargetContext.getContentResolver();
@@ -105,6 +110,11 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         }
 
         super.tearDown();
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
     }
 
     @Test

@@ -563,6 +563,11 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
+                if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                        && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+                    android.util.Log.d("b/117332845",
+                            android.util.Log.getStackTraceString(new Throwable()));
+                }
             }
         }
 
