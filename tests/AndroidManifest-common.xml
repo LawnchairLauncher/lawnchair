@@ -67,5 +67,33 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="com.android.launcher3.testcomponent.TestCommandReceiver"
+            android:authorities="${packageName}.commands"
+            android:exported="true" />
+
+        <activity
+            android:name="com.android.launcher3.testcomponent.TestLauncherActivity"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:label="Test launcher"
+            android:stateNotNeeded="true"
+            android:theme="@android:style/Theme.DeviceDefault.Light"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="unspecified"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:resizeableActivity="true"
+            android:taskAffinity=""
+            android:process=":testLauncherProcess"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.LAUNCHER_APP" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

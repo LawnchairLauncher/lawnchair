@@ -11,10 +11,8 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,8 +22,6 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
-
-    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
     @Test
     @Ignore

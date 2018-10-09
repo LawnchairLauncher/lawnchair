@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import androidx.test.uiautomator.UiObject2;
-
 import androidx.annotation.NonNull;
 
 /**
@@ -28,11 +26,16 @@ import androidx.annotation.NonNull;
  * that essentially represents these two activity states. Any gestures (e.g., switchToOverview) that
  * can be performed in both of these states can be defined here.
  */
-public abstract class Home extends LauncherInstrumentation.VisibleContainer {
+public abstract class Home extends Background {
 
     protected Home(LauncherInstrumentation launcher) {
         super(launcher);
         verifyActiveContainer();
+    }
+
+    @Override
+    protected LauncherInstrumentation.ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.WORKSPACE;
     }
 
     /**
@@ -41,20 +44,10 @@ public abstract class Home extends LauncherInstrumentation.VisibleContainer {
      * @return the Overview panel object.
      */
     @NonNull
+    @Override
     public Overview switchToOverview() {
         verifyActiveContainer();
-        if (mLauncher.isSwipeUpEnabled()) {
-            final int height = mLauncher.getDevice().getDisplayHeight();
-            final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
-
-            mLauncher.swipe(
-                    navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - 300
-            );
-        } else {
-            mLauncher.getSystemUiObject("recent_apps").click();
-        }
-
+        goToOverviewUnchecked();
         return new Overview(mLauncher);
     }
 }

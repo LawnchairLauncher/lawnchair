@@ -56,6 +56,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import java.util.Set;
@@ -70,8 +71,6 @@ import java.util.concurrent.TimeUnit;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class BindWidgetTest extends AbstractLauncherUiTest {
-
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
     private ContentResolver mResolver;
     private AppWidgetManagerCompat mWidgetManager;
