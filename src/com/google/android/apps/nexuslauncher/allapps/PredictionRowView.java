@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -33,7 +32,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.anim.Interpolators;
@@ -184,14 +182,7 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
             return 0;
         }
         DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
-        int qsbWidgetHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
-        if (prefs.getDockHide()) {
-            return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
-        } else {
-            return dp.allAppsCellHeightPx - (prefs.getDockSearchBar() && prefs.getCompactDock()
-                    ? qsbWidgetHeight : 0) + getPaddingBottom() + getPaddingTop();
-        }
+        return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
     }
 
     @SuppressLint("NewApi")
