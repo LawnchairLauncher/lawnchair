@@ -117,6 +117,7 @@ public class UiFactory {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
                 @Override
                 public void onStateSetImmediately(LauncherState state) {
+                    onStateTransitionComplete(state);
                 }
 
                 @Override
@@ -142,6 +143,7 @@ public class UiFactory {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
                 @Override
                 public void onStateSetImmediately(LauncherState state) {
+                    onStateTransitionComplete(state);
                 }
 
                 @Override
