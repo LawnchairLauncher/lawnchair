@@ -26,7 +26,7 @@
 
     <!-- Dynamic grid -->
     <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
-    <dimen name="dynamic_grid_drawer_additional_padding">20dp</dimen>
+    <dimen name="dynamic_grid_drawer_additional_padding">30dp</dimen>
 
     <dimen name="dynamic_grid_cell_layout_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_layout_bottom_padding">5.5dp</dimen>

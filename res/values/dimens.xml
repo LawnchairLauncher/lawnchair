@@ -22,7 +22,7 @@
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_drawer_additional_padding">28dp</dimen>
+    <dimen name="dynamic_grid_drawer_additional_padding">36dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
