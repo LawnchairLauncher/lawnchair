@@ -75,6 +75,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testWidgetConfig_rotate() throws Throwable {
         runTest(true, true);
     }
