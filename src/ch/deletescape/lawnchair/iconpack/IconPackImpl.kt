@@ -170,6 +170,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                                 packMask.iconUpon = entry
                             } catch (ignored: Exception) { }
                         }
+                    } else if (name == "config") {
+                        val onlyMaskLegacy = parseXml.getAttributeValue(null, "onlyMaskLegacy")
+                        if (!TextUtils.isEmpty(onlyMaskLegacy)) {
+                            packMask.onlyMaskLegacy = onlyMaskLegacy.toBoolean()
+                        }
                     }
                 }
             }
@@ -221,7 +226,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, basePacks, iconProvider)
-            return packMask.getIcon(baseIcon)
+            return packMask.getIcon(context, baseIcon)
         }
 
         return basePacks.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,

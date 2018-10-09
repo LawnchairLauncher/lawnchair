@@ -17,35 +17,50 @@
 
 package ch.deletescape.lawnchair.iconpack
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.FastBitmapDrawable
-import kotlin.math.max
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.FixedScaleDrawable
 
 class IconMask {
     var hasMask: Boolean = false
+    var onlyMaskLegacy: Boolean = false
     var scale: Float = 1.0f
+        get() = if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
+            field - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
+        } else field
     var iconBack: IconPack.Entry? = null
     var iconMask: IconPack.Entry? = null
     var iconUpon: IconPack.Entry? = null
     val matrix = Matrix()
     val paint = Paint()
 
-    fun getIcon(baseIcon: Drawable): Drawable {
-        val packSize: Int = when {
-            iconBack != null -> max(iconBack!!.drawable.intrinsicHeight, iconBack!!.drawable.intrinsicWidth)
-            iconUpon != null -> max(iconUpon!!.drawable.intrinsicHeight, iconUpon!!.drawable.intrinsicWidth)
-            else -> -1
+    @SuppressLint("NewApi")
+    fun getIcon(context: Context, baseIcon: Drawable): Drawable {
+        var adaptiveBackground: Drawable? = null
+        // Some random magic to get an acceptable resolution
+        var size = (LauncherAppState.getIDP(context).iconBitmapSize * (3 - scale)).toInt()
+        if (iconBack?.drawable is AdaptiveIconDrawable) {
+            size += (size * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
         }
-        val size = max(max(baseIcon.intrinsicHeight, baseIcon.intrinsicWidth), packSize)
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         if (iconBack != null) {
-            val b = iconBack!!.drawable.toBitmap()
-            matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
-            canvas.drawBitmap(b, matrix, paint)
-            matrix.reset()
+            val drawable = iconBack!!.drawable
+            if (drawable is AdaptiveIconDrawable) {
+                adaptiveBackground = drawable.background
+            } else {
+                val b = drawable.toBitmap()
+                matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
+                canvas.drawBitmap(b, matrix, paint)
+                matrix.reset()
+            }
         }
         var bb = baseIcon.toBitmap()
         if (!bb.isMutable) bb = bb.copy(bb.config, true)
@@ -77,6 +92,12 @@ class IconMask {
             matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
             canvas.drawBitmap(b, matrix, paint)
             matrix.reset()
+        }
+        if (adaptiveBackground != null) {
+            if (onlyMaskLegacy && baseIcon is AdaptiveIconDrawable) {
+                return baseIcon
+            }
+            return AdaptiveIconDrawable(adaptiveBackground, FastBitmapDrawable(bitmap))
         }
         return FastBitmapDrawable(bitmap)
     }
