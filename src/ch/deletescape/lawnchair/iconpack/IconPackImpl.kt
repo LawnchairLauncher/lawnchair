@@ -53,6 +53,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     private val packComponents: MutableMap<ComponentName, Entry> = HashMap()
     private val packCalendars: MutableMap<ComponentName, String> = HashMap()
     private val packClocks: MutableMap<Int, CustomClock.Metadata> = HashMap()
+    private val packDynamicDrawables: MutableMap<Int, DynamicDrawable.Metadata> = HashMap()
     private var packMask: IconMask = IconMask()
     private val defaultPack = DefaultPack(context)
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
@@ -179,6 +180,27 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     }
                 }
             }
+            val parseDrawableXml = getXml("drawable")
+            if (parseDrawableXml != null) {
+                while (parseDrawableXml.next() != XmlPullParser.END_DOCUMENT) {
+                    if (parseDrawableXml.eventType == XmlPullParser.START_TAG) {
+                        val name = parseDrawableXml.name
+                        if (name == "item") {
+                            val dynamicDrawable = parseDrawableXml.getAttributeValue(null,
+                                    "dynamic_drawable")
+                            if (dynamicDrawable != null) {
+                                val drawableId = res.getIdentifier(dynamicDrawable, "drawable",
+                                        packPackageName)
+                                if (drawableId != 0) {
+                                    packDynamicDrawables[drawableId] = DynamicDrawable.Metadata(
+                                            parseDrawableXml.getAttributeValue(null, "xml"),
+                                            packPackageName)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             val endTime = System.currentTimeMillis()
             Log.d("IconPackImpl", "completed parsing pack $packPackageName in ${endTime - startTime}ms")
             return
@@ -217,6 +239,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 var drawable = packResources.getDrawable(drawableId)
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
+                } else if (packDynamicDrawables.containsKey(drawableId)) {
+                    drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 return drawable.mutate()
             } catch (e: Resources.NotFoundException) {
@@ -249,7 +273,13 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             if (packClocks.containsKey(drawableId)) {
                 val drawable = packResources.getDrawable(drawableId)
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
-            } else if (drawableId != 0) {
+            } else if(packDynamicDrawables.containsKey(drawableId)) {
+                val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
+                val icn = DynamicDrawable.drawIcon(context, icon, packDynamicDrawables[drawableId]!!,
+                        drawableFactory, iconDpi)
+                if (icn != null) return icn
+            }
+            if (drawableId != 0) {
                 return FastBitmapDrawable(icon)
             }
         }

@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.UserHandle
 import android.text.TextUtils
-import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
@@ -41,7 +40,6 @@ import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
-import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 import java.util.*
 import kotlin.collections.HashMap
 

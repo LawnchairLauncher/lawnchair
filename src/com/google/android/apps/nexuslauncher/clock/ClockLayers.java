@@ -61,7 +61,7 @@ public class ClockLayers {
         LauncherIcons launcherIcons = LauncherIcons.obtain(context);
         float[] tmp = new float[1];
         Drawable icon = getBackground().getConstantState().newDrawable();
-        if (Utilities.ATLEAST_OREO) {
+        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
             icon = new AdaptiveIconDrawable(icon, null);
         }
         iconBitmap = launcherIcons.createBadgedIconBitmap(icon, Process.myUserHandle(), 26, false, tmp).icon;
