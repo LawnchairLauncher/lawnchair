@@ -74,6 +74,8 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_flags)
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+# Proguard is disable for testing. Derivarive prjects to keep proguard enabled
+LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
