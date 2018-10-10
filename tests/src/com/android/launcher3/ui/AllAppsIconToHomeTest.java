@@ -46,7 +46,7 @@ public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
 
         // Open all apps and wait for load complete.
         final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag icon to homescreen.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(settingsApp.getLabel().toString()));

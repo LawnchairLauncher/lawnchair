@@ -152,7 +152,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Open all apps and wait for load complete
         final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(
@@ -191,7 +191,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Go back to home
         mActivityMonitor.returnToHome();
-        assertTrue(Wait.atMost(new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT));
+        Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
     }
 
     /**

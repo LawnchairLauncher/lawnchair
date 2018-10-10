@@ -47,6 +47,7 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
@@ -133,7 +134,8 @@ public abstract class AbstractLauncherUiTest {
                     try {
                         // Create launcher activity if necessary and bring it to the front.
                         mDevice.pressHome();
-                        waitForLauncherCondition(launcher -> launcher != null);
+                        waitForLauncherCondition("Launcher activity wasn't created",
+                                launcher -> launcher != null);
 
                         executeOnLauncher(launcher ->
                                 launcher.getRotationHelper().forceAllowRotationForTesting(true));
@@ -170,7 +172,7 @@ public abstract class AbstractLauncherUiTest {
     @After
     public void tearDown() throws Exception {
         // Limits UI tests affecting tests running after them.
-        resetLoaderState();
+        waitForModelLoaded();
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
@@ -320,13 +322,19 @@ public abstract class AbstractLauncherUiTest {
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
-        waitForLauncherCondition(launcher ->
-                LauncherAppState.getInstance(mTargetContext).getModel().isModelLoaded());
+        waitForModelLoaded();
         if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
                 && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
             android.util.Log.d("b/117332845",
                     "FINISH " + android.util.Log.getStackTraceString(new Throwable()));
         }
+    }
+
+    protected void waitForModelLoaded() {
+        waitForLauncherCondition("Launcher model didn't load", launcher -> {
+            final LauncherModel model = LauncherAppState.getInstance(mTargetContext).getModel();
+            return model.getCallback() == null || model.isModelLoaded();
+        });
     }
 
     /**
@@ -354,22 +362,23 @@ public abstract class AbstractLauncherUiTest {
 
     // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call expecting
     // the results of that gesture because the wait can hide flakeness.
-    protected boolean waitForState(LauncherState state) {
-        return waitForLauncherCondition(launcher -> launcher.getStateManager().getState() == state);
+    protected void waitForState(String message, LauncherState state) {
+        waitForLauncherCondition(message,
+                launcher -> launcher.getStateManager().getState() == state);
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
-    protected boolean waitForLauncherCondition(Function<Launcher, Boolean> condition) {
-        return waitForLauncherCondition(condition, DEFAULT_ACTIVITY_TIMEOUT);
+    protected void waitForLauncherCondition(String message, Function<Launcher, Boolean> condition) {
+        waitForLauncherCondition(message, condition, DEFAULT_ACTIVITY_TIMEOUT);
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
-    protected boolean waitForLauncherCondition(
-            Function<Launcher, Boolean> condition, long timeout) {
-        if (!TestHelpers.isInLauncherProcess()) return true;
-        return Wait.atMost(() -> getFromLauncher(condition), timeout);
+    protected void waitForLauncherCondition(
+            String message, Function<Launcher, Boolean> condition, long timeout) {
+        if (!TestHelpers.isInLauncherProcess()) return;
+        Wait.atMost(message, () -> getFromLauncher(condition), timeout);
     }
 
     /**

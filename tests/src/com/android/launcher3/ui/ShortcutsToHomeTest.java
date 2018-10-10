@@ -49,8 +49,7 @@ public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
 
         // Open all apps and wait for load complete.
         final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
-                DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Find the app and long press it to show shortcuts.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(testApp.getLabel().toString()));
