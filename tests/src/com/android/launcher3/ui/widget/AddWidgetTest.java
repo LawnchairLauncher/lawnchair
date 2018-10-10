@@ -70,7 +70,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
         // Open widget tray and wait for load complete.
         final UiObject2 widgetContainer = openWidgetsTray();
-        assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag widget to homescreen
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)

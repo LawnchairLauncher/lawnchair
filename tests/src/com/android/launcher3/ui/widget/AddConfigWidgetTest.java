@@ -106,7 +106,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         // Open widget tray and wait for load complete.
         final UiObject2 widgetContainer = openWidgetsTray();
-        assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
@@ -128,12 +128,12 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         setResult(acceptConfig);
         if (acceptConfig) {
-            assertTrue(Wait.atMost(new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT));
+            Wait.atMost(null, new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
             // Verify that the widget id is deleted.
-            assertTrue(Wait.atMost(() -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
-                    DEFAULT_ACTIVITY_TIMEOUT));
+            Wait.atMost(null, () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+                    DEFAULT_ACTIVITY_TIMEOUT);
         }
     }
 

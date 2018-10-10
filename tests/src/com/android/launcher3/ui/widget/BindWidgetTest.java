@@ -141,7 +141,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // Since there is no widget to verify, just wait until the workspace is ready.
         setupAndVerifyContents(item, Workspace.class, null);
 
-        waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
                 null, null, null, null, null);
@@ -187,7 +186,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID;
 
         setupAndVerifyContents(item, PendingAppWidgetHostView.class, null);
-        waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
                 null, null, null, null, null);
@@ -216,7 +214,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // The view does not exist
         assertFalse(mDevice.findObject(
                 new UiSelector().className(PendingAppWidgetHostView.class)).exists());
-        waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
                 null, null, null, null, null);
@@ -234,7 +231,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         setupAndVerifyContents(item, PendingAppWidgetHostView.class, null);
         // Verify item still exists in db
-        waitUntilLoaderIdle();
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
                 null, null, null, null, null);
         assertEquals(1, mCursor.getCount());
@@ -261,7 +257,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         setupAndVerifyContents(item, PendingAppWidgetHostView.class, null);
         // Verify item still exists in db
-        waitUntilLoaderIdle();
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
                 null, null, null, null, null);
         assertEquals(1, mCursor.getCount());
@@ -306,6 +301,8 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         // Launch the home activity
         mActivityMonitor.startLauncher();
+        waitForModelLoaded();
+
         // Verify UI
         UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
                 .className(widgetClass);
@@ -389,16 +386,5 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         item.cellY = 1;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
         return item;
-    }
-
-    /**
-     * Blocks the current thread until all the jobs in the main worker thread are complete.
-     */
-    private void waitUntilLoaderIdle() throws Exception {
-        new LooperExecutor(LauncherModel.getWorkerLooper())
-                .submit(new Runnable() {
-                    @Override
-                    public void run() { }
-                }).get(DEFAULT_WORKER_TIMEOUT_SECS, TimeUnit.SECONDS);
     }
 }

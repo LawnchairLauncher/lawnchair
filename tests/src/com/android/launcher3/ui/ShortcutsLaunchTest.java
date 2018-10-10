@@ -47,8 +47,7 @@ public class ShortcutsLaunchTest extends AbstractLauncherUiTest {
 
         // Open all apps and wait for load complete
         final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
-                DEFAULT_UI_TIMEOUT));
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Find settings app and verify shortcuts appear when long pressed
         UiObject2 icon = scrollAndFind(appsContainer, By.text(testApp.getLabel().toString()));
