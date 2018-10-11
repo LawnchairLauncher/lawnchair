@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
     @Ignore

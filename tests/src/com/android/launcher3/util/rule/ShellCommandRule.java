@@ -63,7 +63,7 @@ public class ShellCommandRule implements TestRule {
     /**
      * Grants the launcher permission to bind widgets.
      */
-    public static ShellCommandRule grandWidgetBind() {
+    public static ShellCommandRule grantWidgetBind() {
         return new ShellCommandRule("appwidget grantbind --package "
                 + InstrumentationRegistry.getTargetContext().getPackageName(), null);
     }
