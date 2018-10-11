@@ -62,7 +62,7 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class RequestPinItemTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private String mCallbackAction;
     private String mShortcutId;

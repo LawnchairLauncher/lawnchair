@@ -36,7 +36,6 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -55,7 +54,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private LauncherAppWidgetProviderInfo mWidgetInfo;
     private AppWidgetManager mAppWidgetManager;
