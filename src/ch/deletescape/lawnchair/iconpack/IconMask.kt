@@ -41,19 +41,18 @@ class IconMask {
     val matrix = Matrix()
     val paint = Paint()
 
-    @SuppressLint("NewApi")
     fun getIcon(context: Context, baseIcon: Drawable): Drawable {
         var adaptiveBackground: Drawable? = null
         // Some random magic to get an acceptable resolution
         var size = (LauncherAppState.getIDP(context).iconBitmapSize * (3 - scale)).toInt()
-        if (iconBack?.drawable is AdaptiveIconDrawable) {
+        if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
             size += (size * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
         }
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         if (iconBack != null) {
             val drawable = iconBack!!.drawable
-            if (drawable is AdaptiveIconDrawable) {
+            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
                 adaptiveBackground = drawable.background
             } else {
                 val b = drawable.toBitmap()
