@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
-
 import java.util.Collections;
 import java.util.List;
 
