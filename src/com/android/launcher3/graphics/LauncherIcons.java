@@ -227,8 +227,7 @@ public class LauncherIcons implements AutoCloseable {
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
             RectF outIconBounds, float[] outScale) {
         float scale = 1f;
-        if (Utilities.getLawnchairPrefs(mContext).getEnableLegacyTreatment()
-                && Utilities.ATLEAST_OREO) {
+        if (Utilities.ATLEAST_OREO) {
             boolean[] outShape = new boolean[1];
             if (mWrapperIcon == null) {
                 mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
@@ -237,7 +236,7 @@ public class LauncherIcons implements AutoCloseable {
             AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
+            /*if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -245,7 +244,7 @@ public class LauncherIcons implements AutoCloseable {
                 scale = getNormalizer().getScale(icon, outIconBounds, null, null);
 
                 ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
-            }
+            }*/
         } else {
             scale = getNormalizer().getScale(icon, outIconBounds, null, null);
         }

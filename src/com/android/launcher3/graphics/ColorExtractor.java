@@ -17,6 +17,7 @@ package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
 import android.util.SparseArray;
 
 /**
@@ -110,4 +111,79 @@ public class ColorExtractor {
         }
         return bestColor;
     }
+
+    /**
+     * This picks a dominant color judging by how often it appears.
+     *
+     * @param bitmap The bitmap to scan
+     */
+    public static int findDominantColorByOccurrence(Bitmap bitmap) {
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+
+        int[] rgbScoreHistogram = new int[0x1000000];
+        int highScore = -1;
+        int bestRGB = -1;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = bitmap.getPixel(x, y);
+                int alpha = 0xFF & (argb >> 24);
+                if (alpha < 0x80) {
+                    // Drop mostly-transparent pixels.
+                    continue;
+                }
+                // Remove the alpha channel.
+                int rgb = posterize(ColorUtils.setAlphaComponent(argb, 0x00));
+                if (rgb < 0 || rgb >= rgbScoreHistogram.length) {
+                    // Defensively avoid array bounds violations.
+                    continue;
+                }
+                rgbScoreHistogram[rgb] += 1;
+                if (rgbScoreHistogram[rgb] > highScore) {
+                    highScore = rgbScoreHistogram[rgb];
+                    bestRGB = rgb;
+                }
+            }
+        }
+        // Add back alpha channel
+        return ColorUtils.setAlphaComponent(bestRGB, 0xFF);
+    }
+
+    private static final int MAGIC_NUMBER = 25;
+
+    /*
+     * References:
+     * https://www.cs.umb.edu/~jreyes/csit114-fall-2007/project4/filters.html#posterize
+     * https://github.com/gitgraghu/image-processing/blob/master/src/Effects/Posterize.java
+     */
+    private static int posterize(int rgb) {
+        int red = (0xff & (rgb >> 16));
+        int green = (0xff & (rgb >> 8));
+        int blue = (0xff & rgb);
+        red = (red - (red % MAGIC_NUMBER));
+        green = (green - (green % MAGIC_NUMBER));
+        blue = (blue - (blue % MAGIC_NUMBER));
+        if (red > 255) {
+            red = 255;
+        }
+        if (red < 0) {
+            red = 0;
+        }
+        if (green > 255) {
+            green = 255;
+        }
+        if (green < 0) {
+            green = 0;
+        }
+        if (blue > 255) {
+            blue = 255;
+        }
+        if (blue < 0) {
+            blue = 0;
+        }
+        rgb = (red << 16 | green << 8 | blue);
+        return rgb;
+    }
+
 }

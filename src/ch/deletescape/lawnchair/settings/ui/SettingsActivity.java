@@ -356,6 +356,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         IconShapeOverride.handlePreferenceUi(iconShapeOverride);
                     } else {
                         iconShapeOverride.getParent().removePreference(iconShapeOverride);
+                        Preference legacyTreatmentPref = findPreference(
+                                "pref_enableLegacyTreatment");
+                        legacyTreatmentPref.getParent().removePreference(legacyTreatmentPref);
+                        Preference coloredLegacyTreatmentPref = findPreference(
+                                "pref_colorizeGeneratedBackgrounds");
+                        coloredLegacyTreatmentPref.getParent()
+                                .removePreference(coloredLegacyTreatmentPref);
                     }
                 }
                 IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);

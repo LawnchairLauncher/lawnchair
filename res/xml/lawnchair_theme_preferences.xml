@@ -28,11 +28,19 @@
             android:title="@string/icon_shape_override_label" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"
-            android:title="@string/pref_legacy_treatment_title" />
+            android:title="@string/pref_legacy_treatment_title"/>
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_colorizeGeneratedBackgrounds"
+            android:persistent="true"
+            android:dependency="pref_enableLegacyTreatment"
+            android:summary="@string/pref_legacy_colored_backgrounds_summary"
+            android:title="@string/pref_legacy_colored_backgrounds"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

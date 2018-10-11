@@ -36,6 +36,9 @@
     <string name="pref_icon_pack_masking">Icon pack masking</string>
     <string name="pref_icon_pack_masking_summary">Makes icons not themed by your pack fit in better</string>
 
+    <string name="pref_legacy_colored_backgrounds">Generate colored backgrounds</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Color generated adaptive icons based on the icon</string>
+
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
 
     <!-- Dock -->
