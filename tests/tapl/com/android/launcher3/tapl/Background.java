@@ -17,10 +17,9 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import static org.junit.Assert.assertTrue;
-
-import static androidx.test.InstrumentationRegistry.getTargetContext;
 
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
@@ -52,9 +51,8 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     public BaseOverview switchToOverview() {
         verifyActiveContainer();
         goToOverviewUnchecked();
-        assertTrue("Overview not visible", mLauncher.getDevice().wait(Until.hasObject(By.pkg(
-                getTargetContext().getPackageName())),
-                WAIT_TIME_MS));
+        assertTrue("Overview not visible", mLauncher.getDevice().wait(
+                Until.hasObject(By.pkg(getOverviewPackageName())), WAIT_TIME_MS));
         return new BaseOverview(mLauncher);
     }
 

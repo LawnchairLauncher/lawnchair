@@ -20,10 +20,12 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
 import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 
 import java.util.List;
 
@@ -69,5 +71,14 @@ public class TestHelpers {
             return null;
         }
         return launchers.get(0).activityInfo;
+    }
+
+    public static String getOverviewPackageName() {
+        Resources res = Resources.getSystem();
+        int id = res.getIdentifier("config_recentsComponentName", "string", "android");
+        if (id != 0) {
+            return ComponentName.unflattenFromString(res.getString(id)).getPackageName();
+        }
+        return "com.android.systemui";
     }
 }
