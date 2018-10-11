@@ -56,6 +56,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     private var packMask: IconMask = IconMask()
     private val defaultPack = DefaultPack(context)
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
+    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     override val entries get() = packComponents.values.toList()
 
     init {
@@ -223,7 +224,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
         }
 
-        if (packMask.hasMask) {
+        if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, basePacks, iconProvider)
             return packMask.getIcon(context, baseIcon)
@@ -300,6 +301,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         }
         super.getAllIcons(callback, cancel)
     }
+
+    override fun supportsMasking(): Boolean = packMask.hasMask
 
     private fun getXml(name: String): XmlPullParser? {
         val res: Resources

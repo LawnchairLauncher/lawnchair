@@ -123,6 +123,8 @@ class IconPackManager(private val context: Context) {
         }
     }
 
+    fun maskSupported(): Boolean = packList.appliedPacks.any { it.supportsMasking() }
+
     fun getEntryForComponent(component: ComponentKey): IconPack.Entry {
         packList.iterator().forEach {
             val entry = it.getEntryForComponent(component)

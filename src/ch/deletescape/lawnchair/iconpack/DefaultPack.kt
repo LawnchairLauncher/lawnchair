@@ -115,6 +115,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return FastBitmapDrawable(icon)
     }
 
+    override fun supportsMasking(): Boolean = false
+
     private fun getRoundIcon(component: ComponentName, iconDpi: Int): Drawable? {
         var appIcon: String? = null
         val elementTags = HashMap<String, String>()

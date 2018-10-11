@@ -80,6 +80,8 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
         callback(categorize(filterDuplicates(entries)))
     }
 
+    abstract fun supportsMasking(): Boolean
+
     private fun filterDuplicates(entries: List<Entry>): List<Entry> {
         var previous = ""
         val filtered = ArrayList<Entry>()

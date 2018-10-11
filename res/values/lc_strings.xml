@@ -33,6 +33,8 @@
     <string name="drag_to_disable_packs">Drag here to disable</string>
     <string name="get_more_icon_packs">Get more packs</string>
     <string name="enabled_icon_packs">Enabled packs</string>
+    <string name="pref_icon_pack_masking">Icon pack masking</string>
+    <string name="pref_icon_pack_masking_summary">Makes icons not themed by your pack fit in better</string>
 
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
 

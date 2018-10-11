@@ -41,6 +41,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.widget.RecyclerView;
@@ -54,6 +55,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import ch.deletescape.lawnchair.LawnchairPreferences.OnPreferenceChangeListener;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
@@ -355,6 +358,17 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         iconShapeOverride.getParent().removePreference(iconShapeOverride);
                     }
                 }
+                IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
+                Preference packMaskingPreference = findPreference("pref_iconPackMasking");
+                PreferenceGroup parent = packMaskingPreference.getParent();
+                Utilities.getLawnchairPrefs(mContext).addOnPreferenceChangeListener(
+                        "pref_iconPacks", (key, prefs, force) -> {
+                            if (!ipm.maskSupported()) {
+                                parent.removePreference(packMaskingPreference);
+                            } else if (!force) {
+                                parent.addPreference(packMaskingPreference);
+                            }
+                        });
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
