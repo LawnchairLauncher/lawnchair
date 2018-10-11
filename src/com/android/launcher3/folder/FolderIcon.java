@@ -75,6 +75,7 @@ import androidx.annotation.NonNull;
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
+
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
@@ -477,20 +478,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
-        final int saveCount;
-
-        if (canvas.isHardwareAccelerated()) {
-            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
-        } else {
-            saveCount = canvas.save();
-            canvas.clipPath(mBackground.getClipPath());
-        }
-
+        final int saveCount = canvas.save();
+        canvas.clipPath(mBackground.getClipPath());
         mPreviewItemManager.draw(canvas);
-
-        if (canvas.isHardwareAccelerated()) {
-            mBackground.clipCanvasHardware(canvas);
-        }
         canvas.restoreToCount(saveCount);
 
         if (!mBackground.drawingDelegated()) {
