@@ -18,16 +18,17 @@
 package ch.deletescape.lawnchair.gestures.gestures
 
 import android.view.MotionEvent
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.lawnchairPrefs
 
 class DoubleTapGesture(controller: GestureController) : Gesture(controller) {
 
-    override val isEnabled = true
     private val prefs = controller.launcher.lawnchairPrefs
     private val delay get() = prefs.doubleTapDelay
     private val handler by controller.createHandlerPref("pref_gesture_double_tap")
+    override val isEnabled = handler !is BlankGestureHandler
 
     private var lastDown = 0L
 
