@@ -28,6 +28,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.PowerManager
+import android.os.SystemClock
 import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
@@ -38,6 +40,7 @@ import com.android.launcher3.Utilities
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.io.IOException
+import java.lang.reflect.Method
 
 private val suThread = HandlerThread("su").apply { start() }
 private val suHandler = Handler(suThread.looper)
@@ -52,6 +55,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 
     // Preferred methods should appear earlier in the list
     private val method: SleepMethod? = listOf(
+            SleepMethodPowerManager(context),
             SleepMethodPieAccessibility(context),
             SleepMethodDeviceAdmin(context)
     ).firstOrNull { it.supported }
@@ -62,6 +66,28 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
         abstract val supported: Boolean
         abstract fun sleep(controller: GestureController)
     }
+}
+
+@TargetApi(Build.VERSION_CODES.M)
+class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMethod(context) {
+    override val supported = Utilities.ATLEAST_MARSHMALLOW && Utilities.hasPermission(context, "android.permission.DEVICE_POWER")
+
+    private val clazz = PowerManager::class.java
+    private val powerManager: PowerManager by lazy { context.getSystemService(clazz) }
+    private val goToSleep: Method by lazy {
+        clazz.getDeclaredMethod("goToSleep", Long::class.java).apply {
+            isAccessible = true
+        }
+    }
+
+    private fun goToSleep(time: Long) {
+        goToSleep.invoke(powerManager, time)
+    }
+
+    override fun sleep(controller: GestureController) {
+        goToSleep(SystemClock.uptimeMillis())
+    }
+
 }
 
 class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
