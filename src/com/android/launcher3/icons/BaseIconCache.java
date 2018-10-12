@@ -90,10 +90,10 @@ public class BaseIconCache {
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     private final InstantAppResolver mInstantAppResolver;
-    final int mIconDpi;
-
-    final IconDB mIconDb;
     final Handler mWorkerHandler;
+
+    int mIconDpi;
+    IconDB mIconDb;
 
     private final BitmapFactory.Options mDecodeOptions;
 
@@ -103,8 +103,6 @@ public class BaseIconCache {
         mUserManager = UserManagerCompat.getInstance(mContext);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
-        mIconDpi = iconDpi;
-        mIconDb = new IconDB(context, iconPixelSize);
 
         mIconProvider = IconProvider.newInstance(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -115,6 +113,22 @@ public class BaseIconCache {
         } else {
             mDecodeOptions = null;
         }
+
+        mIconDpi = iconDpi;
+        mIconDb = new IconDB(context, iconPixelSize);
+    }
+
+    public void updateIconParams(int iconDpi, int iconPixelSize) {
+        mWorkerHandler.post(() -> updateIconParamsBg(iconDpi, iconPixelSize));
+    }
+
+    private synchronized void updateIconParamsBg(int iconDpi, int iconPixelSize) {
+        mIconDpi = iconDpi;
+        mDefaultIcons.clear();
+
+        mIconDb.close();
+        mIconDb = new IconDB(mContext, iconPixelSize);
+        mCache.clear();
     }
 
     private Drawable getFullResDefaultActivityIcon() {

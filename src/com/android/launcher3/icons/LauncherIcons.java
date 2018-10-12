@@ -27,11 +27,11 @@ import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -48,13 +48,14 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
     private static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
-    private LauncherIcons next;
+    private static int sPoolId = 0;
 
     /**
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
      */
     public static LauncherIcons obtain(Context context) {
+        int poolId;
         synchronized (sPoolSync) {
             if (sPool != null) {
                 LauncherIcons m = sPool;
@@ -62,9 +63,33 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
                 m.next = null;
                 return m;
             }
+            poolId = sPoolId;
         }
+
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize);
+        return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize, poolId);
+    }
+
+    public static void clearPool() {
+        synchronized (sPoolSync) {
+            sPool = null;
+            sPoolId++;
+        }
+    }
+
+    private final Context mContext;
+    private final int mFillResIconDpi;
+    private final int mIconBitmapSize;
+    private final int mPoolId;
+
+    private LauncherIcons next;
+
+    private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId) {
+        super(context, fillResIconDpi, iconBitmapSize);
+        mContext = context.getApplicationContext();
+        mFillResIconDpi = fillResIconDpi;
+        mIconBitmapSize = iconBitmapSize;
+        mPoolId = poolId;
     }
 
     /**
@@ -72,6 +97,9 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
      */
     public void recycle() {
         synchronized (sPoolSync) {
+            if (sPoolId != mPoolId) {
+                return;
+            }
             // Clear any temporary state variables
             clear();
 
@@ -83,17 +111,6 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     @Override
     public void close() {
         recycle();
-    }
-
-    private final Context mContext;
-    private final int mFillResIconDpi;
-    private final int mIconBitmapSize;
-
-    private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize) {
-        super(context, fillResIconDpi, iconBitmapSize);
-        mContext = context.getApplicationContext();
-        mFillResIconDpi = fillResIconDpi;
-        mIconBitmapSize = iconBitmapSize;
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,

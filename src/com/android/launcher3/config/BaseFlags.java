@@ -84,6 +84,12 @@ abstract class BaseFlags {
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
+    /**
+     * Feature flag to handle define config changes dynamically instead of killing the process.
+     */
+    public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
+            "APPLY_CONFIG_AT_RUNTIME", false, "Apply display changes dynamically");
+
     public static void initialize(Context context) {
         // Avoid the disk read for builds without the flags UI.
         if (showFlagTogglerUi()) {
@@ -188,5 +194,4 @@ abstract class BaseFlags {
             return h$;
         }
     }
-
 }
