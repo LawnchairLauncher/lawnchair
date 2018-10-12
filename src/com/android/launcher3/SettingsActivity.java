@@ -43,6 +43,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ListView;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ListViewHighlighter;
@@ -56,6 +57,8 @@ import java.util.Objects;
  */
 public class SettingsActivity extends Activity
         implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+
+    private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
@@ -125,6 +128,12 @@ public class SettingsActivity extends Activity
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
+
+            // Only show flag toggler UI if this build variant implements that.
+            Preference flagToggler = findPreference(FLAGS_PREFERENCE_KEY);
+            if (flagToggler != null && !FeatureFlags.showFlagTogglerUi()) {
+                getPreferenceScreen().removePreference(flagToggler);
+            }
 
             ContentResolver resolver = getActivity().getContentResolver();
 

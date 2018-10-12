@@ -441,7 +441,7 @@ public class LoaderCursor extends CursorWrapper {
                 // Mark the first row as occupied (if the feature is enabled)
                 // in order to account for the QSB.
                 screen.markCells(0, 0, countX + 1, 1,
-                    FeatureFlags.getInstance(mContext).isQsbOnFirstScreenEnabled());
+                    FeatureFlags.QSB_ON_FIRST_SCREEN.get());
             }
             occupied.put(item.screenId, screen);
         }
