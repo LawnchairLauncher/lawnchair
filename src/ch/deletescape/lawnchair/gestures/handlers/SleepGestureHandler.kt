@@ -18,12 +18,14 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.TargetApi
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.Settings
@@ -39,6 +41,60 @@ import java.io.IOException
 
 private val suThread = HandlerThread("su").apply { start() }
 private val suHandler = Handler(suThread.looper)
+
+@Keep
+class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+    override val displayName = context.getString(R.string.action_sleep)
+
+    override fun onGestureTrigger(controller: GestureController) {
+        method!!.sleep(controller)
+    }
+
+    // Preferred methods should appear earlier in the list
+    private val method: SleepMethod? = listOf(
+            SleepMethodPieAccessibility(context),
+            SleepMethodDeviceAdmin(context)
+    ).firstOrNull { it.supported }
+
+    override val isAvailable = method != null
+
+    abstract class SleepMethod(protected val context: Context) {
+        abstract val supported: Boolean
+        abstract fun sleep(controller: GestureController)
+    }
+}
+
+class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
+    override val supported = Utilities.ATLEAST_P
+
+    @TargetApi(Build.VERSION_CODES.P)
+    override fun sleep(controller: GestureController) {
+        context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
+    }
+}
+
+class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod(context) {
+    override val supported = true
+
+    override fun sleep(controller: GestureController) {
+        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        if (devicePolicyManager.isAdminActive(ComponentName(context, SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))) {
+            devicePolicyManager.lockNow()
+        } else {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
+            context.startActivity(intent)
+        }
+    }
+
+    class SleepDeviceAdmin : DeviceAdminReceiver() {
+
+        override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
+            return context.getString(R.string.dt2s_admin_warning)
+        }
+    }
+}
 
 @Keep
 class SleepGestureHandlerRoot(context: Context, config: JSONObject?) : GestureHandler(context, config) {
@@ -128,41 +184,5 @@ class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : Gestur
             intent.data = Uri.parse("package:${launcher.packageName}")
             launcher.startActivity(intent)
         }
-    }
-}
-
-@Keep
-class SleepGestureHandlerDeviceAdmin(context: Context, config: JSONObject?) : GestureHandler(context, config) {
-
-    override val displayName = context.getString(R.string.action_sleep_device_admin)
-
-    override fun onGestureTrigger(controller: GestureController) {
-        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        if (devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
-            devicePolicyManager.lockNow()
-        } else {
-            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepDeviceAdmin::class.java))
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
-            context.startActivity(intent)
-        }
-    }
-
-    class SleepDeviceAdmin : DeviceAdminReceiver() {
-
-        override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
-            return context.getString(R.string.dt2s_admin_warning)
-        }
-    }
-}
-
-@Keep
-class SleepGestureHandlerAccessibility(context: Context, config: JSONObject?) : GestureHandler(context, config) {
-
-    override val displayName = context.getString(R.string.action_sleep_accessibility)
-    override val isAvailable = Utilities.ATLEAST_P
-
-    override fun onGestureTrigger(controller: GestureController) {
-        context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
     }
 }

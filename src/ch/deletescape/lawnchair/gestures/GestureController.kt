@@ -78,6 +78,9 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     companion object {
 
         private const val TAG = "GestureController"
+        private val LEGACY_SLEEP_HANDLERS = listOf(
+                "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerDeviceAdmin",
+                "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerAccessibility")
 
         fun createGestureHandler(context: Context, jsonString: String, fallback: GestureHandler): GestureHandler {
             if (!TextUtils.isEmpty(jsonString)) {
@@ -86,7 +89,10 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 } catch (e: JSONException) {
                     null
                 }
-                val className = config?.getString("class") ?: jsonString
+                var className = config?.getString("class") ?: jsonString
+                if (className in LEGACY_SLEEP_HANDLERS) {
+                    className = SleepGestureHandler::class.java.name
+                }
                 val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
                 // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
@@ -106,16 +112,20 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
             } catch (e: JSONException) {
                 null
             }
-            return config?.getString("class") ?: jsonString
+            val className = config?.getString("class") ?: jsonString
+            return if (className in LEGACY_SLEEP_HANDLERS) {
+                SleepGestureHandler::class.java.name
+            } else {
+                className
+            }
         }
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean) = listOf(
                 SwitchAppsGestureHandler(context, null),
                 BlankGestureHandler(context, null),
+                SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 SleepGestureHandlerRoot(context, null),
-                SleepGestureHandlerDeviceAdmin(context, null),
-                SleepGestureHandlerAccessibility(context, null),
                 OpenDrawerGestureHandler(context, null),
                 OpenWidgetsGestureHandler(context, null),
                 OpenSettingsGestureHandler(context, null),

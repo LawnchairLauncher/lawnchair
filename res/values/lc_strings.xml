@@ -47,4 +47,7 @@
 
     <string name="dismiss_drop_target_label">"Don't show"</string>
     <string name="suggested_action_content_description">%1$s opens in %2$s</string>
+
+    <!-- Gestures -->
+    <string name="action_sleep">Sleep</string>
 </resources>
