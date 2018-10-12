@@ -34,6 +34,7 @@ import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
+import ch.deletescape.lawnchair.reloadIcons
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -152,28 +153,7 @@ class IconPackManager(private val context: Context) {
     }
 
     fun onPacksUpdated() {
-        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
-            val userManagerCompat = UserManagerCompat.getInstance(context)
-            val model = LauncherAppState.getInstance(context).model
-
-            for (user in userManagerCompat.userProfiles) {
-                model.onPackagesReload(user)
-            }
-
-            val shortcutManager = DeepShortcutManager.getInstance(context)
-            val launcherApps = LauncherAppsCompat.getInstance(context)
-            userManagerCompat.userProfiles.forEach { user ->
-                launcherApps.getActivityList(null, user).forEach { reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
-            }
-        }
-    }
-
-    private fun reloadIcon(shortcutManager: DeepShortcutManager, model: LauncherModel, user: UserHandle, pkg: String) {
-        model.onPackageChanged(pkg, user)
-        val shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user)
-        if (!shortcuts.isEmpty()) {
-            model.updatePinnedShortcuts(pkg, shortcuts, user)
-        }
+        reloadIcons(context)
     }
 
     data class CustomIconEntry(val packPackageName: String, val icon: String? = null) {
