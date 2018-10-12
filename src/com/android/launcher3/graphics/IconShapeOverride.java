@@ -17,7 +17,6 @@ package com.android.launcher3.graphics;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
@@ -27,11 +26,9 @@ import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.LooperExecutor;
 
 import java.lang.reflect.Field;
 
@@ -146,18 +143,32 @@ public class IconShapeOverride {
             mContext = context;
         }
 
+        @SuppressLint("ApplySharedPref")
         @Override
         public boolean onPreferenceChange(Preference preference, Object o) {
             String newValue = (String) o;
             if (!getAppliedValue(mContext).equals(newValue)) {
                 // Value has changed
-                ProgressDialog.show(mContext,
-                        null /* title */,
-                        mContext.getString(R.string.icon_shape_override_progress),
-                        true /* indeterminate */,
-                        false /* cancelable */);
-                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-                        new OverrideApplyHandler(mContext, newValue));
+//                ProgressDialog.show(mContext,
+//                        null /* title */,
+//                        mContext.getString(R.string.icon_shape_override_progress),
+//                        true /* indeterminate */,
+//                        false /* cancelable */);
+                // Synchronously write the preference.
+                getDevicePrefs(mContext).edit().putString(KEY_PREFERENCE, newValue).commit();
+
+                if (preference instanceof ListPreference) {
+                    ((ListPreference) preference).setValue(newValue);
+                }
+
+                // Clear the icon cache.
+                LauncherAppState.getInstance(mContext).getIconCache().clear();
+
+                // Schedule restart
+                ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
+                        .scheduleRestart();
+//                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
+//                        new OverrideApplyHandler(mContext, newValue));
             }
             return false;
         }
