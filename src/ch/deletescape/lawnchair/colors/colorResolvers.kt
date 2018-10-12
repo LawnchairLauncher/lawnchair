@@ -19,17 +19,30 @@ package ch.deletescape.lawnchair.colors
 
 import android.graphics.Color
 import android.support.annotation.Keep
+import android.text.TextUtils
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.getColorAccent
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 @Keep
 class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
-    private val accentColor = ContextThemeWrapper(engine.context, android.R.style.Theme_DeviceDefault).getColorAccent()
-
-    override fun resolveColor() = accentColor
+    override fun resolveColor(): Int {
+        var color = ContextThemeWrapper(engine.context, android.R.style.Theme_DeviceDefault).getColorAccent()
+        if (Utilities.isOnePlusStock()) {
+            var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
+            if (!TextUtils.isEmpty(propertyValue)) {
+                if (!propertyValue.startsWith('#')) propertyValue = "#$propertyValue"
+                try {
+                    color = Color.parseColor(propertyValue)
+                } catch (e: IllegalArgumentException) {
+                }
+            }
+        }
+        return color
+    }
 
     override fun getDisplayName() = engine.context.getString(R.string.color_system_accent) as String
 }

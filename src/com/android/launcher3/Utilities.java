@@ -768,6 +768,11 @@ public final class Utilities {
         return !TextUtils.isEmpty(getSystemProperty("ro.build.version.emui", ""));
     }
 
+    public static Boolean isOnePlusStock() {
+        return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", "")) || !TextUtils
+                .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
+    }
+
     public static void openURLinBrowser(Context context, String url) {
         openURLinBrowser(context, url, null, null);
     }
