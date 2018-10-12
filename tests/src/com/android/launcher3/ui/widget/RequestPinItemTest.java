@@ -42,6 +42,7 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -151,7 +152,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         // Open all apps and wait for load complete
-        final UiObject2 appsContainer = openAllApps();
+        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
         Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Open Pin item activity

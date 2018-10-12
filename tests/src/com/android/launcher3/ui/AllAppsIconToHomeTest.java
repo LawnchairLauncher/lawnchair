@@ -45,12 +45,12 @@ public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
         mDevice.waitForIdle();
 
         // Open all apps and wait for load complete.
-        final UiObject2 appsContainer = openAllApps();
+        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
         Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag icon to homescreen.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(settingsApp.getLabel().toString()));
-        dragToWorkspace(icon, true);
+        TestViewHelpers.dragToWorkspace(icon, true);
 
         // Verify that the icon works on homescreen.
         mDevice.findObject(By.text(settingsApp.getLabel().toString())).click();

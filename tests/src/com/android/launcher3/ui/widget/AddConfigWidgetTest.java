@@ -15,20 +15,20 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.view.View;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
-import android.view.View;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -65,7 +66,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        mWidgetInfo = findWidgetProvider(true /* hasConfigureScreen */);
+        mWidgetInfo = TestViewHelpers.findWidgetProvider(this, true /* hasConfigureScreen */);
         mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
     }
 
@@ -104,14 +105,14 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         // Open widget tray and wait for load complete.
-        final UiObject2 widgetContainer = openWidgetsTray();
+        final UiObject2 widgetContainer = TestViewHelpers.openWidgetsTray();
         Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
                 .hasDescendant(By.text(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        dragToWorkspace(widget, false);
+        TestViewHelpers.dragToWorkspace(widget, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
 

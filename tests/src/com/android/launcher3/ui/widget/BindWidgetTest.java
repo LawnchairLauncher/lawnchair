@@ -39,6 +39,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -58,6 +59,7 @@ import java.util.Set;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.UiSelector;
+import java.util.concurrent.Callable;
 
 /**
  * Tests for bind widget flow.
@@ -68,7 +70,8 @@ import androidx.test.uiautomator.UiSelector;
 @RunWith(AndroidJUnit4.class)
 public class BindWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private ContentResolver mResolver;
     private AppWidgetManagerCompat mWidgetManager;
@@ -116,7 +119,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testBindNormalWidget_withConfig() {
-        LauncherAppWidgetProviderInfo info = findWidgetProvider(true);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
         LauncherAppWidgetInfo item = createWidgetInfo(info, true);
 
         setupContents(item);
@@ -125,7 +128,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testBindNormalWidget_withoutConfig() {
-        LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, true);
 
         setupContents(item);
@@ -134,7 +137,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test @Ignore
     public void testUnboundWidget_removed() {
-        LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
         item.appWidgetId = -33;
 
@@ -159,7 +162,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                     "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
         }
         // A non-restored widget with no config screen gets restored automatically.
-        LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
 
         // Do not bind the widget
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
@@ -183,7 +186,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                     "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
         }
         // A non-restored widget with config screen get bound and shows a 'Click to setup' UI.
-        LauncherAppWidgetProviderInfo info = findWidgetProvider(true);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
 
         // Do not bind the widget
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
