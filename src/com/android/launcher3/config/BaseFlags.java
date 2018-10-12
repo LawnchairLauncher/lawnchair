@@ -44,9 +44,6 @@ abstract class BaseFlags {
     //Feature flag to enable pulling down navigation shade from workspace.
     public static final boolean PULL_DOWN_STATUS_BAR = true;
 
-    // When enabled the all-apps icon is not added to the hotseat.
-    public static final boolean NO_ALL_APPS_ICON = true;
-
     // When true, custom widgets are loaded using CustomWidgetParser.
     public static final boolean ENABLE_CUSTOM_WIDGETS = false;
 
