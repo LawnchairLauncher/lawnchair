@@ -274,7 +274,7 @@
         <!-- DT2S using device admin -->
         <receiver
             android:description="@string/dt2s_admin_hint"
-            android:name="ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerDeviceAdmin$SleepDeviceAdmin"
+            android:name="ch.deletescape.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
