@@ -31,7 +31,6 @@ import android.widget.Switch
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.util.Themes
 
-
 open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet?) : SwitchPreference(context, attrs), ColorEngine.OnAccentChangeListener {
 
     private val normalLight = android.support.v7.preference.R.color.switch_thumb_normal_material_light

@@ -2,7 +2,7 @@
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+    <ch.deletescape.lawnchair.preferences.SwipeUpSwitchPreference
         android:defaultValue="true"
         android:key="pref_swipe_up_to_switch_apps_enabled"
         android:persistent="true"

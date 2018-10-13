@@ -55,10 +55,9 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import ch.deletescape.lawnchair.LawnchairPreferences.OnPreferenceChangeListener;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
-import com.android.launcher3.BuildConfig;
+
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
@@ -70,6 +69,7 @@ import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.PixelBridge;
 import org.jetbrains.annotations.NotNull;
@@ -386,6 +386,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
                 findPreference("screenshot").setOnPreferenceClickListener(this);
+            } else if (getContent() == R.xml.lawnchair_quickstep_preferences) {
+                if (OverviewInteractionState.isSwipeUpSettingsAvailable()) {
+
+                }
             }
         }
 

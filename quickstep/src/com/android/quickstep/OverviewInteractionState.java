@@ -106,8 +106,15 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
-        mSwipeUpSettingObserver = null;
+        if (isSwipeUpSettingsAvailable()) {
+            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
+                    context.getContentResolver());
+            mSwipeUpSettingObserver.register();
+        } else {
+            mSwipeUpSettingObserver = null;
+            Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
+            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
+        }
     }
 
     public boolean isSwipeUpGestureEnabled() {
@@ -226,7 +233,11 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
         }
     }
 
-    private boolean getSystemBooleanRes(String resName) {
+    public static boolean isSwipeUpSettingsAvailable() {
+        return getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
+    }
+
+    private static boolean getSystemBooleanRes(String resName) {
         Resources res = Resources.getSystem();
         int resId = res.getIdentifier(resName, "bool", "android");
 
