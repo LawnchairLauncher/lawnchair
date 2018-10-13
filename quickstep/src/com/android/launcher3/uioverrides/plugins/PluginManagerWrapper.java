@@ -43,7 +43,12 @@ public class PluginManagerWrapper {
     }
 
     public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass) {
-        mPluginManager.addPluginListener(listener, pluginClass);
+        addPluginListener(listener, pluginClass, false);
+    }
+
+    public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass,
+            boolean allowMultiple) {
+        mPluginManager.addPluginListener(listener, pluginClass, allowMultiple);
     }
 
     public void removePluginListener(PluginListener<? extends Plugin> listener) {
