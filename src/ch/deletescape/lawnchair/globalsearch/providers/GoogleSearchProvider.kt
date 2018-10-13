@@ -16,18 +16,19 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
     override val supportsAssistant: Boolean
         get() = true
 
-    override fun startSearch(callback: (intent: Intent) -> Unit) {
-        throw RuntimeException("Google Search has to be handled locally")
-//        LauncherAppState.getInstanceNoCreate().launcher.startGlobalSearch(null, false, null, null)
-    }
+    override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
 
-    override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = throw RuntimeException("Google Search has to be handled locally")
+    override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent("android.intent.action.VOICE_ASSIST").setPackage(PACKAGE))
 
-    override fun startAssistant(callback: (intent: Intent) -> Unit ) = throw RuntimeException("Google Search has to be handled locally")
+    override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_VOICE_COMMAND).setPackage(PACKAGE))
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_super_g_color)!!
 
     override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!
 
     override fun getAssistantIcon(): Drawable = context.getDrawable(R.drawable.opa_assistant_logo)!!
+
+    companion object {
+        private const val PACKAGE = "com.google.android.googlequicksearchbox"
+    }
 }

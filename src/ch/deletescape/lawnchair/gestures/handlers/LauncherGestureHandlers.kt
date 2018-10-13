@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.UserHandle
 import android.support.annotation.Keep
+import android.util.Log
 import android.widget.Toast
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
@@ -88,7 +89,11 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
 
     override fun onGestureTrigger(controller: GestureController) {
         SearchProviderController.getInstance(context).searchProvider.startSearch {
-            context.startActivity(it)
+            try {
+                context.startActivity(it)
+            } catch (e: Exception) {
+                Log.e(this::class.java.name, "Failed to start global search", e)
+            }
         }
     }
 }
@@ -206,9 +211,33 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
 @Keep
 class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_assistant)!!
+    override val isAvailable = SearchProviderController.getInstance(context).searchProvider.supportsAssistant
+    override val displayName = context.getString(R.string.action_assistant)
 
     override fun onGestureTrigger(controller: GestureController) {
-        Utilities.startAssistant(context)
+        SearchProviderController.getInstance(context).searchProvider.startAssistant {
+            try {
+                context.startActivity(it)
+            } catch (e: Exception) {
+                Log.e(this::class.java.name, "Failed to start assistant", e)
+            }
+        }
+    }
+}
+
+@Keep
+class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+
+    override val isAvailable = SearchProviderController.getInstance(context).searchProvider.supportsVoiceSearch
+    override val displayName = context.getString(R.string.action_voice_search)
+
+    override fun onGestureTrigger(controller: GestureController) {
+        SearchProviderController.getInstance(context).searchProvider.startVoiceSearch {
+            try {
+                context.startActivity(it)
+            } catch (e: Exception) {
+                Log.e(this::class.java.name, "Failed to start voice search", e)
+            }
+        }
     }
 }

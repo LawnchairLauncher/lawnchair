@@ -50,4 +50,5 @@
 
     <!-- Gestures -->
     <string name="action_sleep">Sleep</string>
+    <string name="action_voice_search">Start Voice Search</string>
 </resources>
