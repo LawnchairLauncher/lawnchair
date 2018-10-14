@@ -372,7 +372,7 @@
   <string name="pref_applyBlur">Appliquez le flou sur</string>
   <string name="search_bar">Barre de recherche</string>
   <string name="folder">Dossier</string>
-  <string name="dock_allapps"><![CDATA[Dock & tiroir d'applications]]></string>
+  <string name="dock_allapps"><![CDATA[Dock & tiroir d\'applications]]></string>
   <string name="app_shortcuts">Raccourcis d\'application</string>
   <string name="blur_effect">Effet de flou</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
