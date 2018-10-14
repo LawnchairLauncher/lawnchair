@@ -6,7 +6,7 @@
         android:key="pref_smartspace"
         android:title="@string/home_widget"
         android:summary="@string/smartspace_preferences_in_settings_desc"
-        android:defaultValue="true"
+        android:defaultValue="@bool/config_enable_smartspace"
         android:persistent="true" />
   
     <ch.deletescape.lawnchair.preferences.PreviewPreference

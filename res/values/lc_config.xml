@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- Wether or not blur is enabled per default -->
+    <bool name="config_default_enable_blur">false</bool>
+    <!-- The default blur strength -->
+    <item format="float" type="dimen" name="config_default_blur_strength">75</item>
+    <!-- The default icon pack to use; empty = system icons -->
+    <string name="config_default_icon_pack" translatable="false"/>
+    <!-- Wether or not adaptive icons should be generated for legacy icons -->
+    <bool name="config_enable_legacy_treatment">true</bool>
+    <!-- If set to true lawnchair will generate colorized background for legacy masked icons -->
+    <bool name="config_enable_colorized_legacy_treatment">true</bool>
+    <!-- Wether the status bar should be hidden on the home screen -->
+    <bool name="config_hide_statusbar">false</bool>
+    <!-- Wether smartspace (at a glance) should be enabled per default -->
+    <bool name="config_enable_smartspace">true</bool>
+    <!-- Which search provider to use per default -->
+    <string name="config_default_search_provider" translatable="false">ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider</string>
+    <!-- Which color resolver to use per default; Possible values:
+    ch.deletescape.lawnchair.colors.SystemAccentResolver
+    ch.deletescape.lawnchair.colors.PixelAccentResolver
+    ch.deletescape.lawnchair.colors.RGBColorResolver|R|G|B
+    ch.deletescape.lawnchair.colors.WallpaperMainColorResolver
+    ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver
+    ch.deletescape.lawnchair.colors.WallpaperTertiaryColorResolver -->
+    <string name="config_default_color_resolver" translatable="false">ch.deletescape.lawnchair.colors.PixelAccentResolver</string>
+</resources>

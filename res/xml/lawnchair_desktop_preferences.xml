@@ -72,7 +72,7 @@
             android:title="@string/allow_rotation_title" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="@bool/config_hide_statusbar"
             android:key="pref_hideStatusBar"
             android:persistent="true"
             android:title="@string/pref_hide_statusbar"/>

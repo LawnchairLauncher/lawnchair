@@ -23,6 +23,7 @@ import android.support.v7.graphics.Palette
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.SingletonHolder
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.util.HashSet
 
@@ -32,7 +33,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     private val accentListeners = HashSet<OnAccentChangeListener>()
 
-    private val defaultColorResolver = PixelAccentResolver(ColorResolver.Config(this))
+    private val defaultColorResolver = createColorResolver(context.resources.getString(R.string.config_default_color_resolver))
 
     var accentResolver by createResolverPref(KEY_ACCENT_RESOLVER)
     val accent get() = accentResolver.resolveColor()
@@ -83,7 +84,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         } catch (e: ClassNotFoundException) {
         } catch (e: InstantiationException) {
         }
-        return defaultColorResolver
+        return PixelAccentResolver(ColorResolver.Config(this))
     }
 
     companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine)))

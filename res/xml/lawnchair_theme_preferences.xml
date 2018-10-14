@@ -7,7 +7,7 @@
         android:title="@string/pref_category_icons">
 
         <ch.deletescape.lawnchair.settings.ui.IconPackPreference
-            android:defaultValue=""
+            android:defaultValue="@string/config_default_icon_pack"
             android:key="pref_icon_pack"
             android:persistent="true"
             android:title="@string/pref_icon_packs" />
@@ -28,14 +28,14 @@
             android:title="@string/icon_shape_override_label" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="@bool/config_enable_legacy_treatment"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"
             android:title="@string/pref_legacy_treatment_title"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="@bool/config_enable_colorized_legacy_treatment"
             android:key="pref_colorizeGeneratedBackgrounds"
             android:persistent="true"
             android:dependency="pref_enableLegacyTreatment"
@@ -63,7 +63,7 @@
             app:defaultColor="@color/colorAccent"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="@bool/config_default_enable_blur"
             android:key="pref_enableBlur"
             android:persistent="true"
             android:summary="@string/blur_pref_summary"
@@ -74,7 +74,7 @@
             android:key="pref_blurRadius"
             android:persistent="true"
             android:title="@string/blur_radius_pref_title"
-            app:defaultSeekbarValue="75"
+            app:defaultSeekbarValue="@dimen/config_default_blur_strength"
             app:maxValue="150"
             app:minValue="10"
             app:steps="140"

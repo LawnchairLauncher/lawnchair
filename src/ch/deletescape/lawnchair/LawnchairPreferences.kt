@@ -23,6 +23,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import android.text.TextUtils
+import android.util.TypedValue
 import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
@@ -79,23 +80,26 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
     // Blur
-    var enableBlur by BooleanPref("pref_enableBlur", false, updateBlur)
+    var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
     val enableVibrancy = true
-    val blurRadius by FloatPref("pref_blurRadius", 75f, updateBlur)
+    val defaultBlurStrength = TypedValue().apply {
+        context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
+    }
+    val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
 
     // Theme
-    private var iconPack by StringPref("pref_icon_pack", "", reloadIconPacks)
+    private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
             if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
 
         override fun unflattenValue(value: String) = value
     }
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", true, reloadIcons)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", true, reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
     val accentColor by IntPref("pref_accentColor", context.resources.getColor(R.color.colorAccent), doNothing)
     val darkSearchbar by BooleanPref("pref_darkSearchbar", false, doNothing)
-    val hideStatusBar by BooleanPref("pref_hideStatusBar", false, doNothing)
+    val hideStatusBar by BooleanPref("pref_hideStatusBar", context.resources.getBoolean(R.bool.config_hide_statusbar), doNothing)
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
@@ -107,7 +111,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
 
     // Smartspace
-    val enableSmartspace by BooleanPref("pref_smartspace", true)
+    val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", true, refreshGrid)
@@ -164,7 +168,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
 
     // Search
-    var searchProvider by StringPref("pref_globalSearchProvider", GoogleSearchProvider::class.java.name, doNothing)
+    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider), doNothing)
 
     // Gestures
     val doubleTapDelay = 350L
