@@ -197,6 +197,7 @@
   int numHotseatIconsOriginal;
   int numRowsOriginal;
   int numColumnsOriginal;
+  int numColsDrawerOriginal;
 }
 
 -keep class com.android.systemui.shared.system.** { *; }

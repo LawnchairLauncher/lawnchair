@@ -148,6 +148,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
     val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
+    private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
+    val drawerGridSize by drawerGridSizeDelegate
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
@@ -659,6 +661,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 onChangeCallback = null
                 gridSizeDelegate.resetValue()
                 dockGridSizeDelegate.resetValue()
+                drawerGridSizeDelegate.resetValue()
             }
         }
     }

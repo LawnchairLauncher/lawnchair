@@ -30,6 +30,10 @@
             app:steps="120"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
+
+        <ch.deletescape.lawnchair.settings.ui.DrawerGridSizePreference
+            android:key="pref_drawer_grid_size"
+            android:title="@string/pref_drawer_columns"/>
         
         <Preference
             android:key="pref_hiddenApps"

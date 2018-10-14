@@ -23,4 +23,4 @@ import android.util.AttributeSet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class DockGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).dockGridSize)
+class DrawerGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).drawerGridSize)

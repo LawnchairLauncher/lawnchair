@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair.settings.ui
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -28,9 +27,9 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnAccentChangeListener {
+class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnAccentChangeListener {
 
-    private val gridSizePreference get() = preference as DockGridSizePreference
+    private val gridSizePreference get() = preference as SingleDimensionGridSizePreference
 
     private var numRows = 0
 
@@ -110,7 +109,7 @@ class DockGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekB
     companion object {
         const val SAVE_STATE_ROWS = "rows"
 
-        fun newInstance(key: String?) = DockGridSizeDialogFragmentCompat().apply {
+        fun newInstance(key: String?) = SingleDimensionGridSizeDialogFragmentCompat().apply {
             arguments = Bundle(1).apply {
                 putString(ARG_KEY, key)
             }

@@ -20,7 +20,30 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Context
 import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
+import ch.deletescape.lawnchair.settings.GridSize
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class DockGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).dockGridSize)
+abstract class SingleDimensionGridSizePreference(context: Context, attrs: AttributeSet?, private val gridSize: GridSize) : DialogPreference(context, attrs) {
+    val defaultSize by lazy { gridSize.numRowsOriginal }
+
+    init {
+        updateSummary()
+    }
+
+    fun getSize(): Int {
+        return gridSize.fromPref(gridSize.numRows, defaultSize)
+    }
+
+    fun setSize(rows: Int) {
+        gridSize.numRowsPref = gridSize.toPref(rows, defaultSize)
+        updateSummary()
+    }
+
+    private fun updateSummary() {
+        val value = getSize()
+        summary = "$value"
+    }
+
+    override fun getDialogLayoutResource() = R.layout.pref_dialog_single_dimension_grid_size
+}
