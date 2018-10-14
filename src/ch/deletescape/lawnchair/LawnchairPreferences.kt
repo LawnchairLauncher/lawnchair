@@ -152,6 +152,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerGridSize by drawerGridSizeDelegate
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
+    val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)

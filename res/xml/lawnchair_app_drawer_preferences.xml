@@ -34,6 +34,17 @@
         <ch.deletescape.lawnchair.settings.ui.DrawerGridSizePreference
             android:key="pref_drawer_grid_size"
             android:title="@string/pref_drawer_columns"/>
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsPaddingScale"
+            android:persistent="true"
+            android:title="@string/pref_drawer_padding"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.5"
+            app:minValue="0"
+            app:steps="150"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"/>
         
         <Preference
             android:key="pref_hiddenApps"

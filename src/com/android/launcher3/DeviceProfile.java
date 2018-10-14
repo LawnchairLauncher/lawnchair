@@ -182,7 +182,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         Utilities.getLawnchairPrefs(context)
                 .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                        "pref_twoRowDock", "pref_compactDock");
+                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale");
     }
 
     public DeviceProfile copy(Context context) {
@@ -346,7 +346,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
-        boolean dockVisible = !Utilities.getLawnchairPrefs(mContext).getDockHide();
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mContext);
+        boolean dockVisible = !prefs.getDockHide();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
@@ -373,7 +374,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * scale);
         allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
-        int additionalPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding);
+        int additionalPadding = (int) (
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs
+                        .getDrawerPaddingScale());
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx + textHeight
                 + additionalPadding;
 
