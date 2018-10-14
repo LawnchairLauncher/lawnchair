@@ -55,4 +55,5 @@
     <!-- Drawer -->
     <string name="grid_size_padding">Padding</string>
     <string name="pref_drawer_columns">Number of columns in drawer</string>
+    <string name="pref_prediction_count">Number of suggestions</string>
 </resources>

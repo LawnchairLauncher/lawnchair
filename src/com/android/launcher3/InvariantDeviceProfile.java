@@ -73,6 +73,8 @@ public class InvariantDeviceProfile {
      */
     public int numColsDrawer;
     public int numColsDrawerOriginal;
+    public int numPredictions;
+    public int numPredictionsOriginal;
 
     /**
      * Number of icons per row and column in the folder.
@@ -160,6 +162,7 @@ public class InvariantDeviceProfile {
         numColumnsOriginal = numColumns;
         numColsDrawer = numColumns;
         numColsDrawerOriginal = numColumns;
+        numPredictions = numPredictionsOriginal = numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
         numHotseatIconsOriginal = numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;

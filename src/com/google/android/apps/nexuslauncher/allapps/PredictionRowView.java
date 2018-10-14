@@ -123,7 +123,7 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         mPaint.setStrokeWidth((float) getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
         mStrokeColor = this.mPaint.getColor();
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
-        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
+        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numPredictions;
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
         mIconTextColor = Themes.getAttrColor(context, 16842808);

@@ -24,3 +24,4 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 class DrawerGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).drawerGridSize)
+class PredictionGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).predictionGridSize)

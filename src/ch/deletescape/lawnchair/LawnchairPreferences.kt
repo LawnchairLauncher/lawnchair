@@ -150,6 +150,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
     val drawerGridSize by drawerGridSizeDelegate
+    private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
+    val predictionGridSize by predictionGridSizeDelegate
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
@@ -662,6 +664,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 gridSizeDelegate.resetValue()
                 dockGridSizeDelegate.resetValue()
                 drawerGridSizeDelegate.resetValue()
+                predictionGridSizeDelegate.resetValue()
             }
         }
     }

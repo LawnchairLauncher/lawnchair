@@ -198,6 +198,7 @@
   int numRowsOriginal;
   int numColumnsOriginal;
   int numColsDrawerOriginal;
+  int numPredictionsOriginal;
 }
 
 -keep class com.android.systemui.shared.system.** { *; }
