@@ -372,7 +372,7 @@
   <string name="pref_applyBlur">Aplica el difuminat a</string>
   <string name="search_bar">Barra de cerca</string>
   <string name="folder">Carpeta</string>
-  <string name="dock_allapps"><![CDATA[Barra d'aplicacions i calaix]]></string>
+  <string name="dock_allapps"><![CDATA[Barra d\'aplicacions i calaix]]></string>
   <string name="app_shortcuts">Draceres d\'aplicació</string>
   <string name="blur_effect">Efecte difuminat</string>
   <string name="pref_weather_provider">Proveïdor del temps</string>
