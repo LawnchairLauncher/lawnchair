@@ -39,6 +39,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -355,6 +356,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     public AlphaProperty getAlphaProperty(int index) {
         return mMultiValueAlpha.getProperty(index);
+    }
+
+    public void dumpAlpha(PrintWriter writer) {
+        writer.println(" dragLayerAlpha : " + mMultiValueAlpha );
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
