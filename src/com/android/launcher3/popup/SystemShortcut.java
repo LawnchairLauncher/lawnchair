@@ -6,8 +6,10 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
@@ -36,7 +38,7 @@ import java.util.List;
 public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo {
     private final int mIconResId;
     private final int mLabelResId;
-    private final Drawable mIcon;
+    private final Icon mIcon;
     private final CharSequence mLabel;
     private final CharSequence mContentDescription;
     private final int mAccessibilityActionId;
@@ -50,7 +52,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         mContentDescription = null;
     }
 
-    public SystemShortcut(Drawable icon, CharSequence label, CharSequence contentDescription,
+    public SystemShortcut(Icon icon, CharSequence label, CharSequence contentDescription,
             int accessibilityActionId) {
         mIcon = icon;
         mLabel = label;
@@ -71,7 +73,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public void setIconAndLabelFor(View iconView, TextView labelView) {
         if (mIcon != null) {
-            iconView.setBackground(mIcon);
+            mIcon.loadDrawableAsync(iconView.getContext(),
+                    iconView::setBackground,
+                    new Handler(Looper.getMainLooper()));
         } else {
             iconView.setBackgroundResource(mIconResId);
         }
@@ -85,7 +89,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public void setIconAndContentDescriptionFor(ImageView view) {
         if (mIcon != null) {
-            view.setImageDrawable(mIcon);
+            mIcon.loadDrawableAsync(view.getContext(),
+                    view::setImageDrawable,
+                    new Handler(Looper.getMainLooper()));
         } else {
             view.setImageResource(mIconResId);
         }

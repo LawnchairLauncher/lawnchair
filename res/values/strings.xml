@@ -347,4 +347,7 @@
     <string name="work_mode_off_label">Notifications and apps are off</string>
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
+
+    <!-- Failed action error message: e.g. Failed: Pause -->
+    <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
 </resources>
