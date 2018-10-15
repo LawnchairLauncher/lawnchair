@@ -15,29 +15,21 @@
  */
 package com.android.launcher3.ui;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
+import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
-import android.graphics.Point;
 import android.os.Process;
 import android.os.RemoteException;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.Surface;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
@@ -46,19 +38,14 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
-import com.android.launcher3.testcomponent.AppWidgetNoConfig;
-import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -89,15 +76,12 @@ public abstract class AbstractLauncherUiTest {
 
     public static final long SHORT_UI_TIMEOUT= 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
-    public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected final UiDevice mDevice;
     protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
-
-    private static final String TAG = "AbstractLauncherUiTest";
 
     protected AbstractLauncherUiTest() {
         final Instrumentation instrumentation = getInstrumentation();
@@ -114,7 +98,8 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
-    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
+    @Rule public ShellCommandRule mDefaultLauncherRule =
+            TestHelpers.isInLauncherProcess() ? ShellCommandRule.setDefaultLauncher() : null;
 
     @Rule public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
@@ -184,30 +169,6 @@ public abstract class AbstractLauncherUiTest {
     }
 
     /**
-     * Opens all apps and returns the recycler view
-     */
-    protected UiObject2 openAllApps() {
-        mDevice.waitForIdle();
-        UiObject2 hotseat = mDevice.wait(
-                Until.findObject(getSelectorForId(R.id.hotseat)), 2500);
-        Point start = hotseat.getVisibleCenter();
-        int endY = (int) (mDevice.getDisplayHeight() * 0.1f);
-        // 100 px/step
-        mDevice.swipe(start.x, start.y, start.x, endY, (start.y - endY) / 100);
-        return findViewById(R.id.apps_list_view);
-    }
-
-    /**
-     * Opens widget tray and returns the recycler view.
-     */
-    protected UiObject2 openWidgetsTray() {
-        mDevice.pressMenu(); // Enter overview mode.
-        mDevice.wait(Until.findObject(
-                By.text(mTargetContext.getString(R.string.widget_button_text))), DEFAULT_UI_TIMEOUT).click();
-        return findViewById(R.id.widgets_list_view);
-    }
-
-    /**
      * Scrolls the {@param container} until it finds an object matching {@param condition}.
      * @return the matching object.
      */
@@ -226,73 +187,6 @@ public abstract class AbstractLauncherUiTest {
             if (++i > 40) fail("Too many attempts");
             container.scroll(Direction.DOWN, 1f);
         }
-    }
-
-    /**
-     * Drags an icon to the center of homescreen.
-     * @param icon  object that is either app icon or shortcut icon
-     */
-    protected void dragToWorkspace(UiObject2 icon, boolean expectedToShowShortcuts) {
-        Point center = icon.getVisibleCenter();
-
-        // Action Down
-        sendPointer(MotionEvent.ACTION_DOWN, center);
-
-        UiObject2 dragLayer = findViewById(R.id.drag_layer);
-
-        if (expectedToShowShortcuts) {
-            // Make sure shortcuts show up, and then move a bit to hide them.
-            assertNotNull(findViewById(R.id.deep_shortcuts_container));
-
-            Point moveLocation = new Point(center);
-            int distanceToMove = mTargetContext.getResources().getDimensionPixelSize(
-                    R.dimen.deep_shortcuts_start_drag_threshold) + 50;
-            if (moveLocation.y - distanceToMove >= dragLayer.getVisibleBounds().top) {
-                moveLocation.y -= distanceToMove;
-            } else {
-                moveLocation.y += distanceToMove;
-            }
-            movePointer(center, moveLocation);
-
-            assertNull(findViewById(R.id.deep_shortcuts_container));
-        }
-
-        // Wait until Remove/Delete target is visible
-        assertNotNull(findViewById(R.id.delete_target_text));
-
-        Point moveLocation = dragLayer.getVisibleCenter();
-
-        // Move to center
-        movePointer(center, moveLocation);
-        sendPointer(MotionEvent.ACTION_UP, center);
-
-        // Wait until remove target is gone.
-        mDevice.wait(Until.gone(getSelectorForId(R.id.delete_target_text)), DEFAULT_UI_TIMEOUT);
-    }
-
-    private void movePointer(Point from, Point to) {
-        while(!from.equals(to)) {
-            from.x = getNextMoveValue(to.x, from.x);
-            from.y = getNextMoveValue(to.y, from.y);
-            sendPointer(MotionEvent.ACTION_MOVE, from);
-        }
-    }
-
-    private int getNextMoveValue(int targetValue, int oldValue) {
-        if (targetValue - oldValue > 10) {
-            return oldValue + 10;
-        } else if (targetValue - oldValue < -10) {
-            return oldValue - 10;
-        } else {
-            return targetValue;
-        }
-    }
-
-    protected void sendPointer(int action, Point point) {
-        MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(), action, point.x, point.y, 0);
-        getInstrumentation().sendPointerSync(event);
-        event.recycle();
     }
 
     /**
@@ -379,37 +273,6 @@ public abstract class AbstractLauncherUiTest {
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout);
-    }
-
-    /**
-     * Finds a widget provider which can fit on the home screen.
-     * @param hasConfigureScreen if true, a provider with a config screen is returned.
-     */
-    protected LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {
-        LauncherAppWidgetProviderInfo info =
-                getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
-            @Override
-            public LauncherAppWidgetProviderInfo call() throws Exception {
-                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
-                        hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
-                Log.d(TAG, "findWidgetProvider componentName=" + cn.flattenToString());
-                return AppWidgetManagerCompat.getInstance(mTargetContext)
-                        .findProvider(cn, Process.myUserHandle());
-            }
-        });
-        if (info == null) {
-            throw new IllegalArgumentException("No valid widget provider");
-        }
-        return info;
-    }
-
-    protected UiObject2 findViewById(int id) {
-        return mDevice.wait(Until.findObject(getSelectorForId(id)), DEFAULT_UI_TIMEOUT);
-    }
-
-    protected BySelector getSelectorForId(int id) {
-        String name = mTargetContext.getResources().getResourceEntryName(id);
-        return By.res(mTargetPackage, name);
     }
 
     protected LauncherActivityInfo getSettingsApp() {
