@@ -52,4 +52,10 @@
         android:defaultValue=""
         android:persistent="false" />
 
+    <PreferenceScreen
+        android:fragment="com.android.launcher3.config.FlagTogglerPreferenceFragment"
+        android:key="flag_toggler"
+        android:persistent="false"
+        android:title="Feature flags"/>
+
 </PreferenceScreen>

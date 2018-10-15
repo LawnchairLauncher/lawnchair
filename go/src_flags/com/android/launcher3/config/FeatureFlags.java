@@ -22,13 +22,9 @@ import android.content.Context;
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
-    private static FeatureFlags instance = new FeatureFlags();
-
-    public static FeatureFlags getInstance(Context context) {
-        return instance;
+    private FeatureFlags() {
+        // Prevent instantiation
     }
-
-    private FeatureFlags() {}
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = true;
