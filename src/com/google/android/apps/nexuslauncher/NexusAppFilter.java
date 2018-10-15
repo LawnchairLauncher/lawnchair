@@ -20,6 +20,9 @@ public class NexusAppFilter extends AppFilter {
 
         //Google Now Launcher
         mHideList.add(ComponentName.unflattenFromString("com.google.android.launcher/.StubApp"));
+
+        //Actions Services
+        mHideList.add(ComponentName.unflattenFromString("com.google.android.as/com.google.android.apps.miphone.aiai.allapps.main.MainDummyActivity"));
     }
 
     @Override
