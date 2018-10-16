@@ -256,6 +256,28 @@
             android:name="ch.deletescape.lawnchair.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2"/>
 
+        <!-- Actions -->
+        <activity
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/lawnchair_actions"
+            android:name="ch.deletescape.lawnchair.gestures.LawnchairShortcutActivity"
+            android:theme="@style/SettingsTheme.V2">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="ch.deletescape.lawnchair.gestures.ui.RunHandlerActivity"
+            android:theme="@style/SettingsTheme.V2.Transparent">
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.START_ACTION"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <!-- Gesture app selection -->
         <activity
             android:label="@string/action_open_app_select_app"

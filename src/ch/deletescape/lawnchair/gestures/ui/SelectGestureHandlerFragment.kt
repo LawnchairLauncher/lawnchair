@@ -25,10 +25,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.CheckedTextView
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
@@ -49,7 +46,7 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
         super.onBindDialogView(view)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView.adapter = HandlerListAdapter(activity as Context)
+        recyclerView.adapter = HandlerListAdapter(activity as Context, isSwipeUp, currentClass, ::onSelectHandler)
         recyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
@@ -63,7 +60,7 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == requestCode && resultCode == Activity.RESULT_OK) {
+        if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
             selectedHandler?.onConfigResult(data)
             saveChanges()
         }
@@ -83,31 +80,6 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
 
     override fun onDialogClosed(positiveResult: Boolean) {
 
-    }
-
-    inner class HandlerListAdapter(private val context: Context) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
-
-        val handlers = GestureController.getGestureHandlers(context, isSwipeUp)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(LayoutInflater.from(context).inflate(R.layout.gesture_item, parent, false))
-        }
-
-        override fun getItemCount() = handlers.size
-
-        override fun onBindViewHolder(holder: Holder, position: Int) {
-            holder.text.text = handlers[position].displayName
-            holder.text.isChecked = handlers[position]::class.java.name == currentClass
-        }
-
-        inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-            val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply { setOnClickListener(this@Holder) }
-
-            override fun onClick(v: View) {
-                onSelectHandler(handlers[adapterPosition])
-            }
-        }
     }
 
     companion object {

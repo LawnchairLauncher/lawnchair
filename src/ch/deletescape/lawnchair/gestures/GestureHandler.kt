@@ -19,6 +19,8 @@ package ch.deletescape.lawnchair.gestures
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
+import ch.deletescape.lawnchair.getIcon
 import com.android.launcher3.R
 import org.json.JSONObject
 
@@ -28,6 +30,7 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
     open val hasConfig = false
     open val configIntent: Intent? = null
     open val isAvailable: Boolean = true
+    open val icon: Drawable by lazy { context.getIcon() }
 
     abstract fun onGestureTrigger(controller: GestureController)
 
