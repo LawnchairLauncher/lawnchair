@@ -145,7 +145,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
-    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, doNothing)
+    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
