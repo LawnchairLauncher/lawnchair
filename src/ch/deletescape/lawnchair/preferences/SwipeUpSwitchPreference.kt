@@ -27,14 +27,20 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSw
 
     override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {
         if (secureOverrideMode) {
-            return Settings.Secure.getInt(context.contentResolver, securePrefName) == 1
+            try {
+                return Settings.Secure.getInt(context.contentResolver, securePrefName) == 1
+            } catch (ignored: Settings.SettingNotFoundException) {
+            }
         }
         return super.getPersistedBoolean(defaultReturnValue)
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
         if (hasWriteSecurePermission && secureOverrideMode) {
-            return Settings.Secure.putInt(context.contentResolver, securePrefName, if (value) 1 else 0)
+            try {
+                return Settings.Secure.putInt(context.contentResolver, securePrefName, if (value) 1 else 0)
+            } catch (ignored: Exception) {
+            }
         }
         return super.persistBoolean(value)
     }
