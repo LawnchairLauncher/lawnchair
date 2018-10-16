@@ -2285,6 +2285,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
         writer.println(" mPendingActivityResult=" + mPendingActivityResult);
         writer.println(" mRotationHelper: " + mRotationHelper);
+        // Extra logging for b/116853349
+        mDragLayer.dumpAlpha(writer);
         dumpMisc(writer);
 
         try {
