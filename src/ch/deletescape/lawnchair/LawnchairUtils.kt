@@ -345,7 +345,9 @@ fun reloadIcons(context: Context) {
         userManagerCompat.userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
         }
-        (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
+        runOnMainThread {
+            (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
+        }
     }
 }
 
