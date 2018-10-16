@@ -49,6 +49,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
+import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import java.lang.reflect.Field
 import java.util.concurrent.Callable
@@ -331,7 +332,9 @@ fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.
 fun reloadIcons(context: Context) {
     LooperExecutor(LauncherModel.getIconPackLooper()).execute {
         val userManagerCompat = UserManagerCompat.getInstance(context)
-        val model = LauncherAppState.getInstance(context).model
+        val las = LauncherAppState.getInstance(context)
+        val model = las.model
+        val launcher = las.launcher
 
         for (user in userManagerCompat.userProfiles) {
             model.onPackagesReload(user)
@@ -342,6 +345,7 @@ fun reloadIcons(context: Context) {
         userManagerCompat.userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
         }
+        (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
     }
 }
 

@@ -267,7 +267,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             return mPredictor.getPredictions();
         }
 
-        void onPredictionsUpdated() {
+        public /* private */ void onPredictionsUpdated() {
             for (Listener listener : mListeners) {
                 listener.onPredictionsUpdated();
             }
