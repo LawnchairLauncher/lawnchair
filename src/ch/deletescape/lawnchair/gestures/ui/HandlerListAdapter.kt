@@ -18,11 +18,13 @@
 package ch.deletescape.lawnchair.gestures.ui
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
@@ -44,7 +46,12 @@ class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, priva
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply { setOnClickListener(this@Holder) }
+        val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
+            setOnClickListener(this@Holder)
+            val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+            compoundDrawableTintList = tintList
+            backgroundTintList = tintList
+        }
 
         override fun onClick(v: View) {
             onSelectHandler(handlers[adapterPosition])

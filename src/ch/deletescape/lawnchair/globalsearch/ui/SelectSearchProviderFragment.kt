@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.globalsearch.ui
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
 import com.android.launcher3.R
@@ -62,7 +64,12 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
 
         inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-            val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply { setOnClickListener(this@Holder) }
+            val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
+                setOnClickListener(this@Holder)
+                val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+                compoundDrawableTintList = tintList
+                backgroundTintList = tintList
+            }
 
             override fun onClick(v: View) {
                 selectedProvider = Providers[adapterPosition]
