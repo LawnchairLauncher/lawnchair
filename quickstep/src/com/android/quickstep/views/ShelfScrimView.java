@@ -139,12 +139,12 @@ public class ShelfScrimView extends ScrimView {
             }
 
             mRemainingScreenColor = 0;
-        } else if (mProgress <= 0) {
+        } /* else if (mProgress <= 0) {
             mScrimMoveFactor = 0;
             mShelfColor = mCurrentFlatColor;
             mRemainingScreenColor = 0;
 
-        } else {
+        } */ else {
             mScrimMoveFactor = mProgress / mMoveThreshold;
             mRemainingScreenColor = setAlphaComponent(mScrimColor,
                     Math.round((1 - mScrimMoveFactor) * mMaxScrimAlpha * 255));
