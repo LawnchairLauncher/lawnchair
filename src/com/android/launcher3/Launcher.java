@@ -612,16 +612,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 final CellLayout dropLayout =
                         mWorkspace.getScreenWithId(requestArgs.screenId);
 
-                dropLayout.setDropPending(true);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
-                        dropLayout.setDropPending(false);
-                    }
-                };
-                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                if (dropLayout != null) {
+                    dropLayout.setDropPending(true);
+                    final Runnable onComplete = new Runnable() {
+                        @Override
+                        public void run() {
+                            completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
+                            dropLayout.setDropPending(false);
+                        }
+                    };
+                    mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                }
             }
             return;
         }
