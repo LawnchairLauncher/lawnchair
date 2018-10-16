@@ -682,18 +682,20 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void doLogGesture(boolean toLauncher) {
         final int direction;
-        if (mDp.isVerticalBarLayout()) {
-            direction = (mDp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
-        } else {
-            direction = toLauncher ? Direction.UP : Direction.DOWN;
-        }
+        if (mDp != null) {
+            if (mDp.isVerticalBarLayout()) {
+                direction = (mDp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
+            } else {
+                direction = toLauncher ? Direction.UP : Direction.DOWN;
+            }
 
-        int dstContainerType = toLauncher ? ContainerType.TASKSWITCHER : ContainerType.APP;
-        UserEventDispatcher.newInstance(mContext, mDp).logStateChangeAction(
-                mLogAction, direction,
-                ContainerType.NAVBAR, ContainerType.APP,
-                dstContainerType,
-                0);
+            int dstContainerType = toLauncher ? ContainerType.TASKSWITCHER : ContainerType.APP;
+            UserEventDispatcher.newInstance(mContext, mDp).logStateChangeAction(
+                    mLogAction, direction,
+                    ContainerType.NAVBAR, ContainerType.APP,
+                    dstContainerType,
+                    0);
+        }
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
