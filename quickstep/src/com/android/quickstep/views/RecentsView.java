@@ -43,7 +43,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
-import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -78,13 +77,11 @@ import com.android.launcher3.util.Themes;
 import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.TaskViewDrawable;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
-import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.model.TaskStack;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -100,7 +97,8 @@ import androidx.annotation.Nullable;
  * A list of recent tasks.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable {
+public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
+        TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -206,17 +204,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     handler.post(() ->
                             dismissTask(taskView, true /* animate */, false /* removeTask */));
                 } else {
-                    RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(getContext());
-                    RecentsTaskLoadPlan.PreloadOptions opts =
-                            new RecentsTaskLoadPlan.PreloadOptions();
-                    opts.loadTitles = false;
-                    loadPlan.preloadPlan(opts, mModel.getRecentsTaskLoader(), -1,
-                            UserHandle.myUserId());
-                    if (loadPlan.getTaskStack().findTaskWithId(taskId) == null) {
-                        // The task was removed from the recents list
-                        handler.post(() ->
-                                dismissTask(taskView, true /* animate */, false /* removeTask */));
-                    }
+                    mModel.findTaskWithId(taskKey.id, (key) -> {
+                        if (key == null) {
+                            // The task was removed from the recents list
+                            handler.post(() -> dismissTask(taskView, true /* animate */,
+                                    false /* removeTask */));
+                        }
+                    });
                 }
             });
         }
@@ -229,9 +223,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    // Used to keep track of the last requested load plan id, so that we do not request to load the
+    // Used to keep track of the last requested task list id, so that we do not request to load the
     // tasks again if we have already requested it and the task list has not changed
-    private int mRequestedLoadPlanId = -1;
+    private int mTaskListChangeId = -1;
 
     // Only valid until the launcher state changes to NORMAL
     private int mRunningTaskId = -1;
@@ -285,7 +279,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity = (T) BaseActivity.fromContext(context);
         mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.INSTANCE.get(context);
-
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
         mClearAllButton.setOnClickListener(this::dismissAllTasks);
@@ -316,7 +309,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
         TaskView taskView = getTaskView(taskId);
         if (taskView != null) {
-            taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
+            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
         }
         return taskView;
     }
@@ -331,6 +324,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateTaskStackListenerState();
+        mModel.getThumbnailCache().getHighResLoadingState().addCallback(this);
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
     }
@@ -339,6 +333,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
+        mModel.getThumbnailCache().getHighResLoadingState().removeCallback(this);
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
     }
@@ -349,12 +344,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         // Clear the task data for the removed child if it was visible
         if (child != mClearAllButton) {
-            Task task = ((TaskView) child).getTask();
+            TaskView taskView = (TaskView) child;
+            Task task = taskView.getTask();
             if (mHasVisibleTaskData.get(task.key.id)) {
                 mHasVisibleTaskData.delete(task.key.id);
-                RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
-                loader.unloadTaskData(task);
-                loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                taskView.onTaskListVisibilityChanged(false /* visible */);
             }
         }
     }
@@ -444,14 +438,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
+    private void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(loadPlan));
+            mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(tasks));
             return;
         }
 
-        TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
-        if (stack == null) {
+        if (tasks == null || tasks.isEmpty()) {
             removeAllViews();
             onTaskStackUpdated();
             return;
@@ -462,7 +455,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // Ensure there are as many views as there are tasks in the stack (adding and trimming as
         // necessary)
         final LayoutInflater inflater = LayoutInflater.from(getContext());
-        final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
 
         // Unload existing visible task data
         unloadVisibleTaskData();
@@ -581,9 +573,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             loadVisibleTaskData();
         }
 
-        // Update the high res thumbnail loader
-        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
-        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
+        // Update the high res thumbnail loader state
+        mModel.getThumbnailCache().getHighResLoadingState().setFlingingFast(isFlingingFast);
         return scrolling;
     }
 
@@ -618,13 +609,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * and unloads the associated task data for tasks that are no longer visible.
      */
     public void loadVisibleTaskData() {
-        if (!mOverviewStateEnabled || mRequestedLoadPlanId == -1) {
+        if (!mOverviewStateEnabled || mTaskListChangeId == -1) {
             // Skip loading visible task data if we've already left the overview state, or if the
             // task list hasn't been loaded yet (the task views will not reflect the task list)
             return;
         }
 
-        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         int centerPageIndex = getPageNearestToCenterOfScreen();
         int numChildren = getTaskViewCount();
         int lower = Math.max(0, centerPageIndex - 2);
@@ -641,14 +631,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     continue;
                 }
                 if (!mHasVisibleTaskData.get(task.key.id)) {
-                    loader.loadTaskData(task);
-                    loader.getHighResThumbnailLoader().onTaskVisible(task);
+                    taskView.onTaskListVisibilityChanged(true /* visible */);
                 }
                 mHasVisibleTaskData.put(task.key.id, visible);
             } else {
                 if (mHasVisibleTaskData.get(task.key.id)) {
-                    loader.unloadTaskData(task);
-                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                    taskView.onTaskListVisibilityChanged(false /* visible */);
                 }
                 mHasVisibleTaskData.delete(task.key.id);
             }
@@ -659,18 +647,31 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Unloads any associated data from the currently visible tasks
      */
     private void unloadVisibleTaskData() {
-        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
             if (mHasVisibleTaskData.valueAt(i)) {
                 TaskView taskView = getTaskView(mHasVisibleTaskData.keyAt(i));
                 if (taskView != null) {
-                    Task task = taskView.getTask();
-                    loader.unloadTaskData(task);
-                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                    taskView.onTaskListVisibilityChanged(false /* visible */);
                 }
             }
         }
         mHasVisibleTaskData.clear();
+    }
+
+    @Override
+    public void onHighResLoadingStateChanged(boolean enabled) {
+        // Whenever the high res loading state changes, poke each of the visible tasks to see if
+        // they want to updated their thumbnail state
+        for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
+            if (mHasVisibleTaskData.valueAt(i)) {
+                TaskView taskView = getTaskView(mHasVisibleTaskData.keyAt(i));
+                if (taskView != null) {
+                    // Poke the view again, which will trigger it to load high res if the state
+                    // is enabled
+                    taskView.onTaskListVisibilityChanged(true /* visible */);
+                }
+            }
+        }
     }
 
     protected abstract void startHome();
@@ -679,7 +680,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mRunningTaskId = -1;
         mRunningTaskTileHidden = false;
         mIgnoreResetTaskId = -1;
-        mRequestedLoadPlanId = -1;
+        mTaskListChangeId = -1;
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -691,8 +692,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Reloads the view if anything in recents changed.
      */
     public void reloadIfNeeded() {
-        if (!mModel.isLoadPlanValid(mRequestedLoadPlanId)) {
-            mRequestedLoadPlanId = mModel.loadTasks(mRunningTaskId, this::applyLoadPlan);
+        if (!mModel.isTaskListValid(mTaskListChangeId)) {
+            mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
         }
     }
 
@@ -753,8 +754,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         setCurrentPage(0);
 
-        // Load the tasks
-        reloadIfNeeded();
+        // Load the tasks (if the loading is already
+        mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
     }
 
     public void showNextTask() {
