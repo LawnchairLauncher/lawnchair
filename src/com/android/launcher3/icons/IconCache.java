@@ -169,27 +169,9 @@ public class IconCache extends BaseIconCache {
         applyCacheEntry(entry, infoInOut);
     }
 
-    public static abstract class IconLoadRequest implements Runnable {
-        private final Handler mHandler;
-        private final Runnable mEndRunnable;
-
-        private boolean mEnded = false;
-
+    public static abstract class IconLoadRequest extends HandlerRunnable {
         IconLoadRequest(Handler handler, Runnable endRunnable) {
-            mHandler = handler;
-            mEndRunnable = endRunnable;
-        }
-
-        public void cancel() {
-            mHandler.removeCallbacks(this);
-            onEnd();
-        }
-
-        public void onEnd() {
-            if (!mEnded) {
-                mEnded = true;
-                mEndRunnable.run();
-            }
+            super(handler, endRunnable);
         }
     }
 

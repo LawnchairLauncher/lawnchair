@@ -230,7 +230,7 @@ public class OverviewCommandHelper {
             mRunningTaskId = mAM.getRunningTask().id;
 
             // Preload the plan
-            mRecentsModel.loadTasks(mRunningTaskId, null);
+            mRecentsModel.getTasks(null);
         }
 
         @Override
