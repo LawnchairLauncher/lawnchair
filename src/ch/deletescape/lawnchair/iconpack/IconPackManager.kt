@@ -104,8 +104,14 @@ class IconPackManager(private val context: Context) {
                     packList.iterator(), iconProvider)
         } else {
             val iterator = packList.iterator()
-            iterator.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
-                    iterator, iconProvider)
+            if (iterator.hasNext()) {
+                iterator.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
+                        iterator, iconProvider)
+            } else {
+                // This should technically never be the case, but apparently it is
+                defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
+                        iterator, iconProvider)
+            }
         }
     }
 
