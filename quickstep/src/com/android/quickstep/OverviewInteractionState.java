@@ -15,23 +15,21 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.SwipeUpSetting.newSwipeUpSettingsObserver;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -60,7 +58,7 @@ public class OverviewInteractionState {
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
     private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
 
-    private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
+    private final SecureSettingsObserver mSwipeUpSettingObserver;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -85,9 +83,11 @@ public class OverviewInteractionState {
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
         if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
-            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
-                    context.getContentResolver());
+            mSwipeUpSettingObserver =
+                    newSwipeUpSettingsObserver(context, this::notifySwipeUpSettingChanged);
             mSwipeUpSettingObserver.register();
+            mSwipeUpEnabled = mSwipeUpSettingObserver.getValue();
+            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
         } else {
             mSwipeUpSettingObserver = null;
             mSwipeUpEnabled = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
@@ -190,34 +190,6 @@ public class OverviewInteractionState {
         mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
         mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
                 sendToTarget();
-    }
-
-    private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
-        private ContentResolver mResolver;
-        private final int defaultValue;
-
-        SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
-            super(handler);
-            mResolver = resolver;
-            defaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue() ? 1 : 0;
-        }
-
-        public void register() {
-            mResolver.registerContentObserver(Settings.Secure.getUriFor(SWIPE_UP_SETTING_NAME),
-                    false, this);
-            mSwipeUpEnabled = getValue();
-            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            notifySwipeUpSettingChanged(getValue());
-        }
-
-        private boolean getValue() {
-            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
-        }
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
