@@ -208,8 +208,8 @@ public class TaskMenuView extends AbstractFloatingView {
     private void addMenuOption(TaskSystemShortcut menuOption, OnClickListener onClickListener) {
         ViewGroup menuOptionView = (ViewGroup) mActivity.getLayoutInflater().inflate(
                 R.layout.task_view_menu_option, this, false);
-        menuOptionView.findViewById(R.id.icon).setBackgroundResource(menuOption.iconResId);
-        ((TextView) menuOptionView.findViewById(R.id.text)).setText(menuOption.labelResId);
+        menuOption.setIconAndLabelFor(
+                menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
         menuOptionView.setOnClickListener(onClickListener);
         mOptionLayout.addView(menuOptionView);
     }

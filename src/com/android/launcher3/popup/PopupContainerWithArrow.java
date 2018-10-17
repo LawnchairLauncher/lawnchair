@@ -391,13 +391,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         if (view instanceof DeepShortcutView) {
             // Expanded system shortcut, with both icon and text shown on white background.
             final DeepShortcutView shortcutView = (DeepShortcutView) view;
-            shortcutView.getIconView().setBackgroundResource(info.iconResId);
-            shortcutView.getBubbleText().setText(info.labelResId);
+            info.setIconAndLabelFor(shortcutView.getIconView(), shortcutView.getBubbleText());
         } else if (view instanceof ImageView) {
             // Only the system shortcut icon shows on a gray background header.
-            final ImageView shortcutIcon = (ImageView) view;
-            shortcutIcon.setImageResource(info.iconResId);
-            shortcutIcon.setContentDescription(getContext().getText(info.labelResId));
+            info.setIconAndContentDescriptionFor((ImageView) view);
         }
         view.setTag(info);
         view.setOnClickListener(info.getOnClickListener(mLauncher,
