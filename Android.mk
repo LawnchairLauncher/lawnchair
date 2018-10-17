@@ -53,7 +53,6 @@ LOCAL_SRC_FILES := \
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 28
 LOCAL_MODULE := LauncherPluginLib
-LOCAL_PRIVILEGED_MODULE := true
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -69,7 +68,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.recyclerview_recyclerview \
     androidx.dynamicanimation_dynamicanimation
 
-LOCAL_STATIC_JAVA_LIBRARIES := libPluginCore
+LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \

@@ -31,6 +31,10 @@ public class PluginManagerWrapper {
     public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass) {
     }
 
+    public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass,
+            boolean allowMultiple) {
+    }
+
     public void removePluginListener(PluginListener<? extends Plugin> listener) {
     }
 }
