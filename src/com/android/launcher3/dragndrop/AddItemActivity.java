@@ -40,6 +40,8 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 
+import android.widget.Button;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -104,6 +106,11 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
         setContentView(R.layout.add_item_confirmation_activity);
+        Button cancel = findViewById(R.id.cancel_action);
+        Button add = findViewById(R.id.add_action);
+        int color = ColorEngine.Companion.getInstance(this).getAccent();
+        cancel.setTextColor(color);
+        add.setTextColor(color);
         mWidgetCell = findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {

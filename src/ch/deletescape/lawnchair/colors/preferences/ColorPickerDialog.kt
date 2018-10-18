@@ -17,13 +17,14 @@
 package ch.deletescape.lawnchair.colors.preferences
 
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.support.annotation.ColorInt
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.view.WindowManager
+import ch.deletescape.lawnchair.applyAccent
 import com.android.launcher3.R
 import me.priyesh.chroma.*
 
@@ -73,6 +74,11 @@ class ColorPickerDialog : DialogFragment() {
                 window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

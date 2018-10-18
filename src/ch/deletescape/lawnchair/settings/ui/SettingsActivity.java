@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair.settings.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -38,14 +37,22 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.EditTextPreferenceDialogFragmentCompat;
 import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.ListPreferenceDialogFragmentCompat;
+import android.support.v7.preference.MultiSelectListPreferenceDialogFragmentCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.TwoStatePreference;
+import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +62,10 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.colors.overrides.ThemedEditTextPreferenceDialogFragmentCompat;
+import ch.deletescape.lawnchair.colors.overrides.ThemedListPreferenceDialogFragment;
+import ch.deletescape.lawnchair.colors.overrides.ThemedMultiSelectListPreferenceDialogFragmentCompat;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 
@@ -453,6 +464,15 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                 f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion.newInstance((SearchProviderPreference) preference);
+            } else if (preference instanceof ListPreference) {
+                Log.d("success", "onDisplayPreferenceDialog: yay");
+                f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof EditTextPreference) {
+                f = ThemedEditTextPreferenceDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
+            } else if (preference instanceof AbstractMultiSelectListPreference) {
+                f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
@@ -561,6 +581,13 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
         }
+
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            LawnchairUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
     }
 
     /**
@@ -638,6 +665,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         }
 
         @Override
+        public void onStart() {
+            super.onStart();
+            LawnchairUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
+
+        @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
@@ -655,6 +688,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     .setMessage(R.string.bridge_missing_message)
                     .setNegativeButton(android.R.string.cancel, null)
                     .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            LawnchairUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
     }
 }

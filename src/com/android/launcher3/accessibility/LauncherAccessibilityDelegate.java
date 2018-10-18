@@ -2,12 +2,12 @@ package com.android.launcher3.accessibility;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
-import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -16,6 +16,7 @@ import android.view.View.AccessibilityDelegate;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.BubbleTextView;
@@ -216,7 +217,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 labels[i] = mLauncher.getText(actions.get(i));
             }
 
-            new AlertDialog.Builder(mLauncher)
+            AlertDialog dialog = new AlertDialog.Builder(mLauncher)
                 .setTitle(R.string.action_resize)
                 .setItems(labels, new DialogInterface.OnClickListener() {
 
@@ -225,8 +226,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                         performResizeAction(actions.get(which), host, info);
                         dialog.dismiss();
                     }
-                })
-                .show();
+                }).create();
+            dialog.show();
+            LawnchairUtilsKt.applyAccent(dialog);
             return true;
         } else if (action == DEEP_SHORTCUTS) {
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;

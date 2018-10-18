@@ -26,6 +26,7 @@ import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
@@ -76,6 +77,11 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
         super.onPrepareDialogBuilder(builder)
 
         builder.setPositiveButton(null, null)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {

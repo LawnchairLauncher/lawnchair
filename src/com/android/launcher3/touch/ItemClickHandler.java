@@ -23,14 +23,15 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Process;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.FolderInfo;
@@ -140,7 +141,7 @@ public class ItemClickHandler {
             startMarketIntentForPackage(v, launcher, packageName);
             return;
         }
-        new AlertDialog.Builder(launcher)
+        AlertDialog dialog = new AlertDialog.Builder(launcher)
                 .setTitle(R.string.abandoned_promises_title)
                 .setMessage(R.string.abandoned_promise_explanation)
                 .setPositiveButton(R.string.abandoned_search,
@@ -148,7 +149,9 @@ public class ItemClickHandler {
                 .setNeutralButton(R.string.abandoned_clean_this,
                         (d, i) -> launcher.getWorkspace()
                                 .removeAbandonedPromise(packageName, Process.myUserHandle()))
-                .create().show();
+                .create();
+        dialog.show();
+        LawnchairUtilsKt.applyAccent(dialog);
     }
 
     private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {

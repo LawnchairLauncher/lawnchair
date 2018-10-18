@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -33,14 +34,19 @@ import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
+import android.util.Log
 import android.util.Property
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckedTextView
+import android.widget.ListView
 import android.widget.TextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -406,4 +412,11 @@ fun dpToPx(size: Float): Float {
 
 fun Drawable.toBitmap(): Bitmap {
     return Utilities.drawableToBitmap(this)
+}
+
+fun AlertDialog.applyAccent() {
+    val color = ColorEngine.getInstance(context!!).accent
+    getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
+    getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
+    getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
 }

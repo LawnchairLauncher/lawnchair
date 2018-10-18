@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
@@ -41,6 +42,11 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
         super.onPrepareDialogBuilder(builder)
 
         builder.setPositiveButton(null, null)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {

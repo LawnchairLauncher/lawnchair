@@ -74,12 +74,14 @@
         android:paddingStart="12dp"
         android:paddingTop="4dp" >
         <Button
+            android:id="@+id/cancel_action"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCancelClick"
             android:text="@android:string/cancel" />
         <Button
+            android:id="@+id/add_action"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

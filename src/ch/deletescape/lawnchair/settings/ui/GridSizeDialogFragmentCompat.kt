@@ -26,6 +26,7 @@ import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.util.Log
 import android.view.View
 import android.widget.NumberPicker
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
@@ -96,6 +97,11 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         } catch (e: Exception) {
             Log.e("GridSizeDialog","Failed to set mSelectionDivider", e)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onDetach() {

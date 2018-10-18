@@ -24,6 +24,7 @@ import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
@@ -99,6 +100,11 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
             progressTintList = tintList
             thumbTintList = tintList
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onDetach() {

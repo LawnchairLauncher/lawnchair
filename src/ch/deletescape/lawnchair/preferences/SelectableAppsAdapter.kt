@@ -18,7 +18,9 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.AppFilter
 import com.android.launcher3.util.ComponentKey
 import kotlin.reflect.KMutableProperty0
@@ -27,6 +29,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
     : AppsAdapter(context, null, filter) {
 
     private val selections = HashSet<ComponentKey>()
+    private val accentTintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
 
     init {
         callback?.onSelectionsChanged(0)
@@ -40,8 +43,11 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
 
     override fun onBindApp(app: AppsAdapter.App, holder: AppHolder) {
         super.onBindApp(app, holder)
-        holder.checkBox.visibility = View.VISIBLE
-        holder.checkBox.isChecked = isSelected(app.key)
+        holder.checkBox.apply {
+            visibility = View.VISIBLE
+            isChecked = isSelected(app.key)
+            buttonTintList = accentTintList
+        }
     }
 
     override fun onClickApp(position: Int, holder: AppHolder) {

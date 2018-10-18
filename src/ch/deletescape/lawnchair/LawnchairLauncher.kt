@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -33,6 +32,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
@@ -181,7 +181,10 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
                         .setMessage(R.string.content_storage_permission_required)
                         .setPositiveButton(android.R.string.ok) { _, _ -> Utilities.requestStoragePermission(this@LawnchairLauncher) }
                         .setCancelable(false)
-                        .show()
+                        .create().apply {
+                            show()
+                            applyAccent()
+                        }
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

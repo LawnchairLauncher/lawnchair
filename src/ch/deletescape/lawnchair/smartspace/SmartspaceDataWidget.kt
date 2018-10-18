@@ -34,10 +34,7 @@ import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
-import ch.deletescape.lawnchair.BlankActivity
-import ch.deletescape.lawnchair.getAllChilds
-import ch.deletescape.lawnchair.lawnchairApp
-import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.*
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -187,8 +184,11 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                         AlertDialog.Builder(foreground)
                                 .setTitle(R.string.smartspace_provider_error)
                                 .setMessage(R.string.smartspace_widget_provider_not_found)
-                                .setNegativeButton(android.R.string.cancel, null)
-                                .show()
+                                .setNegativeButton(android.R.string.cancel, null).create().apply {
+                                    show()
+                                    applyAccent()
+                                }
+
                     }
                 }
                 throw RuntimeException("smartspace widget not found")
