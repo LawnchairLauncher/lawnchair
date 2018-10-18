@@ -28,13 +28,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 
 import java.nio.ByteBuffer;
 
@@ -84,9 +79,9 @@ public class IconNormalizer {
     private final Matrix mMatrix;
 
     /** package private **/
-    IconNormalizer(Context context) {
+    IconNormalizer(Context context, int iconBitmapSize) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
-        mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
+        mMaxSize = iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
         mCanvas = new Canvas(mBitmap);
         mPixels = new byte[mMaxSize * mMaxSize];
@@ -193,16 +188,12 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
             @Nullable Path path, @Nullable boolean[] outMaskShape) {
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
+        if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
             if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
                 if (outBounds != null) {
                     outBounds.set(mAdaptiveIconBounds);
                 }
                 return mAdaptiveIconScale;
-            }
-            if (d instanceof FolderAdaptiveIcon) {
-                // Since we just want the scale, avoid heavy drawing operations
-                d = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
             }
         }
         int width = d.getIntrinsicWidth();
@@ -314,7 +305,7 @@ public class IconNormalizer {
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
+        if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
             mAdaptiveIconBounds.set(mBounds);
