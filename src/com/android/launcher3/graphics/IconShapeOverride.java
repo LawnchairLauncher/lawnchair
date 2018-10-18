@@ -28,8 +28,10 @@ import android.util.Log;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 
+import com.android.launcher3.util.LooperExecutor;
 import java.lang.reflect.Field;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
@@ -154,21 +156,13 @@ public class IconShapeOverride {
 //                        mContext.getString(R.string.icon_shape_override_progress),
 //                        true /* indeterminate */,
 //                        false /* cancelable */);
-                // Synchronously write the preference.
-                getDevicePrefs(mContext).edit().putString(KEY_PREFERENCE, newValue).commit();
 
                 if (preference instanceof ListPreference) {
                     ((ListPreference) preference).setValue(newValue);
                 }
 
-                // Clear the icon cache.
-                LauncherAppState.getInstance(mContext).getIconCache().clear();
-
-                // Schedule restart
-                ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
-                        .scheduleRestart();
-//                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-//                        new OverrideApplyHandler(mContext, newValue));
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
+                        new OverrideApplyHandler(mContext, newValue));
             }
             return false;
         }
@@ -192,14 +186,17 @@ public class IconShapeOverride {
             // Clear the icon cache.
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 
-            // Wait for it
-            try {
-                Thread.sleep(PROCESS_KILL_DELAY_MS);
-            } catch (Exception e) {
-                Log.e(TAG, "Error waiting", e);
-            }
+            // Schedule restart
+            ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
+                    .scheduleRestart();
 
-            restartLauncher(mContext);
+            // Wait for it
+//            try {
+//                Thread.sleep(PROCESS_KILL_DELAY_MS);
+//            } catch (Exception e) {
+//                Log.e(TAG, "Error waiting", e);
+//            }
+//            restartLauncher(mContext);
         }
     }
 }
