@@ -74,6 +74,7 @@
     <uses-permission android:name="android.permission.INSTALL_SHORTCUT"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_WALLPAPER_INTERNAL"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER"/>
 
     <!-- EMUI specific permissions -->
     <uses-permission android:name="com.android.permission.RECEIVE_LAUNCH_BROADCASTS"/>
