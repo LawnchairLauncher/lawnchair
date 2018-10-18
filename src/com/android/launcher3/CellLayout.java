@@ -2063,7 +2063,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement() {
         mTmpOccupied.copyTo(mOccupied);
 
-        long screenId = mLauncher.getWorkspace().getIdForScreen(this);
+        int screenId = mLauncher.getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
@@ -2688,8 +2688,8 @@ public class CellLayout extends ViewGroup {
     //    the CellLayout that was long clicked
     public static final class CellInfo extends CellAndSpan {
         public final View cell;
-        final long screenId;
-        final long container;
+        final int screenId;
+        final int container;
 
         public CellInfo(View v, ItemInfo info) {
             cellX = info.cellX;

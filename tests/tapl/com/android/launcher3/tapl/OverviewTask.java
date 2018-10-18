@@ -26,9 +26,9 @@ import androidx.test.uiautomator.Until;
 public final class OverviewTask {
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
-    private final Overview mOverview;
+    private final BaseOverview mOverview;
 
-    OverviewTask(LauncherInstrumentation launcher, UiObject2 task, Overview overview) {
+    OverviewTask(LauncherInstrumentation launcher, UiObject2 task, BaseOverview overview) {
         mLauncher = launcher;
         mTask = task;
         mOverview = overview;

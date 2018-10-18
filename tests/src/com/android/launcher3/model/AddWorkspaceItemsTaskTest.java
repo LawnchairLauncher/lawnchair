@@ -23,7 +23,8 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.GridOccupancy;
-import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSparseArrayMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,15 +44,15 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     private final ComponentName mComponent1 = new ComponentName("a", "b");
     private final ComponentName mComponent2 = new ComponentName("b", "b");
 
-    private ArrayList<Long> existingScreens;
-    private ArrayList<Long> newScreens;
-    private LongArrayMap<GridOccupancy> screenOccupancy;
+    private IntArray existingScreens;
+    private IntArray newScreens;
+    private IntSparseArrayMap<GridOccupancy> screenOccupancy;
 
     @Before
     public void initData() throws Exception {
-        existingScreens = new ArrayList<>();
-        screenOccupancy = new LongArrayMap<>();
-        newScreens = new ArrayList<>();
+        existingScreens = new IntArray();
+        screenOccupancy = new IntSparseArrayMap<>();
+        newScreens = new IntArray();
 
         idp.numColumns = 5;
         idp.numRows = 5;
@@ -65,7 +66,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         return new AddWorkspaceItemsTask(list) {
 
             @Override
-            protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) { }
+            protected void updateScreens(Context context, IntArray workspaceScreens) { }
         };
     }
 
@@ -77,18 +78,18 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         // Second screen has 2 holes of sizes 3x2 and 2x3
         setupWorkspaceWithHoles(nextId, 2, new Rect(2, 0, 5, 2), new Rect(0, 2, 2, 5));
 
-        Pair<Long, int[]> spaceFound = newTask()
+        int[] spaceFound = newTask()
                 .findSpaceForItem(appState, bgDataModel, existingScreens, newScreens, 1, 1);
-        assertEquals(2L, (long) spaceFound.first);
-        assertTrue(screenOccupancy.get(spaceFound.first)
-                .isRegionVacant(spaceFound.second[0], spaceFound.second[1], 1, 1));
+        assertEquals(2, spaceFound[0]);
+        assertTrue(screenOccupancy.get(spaceFound[0])
+                .isRegionVacant(spaceFound[1], spaceFound[2], 1, 1));
 
         // Find a larger space
         spaceFound = newTask()
                 .findSpaceForItem(appState, bgDataModel, existingScreens, newScreens, 2, 3);
-        assertEquals(2L, (long) spaceFound.first);
-        assertTrue(screenOccupancy.get(spaceFound.first)
-                .isRegionVacant(spaceFound.second[0], spaceFound.second[1], 2, 3));
+        assertEquals(2, spaceFound[0]);
+        assertTrue(screenOccupancy.get(spaceFound[0])
+                .isRegionVacant(spaceFound[1], spaceFound[2], 2, 3));
     }
 
     @Test
@@ -97,11 +98,11 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         setupWorkspaceWithHoles(1, 1, new Rect(2, 0, 5, 2), new Rect(0, 2, 2, 5));
         commitScreensToDb();
 
-        ArrayList<Long> oldScreens = new ArrayList<>(existingScreens);
-        Pair<Long, int[]> spaceFound = newTask()
+        IntArray oldScreens = existingScreens.clone();
+        int[] spaceFound = newTask()
                 .findSpaceForItem(appState, bgDataModel, existingScreens, newScreens, 3, 3);
-        assertFalse(oldScreens.contains(spaceFound.first));
-        assertTrue(newScreens.contains(spaceFound.first));
+        assertFalse(oldScreens.contains(spaceFound[0]));
+        assertTrue(newScreens.contains(spaceFound[0]));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
         // only info2 should be added because info was already added to the workspace
         // in setupWorkspaceWithHoles()
-        verify(callbacks).bindAppsAdded(any(ArrayList.class), notAnimated.capture(),
+        verify(callbacks).bindAppsAdded(any(IntArray.class), notAnimated.capture(),
                 animated.capture());
         assertTrue(notAnimated.getValue().isEmpty());
 
@@ -143,7 +144,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         assertTrue(animated.getValue().contains(info2));
     }
 
-    private int setupWorkspaceWithHoles(int startId, long screenId, Rect... holes) {
+    private int setupWorkspaceWithHoles(int startId, int screenId, Rect... holes) {
         GridOccupancy occupancy = new GridOccupancy(idp.numColumns, idp.numRows);
         occupancy.markCells(0, 0, idp.numColumns, idp.numRows, true);
         for (Rect r : holes) {
@@ -183,7 +184,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         int count = existingScreens.size();
         for (int i = 0; i < count; i++) {
             ContentValues v = new ContentValues();
-            long screenId = existingScreens.get(i);
+            int screenId = existingScreens.get(i);
             v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());

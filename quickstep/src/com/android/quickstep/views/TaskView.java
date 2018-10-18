@@ -387,8 +387,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
             if (onClickListener != null) {
-                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(menuOption.labelResId,
-                        context.getText(menuOption.labelResId)));
+                info.addAction(menuOption.createAccessibilityAction(context));
             }
         }
 
@@ -409,7 +408,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
 
         for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
-            if (action == menuOption.labelResId) {
+            if (menuOption.hasHandlerForAction(action)) {
                 OnClickListener onClickListener = menuOption.getOnClickListener(
                         fromContext(getContext()), this);
                 if (onClickListener != null) {

@@ -15,10 +15,14 @@
  */
 package com.android.launcher3.util.rule;
 
+import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
+
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.InstrumentationRegistry.getTargetContext;
+
 import android.app.Activity;
 import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.test.InstrumentationRegistry;
 
@@ -65,19 +69,12 @@ public class LauncherActivityRule implements TestRule {
      * Starts the launcher activity in the target package.
      */
     public void startLauncher() {
-        InstrumentationRegistry.getInstrumentation().startActivitySync(getHomeIntent());
+        getInstrumentation().startActivitySync(getHomeIntentInPackage(getTargetContext()));
     }
 
     public void returnToHome() {
-        InstrumentationRegistry.getTargetContext().startActivity(getHomeIntent());
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-    }
-
-    public static Intent getHomeIntent() {
-        return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getTargetContext().startActivity(getHomeIntentInPackage(getTargetContext()));
+        getInstrumentation().waitForIdleSync();
     }
 
     private class MyStatement extends Statement implements ActivityLifecycleCallbacks {

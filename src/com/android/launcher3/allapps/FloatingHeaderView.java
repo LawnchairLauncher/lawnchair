@@ -25,16 +25,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
-
-import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertySetter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.systemui.plugins.AllAppsRow;
+import com.android.systemui.plugins.PluginListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FloatingHeaderView extends LinearLayout implements
-        ValueAnimator.AnimatorUpdateListener {
+        ValueAnimator.AnimatorUpdateListener, PluginListener<AllAppsRow> {
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
@@ -64,6 +70,9 @@ public class FloatingHeaderView extends LinearLayout implements
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
     private AllAppsRecyclerView mCurrentRV;
+    protected final Map<AllAppsRow, View> mPluginRows;
+    // Contains just the values of the above map so we can iterate without extracting a new list.
+    protected final List<View> mPluginRowViews;
     private ViewGroup mParent;
     private boolean mHeaderCollapsed;
     private int mSnappedScrolledY;
@@ -82,12 +91,46 @@ public class FloatingHeaderView extends LinearLayout implements
 
     public FloatingHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        mPluginRows = new HashMap<>();
+        mPluginRowViews = new ArrayList<>();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTabLayout = findViewById(R.id.tabs);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(this,
+                AllAppsRow.class, true /* allowMultiple */);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
+    }
+
+    @Override
+    public void onPluginConnected(AllAppsRow allAppsRowPlugin, Context context) {
+        mPluginRows.put(allAppsRowPlugin, null);
+        setupPluginRows();
+        allAppsRowPlugin.setOnHeightUpdatedListener(this::onPluginRowHeightUpdated);
+    }
+
+    protected void onPluginRowHeightUpdated() {
+    }
+
+    @Override
+    public void onPluginDisconnected(AllAppsRow plugin) {
+        View pluginRowView = mPluginRows.get(plugin);
+        removeView(pluginRowView);
+        mPluginRows.remove(plugin);
+        mPluginRowViews.remove(pluginRowView);
+        onPluginRowHeightUpdated();
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
@@ -97,7 +140,22 @@ public class FloatingHeaderView extends LinearLayout implements
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(mMainRVActive || mWorkRV == null);
+        setupPluginRows();
         reset(false);
+    }
+
+    private void setupPluginRows() {
+        for (Map.Entry<AllAppsRow, View> rowPluginEntry : mPluginRows.entrySet()) {
+            if (rowPluginEntry.getValue() == null) {
+                View pluginRow = rowPluginEntry.getKey().setup(this);
+                addView(pluginRow, indexOfChild(mTabLayout));
+                rowPluginEntry.setValue(pluginRow);
+                mPluginRowViews.add(pluginRow);
+            }
+        }
+        for (View plugin : mPluginRowViews) {
+            plugin.setVisibility(mHeaderCollapsed ? GONE : VISIBLE);
+        }
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {

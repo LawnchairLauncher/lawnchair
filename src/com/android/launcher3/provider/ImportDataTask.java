@@ -32,8 +32,9 @@ import android.net.Uri;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
-import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
+
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.DefaultLayoutParser;
 import com.android.launcher3.LauncherAppState;
@@ -50,7 +51,9 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
-import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSparseArrayMap;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -85,7 +88,7 @@ public class ImportDataTask {
     }
 
     public boolean importWorkspace() throws Exception {
-        ArrayList<Long> allScreens = LauncherDbUtils.getScreenIdsFromCursor(
+        IntArray allScreens = LauncherDbUtils.getScreenIdsFromCursor(
                 mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
                         LauncherSettings.WorkspaceScreens.SCREEN_RANK));
         FileLog.d(TAG, "Importing DB from " + mOtherFavoritesUri);
@@ -102,12 +105,12 @@ public class ImportDataTask {
         // Build screen update
         ArrayList<ContentProviderOperation> screenOps = new ArrayList<>();
         int count = allScreens.size();
-        LongSparseArray<Long> screenIdMap = new LongSparseArray<>(count);
+        SparseIntArray screenIdMap = new SparseIntArray(count);
         for (int i = 0; i < count; i++) {
             ContentValues v = new ContentValues();
             v.put(LauncherSettings.WorkspaceScreens._ID, i);
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-            screenIdMap.put(allScreens.get(i), (long) i);
+            screenIdMap.put(allScreens.get(i), i);
             screenOps.add(ContentProviderOperation.newInsert(
                     LauncherSettings.WorkspaceScreens.CONTENT_URI).withValues(v).build());
         }
@@ -128,16 +131,16 @@ public class ImportDataTask {
      * 3) In the end fills any holes in hotseat with items from default hotseat layout.
      */
     private void importWorkspaceItems(
-            long firsetScreenId, LongSparseArray<Long> screenIdMap) throws Exception {
+            int firstScreenId, SparseIntArray screenIdMap) throws Exception {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
                 .getSerialNumberForUser(Process.myUserHandle()));
 
         boolean createEmptyRowOnFirstScreen;
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN.get()) {
             try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
                     // get items on the first row of the first screen
                     "profileId = ? AND container = -100 AND screen = ? AND cellY = 0",
-                    new String[]{profileId, Long.toString(firsetScreenId)},
+                    new String[]{profileId, Integer.toString(firstScreenId)},
                     null)) {
                 // First row of first screen is not empty
                 createEmptyRowOnFirstScreen = c.moveToNext();
@@ -190,7 +193,7 @@ public class ImportDataTask {
                 int type = c.getInt(itemTypeIndex);
                 int container = c.getInt(containerIndex);
 
-                long screen = c.getLong(screenIndex);
+                int screen = c.getInt(screenIndex);
 
                 int cellX = c.getInt(cellXIndex);
                 int cellY = c.getInt(cellYIndex);
@@ -199,7 +202,7 @@ public class ImportDataTask {
 
                 switch (container) {
                     case Favorites.CONTAINER_DESKTOP: {
-                        Long newScreenId = screenIdMap.get(screen);
+                        Integer newScreenId = screenIdMap.get(screen);
                         if (newScreenId == null) {
                             FileLog.d(TAG, String.format("Skipping item %d, type %d not on a valid screen %d", id, type, screen));
                             continue;
@@ -306,15 +309,15 @@ public class ImportDataTask {
             insertOperations.clear();
         }
 
-        LongArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
+        IntSparseArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
         int myHotseatCount = LauncherAppState.getIDP(mContext).numHotseatIcons;
         if (hotseatItems.size() < myHotseatCount) {
             // Insufficient hotseat items. Add a few more.
             HotseatParserCallback parserCallback = new HotseatParserCallback(
                     hotseatTargetApps, hotseatItems, insertOperations, maxId + 1, myHotseatCount);
             new HotseatLayoutParser(mContext,
-                    parserCallback).loadLayout(null, new ArrayList<Long>());
-            mHotseatSize = (int) hotseatItems.keyAt(hotseatItems.size() - 1) + 1;
+                    parserCallback).loadLayout(null, new IntArray());
+            mHotseatSize = hotseatItems.keyAt(hotseatItems.size() - 1) + 1;
 
             if (!insertOperations.isEmpty()) {
                 mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
@@ -405,13 +408,13 @@ public class ImportDataTask {
      */
     private static class HotseatParserCallback implements LayoutParserCallback {
         private final HashSet<String> mExistingApps;
-        private final LongArrayMap<Object> mExistingItems;
+        private final IntSparseArrayMap<Object> mExistingItems;
         private final ArrayList<ContentProviderOperation> mOutOps;
         private final int mRequiredSize;
         private int mStartItemId;
 
         HotseatParserCallback(
-                HashSet<String> existingApps, LongArrayMap<Object> existingItems,
+                HashSet<String> existingApps, IntSparseArrayMap<Object> existingItems,
                 ArrayList<ContentProviderOperation> outOps, int startItemId, int requiredSize) {
             mExistingApps = existingApps;
             mExistingItems = existingItems;
@@ -421,12 +424,12 @@ public class ImportDataTask {
         }
 
         @Override
-        public long generateNewItemId() {
+        public int generateNewItemId() {
             return mStartItemId++;
         }
 
         @Override
-        public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+        public int insertAndCheck(SQLiteDatabase db, ContentValues values) {
             if (mExistingItems.size() >= mRequiredSize) {
                 // No need to add more items.
                 return 0;
@@ -445,7 +448,7 @@ public class ImportDataTask {
             mExistingApps.add(pkg);
 
             // find next vacant spot.
-            long screen = 0;
+            int screen = 0;
             while (mExistingItems.get(screen) != null) {
                 screen++;
             }

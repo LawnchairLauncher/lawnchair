@@ -48,11 +48,11 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
-import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSparseArrayMap;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 
 /**
  * Extension of {@link Cursor} with utility methods for workspace loading.
@@ -68,9 +68,9 @@ public class LoaderCursor extends CursorWrapper {
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
 
-    private final ArrayList<Long> itemsToRemove = new ArrayList<>();
-    private final ArrayList<Long> restoredRows = new ArrayList<>();
-    private final LongArrayMap<GridOccupancy> occupied = new LongArrayMap<>();
+    private final IntArray itemsToRemove = new IntArray();
+    private final IntArray restoredRows = new IntArray();
+    private final IntSparseArrayMap<GridOccupancy> occupied = new IntSparseArrayMap<>();
 
     private final int iconPackageIndex;
     private final int iconResourceIndex;
@@ -90,8 +90,8 @@ public class LoaderCursor extends CursorWrapper {
     // Properties loaded per iteration
     public long serialNumber;
     public UserHandle user;
-    public long id;
-    public long container;
+    public int id;
+    public int container;
     public int itemType;
     public int restoreFlag;
 
@@ -126,7 +126,7 @@ public class LoaderCursor extends CursorWrapper {
             // Load common properties.
             itemType = getInt(itemTypeIndex);
             container = getInt(containerIndex);
-            id = getLong(idIndex);
+            id = getInt(idIndex);
             serialNumber = getInt(profileIdIndex);
             user = allUsers.get(serialNumber);
             restoreFlag = getInt(restoredIndex);
@@ -293,7 +293,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public ContentWriter updater() {
        return new ContentWriter(mContext, new ContentWriter.CommitParams(
-               BaseColumns._ID + "= ?", new String[]{Long.toString(id)}));
+               BaseColumns._ID + "= ?", new String[]{Integer.toString(id)}));
     }
 
     /**
@@ -383,11 +383,11 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * check & update map of what's occupied; used to discard overlapping/invalid items
      */
-    protected boolean checkItemPlacement(ItemInfo item, ArrayList<Long> workspaceScreens) {
-        long containerIndex = item.screenId;
+    protected boolean checkItemPlacement(ItemInfo item, IntArray workspaceScreens) {
+        int containerIndex = item.screenId;
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy =
-                    occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                    occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
             if (item.screenId >= mIDP.numHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
@@ -404,17 +404,17 @@ public class LoaderCursor extends CursorWrapper {
                             + item.cellY + ") already occupied");
                     return false;
                 } else {
-                    hotseatOccupancy.cells[(int) item.screenId][0] = true;
+                    hotseatOccupancy.cells[item.screenId][0] = true;
                     return true;
                 }
             } else {
                 final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, 1);
-                occupancy.cells[(int) item.screenId][0] = true;
-                occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
+                occupancy.cells[item.screenId][0] = true;
+                occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }
         } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            if (!workspaceScreens.contains((Long) item.screenId)) {
+            if (!workspaceScreens.contains(item.screenId)) {
                 // The item has an invalid screen id.
                 return false;
             }
@@ -440,7 +440,8 @@ public class LoaderCursor extends CursorWrapper {
             if (item.screenId == Workspace.FIRST_SCREEN_ID) {
                 // Mark the first row as occupied (if the feature is enabled)
                 // in order to account for the QSB.
-                screen.markCells(0, 0, countX + 1, 1, FeatureFlags.QSB_ON_FIRST_SCREEN);
+                screen.markCells(0, 0, countX + 1, 1,
+                    FeatureFlags.QSB_ON_FIRST_SCREEN.get());
             }
             occupied.put(item.screenId, screen);
         }

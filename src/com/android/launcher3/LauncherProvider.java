@@ -58,6 +58,8 @@ import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
@@ -67,9 +69,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -170,7 +170,7 @@ public class LauncherProvider extends ContentProvider {
         return result;
     }
 
-    @Thunk static long dbInsertAndCheck(DatabaseHelper helper,
+    @Thunk static int dbInsertAndCheck(DatabaseHelper helper,
             SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
@@ -179,7 +179,7 @@ public class LauncherProvider extends ContentProvider {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
         helper.checkId(table, values);
-        return db.insert(table, nullColumnHack, values);
+        return (int) db.insert(table, nullColumnHack, values);
     }
 
     private void reloadLauncherIfExternal() {
@@ -205,7 +205,7 @@ public class LauncherProvider extends ContentProvider {
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         addModifiedTime(initialValues);
-        final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
+        final int rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
         if (rowId < 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
@@ -230,7 +230,7 @@ public class LauncherProvider extends ContentProvider {
 
     private boolean initializeExternalAdd(ContentValues values) {
         // 1. Ensure that externally added items have a valid item id
-        long id = mOpenHelper.generateNewItemId();
+        int id = mOpenHelper.generateNewItemId();
         values.put(LauncherSettings.Favorites._ID, id);
 
         // 2. In the case of an app widget, and if no app widget id is specified, we
@@ -263,7 +263,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         // Add screen id if not present
-        long screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+        int screenId = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
         SQLiteStatement stmp = null;
         try {
             stmp = mOpenHelper.getWritableDatabase().compileStatement(
@@ -369,17 +369,18 @@ public class LauncherProvider extends ContentProvider {
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
                 Bundle result = new Bundle();
-                result.putSerializable(LauncherSettings.Settings.EXTRA_VALUE, deleteEmptyFolders());
+                result.putIntArray(LauncherSettings.Settings.EXTRA_VALUE, deleteEmptyFolders()
+                        .toArray());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_NEW_ITEM_ID: {
                 Bundle result = new Bundle();
-                result.putLong(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewItemId());
+                result.putInt(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewItemId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_NEW_SCREEN_ID: {
                 Bundle result = new Bundle();
-                result.putLong(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewScreenId());
+                result.putInt(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewScreenId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
@@ -402,8 +403,8 @@ public class LauncherProvider extends ContentProvider {
      * Deletes any empty folder from the DB.
      * @return Ids of deleted folders.
      */
-    private ArrayList<Long> deleteEmptyFolders() {
-        ArrayList<Long> folderIds = new ArrayList<>();
+    private IntArray deleteEmptyFolders() {
+        IntArray folderIds = new IntArray();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Select folders whose id do not match any container value.
@@ -542,8 +543,8 @@ public class LauncherProvider extends ContentProvider {
     public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
-        private long mMaxItemId = -1;
-        private long mMaxScreenId = -1;
+        private int mMaxItemId = -1;
+        private int mMaxScreenId = -1;
 
         DatabaseHelper(Context context, Handler widgetHostResetHandler) {
             this(context, widgetHostResetHandler, LauncherFiles.LAUNCHER_DB);
@@ -789,7 +790,7 @@ public class LauncherProvider extends ContentProvider {
                     convertShortcutsToLauncherActivities(db);
                 case 26:
                     // QSB was moved to the grid. Clear the first row on screen 0.
-                    if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
+                    if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() &&
                             !LauncherDbUtils.prepareScreenZeroToHostQsb(mContext, db)) {
                         break;
                     }
@@ -844,7 +845,7 @@ public class LauncherProvider extends ContentProvider {
                 Log.e(TAG, "getAppWidgetIds not supported", e);
                 return;
             }
-            final HashSet<Integer> validWidgets = new HashSet<>();
+            final IntSet validWidgets = new IntSet();
             try (Cursor c = db.query(Favorites.TABLE_NAME,
                     new String[] {Favorites.APPWIDGET_ID },
                     "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null, null, null)) {
@@ -899,7 +900,7 @@ public class LauncherProvider extends ContentProvider {
                         continue;
                     }
 
-                    long id = c.getLong(idIndex);
+                    int id = c.getInt(idIndex);
                     updateStmt.bindLong(1, id);
                     updateStmt.executeUpdateDelete();
                 }
@@ -914,15 +915,14 @@ public class LauncherProvider extends ContentProvider {
          */
         public boolean recreateWorkspaceTable(SQLiteDatabase db) {
             try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-                final ArrayList<Long> sortedIDs;
+                final IntArray sortedIDs;
 
                 try (Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
                         new String[] {LauncherSettings.WorkspaceScreens._ID},
                         null, null, null, null,
                         LauncherSettings.WorkspaceScreens.SCREEN_RANK)) {
                     // Use LinkedHashSet so that ordering is preserved
-                    sortedIDs = new ArrayList<>(
-                            LauncherDbUtils.iterateCursor(c, 0, new LinkedHashSet<Long>()));
+                    sortedIDs = LauncherDbUtils.getScreenIdsFromCursor(c);
                 }
                 db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
                 addWorkspacesTable(db, false);
@@ -937,7 +937,11 @@ public class LauncherProvider extends ContentProvider {
                     db.insertOrThrow(WorkspaceScreens.TABLE_NAME, null, values);
                 }
                 t.commit();
-                mMaxScreenId = sortedIDs.isEmpty() ? 0 : Collections.max(sortedIDs);
+
+                mMaxScreenId = 0;
+                for (int i = 0; i < sortedIDs.size(); i++) {
+                    mMaxScreenId = Math.max(mMaxScreenId, sortedIDs.get(i));
+                }
             } catch (SQLException ex) {
                 // Old version remains, which means we wipe old data
                 Log.e(TAG, ex.getMessage(), ex);
@@ -997,7 +1001,7 @@ public class LauncherProvider extends ContentProvider {
         // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
         // after that point
         @Override
-        public long generateNewItemId() {
+        public int generateNewItemId() {
             if (mMaxItemId < 0) {
                 throw new RuntimeException("Error: max item id was not initialized");
             }
@@ -1010,12 +1014,12 @@ public class LauncherProvider extends ContentProvider {
         }
 
         @Override
-        public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+        public int insertAndCheck(SQLiteDatabase db, ContentValues values) {
             return dbInsertAndCheck(this, db, Favorites.TABLE_NAME, null, values);
         }
 
         public void checkId(String table, ContentValues values) {
-            long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
+            int id = values.getAsInteger(LauncherSettings.BaseLauncherColumns._ID);
             if (WorkspaceScreens.TABLE_NAME.equals(table)) {
                 mMaxScreenId = Math.max(id, mMaxScreenId);
             }  else {
@@ -1023,7 +1027,7 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
-        private long initializeMaxItemId(SQLiteDatabase db) {
+        private int initializeMaxItemId(SQLiteDatabase db) {
             return getMaxId(db, Favorites.TABLE_NAME);
         }
 
@@ -1032,7 +1036,7 @@ public class LauncherProvider extends ContentProvider {
         // call the constructor from the worker thread; however, this doesn't extend until after the
         // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
         // after that point
-        public long generateNewScreenId() {
+        public int generateNewScreenId() {
             if (mMaxScreenId < 0) {
                 throw new RuntimeException("Error: max screen id was not initialized");
             }
@@ -1040,20 +1044,21 @@ public class LauncherProvider extends ContentProvider {
             return mMaxScreenId;
         }
 
-        private long initializeMaxScreenId(SQLiteDatabase db) {
+        private int initializeMaxScreenId(SQLiteDatabase db) {
             return getMaxId(db, WorkspaceScreens.TABLE_NAME);
         }
 
         @Thunk int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
-            ArrayList<Long> screenIds = new ArrayList<Long>();
+            IntArray screenIds = new IntArray();
             // TODO: Use multiple loaders with fall-back and transaction.
             int count = loader.loadLayout(db, screenIds);
 
             // Add the screens specified by the items above
-            Collections.sort(screenIds);
+            int[] sortedScreenIds = screenIds.toArray();
+            Arrays.sort(sortedScreenIds);
             int rank = 0;
             ContentValues values = new ContentValues();
-            for (Long id : screenIds) {
+            for (int id : sortedScreenIds) {
                 values.clear();
                 values.put(LauncherSettings.WorkspaceScreens._ID, id);
                 values.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, rank);
@@ -1075,12 +1080,12 @@ public class LauncherProvider extends ContentProvider {
     /**
      * @return the max _id in the provided table.
      */
-    @Thunk static long getMaxId(SQLiteDatabase db, String table) {
+    @Thunk static int getMaxId(SQLiteDatabase db, String table) {
         Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
         // get the result
-        long id = -1;
+        int id = -1;
         if (c != null && c.moveToNext()) {
-            id = c.getLong(0);
+            id = c.getInt(0);
         }
         if (c != null) {
             c.close();

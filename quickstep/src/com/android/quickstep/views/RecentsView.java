@@ -229,7 +229,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    private int mLoadPlanId = -1;
+    // Used to keep track of the last requested load plan id, so that we do not request to load the
+    // tasks again if we have already requested it and the task list has not changed
+    private int mRequestedLoadPlanId = -1;
 
     // Only valid until the launcher state changes to NORMAL
     private int mRunningTaskId = -1;
@@ -400,9 +402,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (mShowEmptyMessage) {
-                    onAllTasksRemoved();
-                }
                 if (mTouchDownToStartHome) {
                     startHome();
                 }
@@ -413,7 +412,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Passing the touch slop will not allow dismiss to home
-                if (mTouchDownToStartHome && Math.hypot(mDownX - x, mDownY - y) > mTouchSlop) {
+                if (mTouchDownToStartHome &&
+                        (isHandlingTouch() || Math.hypot(mDownX - x, mDownY - y) > mTouchSlop)) {
                     mTouchDownToStartHome = false;
                 }
                 break;
@@ -421,12 +421,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 // Touch down anywhere but the deadzone around the visible clear all button and
                 // between the task views will start home on touch up
                 if (!isHandlingTouch()) {
-                    updateDeadZoneRects();
-                    final boolean clearAllButtonDeadZoneConsumed = mClearAllButton.getAlpha() == 1
-                            && mClearAllButtonDeadZoneRect.contains(x, y);
-                    if (!clearAllButtonDeadZoneConsumed
-                            && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
+                    if (mShowEmptyMessage) {
                         mTouchDownToStartHome = true;
+                    } else {
+                        updateDeadZoneRects();
+                        final boolean clearAllButtonDeadZoneConsumed =
+                                mClearAllButton.getAlpha() == 1
+                                        && mClearAllButtonDeadZoneRect.contains(x, y);
+                        if (!clearAllButtonDeadZoneConsumed
+                                && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
+                            mTouchDownToStartHome = true;
+                        }
                     }
                 }
                 mDownX = x;
@@ -444,6 +449,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(loadPlan));
             return;
         }
+
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();
@@ -612,8 +618,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * and unloads the associated task data for tasks that are no longer visible.
      */
     public void loadVisibleTaskData() {
-        if (!mOverviewStateEnabled) {
-            // Skip loading visible task data if we've already left the overview state
+        if (!mOverviewStateEnabled || mRequestedLoadPlanId == -1) {
+            // Skip loading visible task data if we've already left the overview state, or if the
+            // task list hasn't been loaded yet (the task views will not reflect the task list)
             return;
         }
 
@@ -666,16 +673,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mHasVisibleTaskData.clear();
     }
 
-    protected void onAllTasksRemoved() {
-        startHome();
-    }
-
     protected abstract void startHome();
 
     public void reset() {
         mRunningTaskId = -1;
         mRunningTaskTileHidden = false;
         mIgnoreResetTaskId = -1;
+        mRequestedLoadPlanId = -1;
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -687,8 +691,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Reloads the view if anything in recents changed.
      */
     public void reloadIfNeeded() {
-        if (!mModel.isLoadPlanValid(mLoadPlanId)) {
-            mLoadPlanId = mModel.loadTasks(mRunningTaskId, this::applyLoadPlan);
+        if (!mModel.isLoadPlanValid(mRequestedLoadPlanId)) {
+            mRequestedLoadPlanId = mModel.loadTasks(mRunningTaskId, this::applyLoadPlan);
         }
     }
 
@@ -749,8 +753,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         setCurrentPage(0);
 
-        // Load the tasks (if the loading is already
-        mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
+        // Load the tasks
+        reloadIfNeeded();
     }
 
     public void showNextTask() {
@@ -973,7 +977,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
                if (getTaskViewCount() == 0) {
                    removeView(mClearAllButton);
-                   onAllTasksRemoved();
+                   startHome();
                } else {
                    snapToPageImmediately(pageToSnapTo);
                }
@@ -1002,7 +1006,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 // Remove all the task views now
                 ActivityManagerWrapper.getInstance().removeAllRecentTasks();
                 removeAllViews();
-                onAllTasksRemoved();
+                startHome();
             }
             mPendingAnimation = null;
         });

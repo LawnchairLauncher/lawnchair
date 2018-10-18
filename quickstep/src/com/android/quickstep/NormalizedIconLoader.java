@@ -43,7 +43,6 @@ public class NormalizedIconLoader extends IconLoader {
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
     private final DrawableFactory mDrawableFactory;
     private final boolean mDisableColorExtraction;
-    private LauncherIcons mLauncherIcons;
 
     public NormalizedIconLoader(Context context, TaskKeyLruCache<Drawable> iconCache,
             LruCache<ComponentName, ActivityInfo> activityInfoCache,
@@ -73,19 +72,18 @@ public class NormalizedIconLoader extends IconLoader {
                 false));
     }
 
-    private synchronized BitmapInfo getBitmapInfo(Drawable drawable, int userId,
+    private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
             int primaryColor, boolean isInstantApp) {
-        if (mLauncherIcons == null) {
-            mLauncherIcons = LauncherIcons.obtain(mContext);
+        try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
             if (mDisableColorExtraction) {
-                mLauncherIcons.disableColorExtraction();
+                la.disableColorExtraction();
             }
-        }
+            la.setWrapperBackgroundColor(primaryColor);
 
-        mLauncherIcons.setWrapperBackgroundColor(primaryColor);
-        // User version code O, so that the icon is always wrapped in an adaptive icon container.
-        return mLauncherIcons.createBadgedIconBitmap(drawable, UserHandle.of(userId),
-                Build.VERSION_CODES.O, isInstantApp);
+            // User version code O, so that the icon is always wrapped in an adaptive icon container
+            return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
+                    Build.VERSION_CODES.O, isInstantApp);
+        }
     }
 
     @Override

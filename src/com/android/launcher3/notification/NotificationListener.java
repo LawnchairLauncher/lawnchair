@@ -16,7 +16,7 @@
 
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -28,13 +28,13 @@ import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.util.SecureSettingsObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import androidx.annotation.Nullable;
 
@@ -78,7 +77,7 @@ public class NotificationListener extends NotificationListenerService {
     /** The last notification key that was dismissed from launcher UI */
     private String mLastKeyDismissedByLauncher;
 
-    private SettingsObserver mNotificationBadgingObserver;
+    private SecureSettingsObserver mNotificationBadgingObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
@@ -195,17 +194,18 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerConnected();
         sIsConnected = true;
 
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled && sIsConnected) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+        mNotificationBadgingObserver =
+                newNotificationSettingsObserver(this, this::onNotificationBadgingChanged);
+        mNotificationBadgingObserver.register();
+        mNotificationBadgingObserver.dispatchOnChange();
 
         onNotificationFullRefresh();
+    }
+
+    private void onNotificationBadgingChanged(boolean isNotificationBadgingEnabled) {
+        if (!isNotificationBadgingEnabled && sIsConnected) {
+            requestUnbind();
+        }
     }
 
     private void onNotificationFullRefresh() {
@@ -346,7 +346,7 @@ public class NotificationListener extends NotificationListenerService {
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
-        Set<Integer> removedNotifications = new ArraySet<>();
+        IntSet removedNotifications = new IntSet();
         for (int i = 0; i < notifications.length; i++) {
             if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);

@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
+import com.android.launcher3.util.IntArray;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +48,7 @@ public class LauncherDbUtils {
     public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Get the existing screens
-            ArrayList<Long> screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
+            IntArray screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
                     null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
 
             if (screenIds.isEmpty()) {
@@ -57,10 +58,10 @@ public class LauncherDbUtils {
             }
             if (screenIds.get(0) != 0) {
                 // First screen is not 0, we need to rename screens
-                if (screenIds.indexOf(0L) > -1) {
+                if (screenIds.contains(0)) {
                     // There is already a screen 0. First rename it to a different screen.
-                    long newScreenId = 1;
-                    while (screenIds.indexOf(newScreenId) > -1) newScreenId++;
+                    int newScreenId = 1;
+                    while (screenIds.contains(newScreenId)) newScreenId++;
                     renameScreen(db, 0, newScreenId);
                 }
 
@@ -86,8 +87,8 @@ public class LauncherDbUtils {
         }
     }
 
-    private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
-        String[] whereParams = new String[] { Long.toString(oldScreen) };
+    private static void renameScreen(SQLiteDatabase db, int oldScreen, int newScreen) {
+        String[] whereParams = new String[] { Integer.toString(oldScreen) };
 
         ContentValues values = new ContentValues();
         values.put(WorkspaceScreens._ID, newScreen);
@@ -101,19 +102,18 @@ public class LauncherDbUtils {
     /**
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
      */
-    public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
+    public static IntArray getScreenIdsFromCursor(Cursor sc) {
         try {
             return iterateCursor(sc,
-                    sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
-                    new ArrayList<Long>());
+                    sc.getColumnIndexOrThrow(WorkspaceScreens._ID), new IntArray());
         } finally {
             sc.close();
         }
     }
 
-    public static <T extends Collection<Long>> T iterateCursor(Cursor c, int columnIndex, T out) {
+    public static IntArray iterateCursor(Cursor c, int columnIndex, IntArray out) {
         while (c.moveToNext()) {
-            out.add(c.getLong(columnIndex));
+            out.add(c.getInt(columnIndex));
         }
         return out;
     }

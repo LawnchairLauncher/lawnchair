@@ -108,6 +108,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -490,9 +491,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Returns whether we should delay spring loaded mode -- for shortcuts and widgets that have
      * a configuration step, this allows the proper animations to run after other transitions.
      */
-    private long completeAdd(
+    private int completeAdd(
             int requestCode, Intent intent, int appWidgetId, PendingRequestArgs info) {
-        long screenId = info.screenId;
+        int screenId = info.screenId;
         if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             // When the screen id represents an actual screen (as opposed to a rank) we make sure
             // that the drop page actually exists.
@@ -694,7 +695,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param screenId the screen id to check
      * @return the new screen, or screenId if it exists
      */
-    private long ensurePendingDropLayoutExists(long screenId) {
+    private int ensurePendingDropLayoutExists(int screenId) {
         CellLayout dropLayout = mWorkspace.getScreenWithId(screenId);
         if (dropLayout == null) {
             // it's possible that the add screen was removed because it was
@@ -974,7 +975,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param data The intent describing the shortcut.
      */
-    private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
+    private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
         if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
@@ -1050,7 +1051,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public FolderIcon findFolderIcon(final long folderIconId) {
+    public FolderIcon findFolderIcon(final int folderIconId) {
         return (FolderIcon) mWorkspace.getHomescreenIconByItemId(folderIconId);
     }
 
@@ -1413,7 +1414,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
+    public void addPendingItem(PendingAddItemInfo info, int container, int screenId,
             int[] cell, int spanX, int spanY) {
         info.container = container;
         info.screenId = screenId;
@@ -1489,7 +1490,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    FolderIcon addFolder(CellLayout layout, long container, final long screenId, int cellX,
+    FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
             int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
@@ -1650,7 +1651,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Returns the CellLayout of the specified container at the specified screen.
      */
-    public CellLayout getCellLayout(long container, long screenId) {
+    public CellLayout getCellLayout(int container, int screenId) {
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             if (mHotseat != null) {
                 return mHotseat.getLayout();
@@ -1750,14 +1751,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void bindScreens(ArrayList<Long> orderedScreenIds) {
+    public void bindScreens(IntArray orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
-            orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
+            orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             LauncherModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
-        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
+        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get()
+                && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
         }
@@ -1769,11 +1771,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.unlockWallpaperFromDefaultPageOnNextLayout();
     }
 
-    private void bindAddScreens(ArrayList<Long> orderedScreenIds) {
+    private void bindAddScreens(IntArray orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
-            long screenId = orderedScreenIds.get(i);
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || screenId != Workspace.FIRST_SCREEN_ID) {
+            int screenId = orderedScreenIds.get(i);
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get() || screenId != Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
                 mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
             }
@@ -1792,7 +1794,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void bindAppsAdded(ArrayList<Long> newScreens, ArrayList<ItemInfo> addNotAnimated,
+    public void bindAppsAdded(IntArray newScreens, ArrayList<ItemInfo> addNotAnimated,
             ArrayList<ItemInfo> addAnimated) {
         // Add the new screens
         if (newScreens != null) {
@@ -1823,7 +1825,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         final Collection<Animator> bounceAnims = new ArrayList<>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
-        long newItemsScreenId = -1;
+        int newItemsScreenId = -1;
         int end = items.size();
         for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
@@ -1896,7 +1898,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             AnimatorSet anim = new AnimatorSet();
             anim.playTogether(bounceAnims);
 
-            long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
+            int currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
             final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
             final Runnable startBounceAnimRunnable = anim::start;
 
@@ -2283,6 +2285,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
         writer.println(" mPendingActivityResult=" + mPendingActivityResult);
         writer.println(" mRotationHelper: " + mRotationHelper);
+        // Extra logging for b/116853349
+        mDragLayer.dumpAlpha(writer);
         dumpMisc(writer);
 
         try {

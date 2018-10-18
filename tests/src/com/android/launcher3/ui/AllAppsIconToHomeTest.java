@@ -11,9 +11,8 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ShellCommandRule;
 
-import org.junit.Rule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,15 +23,15 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
-
     @Test
+    @Ignore
     public void testDragIcon_portrait() throws Throwable {
         lockRotation(true);
         performTest();
     }
 
     @Test
+    @Ignore
     public void testDragIcon_landscape() throws Throwable {
         lockRotation(false);
         performTest();
@@ -46,12 +45,12 @@ public class AllAppsIconToHomeTest extends AbstractLauncherUiTest {
         mDevice.waitForIdle();
 
         // Open all apps and wait for load complete.
-        final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
+        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag icon to homescreen.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(settingsApp.getLabel().toString()));
-        dragToWorkspace(icon, true);
+        TestViewHelpers.dragToWorkspace(icon, true);
 
         // Verify that the icon works on homescreen.
         mDevice.findObject(By.text(settingsApp.getLabel().toString())).click();

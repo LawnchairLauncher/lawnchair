@@ -92,7 +92,7 @@ public class RestoreDbTask {
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
         long myProfileId = helper.getDefaultUserSerial();
-        if (Utilities.longCompare(oldProfileId, myProfileId) != 0) {
+        if (myProfileId != oldProfileId) {
             FileLog.d(TAG, "Changing primary user id from " + oldProfileId + " to " + myProfileId);
             migrateProfileId(db, myProfileId);
         }

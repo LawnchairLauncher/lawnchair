@@ -79,7 +79,7 @@ public class ModelWriter {
     }
 
     private void updateItemInfoProps(
-            ItemInfo item, long container, long screenId, int cellX, int cellY) {
+            ItemInfo item, int container, int screenId, int cellX, int cellY) {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
@@ -98,7 +98,7 @@ public class ModelWriter {
      * <container, screen, cellX, cellY>
      */
     public void addOrMoveItemInDatabase(ItemInfo item,
-            long container, long screenId, int cellX, int cellY) {
+            int container, int screenId, int cellX, int cellY) {
         if (item.container == ItemInfo.NO_ID) {
             // From all apps
             addItemToDatabase(item, container, screenId, cellX, cellY);
@@ -108,7 +108,12 @@ public class ModelWriter {
         }
     }
 
-    private void checkItemInfoLocked(long itemId, ItemInfo item, StackTraceElement[] stackTrace) {
+    private void checkItemInfoLocked(int itemId, ItemInfo item, StackTraceElement[] stackTrace) {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Checking item: " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
@@ -149,7 +154,7 @@ public class ModelWriter {
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
     public void moveItemInDatabase(final ItemInfo item,
-            long container, long screenId, int cellX, int cellY) {
+            int container, int screenId, int cellX, int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
         final ContentWriter writer = new ContentWriter(mContext)
@@ -166,7 +171,7 @@ public class ModelWriter {
      * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
      * cellX, cellY have already been updated on the ItemInfos.
      */
-    public void moveItemsInDatabase(final ArrayList<ItemInfo> items, long container, int screen) {
+    public void moveItemsInDatabase(final ArrayList<ItemInfo> items, int container, int screen) {
         ArrayList<ContentValues> contentValues = new ArrayList<>();
         int count = items.size();
 
@@ -190,7 +195,7 @@ public class ModelWriter {
      * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
      */
     public void modifyItemInDatabase(final ItemInfo item,
-            long container, long screenId, int cellX, int cellY, int spanX, int spanY) {
+            int container, int screenId, int cellX, int cellY, int spanX, int spanY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         item.spanX = spanX;
         item.spanY = spanY;
@@ -221,14 +226,14 @@ public class ModelWriter {
      * cellY fields of the item. Also assigns an ID to the item.
      */
     public void addItemToDatabase(final ItemInfo item,
-            long container, long screenId, int cellX, int cellY) {
+            int container, int screenId, int cellX, int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
         final ContentWriter writer = new ContentWriter(mContext);
         final ContentResolver cr = mContext.getContentResolver();
         item.onAddToDatabase(writer);
 
-        item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID).getLong(Settings.EXTRA_VALUE);
+        item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID).getInt(Settings.EXTRA_VALUE);
         writer.put(Favorites._ID, item.id);
 
         ModelVerifier verifier = new ModelVerifier();
@@ -355,9 +360,14 @@ public class ModelWriter {
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
         private final ItemInfo mItem;
         private final ContentWriter mWriter;
-        private final long mItemId;
+        private final int mItemId;
 
         UpdateItemRunnable(ItemInfo item, ContentWriter writer) {
+            if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                    && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+                android.util.Log.d("b/117332845",
+                        android.util.Log.getStackTraceString(new Throwable()));
+            }
             mItem = item;
             mWriter = writer;
             mItemId = item.id;
@@ -386,7 +396,7 @@ public class ModelWriter {
             int count = mItems.size();
             for (int i = 0; i < count; i++) {
                 ItemInfo item = mItems.get(i);
-                final long itemId = item.id;
+                final int itemId = item.id;
                 final Uri uri = Favorites.getContentUri(itemId);
                 ContentValues values = mValues.get(i);
 
@@ -409,7 +419,7 @@ public class ModelWriter {
             mStackTrace = new Throwable().getStackTrace();
         }
 
-        protected void updateItemArrays(ItemInfo item, long itemId) {
+        protected void updateItemArrays(ItemInfo item, int itemId) {
             // Lock on mBgLock *after* the db operation
             synchronized (mBgDataModel) {
                 checkItemInfoLocked(itemId, item, mStackTrace);

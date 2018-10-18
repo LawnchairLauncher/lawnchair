@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -25,7 +26,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -43,10 +43,11 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ListView;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ListViewHighlighter;
-import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
 import java.util.Objects;
@@ -57,9 +58,9 @@ import java.util.Objects;
 public class SettingsActivity extends Activity
         implements PreferenceFragment.OnPreferenceStartFragmentCallback {
 
+    private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
+
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
-    public static final String NOTIFICATION_BADGING = "notification_badging";
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
@@ -111,7 +112,7 @@ public class SettingsActivity extends Activity
      */
     public static class LauncherSettingsFragment extends PreferenceFragment {
 
-        private IconBadgingObserver mIconBadgingObserver;
+        private SecureSettingsObserver mIconBadgingObserver;
 
         private String mPreferenceKey;
         private boolean mPreferenceHighlighted = false;
@@ -126,6 +127,12 @@ public class SettingsActivity extends Activity
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
 
+            // Only show flag toggler UI if this build variant implements that.
+            Preference flagToggler = findPreference(FLAGS_PREFERENCE_KEY);
+            if (flagToggler != null && !FeatureFlags.showFlagTogglerUi()) {
+                getPreferenceScreen().removePreference(flagToggler);
+            }
+
             ContentResolver resolver = getActivity().getContentResolver();
 
             ButtonPreference iconBadgingPref =
@@ -138,9 +145,14 @@ public class SettingsActivity extends Activity
                 getPreferenceScreen().removePreference(iconBadgingPref);
             } else {
                 // Listen to system notification badge settings while this UI is active.
-                mIconBadgingObserver = new IconBadgingObserver(
-                        iconBadgingPref, resolver, getFragmentManager());
-                mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+                mIconBadgingObserver = newNotificationSettingsObserver(
+                        getActivity(), new IconBadgingObserver(iconBadgingPref, resolver));
+                mIconBadgingObserver.register();
+                // Also listen if notification permission changes
+                mIconBadgingObserver.getResolver().registerContentObserver(
+                        Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS), false,
+                        mIconBadgingObserver);
+                mIconBadgingObserver.dispatchOnChange();
             }
 
             Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
@@ -246,22 +258,18 @@ public class SettingsActivity extends Activity
      * Content observer which listens for system badging setting changes,
      * and updates the launcher badging setting subtext accordingly.
      */
-    private static class IconBadgingObserver extends SettingsObserver.Secure {
+    private static class IconBadgingObserver implements SecureSettingsObserver.OnChangeListener {
 
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
-        private final FragmentManager mFragmentManager;
 
-        public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
-                FragmentManager fragmentManager) {
-            super(resolver);
+        public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver) {
             mBadgingPref = badgingPref;
             mResolver = resolver;
-            mFragmentManager = fragmentManager;
         }
 
         @Override
-        public void onSettingChanged(boolean enabled) {
+        public void onSettingsChanged(boolean enabled) {
             int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
 
             boolean serviceEnabled = true;

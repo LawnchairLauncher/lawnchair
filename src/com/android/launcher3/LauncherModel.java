@@ -55,6 +55,7 @@ import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
@@ -143,15 +144,14 @@ public class LauncherModel extends BroadcastReceiver
         public void clearPendingBinds();
         public void startBinding();
         public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
-        public void bindScreens(ArrayList<Long> orderedScreenIds);
+        public void bindScreens(IntArray orderedScreenIds);
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
         public void finishBindingItems(int currentScreen);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
         public void preAddApps();
-        public void bindAppsAdded(ArrayList<Long> newScreens,
-                                  ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated);
+        public void bindAppsAdded(IntArray newScreens,
+                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
         public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
@@ -211,7 +211,12 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     static void checkItemInfoLocked(
-            final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+            final int itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    "Checking item: " + android.util.Log.getStackTraceString(new Throwable()));
+        }
         ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
@@ -250,7 +255,7 @@ public class LauncherModel extends BroadcastReceiver
 
     static void checkItemInfo(final ItemInfo item) {
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        final long itemId = item.id;
+        final int itemId = item.id;
         Runnable r = new Runnable() {
             public void run() {
                 synchronized (sBgDataModel) {
@@ -265,17 +270,16 @@ public class LauncherModel extends BroadcastReceiver
      * Update the order of the workspace screens in the database. The array list contains
      * a list of screen ids in the order that they should appear.
      */
-    public static void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
-        final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
+    public static void updateWorkspaceScreenOrder(Context context, IntArray screens) {
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
-        // Remove any negative screen ids -- these aren't persisted
-        Iterator<Long> iter = screensCopy.iterator();
-        while (iter.hasNext()) {
-            long id = iter.next();
-            if (id < 0) {
-                iter.remove();
+        // Create a copy with only non-negative values
+        final IntArray screensCopy = new IntArray();
+        for (int i = 0; i < screens.size(); i++) {
+            int id = screens.get(i);
+            if (id >= 0) {
+                screensCopy.add(id);
             }
         }
 
@@ -288,7 +292,7 @@ public class LauncherModel extends BroadcastReceiver
                 int count = screensCopy.size();
                 for (int i = 0; i < count; i++) {
                     ContentValues v = new ContentValues();
-                    long screenId = screensCopy.get(i);
+                    int screenId = screensCopy.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
                     ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
@@ -447,6 +451,11 @@ public class LauncherModel extends BroadcastReceiver
      * @return true if the page could be bound synchronously.
      */
     public boolean startLoader(int synchronousBindPage) {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
@@ -511,7 +520,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Loads the workspace screen ids in an ordered list.
      */
-    public static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
+    public static IntArray loadWorkspaceScreensDb(Context context) {
         final ContentResolver contentResolver = context.getContentResolver();
         final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
@@ -558,6 +567,11 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
+                if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                        && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+                    android.util.Log.d("b/117332845",
+                            android.util.Log.getStackTraceString(new Throwable()));
+                }
             }
         }
 

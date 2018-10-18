@@ -114,8 +114,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"आइटम यहां ले जाएं"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"होम स्क्रीन में आइटम जोड़ा गया"</string>
     <string name="item_removed" msgid="851119963877842327">"आइटम निकाला गया"</string>
-    <!-- no translation found for undo (4151576204245173321) -->
-    <skip />
+    <string name="undo" msgid="4151576204245173321">"पहले जैसा करें"</string>
     <string name="action_move" msgid="4339390619886385032">"आइटम ले जाएं"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"पंक्ति <xliff:g id="NUMBER_0">%1$s</xliff:g> स्तंभ <xliff:g id="NUMBER_1">%2$s</xliff:g> पर ले जाएं"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> स्थिति पर ले जाएं"</string>

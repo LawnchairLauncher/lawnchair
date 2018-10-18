@@ -34,7 +34,7 @@ public class ItemInfo {
     /**
      * The id in the settings database for this item
      */
-    public long id = NO_ID;
+    public int id = NO_ID;
 
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
@@ -52,14 +52,14 @@ public class ItemInfo {
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
-    public long container = NO_ID;
+    public int container = NO_ID;
 
     /**
      * Indicates the screen in which the shortcut appears if the container types is
      * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the container type is
      * {@link LauncherSettings.Favorites#CONTAINER_HOTSEAT})
      */
-    public long screenId = -1;
+    public int screenId = -1;
 
     /**
      * Indicates the X position of the associated cell.
@@ -158,8 +158,8 @@ public class ItemInfo {
 
     public void readFromValues(ContentValues values) {
         itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
-        screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+        container = values.getAsInteger(LauncherSettings.Favorites.CONTAINER);
+        screenId = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
         cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
         cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
         spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);

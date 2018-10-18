@@ -15,10 +15,8 @@ import android.view.MotionEvent;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,8 +26,6 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
-
-    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
     @Test
     @Ignore
@@ -52,25 +48,25 @@ public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
         LauncherActivityInfo testApp  = getSettingsApp();
 
         // Open all apps and wait for load complete.
-        final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
-                DEFAULT_UI_TIMEOUT));
+        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Find the app and long press it to show shortcuts.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(testApp.getLabel().toString()));
         // Press icon center until shortcuts appear
         Point iconCenter = icon.getVisibleCenter();
-        sendPointer(MotionEvent.ACTION_DOWN, iconCenter);
-        UiObject2 deepShortcutsContainer = findViewById(R.id.deep_shortcuts_container);
+        TestViewHelpers.sendPointer(MotionEvent.ACTION_DOWN, iconCenter);
+        UiObject2 deepShortcutsContainer = TestViewHelpers.findViewById(
+                R.id.deep_shortcuts_container);
         assertNotNull(deepShortcutsContainer);
-        sendPointer(MotionEvent.ACTION_UP, iconCenter);
+        TestViewHelpers.sendPointer(MotionEvent.ACTION_UP, iconCenter);
 
         // Drag the first shortcut to the home screen.
         assertTrue(deepShortcutsContainer.getChildCount() > 0);
         UiObject2 shortcut = deepShortcutsContainer.getChildren().get(1)
-                .findObject(getSelectorForId(R.id.bubble_text));
+                .findObject(TestViewHelpers.getSelectorForId(R.id.bubble_text));
         String shortcutName = shortcut.getText();
-        dragToWorkspace(shortcut, false);
+        TestViewHelpers.dragToWorkspace(shortcut, false);
 
         // Verify that the shortcut works on home screen
         // (the app opens and has the same text as the shortcut).

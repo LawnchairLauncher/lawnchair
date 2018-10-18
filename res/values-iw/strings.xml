@@ -65,10 +65,10 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"תיקיה ללא שם"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> מושבתת"</string>
     <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="two">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
-      <item quantity="many">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
-      <item quantity="other">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> הודעות</item>
-      <item quantity="one">לאפליקציה <xliff:g id="APP_NAME_0">%1$s</xliff:g> יש הודעה אחת (<xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>)</item>
+      <item quantity="two">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> התראות</item>
+      <item quantity="many">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> התראות</item>
+      <item quantity="other">לאפליקציה <xliff:g id="APP_NAME_2">%1$s</xliff:g> יש <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> התראות</item>
+      <item quantity="one">לאפליקציה <xliff:g id="APP_NAME_0">%1$s</xliff:g> יש התראה אחת (<xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>)</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏דף %1$d מתוך %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏מסך דף הבית %1$d מתוך %2$d"</string>
@@ -85,11 +85,11 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"הושבת על ידי מנהל המערכת שלך"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"אפשרות סיבוב של מסך דף הבית"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"כאשר הטלפון מסובב"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"סימני הודעות"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"סימני ההתראות"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"מופעלת"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"כבויה"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"נדרשת גישה להודעות"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"כדי להציג את סימני ההודעות, יש להפעיל הודעות מהאפליקציה <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"נדרשת גישה להתראות"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"כדי להציג את סימני ההתראות,יש להפעיל התראות מהאפליקציה <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"שנה את ההגדרות"</string>
     <string name="icon_badging_service_title" msgid="2309733118428242174">"הצגה של סימן ההודעות"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"הוספת סמל במסך דף הבית"</string>
@@ -137,7 +137,7 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"קיצורי דרך"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"קיצורי דרך והודעות"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגור"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"ההודעה נסגרה"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"ההתראה נסגרה"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישיות"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"עבודה"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>

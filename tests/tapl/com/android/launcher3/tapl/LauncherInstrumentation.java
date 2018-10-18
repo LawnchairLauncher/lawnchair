@@ -28,13 +28,6 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.accessibility.AccessibilityEvent;
 
-import androidx.annotation.NonNull;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
-
 import com.android.launcher3.TestProtocol;
 import com.android.quickstep.SwipeUpSetting;
 
@@ -42,6 +35,13 @@ import org.junit.Assert;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
+
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -54,7 +54,7 @@ public final class LauncherInstrumentation {
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
     enum ContainerType {
-        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND
+        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, BASE_OVERVIEW
     }
 
     // Base class for launcher containers.
@@ -84,7 +84,7 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     static final String LAUNCHER_PKG = "com.google.android.apps.nexuslauncher";
-    static final int WAIT_TIME_MS = 60000;
+    public static final int WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -108,7 +108,12 @@ public final class LauncherInstrumentation {
                 instrumentation.getTargetContext().getContentResolver(),
                 SWIPE_UP_SETTING_NAME,
                 swipeUpEnabledDefault ? 1 : 0) == 1;
-        assertTrue("Device must run in a test harness", ActivityManager.isRunningInTestHarness());
+
+        // Launcher should run in test harness so that custom accessibility protocol between
+        // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
+        // into Launcher.
+        assertTrue("Device must run in a test harness",
+                TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
     }
 
     // Used only by TaplTests.
@@ -195,8 +200,12 @@ public final class LauncherInstrumentation {
                 } else {
                     waitUntilGone(APPS_RES_ID);
                 }
+                // Fall through
+            }
+            case BASE_OVERVIEW: {
                 waitUntilGone(WORKSPACE_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
+
                 return waitForLauncherObject(OVERVIEW_RES_ID);
             }
             case BACKGROUND: {
@@ -299,6 +308,17 @@ public final class LauncherInstrumentation {
     @NonNull
     public Overview getOverview() {
         return new Overview(this);
+    }
+
+    /**
+     * Gets the Base overview object if either Launcher is in overview state or the fallback
+     * overview activity is showing. Fails otherwise.
+     *
+     * @return BaseOverview object.
+     */
+    @NonNull
+    public BaseOverview getBaseOverview() {
+        return new BaseOverview(this);
     }
 
     /**
