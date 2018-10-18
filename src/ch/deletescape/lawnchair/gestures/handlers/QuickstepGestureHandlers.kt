@@ -19,7 +19,7 @@ package ch.deletescape.lawnchair.gestures.handlers
 
 import android.app.ActivityOptions
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.content.Intent
 import android.support.annotation.Keep
 import android.util.Log
 import ch.deletescape.lawnchair.gestures.GestureController
@@ -39,7 +39,7 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
     override val displayName = context.getString(R.string.action_switch_apps)!!
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
-    override val icon: Drawable by lazy { context.getDrawable(R.drawable.ic_lawnstep) }
+    override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_lawnstep) }
 
     override fun onGestureTrigger(controller: GestureController) {
         controller.launcher.stateManager.goToState(LauncherState.OVERVIEW)

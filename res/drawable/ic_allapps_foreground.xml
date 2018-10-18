@@ -1,0 +1,56 @@
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="108dp"
+        android:height="108dp"
+        android:viewportWidth="54.597546"
+        android:viewportHeight="54.597546">
+    <group android:translateX="7.6436567"
+            android:translateY="11.218387">
+      <path
+          android:pathData="M12.0713,12.1382m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+      <path
+          android:pathData="M19.6885,12.1382m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+      <path
+          android:pathData="M27.2389,12.0713m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+      <path
+          android:pathData="M12.0713,20.0226m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+      <path
+          android:pathData="M19.6885,20.0894m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+      <path
+          android:pathData="M27.1053,20.0226m-2.0713,0a2.0713,2.0713 0,1 1,4.1427 0a2.0713,2.0713 0,1 1,-4.1427 0"
+          android:strokeWidth="0.26458332"
+          android:fillColor="#666666"
+          android:fillAlpha="1"/>
+    </group>
+</vector>
