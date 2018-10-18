@@ -120,9 +120,9 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
             }
         }
 
-        fun getGestureHandlers(context: Context, isSwipeUp: Boolean) = listOf(
+        fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
                 SwitchAppsGestureHandler(context, null),
-                BlankGestureHandler(context, null),
+                // BlankGestureHandler(context, null), -> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 SleepGestureHandlerRoot(context, null),
@@ -140,6 +140,10 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null),
                 LaunchMostRecentTaskGestureHandler(context, null)
-        ).filter { it.isAvailableForSwipeUp(isSwipeUp) }
+        ).apply {
+            if (hasBlank) {
+                add(1, BlankGestureHandler(context, null))
+            }
+        }.filter { it.isAvailableForSwipeUp(isSwipeUp) }
     }
 }

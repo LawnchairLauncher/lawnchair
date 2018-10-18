@@ -29,9 +29,9 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
 
-class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, private val currentClass: String, private val onSelectHandler: (handler: GestureHandler) -> Unit) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
+class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, private val currentClass: String, private val onSelectHandler: (handler: GestureHandler) -> Unit, showBlank: Boolean = true) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
 
-    val handlers = GestureController.getGestureHandlers(context, isSwipeUp)
+    val handlers = GestureController.getGestureHandlers(context, isSwipeUp, showBlank)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(context).inflate(R.layout.gesture_item, parent, false))

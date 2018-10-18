@@ -45,7 +45,7 @@ class LawnchairShortcutActivity : SettingsBaseActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val recyclerView = findViewById<RecyclerView>(R.id.list)
-        recyclerView.adapter = HandlerListAdapter(this, false, "", ::onSelectHandler)
+        recyclerView.adapter = HandlerListAdapter(this, false, "", ::onSelectHandler, false)
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
