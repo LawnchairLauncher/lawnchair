@@ -173,6 +173,10 @@ public class TaskThumbnailView extends View {
         return 0;
     }
 
+    public TaskOverlay getTaskOverlay() {
+        return mOverlay;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
