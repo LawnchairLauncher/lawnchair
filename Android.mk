@@ -66,7 +66,8 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.recyclerview_recyclerview \
-    androidx.dynamicanimation_dynamicanimation
+    androidx.dynamicanimation_dynamicanimation \
+    androidx.preference_preference
 
 LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
 
