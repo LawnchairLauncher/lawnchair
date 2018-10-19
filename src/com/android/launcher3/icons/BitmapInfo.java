@@ -18,19 +18,12 @@ package com.android.launcher3.icons;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
-import com.android.launcher3.ItemInfoWithIcon;
-
 public class BitmapInfo {
 
     public static final Bitmap LOW_RES_ICON = Bitmap.createBitmap(1, 1, Config.ALPHA_8);
 
     public Bitmap icon;
     public int color;
-
-    public void applyTo(ItemInfoWithIcon info) {
-        info.iconBitmap = icon;
-        info.iconColor = color;
-    }
 
     public void applyTo(BitmapInfo info) {
         info.icon = icon;

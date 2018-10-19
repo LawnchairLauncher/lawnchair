@@ -95,7 +95,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                     // If the shortcut is pinned but no longer has an icon in the system,
                     // keep the current icon instead of reverting to the default icon.
                     LauncherIcons li = LauncherIcons.obtain(context);
-                    li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap)).applyTo(si);
+                    si.applyFrom(li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap)));
                     li.recycle();
                 } else {
                     si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
