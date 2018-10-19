@@ -214,8 +214,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // UI and state for the overview panel
     private View mOverviewPanel;
 
-    private View mOverviewPanelContainer;
-
     @Thunk boolean mWorkspaceLoading = true;
 
     private OnResumeCallback mOnResumeCallback;
@@ -743,6 +741,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
 
+        UiFactory.onLauncherStateOrResumeChanged(this);
+
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
@@ -913,7 +913,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
-        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
         mHotseat = findViewById(R.id.hotseat);
         mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
@@ -1172,10 +1171,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
-    }
-
-    public <T extends View> T getOverviewPanelContainer() {
-        return (T) mOverviewPanelContainer;
     }
 
     public DropTargetBar getDropTargetBar() {
@@ -2335,6 +2330,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (isInState(NORMAL)) {
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
                     KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.widget_button_text),
+                    KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON));
         }
         final View currentFocus = getCurrentFocus();
         if (currentFocus != null) {
@@ -2380,6 +2377,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
                 case KeyEvent.KEYCODE_O:
                     if (new CustomActionsPopup(this, getCurrentFocus()).show()) {
+                        return true;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_W:
+                    if (isInState(NORMAL)) {
+                        OptionsPopupView.openWidgets(this);
                         return true;
                     }
                     break;

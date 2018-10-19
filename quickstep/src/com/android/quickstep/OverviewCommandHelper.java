@@ -67,6 +67,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 import com.android.systemui.shared.system.TransactionCompat;
 
 import java.util.ArrayList;
@@ -350,11 +351,14 @@ public class OverviewCommandHelper {
             clipHelper.updateTargetRect(targetRect);
             clipHelper.prepareAnimation(false /* isOpening */);
 
+            SyncRtSurfaceTransactionApplier syncTransactionApplier =
+                    new SyncRtSurfaceTransactionApplier(rootView);
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             valueAnimator.addUpdateListener((v) ->
-                    clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue()));
+                    clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue(),
+                            syncTransactionApplier));
 
             if (targetSet.isAnimatingHome()) {
                 // If we are animating home, fade in the opening targets

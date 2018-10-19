@@ -256,6 +256,10 @@ public class RecentsModel extends TaskStackChangeListener {
         }
     }
 
+    public void resetAssistCache() {
+        mCachedAssistData.clear();
+    }
+
     @WorkerThread
     public void preloadAssistData(int taskId, Bundle data) {
         mMainThreadExecutor.execute(() -> {

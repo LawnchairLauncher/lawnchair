@@ -48,6 +48,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
 
@@ -273,6 +274,25 @@ public final class Utilities {
         return scale;
     }
 
+    /**
+     * Maps t from one range to another range.
+     * @param t The value to map.
+     * @param fromMin The lower bound of the range that t is being mapped from.
+     * @param fromMax The upper bound of the range that t is being mapped from.
+     * @param toMin The lower bound of the range that t is being mapped to.
+     * @param toMax The upper bound of the range that t is being mapped to.
+     * @return The mapped value of t.
+     */
+    public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax,
+            Interpolator interpolator) {
+        if (fromMin == fromMax || toMin == toMax) {
+            Log.e(TAG, "mapToRange: range has 0 length");
+            return toMin;
+        }
+        float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
+        return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
+    }
+
     public static float mapRange(float value, float min, float max) {
         return min + (value * (max - min));
     }
@@ -460,6 +480,13 @@ public final class Utilities {
      * @see #boundToRange(int, int, int).
      */
     public static float boundToRange(float value, float lowerBound, float upperBound) {
+        return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+
+    /**
+     * @see #boundToRange(int, int, int).
+     */
+    public static long boundToRange(long value, long lowerBound, long upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
 
