@@ -20,20 +20,33 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.view.View;
 
+import androidx.annotation.AnyThread;
+
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import androidx.annotation.AnyThread;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory class to create and add an overlays on the TaskView
  */
 public class TaskOverlayFactory implements ResourceBasedOverride {
-
     private static TaskOverlayFactory sInstance;
+
+    /** Note that these will be shown in order from top to bottom, if available for the task. */
+    private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[]{
+            new TaskSystemShortcut.AppInfo(),
+            new TaskSystemShortcut.SplitScreen(),
+            new TaskSystemShortcut.Pin(),
+            new TaskSystemShortcut.Install(),
+    };
 
     public static TaskOverlayFactory get(Context context) {
         Preconditions.assertUIThread();
@@ -55,9 +68,23 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
     public static class TaskOverlay {
 
-        public void setTaskInfo(Task task, ThumbnailData thumbnail, Matrix matrix) { }
+        public void setTaskInfo(Task task, ThumbnailData thumbnail, Matrix matrix) {
+        }
 
-        public void reset() { }
+        public void reset() {
+        }
 
+        public List<TaskSystemShortcut> getEnabledShortcuts(TaskView taskView) {
+            final ArrayList<TaskSystemShortcut> shortcuts = new ArrayList<>();
+            final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
+            for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
+                View.OnClickListener onClickListener =
+                        menuOption.getOnClickListener(activity, taskView);
+                if (onClickListener != null) {
+                    shortcuts.add(menuOption);
+                }
+            }
+            return shortcuts;
+        }
     }
 }

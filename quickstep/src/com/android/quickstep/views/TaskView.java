@@ -42,12 +42,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -56,8 +56,9 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -188,6 +189,10 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     public IconView getIconView() {
         return mIconView;
+    }
+
+    public TaskOverlayFactory.TaskOverlay getTaskOverlay() {
+        return mSnapshotView.getTaskOverlay();
     }
 
     public void launchTask(boolean animate) {
@@ -384,7 +389,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         final Context context = getContext();
         final BaseDraggingActivity activity = fromContext(context);
-        for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
+        final List<TaskSystemShortcut> shortcuts =
+                mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
+        final int count = shortcuts.size();
+        for (int i = 0; i < count; ++i) {
+            final TaskSystemShortcut menuOption = shortcuts.get(i);
             OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
             if (onClickListener != null) {
                 info.addAction(menuOption.createAccessibilityAction(context));
@@ -407,7 +416,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             return true;
         }
 
-        for (TaskSystemShortcut menuOption : TaskMenuView.MENU_OPTIONS) {
+        final List<TaskSystemShortcut> shortcuts =
+                mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
+        final int count = shortcuts.size();
+        for (int i = 0; i < count; ++i) {
+            final TaskSystemShortcut menuOption = shortcuts.get(i);
             if (menuOption.hasHandlerForAction(action)) {
                 OnClickListener onClickListener = menuOption.getOnClickListener(
                         fromContext(getContext()), this);
