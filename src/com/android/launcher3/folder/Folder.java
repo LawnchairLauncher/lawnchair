@@ -26,6 +26,8 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
 import android.text.Selection;
@@ -150,6 +152,8 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
     // Cell ranks used for drag and drop
     @Thunk int mTargetRank, mPrevTargetRank, mEmptyCellRank;
+
+    private Path mClipPath;
 
     @ViewDebug.ExportedProperty(category = "launcher",
             mapping = {
@@ -1474,6 +1478,27 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
         if (sHintText == null || force) {
             sHintText = res.getString(R.string.folder_hint_text);
+        }
+    }
+
+    /**
+     * Alternative to using {@link #getClipToOutline()} as it only works with derivatives of
+     * rounded rect.
+     */
+    public void setClipPath(Path clipPath) {
+        mClipPath = clipPath;
+        invalidate();
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (mClipPath != null) {
+            int count = canvas.save();
+            canvas.clipPath(mClipPath);
+            super.draw(canvas);
+            canvas.restoreToCount(count);
+        } else {
+            super.draw(canvas);
         }
     }
 }
