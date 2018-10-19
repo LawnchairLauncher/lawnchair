@@ -117,7 +117,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         }
 
         if (isUserUnlocked) {
-            dataModel.updateDeepShortcutMap(
+            dataModel.updateDeepShortcutCounts(
                     null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
         }
         bindDeepShortcuts(dataModel);

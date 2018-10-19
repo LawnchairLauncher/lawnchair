@@ -34,7 +34,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
@@ -42,9 +41,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 /**
@@ -333,20 +331,16 @@ public class LoaderResults {
     }
 
     public void bindDeepShortcuts() {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy;
+        final HashMap<ComponentKey, Integer> shortcutMapCopy;
         synchronized (mBgDataModel) {
-            shortcutMapCopy = mBgDataModel.deepShortcutMap.clone();
+            shortcutMapCopy = new HashMap<>(mBgDataModel.deepShortcutMap);
         }
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
-                }
+        mUiExecutor.execute(() -> {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                callbacks.bindDeepShortcutMap(shortcutMapCopy);
             }
-        };
-        mUiExecutor.execute(r);
+        });
     }
 
     public void bindAllApps() {

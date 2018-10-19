@@ -29,7 +29,6 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
@@ -52,8 +51,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     private final Launcher mLauncher;
 
-    /** Maps launcher activity components to their list of shortcut ids. */
-    private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
+    /** Maps launcher activity components to a count of how many shortcuts they have. */
+    private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
     /** Maps packages to their BadgeInfo's . */
     private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos = new HashMap<>();
     /** Maps packages to their Widgets */
@@ -146,22 +145,22 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
     }
 
-    public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+    public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mDeepShortcutMap = deepShortcutMapCopy;
         if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
     }
 
-    public List<String> getShortcutIdsForItem(ItemInfo info) {
+    public int getShortcutCountForItem(ItemInfo info) {
         if (!DeepShortcutManager.supportsShortcuts(info)) {
-            return Collections.EMPTY_LIST;
+            return 0;
         }
         ComponentName component = info.getTargetComponent();
         if (component == null) {
-            return Collections.EMPTY_LIST;
+            return 0;
         }
 
-        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.EMPTY_LIST : ids;
+        Integer count = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+        return count == null ? 0 : count;
     }
 
     public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
