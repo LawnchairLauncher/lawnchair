@@ -657,6 +657,7 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
                 ShortcutInfo info = shortcutProvider.get();
+                getModelWriter().updateItemInDatabase(info);
                 ArrayList<ShortcutInfo> update = new ArrayList<>();
                 update.add(info);
                 bindUpdatedShortcuts(update, info.user);

@@ -143,10 +143,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter setter) {
-        setContentVisibility(hasHeader, hasContent, setter, Interpolators.LINEAR);
-    }
-
     public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
         if (hasHeader && !hasContent && mIsCollapsed) {
             Launcher.getLauncher(getContext()).getAppsView().getSearchUiManager().resetSearch();

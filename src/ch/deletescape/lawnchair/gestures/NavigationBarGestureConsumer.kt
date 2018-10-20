@@ -82,7 +82,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
                 activePointerId = ev.getPointerId(0)
                 passedInitialSlop = false
                 quickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx()
-                quickScrubDragSlop = NavigationBarCompat.getQuickScrubDragSlopPx()
+                quickScrubDragSlop = NavigationBarCompat.getQuickScrubTouchSlopPx()
 
                 downPos.set(ev.x, ev.y)
                 lastPos.set(downPos)

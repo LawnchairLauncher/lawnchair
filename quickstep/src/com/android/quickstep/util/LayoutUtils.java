@@ -42,7 +42,7 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            extraSpace = dp.shelfBarSizePx + dp.verticalDragHandleSizePx;
+            extraSpace = dp.hotseatBarSizePx  + dp.verticalDragHandleSizePx;
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }

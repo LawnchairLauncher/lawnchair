@@ -164,7 +164,12 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk) {
-        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false, null);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
+            boolean isInstantApp) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, null);
     }
 
     /**
@@ -173,12 +178,10 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-                                             boolean isInstantApp) {
-        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, new float[1]);
-    }
-
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp, float[] scale) {
+            boolean isInstantApp, float [] scale) {
+        if (scale == null) {
+            scale = new float[1];
+        }
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
@@ -318,7 +321,7 @@ public class LauncherIcons implements AutoCloseable {
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
             int offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
             int size = Math.max(width, height);
-            icon.setBounds(offset, offset, offset + size, offset + size);
+            icon.setBounds(offset, offset, size - offset, size - offset);
         } else {
             icon.setBounds(left, top, left+width, top+height);
         }

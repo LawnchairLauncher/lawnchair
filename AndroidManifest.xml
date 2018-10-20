@@ -93,12 +93,12 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/derived_app_name"
+        android:theme="@style/AppTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:name="ch.deletescape.lawnchair.LawnchairApp"
         android:restoreAnyVersion="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/LauncherTheme"
         tools:replace="android:label">
 
         <!--

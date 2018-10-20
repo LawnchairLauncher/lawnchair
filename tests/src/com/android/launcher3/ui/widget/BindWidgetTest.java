@@ -49,6 +49,7 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,7 +123,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         setupAndVerifyContents(item, LauncherAppWidgetHostView.class, info.label);
     }
 
-    @Test
+    @Test @Ignore
     public void testUnboundWidget_removed() throws Exception {
         LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
@@ -177,7 +178,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                         LauncherSettings.Favorites.APPWIDGET_ID))));
     }
 
-    @Test
+    @Test @Ignore
     public void testPendingWidget_notRestored_removed() throws Exception {
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID

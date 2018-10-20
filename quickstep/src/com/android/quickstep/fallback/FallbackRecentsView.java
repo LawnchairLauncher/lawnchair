@@ -39,7 +39,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
-    protected void onAllTasksRemoved() {
+    protected void startHome() {
         mActivity.startHome();
     }
 

@@ -24,7 +24,6 @@ import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -142,8 +141,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected T mPageIndicator;
 
     // Convenience/caching
-    private static final Matrix sTmpInvMatrix = new Matrix();
-    private static final float[] sTmpPoint = new float[2];
     private static final Rect sTmpRect = new Rect();
 
     protected final Rect mInsets = new Rect();
@@ -242,12 +239,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return index;
     }
 
-    protected void scrollAndForceFinish(int scrollX) {
-        scrollTo(scrollX, 0);
-        mScroller.setFinalX(scrollX);
-        forceFinishScroller(true);
-    }
-
     /**
      * Updates the scroll of the current page immediately to its final scroll position.  We use this
      * in CustomizePagedView to allow tabs to share the same PagedView while resetting the scroll of
@@ -259,7 +250,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
             newX = getScrollForPage(mCurrentPage);
         }
-        scrollAndForceFinish(newX);
+        scrollTo(newX, 0);
+        mScroller.setFinalX(newX);
+        forceFinishScroller(true);
     }
 
     private void abortScrollerAnimation(boolean resetNextPage) {
@@ -544,10 +537,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         setMeasuredDimension(widthSize, heightSize);
     }
 
-    protected void restoreScrollOnLayout() {
-        setCurrentPage(getNextPage());
-    }
-
     @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -599,7 +588,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         if (mScroller.isFinished() && pageScrollChanged) {
-            restoreScrollOnLayout();
+            setCurrentPage(getNextPage());
         }
     }
 
@@ -620,23 +609,26 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 - mInsets.bottom - getPaddingBottom()) / 2;
 
         final int scrollOffsetLeft = mInsets.left + getPaddingLeft();
+        final int scrollOffsetRight = getWidth() - getPaddingRight() - mInsets.right;
         boolean pageScrollChanged = false;
 
-        for (int i = startIndex, childLeft = scrollOffsetLeft + offsetForPageScrolls();
-                i != endIndex;
-                i += delta) {
+        for (int i = startIndex, childLeft = scrollOffsetLeft; i != endIndex; i += delta) {
             final View child = getPageAt(i);
             if (scrollLogic.shouldIncludeView(child)) {
-                final int childTop = verticalCenter - child.getMeasuredHeight() / 2;
                 final int childWidth = child.getMeasuredWidth();
+                final int childRight = childLeft + childWidth;
 
                 if (layoutChildren) {
                     final int childHeight = child.getMeasuredHeight();
-                    child.layout(childLeft, childTop,
-                            childLeft + child.getMeasuredWidth(), childTop + childHeight);
+                    final int childTop = verticalCenter - childHeight / 2;
+                    child.layout(childLeft, childTop, childRight, childTop + childHeight);
                 }
 
-                final int pageScroll = childLeft - scrollOffsetLeft;
+                // In case the pages are of different width, align the page to left or right edge
+                // based on the orientation.
+                final int pageScroll = mIsRtl
+                        ? (childLeft - scrollOffsetLeft)
+                        : Math.max(0, childRight  - scrollOffsetRight);
                 if (outPageScrolls[i] != pageScroll) {
                     pageScrollChanged = true;
                     outPageScrolls[i] = pageScroll;
@@ -664,10 +656,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         } else {
             return 0;
         }
-    }
-
-    protected int offsetForPageScrolls() {
-        return 0;
     }
 
     public void setPageSpacing(int pageSpacing) {
@@ -747,11 +735,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (direction == View.FOCUS_LEFT) {
             if (getCurrentPage() > 0) {
                 snapToPage(getCurrentPage() - 1);
+                getChildAt(getCurrentPage() - 1).requestFocus(direction);
                 return true;
             }
         } else if (direction == View.FOCUS_RIGHT) {
             if (getCurrentPage() < getPageCount() - 1) {
                 snapToPage(getCurrentPage() + 1);
+                getChildAt(getCurrentPage() + 1).requestFocus(direction);
                 return true;
             }
         }

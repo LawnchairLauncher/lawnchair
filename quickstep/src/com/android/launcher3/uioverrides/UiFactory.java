@@ -25,7 +25,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.Manifest;
 import android.animation.AnimatorSet;
@@ -51,7 +50,6 @@ import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
@@ -180,8 +178,9 @@ public class UiFactory {
         DeviceProfile profile = launcher.getDeviceProfile();
         if (ContextCompat.checkSelfPermission(launcher, Manifest.permission.STATUS_BAR) == PackageManager.PERMISSION_GRANTED) {
             WindowManagerWrapper.getInstance().setShelfHeight(
-                    state != ALL_APPS && launcher.isUserActive() && !profile.isVerticalBarLayout(),
-                    profile.shelfBarSizePx);
+                    (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                            && !profile.isVerticalBarLayout(),
+                    profile.hotseatBarSizePx);
         }
 
         if (state == NORMAL) {

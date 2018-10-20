@@ -54,7 +54,7 @@ public class SpringRelativeLayout extends RelativeLayout {
                 }
             };
 
-    private final SparseBooleanArray mSpringViews = new SparseBooleanArray();
+    protected final SparseBooleanArray mSpringViews = new SparseBooleanArray();
     private final SpringAnimation mSpring;
 
     private float mDampedScrollShift = 0;
@@ -85,17 +85,25 @@ public class SpringRelativeLayout extends RelativeLayout {
         invalidate();
     }
 
+    /**
+     * Used to clip the canvas when drawing child views during overscroll.
+     */
+    public int getCanvasClipTopForOverscroll() {
+        return 0;
+    }
+
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        if (mSpringViews.get(child.getId())) {
-            if (child instanceof SpringChild) {
-                ((SpringChild) child).setShift(mDampedScrollShift);
-            } else if (mDampedScrollShift != 0) {
-                canvas.translate(0, mDampedScrollShift);
-                boolean result = super.drawChild(canvas, child, drawingTime);
-                canvas.translate(0, -mDampedScrollShift);
-                return result;
-            }
+        if (mDampedScrollShift != 0 && mSpringViews.get(child.getId())) {
+            int saveCount = canvas.save();
+
+            canvas.clipRect(0, getCanvasClipTopForOverscroll(), getWidth(), getHeight());
+            canvas.translate(0, mDampedScrollShift);
+            boolean result = super.drawChild(canvas, child, drawingTime);
+
+            canvas.restoreToCount(saveCount);
+
+            return result;
         }
         return super.drawChild(canvas, child, drawingTime);
     }
@@ -178,10 +186,5 @@ public class SpringRelativeLayout extends RelativeLayout {
             mDistance = 0;
             finishScrollWithVelocity(0);
         }
-    }
-
-    public interface SpringChild {
-
-        void setShift(float shift);
     }
 }

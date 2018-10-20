@@ -262,8 +262,10 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
      * Called when the start transition ends and the user settles on this particular state.
      */
     public void onStateTransitionEnd(Launcher launcher) {
-        if (this == NORMAL) {
+        if (this == NORMAL || this == SPRING_LOADED) {
             UiFactory.resetOverview(launcher);
+        }
+        if (this == NORMAL) {
             // Clear any rotation locks when going to normal state
             launcher.getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }

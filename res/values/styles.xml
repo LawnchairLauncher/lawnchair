@@ -67,7 +67,9 @@
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
-    <style name="LauncherThemeDark" parent="@style/LauncherTheme">
+    <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFFFF</item>
         <item name="android:textColorTertiary">#CCFFFFFF</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
@@ -81,13 +83,9 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
-
-        <!-- Backports -->
-        <item name="android:textColorPrimary">@color/primary_text_material_dark</item>
-        <item name="android:textColorSecondary">@color/secondary_text_material_dark</item>
     </style>
 
-    <style name="LauncherThemeBlack" parent="@style/LauncherThemeDark">
+    <style name="LauncherThemeBlack" parent="@style/LauncherTheme.Dark">
         <item name="android:colorPrimary">#000000</item>
         <item name="allAppsScrimColor">#7A000000</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
@@ -98,12 +96,12 @@
         <item name="isMainColorDark">true</item>
     </style>
 
-    <style name="LauncherThemeTransparent" parent="@style/LauncherThemeDark">
+    <style name="LauncherThemeTransparent" parent="@style/LauncherTheme.Dark">
         <item name="allAppsScrimColor">#00FFFFFF</item>
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
-    <style name="LauncherThemeDark.DarKText" parent="@style/LauncherThemeDark">
+    <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
@@ -112,6 +110,13 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
+
+    <!-- A derivative project can extend these themes to customize the application theme without
+         affecting the base theme -->
+    <style name="AppTheme" parent="@style/LauncherTheme" />
+    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
+    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
@@ -140,7 +145,7 @@
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
+    <style name="WidgetContainerTheme.Dark" parent="LauncherTheme.Dark">
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
@@ -162,6 +167,7 @@
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:importantForAccessibility">no</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
@@ -241,7 +247,7 @@
     <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
-    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
+    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherTheme.Dark">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
     <style name="GoogleSearchLauncherThemeBlack" parent="@style/LauncherThemeBlack">

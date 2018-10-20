@@ -160,8 +160,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             }
                         };
 
-                AbstractFloatingView.closeOpenViews(activity, true,
-                        AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
+                dismissTaskMenuView(activity);
 
                 final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
                 if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
@@ -198,9 +197,14 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     final Rect taskBounds = new Rect(position[0], position[1],
                             position[0] + width, position[1] + height);
 
+                    // Take the thumbnail of the task without a scrim and apply it back after
+                    float alpha = thumbnailView.getDimAlpha();
+                    thumbnailView.setDimAlpha(0);
                     Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
                             taskBounds.width(), taskBounds.height(), thumbnailView, 1f,
                             Color.BLACK);
+                    thumbnailView.setDimAlpha(alpha);
+
                     AppTransitionAnimationSpecsFuture future =
                             new AppTransitionAnimationSpecsFuture(mHandler) {
                         @Override
@@ -254,6 +258,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     }
                 };
                 taskView.launchTask(true, resultCallback, mHandler);
+                dismissTaskMenuView(activity);
             };
         }
     }
@@ -310,7 +315,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 return v -> {
                     try {
                         ActivityManager.getService().forceStopPackage(packageName, userId);
-                        AbstractFloatingView.closeAllOpenViews(activity);
+                        dismissTaskMenuView(activity);
                     } catch (RemoteException ignored) {
                     }
                 };
@@ -318,5 +323,10 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 return null;
             }
         }
+    }
+
+    private static void dismissTaskMenuView(BaseDraggingActivity activity) {
+        AbstractFloatingView.closeOpenViews(activity, true,
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }

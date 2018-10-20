@@ -304,6 +304,24 @@ public class LauncherStateManager {
 
     /**
      * Creates a {@link AnimatorPlaybackController} that can be used for a controlled
+     * state transition. The UI is force-set to fromState before creating the controller.
+     * @param fromState the initial state for the transition.
+     * @param state the final state for the transition.
+     * @param duration intended duration for normal playback. Use higher duration for better
+     *                accuracy.
+     */
+    public AnimatorPlaybackController createAnimationToNewWorkspace(
+            LauncherState fromState, LauncherState state, long duration) {
+        mConfig.reset();
+        for (StateHandler handler : getStateHandlers()) {
+            handler.setState(fromState);
+        }
+
+        return createAnimationToNewWorkspace(state, duration);
+    }
+
+    /**
+     * Creates a {@link AnimatorPlaybackController} that can be used for a controlled
      * state transition.
      * @param state the final state for the transition.
      * @param duration intended duration for normal playback. Use higher duration for better
@@ -354,12 +372,6 @@ public class LauncherStateManager {
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                mState = mCurrentStableState;
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
@@ -376,7 +388,9 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        mState.onStateDisabled(mLauncher);
+        if (mState != state) {
+            mState.onStateDisabled(mLauncher);
+        }
         mState = state;
         mState.onStateEnabled(mLauncher);
         mLauncher.getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
@@ -444,6 +458,7 @@ public class LauncherStateManager {
     }
 
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        clearCurrentAnimation();
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;
@@ -544,6 +559,9 @@ public class LauncherStateManager {
 
         @Override
         public void onAnimationEnd(Animator animation) {
+            if (playbackController != null && playbackController.getTarget() == animation) {
+                playbackController = null;
+            }
             if (mCurrentAnimation == animation) {
                 mCurrentAnimation = null;
             }
