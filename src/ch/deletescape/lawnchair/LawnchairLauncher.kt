@@ -117,7 +117,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
     open fun restartIfPending() {
         if (sRestart) {
-            lawnchairApp.restart(true)
+            lawnchairApp.restart(false)
         }
     }
 

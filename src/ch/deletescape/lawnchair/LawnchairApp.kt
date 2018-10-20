@@ -44,7 +44,11 @@ class LawnchairApp : Application() {
     }
 
     fun restart(recreateLauncher: Boolean = true) {
-        activityHandler.finishAll(recreateLauncher)
+        if (recreateLauncher) {
+            activityHandler.finishAll(recreateLauncher)
+        } else {
+            Utilities.restartLauncher(this)
+        }
     }
 
     fun performGlobalAction(action: Int): Boolean {
