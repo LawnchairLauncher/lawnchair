@@ -60,7 +60,7 @@ public class WallpaperColorInfoVOMR1 extends WallpaperColorInfo implements OnCol
 
     @Override
     public int getActualMainColor() {
-        return mColors == null ? -1 : mColors.getPrimaryColor().toArgb();
+        return mColors == null ? Color.TRANSPARENT : mColors.getPrimaryColor().toArgb();
     }
 
     @Override
@@ -71,13 +71,13 @@ public class WallpaperColorInfoVOMR1 extends WallpaperColorInfo implements OnCol
     @Override
     public int getActualSecondaryColor() {
         Color secondary = mColors == null ? null : mColors.getSecondaryColor();
-        return secondary == null ? -1 : secondary.toArgb();
+        return secondary == null ? Color.TRANSPARENT : secondary.toArgb();
     }
 
     @Override
     public int getTertiaryColor() {
         Color tertiary = mColors == null ? null : mColors.getTertiaryColor();
-        return tertiary == null ? -1 : tertiary.toArgb();
+        return tertiary == null ? Color.TRANSPARENT : tertiary.toArgb();
     }
 
     @Override

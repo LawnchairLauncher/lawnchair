@@ -42,7 +42,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
             WallpaperMainColorResolver(ColorEngine.ColorResolver.Config(engine)),
             WallpaperSecondaryColorResolver(ColorEngine.ColorResolver.Config(engine)),
             WallpaperTertiaryColorResolver(ColorEngine.ColorResolver.Config(engine)))
-            .filter { it.resolveColor() != -1 }
+            .filter { Color.alpha(it.resolveColor()) > 0 }
 
     private val isLandscape = orientation(context) == Configuration.ORIENTATION_LANDSCAPE
 
