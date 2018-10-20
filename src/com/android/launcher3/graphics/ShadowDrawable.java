@@ -17,6 +17,7 @@
 package com.android.launcher3.graphics;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -150,6 +152,21 @@ public class ShadowDrawable extends Drawable {
             bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnBitmap = bitmap;
+    }
+
+    public static ShadowDrawable wrap(Context context, Drawable d, int shadowColorRes,
+            float elevationDps, int darkTintColorRes) {
+        ShadowDrawable sd = new ShadowDrawable();
+        sd.setChild(d);
+        sd.mState.mShadowColor = context.getColor(shadowColorRes);
+        sd.mState.mShadowSize = (int) LawnchairUtilsKt.dpToPx(elevationDps);
+        sd.mState.mDarkTintColor = context.getColor(darkTintColorRes);
+        sd.mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * sd.mState.mShadowSize;
+        sd.mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * sd.mState.mShadowSize;
+        sd.mState.mChangingConfigurations = d.getChangingConfigurations();
+
+        sd.mState.mChildState = d.getConstantState();
+        return sd;
     }
 
     @Override

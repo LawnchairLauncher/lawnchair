@@ -21,7 +21,7 @@ abstract class SearchProvider(protected val context: Context) {
     }
 
     protected fun wrapInShadowDrawable(d: Drawable): Drawable {
-        return (context.getDrawable(R.drawable.ic_super_g_shadow) as ShadowDrawable).setChild(d)
+        return ShadowDrawable.wrap(context, d, R.color.qsb_icon_shadow_color, 4f, R.color.qsb_dark_icon_tint)
     }
 
     fun getIcon(colored: Boolean) = if (colored) getIcon() else getShadowIcon()
