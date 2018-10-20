@@ -129,7 +129,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockStyles = DockStyle.StyleManager(this, recreate, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
-    val dockSearchBar by BooleanPref("pref_dockSearchBar", true, restart)
+    val dockSearchBar by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow

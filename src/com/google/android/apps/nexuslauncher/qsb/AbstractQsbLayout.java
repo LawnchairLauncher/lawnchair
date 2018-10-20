@@ -495,7 +495,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (settingsIntent == null && clipboardText == null) {
             return false;
         }
-        startActionMode(new b(this, clipboardText, settingsIntent), 1);
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            startActionMode(new b(this, clipboardText, settingsIntent), 1);
+        }
         return true;
     }
 

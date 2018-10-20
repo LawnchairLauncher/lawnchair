@@ -416,8 +416,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
                 (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
-                        || mLauncher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
-                        == PackageManager.PERMISSION_GRANTED);
+                        || Utilities
+                        .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
     }
 
     private List<AppInfo> getFiltersAppInfos() {

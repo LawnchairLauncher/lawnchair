@@ -810,7 +810,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     private boolean hasControlRemoteAppTransitionPermission() {
-        return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
-                == PackageManager.PERMISSION_GRANTED;
+        return Utilities.hasPermission(mLauncher, CONTROL_REMOTE_APP_TRANSITION_PERMISSION);
     }
 }
