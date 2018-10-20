@@ -86,7 +86,7 @@ public class LauncherAppState {
             throw new RuntimeException(
                     "Initializing LauncherAppState in the absence of LauncherProvider");
         }
-        Log.v(Launcher.TAG, "LauncherAppState initiated");
+        Log.v(Launcher.TAG, "LauncherAppState initiated", new Throwable());
         Preconditions.assertUIThread();
         mContext = context;
 
@@ -186,11 +186,10 @@ public class LauncherAppState {
             cl = context.getContentResolver()
                     .acquireContentProviderClient(LauncherProvider.AUTHORITY);
             return (LauncherProvider) cl.getLocalContentProvider();
-        } catch (Exception e) {
+        } finally {
             if (cl != null) {
                 cl.release();
             }
-            throw e;
         }
     }
 
