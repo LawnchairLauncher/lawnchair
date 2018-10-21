@@ -16,16 +16,16 @@
 
 package com.android.launcher3.util;
 
-import android.util.LongSparseArray;
+import android.util.SparseArray;
 
 import java.util.Iterator;
 
 /**
- * Extension of {@link LongSparseArray} with some utility methods.
+ * Extension of {@link SparseArray} with some utility methods.
  */
-public class LongArrayMap<E> extends LongSparseArray<E> implements Iterable<E> {
+public class IntSparseArrayMap<E> extends SparseArray<E> implements Iterable<E> {
 
-    public boolean containsKey(long key) {
+    public boolean containsKey(int key) {
         return indexOfKey(key) >= 0;
     }
 
@@ -34,8 +34,8 @@ public class LongArrayMap<E> extends LongSparseArray<E> implements Iterable<E> {
     }
 
     @Override
-    public LongArrayMap<E> clone() {
-        return (LongArrayMap<E>) super.clone();
+    public IntSparseArrayMap<E> clone() {
+        return (IntSparseArrayMap<E>) super.clone();
     }
 
     @Override

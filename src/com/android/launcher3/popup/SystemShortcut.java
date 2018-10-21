@@ -3,10 +3,15 @@ package com.android.launcher3.popup;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
@@ -23,18 +28,82 @@ import com.android.launcher3.widget.WidgetsBottomSheet;
 import java.util.List;
 
 /**
- * Represents a system shortcut for a given app. The shortcut should have a static label and
- * icon, and an onClickListener that depends on the item that the shortcut services.
+ * Represents a system shortcut for a given app. The shortcut should have a label and icon, and an
+ * onClickListener that depends on the item that the shortcut services.
  *
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  */
 public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo {
-    public final int iconResId;
-    public final int labelResId;
+    private final int mIconResId;
+    private final int mLabelResId;
+    private final Drawable mIcon;
+    private final CharSequence mLabel;
+    private final CharSequence mContentDescription;
+    private final int mAccessibilityActionId;
 
     public SystemShortcut(int iconResId, int labelResId) {
-        this.iconResId = iconResId;
-        this.labelResId = labelResId;
+        mIconResId = iconResId;
+        mLabelResId = labelResId;
+        mAccessibilityActionId = labelResId;
+        mIcon = null;
+        mLabel = null;
+        mContentDescription = null;
+    }
+
+    public SystemShortcut(Drawable icon, CharSequence label, CharSequence contentDescription,
+            int accessibilityActionId) {
+        mIcon = icon;
+        mLabel = label;
+        mContentDescription = contentDescription;
+        mAccessibilityActionId = accessibilityActionId;
+        mIconResId = 0;
+        mLabelResId = 0;
+    }
+
+    public SystemShortcut(SystemShortcut other) {
+        mIconResId = other.mIconResId;
+        mLabelResId = other.mLabelResId;
+        mIcon = other.mIcon;
+        mLabel = other.mLabel;
+        mContentDescription = other.mContentDescription;
+        mAccessibilityActionId = other.mAccessibilityActionId;
+    }
+
+    public void setIconAndLabelFor(View iconView, TextView labelView) {
+        if (mIcon != null) {
+            iconView.setBackground(mIcon);
+        } else {
+            iconView.setBackgroundResource(mIconResId);
+        }
+
+        if (mLabel != null) {
+            labelView.setText(mLabel);
+        } else {
+            labelView.setText(mLabelResId);
+        }
+    }
+
+    public void setIconAndContentDescriptionFor(ImageView view) {
+        if (mIcon != null) {
+            view.setImageDrawable(mIcon);
+        } else {
+            view.setImageResource(mIconResId);
+        }
+
+        view.setContentDescription(getContentDescription(view.getContext()));
+    }
+
+    private CharSequence getContentDescription(Context context) {
+        return mContentDescription != null ? mContentDescription : context.getText(mLabelResId);
+    }
+
+    public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(Context context) {
+        return new AccessibilityNodeInfo.AccessibilityAction(mAccessibilityActionId,
+                getContentDescription(context));
+    }
+
+    public boolean hasHandlerForAction(int action) {
+        return mAccessibilityActionId == action;
     }
 
     public abstract View.OnClickListener getOnClickListener(T activity, ItemInfo itemInfo);

@@ -19,7 +19,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.systemui.shared.system.ActivityManagerWrapper
@@ -51,7 +51,9 @@ import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ChoreographerCompat;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
@@ -184,6 +186,7 @@ public class TouchInteractionService extends Service {
     private OverviewCallbacks mOverviewCallbacks;
     private TaskOverlayFactory mTaskOverlayFactory;
     private TouchInteractionLog mTouchInteractionLog;
+    private InputConsumerController mInputConsumer;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -202,6 +205,8 @@ public class TouchInteractionService extends Service {
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.get(this);
         mTouchInteractionLog = new TouchInteractionLog();
+        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
+        mInputConsumer.registerInputConsumer();
 
         sConnected = true;
 
@@ -212,6 +217,7 @@ public class TouchInteractionService extends Service {
 
     @Override
     public void onDestroy() {
+        mInputConsumer.unregisterInputConsumer();
         mOverviewCommandHelper.onDestroy();
         sConnected = false;
         super.onDestroy();
@@ -255,7 +261,7 @@ public class TouchInteractionService extends Service {
                             mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                            mTaskOverlayFactory, tracker, mTouchInteractionLog);
+                            mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
         }
     }
 
@@ -299,7 +305,7 @@ public class TouchInteractionService extends Service {
             mActivityHelper = activityHelper;
             mActivity = activity;
             mTarget = activity.getDragLayer();
-            mTouchSlop = ViewConfiguration.get(mTarget.getContext()).getScaledTouchSlop();
+            mTouchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
             mStartingInActivityBounds = startingInActivityBounds;
 
             mQuickScrubController = mActivity.<RecentsView>getOverviewPanel()
@@ -324,12 +330,6 @@ public class TouchInteractionService extends Service {
                 mDownPos.set(ev.getX(), ev.getY());
             } else if (!mTrackingStarted) {
                 switch (action) {
-                    case ACTION_POINTER_UP:
-                    case ACTION_POINTER_DOWN:
-                        if (!mTrackingStarted) {
-                            mInvalidated = true;
-                        }
-                        break;
                     case ACTION_CANCEL:
                     case ACTION_UP:
                         startTouchTracking(ev, true /* updateLocationOffset */);
@@ -359,15 +359,26 @@ public class TouchInteractionService extends Service {
             }
 
             // Send down touch event
-            MotionEvent down = MotionEvent.obtain(ev);
+            MotionEvent down = MotionEvent.obtainNoHistory(ev);
             down.setAction(ACTION_DOWN);
             sendEvent(down);
-            down.recycle();
 
             mTrackingStarted = true;
+            // Send pointer down for remaining pointers.
+            int pointerCount = ev.getPointerCount();
+            for (int i = 1; i < pointerCount; i++) {
+                down.setAction(ACTION_POINTER_DOWN | (i << ACTION_POINTER_INDEX_SHIFT));
+                sendEvent(down);
+            }
+
+            down.recycle();
         }
 
         private void sendEvent(MotionEvent ev) {
+            if (!mTarget.verifyTouchDispatch(this, ev)) {
+                mInvalidated = true;
+                return;
+            }
             int flags = ev.getEdgeFlags();
             ev.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
             ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);

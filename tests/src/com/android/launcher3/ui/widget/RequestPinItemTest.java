@@ -42,6 +42,7 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -60,10 +61,9 @@ import java.util.UUID;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RequestPinItemTest  extends AbstractLauncherUiTest {
+public class RequestPinItemTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
-    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private String mCallbackAction;
     private String mShortcutId;
@@ -152,8 +152,8 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         // Open all apps and wait for load complete
-        final UiObject2 appsContainer = openAllApps();
-        assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT));
+        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
+        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(
@@ -192,7 +192,7 @@ public class RequestPinItemTest  extends AbstractLauncherUiTest {
 
         // Go back to home
         mActivityMonitor.returnToHome();
-        assertTrue(Wait.atMost(new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT));
+        Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
     }
 
     /**

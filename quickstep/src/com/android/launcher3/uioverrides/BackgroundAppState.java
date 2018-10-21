@@ -15,10 +15,14 @@
  */
 package com.android.launcher3.uioverrides;
 
+import android.os.RemoteException;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.quickstep.QuickScrubController;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 
 /**
  * State indicating that the Launcher is behind an app
@@ -42,5 +46,28 @@ public class BackgroundAppState extends OverviewState {
         float scrollRange = Math.max(controller.getShiftRange(), 1);
         float progressDelta = (transitionLength / scrollRange);
         return super.getVerticalProgress(launcher) + progressDelta;
+    }
+
+    @Override
+    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+        // Initialize the recents view scale to what it would be when starting swipe up/quickscrub
+        RecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.getTaskSize(sTempRect);
+        int appWidth = launcher.getDragLayer().getWidth();
+        if (recentsView.shouldUseMultiWindowTaskSizeStrategy()) {
+            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(launcher).getSystemUiProxy();
+            if (sysUiProxy != null) {
+                try {
+                    // Try to use the actual non-minimized app width (launcher will be resized to
+                    // the non-minimized bounds, which differs from the app width in landscape
+                    // multi-window mode
+                    appWidth = sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds().width();
+                } catch (RemoteException e) {
+                    // Ignore, fall back to just using the drag layer width
+                }
+            }
+        }
+        float scale = (float) appWidth / sTempRect.width();
+        return new float[] { scale, 0f };
     }
 }

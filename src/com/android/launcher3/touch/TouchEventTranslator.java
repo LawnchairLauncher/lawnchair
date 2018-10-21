@@ -82,7 +82,7 @@ public class TouchEventTranslator {
     public void dispatchDownEvents(MotionEvent ev) {
         for(int i = 0; i < ev.getPointerCount() && i < mDownEvents.size(); i++) {
             int pid = ev.getPointerId(i);
-            put(pid, ev.getX(i), 0, mDownEvents.get(i).timeStamp, ev);
+            put(pid, i, ev.getX(i), 0, mDownEvents.get(i).timeStamp, ev);
         }
     }
 
@@ -103,7 +103,7 @@ public class TouchEventTranslator {
                     }
                     generateEvent(ev.getAction(), ev);
                 } else {
-                    put(pid, x, y, ev);
+                    put(pid, index, x, y, ev);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -128,11 +128,11 @@ public class TouchEventTranslator {
         }
     }
 
-    private TouchEventTranslator put(int id, float x, float y, MotionEvent ev) {
-        return put(id, x, y, ev.getEventTime(), ev);
+    private TouchEventTranslator put(int id, int index, float x, float y, MotionEvent ev) {
+        return put(id, index, x, y, ev.getEventTime(), ev);
     }
 
-    private TouchEventTranslator put(int id, float x, float y, long ms, MotionEvent ev) {
+    private TouchEventTranslator put(int id, int index, float x, float y, long ms, MotionEvent ev) {
         checkFingerExistence(id, false);
         boolean isInitialDown = (mFingers.size() == 0);
 
@@ -155,7 +155,7 @@ public class TouchEventTranslator {
         } else {
             action = MotionEvent.ACTION_POINTER_DOWN;
             // Set the id of the changed pointer.
-            action |= id << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+            action |= index << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
         }
         generateEvent(action, ms, ev);
         return this;
@@ -209,7 +209,7 @@ public class TouchEventTranslator {
     public void printSamples(String msg, MotionEvent ev) {
         System.out.printf("%s %s", msg, MotionEvent.actionToString(ev.getActionMasked()));
         final int pointerCount = ev.getPointerCount();
-        System.out.printf("#%d/%d", ev.getPointerId(ev.getActionIndex()), pointerCount);
+        System.out.printf("#%d/%d", ev.getActionIndex(), pointerCount);
         System.out.printf(" t=%d:", ev.getEventTime());
         for (int p = 0; p < pointerCount; p++) {
             System.out.printf("  id=%d: (%f,%f)",
@@ -241,6 +241,10 @@ public class TouchEventTranslator {
                 ev.getFlags() /* flags */);
         if (DEBUG) {
             printSamples(TAG + " generateEvent", event);
+        }
+        if (event.getPointerId(event.getActionIndex()) < 0) {
+            printSamples(TAG + "generateEvent", event);
+            throw new IllegalStateException(event.getActionIndex() + " not found in MotionEvent");
         }
         mListener.accept(event);
         event.recycle();

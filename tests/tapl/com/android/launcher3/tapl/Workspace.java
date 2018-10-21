@@ -38,11 +38,6 @@ public final class Workspace extends Home {
         mHotseat = launcher.waitForLauncherObject("hotseat");
     }
 
-    @Override
-    protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.WORKSPACE;
-    }
-
     /**
      * Swipes up to All Apps.
      *

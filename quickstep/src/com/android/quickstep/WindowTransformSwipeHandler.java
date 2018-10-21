@@ -78,6 +78,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -226,8 +227,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
 
-    private final RecentsAnimationWrapper mRecentsAnimationWrapper =
-            new RecentsAnimationWrapper(this::createNewTouchProxyHandler);
+    private final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
@@ -241,7 +241,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     WindowTransformSwipeHandler(int id, RunningTaskInfo runningTaskInfo, Context context,
             long touchTimeMs, ActivityControlHelper<T> controller,
-            TouchInteractionLog touchInteractionLog) {
+            InputConsumerController inputConsumer, TouchInteractionLog touchInteractionLog) {
         this.id = id;
         mContext = context;
         mRunningTaskInfo = runningTaskInfo;
@@ -251,6 +251,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityInitListener = mActivityControlHelper
                 .createActivityInitListener(this::onActivityInit);
         mTouchInteractionLog = touchInteractionLog;
+        mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
+                this::createNewTouchProxyHandler);
 
         initStateCallbacks();
     }
@@ -860,7 +862,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mActivityInitListener.unregister();
-        mRecentsAnimationWrapper.unregisterInputConsumer();
         mTaskSnapshot = null;
     }
 

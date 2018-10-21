@@ -17,6 +17,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import org.junit.Before;
@@ -24,7 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -43,8 +43,8 @@ public class GridSizeMigrationTaskTest {
             new ProviderTestRule.Builder(TestLauncherProvider.class, LauncherProvider.AUTHORITY)
                     .build();
 
-    private static final long DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-    private static final long HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+    private static final int DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
+    private static final int HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
     private static final int APPLICATION = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     private static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -75,7 +75,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testHotseatMigration_apps_dropped() throws Exception {
-        long[] hotseatItems = {
+        int[] hotseatItems = {
                 addItem(APPLICATION, 0, HOTSEAT, 0, 0),
                 addItem(SHORTCUT, 1, HOTSEAT, 0, 0),
                 -1,
@@ -92,7 +92,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testHotseatMigration_shortcuts_dropped() throws Exception {
-        long[] hotseatItems = {
+        int[] hotseatItems = {
                 addItem(APPLICATION, 0, HOTSEAT, 0, 0),
                 addItem(30, 1, HOTSEAT, 0, 0),
                 -1,
@@ -107,11 +107,11 @@ public class GridSizeMigrationTaskTest {
         verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
     }
 
-    private void verifyHotseat(long... sortedIds) {
+    private void verifyHotseat(int... sortedIds) {
         int screenId = 0;
         int total = 0;
 
-        for (long id : sortedIds) {
+        for (int id : sortedIds) {
             Cursor c = mProviderRule.getResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                     new String[]{LauncherSettings.Favorites._ID},
                     "container=-101 and screen=" + screenId, null, null, null);
@@ -139,7 +139,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_empty_row_column_removed() throws Exception {
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 {  0,  0, -1,  1},
                 {  3,  1, -1,  4},
                 { -1, -1, -1, -1},
@@ -150,7 +150,7 @@ public class GridSizeMigrationTaskTest {
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Column 2 and row 2 got removed.
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
                 {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
                 {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
@@ -159,7 +159,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_new_screen_created() throws Exception {
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -170,7 +170,7 @@ public class GridSizeMigrationTaskTest {
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column get moved to new screen
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
                 {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
                 {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
@@ -181,7 +181,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_items_merged_in_next_screen() throws Exception {
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -196,7 +196,7 @@ public class GridSizeMigrationTaskTest {
 
         // Items in the second column of the first screen should get placed on the 3rd
         // row of the second screen
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
                 {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
                 {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
@@ -211,7 +211,7 @@ public class GridSizeMigrationTaskTest {
     public void testWorkspace_items_not_merged_in_next_screen() throws Exception {
         // First screen has 2 items that need to be moved, but second screen has only one
         // empty space after migration (top-left corner)
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -227,7 +227,7 @@ public class GridSizeMigrationTaskTest {
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
                 {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
                 {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
@@ -244,7 +244,7 @@ public class GridSizeMigrationTaskTest {
     public void testWorkspace_first_row_blocked() throws Exception {
         // The first screen has one item on the 4th column which needs moving, as the first row
         // will be kept empty.
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 { -1, -1, -1, -1},
                 {  3,  1,  7,  0},
                 {  8,  7,  7, -1},
@@ -255,7 +255,7 @@ public class GridSizeMigrationTaskTest {
                 new Point(4, 4), new Point(3, 4)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {          -1,           -1,           -1},
                 {ids[0][1][0], ids[0][1][1], ids[0][1][2]},
                 {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
@@ -268,7 +268,7 @@ public class GridSizeMigrationTaskTest {
     @Test
     public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
         // Items will get moved to the next screen to keep the first screen empty.
-        long[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = createGrid(new int[][][]{{
                 { -1, -1, -1, -1},
                 {  0,  1,  0,  0},
                 {  8,  7,  7, -1},
@@ -279,7 +279,7 @@ public class GridSizeMigrationTaskTest {
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
-        verifyWorkspace(new long[][][] {{
+        verifyWorkspace(new int[][][] {{
                 {          -1,           -1,           -1},
                 {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
                 {ids[0][3][0], ids[0][3][1], ids[0][3][2]},
@@ -289,7 +289,7 @@ public class GridSizeMigrationTaskTest {
         }});
     }
 
-    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+    private int[][][] createGrid(int[][][] typeArray) throws Exception {
         return createGrid(typeArray, 1);
     }
 
@@ -300,14 +300,14 @@ public class GridSizeMigrationTaskTest {
      *                  two represent the workspace grid.
      * @return the same grid representation where each entry is the corresponding item id.
      */
-    private long[][][] createGrid(int[][][] typeArray, long startScreen) throws Exception {
+    private int[][][] createGrid(int[][][] typeArray, int startScreen) throws Exception {
         LauncherSettings.Settings.call(mProviderRule.getResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        long[][][] ids = new long[typeArray.length][][];
+        int[][][] ids = new int[typeArray.length][][];
 
         for (int i = 0; i < typeArray.length; i++) {
             // Add screen to DB
-            long screenId = startScreen + i;
+            int screenId = startScreen + i;
 
             // Keep the screen id counter up to date
             LauncherSettings.Settings.call(mProviderRule.getResolver(),
@@ -318,9 +318,9 @@ public class GridSizeMigrationTaskTest {
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             mProviderRule.getResolver().insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
 
-            ids[i] = new long[typeArray[i].length][];
+            ids[i] = new int[typeArray[i].length][];
             for (int y = 0; y < typeArray[i].length; y++) {
-                ids[i][y] = new long[typeArray[i][y].length];
+                ids[i][y] = new int[typeArray[i][y].length];
                 for (int x = 0; x < typeArray[i][y].length; x++) {
                     if (typeArray[i][y][x] < 0) {
                         // Empty cell
@@ -339,16 +339,16 @@ public class GridSizeMigrationTaskTest {
      * @param ids A 3d array where the first dimension represents the screen, and the rest two
      *            represent the workspace grid.
      */
-    private void verifyWorkspace(long[][][] ids) {
-        ArrayList<Long> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+    private void verifyWorkspace(int[][][] ids) {
+        IntArray allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         assertEquals(ids.length, allScreens.size());
         int total = 0;
 
         for (int i = 0; i < ids.length; i++) {
-            long screenId = allScreens.get(i);
+            int screenId = allScreens.get(i);
             for (int y = 0; y < ids[i].length; y++) {
                 for (int x = 0; x < ids[i][y].length; x++) {
-                    long id = ids[i][y][x];
+                    int id = ids[i][y][x];
 
                     Cursor c = mProviderRule.getResolver().query(
                             LauncherSettings.Favorites.CONTENT_URI,
@@ -382,10 +382,10 @@ public class GridSizeMigrationTaskTest {
      * @param type {@link #APPLICATION} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
-    private long addItem(int type, long screen, long container, int x, int y) throws Exception {
-        long id = LauncherSettings.Settings.call(mProviderRule.getResolver(),
+    private int addItem(int type, int screen, int container, int x, int y) throws Exception {
+        int id = LauncherSettings.Settings.call(mProviderRule.getResolver(),
                 LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
 
         ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites._ID, id);

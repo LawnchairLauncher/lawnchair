@@ -286,7 +286,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
 
             if (interactionType == INTERACTION_NORMAL) {
-                playScaleDownAnim(anim, activity);
+                playScaleDownAnim(anim, activity, endState);
             }
 
             anim.setDuration(transitionLength * 2);
@@ -304,14 +304,24 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         /**
          * Scale down recents from the center task being full screen to being in overview.
          */
-        private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
+        private void playScaleDownAnim(AnimatorSet anim, Launcher launcher,
+                LauncherState endState) {
             RecentsView recentsView = launcher.getOverviewPanel();
             TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
             if (v == null) {
                 return;
             }
+
+            // Setup the clip animation helper source/target rects in the final transformed state
+            // of the recents view (a scale may be applied prior to this animation starting to
+            // line up the side pages during swipe up)
+            float prevRvScale = recentsView.getScaleX();
+            float targetRvScale = endState.getOverviewScaleAndTranslationYFactor(launcher)[0];
+            SCALE_PROPERTY.set(recentsView, targetRvScale);
             ClipAnimationHelper clipHelper = new ClipAnimationHelper();
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
+            SCALE_PROPERTY.set(recentsView, prevRvScale);
+
             if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
                 float fromScale = clipHelper.getSourceRect().width()
                         / clipHelper.getTargetRect().width();

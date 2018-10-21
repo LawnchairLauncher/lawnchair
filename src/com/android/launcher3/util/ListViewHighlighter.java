@@ -75,7 +75,7 @@ public class ListViewHighlighter implements OnScrollListener, RecyclerListener,
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem,
             int visibleItemCount, int totalItemCount) {
-        highlightIfVisible(firstVisibleItem, firstVisibleItem + visibleItemCount);
+        highlightIfVisible(firstVisibleItem, firstVisibleItem + visibleItemCount - 1);
     }
 
     private boolean highlightIfVisible(int start, int end) {

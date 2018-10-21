@@ -65,7 +65,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
     }
 
     public static FolderAdaptiveIcon createFolderAdaptiveIcon(
-            Launcher launcher, long folderId, Point dragViewSize) {
+            Launcher launcher, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.blur_size_medium_outline);

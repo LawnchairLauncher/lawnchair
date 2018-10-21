@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -45,7 +46,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
     @Ignore
@@ -66,16 +67,16 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         final LauncherAppWidgetProviderInfo widgetInfo =
-                findWidgetProvider(false /* hasConfigureScreen */);
+                TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
 
         // Open widget tray and wait for load complete.
-        final UiObject2 widgetContainer = openWidgetsTray();
-        assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
+        final UiObject2 widgetContainer = TestViewHelpers.openWidgetsTray();
+        Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag widget to homescreen
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
                 .hasDescendant(By.text(widgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        dragToWorkspace(widget, false);
+        TestViewHelpers.dragToWorkspace(widget, false);
 
         assertTrue(mActivityMonitor.itemExists(new ItemOperator() {
             @Override

@@ -29,9 +29,10 @@ import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -52,7 +53,7 @@ import java.util.concurrent.Executor;
 public class LoaderResults {
 
     private static final String TAG = "LoaderResults";
-    private static final long INVALID_SCREEN_ID = -1L;
+    private static final int INVALID_SCREEN_ID = -1;
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
 
     private final Executor mUiExecutor;
@@ -92,7 +93,7 @@ public class LoaderResults {
         // Save a copy of all the bg-thread collections
         ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
-        final ArrayList<Long> orderedScreenIds = new ArrayList<>();
+        final IntArray orderedScreenIds = new IntArray();
 
         synchronized (mBgDataModel) {
             workspaceItems.addAll(mBgDataModel.workspaceItems);
@@ -112,7 +113,7 @@ public class LoaderResults {
             currentScreen = currScreen;
         }
         final boolean validFirstPage = currentScreen >= 0;
-        final long currentScreenId =
+        final int currentScreenId =
                 validFirstPage ? orderedScreenIds.get(currentScreen) : INVALID_SCREEN_ID;
 
         // Separate the items that are on the current screen, and all the other remaining items
@@ -209,7 +210,7 @@ public class LoaderResults {
 
     /** Filters the set of items who are directly or indirectly (via another container) on the
      * specified screen. */
-    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
+    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(int currentScreenId,
             ArrayList<T> allWorkspaceItems,
             ArrayList<T> currentScreenItems,
             ArrayList<T> otherScreenItems) {
@@ -225,13 +226,10 @@ public class LoaderResults {
         // Order the set of items by their containers first, this allows use to walk through the
         // list sequentially, build up a list of containers that are in the specified screen,
         // as well as all items in those containers.
-        Set<Long> itemsOnScreen = new HashSet<>();
-        Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
-            @Override
-            public int compare(ItemInfo lhs, ItemInfo rhs) {
-                return Utilities.longCompare(lhs.container, rhs.container);
-            }
-        });
+        IntSet itemsOnScreen = new IntSet();
+        Collections.sort(allWorkspaceItems,
+                (lhs, rhs) -> Integer.compare(lhs.container, rhs.container));
+
         for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 if (info.screenId == currentScreenId) {
@@ -267,15 +265,15 @@ public class LoaderResults {
                     // Within containers, order by their spatial position in that container
                     switch ((int) lhs.container) {
                         case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                            long lr = (lhs.screenId * screenCellCount +
+                            int lr = (lhs.screenId * screenCellCount +
                                     lhs.cellY * screenCols + lhs.cellX);
-                            long rr = (rhs.screenId * screenCellCount +
+                            int rr = (rhs.screenId * screenCellCount +
                                     rhs.cellY * screenCols + rhs.cellX);
-                            return Utilities.longCompare(lr, rr);
+                            return Integer.compare(lr, rr);
                         }
                         case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
                             // We currently use the screen id as the rank
-                            return Utilities.longCompare(lhs.screenId, rhs.screenId);
+                            return Integer.compare(lhs.screenId, rhs.screenId);
                         }
                         default:
                             if (FeatureFlags.IS_DOGFOOD_BUILD) {
@@ -286,7 +284,7 @@ public class LoaderResults {
                     }
                 } else {
                     // Between containers, order by hotseat, desktop
-                    return Utilities.longCompare(lhs.container, rhs.container);
+                    return Integer.compare(lhs.container, rhs.container);
                 }
             }
         });
@@ -296,6 +294,11 @@ public class LoaderResults {
             final ArrayList<LauncherAppWidgetInfo> appWidgets,
             final Executor executor) {
 
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845",
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
         // Bind the workspace items
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
