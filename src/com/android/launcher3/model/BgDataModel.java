@@ -38,7 +38,6 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
-import com.android.launcher3.util.MultiHashMap;
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.FileDescriptor;
@@ -97,9 +96,9 @@ public class BgDataModel {
     public boolean hasShortcutHostPermission;
 
     /**
-     * Maps all launcher activities to the id's of their shortcuts (if they have any).
+     * Maps all launcher activities to counts of their shortcuts.
      */
-    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+    public final HashMap<ComponentKey, Integer> deepShortcutMap = new HashMap<>();
 
     /**
      * Entire list of widgets.
@@ -154,14 +153,11 @@ public class BgDataModel {
         }
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
-            writer.println(prefix + "shortcuts");
-            for (ArrayList<String> map : deepShortcutMap.values()) {
-                writer.print(prefix + "  ");
-                for (String str : map) {
-                    writer.print(str + ", ");
-                }
-                writer.println();
+            writer.println(prefix + "shortcut counts ");
+            for (Integer count : deepShortcutMap.values()) {
+                writer.print(count + ", ");
             }
+            writer.println();
         }
     }
 
@@ -359,9 +355,9 @@ public class BgDataModel {
     }
 
     /**
-     * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
+     * Clear all the deep shortcut counts for the given package, and re-add the new shortcut counts.
      */
-    public synchronized void updateDeepShortcutMap(
+    public synchronized void updateDeepShortcutCounts(
             String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
@@ -381,7 +377,9 @@ public class BgDataModel {
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-                deepShortcutMap.addToList(targetComponent, shortcut.getId());
+
+                Integer previousCount = deepShortcutMap.get(targetComponent);
+                deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
             }
         }
     }

@@ -116,7 +116,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
         if (mUpdateIdMap) {
             // Update the deep shortcut map if the list of ids has changed for an activity.
-            dataModel.updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
+            dataModel.updateDeepShortcutCounts(mPackageName, mUser, mShortcuts);
             bindDeepShortcuts(dataModel);
         }
     }
