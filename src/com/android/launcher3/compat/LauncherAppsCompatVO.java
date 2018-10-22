@@ -139,7 +139,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
             ShortcutInfo info = new ShortcutInfo(compat, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
             LauncherIcons li = LauncherIcons.obtain(context);
-            li.createShortcutIcon(compat, false /* badged */).applyTo(info);
+            info.applyFrom(li.createShortcutIcon(compat, false /* badged */));
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
                     .updateAndBindShortcutInfo(info, compat);

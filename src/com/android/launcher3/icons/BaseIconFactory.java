@@ -69,14 +69,14 @@ public class BaseIconFactory {
 
     public ShadowGenerator getShadowGenerator() {
         if (mShadowGenerator == null) {
-            mShadowGenerator = new ShadowGenerator(mContext);
+            mShadowGenerator = new ShadowGenerator(mIconBitmapSize);
         }
         return mShadowGenerator;
     }
 
     public IconNormalizer getNormalizer() {
         if (mNormalizer == null) {
-            mNormalizer = new IconNormalizer(mContext);
+            mNormalizer = new IconNormalizer(mContext, mIconBitmapSize);
         }
         return mNormalizer;
     }

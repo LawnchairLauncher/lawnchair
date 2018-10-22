@@ -127,8 +127,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private static final int DEFAULT_PAGE = 0;
 
-    private static final boolean MAP_NO_RECURSE = false;
-    private static final boolean MAP_RECURSE = true;
+    public static final boolean MAP_NO_RECURSE = false;
+    public static final boolean MAP_RECURSE = true;
 
     // The screen id used for the empty screen always present to the right.
     public static final int EXTRA_EMPTY_SCREEN_ID = -201;
@@ -3121,7 +3121,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param recurse true: iterate over folder children. false: op get the folders themselves.
      * @param op the operator to map over the shortcuts
      */
-    void mapOverItems(boolean recurse, ItemOperator op) {
+    public void mapOverItems(boolean recurse, ItemOperator op) {
         ArrayList<ShortcutAndWidgetContainer> containers = getAllShortcutAndWidgetContainers();
         final int containerCount = containers.size();
         for (int containerIdx = 0; containerIdx < containerCount; containerIdx++) {

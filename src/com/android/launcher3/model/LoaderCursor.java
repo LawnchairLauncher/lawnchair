@@ -153,7 +153,7 @@ public class LoaderCursor extends CursorWrapper {
         info.title = getTitle();
         // the fallback icon
         if (!loadIcon(info)) {
-            mIconCache.getDefaultIcon(info.user).applyTo(info);
+            info.applyFrom(mIconCache.getDefaultIcon(info.user));
         }
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -176,7 +176,7 @@ public class LoaderCursor extends CursorWrapper {
                 BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
                 li.recycle();
                 if (iconInfo != null) {
-                    iconInfo.applyTo(info);
+                    info.applyFrom(iconInfo);
                     return true;
                 }
             }
@@ -185,7 +185,7 @@ public class LoaderCursor extends CursorWrapper {
         // Failed to load from resource, try loading from DB.
         byte[] data = getBlob(iconIndex);
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-            li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)).applyTo(info);
+            info.applyFrom(li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)));
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Failed to load icon for info " + info, e);

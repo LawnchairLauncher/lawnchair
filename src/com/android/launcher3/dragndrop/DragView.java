@@ -204,7 +204,7 @@ public class DragView extends View {
             public void run() {
                 LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
-                final Drawable dr = getFullDrawable(info, appState, outObj);
+                Drawable dr = getFullDrawable(info, appState, outObj);
 
                 if (dr instanceof AdaptiveIconDrawable) {
                     int w = mBitmap.getWidth();
@@ -220,10 +220,20 @@ public class DragView extends View {
                     mBadge = getBadge(info, appState, outObj[0]);
                     mBadge.setBounds(badgeBounds);
 
-                    LauncherIcons li = LauncherIcons.obtain(mLauncher);
-                    Utilities.scaleRectAboutCenter(bounds,
-                            li.getNormalizer().getScale(dr, null, null, null));
-                    li.recycle();
+                    // Do not draw the background in case of folder as its translucent
+                    mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
+
+                    try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
+                        Drawable nDr; // drawable to be normalized
+                        if (mDrawBitmap) {
+                            nDr = dr;
+                        } else {
+                            // Since we just want the scale, avoid heavy drawing operations
+                            nDr = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
+                        }
+                        Utilities.scaleRectAboutCenter(bounds,
+                                li.getNormalizer().getScale(nDr, null, null, null));
+                    }
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 
                     // Shrink very tiny bit so that the clip path is smaller than the original bitmap
@@ -258,9 +268,6 @@ public class DragView extends View {
                         public void run() {
                             // Assign the variable on the UI thread to avoid race conditions.
                             mScaledMaskPath = mask;
-
-                            // Do not draw the background in case of folder as its translucent
-                            mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
 
                             if (info.isDisabled()) {
                                 FastBitmapDrawable d = new FastBitmapDrawable((Bitmap) null);

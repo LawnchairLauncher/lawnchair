@@ -498,8 +498,8 @@ public class LoaderTask implements Runnable {
                                             c.loadIcon(finalInfo) ? finalInfo.iconBitmap : null;
 
                                     LauncherIcons li = LauncherIcons.obtain(context);
-                                    li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider).applyTo(info);
+                                    info.applyFrom(li.createShortcutIcon(pinnedShortcut,
+                                            true /* badged */, fallbackIconProvider));
                                     li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {

@@ -540,7 +540,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
         displacement = -displacement;
-        if (displacement > mTransitionDragLength) {
+        if (displacement > mTransitionDragLength && mTransitionDragLength > 0) {
             mCurrentShift.updateValue(1);
 
             if (!mBgLongSwipeMode) {
@@ -815,8 +815,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         long startMillis = SystemClock.uptimeMillis();
         executeOnUiThread(() -> {
             // Animate the launcher components at the same time as the window, always on UI thread.
-            if (mLauncherTransitionController != null && !mWasLauncherAlreadyVisible
-                    && start != end && duration > 0) {
+            if (mLauncherTransitionController == null) {
+                return;
+            }
+            if (start == end || duration <= 0) {
+                mLauncherTransitionController.getAnimationPlayer().end();
+            } else {
                 // Adjust start progress and duration in case we are on a different thread.
                 long elapsedMillis = SystemClock.uptimeMillis() - startMillis;
                 elapsedMillis = Utilities.boundToRange(elapsedMillis, 0, duration);
