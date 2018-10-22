@@ -192,18 +192,18 @@ public class BaseIconFactory {
             }
             AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
-            scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
+            scale = getNormalizer().getScale(icon, outIconBounds);
+            if (ATLEAST_OREO && !(icon instanceof AdaptiveIconDrawable)) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
                 icon = dr;
-                scale = getNormalizer().getScale(icon, outIconBounds, null, null);
+                scale = getNormalizer().getScale(icon, outIconBounds);
 
                 ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
             }
         } else {
-            scale = getNormalizer().getScale(icon, outIconBounds, null, null);
+            scale = getNormalizer().getScale(icon, outIconBounds);
         }
 
         outScale[0] = scale;
