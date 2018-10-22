@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderShape;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -39,5 +40,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
         FeatureFlags.initialize(context);
         IconShapeOverride.apply(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
+        FolderShape.init();
     }
 }

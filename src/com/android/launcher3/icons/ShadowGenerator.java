@@ -16,7 +16,6 @@
 
 package com.android.launcher3.icons;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
@@ -28,23 +27,19 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
-import com.android.launcher3.LauncherAppState;
-
 import androidx.core.graphics.ColorUtils;
 
 /**
  * Utility class to add shadows to bitmaps.
  */
 public class ShadowGenerator {
-
-    // Percent of actual icon size
-    private static final float HALF_DISTANCE = 0.5f;
     public static final float BLUR_FACTOR = 0.5f/48;
 
     // Percent of actual icon size
     public static final float KEY_SHADOW_DISTANCE = 1f/48;
     private static final int KEY_SHADOW_ALPHA = 61;
-
+    // Percent of actual icon size
+    private static final float HALF_DISTANCE = 0.5f;
     private static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private final int mIconSize;
@@ -53,8 +48,8 @@ public class ShadowGenerator {
     private final Paint mDrawPaint;
     private final BlurMaskFilter mDefaultBlurMaskFilter;
 
-    public ShadowGenerator(Context context) {
-        mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
+    public ShadowGenerator(int iconSize) {
+        mIconSize = iconSize;
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDefaultBlurMaskFilter = new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL);

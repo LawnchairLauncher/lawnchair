@@ -112,6 +112,7 @@ enum ControlType {
   CANCEL_TARGET = 14;
   TASK_PREVIEW = 15;
   SPLIT_SCREEN_TARGET = 16;
+  REMOTE_ACTION_SHORTCUT = 17;
 }
 
 enum TipType {

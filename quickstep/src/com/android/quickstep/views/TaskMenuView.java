@@ -43,20 +43,14 @@ import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.IconView.OnScaleUpdateListener;
 
+import java.util.List;
+
 /**
  * Contains options for a recent task when long-pressing its icon.
  */
 public class TaskMenuView extends AbstractFloatingView {
 
     private static final Rect sTempRect = new Rect();
-
-    /** Note that these will be shown in order from top to bottom, if available for the task. */
-    public static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[] {
-            new TaskSystemShortcut.AppInfo(),
-            new TaskSystemShortcut.SplitScreen(),
-            new TaskSystemShortcut.Pin(),
-            new TaskSystemShortcut.Install(),
-    };
 
     private final OnScaleUpdateListener mTaskViewIconScaleListener = new OnScaleUpdateListener() {
         @Override
@@ -197,11 +191,13 @@ public class TaskMenuView extends AbstractFloatingView {
         params.topMargin = (int) -mThumbnailTopMargin;
         mTaskIcon.setLayoutParams(params);
 
-        for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
-            OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, taskView);
-            if (onClickListener != null) {
-                addMenuOption(menuOption, onClickListener);
-            }
+        final BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
+        final List<TaskSystemShortcut> shortcuts =
+                taskView.getTaskOverlay().getEnabledShortcuts(taskView);
+        final int count = shortcuts.size();
+        for (int i = 0; i < count; ++i) {
+            final TaskSystemShortcut menuOption = shortcuts.get(i);
+            addMenuOption(menuOption, menuOption.getOnClickListener(activity, taskView));
         }
     }
 

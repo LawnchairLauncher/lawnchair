@@ -20,6 +20,8 @@ import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 
 import android.graphics.Bitmap;
 
+import com.android.launcher3.icons.BitmapInfo;
+
 /**
  * Represents an ItemInfo which also holds an icon.
  */
@@ -118,4 +120,10 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public boolean usingLowResIcon() {
         return iconBitmap == LOW_RES_ICON;
     }
+
+    public void applyFrom(BitmapInfo info) {
+        iconBitmap = info.icon;
+        iconColor = info.color;
+    }
+
 }

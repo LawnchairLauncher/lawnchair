@@ -139,7 +139,7 @@ public class IconCache extends BaseIconCache {
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
         if (info.getTargetComponent() == null) {
-            getDefaultIcon(info.user).applyTo(info);
+            info.applyFrom(getDefaultIcon(info.user));
             info.title = "";
             info.contentDescription = "";
         } else {
