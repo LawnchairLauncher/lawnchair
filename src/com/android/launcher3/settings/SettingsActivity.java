@@ -203,7 +203,7 @@ public class SettingsActivity extends Activity
 
                 case FLAGS_PREFERENCE_KEY:
                     // Only show flag toggler UI if this build variant implements that.
-                    return FeatureFlags.showFlagTogglerUi();
+                    return FeatureFlags.showFlagTogglerUi(getContext());
             }
 
             return true;
