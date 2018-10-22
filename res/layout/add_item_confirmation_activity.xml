@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/colorPrimaryDark"
-                android:theme="@style/WidgetContainerTheme">
+                android:theme="?attr/widgetsTheme">
 
                 <com.android.launcher3.dragndrop.LivePreviewWidgetCell
                     android:id="@+id/widget_cell"
