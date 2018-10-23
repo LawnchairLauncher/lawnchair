@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_SIZE;
 
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
@@ -30,6 +31,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
@@ -94,6 +96,7 @@ public class LauncherAppState {
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
+        mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_badging_enabled)) {
             mNotificationBadgingObserver = null;
@@ -111,6 +114,19 @@ public class LauncherAppState {
             NotificationListener.requestRebind(new ComponentName(
                     mContext, NotificationListener.class));
         }
+    }
+
+    private void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        if (changeFlags == 0) {
+            return;
+        }
+
+        if ((changeFlags & CHANGE_FLAG_ICON_SIZE) != 0) {
+            LauncherIcons.clearPool();
+            mIconCache.updateIconParams(idp.fillResIconDpi, idp.iconBitmapSize);
+        }
+
+        mModel.forceReload();
     }
 
     /**
