@@ -219,7 +219,6 @@ public class RecentsActivity extends BaseDraggingActivity {
         // onActivityStart callback.
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
-        UiFactory.onStart(this);
         mFallbackRecentsView.resetTaskVisuals();
     }
 

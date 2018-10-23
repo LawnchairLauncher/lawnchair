@@ -232,7 +232,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mInputConsumer, mTouchInteractionLog);
 
         // Preload the plan
-        mRecentsModel.loadTasks(mRunningTask.id, null);
+        mRecentsModel.getTasks(null);
         mInteractionHandler = handler;
         handler.setGestureEndCallback(mEventQueue::reset);
 

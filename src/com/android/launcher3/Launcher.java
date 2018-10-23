@@ -768,7 +768,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         mAppWidgetHost.setListenIfResumed(true);
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
-        UiFactory.onStart(this);
     }
 
     private void logOnDelayedResume() {

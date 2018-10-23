@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-
 import static com.android.launcher3.BaseActivity.fromContext;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -30,6 +29,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -47,14 +47,15 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.quickstep.RecentsModel;
+import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskSystemShortcut;
+import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
-import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 
@@ -64,7 +65,7 @@ import java.util.function.Consumer;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
+public class TaskView extends FrameLayout implements PageCallbacks {
 
     private static final String TAG = TaskView.class.getSimpleName();
 
@@ -137,6 +138,10 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     private Animator mIconAndDimAnimator;
     private float mFocusTransitionProgress = 1;
 
+    // The current background requests to load the task thumbnail and icon
+    private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
+    private TaskIconCache.IconLoadRequest mIconLoadRequest;
+
     public TaskView(Context context) {
         this(context, null);
     }
@@ -170,13 +175,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
      * Updates this task view to the given {@param task}.
      */
     public void bind(Task task) {
-        if (mTask != null) {
-            mTask.removeCallback(this);
-        }
         mTask = task;
         mSnapshotView.bind();
-        task.addCallback(this);
-        setContentDescription(task.titleDescription);
     }
 
     public Task getTask() {
@@ -233,15 +233,34 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
     }
 
-    @Override
-    public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
-        mSnapshotView.setThumbnail(task, thumbnailData);
-        mIconView.setDrawable(task.icon);
-        mIconView.setOnClickListener(icon -> showTaskMenu());
-        mIconView.setOnLongClickListener(icon -> {
-            requestDisallowInterceptTouchEvent(true);
-            return showTaskMenu();
-        });
+    public void onTaskListVisibilityChanged(boolean visible) {
+        if (mTask == null) {
+            return;
+        }
+        if (visible) {
+            // These calls are no-ops if the data is already loaded, try and load the high
+            // resolution thumbnail if the state permits
+            RecentsModel model = RecentsModel.INSTANCE.get(getContext());
+            TaskThumbnailCache thumbnailCache = model.getThumbnailCache();
+            TaskIconCache iconCache = model.getIconCache();
+            mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(mTask,
+                    !thumbnailCache.getHighResLoadingState().isEnabled() /* reducedResolution */,
+                    (task) -> mSnapshotView.setThumbnail(task, task.thumbnail));
+            mIconLoadRequest = iconCache.updateIconInBackground(mTask,
+                    (task) -> {
+                        setContentDescription(task.titleDescription);
+                        setIcon(task.icon);
+                    });
+        } else {
+            if (mThumbnailLoadRequest != null) {
+                mThumbnailLoadRequest.cancel();
+            }
+            if (mIconLoadRequest != null) {
+                mIconLoadRequest.cancel();
+            }
+            mSnapshotView.setThumbnail(null, null);
+            setIcon(null);
+        }
     }
 
     private boolean showTaskMenu() {
@@ -253,16 +272,18 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return mMenuView != null;
     }
 
-    @Override
-    public void onTaskDataUnloaded() {
-        mSnapshotView.setThumbnail(null, null);
-        mIconView.setDrawable(null);
-        mIconView.setOnLongClickListener(null);
-    }
-
-    @Override
-    public void onTaskWindowingModeChanged() {
-        // Do nothing
+    private void setIcon(Drawable icon) {
+        if (icon != null) {
+            mIconView.setDrawable(icon);
+            mIconView.setOnClickListener(v -> showTaskMenu());
+            mIconView.setOnLongClickListener(v -> {
+                requestDisallowInterceptTouchEvent(true);
+                return showTaskMenu();
+            });
+        } else {
+            mIconView.setDrawable(null);
+            mIconView.setOnLongClickListener(null);
+        }
     }
 
     private void setIconAndDimTransitionProgress(float progress) {

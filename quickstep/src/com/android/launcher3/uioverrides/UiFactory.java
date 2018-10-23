@@ -163,19 +163,12 @@ public class UiFactory {
         }
     }
 
-    public static void onStart(Context context) {
-        RecentsModel model = RecentsModel.INSTANCE.get(context);
-        if (model != null) {
-            model.onStart();
-        }
-    }
-
     public static void onEnterAnimationComplete(Context context) {
         // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
         // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
         // enter overview
-        RecentsModel.INSTANCE.get(context).getRecentsTaskLoader()
-                .getHighResThumbnailLoader().setVisible(true);
+        RecentsModel.INSTANCE.get(context).getThumbnailCache()
+                .getHighResLoadingState().setVisible(true);
     }
 
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
