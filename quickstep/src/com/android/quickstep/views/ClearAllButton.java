@@ -17,14 +17,14 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 import com.android.launcher3.Utilities;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 
-public class ClearAllButton extends Button implements PageCallbacks {
+public class ClearAllButton extends AppCompatButton implements PageCallbacks {
 
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;

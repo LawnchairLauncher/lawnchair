@@ -128,7 +128,7 @@
             android:value="com.android.launcher3.LauncherProvider" />
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+            android:resource="@array/preloaded_fonts"/>
 
     </application>
 </manifest>
