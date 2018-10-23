@@ -261,7 +261,7 @@ public class BaseIconCache {
     protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
-        ((entry.icon == null) ? getDefaultIcon(info.user) : entry).applyTo(info);
+        info.applyFrom((entry.icon == null) ? getDefaultIcon(info.user) : entry);
     }
 
     public synchronized BitmapInfo getDefaultIcon(UserHandle user) {

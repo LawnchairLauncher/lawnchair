@@ -26,9 +26,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,6 +39,9 @@ import com.android.launcher3.util.LooperExecutor;
 import java.lang.reflect.Field;
 
 import androidx.annotation.NonNull;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceChangeListener;
 
 /**
  * Utility class to override shape of {@link android.graphics.drawable.AdaptiveIconDrawable}.

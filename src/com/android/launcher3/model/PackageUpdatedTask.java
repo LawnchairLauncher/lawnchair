@@ -194,7 +194,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             BitmapInfo iconInfo = li.createIconBitmap(si.iconResource);
                             li.recycle();
                             if (iconInfo != null) {
-                                iconInfo.applyTo(si);
+                                si.applyFrom(iconInfo);
                                 infoUpdated = true;
                             }
                         }

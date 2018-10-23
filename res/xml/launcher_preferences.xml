@@ -14,9 +14,10 @@
      limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.android.launcher3.views.ButtonPreference
+    <com.android.launcher3.settings.IconBadgingPreference
         android:key="pref_icon_badging"
         android:title="@string/icon_badging_title"
         android:persistent="false"
@@ -27,7 +28,7 @@
                 android:name=":settings:fragment_args_key"
                 android:value="notification_badging" />
         </intent>
-    </com.android.launcher3.views.ButtonPreference>
+    </com.android.launcher3.settings.IconBadgingPreference>
 
     <SwitchPreference
         android:key="pref_add_icon_to_home"
@@ -52,10 +53,10 @@
         android:defaultValue=""
         android:persistent="false" />
 
-    <PreferenceScreen
+    <androidx.preference.PreferenceScreen
         android:fragment="com.android.launcher3.config.FlagTogglerPreferenceFragment"
         android:key="flag_toggler"
         android:persistent="false"
         android:title="Feature flags"/>
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>
