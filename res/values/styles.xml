@@ -144,7 +144,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:defaultFocusHighlightEnabled">false</item>
