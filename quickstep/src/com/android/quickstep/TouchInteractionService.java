@@ -196,7 +196,6 @@ public class TouchInteractionService extends Service {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
-        mRecentsModel.setPreloadTasksInBackground(true);
         mMainThreadExecutor = new MainThreadExecutor();
         mOverviewCommandHelper = new OverviewCommandHelper(this);
         mMainThreadChoreographer = Choreographer.getInstance();

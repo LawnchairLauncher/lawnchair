@@ -504,8 +504,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         // This method is only called when STATE_GESTURE_STARTED_QUICKSTEP/
         // STATE_GESTURE_STARTED_QUICKSCRUB is set, so we can enable the high-res thumbnail loader
         // here once we are sure that we will end up in an overview state
-        RecentsModel.INSTANCE.get(mContext).getRecentsTaskLoader()
-                .getHighResThumbnailLoader().setVisible(true);
+        RecentsModel.INSTANCE.get(mContext).getThumbnailCache()
+                .getHighResLoadingState().setVisible(true);
     }
 
     private void shiftAnimationDestinationForQuickscrub() {
