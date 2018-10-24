@@ -113,6 +113,7 @@ enum ControlType {
   TASK_PREVIEW = 15;
   SPLIT_SCREEN_TARGET = 16;
   REMOTE_ACTION_SHORTCUT = 17;
+  APP_USAGE_SETTINGS = 18;
 }
 
 enum TipType {
