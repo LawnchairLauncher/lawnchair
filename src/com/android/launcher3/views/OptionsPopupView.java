@@ -136,7 +136,7 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     @VisibleForTesting
-    public static OptionsPopupView getOptionsPopup(Launcher launcher) {
+    public static ArrowPopup getOptionsPopup(Launcher launcher) {
         return launcher.findViewById(R.id.deep_shortcuts_container);
     }
 

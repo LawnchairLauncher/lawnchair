@@ -56,6 +56,7 @@ import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.runners.model.Statement;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -168,6 +169,16 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
+    protected void clearLauncherData() throws IOException {
+        if (TestHelpers.isInLauncherProcess()) {
+            LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+            resetLoaderState();
+        } else {
+            mDevice.executeShellCommand("pm clear " + mDevice.getLauncherPackageName());
+        }
+    }
+
     /**
      * Scrolls the {@param container} until it finds an object matching {@param condition}.
      * @return the matching object.
@@ -259,6 +270,10 @@ public abstract class AbstractLauncherUiTest {
     protected void waitForState(String message, LauncherState state) {
         waitForLauncherCondition(message,
                 launcher -> launcher.getStateManager().getState() == state);
+    }
+
+    protected void waitForResumed(String message) {
+        waitForLauncherCondition(message, launcher -> launcher.hasBeenResumed());
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
