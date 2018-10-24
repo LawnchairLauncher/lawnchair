@@ -16,7 +16,8 @@ java_library_static {
     name: "launcher-aosp-tapl",
     static_libs: [
         "androidx.annotation_annotation",
-        "androidx-test",
+        "androidx.test.runner",
+        "androidx.test.rules",
         "androidx.test.uiautomator_uiautomator",
         "SystemUISharedLib",
     ],

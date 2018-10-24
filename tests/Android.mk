@@ -21,7 +21,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
-	androidx-test \
+	androidx.test.runner \
+	androidx.test.rules \
 	androidx.test.uiautomator_uiautomator \
 	libSharedSystemUI
 
@@ -42,7 +43,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := tests
 LOCAL_STATIC_JAVA_LIBRARIES := \
-	androidx-test \
+	androidx.test.runner \
+	androidx.test.rules \
 	androidx.test.uiautomator_uiautomator \
 	mockito-target-minus-junit4
 
