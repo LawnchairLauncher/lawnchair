@@ -145,4 +145,6 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना आणि अॅप्स बंद आहेत"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बंद करा"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बंद केले"</string>
+    <!-- no translation found for remote_action_failed (1383965239183576790) -->
+    <skip />
 </resources>
