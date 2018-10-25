@@ -14,16 +14,25 @@
 
 package com.android.launcher3.uioverrides.plugins;
 
+import android.content.ComponentName;
 import android.content.Context;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
 
+import java.util.Collections;
+import java.util.Set;
+
+import androidx.preference.PreferenceDataStore;
+
 public class PluginManagerWrapper {
 
     public static final MainThreadInitializedObject<PluginManagerWrapper> INSTANCE =
             new MainThreadInitializedObject<>(PluginManagerWrapper::new);
+
+    private static final String PREFIX_PLUGIN_ENABLED = "PLUGIN_ENABLED_";
+    public static final String PLUGIN_CHANGED = "com.android.systemui.action.PLUGIN_CHANGED";
 
     private PluginManagerWrapper(Context c) {
     }
@@ -35,6 +44,21 @@ public class PluginManagerWrapper {
             boolean allowMultiple) {
     }
 
-    public void removePluginListener(PluginListener<? extends Plugin> listener) {
+    public void removePluginListener(PluginListener<? extends Plugin> listener) { }
+
+    public Set<String> getPluginActions() {
+        return Collections.emptySet();
+    }
+
+    public PreferenceDataStore getPluginEnabler() {
+        return new PreferenceDataStore() { };
+    }
+
+    public static String pluginEnabledKey(ComponentName cn) {
+        return PREFIX_PLUGIN_ENABLED + cn.flattenToString();
+    }
+
+    public static boolean hasPlugins(Context context) {
+        return false;
     }
 }

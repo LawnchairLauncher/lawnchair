@@ -54,9 +54,9 @@
         android:persistent="false" />
 
     <androidx.preference.PreferenceScreen
-        android:fragment="com.android.launcher3.config.FlagTogglerPreferenceFragment"
-        android:key="flag_toggler"
+        android:key="pref_developer_options"
         android:persistent="false"
-        android:title="Feature flags"/>
+        android:title="Developer Options"
+        android:fragment="com.android.launcher3.settings.DeveloperOptionsFragment"/>
 
 </androidx.preference.PreferenceScreen>

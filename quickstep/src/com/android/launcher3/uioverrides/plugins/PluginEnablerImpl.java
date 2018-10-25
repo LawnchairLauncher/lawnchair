@@ -21,7 +21,11 @@ import android.content.SharedPreferences;
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.plugins.PluginEnabler;
 
-public class PluginEnablerImpl implements PluginEnabler {
+import androidx.preference.PreferenceDataStore;
+
+public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnabler {
+
+    private static final String PREFIX_PLUGIN_ENABLED = "PLUGIN_ENABLED_";
 
     final private SharedPreferences mSharedPrefs;
 
@@ -31,15 +35,25 @@ public class PluginEnablerImpl implements PluginEnabler {
 
     @Override
     public void setEnabled(ComponentName component, boolean enabled) {
-        mSharedPrefs.edit().putBoolean(toPrefString(component), enabled).apply();
+        putBoolean(pluginEnabledKey(component), enabled);
     }
 
     @Override
     public boolean isEnabled(ComponentName component) {
-        return mSharedPrefs.getBoolean(toPrefString(component), true);
+        return getBoolean(pluginEnabledKey(component), true);
     }
 
-    private String toPrefString(ComponentName component) {
-        return "PLUGIN_ENABLED_" + component.flattenToString();
+    @Override
+    public void putBoolean(String key, boolean value) {
+        mSharedPrefs.edit().putBoolean(key, value).apply();
+    }
+
+    @Override
+    public boolean getBoolean(String key, boolean defValue) {
+        return mSharedPrefs.getBoolean(key, defValue);
+    }
+
+    static String pluginEnabledKey(ComponentName cn) {
+        return PREFIX_PLUGIN_ENABLED + cn.flattenToString();
     }
 }
