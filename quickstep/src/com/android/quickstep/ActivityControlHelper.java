@@ -40,6 +40,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -537,6 +538,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
                 @Override
                 public void finish() { }
+
+                @Override
+                public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect) { }
             };
         }
 
@@ -613,6 +617,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         void setHandler(WindowTransformSwipeHandler handler);
 
         void finish();
+
+        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect);
     }
 
     interface ActivityInitListener {

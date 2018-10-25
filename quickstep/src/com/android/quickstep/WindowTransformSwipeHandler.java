@@ -597,6 +597,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void updateFinalShiftUi() {
+        if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
+            mLayoutListener.update(mCurrentShift.value > 1, mUiLongSwipeMode,
+                    mClipAnimationHelper.getCurrentRectWithInsets());
+        }
+
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
@@ -874,7 +879,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLayoutListener.finish();
         mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
-        mRecentsView.setRunningTaskHidden(false);
         mRecentsView.setRunningTaskIconScaledDown(false);
         mQuickScrubController.cancelActiveQuickscrub();
     }
@@ -895,6 +899,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (mWasLauncherAlreadyVisible && mLauncherTransitionController != null) {
             mLauncherTransitionController.setPlayFraction(1);
         }
+        mRecentsView.setRunningTaskHidden(false);
     }
 
     private void switchToScreenshot() {
