@@ -221,6 +221,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 factory.getEnabledShortcuts(mLauncher, item));
     }
 
+    public ViewGroup getSystemShortcutContainerForTesting() {
+        return mSystemShortcutContainer;
+    }
+
     @TargetApi(Build.VERSION_CODES.P)
     protected void populateAndShow(final BubbleTextView originalIcon, int shortcutCount,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {

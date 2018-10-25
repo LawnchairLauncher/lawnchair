@@ -28,6 +28,8 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -42,6 +44,7 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 public class TestViewHelpers {
     private static final String TAG = "TestViewHelpers";
@@ -182,5 +185,13 @@ public class TestViewHelpers {
                 By.text(getTargetContext().getString(R.string.widget_button_text))),
                 AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT).click();
         return findViewById(R.id.widgets_list_view);
+    }
+
+    public static View findChildView(ViewGroup parent, Function<View, Boolean> condition) {
+        for (int i = 0; i < parent.getChildCount(); ++i) {
+            final View child = parent.getChildAt(i);
+            if (condition.apply(child)) return child;
+        }
+        return null;
     }
 }
