@@ -34,6 +34,7 @@ import com.android.systemui.shared.system.MetricsLoggerCompat;
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
+@Deprecated
 public class UserEventDispatcherExtension extends UserEventDispatcher {
 
     private static final String TAG = "UserEventDispatcher";
