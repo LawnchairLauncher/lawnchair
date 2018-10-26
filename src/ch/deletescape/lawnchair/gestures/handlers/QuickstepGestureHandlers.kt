@@ -17,9 +17,11 @@
 
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.annotation.TargetApi
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.annotation.Keep
 import android.util.Log
 import ch.deletescape.lawnchair.gestures.GestureController
@@ -44,9 +46,12 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
     override fun onGestureTrigger(controller: GestureController) {
         controller.launcher.stateManager.goToState(LauncherState.OVERVIEW)
     }
+
+    override fun isAvailableForSwipeUp(isSwipeUp: Boolean) = !isSwipeUp
 }
 
 @Keep
+@TargetApi(Build.VERSION_CODES.P)
 open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     override val displayName = context.getString(R.string.action_last_task)!!
@@ -54,15 +59,15 @@ open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObje
         get() = TouchInteractionService.isConnected()
 
     override fun onGestureTrigger(controller: GestureController) {
-        RecentsModel.getInstance(context).loadTasks(-1, {
+        RecentsModel.getInstance(context).loadTasks(-1) {
             val opts = ActivityOptions.makeBasic()
-            if (it.taskStack.mostRecentTask != null) {
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(it.taskStack.mostRecentTask?.key, opts, {
-                    if (!it) {
+            it.taskStack.mostRecentTask?.let { mostRecentTask -> {
+                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mostRecentTask.key, opts, { result ->
+                    if (!result) {
                         Log.e(this::class.java.simpleName, "Failed to start task")
                     }
                 }, mainHandler)
-            }
-        })
+            } }
+        }
     }
 }
