@@ -40,8 +40,6 @@ public class DeepShortcutView extends FrameLayout {
 
     private static final Point sTempPoint = new Point();
 
-    private final Rect mPillRect;
-
     private BubbleTextView mBubbleText;
     private View mIconView;
     private View mDivider;
@@ -59,8 +57,6 @@ public class DeepShortcutView extends FrameLayout {
 
     public DeepShortcutView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mPillRect = new Rect();
     }
 
     @Override
@@ -96,12 +92,6 @@ public class DeepShortcutView extends FrameLayout {
             sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
         }
         return sTempPoint;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
     /** package private **/
