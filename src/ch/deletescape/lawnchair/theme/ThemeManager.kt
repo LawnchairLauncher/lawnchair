@@ -96,10 +96,10 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
-        private const val THEME_AUTO = 1
-        private const val THEME_DARK_TEXT = 1 shl 1
-        private const val THEME_DARK = 1 shl 2
-        private const val THEME_USE_BLACK = 1 shl 3
+        private const val THEME_AUTO = 1                // 0001
+        private const val THEME_DARK_TEXT = 1 shl 1     // 0010
+        private const val THEME_DARK = 1 shl 2          // 0100
+        private const val THEME_USE_BLACK = 1 shl 3     // 1000
 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0
         fun isDark(flags: Int) = (flags and THEME_DARK) != 0

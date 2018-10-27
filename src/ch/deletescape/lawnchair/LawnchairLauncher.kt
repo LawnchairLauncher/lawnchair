@@ -70,14 +70,6 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
     }
 
-    override fun getLauncherThemeSet(): ThemeOverride.ThemeSet {
-        return if (Utilities.getLawnchairPrefs(this).allAppsSearch) {
-            ThemeOverride.LauncherQsb()
-        } else {
-            ThemeOverride.Launcher()
-        }
-    }
-
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (key == hideStatusBarKey) {
             if (prefs.hideStatusBar) {

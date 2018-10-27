@@ -45,17 +45,17 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
     val isAlive get() = listener.isAlive
 
     fun applyTheme(themeFlags: Int) {
-        if (ThemeManager.isDark(themeFlags)) {
-            if (ThemeManager.isBlack(themeFlags)) {
-                listener.applyTheme(themeSet.blackTheme)
-            } else {
-                listener.applyTheme(themeSet.darkTheme)
-            }
-        } else if (ThemeManager.isDarkText(themeFlags) && Utilities.ATLEAST_NOUGAT) {
-            listener.applyTheme(themeSet.darkTextTheme)
-        } else {
-            listener.applyTheme(themeSet.lightTheme)
-        }
+        val isDark = ThemeManager.isDark(themeFlags)
+        val isDarkText = ThemeManager.isDarkText(themeFlags) && Utilities.ATLEAST_NOUGAT
+        val isBlack = isDark && ThemeManager.isBlack(themeFlags)
+        listener.applyTheme(when {
+            isBlack && isDarkText -> themeSet.blackDarkTextTheme
+            isBlack -> themeSet.blackTheme
+            isDark && isDarkText -> themeSet.darkDarkTextTheme
+            isDark -> themeSet.darkTheme
+            isDarkText -> themeSet.darkTextTheme
+            else -> themeSet.lightTheme
+        })
     }
 
     fun onThemeChanged(themeFlags: Int) {
@@ -65,26 +65,22 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
 
     class Launcher : ThemeSet {
 
-        override val lightTheme = R.style.LauncherTheme
-        override val darkTextTheme = R.style.LauncherTheme_DarkText
-        override val darkTheme = R.style.LauncherTheme_Dark
-        override val blackTheme = R.style.LauncherThemeBlack
-    }
-
-    class LauncherQsb : ThemeSet {
-
-        override val lightTheme = R.style.GoogleSearchLauncherTheme
-        override val darkTextTheme = R.style.GoogleSearchLauncherThemeDarkText
-        override val darkTheme = R.style.GoogleSearchLauncherThemeDark
-        override val blackTheme = R.style.GoogleSearchLauncherThemeBlack
+        override val lightTheme = R.style.AppTheme
+        override val darkTextTheme = R.style.AppTheme_DarkText
+        override val darkTheme = R.style.AppTheme_Dark
+        override val darkDarkTextTheme = R.style.AppTheme_Dark_DarkText
+        override val blackTheme = R.style.AppTheme_Black
+        override val blackDarkTextTheme = R.style.AppTheme_Black_DarkText
     }
 
     class LauncherScreenshot : ThemeSet {
 
-        override val lightTheme = R.style.ScreenshotLauncherTheme
-        override val darkTextTheme = R.style.ScreenshotLauncherThemeDarkText
-        override val darkTheme = R.style.ScreenshotLauncherThemeDark
-        override val blackTheme = R.style.ScreenshotLauncherThemeBlack
+        override val lightTheme = R.style.ScreenshotTheme
+        override val darkTextTheme = R.style.ScreenshotTheme_DarkText
+        override val darkTheme = R.style.ScreenshotTheme_Dark
+        override val darkDarkTextTheme = R.style.ScreenshotTheme_Dark_DarkText
+        override val blackTheme = R.style.ScreenshotTheme_Black
+        override val blackDarkTextTheme = R.style.ScreenshotTheme_Black_DarkText
     }
 
     class Settings : ThemeSet {
@@ -92,7 +88,9 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         override val lightTheme = R.style.SettingsTheme_V2
         override val darkTextTheme = R.style.SettingsTheme_V2
         override val darkTheme = R.style.SettingsTheme_V2_Dark
+        override val darkDarkTextTheme = R.style.SettingsTheme_V2_Dark
         override val blackTheme = R.style.SettingsTheme_V2_Black
+        override val blackDarkTextTheme = R.style.SettingsTheme_V2_Black
     }
 
     class SettingsTransparent : ThemeSet {
@@ -100,7 +98,9 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         override val lightTheme = R.style.SettingsTheme_V2_Transparent
         override val darkTextTheme = R.style.SettingsTheme_V2_DarkText_Transparent
         override val darkTheme = R.style.SettingsTheme_V2_Dark_Transparent
+        override val darkDarkTextTheme = R.style.SettingsTheme_V2_Dark_Transparent
         override val blackTheme = R.style.SettingsTheme_V2_Black_Transparent
+        override val blackDarkTextTheme = R.style.SettingsTheme_V2_Black_Transparent
     }
 
     interface ThemeSet {
@@ -108,7 +108,9 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         val lightTheme: Int
         val darkTextTheme: Int
         val darkTheme: Int
+        val darkDarkTextTheme: Int
         val blackTheme: Int
+        val blackDarkTextTheme: Int
     }
 
     interface ThemeOverrideListener {

@@ -130,7 +130,7 @@
             android:excludeFromRecents="true"
             android:name="ch.deletescape.lawnchair.LawnchairLauncher$Screenshot"
             android:screenOrientation="portrait"
-            android:theme="@style/ScreenshotLauncherTheme"/>
+            android:theme="@style/ScreenshotTheme"/>
 
         <!-- The settings activity. When extending keep the intent filter present -->
         <activity

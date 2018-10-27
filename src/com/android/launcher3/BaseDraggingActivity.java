@@ -82,7 +82,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @NonNull
     protected ThemeSet getLauncherThemeSet() {
-        return new ThemeOverride.LauncherQsb();
+        return new ThemeOverride.Launcher();
     }
 
     @Override
@@ -250,7 +250,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WallpaperColorInfo.getInstance(this).removeOnChangeListener(this);
         mRotationListener.disable();
     }
 

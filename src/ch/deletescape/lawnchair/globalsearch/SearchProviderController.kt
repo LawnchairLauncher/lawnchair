@@ -22,7 +22,7 @@ class SearchProviderController(private val context: Context) {
     val isGoogle get() = searchProvider is GoogleSearchProvider
 
     init {
-        ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.LauncherQsb(), ThemeListener()))
+        ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.Launcher(), ThemeListener()))
     }
 
     val searchProvider: SearchProvider
