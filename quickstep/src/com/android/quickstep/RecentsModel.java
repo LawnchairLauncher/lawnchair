@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
@@ -95,6 +96,15 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     /**
+     * @return The task id of the running task, or -1 if there is no current running task.
+     */
+    public static int getRunningTaskId() {
+        ActivityManager.RunningTaskInfo runningTask =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        return runningTask != null ? runningTask.id : -1;
+    }
+
+    /**
      * @return Whether the provided {@param changeId} is the latest recent tasks list id.
      */
     public boolean isTaskListValid(int changeId) {
@@ -133,8 +143,8 @@ public class RecentsModel extends TaskStackChangeListener {
         }
 
         // Keep the cache up to date with the latest thumbnails
+        int runningTaskId = RecentsModel.getRunningTaskId();
         mTaskList.getTasks(mThumbnailCache.getCacheSize(), true /* keysOnly */, (tasks) -> {
-            int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().id;
             for (Task task : tasks) {
                 if (task.key.id == runningTaskId) {
                     // Skip the running task, it's not going to have an up-to-date snapshot by the

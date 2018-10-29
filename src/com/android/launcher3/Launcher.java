@@ -110,7 +110,6 @@ import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -137,6 +136,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -2162,11 +2162,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     /**
-     * Copies LauncherModel's map of activities to shortcut ids to Launcher's. This is necessary
+     * Copies LauncherModel's map of activities to shortcut counts to Launcher's. This is necessary
      * because LauncherModel's map is updated in the background, while Launcher runs on the UI.
      */
     @Override
-    public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+    public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
     }
 

@@ -20,6 +20,7 @@ import static androidx.core.util.Preconditions.checkNotNull;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
@@ -51,8 +52,10 @@ abstract class BaseFlags {
         throw new UnsupportedOperationException("Don't instantiate BaseFlags");
     }
 
-    public static boolean showFlagTogglerUi() {
-        return Utilities.IS_DEBUG_DEVICE;
+    public static boolean showFlagTogglerUi(Context context) {
+        return Utilities.IS_DEBUG_DEVICE &&
+                Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
+                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
@@ -84,9 +87,15 @@ abstract class BaseFlags {
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
+    /**
+     * Feature flag to handle define config changes dynamically instead of killing the process.
+     */
+    public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
+            "APPLY_CONFIG_AT_RUNTIME", false, "Apply display changes dynamically");
+
     public static void initialize(Context context) {
-        // Avoid the disk read for builds without the flags UI.
-        if (showFlagTogglerUi()) {
+        // Avoid the disk read for user builds
+        if (Utilities.IS_DEBUG_DEVICE) {
             SharedPreferences sharedPreferences =
                     context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
             synchronized (sLock) {
@@ -188,5 +197,4 @@ abstract class BaseFlags {
             return h$;
         }
     }
-
 }

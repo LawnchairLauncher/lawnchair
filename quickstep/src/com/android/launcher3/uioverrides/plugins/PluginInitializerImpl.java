@@ -18,7 +18,6 @@ import android.content.Context;
 import android.os.Looper;
 
 import com.android.launcher3.LauncherModel;
-import com.android.systemui.shared.plugins.PluginEnabler;
 import com.android.systemui.shared.plugins.PluginInitializer;
 
 public class PluginInitializerImpl implements PluginInitializer {
@@ -37,7 +36,7 @@ public class PluginInitializerImpl implements PluginInitializer {
     }
 
     @Override
-    public PluginEnabler getPluginEnabler(Context context) {
+    public PluginEnablerImpl getPluginEnabler(Context context) {
         return new PluginEnablerImpl(context);
     }
 

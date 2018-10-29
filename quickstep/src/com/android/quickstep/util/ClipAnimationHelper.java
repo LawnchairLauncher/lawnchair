@@ -77,10 +77,11 @@ public class ClipAnimationHelper {
     public final Rect mHomeStackBounds = new Rect();
 
     // The clip rect in source app window coordinates
-    private final Rect mClipRect = new Rect();
+    private final RectF mClipRectF = new RectF();
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private final Matrix mTmpMatrix = new Matrix();
     private final RectF mTmpRectF = new RectF();
+    private final RectF mCurrentRectWithInsets = new RectF();
 
     private float mTargetScale = 1f;
     private float mOffsetScale = 1f;
@@ -153,12 +154,12 @@ public class ClipAnimationHelper {
                     mTargetOffset.y  * offsetYProgress);
         }
 
-        mClipRect.left = (int) (mSourceWindowClipInsets.left * progress);
-        mClipRect.top = (int) (mSourceWindowClipInsets.top * progress);
-        mClipRect.right = (int)
-                (mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress));
-        mClipRect.bottom = (int)
-                (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress));
+        mClipRectF.left = mSourceWindowClipInsets.left * progress;
+        mClipRectF.top = mSourceWindowClipInsets.top * progress;
+        mClipRectF.right =
+                mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress);
+        mClipRectF.bottom =
+                mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress);
 
         SurfaceParams[] params = new SurfaceParams[targetSet.unfilteredApps.length];
         for (int i = 0; i < targetSet.unfilteredApps.length; i++) {
@@ -166,11 +167,12 @@ public class ClipAnimationHelper {
             mTmpMatrix.setTranslate(app.position.x, app.position.y);
             Rect crop = app.sourceContainerBounds;
             float alpha = 1f;
+            int layer;
             if (app.mode == targetSet.targetMode) {
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                    crop = mClipRect;
+                    mClipRectF.roundOut(crop);
                 }
 
                 if (app.isNotInRecents
@@ -179,15 +181,20 @@ public class ClipAnimationHelper {
                 }
 
                 alpha = mTaskAlphaCallback.apply(app, alpha);
+                layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             } else {
                 crop = null;
+                layer = Integer.MAX_VALUE;
             }
-
-            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop,
-                    RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers));
+            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer);
         }
         applyParams(syncTransactionApplier, params);
         return currentRect;
+    }
+
+    public RectF getCurrentRectWithInsets() {
+        mTmpMatrix.mapRect(mCurrentRectWithInsets, mClipRectF);
+        return mCurrentRectWithInsets;
     }
 
     private void applyParams(@Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier,

@@ -26,7 +26,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
@@ -43,8 +45,10 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.RecentsModel;
@@ -100,7 +104,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
                 }
             };
 
-    private static FloatProperty<TaskView> FOCUS_TRANSITION =
+    private static final FloatProperty<TaskView> FOCUS_TRANSITION =
             new FloatProperty<TaskView>("focusTransition") {
         @Override
         public void setValue(TaskView taskView, float v) {
@@ -112,6 +116,9 @@ public class TaskView extends FrameLayout implements PageCallbacks {
             return taskView.mFocusTransitionProgress;
         }
     };
+
+    static final Intent SEE_TIME_IN_APP_TEMPLATE =
+            new Intent("com.android.settings.action.TIME_SPENT_IN_APP");
 
     private final OnAttachStateChangeListener mTaskMenuStateListener =
             new OnAttachStateChangeListener() {
@@ -141,6 +148,8 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     // The current background requests to load the task thumbnail and icon
     private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
     private TaskIconCache.IconLoadRequest mIconLoadRequest;
+
+    private long mAppRemainingTimeMs = -1;
 
     public TaskView(Context context) {
         this(context, null);
@@ -193,6 +202,10 @@ public class TaskView extends FrameLayout implements PageCallbacks {
 
     public TaskOverlayFactory.TaskOverlay getTaskOverlay() {
         return mSnapshotView.getTaskOverlay();
+    }
+
+    private boolean hasRemainingTime() {
+        return mAppRemainingTimeMs > 0;
     }
 
     public void launchTask(boolean animate) {
@@ -421,6 +434,13 @@ public class TaskView extends FrameLayout implements PageCallbacks {
             }
         }
 
+        if (hasRemainingTime()) {
+            info.addAction(
+                    new AccessibilityNodeInfo.AccessibilityAction(
+                            R.string.accessibility_app_usage_settings,
+                            getContext().getText(R.string.accessibility_app_usage_settings)));
+        }
+
         final RecentsView recentsView = getRecentsView();
         final AccessibilityNodeInfo.CollectionItemInfo itemInfo =
                 AccessibilityNodeInfo.CollectionItemInfo.obtain(
@@ -434,6 +454,11 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         if (action == R.string.accessibility_close_task) {
             getRecentsView().dismissTask(this, true /*animateTaskView*/,
                     true /*removeTask*/);
+            return true;
+        }
+
+        if (action == R.string.accessibility_app_usage_settings) {
+            openAppUsageSettings();
             return true;
         }
 
@@ -453,6 +478,22 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         }
 
         return super.performAccessibilityAction(action, arguments);
+    }
+
+    private void openAppUsageSettings() {
+        final Intent intent = new Intent(SEE_TIME_IN_APP_TEMPLATE)
+                .putExtra(Intent.EXTRA_PACKAGE_NAME,
+                        mTask.getTopComponent().getPackageName()).addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        try {
+            final Launcher launcher = Launcher.getLauncher(getContext());
+            launcher.startActivity(intent);
+            launcher.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
+                    LauncherLogProto.ControlType.APP_USAGE_SETTINGS, this);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Failed to open app usage settings for task "
+                    + mTask.getTopComponent().getPackageName(), e);
+        }
     }
 
     private RecentsView getRecentsView() {

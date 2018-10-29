@@ -63,7 +63,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
     protected T mSystemShortcut;
 
-    protected TaskSystemShortcut(T systemShortcut) {
+    public TaskSystemShortcut(T systemShortcut) {
         super(systemShortcut);
         mSystemShortcut = systemShortcut;
     }
