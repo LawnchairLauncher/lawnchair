@@ -18,12 +18,15 @@ package com.android.launcher3.graphics;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 /**
  * Utility class for extracting colors from a bitmap.
  */
 public class ColorExtractor {
+
+    private static final String TAG = "ColorExtractor";
 
     public static int findDominantColorByHue(Bitmap bitmap) {
         return findDominantColorByHue(bitmap, 20);
@@ -123,7 +126,15 @@ public class ColorExtractor {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
 
-        int[] rgbScoreHistogram = new int[MAX_RGB_VALUE_POSTERIZED];
+        int[] rgbScoreHistogram;
+        try {
+            rgbScoreHistogram = new int[MAX_RGB_VALUE_POSTERIZED];
+        } catch (OutOfMemoryError e) {
+            Log.e(TAG, "Failed to create RGB score histogram, falling back to hue based extraction",
+                    e);
+            return findDominantColorByHue(bitmap);
+        }
+
         int highScore = -1;
         int bestRGB = -1;
 
