@@ -112,6 +112,8 @@ public class ColorExtractor {
         return bestColor;
     }
 
+    private static final int MAX_RGB_VALUE_POSTERIZED = posterize(0xffffff) + 1;
+
     /**
      * This picks a dominant color judging by how often it appears.
      *
@@ -121,7 +123,7 @@ public class ColorExtractor {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
 
-        int[] rgbScoreHistogram = new int[0x1000000];
+        int[] rgbScoreHistogram = new int[MAX_RGB_VALUE_POSTERIZED];
         int highScore = -1;
         int bestRGB = -1;
 
