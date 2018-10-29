@@ -73,7 +73,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public final int workspaceSpringLoadedBottomSpace;
 
     // Drag handle
-    public final int verticalDragHandleSizePx;
+    public int verticalDragHandleSizePx;
     private final int verticalDragHandleOverlapWorkspace;
 
     // Workspace icons
@@ -280,7 +280,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         hotseatBarSizePx = isVerticalBarLayout()
                 ? iconSizePx + hotseatBarSidePaddingStartPx
                 + hotseatBarSidePaddingEndPx
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size) * dockRows
+                : res.getDimensionPixelSize(dockSearchBar ?
+                        R.dimen.dynamic_grid_hotseat_size :
+                        R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
         // Calculate all of the remaining variables.
@@ -300,6 +302,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
+
+        if (dockHidden) {
+            hotseatBarSizePx = 0;
+            verticalDragHandleSizePx = 0;
+
+            updateAvailableDimensions(dm, res);
+        }
+
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
