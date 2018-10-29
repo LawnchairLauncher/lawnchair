@@ -278,9 +278,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
                 ? edgeMarginPx : 0;
         hotseatBarSizePx = isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm) + hotseatBarSidePaddingStartPx
+                ? iconSizePx + hotseatBarSidePaddingStartPx
                 + hotseatBarSidePaddingEndPx
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size) * dockRows
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
         // Calculate all of the remaining variables.
