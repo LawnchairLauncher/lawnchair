@@ -181,8 +181,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
-        verticalDragHandleSizePx = res.getDimensionPixelSize(
-                R.dimen.vertical_drag_handle_size);
         verticalDragHandleOverlapWorkspace =
                 res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
         defaultPageSpacingPx =
@@ -268,10 +266,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+                res.getDimensionPixelSize(dockSearchBar ?
+                        R.dimen.dynamic_grid_hotseat_top_padding :
+                        R.dimen.v1_dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
-                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+                + res.getDimensionPixelSize(dockSearchBar ?
+                R.dimen.dynamic_grid_hotseat_bottom_padding :
+                R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
@@ -284,6 +286,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                         R.dimen.dynamic_grid_hotseat_size :
                         R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
