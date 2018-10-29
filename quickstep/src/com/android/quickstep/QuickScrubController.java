@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASK_STABILIZER;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -123,6 +124,12 @@ public class QuickScrubController implements OnAlarmListener {
         mFinishedTransitionToQuickScrub = false;
         mActivityControlHelper = controlHelper;
         mTouchInteractionLog = touchInteractionLog;
+
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mRecentsView.getRunningTaskView() != null) {
+                mRecentsView.getRunningTaskView().setShowScreenshot(false);
+            }
+        }
 
         if (mIsQuickSwitch) {
             mShouldSwitchToNext = true;
@@ -342,6 +349,7 @@ public class QuickScrubController implements OnAlarmListener {
         if (action != null) {
             action.run();
         }
+        mRecentsView.setEnableDrawingLiveTile(true);
     }
 
     public void onTaskRemoved(int taskId) {

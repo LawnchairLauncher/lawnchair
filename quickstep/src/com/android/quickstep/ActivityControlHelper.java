@@ -148,6 +148,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      */
     int getContainerType();
 
+    boolean isInLiveTileMode();
+
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
         @Override
@@ -440,6 +442,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return launcher != null ? launcher.getStateManager().getState().containerType
                     : LauncherLogProto.ContainerType.APP;
         }
+
+        @Override
+        public boolean isInLiveTileMode() {
+            Launcher launcher = getCreatedActivity();
+            return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
+                    launcher.isStarted();
+        }
     }
 
     class FallbackActivityControllerHelper implements ActivityControlHelper<RecentsActivity> {
@@ -624,6 +633,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public int getContainerType() {
             return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
+        }
+
+        @Override
+        public boolean isInLiveTileMode() {
+            return false;
         }
     }
 

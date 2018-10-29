@@ -53,6 +53,7 @@ public class TaskViewDrawable extends Drawable {
     private final RecentsView mParent;
     private final View mIconView;
     private final int[] mIconPos;
+    private final TaskView mTaskView;
 
     private final TaskThumbnailView mThumbnailView;
 
@@ -65,6 +66,7 @@ public class TaskViewDrawable extends Drawable {
 
     public TaskViewDrawable(TaskView tv, RecentsView parent) {
         mParent = parent;
+        mTaskView = tv;
         mIconView = tv.getIconView();
         mIconPos = new int[2];
         mIconScale = mIconView.getScaleX();
@@ -138,5 +140,9 @@ public class TaskViewDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    public TaskView getTaskView() {
+        return mTaskView;
     }
 }

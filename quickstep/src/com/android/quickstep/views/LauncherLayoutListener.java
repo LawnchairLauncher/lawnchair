@@ -16,6 +16,7 @@
 package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Canvas;
@@ -54,8 +55,8 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
     @Override
     public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
-            float cornerRadius) {
-        if (shouldFinish) {
+                  float cornerRadius) {
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get() && shouldFinish) {
             finish();
             return;
         }

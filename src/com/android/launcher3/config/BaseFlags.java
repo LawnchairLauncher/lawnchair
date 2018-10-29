@@ -101,6 +101,9 @@ abstract class BaseFlags {
     public static final TogglableFlag QUICKSTEP_SPRINGS = new TogglableFlag("QUICKSTEP_SPRINGS",
             false, "Enable springs for quickstep animations");
 
+    public static final TogglableFlag ENABLE_QUICKSTEP_LIVE_TILE = new TogglableFlag(
+            "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {

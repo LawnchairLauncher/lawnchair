@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -29,6 +30,8 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
@@ -76,6 +79,8 @@ public class TaskThumbnailView extends View {
     private final boolean mIsDarkTextTheme;
     private final Paint mPaint = new Paint();
     private final Paint mBackgroundPaint = new Paint();
+    private final Paint mClearPaint = new Paint();
+    private final Paint mDimmingPaintAfterClearing = new Paint();
 
     private final Matrix mMatrix = new Matrix();
 
@@ -105,6 +110,8 @@ public class TaskThumbnailView extends View {
         mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
+        mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
     }
@@ -213,6 +220,15 @@ public class TaskThumbnailView extends View {
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
+                        mDimmingPaintAfterClearing);
+                return;
+            }
+        }
+
         // Draw the background in all cases, except when the thumbnail data is opaque
         final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
                 || mThumbnailData == null;
@@ -233,8 +249,13 @@ public class TaskThumbnailView extends View {
         }
     }
 
+    protected TaskView getTaskView() {
+        return (TaskView) getParent();
+    }
+
     private void updateThumbnailPaintFilter() {
         int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
+        mDimmingPaintAfterClearing.setAlpha(255 - mul);
         if (mBitmapShader != null) {
             ColorFilter filter = getColorFilter(mul, mIsDarkTextTheme, mSaturation);
             mPaint.setColorFilter(filter);
@@ -242,6 +263,7 @@ public class TaskThumbnailView extends View {
         } else {
             mPaint.setColorFilter(null);
             mPaint.setColor(Color.argb(255, mul, mul, mul));
+            mBackgroundPaint.setColorFilter(null);
         }
         invalidate();
     }

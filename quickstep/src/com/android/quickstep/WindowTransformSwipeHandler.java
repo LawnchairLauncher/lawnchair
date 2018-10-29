@@ -22,6 +22,7 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_START_DURATION;
@@ -347,9 +348,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mStateCallback.addCallback(LONG_SWIPE_ENTER_STATE, this::checkLongSwipeCanEnter);
         mStateCallback.addCallback(LONG_SWIPE_START_STATE, this::checkLongSwipeCanStart);
 
-        mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
-                | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
-                (b) -> mRecentsView.setRunningTaskHidden(!b));
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
+                            | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
+                    (b) -> mRecentsView.setRunningTaskHidden(!b));
+        }
     }
 
     private void executeOnUiThread(Runnable action) {
@@ -421,6 +424,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             updateFinalShift();
         });
+        mRecentsView.setRecentsAnimationWrapper(mRecentsAnimationWrapper);
+        mRecentsView.setClipAnimationHelper(mClipAnimationHelper);
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mLayoutListener = mActivityControlHelper.createLayoutListener(mActivity);
 
@@ -473,6 +478,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void setupRecentsViewUi() {
+        mRecentsView.setEnableDrawingLiveTile(false);
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setRunningTaskHidden(true);
         mRecentsView.setRunningTaskIconScaledDown(true);
@@ -653,6 +659,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void updateFinalShiftUi() {
         if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                mLayoutListener.open();
+            }
             mLayoutListener.update(mCurrentShift.value > 1, mUiLongSwipeMode,
                     mClipAnimationHelper.getCurrentRectWithInsets(),
                     mClipAnimationHelper.getCurrentCornerRadius());
@@ -787,8 +796,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (mLauncherTransitionController != null) {
             mLauncherTransitionController.getAnimationPlayer().end();
         }
-        // Hide the task view, if not already hidden
-        setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            // Hide the task view, if not already hidden
+            setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+        }
 
         return OverviewTouchConsumer.newInstance(mActivityControlHelper, true,
                 mTouchInteractionLog);
@@ -1018,57 +1029,66 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void layoutListenerClosed() {
+        mRecentsView.setRunningTaskHidden(false);
         if (mWasLauncherAlreadyVisible && mLauncherTransitionController != null) {
             mLauncherTransitionController.setPlayFraction(1);
         }
-        mRecentsView.setRunningTaskHidden(false);
+        mRecentsView.setEnableDrawingLiveTile(true);
     }
 
     private void switchToScreenshot() {
-        boolean finishTransitionPosted = false;
-        RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
-        if (controller != null) {
-            // Update the screenshot of the task
-            if (mTaskSnapshot == null) {
-                mTaskSnapshot = controller.screenshotTask(mRunningTaskId);
-            }
-            TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
-            if (taskView != null) {
-                // Defer finishing the animation until the next launcher frame with the
-                // new thumbnail
-                finishTransitionPosted = new WindowCallbacksCompat(taskView) {
-
-                    // The number of frames to defer until we actually finish the animation
-                    private int mDeferFrameCount = 2;
-
-                    @Override
-                    public void onPostDraw(Canvas canvas) {
-                        if (mDeferFrameCount > 0) {
-                            mDeferFrameCount--;
-                            // Workaround, detach and reattach to invalidate the root node for
-                            // another draw
-                            detach();
-                            attach();
-                            taskView.invalidate();
-                            return;
-                        }
-
-                        setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                        detach();
-                    }
-                }.attach();
-            }
-        }
-        if (!finishTransitionPosted) {
-            // If we haven't posted a draw callback, set the state immediately.
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+        } else {
+            boolean finishTransitionPosted = false;
+            RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+            if (controller != null) {
+                // Update the screenshot of the task
+                if (mTaskSnapshot == null) {
+                    mTaskSnapshot = controller.screenshotTask(mRunningTaskId);
+                }
+                TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
+                if (taskView != null) {
+                    // Defer finishing the animation until the next launcher frame with the
+                    // new thumbnail
+                    finishTransitionPosted = new WindowCallbacksCompat(taskView) {
+
+                        // The number of frames to defer until we actually finish the animation
+                        private int mDeferFrameCount = 2;
+
+                        @Override
+                        public void onPostDraw(Canvas canvas) {
+                            if (mDeferFrameCount > 0) {
+                                mDeferFrameCount--;
+                                // Workaround, detach and reattach to invalidate the root node for
+                                // another draw
+                                detach();
+                                attach();
+                                taskView.invalidate();
+                                return;
+                            }
+
+                            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+                            detach();
+                        }
+                    }.attach();
+                }
+            }
+            if (!finishTransitionPosted) {
+                // If we haven't posted a draw callback, set the state immediately.
+                setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+            }
         }
     }
 
     private void finishCurrentTransitionToHome() {
-        synchronized (mRecentsAnimationWrapper) {
-            mRecentsAnimationWrapper.finish(true /* toHome */,
-                    () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+        } else {
+            synchronized (mRecentsAnimationWrapper) {
+                mRecentsAnimationWrapper.finish(true /* toHome */,
+                        () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+            }
         }
         mTouchInteractionLog.finishRecentsAnimation(true);
     }
@@ -1118,7 +1138,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mLauncherTransitionController.getAnimationPlayer().end();
             mLauncherTransitionController = null;
         }
-        mLayoutListener.finish();
 
         mActivityControlHelper.onQuickInteractionStart(mActivity, mRunningTaskInfo, false,
                 mTouchInteractionLog);
@@ -1131,6 +1150,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (mQuickScrubBlocked) {
             return;
         }
+        mLayoutListener.finish();
         mQuickScrubController.onFinishedTransitionToQuickScrub();
 
         mRecentsView.animateUpRunningTaskIconScale();
@@ -1255,7 +1275,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLongSwipeController = mActivityControlHelper.getLongSwipeController(
                 mActivity, mRunningTaskId);
         onLongSwipeDisplacementUpdated();
-        setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+        }
     }
 
     private void onLongSwipeGestureFinishUi(float velocity, boolean isFling, float velocityX) {
