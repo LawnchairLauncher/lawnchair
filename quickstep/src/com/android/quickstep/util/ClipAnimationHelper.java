@@ -30,6 +30,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Surface;
 import android.view.animation.Interpolator;
 
@@ -58,6 +59,8 @@ import java.util.function.BiFunction;
  */
 @TargetApi(Build.VERSION_CODES.P)
 public class ClipAnimationHelper {
+
+    private static final String TAG = "ClipAnimationHelper";
 
     // The bounds of the source app in device coordinates
     private final Rect mSourceStackBounds = new Rect();
@@ -200,7 +203,11 @@ public class ClipAnimationHelper {
             for (SurfaceParams param : params) {
                 SyncRtSurfaceTransactionApplier.applyParams(t, param);
             }
-            t.setEarlyWakeup();
+            try {
+                t.setEarlyWakeup();
+            } catch (NoSuchMethodError e) {
+                Log.e(TAG, "applyParams: setEarlyWakeUp not found", e);
+            }
             t.apply();
         }
     }
