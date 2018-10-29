@@ -143,8 +143,8 @@ public class RecentsModel extends TaskStackChangeListener {
         }
 
         // Keep the cache up to date with the latest thumbnails
+        int runningTaskId = RecentsModel.getRunningTaskId();
         mTaskList.getTasks(mThumbnailCache.getCacheSize(), true /* keysOnly */, (tasks) -> {
-            int runningTaskId = RecentsModel.getRunningTaskId();
             for (Task task : tasks) {
                 if (task.key.id == runningTaskId) {
                     // Skip the running task, it's not going to have an up-to-date snapshot by the
