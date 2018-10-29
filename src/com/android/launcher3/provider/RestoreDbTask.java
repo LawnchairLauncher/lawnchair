@@ -16,6 +16,8 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -111,7 +113,7 @@ public class RestoreDbTask {
         db.execSQL("ALTER TABLE favorites RENAME TO favorites_old;");
         Favorites.addTableToDb(db, newProfileId, false);
         db.execSQL("INSERT INTO favorites SELECT * FROM favorites_old;");
-        db.execSQL("DROP TABLE favorites_old;");
+        dropTable(db, "favorites_old");
     }
 
     /**

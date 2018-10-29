@@ -5,29 +5,21 @@ import static com.android.launcher3.model.GridSizeMigrationTask.getWorkspaceScre
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FlagOverrideRule;
 import com.android.launcher3.config.FlagOverrideRule.FlagOverride;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.TestLauncherProvider;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowContentResolver;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,47 +28,33 @@ import java.util.LinkedList;
  * Unit tests for {@link GridSizeMigrationTask}
  */
 @RunWith(RobolectricTestRunner.class)
-public class GridSizeMigrationTaskTest {
-
-    private static final int DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-    private static final int HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
-    private static final int APPLICATION = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-    private static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-
-    private static final String TEST_PACKAGE = "com.android.launcher3.validpackage";
+public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
 
     @Rule
     public final FlagOverrideRule flags = new FlagOverrideRule();
 
     private HashSet<String> mValidPackages;
     private InvariantDeviceProfile mIdp;
-    private Context mContext;
-    private TestLauncherProvider mProvider;
 
     @Before
     public void setUp() {
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
         mIdp = new InvariantDeviceProfile();
-        mContext = RuntimeEnvironment.application;
-
-        mProvider = Robolectric.setupContentProvider(TestLauncherProvider.class);
-        ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, mProvider);
     }
 
     @Test
     public void testHotseatMigration_apps_dropped() throws Exception {
         int[] hotseatItems = {
-                addItem(APPLICATION, 0, HOTSEAT, 0, 0),
+                addItem(APP_ICON, 0, HOTSEAT, 0, 0),
                 addItem(SHORTCUT, 1, HOTSEAT, 0, 0),
                 -1,
                 addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
-                addItem(APPLICATION, 4, HOTSEAT, 0, 0),
+                addItem(APP_ICON, 4, HOTSEAT, 0, 0),
         };
 
         mIdp.numHotseatIcons = 3;
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages, 5, 3)
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.
         verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
@@ -85,7 +63,7 @@ public class GridSizeMigrationTaskTest {
     @Test
     public void testHotseatMigration_shortcuts_dropped() throws Exception {
         int[] hotseatItems = {
-                addItem(APPLICATION, 0, HOTSEAT, 0, 0),
+                addItem(APP_ICON, 0, HOTSEAT, 0, 0),
                 addItem(30, 1, HOTSEAT, 0, 0),
                 -1,
                 addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
@@ -93,7 +71,7 @@ public class GridSizeMigrationTaskTest {
         };
 
         mIdp.numHotseatIcons = 3;
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages, 5, 3)
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.
         verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
@@ -138,7 +116,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Column 2 and row 2 got removed.
@@ -158,7 +136,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column get moved to new screen
@@ -183,7 +161,7 @@ public class GridSizeMigrationTaskTest {
                 {  3,  1, -1,  4},
         }});
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on the 3rd
@@ -215,7 +193,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -244,7 +222,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 4)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -269,7 +247,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  6,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(mContext, mIdp, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -283,54 +261,13 @@ public class GridSizeMigrationTaskTest {
         }});
     }
 
-    private int[][][] createGrid(int[][][] typeArray) throws Exception {
-        return createGrid(typeArray, 1);
-    }
-
-    /**
-     * Initializes the DB with dummy elements to represent the provided grid structure.
-     * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
-     *                  type definitions. The first dimension represents the screens and the next
-     *                  two represent the workspace grid.
-     * @return the same grid representation where each entry is the corresponding item id.
-     */
-    private int[][][] createGrid(int[][][] typeArray, int startScreen) throws Exception {
-        LauncherSettings.Settings.call(mContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        int[][][] ids = new int[typeArray.length][][];
-
-        for (int i = 0; i < typeArray.length; i++) {
-            // Add screen to DB
-            int screenId = startScreen + i;
-
-            // Keep the screen id counter up to date
-            LauncherSettings.Settings.call(mContext.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-            ids[i] = new int[typeArray[i].length][];
-            for (int y = 0; y < typeArray[i].length; y++) {
-                ids[i][y] = new int[typeArray[i][y].length];
-                for (int x = 0; x < typeArray[i][y].length; x++) {
-                    if (typeArray[i][y][x] < 0) {
-                        // Empty cell
-                        ids[i][y][x] = -1;
-                    } else {
-                        ids[i][y][x] = addItem(typeArray[i][y][x], screenId, DESKTOP, x, y);
-                    }
-                }
-            }
-        }
-
-        return ids;
-    }
-
     /**
      * Verifies that the workspace items are arranged in the provided order.
      * @param ids A 3d array where the first dimension represents the screen, and the rest two
      *            represent the workspace grid.
      */
     private void verifyWorkspace(int[][][] ids) {
-        IntArray allScreens = getWorkspaceScreenIds(mContext);
+        IntArray allScreens = getWorkspaceScreenIds(mDb);
         assertEquals(ids.length, allScreens.size());
         int total = 0;
 
@@ -367,42 +304,6 @@ public class GridSizeMigrationTaskTest {
         c.close();
     }
 
-    /**
-     * Adds a dummy item in the DB.
-     * @param type {@link #APPLICATION} or {@link #SHORTCUT} or >= 2 for
-     *             folder (where the type represents the number of items in the folder).
-     */
-    private int addItem(int type, int screen, int container, int x, int y) throws Exception {
-        int id = LauncherSettings.Settings.call(mContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-
-        ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites._ID, id);
-        values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screen);
-        values.put(LauncherSettings.Favorites.CELLX, x);
-        values.put(LauncherSettings.Favorites.CELLY, y);
-        values.put(LauncherSettings.Favorites.SPANX, 1);
-        values.put(LauncherSettings.Favorites.SPANY, 1);
-
-        if (type == APPLICATION || type == SHORTCUT) {
-            values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
-            values.put(LauncherSettings.Favorites.INTENT,
-                    new Intent(Intent.ACTION_MAIN).setPackage(TEST_PACKAGE).toUri(0));
-        } else {
-            values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
-            // Add folder items.
-            for (int i = 0; i < type; i++) {
-                addItem(APPLICATION, 0, id, 0, 0);
-            }
-        }
-
-        mContext.getContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
-        return id;
-    }
-
     @Test
     public void testMultiStepMigration_small_to_large() throws Exception {
         MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier();
@@ -435,7 +336,7 @@ public class GridSizeMigrationTaskTest {
         private final LinkedList<Point> mPoints;
 
         public MultiStepMigrationTaskVerifier(int... points) {
-            super(null, null);
+            super(null, null, null);
 
             mPoints = new LinkedList<>();
             for (int i = 0; i < points.length; i += 2) {
