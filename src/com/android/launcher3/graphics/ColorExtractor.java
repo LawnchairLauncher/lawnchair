@@ -18,8 +18,8 @@ package com.android.launcher3.graphics;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
-import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 /**
  * Utility class for extracting colors from a bitmap.
@@ -115,7 +115,7 @@ public class ColorExtractor {
         return bestColor;
     }
 
-    private static final int MAX_RGB_VALUE_POSTERIZED = posterize(0xffffff) + 1;
+    private static final int NUMBER_OF_COLORS_GUESSTIMATION = 255;
 
     /**
      * This picks a dominant color judging by how often it appears.
@@ -126,14 +126,7 @@ public class ColorExtractor {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
 
-        int[] rgbScoreHistogram;
-        try {
-            rgbScoreHistogram = new int[MAX_RGB_VALUE_POSTERIZED];
-        } catch (OutOfMemoryError e) {
-            Log.e(TAG, "Failed to create RGB score histogram, falling back to hue based extraction",
-                    e);
-            return findDominantColorByHue(bitmap);
-        }
+        SparseIntArray rgbScoreHistogram = new SparseIntArray(NUMBER_OF_COLORS_GUESSTIMATION);
 
         int highScore = -1;
         int bestRGB = -1;
@@ -148,13 +141,14 @@ public class ColorExtractor {
                 }
                 // Remove the alpha channel.
                 int rgb = posterize(ColorUtils.setAlphaComponent(argb, 0x00));
-                if (rgb < 0 || rgb >= rgbScoreHistogram.length) {
+                if (rgb < 0) {
                     // Defensively avoid array bounds violations.
                     continue;
                 }
-                rgbScoreHistogram[rgb] += 1;
-                if (rgbScoreHistogram[rgb] > highScore) {
-                    highScore = rgbScoreHistogram[rgb];
+                int currentScore = rgbScoreHistogram.get(rgb) + 1;
+                rgbScoreHistogram.append(rgb, currentScore);
+                if (currentScore > highScore) {
+                    highScore = currentScore;
                     bestRGB = rgb;
                 }
             }
