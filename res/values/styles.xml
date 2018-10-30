@@ -27,7 +27,7 @@
         <item name="android:colorEdgeEffect">#FF757575</item>
     </style>
 
-    <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#EAFFFFFF</item>
         <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
@@ -44,9 +44,13 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderBadgeColor">?android:attr/colorPrimary</item>
         <item name="loadingIconColor">#FFF</item>
-    </style>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+    </style>
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>
@@ -94,6 +98,10 @@
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
+    <style name="AppItemActivityTheme" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+    </style>
+
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
     Various foreground colors are overridden to be workspaceTextColor so that they are properly
@@ -136,7 +144,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:defaultFocusHighlightEnabled">false</item>

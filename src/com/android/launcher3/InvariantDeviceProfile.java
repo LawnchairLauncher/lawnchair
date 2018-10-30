@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -23,6 +25,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
@@ -45,12 +48,12 @@ public class InvariantDeviceProfile {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
-            new MainThreadInitializedObject<>((c) -> {
-                new ConfigMonitor(c).register();
-                return new InvariantDeviceProfile(c);
-            });
+            new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
+
+    public static final int CHANGE_FLAG_GRID = 1 << 0;
+    public static final int CHANGE_FLAG_ICON_SIZE = 1 << 1;
 
     // Constants that affects the interpolation curve between statically defined device profile
     // buckets.
@@ -61,9 +64,9 @@ public class InvariantDeviceProfile {
     private static float WEIGHT_EFFICIENT = 100000f;
 
     // Profile-defining invariant properties
-    String name;
-    float minWidthDps;
-    float minHeightDps;
+    private String name;
+    private float minWidthDps;
+    private float minHeightDps;
 
     /**
      * Number of icons per row and column in the workspace.
@@ -95,9 +98,11 @@ public class InvariantDeviceProfile {
 
     public Point defaultWallpaperSize;
 
+    private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
+    private ConfigMonitor mConfigMonitor;
+
     @VisibleForTesting
-    public InvariantDeviceProfile() {
-    }
+    public InvariantDeviceProfile() {}
 
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
@@ -125,6 +130,12 @@ public class InvariantDeviceProfile {
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
+        initGrid(context);
+        mConfigMonitor = new ConfigMonitor(context,
+                APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+    }
+
+    private void initGrid(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -182,6 +193,44 @@ public class InvariantDeviceProfile {
                     largeSide);
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+        }
+    }
+
+    public void addOnChangeListener(OnIDPChangeListener listener) {
+        mChangeListeners.add(listener);
+    }
+
+    private void killProcess(Context context) {
+        Log.e("ConfigMonitor", "restarting launcher");
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    private void onConfigChanged(Context context) {
+        // Config changes, what shall we do?
+        InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
+
+        // Re-init grid
+        initGrid(context);
+
+        int changeFlags = 0;
+        if (numRows != oldProfile.numRows ||
+                numColumns != oldProfile.numColumns ||
+                numFolderColumns != oldProfile.numFolderColumns ||
+                numFolderRows != oldProfile.numFolderRows ||
+                numHotseatIcons != oldProfile.numHotseatIcons) {
+            changeFlags |= CHANGE_FLAG_GRID;
+        }
+
+        if (iconSize != oldProfile.iconSize || iconBitmapSize != oldProfile.iconBitmapSize) {
+            changeFlags |= CHANGE_FLAG_ICON_SIZE;
+        }
+
+        // Create a new config monitor
+        mConfigMonitor.unregister();
+        mConfigMonitor = new ConfigMonitor(context, this::onConfigChanged);
+
+        for (OnIDPChangeListener listener : mChangeListeners) {
+            listener.onIdpChanged(changeFlags, this);
         }
     }
 
@@ -356,4 +405,8 @@ public class InvariantDeviceProfile {
         return x * aspectRatio + y;
     }
 
+    public interface OnIDPChangeListener {
+
+        void onIdpChanged(int changeFlags, InvariantDeviceProfile profile);
+    }
 }

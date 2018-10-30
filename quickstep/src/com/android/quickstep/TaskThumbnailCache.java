@@ -108,8 +108,9 @@ public class TaskThumbnailCache {
         Preconditions.assertUIThread();
 
         // Fetch the thumbnail for this task and put it in the cache
-        mCache.put(task.key, ActivityManagerWrapper.getInstance().getTaskThumbnail(
-                task.key.id, true /* reducedResolution */));
+        updateThumbnailInBackground(task, true /* reducedResolution */, (t) -> {
+            mCache.put(task.key, t.thumbnail);
+        });
     }
 
 

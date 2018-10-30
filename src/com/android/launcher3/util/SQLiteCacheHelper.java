@@ -87,6 +87,10 @@ public abstract class SQLiteCacheHelper {
         mOpenHelper.clearDB(mOpenHelper.getWritableDatabase());
     }
 
+    public void close() {
+        mOpenHelper.close();
+    }
+
     protected abstract void onCreateTable(SQLiteDatabase db);
 
     /**

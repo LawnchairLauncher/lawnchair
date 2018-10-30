@@ -216,13 +216,17 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
-                popupDataProvider.getShortcutIdsForItem(item),
+                popupDataProvider.getShortcutCountForItem(item),
                 popupDataProvider.getNotificationKeysForItem(item),
                 factory.getEnabledShortcuts(mLauncher, item));
     }
 
+    public ViewGroup getSystemShortcutContainerForTesting() {
+        return mSystemShortcutContainer;
+    }
+
     @TargetApi(Build.VERSION_CODES.P)
-    protected void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
+    protected void populateAndShow(final BubbleTextView originalIcon, int shortcutCount,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         mNumNotifications = notificationKeys.size();
         mOriginalIcon = originalIcon;
@@ -240,12 +244,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         int viewsToFlip = getChildCount();
         mSystemShortcutContainer = this;
 
-        if (!shortcutIds.isEmpty()) {
+        if (shortcutCount > 0) {
             if (mNotificationItemView != null) {
                 mNotificationItemView.addGutter();
             }
 
-            for (int i = shortcutIds.size(); i > 0; i--) {
+            for (int i = shortcutCount; i > 0; i--) {
                 mShortcuts.add(inflateAndAdd(R.layout.deep_shortcut, this));
             }
             updateHiddenShortcuts();
@@ -284,7 +288,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
-                this, shortcutIds, mShortcuts, notificationKeys));
+                this, mShortcuts, notificationKeys));
     }
 
     private String getTitleForAccessibility() {

@@ -145,4 +145,6 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"Benachrichtigungen und Apps sind deaktiviert"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Schließen"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Geschlossen"</string>
+    <!-- no translation found for remote_action_failed (1383965239183576790) -->
+    <skip />
 </resources>

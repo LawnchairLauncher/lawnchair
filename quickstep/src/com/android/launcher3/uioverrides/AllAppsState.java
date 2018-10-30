@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW;
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
@@ -44,7 +45,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        AbstractFloatingView.closeAllOpenViews(launcher);
+        AbstractFloatingView.closeAllOpenViewsExcept(launcher, TYPE_QUICKSTEP_PREVIEW);
         dispatchWindowStateChanged(launcher);
     }
 

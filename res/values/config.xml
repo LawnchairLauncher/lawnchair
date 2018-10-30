@@ -19,7 +19,7 @@
     <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
     <!-- String representing the fragment class for settings activity.-->
-    <string name="settings_fragment_name" translatable="false">com.android.launcher3.SettingsActivity$LauncherSettingsFragment</string>
+    <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
@@ -105,7 +105,10 @@
     <item type="id" name="view_unhighlight_background" />
     <item type="id" name="view_highlighted" />
 
-<!-- Popup items -->
+    <!-- Menu id for feature flags -->
+    <item type="id" name="menu_apply_flags" />
+
+    <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
     <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>

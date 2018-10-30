@@ -18,6 +18,7 @@ package com.android.launcher3.popup;
 
 import android.app.PendingIntent;
 import android.app.RemoteAction;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -48,14 +49,20 @@ public class RemoteActionShortcut extends SystemShortcut<Launcher> {
             AbstractFloatingView.closeAllOpenViews(launcher);
 
             try {
-                mAction.getActionIntent().send(0,
+                mAction.getActionIntent().send(
+                        launcher,
+                        0,
+                        new Intent().putExtra(
+                                Intent.EXTRA_PACKAGE_NAME,
+                                itemInfo.getTargetComponent().getPackageName()),
                         (pendingIntent, intent, resultCode, resultData, resultExtras) -> {
                             if (resultData != null && !resultData.isEmpty()) {
                                 Log.e(TAG, "Remote action returned result: " + mAction.getTitle()
                                         + " : " + resultData);
                                 Toast.makeText(launcher, resultData, Toast.LENGTH_SHORT).show();
                             }
-                        }, new Handler(Looper.getMainLooper()));
+                        },
+                        new Handler(Looper.getMainLooper()));
             } catch (PendingIntent.CanceledException e) {
                 Log.e(TAG, "Remote action canceled: " + mAction.getTitle(), e);
                 Toast.makeText(launcher, launcher.getString(

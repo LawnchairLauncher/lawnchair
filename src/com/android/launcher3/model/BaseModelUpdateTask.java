@@ -27,10 +27,10 @@ import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 
 /**
@@ -107,13 +107,9 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindDeepShortcuts(BgDataModel dataModel) {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy = dataModel.deepShortcutMap.clone();
-        scheduleCallbackTask(new CallbackTask() {
-            @Override
-            public void execute(Callbacks callbacks) {
-                callbacks.bindDeepShortcutMap(shortcutMapCopy);
-            }
-        });
+        final HashMap<ComponentKey, Integer> shortcutMapCopy =
+                new HashMap<>(dataModel.deepShortcutMap);
+        scheduleCallbackTask(callbacks -> callbacks.bindDeepShortcutMap(shortcutMapCopy));
     }
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {

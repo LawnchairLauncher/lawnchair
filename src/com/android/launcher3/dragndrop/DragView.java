@@ -232,7 +232,7 @@ public class DragView extends View {
                             nDr = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
                         }
                         Utilities.scaleRectAboutCenter(bounds,
-                                li.getNormalizer().getScale(nDr, null, null, null));
+                                li.getNormalizer().getScale(nDr, null));
                     }
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 

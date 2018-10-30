@@ -51,7 +51,8 @@ public class StatusBarTouchController implements TouchController {
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
-        mTouchSlop = ViewConfiguration.get(l).getScaledTouchSlop();
+        // Guard against TAPs by increasing the touch slop.
+        mTouchSlop = 2 * ViewConfiguration.get(l).getScaledTouchSlop();
         mTranslator = new TouchEventTranslator((MotionEvent ev)-> dispatchTouchEvent(ev));
     }
 
@@ -89,6 +90,9 @@ public class StatusBarTouchController implements TouchController {
                 mTranslator.dispatchDownEvents(ev);
                 mTranslator.processMotionEvent(ev);
                 return true;
+            }
+            if (Math.abs(dx) > mTouchSlop) {
+                mCanIntercept = false;
             }
         }
         return false;

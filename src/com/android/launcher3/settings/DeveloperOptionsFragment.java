@@ -1,19 +1,24 @@
 /*
  * Copyright (C) 2018 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package com.android.launcher3.settings;
 
-package com.android.launcher3.uioverrides.plugins;
+import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
+import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,66 +28,132 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.systemui.shared.plugins.PluginEnabler;
-import com.android.systemui.shared.plugins.PluginManager;
-import com.android.systemui.shared.plugins.PluginPrefs;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.FlagTogglerPrefUi;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 
 import java.util.List;
 import java.util.Set;
 
-/**
- * This class is copied from System UI Tuner, except using our PluginEnablerImpl. The reason we
- * can't share a common base class in the shared lib is because the androidx preference dependency
- * interferes with our recyclerview and fragment dependencies.
- */
-public class PluginPreferencesFragment extends PreferenceFragment {
-    public static final String ACTION_PLUGIN_SETTINGS
-            = "com.android.systemui.action.PLUGIN_SETTINGS";
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceDataStore;
+import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SwitchPreference;
 
+/**
+ * Dev-build only UI allowing developers to toggle flag settings and plugins.
+ * See {@link FeatureFlags}.
+ */
+@TargetApi(Build.VERSION_CODES.O)
+public class DeveloperOptionsFragment extends PreferenceFragment {
+
+    private static final String ACTION_PLUGIN_SETTINGS = "com.android.systemui.action.PLUGIN_SETTINGS";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
-    private PluginPrefs mPluginPrefs;
-    private PluginEnabler mPluginEnabler;
+    private final BroadcastReceiver mPluginReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadPluginPrefs();
+        }
+    };
+
+    private PreferenceScreen mPreferenceScreen;
+
+    private PreferenceCategory mPluginsCategory;
+    private FlagTogglerPrefUi mFlagTogglerPrefUi;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
-        getContext().registerReceiver(mReceiver, filter);
-        filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
-        getContext().registerReceiver(mReceiver, filter);
+        getContext().registerReceiver(mPluginReceiver, filter);
+        getContext().registerReceiver(mPluginReceiver,
+                new IntentFilter(Intent.ACTION_USER_UNLOCKED));
 
-        mPluginEnabler = PluginManagerWrapper.INSTANCE.get(getContext()).getPluginEnabler();
-        loadPrefs();
+        mPreferenceScreen = getPreferenceManager().createPreferenceScreen(getContext());
+        setPreferenceScreen(mPreferenceScreen);
+
+        initFlags();
+        loadPluginPrefs();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getContext().unregisterReceiver(mReceiver);
+        getContext().unregisterReceiver(mPluginReceiver);
     }
 
-    private void loadPrefs() {
-        PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(getContext());
-        screen.setOrderingAsAdded(false);
+    private PreferenceCategory newCategory(String title) {
+        PreferenceCategory category = new PreferenceCategory(getContext());
+        category.setOrder(Preference.DEFAULT_ORDER);
+        category.setTitle(title);
+        mPreferenceScreen.addPreference(category);
+        return category;
+    }
+
+    private void initFlags() {
+        if (!FeatureFlags.showFlagTogglerUi(getContext())) {
+            return;
+        }
+
+        mFlagTogglerPrefUi = new FlagTogglerPrefUi(this);
+        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags"));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mFlagTogglerPrefUi != null) {
+            mFlagTogglerPrefUi.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mFlagTogglerPrefUi != null) {
+            mFlagTogglerPrefUi.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop() {
+        if (mFlagTogglerPrefUi != null) {
+            mFlagTogglerPrefUi.onStop();
+        }
+        super.onStop();
+    }
+
+    private void loadPluginPrefs() {
+        if (mPluginsCategory != null) {
+            mPreferenceScreen.removePreference(mPluginsCategory);
+        }
+        if (!PluginManagerWrapper.hasPlugins(getActivity())) {
+            mPluginsCategory = null;
+            return;
+        }
+        mPluginsCategory = newCategory("Plugins");
+
+        PluginManagerWrapper manager = PluginManagerWrapper.INSTANCE.get(getContext());
         Context prefContext = getContext();
-        mPluginPrefs = new PluginPrefs(getContext());
         PackageManager pm = getContext().getPackageManager();
 
-        Set<String> pluginActions = mPluginPrefs.getPluginList();
+        Set<String> pluginActions = manager.getPluginActions();
         ArrayMap<String, ArraySet<String>> plugins = new ArrayMap<>();
         for (String action : pluginActions) {
             String name = toName(action);
@@ -99,13 +170,13 @@ public class PluginPreferencesFragment extends PreferenceFragment {
 
         List<PackageInfo> apps = pm.getPackagesHoldingPermissions(new String[]{PLUGIN_PERMISSION},
                 PackageManager.MATCH_DISABLED_COMPONENTS | PackageManager.GET_SERVICES);
+        PreferenceDataStore enabled = manager.getPluginEnabler();
         apps.forEach(app -> {
             if (!plugins.containsKey(app.packageName)) return;
-            SwitchPreference pref = new PluginPreference(prefContext, app, mPluginEnabler);
+            SwitchPreference pref = new PluginPreference(prefContext, app, enabled);
             pref.setSummary("Plugins: " + toString(plugins.get(app.packageName)));
-            screen.addPreference(pref);
+            mPluginsCategory.addPreference(pref);
         });
-        setPreferenceScreen(screen);
     }
 
     private String toString(ArraySet<String> plugins) {
@@ -132,19 +203,13 @@ public class PluginPreferencesFragment extends PreferenceFragment {
         return b.toString();
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadPrefs();
-        }
-    };
-
     private static class PluginPreference extends SwitchPreference {
         private final boolean mHasSettings;
         private final PackageInfo mInfo;
-        private final PluginEnabler mPluginEnabler;
+        private final PreferenceDataStore mPluginEnabler;
 
-        public PluginPreference(Context prefContext, PackageInfo info, PluginEnabler pluginEnabler) {
+        public PluginPreference(Context prefContext, PackageInfo info,
+                PreferenceDataStore pluginEnabler) {
             super(prefContext);
             PackageManager pm = prefContext.getPackageManager();
             mHasSettings = pm.resolveActivity(new Intent(ACTION_PLUGIN_SETTINGS)
@@ -156,11 +221,16 @@ public class PluginPreferencesFragment extends PreferenceFragment {
             setWidgetLayoutResource(R.layout.switch_preference_with_settings);
         }
 
+        private boolean isEnabled(ComponentName cn) {
+            return mPluginEnabler.getBoolean(pluginEnabledKey(cn), true);
+
+        }
+
         private boolean isPluginEnabled() {
             for (int i = 0; i < mInfo.services.length; i++) {
                 ComponentName componentName = new ComponentName(mInfo.packageName,
                         mInfo.services[i].name);
-                if (!mPluginEnabler.isEnabled(componentName)) {
+                if (!isEnabled(componentName)) {
                     return false;
                 }
             }
@@ -174,14 +244,14 @@ public class PluginPreferencesFragment extends PreferenceFragment {
                 ComponentName componentName = new ComponentName(mInfo.packageName,
                         mInfo.services[i].name);
 
-                if (mPluginEnabler.isEnabled(componentName) != isEnabled) {
-                    mPluginEnabler.setEnabled(componentName, isEnabled);
+                if (isEnabled(componentName) != isEnabled) {
+                    mPluginEnabler.putBoolean(pluginEnabledKey(componentName), isEnabled);
                     shouldSendBroadcast = true;
                 }
             }
             if (shouldSendBroadcast) {
                 final String pkg = mInfo.packageName;
-                final Intent intent = new Intent(PluginManager.PLUGIN_CHANGED,
+                final Intent intent = new Intent(PLUGIN_CHANGED,
                         pkg != null ? Uri.fromParts("package", pkg, null) : null);
                 getContext().sendBroadcast(intent);
             }
@@ -190,13 +260,13 @@ public class PluginPreferencesFragment extends PreferenceFragment {
         }
 
         @Override
-        protected void onBindView(View view) {
-            super.onBindView(view);
-            view.findViewById(R.id.settings).setVisibility(mHasSettings ? View.VISIBLE
+        public void onBindViewHolder(PreferenceViewHolder holder) {
+            super.onBindViewHolder(holder);
+            holder.findViewById(R.id.settings).setVisibility(mHasSettings ? View.VISIBLE
                     : View.GONE);
-            view.findViewById(R.id.divider).setVisibility(mHasSettings ? View.VISIBLE
+            holder.findViewById(R.id.divider).setVisibility(mHasSettings ? View.VISIBLE
                     : View.GONE);
-            view.findViewById(R.id.settings).setOnClickListener(v -> {
+            holder.findViewById(R.id.settings).setOnClickListener(v -> {
                 ResolveInfo result = v.getContext().getPackageManager().resolveActivity(
                         new Intent(ACTION_PLUGIN_SETTINGS).setPackage(
                                 mInfo.packageName), 0);
@@ -206,7 +276,7 @@ public class PluginPreferencesFragment extends PreferenceFragment {
                                     result.activityInfo.name)));
                 }
             });
-            view.setOnLongClickListener(v -> {
+            holder.itemView.setOnLongClickListener(v -> {
                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 intent.setData(Uri.fromParts("package", mInfo.packageName, null));
                 getContext().startActivity(intent);

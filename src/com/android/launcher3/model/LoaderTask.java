@@ -861,7 +861,7 @@ public class LoaderTask implements Runnable {
                 if (mUserManager.isUserUnlocked(user)) {
                     List<ShortcutInfoCompat> shortcuts =
                             mShortcutManager.queryForAllShortcuts(user);
-                    mBgDataModel.updateDeepShortcutMap(null, user, shortcuts);
+                    mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
                 }
             }
         }
