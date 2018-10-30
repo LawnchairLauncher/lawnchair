@@ -29,6 +29,7 @@ import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
 import android.util.AttributeSet;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -53,34 +54,37 @@ public class ShelfScrimView extends ScrimView {
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
-    private final float mRadius;
-    private final int mMaxScrimAlpha;
+    protected int mEndAlpha;
+    protected float mRadius;
+    protected int mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Mid point where the alpha changes
-    private int mMidAlpha;
-    private float mMidProgress;
+    protected int mMidAlpha;
+    protected float mMidProgress;
 
     private float mShiftRange;
 
     private final float mShelfOffset;
     private float mTopOffset;
-    private float mShelfTop;
+    protected float mShelfTop;
     private float mShelfTopAtThreshold;
 
-    private int mShelfColor;
+    protected int mShelfColor;
     private int mRemainingScreenColor;
 
     private final Path mTempPath = new Path();
     private final Path mRemainingScreenPath = new Path();
     private boolean mRemainingScreenPathValid = false;
 
+    protected final int DEFAULT_END_ALPHA;
+    protected final LawnchairPreferences prefs;
+
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
-        mEndAlpha = Color.alpha(mEndScrim);
+        mEndAlpha = DEFAULT_END_ALPHA = Color.alpha(mEndScrim);
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -88,6 +92,7 @@ public class ShelfScrimView extends ScrimView {
                 .getDeviceProfile().verticalDragHandleSizePx; //context.getResources().getDimension(R.dimen.shelf_surface_offset);
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
+        prefs = Utilities.getLawnchairPrefs(context);
     }
 
     @Override
@@ -166,6 +171,7 @@ public class ShelfScrimView extends ScrimView {
 
     private void drawBackground(Canvas canvas) {
         if (mDrawingFlatColor) {
+            onDrawFlatColor(canvas);
             if (mCurrentFlatColor != 0) {
                 canvas.drawColor(mCurrentFlatColor);
             }
@@ -175,6 +181,7 @@ public class ShelfScrimView extends ScrimView {
         if (Color.alpha(mShelfColor) == 0) {
             return;
         } else if (mProgress <= 0) {
+            onDrawFlatColor(canvas);
             canvas.drawColor(mShelfColor);
             return;
         }
@@ -202,6 +209,13 @@ public class ShelfScrimView extends ScrimView {
         }
 
         mPaint.setColor(mShelfColor);
-        canvas.drawRoundRect(0, mShelfTop, width, height + mRadius, mRadius, mRadius, mPaint);
+        onDrawRoundRect(canvas, 0, mShelfTop, getWidth(), height + mRadius,
+                mRadius, mRadius, mPaint);
+    }
+
+    @Override
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
+            float rx, float ry, Paint paint) {
+        canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
     }
 }
