@@ -993,6 +993,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mLauncherTransitionController.getAnimationPlayer().end();
             mLauncherTransitionController = null;
         }
+        mLayoutListener.finish();
 
         mActivityControlHelper.onQuickInteractionStart(mActivity, mRunningTaskInfo, false,
                 mTouchInteractionLog);
