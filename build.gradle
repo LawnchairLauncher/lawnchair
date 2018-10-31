@@ -100,7 +100,7 @@ android {
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            java.srcDirs = ['go/src', "src_ui_overrides"]
             manifest.srcFile "go/AndroidManifest.xml"
         }
 
