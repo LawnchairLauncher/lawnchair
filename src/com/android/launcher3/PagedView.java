@@ -625,6 +625,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mMaxScrollX = computeMaxScrollX();
     }
 
+    public int getMaxScrollX() {
+        return mMaxScrollX;
+    }
+
     protected int computeMaxScrollX() {
         int childCount = getChildCount();
         if (childCount > 0) {
@@ -638,6 +642,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void setPageSpacing(int pageSpacing) {
         mPageSpacing = pageSpacing;
         requestLayout();
+    }
+
+    public int getPageSpacing() {
+        return mPageSpacing;
     }
 
     private void dispatchPageCountChanged() {

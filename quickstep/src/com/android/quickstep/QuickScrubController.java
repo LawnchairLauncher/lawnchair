@@ -16,8 +16,18 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.animation.Interpolator;
@@ -37,8 +47,10 @@ import com.android.quickstep.views.TaskView;
  * The behavior is to evenly divide the progress into sections, each of which scrolls one page.
  * The first and last section set an alarm to auto-advance backwards or forwards, respectively.
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class QuickScrubController implements OnAlarmListener {
 
+    public static final int QUICK_SWITCH_FROM_APP_START_DURATION = 0;
     public static final int QUICK_SCRUB_FROM_APP_START_DURATION = 240;
     public static final int QUICK_SCRUB_FROM_HOME_START_DURATION = 200;
     // We want the translation y to finish faster than the rest of the animation.
@@ -50,6 +62,19 @@ public class QuickScrubController implements OnAlarmListener {
      */
     private static final float[] QUICK_SCRUB_THRESHOLDS = new float[] {
             0.05f, 0.20f, 0.35f, 0.50f, 0.65f, 0.80f, 0.95f
+    };
+
+    private static final FloatProperty<QuickScrubController> PROGRESS
+            = new FloatProperty<QuickScrubController>("progress") {
+        @Override
+        public void setValue(QuickScrubController quickScrubController, float progress) {
+            quickScrubController.onQuickScrubProgress(progress);
+        }
+
+        @Override
+        public Float get(QuickScrubController quickScrubController) {
+            return quickScrubController.mEndProgress;
+        }
     };
 
     private static final String TAG = "QuickScrubController";
@@ -72,6 +97,13 @@ public class QuickScrubController implements OnAlarmListener {
     private ActivityControlHelper mActivityControlHelper;
     private TouchInteractionLog mTouchInteractionLog;
 
+    private boolean mIsQuickSwitch;
+    private float mStartProgress;
+    private float mEndProgress;
+    private float mPrevProgressDelta;
+    private float mPrevPrevProgressDelta;
+    private boolean mShouldSwitchToNext;
+
     public QuickScrubController(BaseActivity activity, RecentsView recentsView) {
         mActivity = activity;
         mRecentsView = recentsView;
@@ -91,17 +123,26 @@ public class QuickScrubController implements OnAlarmListener {
         mActivityControlHelper = controlHelper;
         mTouchInteractionLog = touchInteractionLog;
 
+        if (mIsQuickSwitch) {
+            mShouldSwitchToNext = true;
+            mPrevProgressDelta = 0;
+            if (mRecentsView.getTaskViewCount() > 0) {
+                mRecentsView.getTaskViewAt(0).setFullscreen(true);
+            }
+            if (mRecentsView.getTaskViewCount() > 1) {
+                mRecentsView.getTaskViewAt(1).setFullscreen(true);
+            }
+        }
+
         snapToNextTaskIfAvailable();
         mActivity.getUserEventDispatcher().resetActionDurationMillis();
     }
 
     public void onQuickScrubEnd() {
         mInQuickScrub = false;
-        if (ENABLE_AUTO_ADVANCE) {
-            mAutoAdvanceAlarm.cancelAlarm();
-        }
-        int page = mRecentsView.getNextPage();
+
         Runnable launchTaskRunnable = () -> {
+            int page = mRecentsView.getPageNearestToCenterOfScreen();
             TaskView taskView = mRecentsView.getTaskViewAt(page);
             if (taskView != null) {
                 mWaitingForTaskLaunch = true;
@@ -118,12 +159,49 @@ public class QuickScrubController implements OnAlarmListener {
                                 TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key));
                     }
                     mWaitingForTaskLaunch = false;
+                    if (mIsQuickSwitch) {
+                        mIsQuickSwitch = false;
+                        if (mRecentsView.getTaskViewCount() > 0) {
+                            mRecentsView.getTaskViewAt(0).setFullscreen(false);
+                        }
+                        if (mRecentsView.getTaskViewCount() > 1) {
+                            mRecentsView.getTaskViewAt(1).setFullscreen(false);
+                        }
+                    }
+
                 }, taskView.getHandler());
             } else {
                 breakOutOfQuickScrub();
             }
             mActivityControlHelper = null;
         };
+
+        if (mIsQuickSwitch) {
+            float progressVelocity = mPrevPrevProgressDelta / SINGLE_FRAME_MS;
+            // Move to the next frame immediately, then start the animation from the
+            // following frame since it starts a frame later.
+            float singleFrameProgress = progressVelocity * SINGLE_FRAME_MS;
+            float fromProgress = mEndProgress + singleFrameProgress;
+            onQuickScrubProgress(fromProgress);
+            fromProgress += singleFrameProgress;
+            float toProgress = mShouldSwitchToNext ? 1 : 0;
+            int duration = (int) Math.abs((toProgress - fromProgress) / progressVelocity);
+            duration = Utilities.boundToRange(duration, 80, 300);
+            Animator anim = ObjectAnimator.ofFloat(this, PROGRESS, fromProgress, toProgress);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    launchTaskRunnable.run();
+                }
+            });
+            anim.setDuration(duration).start();
+            return;
+        }
+
+        if (ENABLE_AUTO_ADVANCE) {
+            mAutoAdvanceAlarm.cancelAlarm();
+        }
+        int page = mRecentsView.getNextPage();
         int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
                 * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
         if (mRecentsView.getChildCount() > 0 && mRecentsView.snapToPage(page, snapDuration)) {
@@ -151,17 +229,26 @@ public class QuickScrubController implements OnAlarmListener {
         mLaunchingTaskId = 0;
     }
 
+    public boolean prepareQuickScrub(String tag) {
+        return prepareQuickScrub(tag, mIsQuickSwitch);
+    }
+
     /**
      * Initializes the UI for quick scrub, returns true if success.
      */
-    public boolean prepareQuickScrub(String tag) {
+    public boolean prepareQuickScrub(String tag, boolean isQuickSwitch) {
         if (mWaitingForTaskLaunch || mInQuickScrub) {
             Log.d(tag, "Waiting for last scrub to finish, will skip this interaction");
             return false;
         }
         mOnFinishedTransitionToQuickScrubRunnable = null;
         mRecentsView.setNextPageSwitchRunnable(null);
+        mIsQuickSwitch = isQuickSwitch;
         return true;
+    }
+
+    public boolean isQuickSwitch() {
+        return mIsQuickSwitch;
     }
 
     public boolean isWaitingForTaskLaunch() {
@@ -179,6 +266,40 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void onQuickScrubProgress(float progress) {
+        if (mIsQuickSwitch) {
+            TaskView currentPage = mRecentsView.getTaskViewAt(0);
+            TaskView nextPage = mRecentsView.getTaskViewAt(1);
+            if (currentPage == null || nextPage == null) {
+                return;
+            }
+            if (!mFinishedTransitionToQuickScrub) {
+                mStartProgress = mEndProgress = progress;
+            } else {
+                float progressDelta = progress - mEndProgress;
+                mEndProgress = progress;
+                progress = Utilities.boundToRange(progress, mStartProgress, 1);
+                progress = Utilities.mapToRange(progress, mStartProgress, 1, 0, 1, LINEAR);
+                if (mInQuickScrub) {
+                    mShouldSwitchToNext = mPrevProgressDelta > 0.007f || progressDelta > 0.007f
+                            || progress >= 0.5f;
+                }
+                mPrevPrevProgressDelta = mPrevProgressDelta;
+                mPrevProgressDelta = progressDelta;
+                float scrollDiff = nextPage.getWidth() + mRecentsView.getPageSpacing();
+                int scrollDir = mRecentsView.isRtl() ? -1 : 1;
+                int linearScrollDiff = (int) (progress * scrollDiff * scrollDir);
+                float accelScrollDiff = ACCEL.getInterpolation(progress) * scrollDiff * scrollDir;
+                currentPage.setZoomScale(1 - DEACCEL_3.getInterpolation(progress)
+                        * TaskView.EDGE_SCALE_DOWN_FACTOR);
+                currentPage.setTranslationX(linearScrollDiff + accelScrollDiff);
+                nextPage.setTranslationZ(1);
+                nextPage.setTranslationY(currentPage.getTranslationY());
+                int startScroll = mRecentsView.isRtl() ? mRecentsView.getMaxScrollX() : 0;
+                mRecentsView.setScrollX(startScroll + linearScrollDiff);
+            }
+            return;
+        }
+
         int quickScrubSection = 0;
         for (float threshold : QUICK_SCRUB_THRESHOLDS) {
             if (progress < threshold) {
@@ -228,9 +349,14 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void snapToNextTaskIfAvailable() {
         if (mInQuickScrub && mRecentsView.getChildCount() > 0) {
-            int duration = mStartedFromHome ? QUICK_SCRUB_FROM_HOME_START_DURATION
-                    : QUICK_SCRUB_FROM_APP_START_DURATION;
-            int pageToGoTo = mStartedFromHome ? 0 : mRecentsView.getNextPage() + 1;
+            int duration = mIsQuickSwitch
+                    ? QUICK_SWITCH_FROM_APP_START_DURATION
+                    : mStartedFromHome
+                        ? QUICK_SCRUB_FROM_HOME_START_DURATION
+                        : QUICK_SCRUB_FROM_APP_START_DURATION;
+            int pageToGoTo = mStartedFromHome || mIsQuickSwitch
+                    ? 0
+                    : mRecentsView.getNextPage() + 1;
             goToPageWithHaptic(pageToGoTo, duration, true /* forceHaptic */,
                     QUICK_SCRUB_START_INTERPOLATOR);
         }
