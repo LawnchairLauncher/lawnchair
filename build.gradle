@@ -72,7 +72,7 @@ android {
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src']
+            java.srcDirs = ['src', 'src_shortcuts_overrides']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
@@ -100,7 +100,7 @@ android {
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            java.srcDirs = ['go/src', "src_ui_overrides"]
             manifest.srcFile "go/AndroidManifest.xml"
         }
 

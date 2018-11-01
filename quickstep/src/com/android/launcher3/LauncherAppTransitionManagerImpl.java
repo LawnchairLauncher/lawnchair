@@ -178,6 +178,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     @Override
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
+            boolean fromRecents = mLauncher.getStateManager().getState().overviewUi
+                    && findTaskViewToLaunch(launcher, v, null) != null;
+            RecentsView recentsView = mLauncher.getOverviewPanel();
+            if (fromRecents && recentsView.getQuickScrubController().isQuickSwitch()) {
+                return ActivityOptions.makeCustomAnimation(mLauncher, R.anim.no_anim,
+                        R.anim.no_anim);
+            }
+
             RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler,
                     true /* startAtFrontOfQueue */) {
 
@@ -218,8 +226,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 }
             };
 
-            boolean fromRecents = mLauncher.getStateManager().getState().overviewUi
-                    && findTaskViewToLaunch(launcher, v, null) != null;
             int duration = fromRecents
                     ? RECENTS_LAUNCH_DURATION
                     : APP_LAUNCH_DURATION;

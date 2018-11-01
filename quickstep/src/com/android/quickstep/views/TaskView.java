@@ -86,7 +86,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     /**
      * How much to scale down pages near the edge of the screen.
      */
-    private static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
+    public static final float EDGE_SCALE_DOWN_FACTOR = 0.03f;
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
@@ -141,6 +141,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     private IconView mIconView;
     private float mCurveScale;
     private float mZoomScale;
+    private boolean mIsFullscreen;
 
     private Animator mIconAndDimAnimator;
     private float mFocusTransitionProgress = 1;
@@ -507,5 +508,19 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         }
         Log.w(tag, msg);
         Toast.makeText(getContext(), R.string.activity_not_available, LENGTH_SHORT).show();
+    }
+
+    /**
+     * Hides the icon and shows insets when this TaskView is about to be shown fullscreen.
+     */
+    public void setFullscreen(boolean isFullscreen) {
+        mIsFullscreen = isFullscreen;
+        mIconView.setVisibility(mIsFullscreen ? INVISIBLE : VISIBLE);
+        setClipChildren(!mIsFullscreen);
+        setClipToPadding(!mIsFullscreen);
+    }
+
+    public boolean isFullscreen() {
+        return mIsFullscreen;
     }
 }

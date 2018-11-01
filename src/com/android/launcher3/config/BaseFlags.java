@@ -22,15 +22,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 
-import androidx.annotation.GuardedBy;
-import androidx.annotation.Keep;
-
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import androidx.annotation.GuardedBy;
+import androidx.annotation.Keep;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -86,6 +86,9 @@ abstract class BaseFlags {
     // When true, overview shows screenshots in the orientation they were taken rather than
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
+
+    public static final TogglableFlag QUICK_SWITCH = new TogglableFlag("QUICK_SWITCH", false,
+            "Swiping right on the nav bar while in an app switches to the previous app");
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
