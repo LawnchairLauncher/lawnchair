@@ -21,23 +21,19 @@
 
     <path
         android:fillColor="@android:color/black"
-        android:fillType="evenOdd"
         android:strokeWidth="1"
         android:pathData="M 9 0 C 13.9705627485 0 18 4.02943725152 18 9 C 18 13.9705627485 13.9705627485 18 9 18 C 4.02943725152 18 0 13.9705627485 0 9 C 0 4.02943725152 4.02943725152 0 9 0 Z" />
     <path
         android:fillColor="@android:color/white"
-        android:fillType="evenOdd"
         android:strokeWidth="1"
         android:pathData="M 9 0 C 13.9705627485 0 18 4.02943725152 18 9 C 18 13.9705627485 13.9705627485 18 9 18 C 4.02943725152 18 0 13.9705627485 0 9 C 0 4.02943725152 4.02943725152 0 9 0 Z" />
     <path
         android:fillColor="@android:color/white"
-        android:fillType="evenOdd"
         android:strokeWidth="1"
         android:pathData="M 9 0 C 13.9705627485 0 18 4.02943725152 18 9 C 18 13.9705627485 13.9705627485 18 9 18 C 4.02943725152 18 0 13.9705627485 0 9 C 0 4.02943725152 4.02943725152 0 9 0 Z" />
     <path
         android:fillColor="@android:color/black"
         android:fillAlpha="0.87"
-        android:fillType="evenOdd"
         android:strokeWidth="1"
         android:pathData="M 6 10.4123279 L 8.63934949 10.4123279 L 8.63934949 15.6 L 12.5577168 7.84517705 L 9.94547194 7.84517705 L 9.94547194 2 Z" />
 </vector>

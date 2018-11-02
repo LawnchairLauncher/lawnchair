@@ -18,7 +18,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.R;
+import com.android.launcher3.icons.R;
 
 import static android.graphics.Paint.DITHER_FLAG;
 import static android.graphics.Paint.FILTER_BITMAP_FLAG;

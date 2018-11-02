@@ -4,19 +4,17 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+        classpath GRADLE_CLASS_PATH
+        classpath PROTOBUF_CLASS_PATH
     }
 }
-
-final String SUPPORT_LIBS_VERSION = '1.0.0-alpha1'
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion COMPILE_SDK.toInteger()
+    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
         minSdkVersion 21
@@ -120,9 +118,15 @@ repositories {
 }
 
 dependencies {
-    implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
-    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+    implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
+    implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
+    implementation PROTOBUF_DEPENDENCY
+    implementation project(':IconLoader')
+
+    // This is already included in sysui_shared
+    aospImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
+    l3goImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
@@ -133,7 +137,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.0'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestImplementation "androidx.annotation:annotation:${SUPPORT_LIBS_VERSION}"
+    androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
 }
 
 protobuf {

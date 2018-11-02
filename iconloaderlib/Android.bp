@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-java_library_static {
-    name: "launcher-aosp-tapl",
+android_library {
+    name: "iconloader",
+    sdk_version: "28",
+    min_sdk_version: "21",
     static_libs: [
-        "androidx.annotation_annotation",
-        "androidx.test.runner",
-        "androidx.test.rules",
-        "androidx.test.uiautomator_uiautomator",
-        "SystemUISharedLib",
+        "androidx.core_core",
+    ],
+    resource_dirs: [
+        "res",
     ],
     srcs: [
-        "tests/tapl/**/*.java",
-        "quickstep/src/com/android/quickstep/SwipeUpSetting.java",
-        "src/com/android/launcher3/util/SecureSettingsObserver.java",
-        "src/com/android/launcher3/TestProtocol.java",
+        "src/**/*.java",
     ],
-    platform_apis: true,
 }
