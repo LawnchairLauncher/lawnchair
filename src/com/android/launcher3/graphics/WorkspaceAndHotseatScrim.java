@@ -167,7 +167,7 @@ public class WorkspaceAndHotseatScrim implements
             mWorkspace.computeScrollWithoutInvalidation();
             CellLayout currCellLayout = mWorkspace.getCurrentDragOverlappingLayout();
             canvas.save();
-            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
+            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat()) {
                 // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
                 mLauncher.getDragLayer()
                         .getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);

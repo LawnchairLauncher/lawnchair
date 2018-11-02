@@ -91,11 +91,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mShiftRange;
     }
 
-    private void onProgressAnimationStart() {
-        // Initialize values that should not change until #onDragEnd
-        mAppsView.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mIsVerticalLayout = dp.isVerticalBarLayout();
@@ -195,16 +190,15 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
-        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter,
                 allAppsFade);
+        mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
                 (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
@@ -215,11 +209,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             @Override
             public void onAnimationSuccess(Animator animator) {
                 onProgressAnimationEnd();
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                onProgressAnimationStart();
             }
         };
     }
@@ -247,13 +236,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
-            mAppsView.setVisibility(View.INVISIBLE);
             mAppsView.reset(false /* animate */);
         } else if (isAllAppsExpanded()) {
-            mAppsView.setVisibility(View.VISIBLE);
             mAppsView.onScrollUpEnd();
-        } else {
-            mAppsView.setVisibility(View.VISIBLE);
         }
     }
 
