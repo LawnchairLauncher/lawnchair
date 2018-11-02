@@ -121,7 +121,6 @@ public class WorkspaceAndHotseatScrim implements
 
     private Workspace mWorkspace;
 
-    private final boolean mHasSysUiScrim;
     private boolean mDrawTopScrim, mDrawBottomScrim;
 
     private final RectF mFinalMaskRect = new RectF();
@@ -149,15 +148,9 @@ public class WorkspaceAndHotseatScrim implements
 
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
-
-        mHasSysUiScrim = !mWallpaperColorInfo.supportsDarkText();
-        if (mHasSysUiScrim) {
-            mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
-            mBottomMask = createDitheredAlphaMask();
-        } else {
-            mTopScrim = null;
-            mBottomMask = null;
-        }
+        mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
+        mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
+        mHideSysUiScrim = mTopScrim == null;
 
         view.addOnAttachStateChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
@@ -185,7 +178,7 @@ public class WorkspaceAndHotseatScrim implements
             canvas.restore();
         }
 
-        if (!mHideSysUiScrim && mHasSysUiScrim) {
+        if (!mHideSysUiScrim) {
             if (mSysUiProgress <= 0) {
                 mAnimateScrimOnNextDraw = false;
                 return;
@@ -213,8 +206,9 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     public void onInsetsChanged(Rect insets) {
-        mDrawTopScrim = insets.top > 0;
-        mDrawBottomScrim = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mDrawTopScrim = mTopScrim != null && insets.top > 0;
+        mDrawBottomScrim = mBottomMask != null &&
+                !mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     private void setScrimProgress(float progress) {
@@ -230,7 +224,7 @@ public class WorkspaceAndHotseatScrim implements
         mWallpaperColorInfo.addOnChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
 
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
             filter.addAction(ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
             mRoot.getContext().registerReceiver(mReceiver, filter);
@@ -240,7 +234,7 @@ public class WorkspaceAndHotseatScrim implements
     @Override
     public void onViewDetachedFromWindow(View view) {
         mWallpaperColorInfo.removeOnChangeListener(this);
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             mRoot.getContext().unregisterReceiver(mReceiver);
         }
     }
@@ -259,14 +253,14 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     public void setSize(int w, int h) {
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             mTopScrim.setBounds(0, 0, w, h);
             mFinalMaskRect.set(0, h - mMaskHeight, w, h);
         }
     }
 
     public void hideSysUiScrim(boolean hideSysUiScrim) {
-        mHideSysUiScrim = hideSysUiScrim;
+        mHideSysUiScrim = hideSysUiScrim || (mTopScrim == null);
         if (!hideSysUiScrim) {
             mAnimateScrimOnNextDraw = true;
         }
@@ -281,18 +275,18 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     private void reapplySysUiAlpha() {
-        if (mHasSysUiScrim) {
-            reapplySysUiAlphaNoInvalidate();
-            if (!mHideSysUiScrim) {
-                invalidate();
-            }
+        reapplySysUiAlphaNoInvalidate();
+        if (!mHideSysUiScrim) {
+            invalidate();
         }
     }
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress * mSysUiAnimMultiplier;
         mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
-        mTopScrim.setAlpha(Math.round(255 * factor));
+        if (mTopScrim != null) {
+            mTopScrim.setAlpha(Math.round(255 * factor));
+        }
     }
 
     public void invalidate() {
