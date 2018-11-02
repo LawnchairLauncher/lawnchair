@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import android.graphics.Point;
 import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
@@ -55,5 +56,16 @@ public final class AppIcon {
 
     UiObject2 getIcon() {
         return mIcon;
+    }
+
+    /**
+     * Long-clicks the icon to open its menu.
+     */
+    public AppIconMenu openMenu() {
+        final Point iconCenter = mIcon.getVisibleCenter();
+        mLauncher.longTap(iconCenter.x, iconCenter.y);
+        final UiObject2 deepShortcutsContainer = mLauncher.waitForLauncherObject(
+                "deep_shortcuts_container");
+        return new AppIconMenu(mLauncher, deepShortcutsContainer);
     }
 }
