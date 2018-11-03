@@ -6,8 +6,6 @@ import android.content.pm.LauncherActivityInfo;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.popup.ArrowPopup;
@@ -49,9 +47,6 @@ public class ShortcutsLaunchTest extends AbstractLauncherUiTest {
         final AppIconMenuItem menuItem = menu.getMenuItem(1);
         final String itemName = menuItem.getText();
 
-        menuItem.launch();
-        assertTrue(mDevice.wait(Until.hasObject(By.pkg(
-                testApp.getComponentName().getPackageName())
-                .text(itemName)), DEFAULT_UI_TIMEOUT));
+        menuItem.launch(testApp.getComponentName().getPackageName(), itemName);
     }
 }
