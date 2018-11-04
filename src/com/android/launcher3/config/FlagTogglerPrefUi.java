@@ -19,6 +19,7 @@ package com.android.launcher3.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Process;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,19 +50,24 @@ public final class FlagTogglerPrefUi {
         public void putBoolean(String key, boolean value) {
             for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
                 if (flag.getKey().equals(key)) {
-                    if (value == flag.getDefaultValue()) {
-                        mSharedPreferences.edit().remove(key).apply();
-                    } else {
-                        mSharedPreferences.edit().putBoolean(key, value).apply();
-                    }
+                    boolean prevValue = flag.get();
+                    flag.updateStorage(mContext, value);
                     updateMenu();
+                    if (flag.get() != prevValue) {
+                        Toast.makeText(mContext, "Flag applied", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
 
         @Override
-        public boolean getBoolean(String key, boolean defValue) {
-            return mSharedPreferences.getBoolean(key, defValue);
+        public boolean getBoolean(String key, boolean defaultValue) {
+            for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+                if (flag.getKey().equals(key)) {
+                    return flag.getFromStorage(mContext, defaultValue);
+                }
+            }
+            return defaultValue;
         }
     };
 
@@ -83,12 +89,21 @@ public final class FlagTogglerPrefUi {
             switchPreference.setDefaultValue(flag.getDefaultValue());
             switchPreference.setChecked(getFlagStateFromSharedPrefs(flag));
             switchPreference.setTitle(flag.getKey());
-            switchPreference.setSummaryOn(flag.getDefaultValue() ? "" : "overridden");
-            switchPreference.setSummaryOff(flag.getDefaultValue() ? "overridden" : "");
+            updateSummary(switchPreference, flag);
             switchPreference.setPreferenceDataStore(mDataStore);
             parent.addPreference(switchPreference);
         }
         updateMenu();
+    }
+
+    /**
+     * Updates the summary to show the description and whether the flag overrides the default value.
+     */
+    private void updateSummary(SwitchPreference switchPreference, TogglableFlag flag) {
+        String onWarning = flag.getDefaultValue() ? "" : "<b>OVERRIDDEN</b><br>";
+        String offWarning = flag.getDefaultValue() ? "<b>OVERRIDDEN</b><br>" : "";
+        switchPreference.setSummaryOn(Html.fromHtml(onWarning + flag.getDescription()));
+        switchPreference.setSummaryOff(Html.fromHtml(offWarning + flag.getDescription()));
     }
 
     private void updateMenu() {
