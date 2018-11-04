@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -33,7 +32,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
-
+import android.view.ViewGroup;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -78,6 +77,7 @@ public class TaskThumbnailView extends View {
     private final Matrix mMatrix = new Matrix();
 
     private float mClipBottom = -1;
+    private Rect mScaledInsets = new Rect();
 
     private Task mTask;
     private ThumbnailData mThumbnailData;
@@ -179,7 +179,17 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
+        if (((TaskView) getParent()).isFullscreen()) {
+            // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
+            drawOnCanvas(canvas,
+                    -mScaledInsets.left,
+                    -mScaledInsets.top,
+                    getMeasuredWidth() + mScaledInsets.right,
+                    getMeasuredHeight() + mScaledInsets.bottom,
+                    mCornerRadius);
+        } else {
+            drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
+        }
     }
 
     public float getCornerRadius() {
@@ -252,6 +262,9 @@ public class TaskThumbnailView extends View {
                         ? getMeasuredWidth() / thumbnailHeight
                         : getMeasuredWidth() / thumbnailWidth;
             }
+
+            mScaledInsets.set(thumbnailInsets);
+            Utilities.scaleRect(mScaledInsets, thumbnailScale);
 
             if (rotate) {
                 int rotationDir = profile.isVerticalBarLayout() && !profile.isSeascape() ? -1 : 1;

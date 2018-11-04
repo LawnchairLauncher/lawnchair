@@ -35,6 +35,7 @@ public class FastOverviewState extends OverviewState {
      * Vertical transition of the task previews relative to the full container.
      */
     public static final float OVERVIEW_TRANSLATION_FACTOR = 0.4f;
+    public static final float OVERVIEW_CENTERED_TRANSLATION_FACTOR = 0.5f;
 
     private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_DISABLE_INTERACTION
             | FLAG_OVERVIEW_UI | FLAG_HIDE_BACK_BUTTON | FLAG_DISABLE_ACCESSIBILITY;
@@ -60,12 +61,17 @@ public class FastOverviewState extends OverviewState {
         RecentsView recentsView = launcher.getOverviewPanel();
         recentsView.getTaskSize(sTempRect);
 
-        return new float[] {getOverviewScale(launcher.getDeviceProfile(), sTempRect, launcher),
-                OVERVIEW_TRANSLATION_FACTOR};
+        boolean isQuickSwitch = recentsView.getQuickScrubController().isQuickSwitch();
+        float translationYFactor = isQuickSwitch
+                ? OVERVIEW_CENTERED_TRANSLATION_FACTOR
+                : OVERVIEW_TRANSLATION_FACTOR;
+        return new float[] {getOverviewScale(launcher.getDeviceProfile(), sTempRect, launcher,
+                isQuickSwitch), translationYFactor};
     }
 
-    public static float getOverviewScale(DeviceProfile dp, Rect taskRect, Context context) {
-        if (dp.isVerticalBarLayout()) {
+    public static float getOverviewScale(DeviceProfile dp, Rect taskRect, Context context,
+            boolean isQuickSwitch) {
+        if (dp.isVerticalBarLayout() && !isQuickSwitch) {
             return 1f;
         }
 
@@ -73,6 +79,10 @@ public class FastOverviewState extends OverviewState {
         float usedHeight = taskRect.height() + res.getDimension(R.dimen.task_thumbnail_top_margin);
         float usedWidth = taskRect.width() + 2 * (res.getDimension(R.dimen.recents_page_spacing)
                 + res.getDimension(R.dimen.quickscrub_adjacent_visible_width));
+        if (isQuickSwitch) {
+            usedWidth = taskRect.width();
+            return Math.max(dp.availableHeightPx / usedHeight, dp.availableWidthPx / usedWidth);
+        }
         return Math.min(Math.min(dp.availableHeightPx / usedHeight,
                 dp.availableWidthPx / usedWidth), MAX_PREVIEW_SCALE_UP);
     }

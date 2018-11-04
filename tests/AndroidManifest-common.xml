@@ -18,6 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3.tests">
 
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
 

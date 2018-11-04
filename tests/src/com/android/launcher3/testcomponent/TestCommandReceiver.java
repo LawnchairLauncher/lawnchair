@@ -19,6 +19,8 @@ import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 import static android.content.pm.PackageManager.DONT_KILL_APP;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.ContentProvider;
@@ -36,6 +38,7 @@ public class TestCommandReceiver extends ContentProvider {
 
     public static final String ENABLE_TEST_LAUNCHER = "enable-test-launcher";
     public static final String DISABLE_TEST_LAUNCHER = "disable-test-launcher";
+    public static final String KILL_PROCESS = "kill-process";
 
     @Override
     public boolean onCreate() {
@@ -83,14 +86,22 @@ public class TestCommandReceiver extends ContentProvider {
                         COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP);
                 return null;
             }
-
+            case KILL_PROCESS: {
+                ((ActivityManager) getContext().getSystemService(Activity.ACTIVITY_SERVICE)).
+                        killBackgroundProcesses(arg);
+                return null;
+            }
         }
         return super.call(method, arg, extras);
     }
 
     public static Bundle callCommand(String command) {
+        return callCommand(command, null);
+    }
+
+    public static Bundle callCommand(String command, String arg) {
         Instrumentation inst = InstrumentationRegistry.getInstrumentation();
         Uri uri = Uri.parse("content://" + inst.getContext().getPackageName() + ".commands");
-        return inst.getTargetContext().getContentResolver().call(uri, command, null, null);
+        return inst.getTargetContext().getContentResolver().call(uri, command, arg, null);
     }
 }
