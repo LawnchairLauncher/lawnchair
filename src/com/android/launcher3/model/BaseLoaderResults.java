@@ -30,47 +30,44 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Executor;
 
 /**
- * Helper class to handle results of {@link com.android.launcher3.model.LoaderTask}.
+ * Base Helper class to handle results of {@link com.android.launcher3.model.LoaderTask}.
  */
-public class LoaderResults {
+public abstract class BaseLoaderResults {
 
-    private static final String TAG = "LoaderResults";
-    private static final int INVALID_SCREEN_ID = -1;
+    protected static final String TAG = "LoaderResults";
+    protected static final int INVALID_SCREEN_ID = -1;
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
 
-    private final Executor mUiExecutor;
+    protected final Executor mUiExecutor;
 
-    private final LauncherAppState mApp;
-    private final BgDataModel mBgDataModel;
+    protected final LauncherAppState mApp;
+    protected final BgDataModel mBgDataModel;
     private final AllAppsList mBgAllAppsList;
-    private final int mPageToBindFirst;
+    protected final int mPageToBindFirst;
 
-    private final WeakReference<Callbacks> mCallbacks;
+    protected final WeakReference<Callbacks> mCallbacks;
 
-    public LoaderResults(LauncherAppState app, BgDataModel dataModel,
+    public BaseLoaderResults(LauncherAppState app, BgDataModel dataModel,
             AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
         mUiExecutor = new MainThreadExecutor();
         mApp = app;
         mBgDataModel = dataModel;
         mBgAllAppsList = allAppsList;
         mPageToBindFirst = pageToBindFirst;
-        mCallbacks = callbacks == null ? new WeakReference<Callbacks>(null) : callbacks;
+        mCallbacks = callbacks == null ? new WeakReference<>(null) : callbacks;
     }
 
     /**
@@ -152,8 +149,8 @@ public class LoaderResults {
 
         Executor mainExecutor = mUiExecutor;
         // Load items on the current page.
-        bindWorkspaceItems(currentWorkspaceItems, currentAppWidgets, mainExecutor);
-
+        bindWorkspaceItems(currentWorkspaceItems, mainExecutor);
+        bindAppWidgets(currentAppWidgets, mainExecutor);
         // In case of validFirstPage, only bind the first screen, and defer binding the
         // remaining screens after first onDraw (and an optional the fade animation whichever
         // happens later).
@@ -173,8 +170,8 @@ public class LoaderResults {
             }
         });
 
-        bindWorkspaceItems(otherWorkspaceItems, otherAppWidgets, deferredExecutor);
-
+        bindWorkspaceItems(otherWorkspaceItems, deferredExecutor);
+        bindAppWidgets(otherAppWidgets, deferredExecutor);
         // Tell the workspace that we're done binding items
         r = new Runnable() {
             public void run() {
@@ -252,7 +249,7 @@ public class LoaderResults {
 
     /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
      * right) */
-    private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
+    protected void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
         final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
         final int screenCols = profile.numColumns;
         final int screenCellCount = profile.numColumns * profile.numRows;
@@ -288,14 +285,12 @@ public class LoaderResults {
         });
     }
 
-    private void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems,
-            final ArrayList<LauncherAppWidgetInfo> appWidgets,
+    protected void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems,
             final Executor executor) {
 
         if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
                 && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    android.util.Log.getStackTraceString(new Throwable()));
+            Log.d("b/117332845", Log.getStackTraceString(new Throwable()));
         }
         // Bind the workspace items
         int N = workspaceItems.size();
@@ -307,22 +302,25 @@ public class LoaderResults {
                 public void run() {
                     Callbacks callbacks = mCallbacks.get();
                     if (callbacks != null) {
-                        callbacks.bindItems(workspaceItems.subList(start, start+chunkSize), false);
+                        callbacks.bindItems(workspaceItems.subList(start, start + chunkSize),
+                                false);
                     }
                 }
             };
             executor.execute(r);
         }
+    }
 
-        // Bind the widgets, one at a time
+    private void bindAppWidgets(ArrayList<LauncherAppWidgetInfo> appWidgets, Executor executor) {
+        int N;// Bind the widgets, one at a time
         N = appWidgets.size();
         for (int i = 0; i < N; i++) {
             final ItemInfo widget = appWidgets.get(i);
             final Runnable r = new Runnable() {
                 public void run() {
-                    Callbacks callbacks = mCallbacks.get();
-                    if (callbacks != null) {
-                        callbacks.bindItems(Collections.singletonList(widget), false);
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    callbacks.bindItems(Collections.singletonList(widget), false);
                     }
                 }
             };
@@ -330,18 +328,7 @@ public class LoaderResults {
         }
     }
 
-    public void bindDeepShortcuts() {
-        final HashMap<ComponentKey, Integer> shortcutMapCopy;
-        synchronized (mBgDataModel) {
-            shortcutMapCopy = new HashMap<>(mBgDataModel.deepShortcutMap);
-        }
-        mUiExecutor.execute(() -> {
-            Callbacks callbacks = mCallbacks.get();
-            if (callbacks != null) {
-                callbacks.bindDeepShortcutMap(shortcutMapCopy);
-            }
-        });
-    }
+    public abstract void bindDeepShortcuts();
 
     public void bindAllApps() {
         // shallow copy
@@ -359,19 +346,7 @@ public class LoaderResults {
         mUiExecutor.execute(r);
     }
 
-    public void bindWidgets() {
-        final ArrayList<WidgetListRowEntry> widgets =
-                mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
-        Runnable r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindAllWidgets(widgets);
-                }
-            }
-        };
-        mUiExecutor.execute(r);
-    }
+    public abstract void bindWidgets();
 
     public LooperIdleLock newIdleLock(Object lock) {
         LooperIdleLock idleLock = new LooperIdleLock(lock, Looper.getMainLooper());
