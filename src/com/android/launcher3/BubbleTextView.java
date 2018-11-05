@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -52,8 +54,6 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -473,8 +473,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             // Special case to prevent text shadows in high contrast mode
             return Color.TRANSPARENT;
         }
-        return ColorUtils.setAlphaComponent(
-                mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
+        return setColorAlphaBound(mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
     }
 
     /**

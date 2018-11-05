@@ -16,6 +16,8 @@
 
 package com.android.launcher3.icons;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
@@ -26,8 +28,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Utility class to add shadows to bitmaps.
@@ -142,12 +142,12 @@ public class ShadowGenerator {
 
             // Key shadow
             p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                    ColorUtils.setAlphaComponent(Color.BLACK, keyShadowAlpha));
+                    setColorAlphaBound(Color.BLACK, keyShadowAlpha));
             c.drawRoundRect(bounds, radius, radius, p);
 
             // Ambient shadow
             p.setShadowLayer(shadowBlur, 0, 0,
-                    ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
+                    setColorAlphaBound(Color.BLACK, ambientShadowAlpha));
             c.drawRoundRect(bounds, radius, radius, p);
 
             if (Color.alpha(color) < 255) {

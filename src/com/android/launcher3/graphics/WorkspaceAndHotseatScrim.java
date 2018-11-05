@@ -19,6 +19,8 @@ package com.android.launcher3.graphics;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_USER_PRESENT;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -174,7 +176,7 @@ public class WorkspaceAndHotseatScrim implements
                 canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
             }
 
-            canvas.drawColor(ColorUtils.setAlphaComponent(mFullScrimColor, mScrimAlpha));
+            canvas.drawColor(setColorAlphaBound(mFullScrimColor, mScrimAlpha));
             canvas.restore();
         }
 
@@ -303,7 +305,7 @@ public class WorkspaceAndHotseatScrim implements
         LinearGradient lg = new LinearGradient(0, 0, 0, gradientHeight,
                 new int[]{
                         0x00FFFFFF,
-                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                        setColorAlphaBound(Color.WHITE, (int) (0xFF * 0.95)),
                         0xFFFFFFFF},
                 new float[]{0f, 0.8f, 1f},
                 Shader.TileMode.CLAMP);

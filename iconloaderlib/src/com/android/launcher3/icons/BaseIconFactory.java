@@ -18,8 +18,6 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.icons.R;
-
 import static android.graphics.Paint.DITHER_FLAG;
 import static android.graphics.Paint.FILTER_BITMAP_FLAG;
 import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
@@ -81,6 +79,7 @@ public class BaseIconFactory {
         return mNormalizer;
     }
 
+    @SuppressWarnings("deprecation")
     public BitmapInfo createIconBitmap(Intent.ShortcutIconResource iconRes) {
         try {
             Resources resources = mPm.getResourcesForApplication(iconRes.packageName);
@@ -184,8 +183,7 @@ public class BaseIconFactory {
             RectF outIconBounds, float[] outScale) {
         float scale = 1f;
 
-        if (shrinkNonAdaptiveIcons) {
-            boolean[] outShape = new boolean[1];
+        if (shrinkNonAdaptiveIcons && ATLEAST_OREO) {
             if (mWrapperIcon == null) {
                 mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
                         .mutate();
@@ -193,7 +191,7 @@ public class BaseIconFactory {
             AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             scale = getNormalizer().getScale(icon, outIconBounds);
-            if (ATLEAST_OREO && !(icon instanceof AdaptiveIconDrawable)) {
+            if (!(icon instanceof AdaptiveIconDrawable)) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);

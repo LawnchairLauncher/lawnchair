@@ -16,6 +16,7 @@
 package com.android.launcher3.icons;
 
 import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -56,7 +57,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
 
 public class BaseIconCache {
 
@@ -435,7 +435,7 @@ public class BaseIconCache {
                             Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
             if (c.moveToNext()) {
                 // Set the alpha to be 255, so that we never have a wrong color
-                entry.color = ColorUtils.setAlphaComponent(c.getInt(0), 255);
+                entry.color = setColorAlphaBound(c.getInt(0), 255);
                 entry.title = c.getString(1);
                 if (entry.title == null) {
                     entry.title = "";
