@@ -1,10 +1,8 @@
 package com.android.launcher3.util;
 
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,8 +11,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link GridOccupancy}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class GridOccupancyTest {
 
     @Test
@@ -24,7 +21,7 @@ public class GridOccupancyTest {
                 0, 0, 1, 1, 0,
                 0, 0, 0, 0, 0,
                 1, 1, 0, 0, 0
-                );
+        );
 
         int[] vacant = new int[2];
         assertTrue(grid.findVacantCell(vacant, 2, 2));
