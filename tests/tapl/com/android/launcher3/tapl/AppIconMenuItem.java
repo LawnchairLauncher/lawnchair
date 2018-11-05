@@ -16,37 +16,20 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.assertTrue;
-
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 /**
  * Menu item in an app icon menu.
  */
-public class AppIconMenuItem {
-    private final LauncherInstrumentation mLauncher;
-    final UiObject2 mShortcut;
-
-    AppIconMenuItem(LauncherInstrumentation launcher,
-            UiObject2 shortcut) {
-        mLauncher = launcher;
-        mShortcut = shortcut;
+public class AppIconMenuItem extends Launchable {
+    AppIconMenuItem(LauncherInstrumentation launcher, UiObject2 shortcut) {
+        super(launcher, shortcut);
     }
 
     /**
      * Returns the visible text of the menu item.
      */
     public String getText() {
-        return mShortcut.getText();
-    }
-
-    /**
-     * Launches the action for the menu item.
-     */
-    public Background launch() {
-        assertTrue("Clicking a menu item didn't open a new window: " + mShortcut.getText(),
-                mShortcut.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
-        return new Background(mLauncher);
+        return mObject.getText();
     }
 }

@@ -22,18 +22,13 @@ import android.widget.TextView;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 /**
  * App icon, whether in all apps or in workspace/
  */
-public final class AppIcon {
-    private final LauncherInstrumentation mLauncher;
-    private final UiObject2 mIcon;
-
+public final class AppIcon extends Launchable {
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
-        mLauncher = launcher;
-        mIcon = icon;
+        super(launcher, icon);
     }
 
     static BySelector getAppIconSelector(String appName) {
@@ -41,28 +36,10 @@ public final class AppIcon {
     }
 
     /**
-     * Clicks the icon to launch its app.
-     */
-    public Background launch(String packageName) {
-        LauncherInstrumentation.log("AppIcon.launch before click " + mIcon.getVisibleCenter());
-        LauncherInstrumentation.assertTrue(
-                "Launching an app didn't open a new window: " + mIcon.getText(),
-                mIcon.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
-        LauncherInstrumentation.assertTrue(
-                "App didn't start: " + packageName, mLauncher.getDevice().wait(Until.hasObject(
-                        By.pkg(packageName).depth(0)), LauncherInstrumentation.WAIT_TIME_MS));
-        return new Background(mLauncher);
-    }
-
-    UiObject2 getIcon() {
-        return mIcon;
-    }
-
-    /**
      * Long-clicks the icon to open its menu.
      */
     public AppIconMenu openMenu() {
-        final Point iconCenter = mIcon.getVisibleCenter();
+        final Point iconCenter = mObject.getVisibleCenter();
         mLauncher.longTap(iconCenter.x, iconCenter.y);
         final UiObject2 deepShortcutsContainer = mLauncher.waitForLauncherObject(
                 "deep_shortcuts_container");
