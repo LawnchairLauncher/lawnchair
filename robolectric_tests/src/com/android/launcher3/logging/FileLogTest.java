@@ -1,13 +1,11 @@
 package com.android.launcher3.logging;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -20,8 +18,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for {@link FileLog}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class FileLogTest {
 
     private File mTempDir;
@@ -30,9 +27,9 @@ public class FileLogTest {
     public void setUp() throws Exception {
         int count = 0;
         do {
-            mTempDir = new File(InstrumentationRegistry.getTargetContext().getCacheDir(),
+            mTempDir = new File(RuntimeEnvironment.application.getCacheDir(),
                     "log-test-" + (count++));
-        } while(!mTempDir.mkdir());
+        } while (!mTempDir.mkdir());
 
         FileLog.setDir(mTempDir);
     }
