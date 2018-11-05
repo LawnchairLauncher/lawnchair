@@ -1617,7 +1617,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else if (mStateManager.getState() == LauncherState.OVERVIEW) {
             return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
         }
-        return StatsLogUtils.LAUNCHER_STATE_BACKGROUND;
+        return StatsLogUtils.LAUNCHER_STATE_HOME;
     }
 
     @Override
