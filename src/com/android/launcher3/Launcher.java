@@ -91,6 +91,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.ModelWriter;
@@ -1607,6 +1608,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int getCurrentState() {
+        if(mStateManager.getState() == LauncherState.ALL_APPS) {
+            return StatsLogUtils.LAUNCHER_STATE_ALLAPPS;
+        } else if (mStateManager.getState() == LauncherState.OVERVIEW) {
+            return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
+        }
+        return StatsLogUtils.LAUNCHER_STATE_BACKGROUND;
     }
 
     @Override
