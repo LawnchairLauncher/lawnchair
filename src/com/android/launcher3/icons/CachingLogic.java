@@ -17,8 +17,6 @@ package com.android.launcher3.icons;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 import android.os.UserHandle;
 
 public interface CachingLogic<T> {
@@ -27,61 +25,7 @@ public interface CachingLogic<T> {
 
     UserHandle getUser(T object);
 
-    CharSequence getLabel(T object, PackageManager pm);
+    CharSequence getLabel(T object);
 
-    void loadIcon(Context context, BaseIconCache cache, T object, BitmapInfo target);
-
-    CachingLogic<LauncherActivityInfo> LAUNCHER_ACTIVITY_INFO =
-            new CachingLogic<LauncherActivityInfo>() {
-
-        @Override
-        public ComponentName getComponent(LauncherActivityInfo object) {
-            return object.getComponentName();
-        }
-
-        @Override
-        public UserHandle getUser(LauncherActivityInfo object) {
-            return object.getUser();
-        }
-
-        @Override
-        public CharSequence getLabel(LauncherActivityInfo object, PackageManager pm) {
-            return object.getLabel();
-        }
-
-        @Override
-        public void loadIcon(Context context, BaseIconCache cache, LauncherActivityInfo object,
-                BitmapInfo target) {
-            LauncherIcons li = LauncherIcons.obtain(context);
-            li.createBadgedIconBitmap(cache.getFullResIcon(object), object.getUser(),
-                    object.getApplicationInfo().targetSdkVersion).applyTo(target);
-            li.recycle();
-        }
-    };
-
-    CachingLogic<ComponentWithLabel> COMPONENT_WITH_LABEL =
-            new CachingLogic<ComponentWithLabel>() {
-
-        @Override
-        public ComponentName getComponent(ComponentWithLabel object) {
-            return object.getComponent();
-        }
-
-        @Override
-        public UserHandle getUser(ComponentWithLabel object) {
-            return object.getUser();
-        }
-
-        @Override
-        public CharSequence getLabel(ComponentWithLabel object, PackageManager pm) {
-            return object.getLabel(pm);
-        }
-
-        @Override
-        public void loadIcon(Context context, BaseIconCache cache,
-                ComponentWithLabel object, BitmapInfo target) {
-            // Do not load icon.
-            target.icon = BitmapInfo.LOW_RES_ICON;
-        }
-    };
+    void loadIcon(Context context, T object, BitmapInfo target);
 }
