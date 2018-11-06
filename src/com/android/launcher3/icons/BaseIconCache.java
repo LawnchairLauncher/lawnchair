@@ -226,7 +226,7 @@ public class BaseIconCache {
             cachingLogic.loadIcon(mContext, object, entry);
         }
         entry.title = cachingLogic.getLabel(object);
-        entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+        entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
         mCache.put(key, entry);
 
         ContentValues values = newContentValues(entry, entry.title.toString(),
@@ -320,7 +320,7 @@ public class BaseIconCache {
                 }
                 if (object != null) {
                     entry.title = cachingLogic.getLabel(object);
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
                 }
             }
         }
@@ -399,7 +399,7 @@ public class BaseIconCache {
                     li.recycle();
 
                     entry.title = appInfo.loadLabel(mPackageManager);
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
                     entry.icon = useLowResIcon ? LOW_RES_ICON : iconInfo.icon;
                     entry.color = iconInfo.color;
 
@@ -441,7 +441,7 @@ public class BaseIconCache {
                     entry.title = "";
                     entry.contentDescription = "";
                 } else {
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(
                             entry.title, cacheKey.user);
                 }
 

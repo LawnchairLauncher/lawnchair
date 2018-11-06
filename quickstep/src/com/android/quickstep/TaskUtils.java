@@ -59,7 +59,6 @@ public class TaskUtils {
      */
     public static CharSequence getTitle(Context context, Task task) {
         LauncherAppsCompat launcherAppsCompat = LauncherAppsCompat.getInstance(context);
-        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
         PackageManager packageManager = context.getPackageManager();
         UserHandle user = UserHandle.of(task.key.userId);
         ApplicationInfo applicationInfo = launcherAppsCompat.getApplicationInfo(
@@ -68,7 +67,7 @@ public class TaskUtils {
             Log.e(TAG, "Failed to get title for task " + task);
             return "";
         }
-        return userManagerCompat.getBadgedLabelForUser(
+        return packageManager.getUserBadgedLabel(
             applicationInfo.loadLabel(packageManager), user);
     }
 
