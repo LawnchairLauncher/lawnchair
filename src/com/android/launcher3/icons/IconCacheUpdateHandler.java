@@ -27,11 +27,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BaseIconCache.IconDB;
-import com.android.launcher3.util.IntArray;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -204,18 +201,31 @@ public class IconCacheUpdateHandler {
         }
     }
 
+    /**
+     * Commits all updates as part of the update handler to disk. Not more calls should be made
+     * to this class after this.
+     */
     public void finish() {
         // Commit all deletes
-        IntArray deleteIds = new IntArray();
+        int deleteCount = 0;
+        StringBuilder queryBuilder = new StringBuilder()
+                .append(IconDB.COLUMN_ROWID)
+                .append(" IN (");
+
         int count = mItemsToDelete.size();
         for (int i = 0;  i < count; i++) {
             if (mItemsToDelete.valueAt(i)) {
-                deleteIds.add(mItemsToDelete.keyAt(i));
+                if (deleteCount > 0) {
+                    queryBuilder.append(", ");
+                }
+                queryBuilder.append(mItemsToDelete.keyAt(i));
+                deleteCount++;
             }
         }
-        if (!deleteIds.isEmpty()) {
-            mIconCache.mIconDb.delete(
-                    Utilities.createDbSelectionQuery(IconDB.COLUMN_ROWID, deleteIds), null);
+        queryBuilder.append(')');
+
+        if (deleteCount > 0) {
+            mIconCache.mIconDb.delete(queryBuilder.toString(), null);
         }
     }
 
