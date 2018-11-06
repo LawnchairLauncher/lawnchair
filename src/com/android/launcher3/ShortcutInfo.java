@@ -24,7 +24,6 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ContentWriter;
@@ -172,8 +171,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         if (TextUtils.isEmpty(label)) {
             label = shortcutInfo.getShortLabel();
         }
-        contentDescription = UserManagerCompat.getInstance(context)
-                .getBadgedLabelForUser(label, user);
+        contentDescription = context.getPackageManager().getUserBadgedLabel(label, user);
         if (shortcutInfo.isEnabled()) {
             runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
