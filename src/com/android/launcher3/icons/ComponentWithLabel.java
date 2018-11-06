@@ -16,6 +16,7 @@
 package com.android.launcher3.icons;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 
@@ -26,4 +27,36 @@ public interface ComponentWithLabel {
     UserHandle getUser();
 
     CharSequence getLabel(PackageManager pm);
+
+
+    class ComponentCachingLogic implements CachingLogic<ComponentWithLabel> {
+
+        private final PackageManager mPackageManager;
+
+        public ComponentCachingLogic(Context context) {
+            mPackageManager = context.getPackageManager();
+        }
+
+        @Override
+        public ComponentName getComponent(ComponentWithLabel object) {
+            return object.getComponent();
+        }
+
+        @Override
+        public UserHandle getUser(ComponentWithLabel object) {
+            return object.getUser();
+        }
+
+        @Override
+        public CharSequence getLabel(ComponentWithLabel object) {
+            return object.getLabel(mPackageManager);
+        }
+
+        @Override
+        public void loadIcon(Context context,
+                ComponentWithLabel object, BitmapInfo target) {
+            // Do not load icon.
+            target.icon = BitmapInfo.LOW_RES_ICON;
+        }
+    }
 }

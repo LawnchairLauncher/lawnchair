@@ -37,6 +37,14 @@ LOCAL_UNINSTALLABLE_MODULE := true
 LOCAL_SDK_VERSION := current
 include $(BUILD_PREBUILT)
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := libLauncherProtos
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/launcher_protos.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := current
+include $(BUILD_PREBUILT)
 #
 # Build rule for plugin lib (needed to write a plugin).
 #
@@ -67,7 +75,8 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.recyclerview_recyclerview \
     androidx.dynamicanimation_dynamicanimation \
-    androidx.preference_preference
+    androidx.preference_preference \
+    iconloader
 
 LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
 
@@ -161,10 +170,10 @@ LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib
+  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
-  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI
+  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif
@@ -225,10 +234,10 @@ LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib
+  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
-  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI
+  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif

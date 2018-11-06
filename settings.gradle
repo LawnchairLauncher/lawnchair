@@ -1,0 +1,2 @@
+include ':IconLoader'
+project(':IconLoader').projectDir = new File(rootDir, 'iconloaderlib')

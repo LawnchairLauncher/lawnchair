@@ -20,6 +20,7 @@ import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderShape.getShape;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -45,8 +46,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.
@@ -153,8 +152,8 @@ public class FolderAnimationManager {
 
         // Set up the Folder background.
         final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
-        final int initialColor =
-                ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
+        final int initialColor = setColorAlphaBound(
+                finalColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 

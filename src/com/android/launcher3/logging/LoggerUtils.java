@@ -40,6 +40,7 @@ import java.lang.reflect.Modifier;
 /**
  * Helper methods for logging.
  */
+@Deprecated
 public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";

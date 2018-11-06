@@ -28,6 +28,13 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.accessibility.AccessibilityEvent;
 
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
 import com.android.launcher3.TestProtocol;
 import com.android.quickstep.SwipeUpSetting;
 
@@ -35,13 +42,6 @@ import org.junit.Assert;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
-
-import androidx.annotation.NonNull;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -393,6 +393,11 @@ public final class LauncherInstrumentation {
     UiDevice getDevice() {
         return mDevice;
     }
+
+    void longTap(int x, int y) {
+        mDevice.drag(x, y, x, y, 0);
+    }
+
 
     void swipe(int startX, int startY, int endX, int endY) {
         executeAndWaitForEvent(

@@ -16,13 +16,13 @@
 package com.android.launcher3.icons;
 
 import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Handler;
 import android.os.Process;
@@ -41,15 +42,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.IconProvider;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.BitmapRenderer;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
@@ -60,7 +57,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
 
 public class BaseIconCache {
 
@@ -80,12 +76,10 @@ public class BaseIconCache {
 
     private final HashMap<UserHandle, BitmapInfo> mDefaultIcons = new HashMap<>();
 
-    final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     final Context mContext;
     final PackageManager mPackageManager;
     final IconProvider mIconProvider;
     final UserManagerCompat mUserManager;
-    final LauncherAppsCompat mLauncherApps;
 
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
@@ -101,13 +95,12 @@ public class BaseIconCache {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mUserManager = UserManagerCompat.getInstance(mContext);
-        mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
 
         mIconProvider = IconProvider.newInstance(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
-        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
+        if (BitmapRenderer.USE_HARDWARE_BITMAP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mDecodeOptions = new BitmapFactory.Options();
             mDecodeOptions.inPreferredConfig = Bitmap.Config.HARDWARE;
         } else {
@@ -159,14 +152,6 @@ public class BaseIconCache {
                     info.getIconResource());
         } catch (PackageManager.NameNotFoundException e) { }
         return getFullResDefaultActivityIcon();
-    }
-
-    public Drawable getFullResIcon(LauncherActivityInfo info) {
-        return getFullResIcon(info, true);
-    }
-
-    public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
-        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
     protected BitmapInfo makeDefaultIcon(UserHandle user) {
@@ -238,10 +223,10 @@ public class BaseIconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            cachingLogic.loadIcon(mContext, this, object, entry);
+            cachingLogic.loadIcon(mContext, object, entry);
         }
-        entry.title = cachingLogic.getLabel(object, mPackageManager);
-        entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+        entry.title = cachingLogic.getLabel(object);
+        entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
         mCache.put(key, entry);
 
         ContentValues values = newContentValues(entry, entry.title.toString(),
@@ -260,22 +245,6 @@ public class BaseIconCache {
         values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
         values.put(IconDB.COLUMN_VERSION, info.versionCode);
         mIconDb.insertOrReplace(values);
-    }
-
-    /**
-     * Fill in {@param infoInOut} with the corresponding icon and label.
-     */
-    public synchronized void getTitleAndIconForApp(
-            PackageItemInfo infoInOut, boolean useLowResIcon) {
-        CacheEntry entry = getEntryForPackageLocked(
-                infoInOut.packageName, infoInOut.user, useLowResIcon);
-        applyCacheEntry(entry, infoInOut);
-    }
-
-    protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
-        info.title = Utilities.trim(entry.title);
-        info.contentDescription = entry.contentDescription;
-        info.applyFrom((entry.icon == null) ? getDefaultIcon(info.user) : entry);
     }
 
     public synchronized BitmapInfo getDefaultIcon(UserHandle user) {
@@ -323,7 +292,7 @@ public class BaseIconCache {
                 providerFetchedOnce = true;
 
                 if (object != null) {
-                    cachingLogic.loadIcon(mContext, this, object, entry);
+                    cachingLogic.loadIcon(mContext, object, entry);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -350,8 +319,8 @@ public class BaseIconCache {
                     providerFetchedOnce = true;
                 }
                 if (object != null) {
-                    entry.title = cachingLogic.getLabel(object, mPackageManager);
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.title = cachingLogic.getLabel(object);
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
                 }
             }
         }
@@ -400,7 +369,7 @@ public class BaseIconCache {
      * Gets an entry for the package, which can be used as a fallback entry for various components.
      * This method is not thread safe, it must be called from a synchronized method.
      */
-    private CacheEntry getEntryForPackageLocked(String packageName, UserHandle user,
+    protected CacheEntry getEntryForPackageLocked(String packageName, UserHandle user,
             boolean useLowResIcon) {
         Preconditions.assertWorkerThread();
         ComponentKey cacheKey = getPackageKey(packageName, user);
@@ -430,7 +399,7 @@ public class BaseIconCache {
                     li.recycle();
 
                     entry.title = appInfo.loadLabel(mPackageManager);
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
                     entry.icon = useLowResIcon ? LOW_RES_ICON : iconInfo.icon;
                     entry.color = iconInfo.color;
 
@@ -466,13 +435,13 @@ public class BaseIconCache {
                             Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
             if (c.moveToNext()) {
                 // Set the alpha to be 255, so that we never have a wrong color
-                entry.color = ColorUtils.setAlphaComponent(c.getInt(0), 255);
+                entry.color = setColorAlphaBound(c.getInt(0), 255);
                 entry.title = c.getString(1);
                 if (entry.title == null) {
                     entry.title = "";
                     entry.contentDescription = "";
                 } else {
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(
                             entry.title, cacheKey.user);
                 }
 

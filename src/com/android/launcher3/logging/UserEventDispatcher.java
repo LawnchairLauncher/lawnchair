@@ -41,9 +41,9 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
@@ -62,9 +62,8 @@ import androidx.annotation.Nullable;
  *
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
+@Deprecated
 public class UserEventDispatcher implements ResourceBasedOverride {
-
-    private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
 
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
@@ -96,42 +95,19 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     /**
-     * Implemented by containers to provide a container source for a given child.
+     * Fills in the container data on the given event if the given view is not null.
+     * @return whether container data was added.
      */
-    public interface LogContainerProvider {
-
-        /**
-         * Copies data from the source to the destination proto.
-         *
-         * @param v            source of the data
-         * @param info         source of the data
-         * @param target       dest of the data
-         * @param targetParent dest of the data
-         */
-        void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent);
-    }
-
-    /**
-     * Recursively finds the parent of the given child which implements IconLogInfoProvider
-     */
-    public static LogContainerProvider getLaunchProviderRecursive(@Nullable View v) {
-        ViewParent parent;
-        if (v != null) {
-            parent = v.getParent();
-        } else {
-            return null;
+    @Deprecated
+    public static boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
+        // Fill in grid(x,y), pageIndex of the child and container type of the parent
+        LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
+        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
+            return false;
         }
-
-        // Optimization to only check up to 5 parents.
-        int count = MAXIMUM_VIEW_HIERARCHY_LEVEL;
-        while (parent != null && count-- > 0) {
-            if (parent instanceof LogContainerProvider) {
-                return (LogContainerProvider) parent;
-            } else {
-                parent = parent.getParent();
-            }
-        }
-        return null;
+        ItemInfo itemInfo = (ItemInfo) v.getTag();
+        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[0], event.srcTarget[1]);
+        return true;
     }
 
     private boolean mSessionStarted;
@@ -150,21 +126,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    /**
-     * Fills in the container data on the given event if the given view is not null.
-     * @return whether container data was added.
-     */
-    protected boolean fillInLogContainerData(LauncherEvent event, @Nullable View v) {
-        // Fill in grid(x,y), pageIndex of the child and container type of the parent
-        LogContainerProvider provider = getLaunchProviderRecursive(v);
-        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
-            return false;
-        }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
-        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[0], event.srcTarget[1]);
-        return true;
-    }
-
+    @Deprecated
     public void logAppLaunch(View v, Intent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
@@ -181,6 +143,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     public void logActionTip(int actionType, int viewType) { }
 
+    @Deprecated
     public void logTaskLaunchOrDismiss(int action, int direction, int taskIndex,
             ComponentKey componentKey) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE or FLING
@@ -363,7 +326,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     public void logDeepShortcutsOpen(View icon) {
-        LogContainerProvider provider = getLaunchProviderRecursive(icon);
+        LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(icon);
         if (icon == null || !(icon.getTag() instanceof ItemInfo)) {
             return;
         }
@@ -374,15 +337,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         dispatchUserEvent(event, null);
 
         resetElapsedContainerMillis("deep shortcut open");
-    }
-
-    /* Currently we are only interested in whether this event happens or not and don't
-    * care about which screen moves to where. */
-    public void logOverviewReorder() {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
-                newContainerTarget(ContainerType.WORKSPACE),
-                newContainerTarget(ContainerType.OVERVIEW));
-        dispatchUserEvent(event, null);
     }
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {

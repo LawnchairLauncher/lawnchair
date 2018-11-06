@@ -17,6 +17,7 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.folder.FolderShape.getShape;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -40,8 +41,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -189,7 +188,7 @@ public class PreviewBackground {
 
     public int getBgColor() {
         int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-        return ColorUtils.setAlphaComponent(mBgColor, alpha);
+        return setColorAlphaBound(mBgColor, alpha);
     }
 
     public int getBadgeColor() {
@@ -275,7 +274,7 @@ public class PreviewBackground {
     }
 
     public void drawBackgroundStroke(Canvas canvas) {
-        mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
+        mPaint.setColor(setColorAlphaBound(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
 

@@ -659,8 +659,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         info.applyFrom(iconInfo);
 
         info.title = Utilities.trim(name);
-        info.contentDescription = UserManagerCompat.getInstance(app.getContext())
-                .getBadgedLabelForUser(info.title, info.user);
+        info.contentDescription = app.getContext().getPackageManager()
+                .getUserBadgedLabel(info.title, info.user);
         info.intent = intent;
         return info;
     }

@@ -26,14 +26,13 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-public class Hotseat extends FrameLayout implements LogContainerProvider, Insettable {
+public class Hotseat extends CellLayout implements LogContainerProvider, Insettable {
 
     private final Launcher mLauncher;
-    private CellLayout mContent;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
@@ -51,38 +50,23 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         mLauncher = Launcher.getLauncher(context);
     }
 
-    public CellLayout getLayout() {
-        return mContent;
-    }
-
-    /* Get the orientation invariant order of the item in the hotseat for persistence. */
-    int getOrderInHotseat(int x, int y) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
-    }
-
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
         return mHasVerticalHotseat ? 0 : rank;
     }
 
     int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mContent = findViewById(R.id.layout);
+        return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
 
     void resetLayout(boolean hasVerticalHotseat) {
-        mContent.removeAllViewsInLayout();
+        removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
         if (hasVerticalHotseat) {
-            mContent.setGridSize(1, idp.numHotseatIcons);
+            setGridSize(1, idp.numHotseatIcons);
         } else {
-            mContent.setGridSize(idp.numHotseatIcons, 1);
+            setGridSize(idp.numHotseatIcons, 1);
         }
     }
 
@@ -90,15 +74,16 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state or an accessible drag is in progress.
-        return !mLauncher.getWorkspace().workspaceIconsCanBeDragged() &&
-                !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+        return (!mLauncher.getWorkspace().workspaceIconsCanBeDragged()
+                && !mLauncher.getAccessibilityDelegate().isInAccessibleDrag())
+                || super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
-        targetParent.containerType = ContainerType.HOTSEAT;
+        targetParent.containerType = LauncherLogProto.ContainerType.HOTSEAT;
     }
 
     @Override
@@ -121,7 +106,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             lp.height = grid.hotseatBarSizePx + insets.bottom;
         }
         Rect padding = grid.getHotseatLayoutPadding();
-        getLayout().setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);

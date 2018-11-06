@@ -85,8 +85,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
@@ -880,7 +880,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            layout = mLauncher.getHotseat().getLayout();
+            layout = mLauncher.getHotseat();
 
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
@@ -1517,7 +1517,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 @Override
                 protected void enableAccessibleDrag(boolean enable) {
                     super.enableAccessibleDrag(enable);
-                    setEnableForLayout(mLauncher.getHotseat().getLayout(),enable);
+                    setEnableForLayout(mLauncher.getHotseat(),enable);
                 }
             });
         }
@@ -1625,11 +1625,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
             // We want the point to be mapped to the dragTarget.
-            if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
-            } else {
-                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
-            }
+            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
 
             int spanX;
             int spanY;
@@ -1831,11 +1827,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // We want the point to be mapped to the dragTarget.
         if (dropTargetLayout != null) {
-            if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
-            } else {
-                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
-            }
+            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
         }
 
         boolean droppedOnOriginalCell = false;
@@ -2195,7 +2187,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     * Convert the 2D coordinate xy from the parent View's coordinate space to this CellLayout's
     * coordinate space. The argument xy is modified with the return result.
     */
-   void mapPointFromSelfToChild(View v, float[] xy) {
+   private void mapPointFromSelfToChild(View v, float[] xy) {
        xy[0] = xy[0] - v.getLeft();
        xy[1] = xy[1] - v.getTop();
    }
@@ -2211,14 +2203,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                mTempXY[1] <= hotseat.getBottom();
    }
 
-   void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
-       mTempXY[0] = (int) xy[0];
-       mTempXY[1] = (int) xy[1];
-       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
-       mLauncher.getDragLayer().mapCoordInSelfToDescendant(hotseat.getLayout(), mTempXY);
+    /**
+     * Updates the point in {@param xy} to point to the co-ordinate space of {@param layout}
+     * @param layout either hotseat of a page in workspace
+     * @param xy the point location in workspace co-ordinate space
+     */
+   private void mapPointFromDropLayout(CellLayout layout, float[] xy) {
+       if (mLauncher.isHotseatLayout(layout)) {
+           mTempXY[0] = (int) xy[0];
+           mTempXY[1] = (int) xy[1];
+           mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
+           mLauncher.getDragLayer().mapCoordInSelfToDescendant(layout, mTempXY);
 
-       xy[0] = mTempXY[0];
-       xy[1] = mTempXY[1];
+           xy[0] = mTempXY[0];
+           xy[1] = mTempXY[1];
+       } else {
+           mapPointFromSelfToChild(layout, xy);
+       }
    }
 
     private boolean isDragWidget(DragObject d) {
@@ -2254,11 +2255,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Handle the drag over
         if (mDragTargetLayout != null) {
             // We want the point to be mapped to the dragTarget.
-            if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
-                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
-            } else {
-                mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter);
-            }
+            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
 
             int minSpanX = item.spanX;
             int minSpanY = item.spanY;
@@ -2329,7 +2326,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Test to see if we are over the hotseat first
         if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
             if (isPointInSelfOverHotseat(d.x, d.y)) {
-                layout = mLauncher.getHotseat().getLayout();
+                layout = mLauncher.getHotseat();
             }
         }
 
@@ -2967,8 +2964,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * Returns a specific CellLayout
      */
     CellLayout getParentCellLayoutForView(View v) {
-        ArrayList<CellLayout> layouts = getWorkspaceAndHotseatCellLayouts();
-        for (CellLayout layout : layouts) {
+        for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
             if (layout.getShortcutsAndWidgets().indexOfChild(v) > -1) {
                 return layout;
             }
@@ -2977,56 +2973,31 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
-     * Returns a list of all the CellLayouts in the workspace.
+     * Returns a list of all the CellLayouts on the Homescreen.
      */
-    ArrayList<CellLayout> getWorkspaceAndHotseatCellLayouts() {
-        ArrayList<CellLayout> layouts = new ArrayList<>();
+    private CellLayout[] getWorkspaceAndHotseatCellLayouts() {
         int screenCount = getChildCount();
-        for (int screen = 0; screen < screenCount; screen++) {
-            layouts.add(((CellLayout) getChildAt(screen)));
-        }
+        final CellLayout[] layouts;
         if (mLauncher.getHotseat() != null) {
-            layouts.add(mLauncher.getHotseat().getLayout());
+            layouts = new CellLayout[screenCount + 1];
+            layouts[screenCount] = mLauncher.getHotseat();
+        } else {
+            layouts = new CellLayout[screenCount];
+        }
+        for (int screen = 0; screen < screenCount; screen++) {
+            layouts[screen] = (CellLayout) getChildAt(screen);
         }
         return layouts;
     }
 
-    /**
-     * We should only use this to search for specific children.  Do not use this method to modify
-     * ShortcutsAndWidgetsContainer directly. Includes ShortcutAndWidgetContainers from
-     * the hotseat and workspace pages
-     */
-    ArrayList<ShortcutAndWidgetContainer> getAllShortcutAndWidgetContainers() {
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts = new ArrayList<>();
-        int screenCount = getChildCount();
-        for (int screen = 0; screen < screenCount; screen++) {
-            childrenLayouts.add(((CellLayout) getChildAt(screen)).getShortcutsAndWidgets());
-        }
-        if (mLauncher.getHotseat() != null) {
-            childrenLayouts.add(mLauncher.getHotseat().getLayout().getShortcutsAndWidgets());
-        }
-        return childrenLayouts;
-    }
-
     public View getHomescreenIconByItemId(final int id) {
-        return getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return info != null && info.id == id;
-            }
-        });
+        return getFirstMatch((info, v) -> info != null && info.id == id);
     }
 
     public LauncherAppWidgetHostView getWidgetForAppWidgetId(final int appWidgetId) {
-        return (LauncherAppWidgetHostView) getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return (info instanceof LauncherAppWidgetInfo) &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId;
-            }
-        });
+        return (LauncherAppWidgetHostView) getFirstMatch((info, v) ->
+                (info instanceof LauncherAppWidgetInfo) &&
+                        ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId);
     }
 
     public View getFirstMatch(final ItemOperator operator) {
@@ -3063,8 +3034,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * shortcuts are not removed.
      */
     public void removeItemsByMatcher(final ItemInfoMatcher matcher) {
-        ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
-        for (final CellLayout layoutParent: cellLayouts) {
+        for (final CellLayout layoutParent: getWorkspaceAndHotseatCellLayouts()) {
             final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
 
             IntSparseArrayMap<View> idToViewMap = new IntSparseArrayMap<>();
@@ -3122,10 +3092,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param op the operator to map over the shortcuts
      */
     public void mapOverItems(boolean recurse, ItemOperator op) {
-        ArrayList<ShortcutAndWidgetContainer> containers = getAllShortcutAndWidgetContainers();
-        final int containerCount = containers.size();
-        for (int containerIdx = 0; containerIdx < containerCount; containerIdx++) {
-            ShortcutAndWidgetContainer container = containers.get(containerIdx);
+        for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
+            ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
             // map over all the shortcuts on the workspace
             final int itemCount = container.getChildCount();
             for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {

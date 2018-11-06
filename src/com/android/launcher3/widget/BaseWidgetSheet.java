@@ -17,6 +17,7 @@ package com.android.launcher3.widget;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.content.Context;
@@ -41,8 +42,6 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Base class for various widgets popup
@@ -162,11 +161,11 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     private static View createColorScrim(Context context) {
         View view = new View(context);
-        view.forceHasOverlappingRendering(false);
+        if (Utilities.ATLEAST_NOUGAT) view.forceHasOverlappingRendering(false);
 
         WallpaperColorInfo colors = WallpaperColorInfo.getInstance(context);
         int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        view.setBackgroundColor(ColorUtils.setAlphaComponent(colors.getSecondaryColor(), alpha));
+        view.setBackgroundColor(setColorAlphaBound(colors.getSecondaryColor(), alpha));
 
         BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         lp.ignoreInsets = true;

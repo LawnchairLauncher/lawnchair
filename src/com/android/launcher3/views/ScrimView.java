@@ -22,9 +22,9 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import static androidx.core.graphics.ColorUtils.compositeColors;
-import static androidx.core.graphics.ColorUtils.setAlphaComponent;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -182,7 +182,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     @Override
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
         mScrimColor = wallpaperColorInfo.getMainColor();
-        mEndFlatColor = compositeColors(mEndScrim, setAlphaComponent(
+        mEndFlatColor = compositeColors(mEndScrim, setColorAlphaBound(
                 mScrimColor, Math.round(mMaxScrimAlpha * 255)));
         mEndFlatColorAlpha = Color.alpha(mEndFlatColor);
         updateColors();
@@ -201,7 +201,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     public void reInitUi() { }
 
     protected void updateColors() {
-        mCurrentFlatColor = mProgress >= 1 ? 0 : setAlphaComponent(
+        mCurrentFlatColor = mProgress >= 1 ? 0 : setColorAlphaBound(
                 mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
     }
 

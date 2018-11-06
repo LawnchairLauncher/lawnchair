@@ -20,8 +20,6 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.icons.CachingLogic.COMPONENT_WITH_LABEL;
-import static com.android.launcher3.icons.CachingLogic.LAUNCHER_ACTIVITY_INFO;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -46,6 +44,7 @@ import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCacheUpdateHandler;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -63,6 +62,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
+import com.android.launcher3.icons.LauncherActivtiyCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
@@ -202,7 +202,8 @@ public class LoaderTask implements Runnable {
             TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
-            updateHandler.updateIcons(allActivityList, LAUNCHER_ACTIVITY_INFO,
+            updateHandler.updateIcons(allActivityList,
+                    new LauncherActivtiyCachingLogic(mApp.getIconCache()),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
@@ -233,7 +234,7 @@ public class LoaderTask implements Runnable {
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 4.3: Update icon cache");
-            updateHandler.updateIcons(allWidgetsList, COMPONENT_WITH_LABEL,
+            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(mApp.getContext()),
                     mApp.getModel()::onWidgetLabelsUpdated);
 
             verifyNotStopped();

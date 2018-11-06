@@ -18,8 +18,7 @@ package com.android.quickstep.views;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-
-import static androidx.core.graphics.ColorUtils.setAlphaComponent;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -141,7 +140,7 @@ public class ShelfScrimView extends ScrimView {
 
             int alpha = Math.round(Utilities.mapToRange(
                     mProgress, mMidProgress, 1, mMidAlpha, 0, ACCEL));
-            mShelfColor = setAlphaComponent(mEndScrim, alpha);
+            mShelfColor = setColorAlphaBound(mEndScrim, alpha);
         } else {
             mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
 
@@ -149,12 +148,12 @@ public class ShelfScrimView extends ScrimView {
             int alpha = Math.round(
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
                             (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
-            mShelfColor = setAlphaComponent(mEndScrim, alpha);
+            mShelfColor = setColorAlphaBound(mEndScrim, alpha);
 
             int remainingScrimAlpha = Math.round(
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
                             (float) 0, LINEAR));
-            mRemainingScreenColor = setAlphaComponent(mScrimColor, remainingScrimAlpha);
+            mRemainingScreenColor = setColorAlphaBound(mScrimColor, remainingScrimAlpha);
         }
     }
 

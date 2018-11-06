@@ -19,12 +19,12 @@ package com.android.launcher3.tapl;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
-import androidx.test.uiautomator.Direction;
-import androidx.test.uiautomator.UiObject2;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiObject2;
 
 /**
  * Operations on the workspace screen.
@@ -85,6 +85,21 @@ public final class Workspace extends Home {
         return icon != null ? new AppIcon(mLauncher, icon) : null;
     }
 
+
+    /**
+     * Returns an icon for the app; fails if the icon doesn't exist.
+     *
+     * @param appName name of the app
+     * @return app icon.
+     */
+    @NonNull
+    public AppIcon getWorkspaceAppIcon(String appName) {
+        return new AppIcon(mLauncher,
+                mLauncher.getObjectInContainer(
+                        verifyActiveContainer(),
+                        AppIcon.getAppIconSelector(appName)));
+    }
+
     /**
      * Ensures that workspace is scrollable. If it's not, drags an icon icons from hotseat to the
      * second screen.
@@ -111,7 +126,7 @@ public final class Workspace extends Home {
     private void dragIconToNextScreen(AppIcon app, UiObject2 workspace) {
         final Point dest = new Point(
                 mLauncher.getDevice().getDisplayWidth(), workspace.getVisibleBounds().centerY());
-        app.getIcon().drag(dest, ICON_DRAG_SPEED);
+        app.getObject().drag(dest, ICON_DRAG_SPEED);
         verifyActiveContainer();
     }
 
