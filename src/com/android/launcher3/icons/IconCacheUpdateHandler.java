@@ -128,7 +128,7 @@ public class IconCacheUpdateHandler {
         if (ignorePackages == null) {
             ignorePackages = Collections.emptySet();
         }
-        long userSerial = mIconCache.mUserManager.getSerialNumberForUser(user);
+        long userSerial = mIconCache.getSerialNumberForUser(user);
 
         Stack<T> appsToUpdate = new Stack<>();
 

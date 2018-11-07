@@ -31,6 +31,7 @@ import android.util.LongSparseArray;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.icons.IconCache;
@@ -149,7 +150,7 @@ public class WidgetPreviewLoader {
         values.put(CacheDb.COLUMN_PACKAGE, key.componentName.getPackageName());
         values.put(CacheDb.COLUMN_VERSION, versions[0]);
         values.put(CacheDb.COLUMN_LAST_UPDATED, versions[1]);
-        values.put(CacheDb.COLUMN_PREVIEW_BITMAP, Utilities.flattenBitmap(preview));
+        values.put(CacheDb.COLUMN_PREVIEW_BITMAP, GraphicsUtils.flattenBitmap(preview));
         mDb.insertOrReplace(values);
     }
 
