@@ -66,7 +66,8 @@ public class IconCache extends BaseIconCache {
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
-        super(context, LauncherFiles.APP_ICONS_DB, inv.fillResIconDpi, inv.iconBitmapSize);
+        super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
+                inv.fillResIconDpi, inv.iconBitmapSize);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
         mLauncherActivityInfoCachingLogic = new LauncherActivtiyCachingLogic(this);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);

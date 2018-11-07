@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.graphics;
+package com.android.launcher3.icons;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -21,14 +21,12 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.os.Build;
 
-import com.android.launcher3.Utilities;
-
 /**
  * Interface representing a bitmap draw operation.
  */
 public interface BitmapRenderer {
 
-    boolean USE_HARDWARE_BITMAP = Utilities.ATLEAST_P;
+    boolean USE_HARDWARE_BITMAP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     static Bitmap createSoftwareBitmap(int width, int height, BitmapRenderer renderer) {
         Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
