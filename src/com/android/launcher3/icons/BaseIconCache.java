@@ -36,14 +36,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.IconProvider;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
@@ -58,7 +57,6 @@ public abstract class BaseIconCache {
 
     private static final String TAG = "BaseIconCache";
     private static final boolean DEBUG = false;
-    private static final boolean DEBUG_IGNORE_CACHE = false;
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
@@ -78,21 +76,24 @@ public abstract class BaseIconCache {
 
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
-    final Handler mWorkerHandler;
+    protected final Handler mWorkerHandler;
 
     protected int mIconDpi;
     IconDB mIconDb;
 
     private final String mDbFileName;
     private final BitmapFactory.Options mDecodeOptions;
+    private final Looper mBgLooper;
 
-    public BaseIconCache(Context context, String dbFileName, int iconDpi, int iconPixelSize) {
+    public BaseIconCache(Context context, String dbFileName, Looper bgLooper,
+            int iconDpi, int iconPixelSize) {
         mContext = context;
         mDbFileName = dbFileName;
         mPackageManager = context.getPackageManager();
+        mBgLooper = bgLooper;
 
         mIconProvider = IconProvider.newInstance(context);
-        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
+        mWorkerHandler = new Handler(mBgLooper);
 
         if (BitmapRenderer.USE_HARDWARE_BITMAP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mDecodeOptions = new BitmapFactory.Options();
@@ -294,7 +295,7 @@ public abstract class BaseIconCache {
             T object = null;
             boolean providerFetchedOnce = false;
 
-            if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 object = infoProvider.get();
                 providerFetchedOnce = true;
 

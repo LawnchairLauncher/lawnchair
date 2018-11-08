@@ -29,8 +29,9 @@ public class ComponentKey {
     private final int mHashCode;
 
     public ComponentKey(ComponentName componentName, UserHandle user) {
-        Preconditions.assertNotNull(componentName);
-        Preconditions.assertNotNull(user);
+        if (componentName == null || user == null) {
+            throw new NullPointerException();
+        }
         this.componentName = componentName;
         this.user = user;
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
