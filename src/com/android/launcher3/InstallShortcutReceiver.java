@@ -41,6 +41,7 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -457,7 +458,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name);
                 if (icon != null) {
-                    byte[] iconByteArray = Utilities.flattenBitmap(icon);
+                    byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
                     json = json.key(ICON_KEY).value(
                             Base64.encodeToString(
                                     iconByteArray, 0, iconByteArray.length, Base64.DEFAULT));

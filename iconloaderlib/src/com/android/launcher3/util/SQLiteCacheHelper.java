@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-
 /**
  * An extension of {@link SQLiteOpenHelper} with utility methods for a single table cache DB.
  * Any exception during write operations are ignored, and any version change causes a DB reset.
@@ -19,8 +16,7 @@ import com.android.launcher3.config.FeatureFlags;
 public abstract class SQLiteCacheHelper {
     private static final String TAG = "SQLiteCacheHelper";
 
-    private static final boolean NO_ICON_CACHE = FeatureFlags.IS_DOGFOOD_BUILD &&
-            Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
+    private static final boolean IN_MEMORY_CACHE = false;
 
     private final String mTableName;
     private final MySQLiteOpenHelper mOpenHelper;
@@ -28,7 +24,7 @@ public abstract class SQLiteCacheHelper {
     private boolean mIgnoreWrites;
 
     public SQLiteCacheHelper(Context context, String name, int version, String tableName) {
-        if (NO_ICON_CACHE) {
+        if (IN_MEMORY_CACHE) {
             name = null;
         }
         mTableName = tableName;

@@ -39,6 +39,7 @@ import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Thunk;
@@ -47,7 +48,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -436,7 +436,7 @@ public class AutoInstallsLayout {
 
             // Auto installs should always support the current platform version.
             LauncherIcons li = LauncherIcons.obtain(mContext);
-            mValues.put(LauncherSettings.Favorites.ICON, Utilities.flattenBitmap(
+            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(
                     li.createBadgedIconBitmap(icon, Process.myUserHandle(), VERSION.SDK_INT).icon));
             li.recycle();
 

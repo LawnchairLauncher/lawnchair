@@ -33,6 +33,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 

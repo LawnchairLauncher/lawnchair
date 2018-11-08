@@ -36,16 +36,14 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
 
-        <!-- Activity for handling PinItemRequest. Only supports shortcuts -->
+        <!-- Activity for handling PinItemRequest is disabled on Android Go. -->
         <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
             android:label="@string/action_add_to_workspace"
+            android:enabled="false"
             tools:node="replace" >
-            <intent-filter>
-                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
-            </intent-filter>
         </activity>
 
     </application>

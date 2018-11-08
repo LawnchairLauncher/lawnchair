@@ -36,19 +36,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.IconProvider;
-import com.android.launcher3.LauncherFiles;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
@@ -58,11 +53,10 @@ import java.util.HashSet;
 
 import androidx.annotation.NonNull;
 
-public class BaseIconCache {
+public abstract class BaseIconCache {
 
     private static final String TAG = "BaseIconCache";
     private static final boolean DEBUG = false;
-    private static final boolean DEBUG_IGNORE_CACHE = false;
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
@@ -76,29 +70,30 @@ public class BaseIconCache {
 
     private final HashMap<UserHandle, BitmapInfo> mDefaultIcons = new HashMap<>();
 
-    final Context mContext;
-    final PackageManager mPackageManager;
-    final IconProvider mIconProvider;
-    final UserManagerCompat mUserManager;
+    protected final Context mContext;
+    protected final PackageManager mPackageManager;
+    protected final IconProvider mIconProvider;
 
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
-    private final InstantAppResolver mInstantAppResolver;
-    final Handler mWorkerHandler;
+    protected final Handler mWorkerHandler;
 
-    int mIconDpi;
+    protected int mIconDpi;
     IconDB mIconDb;
 
+    private final String mDbFileName;
     private final BitmapFactory.Options mDecodeOptions;
+    private final Looper mBgLooper;
 
-    public BaseIconCache(Context context, int iconDpi, int iconPixelSize) {
+    public BaseIconCache(Context context, String dbFileName, Looper bgLooper,
+            int iconDpi, int iconPixelSize) {
         mContext = context;
+        mDbFileName = dbFileName;
         mPackageManager = context.getPackageManager();
-        mUserManager = UserManagerCompat.getInstance(mContext);
-        mInstantAppResolver = InstantAppResolver.newInstance(mContext);
+        mBgLooper = bgLooper;
 
         mIconProvider = IconProvider.newInstance(context);
-        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
+        mWorkerHandler = new Handler(mBgLooper);
 
         if (BitmapRenderer.USE_HARDWARE_BITMAP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mDecodeOptions = new BitmapFactory.Options();
@@ -108,8 +103,20 @@ public class BaseIconCache {
         }
 
         mIconDpi = iconDpi;
-        mIconDb = new IconDB(context, iconPixelSize);
+        mIconDb = new IconDB(context, dbFileName, iconPixelSize);
     }
+
+    /**
+     * Returns the persistable serial number for {@param user}. Subclass should implement proper
+     * caching strategy to avoid making binder call every time.
+     */
+    protected abstract long getSerialNumberForUser(UserHandle user);
+
+    /**
+     * Return true if the given app is an instant app and should be badged appropriately.
+     */
+    protected abstract boolean isInstantApp(ApplicationInfo info);
+
 
     public void updateIconParams(int iconDpi, int iconPixelSize) {
         mWorkerHandler.post(() -> updateIconParamsBg(iconDpi, iconPixelSize));
@@ -120,13 +127,14 @@ public class BaseIconCache {
         mDefaultIcons.clear();
 
         mIconDb.close();
-        mIconDb = new IconDB(mContext, iconPixelSize);
+        mIconDb = new IconDB(mContext, mDbFileName, iconPixelSize);
         mCache.clear();
     }
 
     private Drawable getFullResDefaultActivityIcon() {
-        return Resources.getSystem().getDrawableForDensity(Utilities.ATLEAST_OREO
-                ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
+        return Resources.getSystem().getDrawableForDensity(
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
                 mIconDpi);
     }
 
@@ -189,7 +197,7 @@ public class BaseIconCache {
      */
     public synchronized void removeIconsForPkg(String packageName, UserHandle user) {
         removeFromMemCacheLocked(packageName, user);
-        long userSerial = mUserManager.getSerialNumberForUser(user);
+        long userSerial = getSerialNumberForUser(user);
         mIconDb.delete(
                 IconDB.COLUMN_COMPONENT + " LIKE ? AND " + IconDB.COLUMN_USER + " = ?",
                 new String[]{packageName + "/%", Long.toString(userSerial)});
@@ -287,7 +295,7 @@ public class BaseIconCache {
             T object = null;
             boolean providerFetchedOnce = false;
 
-            if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 object = infoProvider.get();
                 providerFetchedOnce = true;
 
@@ -395,7 +403,7 @@ public class BaseIconCache {
                     // only keep the low resolution icon instead of the larger full-sized icon
                     BitmapInfo iconInfo = li.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion,
-                            mInstantAppResolver.isInstantApp(appInfo));
+                            isInstantApp(appInfo));
                     li.recycle();
 
                     entry.title = appInfo.loadLabel(mPackageManager);
@@ -407,8 +415,7 @@ public class BaseIconCache {
                     // package updates.
                     ContentValues values = newContentValues(
                             iconInfo, entry.title.toString(), packageName);
-                    addIconToDB(values, cacheKey.componentName, info,
-                            mUserManager.getSerialNumberForUser(user));
+                    addIconToDB(values, cacheKey.componentName, info, getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
                     if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
@@ -432,7 +439,7 @@ public class BaseIconCache {
                     IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
                     new String[]{
                             cacheKey.componentName.flattenToString(),
-                            Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
+                            Long.toString(getSerialNumberForUser(cacheKey.user))});
             if (c.moveToNext()) {
                 // Set the alpha to be 255, so that we never have a wrong color
                 entry.color = setColorAlphaBound(c.getInt(0), 255);
@@ -485,10 +492,8 @@ public class BaseIconCache {
         public final static String[] COLUMNS_LOW_RES = new String[] {
                 IconDB.COLUMN_ICON_COLOR, IconDB.COLUMN_LABEL };
 
-        public IconDB(Context context, int iconPixelSize) {
-            super(context, LauncherFiles.APP_ICONS_DB,
-                    (RELEASE_VERSION << 16) + iconPixelSize,
-                    TABLE_NAME);
+        public IconDB(Context context, String dbFileName, int iconPixelSize) {
+            super(context, dbFileName, (RELEASE_VERSION << 16) + iconPixelSize, TABLE_NAME);
         }
 
         @Override
@@ -510,7 +515,7 @@ public class BaseIconCache {
     private ContentValues newContentValues(BitmapInfo bitmapInfo, String label, String packageName) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON,
-                bitmapInfo.isLowRes() ? null : Utilities.flattenBitmap(bitmapInfo.icon));
+                bitmapInfo.isLowRes() ? null : GraphicsUtils.flattenBitmap(bitmapInfo.icon));
         values.put(IconDB.COLUMN_ICON_COLOR, bitmapInfo.color);
 
         values.put(IconDB.COLUMN_LABEL, label);

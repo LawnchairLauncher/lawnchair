@@ -24,7 +24,7 @@
 -keep class androidx.recyclerview.widget.RecyclerView { *; }
 
 # Preference fragments
--keep class ** extends android.preference.PreferenceFragment {
+-keep class ** extends android.app.Fragment {
     public <init>(...);
 }
 

@@ -15,9 +15,17 @@
  */
 package com.android.launcher3.icons;
 
+import android.graphics.Bitmap;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import androidx.annotation.ColorInt;
 
 public class GraphicsUtils {
+
+    private static final String TAG = "GraphicsUtils";
 
     /**
      * Set the alpha component of {@code color} to be {@code alpha}. Unlike the support lib version,
@@ -32,5 +40,24 @@ public class GraphicsUtils {
             alpha = 255;
         }
         return (color & 0x00ffffff) | (alpha << 24);
+    }
+
+    /**
+     * Compresses the bitmap to a byte array for serialization.
+     */
+    public static byte[] flattenBitmap(Bitmap bitmap) {
+        // Try go guesstimate how much space the icon will take when serialized
+        // to avoid unnecessary allocations/copies during the write (4 bytes per pixel).
+        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
+        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
+        try {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            return out.toByteArray();
+        } catch (IOException e) {
+            Log.w(TAG, "Could not write bitmap");
+            return null;
+        }
     }
 }
