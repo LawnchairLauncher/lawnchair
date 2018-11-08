@@ -96,10 +96,12 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk boolean mIsLoaderTaskRunning;
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    private static final Looper mWorkerLooper;
     static {
         sWorkerThread.start();
+        mWorkerLooper = sWorkerThread.getLooper();
     }
-    @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk static final Handler sWorker = new Handler(mWorkerLooper);
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -708,7 +710,7 @@ public class LauncherModel extends BroadcastReceiver
      * @return the looper for the worker thread which can be used to start background tasks.
      */
     public static Looper getWorkerLooper() {
-        return sWorkerThread.getLooper();
+        return mWorkerLooper;
     }
 
     public static void setWorkerPriority(final int priority) {

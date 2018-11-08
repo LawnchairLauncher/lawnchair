@@ -2,9 +2,6 @@ package com.android.launcher3.model;
 
 import static org.junit.Assert.assertEquals;
 
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.ShortcutInfo;
@@ -14,6 +11,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,13 +19,12 @@ import java.util.HashSet;
 /**
  * Tests for {@link PackageInstallStateChangedTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestCase {
 
     @Before
     public void initData() throws Exception {
-        initializeData("package_install_state_change_task_data");
+        initializeData("/package_install_state_change_task_data.txt");
     }
 
     private PackageInstallStateChangedTask newTask(String pkg, int progress) {

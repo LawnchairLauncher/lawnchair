@@ -1,21 +1,20 @@
 package com.android.launcher3.model;
 
-import android.content.ContentResolver;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.MediumTest;
-import androidx.test.rule.provider.ProviderTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.FlagOverrideRule;
+import com.android.launcher3.config.FlagOverrideRule.FlagOverride;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TestLauncherProvider;
@@ -24,24 +23,19 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowContentResolver;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Unit tests for {@link GridSizeMigrationTask}
  */
-@MediumTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class GridSizeMigrationTaskTest {
-
-    @Rule
-    public ProviderTestRule mProviderRule =
-            new ProviderTestRule.Builder(TestLauncherProvider.class, LauncherProvider.AUTHORITY)
-                    .build();
 
     private static final int DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
     private static final int HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -50,27 +44,25 @@ public class GridSizeMigrationTaskTest {
     private static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
     private static final String TEST_PACKAGE = "com.android.launcher3.validpackage";
-    private static final String VALID_INTENT =
-            new Intent(Intent.ACTION_MAIN).setPackage(TEST_PACKAGE).toUri(0);
+
+    @Rule
+    public final FlagOverrideRule flags = new FlagOverrideRule();
 
     private HashSet<String> mValidPackages;
     private InvariantDeviceProfile mIdp;
     private Context mContext;
+    private TestLauncherProvider mProvider;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
-
         mIdp = new InvariantDeviceProfile();
+        mContext = RuntimeEnvironment.application;
 
-        mContext = new ContextWrapper(InstrumentationRegistry.getTargetContext()) {
-
-            @Override
-            public ContentResolver getContentResolver() {
-                return mProviderRule.getResolver();
-            }
-        };
+        mProvider = Robolectric.setupContentProvider(TestLauncherProvider.class);
+        ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, mProvider);
     }
 
     @Test
@@ -112,7 +104,7 @@ public class GridSizeMigrationTaskTest {
         int total = 0;
 
         for (int id : sortedIds) {
-            Cursor c = mProviderRule.getResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+            Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                     new String[]{LauncherSettings.Favorites._ID},
                     "container=-101 and screen=" + screenId, null, null, null);
 
@@ -130,7 +122,7 @@ public class GridSizeMigrationTaskTest {
         }
 
         // Verify that not other entry exist in the DB.
-        Cursor c = mProviderRule.getResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+        Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites._ID},
                 "container=-101", null, null, null);
         assertEquals(total, c.getCount());
@@ -240,6 +232,7 @@ public class GridSizeMigrationTaskTest {
         }});
     }
 
+    @FlagOverride(key = "QSB_ON_FIRST_SCREEN", value = true)
     @Test
     public void testWorkspace_first_row_blocked() throws Exception {
         // The first screen has one item on the 4th column which needs moving, as the first row
@@ -265,6 +258,7 @@ public class GridSizeMigrationTaskTest {
         }});
     }
 
+    @FlagOverride(key = "QSB_ON_FIRST_SCREEN", value = true)
     @Test
     public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
         // Items will get moved to the next screen to keep the first screen empty.
@@ -301,7 +295,7 @@ public class GridSizeMigrationTaskTest {
      * @return the same grid representation where each entry is the corresponding item id.
      */
     private int[][][] createGrid(int[][][] typeArray, int startScreen) throws Exception {
-        LauncherSettings.Settings.call(mProviderRule.getResolver(),
+        LauncherSettings.Settings.call(mContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         int[][][] ids = new int[typeArray.length][][];
 
@@ -310,13 +304,13 @@ public class GridSizeMigrationTaskTest {
             int screenId = startScreen + i;
 
             // Keep the screen id counter up to date
-            LauncherSettings.Settings.call(mProviderRule.getResolver(),
+            LauncherSettings.Settings.call(mContext.getContentResolver(),
                     LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
 
             ContentValues v = new ContentValues();
             v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-            mProviderRule.getResolver().insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
+            mContext.getContentResolver().insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
 
             ids[i] = new int[typeArray[i].length][];
             for (int y = 0; y < typeArray[i].length; y++) {
@@ -331,6 +325,8 @@ public class GridSizeMigrationTaskTest {
                 }
             }
         }
+
+        IntArray allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         return ids;
     }
 
@@ -350,7 +346,7 @@ public class GridSizeMigrationTaskTest {
                 for (int x = 0; x < ids[i][y].length; x++) {
                     int id = ids[i][y][x];
 
-                    Cursor c = mProviderRule.getResolver().query(
+                    Cursor c = mContext.getContentResolver().query(
                             LauncherSettings.Favorites.CONTENT_URI,
                             new String[]{LauncherSettings.Favorites._ID},
                             "container=-100 and screen=" + screenId +
@@ -370,7 +366,7 @@ public class GridSizeMigrationTaskTest {
         }
 
         // Verify that not other entry exist in the DB.
-        Cursor c = mProviderRule.getResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+        Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites._ID},
                 "container=-100", null, null, null);
         assertEquals(total, c.getCount());
@@ -383,7 +379,7 @@ public class GridSizeMigrationTaskTest {
      *             folder (where the type represents the number of items in the folder).
      */
     private int addItem(int type, int screen, int container, int x, int y) throws Exception {
-        int id = LauncherSettings.Settings.call(mProviderRule.getResolver(),
+        int id = LauncherSettings.Settings.call(mContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
                 .getInt(LauncherSettings.Settings.EXTRA_VALUE);
 
@@ -398,7 +394,8 @@ public class GridSizeMigrationTaskTest {
 
         if (type == APPLICATION || type == SHORTCUT) {
             values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
-            values.put(LauncherSettings.Favorites.INTENT, VALID_INTENT);
+            values.put(LauncherSettings.Favorites.INTENT,
+                    new Intent(Intent.ACTION_MAIN).setPackage(TEST_PACKAGE).toUri(0));
         } else {
             values.put(LauncherSettings.Favorites.ITEM_TYPE,
                     LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
@@ -408,7 +405,7 @@ public class GridSizeMigrationTaskTest {
             }
         }
 
-        mProviderRule.getResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
+        mContext.getContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
         return id;
     }
 

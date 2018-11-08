@@ -7,24 +7,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.rule.provider.ProviderTestRule;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.icons.cache.CachingLogic;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
@@ -33,13 +26,18 @@ import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadows.ShadowLog;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -55,12 +53,8 @@ import androidx.annotation.NonNull;
  */
 public class BaseModelUpdateTaskTestCase {
 
-    @Rule
-    public ProviderTestRule mProviderRule =
-            new ProviderTestRule.Builder(TestLauncherProvider.class, LauncherProvider.AUTHORITY)
-                    .build();
-
     public final HashMap<Class, HashMap<String, Field>> fieldCache = new HashMap<>();
+    private TestLauncherProvider mProvider;
 
     public Context targetContext;
     public UserHandle myUser;
@@ -77,6 +71,11 @@ public class BaseModelUpdateTaskTestCase {
 
     @Before
     public void setUp() throws Exception {
+        ShadowLog.stream = System.out;
+
+        mProvider = Robolectric.setupContentProvider(TestLauncherProvider.class);
+        ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, mProvider);
+
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);
         model = mock(LauncherModel.class);
@@ -89,12 +88,8 @@ public class BaseModelUpdateTaskTestCase {
         myUser = Process.myUserHandle();
 
         bgDataModel = new BgDataModel();
-        targetContext = new ContextWrapper(InstrumentationRegistry.getTargetContext()) {
-            @Override
-            public ContentResolver getContentResolver() {
-                return mProviderRule.getResolver();
-            }
-        };
+        targetContext = RuntimeEnvironment.application;
+
         idp = new InvariantDeviceProfile();
         iconCache = new MyIconCache(targetContext, idp);
 
@@ -103,7 +98,6 @@ public class BaseModelUpdateTaskTestCase {
         when(appState.getIconCache()).thenReturn(iconCache);
         when(appState.getInvariantDeviceProfile()).thenReturn(idp);
         when(appState.getContext()).thenReturn(targetContext);
-
     }
 
     /**
@@ -126,11 +120,8 @@ public class BaseModelUpdateTaskTestCase {
      * Initializes mock data for the test.
      */
     public void initializeData(String resourceName) throws Exception {
-        Context myContext = InstrumentationRegistry.getContext();
-        Resources res = myContext.getResources();
-        int id = res.getIdentifier(resourceName, "raw", myContext.getPackageName());
-        try (BufferedReader reader =
-                     new BufferedReader(new InputStreamReader(res.openRawResource(id)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                this.getClass().getResourceAsStream(resourceName)))) {
             String line;
             HashMap<String, Class> classMap = new HashMap<>();
             while((line = reader.readLine()) != null) {
