@@ -28,6 +28,9 @@ import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -41,7 +44,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.IntDef;
 
-public abstract class BaseActivity extends Activity implements UserEventDelegate{
+public abstract class BaseActivity extends Activity implements UserEventDelegate, LogStateProvider{
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
@@ -72,6 +75,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
+    protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
     private static final int ACTIVITY_STATE_STARTED = 1 << 0;
@@ -104,7 +108,16 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return null;
     }
 
+    public int getCurrentState() { return StatsLogUtils.LAUNCHER_STATE_BACKGROUND; }
+
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
+
+    public final StatsLogManager getStatsLogManager() {
+        if (mStatsLogManager == null) {
+            mStatsLogManager = StatsLogManager.newInstance(this, this);
+        }
+        return mStatsLogManager;
+    }
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {

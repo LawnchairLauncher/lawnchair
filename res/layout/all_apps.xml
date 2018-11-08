@@ -26,7 +26,9 @@
     android:focusable="false"
     android:saveEnabled="false" >
 
-    <include layout="@layout/all_apps_rv_layout" />
+    <include
+        layout="@layout/all_apps_rv_layout"
+        android:visibility="gone" />
 
     <include layout="@layout/all_apps_floating_header" />
 

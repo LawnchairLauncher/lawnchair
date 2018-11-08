@@ -16,6 +16,9 @@
 package com.android.launcher3.allapps;
 
 import android.view.KeyEvent;
+import android.view.animation.Interpolator;
+
+import com.android.launcher3.anim.PropertySetter;
 
 /**
  * Interface for controlling the Apps search UI.
@@ -37,4 +40,10 @@ public interface SearchUiManager {
      * some UI beforehand.
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
+
+    /**
+     * Called as part of state transition to update the content UI
+     */
+    void setContentVisibility(int visibleElements, PropertySetter setter,
+            Interpolator interpolator);
 }

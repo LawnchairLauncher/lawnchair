@@ -91,6 +91,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.ModelWriter;
@@ -206,7 +207,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
-    @Nullable private View mHotseatSearchBox;
 
     private DropTargetBar mDropTargetBar;
 
@@ -913,7 +913,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);
-        mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -1156,10 +1155,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public Hotseat getHotseat() {
         return mHotseat;
-    }
-
-    public View getHotseatSearchBox() {
-        return mHotseatSearchBox;
     }
 
     public <T extends View> T getOverviewPanel() {
@@ -1610,6 +1605,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
+    public int getCurrentState() {
+        if(mStateManager.getState() == LauncherState.ALL_APPS) {
+            return StatsLogUtils.LAUNCHER_STATE_ALLAPPS;
+        } else if (mStateManager.getState() == LauncherState.OVERVIEW) {
+            return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
+        }
+        return StatsLogUtils.LAUNCHER_STATE_HOME;
+    }
+
+    @Override
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
         if (event.srcTarget != null && event.srcTarget.length > 0 &&
                 event.srcTarget[1].containerType == ContainerType.PREDICTION) {
@@ -1643,23 +1648,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     boolean isHotseatLayout(View layout) {
         // TODO: Remove this method
-        return mHotseat != null && layout != null &&
-                (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
+        return mHotseat != null && (layout == mHotseat);
     }
 
     /**
      * Returns the CellLayout of the specified container at the specified screen.
      */
     public CellLayout getCellLayout(int container, int screenId) {
-        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            if (mHotseat != null) {
-                return mHotseat.getLayout();
-            } else {
-                return null;
-            }
-        } else {
-            return mWorkspace.getScreenWithId(screenId);
-        }
+        return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                ? mHotseat : mWorkspace.getScreenWithId(screenId);
     }
 
     @Override
@@ -2270,7 +2267,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
 
             writer.println(prefix + "  Hotseat");
-            ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
+            ViewGroup layout = mHotseat.getShortcutsAndWidgets();
             for (int j = 0; j < layout.getChildCount(); j++) {
                 Object tag = layout.getChildAt(j).getTag();
                 if (tag != null) {

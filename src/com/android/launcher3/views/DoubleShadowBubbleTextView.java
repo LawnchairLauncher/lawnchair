@@ -16,6 +16,8 @@
 
 package com.android.launcher3.views;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -25,8 +27,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Extension of {@link BubbleTextView} which draws two shadows on the text (ambient and key shadows}
@@ -60,7 +60,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
 
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
+                setColorAlphaBound(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutBadge(canvas);
         canvas.save();
@@ -69,7 +69,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 getScrollY() + getHeight());
 
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
-                ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
+                setColorAlphaBound(mShadowInfo.keyShadowColor, alpha));
         drawWithoutBadge(canvas);
         canvas.restore();
 
@@ -107,11 +107,11 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 return true;
             } else if (ambientShadowAlpha > 0) {
                 textView.getPaint().setShadowLayer(ambientShadowBlur, 0, 0,
-                        ColorUtils.setAlphaComponent(ambientShadowColor, textAlpha));
+                        setColorAlphaBound(ambientShadowColor, textAlpha));
                 return true;
             } else if (keyShadowAlpha > 0) {
                 textView.getPaint().setShadowLayer(keyShadowBlur, 0.0f, keyShadowOffset,
-                        ColorUtils.setAlphaComponent(keyShadowColor, textAlpha));
+                        setColorAlphaBound(keyShadowColor, textAlpha));
                 return true;
             } else {
                 return false;

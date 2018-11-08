@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath GRADLE_CLASS_PATH
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion COMPILE_SDK.toInteger()
+    buildToolsVersion BUILD_TOOLS_VERSION
+    publishNonDefault true
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
+
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    implementation "androidx.core:core:${ANDROID_X_VERSION}"
+}

@@ -29,23 +29,3 @@ java_library_static {
     ],
     platform_apis: true,
 }
-
-
-android_library {
-    name: "icon-loader",
-    sdk_version: "28",
-    static_libs: [
-        "androidx.core_core",
-    ],
-    resource_dirs: [
-        "res",
-    ],
-    srcs: [
-        "src/com/android/launcher3/icons/BaseIconFactory.java",
-        "src/com/android/launcher3/icons/BitmapInfo.java",
-        "src/com/android/launcher3/icons/IconNormalizer.java",
-        "src/com/android/launcher3/icons/FixedScaleDrawable.java",
-        "src/com/android/launcher3/icons/ShadowGenerator.java",
-        "src/com/android/launcher3/icons/ColorExtractor.java",
-    ],
-}

@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.settings;
 
-import static androidx.core.graphics.ColorUtils.setAlphaComponent;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -57,7 +57,7 @@ public class PreferenceHighlighter extends ItemDecoration implements Runnable {
     private static final long HIGHLIGHT_DURATION = 15000L;
     private static final long HIGHLIGHT_FADE_OUT_DURATION = 500L;
     private static final long HIGHLIGHT_FADE_IN_DURATION = 200L;
-    private static final int END_COLOR = setAlphaComponent(Color.WHITE, 0);
+    private static final int END_COLOR = setColorAlphaBound(Color.WHITE, 0);
 
     private final Paint mPaint = new Paint();
     private final RecyclerView mRv;
@@ -91,7 +91,7 @@ public class PreferenceHighlighter extends ItemDecoration implements Runnable {
 
         if (!mHighLightStarted) {
             // Start highlight
-            int colorTo = setAlphaComponent(Themes.getColorAccent(mRv.getContext()), 66);
+            int colorTo = setColorAlphaBound(Themes.getColorAccent(mRv.getContext()), 66);
             ObjectAnimator anim = ObjectAnimator.ofArgb(this, HIGHLIGHT_COLOR, END_COLOR, colorTo);
             anim.setDuration(HIGHLIGHT_FADE_IN_DURATION);
             anim.setRepeatMode(ValueAnimator.REVERSE);

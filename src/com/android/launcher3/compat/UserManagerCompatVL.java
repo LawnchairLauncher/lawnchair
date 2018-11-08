@@ -17,7 +17,6 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
@@ -30,7 +29,6 @@ import java.util.List;
 public class UserManagerCompatVL extends UserManagerCompat {
 
     protected final UserManager mUserManager;
-    private final PackageManager mPm;
 
     protected LongSparseArray<UserHandle> mUsers;
     // Create a separate reverse map as LongSparseArray.indexOfValue checks if objects are same
@@ -39,7 +37,6 @@ public class UserManagerCompatVL extends UserManagerCompat {
 
     UserManagerCompatVL(Context context) {
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-        mPm = context.getPackageManager();
     }
 
     @Override
@@ -124,14 +121,6 @@ public class UserManagerCompatVL extends UserManagerCompat {
             }
         }
         return getUserProfiles().size() > 1;
-    }
-
-    @Override
-    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
-        if (user == null) {
-            return label;
-        }
-        return mPm.getUserBadgedLabel(label, user);
     }
 }
 
