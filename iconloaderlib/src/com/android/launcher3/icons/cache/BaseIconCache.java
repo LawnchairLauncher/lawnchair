@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.icons;
+package com.android.launcher3.icons.cache;
 
 import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
@@ -42,14 +42,17 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.launcher3.IconProvider;
+import com.android.launcher3.icons.BaseIconFactory;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
@@ -72,14 +75,14 @@ public abstract class BaseIconCache {
 
     protected final Context mContext;
     protected final PackageManager mPackageManager;
-    protected final IconProvider mIconProvider;
 
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     protected final Handler mWorkerHandler;
 
     protected int mIconDpi;
-    IconDB mIconDb;
+    protected IconDB mIconDb;
+    protected String mSystemState = "";
 
     private final String mDbFileName;
     private final BitmapFactory.Options mDecodeOptions;
@@ -91,8 +94,6 @@ public abstract class BaseIconCache {
         mDbFileName = dbFileName;
         mPackageManager = context.getPackageManager();
         mBgLooper = bgLooper;
-
-        mIconProvider = IconProvider.newInstance(context);
         mWorkerHandler = new Handler(mBgLooper);
 
         if (BitmapRenderer.USE_HARDWARE_BITMAP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -102,6 +103,7 @@ public abstract class BaseIconCache {
             mDecodeOptions = null;
         }
 
+        updateSystemState();
         mIconDpi = iconDpi;
         mIconDb = new IconDB(context, dbFileName, iconPixelSize);
     }
@@ -117,6 +119,10 @@ public abstract class BaseIconCache {
      */
     protected abstract boolean isInstantApp(ApplicationInfo info);
 
+    /**
+     * Opens and returns an icon factory. The factory is recycled by the caller.
+     */
+    protected abstract BaseIconFactory getIconFactory();
 
     public void updateIconParams(int iconDpi, int iconPixelSize) {
         mWorkerHandler.post(() -> updateIconParamsBg(iconDpi, iconPixelSize));
@@ -163,7 +169,7 @@ public abstract class BaseIconCache {
     }
 
     protected BitmapInfo makeDefaultIcon(UserHandle user) {
-        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+        try (BaseIconFactory li = getIconFactory()) {
             return li.createBadgedIconBitmap(
                     getFullResDefaultActivityIcon(), user, VERSION.SDK_INT);
         }
@@ -204,8 +210,27 @@ public abstract class BaseIconCache {
     }
 
     public IconCacheUpdateHandler getUpdateHandler() {
-        mIconProvider.updateSystemStateString(mContext);
+        updateSystemState();
         return new IconCacheUpdateHandler(this);
+    }
+
+    /**
+     * Refreshes the system state definition used to check the validity of the cache. It
+     * incorporates all the properties that can affect the cache like locale and system-version.
+     */
+    private void updateSystemState() {
+        final String locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = mContext.getResources().getConfiguration().getLocales().toLanguageTags();
+        } else {
+            locale = Locale.getDefault().toString();
+        }
+
+        mSystemState = locale + "," + Build.VERSION.SDK_INT;
+    }
+
+    protected String getIconSystemState(String packageName) {
+        return mSystemState;
     }
 
     /**
@@ -215,7 +240,7 @@ public abstract class BaseIconCache {
      *                        old data.
      * package private
      */
-    synchronized <T> void addIconToDBAndMemCache(T object, CachingLogic<T> cachingLogic,
+    protected synchronized <T> void addIconToDBAndMemCache(T object, CachingLogic<T> cachingLogic,
             PackageInfo info, long userSerial, boolean replaceExisting) {
         UserHandle user = cachingLogic.getUser(object);
         ComponentName componentName = cachingLogic.getComponent(object);
@@ -282,7 +307,7 @@ public abstract class BaseIconCache {
             @NonNull ComponentName componentName, @NonNull UserHandle user,
             @NonNull Provider<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
             boolean usePackageIcon, boolean useLowResIcon, boolean addToMemCache) {
-        Preconditions.assertWorkerThread();
+        assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowRes() && !useLowResIcon)) {
@@ -336,7 +361,7 @@ public abstract class BaseIconCache {
     }
 
     public synchronized void clear() {
-        Preconditions.assertWorkerThread();
+        assertWorkerThread();
         mIconDb.clear();
     }
 
@@ -359,9 +384,9 @@ public abstract class BaseIconCache {
             entry.title = title;
         }
         if (icon != null) {
-            LauncherIcons li = LauncherIcons.obtain(mContext);
+            BaseIconFactory li = getIconFactory();
             li.createIconBitmap(icon).applyTo(entry);
-            li.recycle();
+            li.close();
         }
         if (!TextUtils.isEmpty(title) && entry.icon != null) {
             mCache.put(cacheKey, entry);
@@ -379,7 +404,7 @@ public abstract class BaseIconCache {
      */
     protected CacheEntry getEntryForPackageLocked(String packageName, UserHandle user,
             boolean useLowResIcon) {
-        Preconditions.assertWorkerThread();
+        assertWorkerThread();
         ComponentKey cacheKey = getPackageKey(packageName, user);
         CacheEntry entry = mCache.get(cacheKey);
 
@@ -398,13 +423,13 @@ public abstract class BaseIconCache {
                         throw new NameNotFoundException("ApplicationInfo is null");
                     }
 
-                    LauncherIcons li = LauncherIcons.obtain(mContext);
+                    BaseIconFactory li = getIconFactory();
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
                     BitmapInfo iconInfo = li.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion,
                             isInstantApp(appInfo));
-                    li.recycle();
+                    li.close();
 
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
@@ -519,8 +544,14 @@ public abstract class BaseIconCache {
         values.put(IconDB.COLUMN_ICON_COLOR, bitmapInfo.color);
 
         values.put(IconDB.COLUMN_LABEL, label);
-        values.put(IconDB.COLUMN_SYSTEM_STATE, mIconProvider.getIconSystemState(packageName));
+        values.put(IconDB.COLUMN_SYSTEM_STATE, getIconSystemState(packageName));
 
         return values;
+    }
+
+    private void assertWorkerThread() {
+        if (Looper.myLooper() != mBgLooper) {
+            throw new IllegalStateException("Cache accessed on wrong thread " + Looper.myLooper());
+        }
     }
 }

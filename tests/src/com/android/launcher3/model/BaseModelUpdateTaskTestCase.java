@@ -23,7 +23,7 @@ import androidx.test.rule.provider.ProviderTestRule;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.icons.CachingLogic;
+import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;

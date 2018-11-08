@@ -30,6 +30,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
@@ -40,6 +41,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
+import com.android.launcher3.icons.cache.BaseIconCache;
+import com.android.launcher3.icons.cache.CachingLogic;
+import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
@@ -62,6 +66,7 @@ public class IconCache extends BaseIconCache {
     private final LauncherAppsCompat mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final InstantAppResolver mInstantAppResolver;
+    private final IconProvider mIconProvider;
 
     private int mPendingIconRequestCount = 0;
 
@@ -73,6 +78,7 @@ public class IconCache extends BaseIconCache {
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
+        mIconProvider = IconProvider.newInstance(context);
     }
 
     @Override
@@ -83,6 +89,11 @@ public class IconCache extends BaseIconCache {
     @Override
     protected boolean isInstantApp(ApplicationInfo info) {
         return mInstantAppResolver.isInstantApp(info);
+    }
+
+    @Override
+    protected BaseIconFactory getIconFactory() {
+        return LauncherIcons.obtain(mContext);
     }
 
     /**
@@ -221,6 +232,11 @@ public class IconCache extends BaseIconCache {
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
+
+    @Override
+    protected String getIconSystemState(String packageName) {
+        return mIconProvider.getSystemStateForPackage(mSystemState, packageName);
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {

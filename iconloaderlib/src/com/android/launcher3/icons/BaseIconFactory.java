@@ -26,10 +26,11 @@ import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
  * This class will be moved to androidx library. There shouldn't be any dependency outside
  * this package.
  */
-public class BaseIconFactory {
+public class BaseIconFactory implements AutoCloseable {
 
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
-    public static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     private final Rect mOldBounds = new Rect();
     private final Context mContext;
@@ -113,6 +114,29 @@ public class BaseIconFactory {
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
             boolean shrinkNonAdaptiveIcons, boolean isInstantApp) {
         return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, null);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk, boolean isInstantApp) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, null);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk, boolean isInstantApp, float[] scale) {
+        boolean shrinkNonAdaptiveIcons = ATLEAST_P ||
+                (ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
+        return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, scale);
+    }
+
+    public Bitmap createScaledBitmapWithoutShadow(Drawable icon, int iconAppTargetSdk) {
+        boolean shrinkNonAdaptiveIcons = ATLEAST_P ||
+                (ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
+        return  createScaledBitmapWithoutShadow(icon, shrinkNonAdaptiveIcons);
     }
 
     /**
@@ -276,6 +300,9 @@ public class BaseIconFactory {
         mCanvas.setBitmap(null);
         return bitmap;
     }
+
+    @Override
+    public void close() { }
 
     /**
      * An extension of {@link BitmapDrawable} which returns the bitmap pixel size as intrinsic size.

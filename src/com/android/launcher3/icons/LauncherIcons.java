@@ -21,16 +21,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Process;
-import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -110,29 +107,6 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     @Override
     public void close() {
         recycle();
-    }
-
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
-            int iconAppTargetSdk) {
-        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
-    }
-
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
-            int iconAppTargetSdk, boolean isInstantApp) {
-        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, null);
-    }
-
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
-            int iconAppTargetSdk, boolean isInstantApp, float[] scale) {
-        boolean shrinkNonAdaptiveIcons = Utilities.ATLEAST_P ||
-                (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
-        return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, scale);
-    }
-
-    public Bitmap createScaledBitmapWithoutShadow(Drawable icon, int iconAppTargetSdk) {
-        boolean shrinkNonAdaptiveIcons = Utilities.ATLEAST_P ||
-                (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
-        return  createScaledBitmapWithoutShadow(icon, shrinkNonAdaptiveIcons);
     }
 
     // below methods should also migrate to BaseIconFactory
