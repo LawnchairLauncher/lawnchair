@@ -177,7 +177,7 @@ public final class LauncherInstrumentation {
 
         switch (containerType) {
             case WORKSPACE: {
-                waitUntilGone(APPS_RES_ID);
+                waitForLauncherObject(APPS_RES_ID);
                 waitUntilGone(OVERVIEW_RES_ID);
                 waitUntilGone(WIDGETS_RES_ID);
                 return waitForLauncherObject(WORKSPACE_RES_ID);
