@@ -31,6 +31,7 @@ import java.util.TreeMap;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -148,7 +149,14 @@ abstract class BaseFlags {
             }
         }
 
-        String getKey() {
+        /** Set the value of this flag. This should only be used in tests. */
+        @VisibleForTesting
+        void setForTests(boolean value) {
+            currentValue = value;
+        }
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+        public String getKey() {
             return key;
         }
 
