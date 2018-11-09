@@ -55,12 +55,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     override fun onClick() {
         super.onClick()
 
-        // TODO: Add some 'Arr!' flavor to it
-        if (Utilities.isBlacklistedAppInstalled(context)) {
-            Toast.makeText(context, R.string.unauthorized_device, Toast.LENGTH_SHORT).show()
-            return
-        }
-
+        
         showDialog()
     }
 
