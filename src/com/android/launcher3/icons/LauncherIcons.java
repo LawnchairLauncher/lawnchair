@@ -73,18 +73,12 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
         }
     }
 
-    private final Context mContext;
-    private final int mFillResIconDpi;
-    private final int mIconBitmapSize;
     private final int mPoolId;
 
     private LauncherIcons next;
 
     private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId) {
         super(context, fillResIconDpi, iconBitmapSize);
-        mContext = context.getApplicationContext();
-        mFillResIconDpi = fillResIconDpi;
-        mIconBitmapSize = iconBitmapSize;
         mPoolId = poolId;
     }
 

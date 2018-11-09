@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.icons.cache;
 
+import static com.android.launcher3.icons.BaseIconFactory.getFullResDefaultActivityIcon;
 import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
@@ -34,7 +35,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
@@ -50,9 +50,13 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 
@@ -76,8 +80,7 @@ public abstract class BaseIconCache {
     protected final Context mContext;
     protected final PackageManager mPackageManager;
 
-    private final HashMap<ComponentKey, CacheEntry> mCache =
-            new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
+    private final Map<ComponentKey, CacheEntry> mCache;
     protected final Handler mWorkerHandler;
 
     protected int mIconDpi;
@@ -89,12 +92,29 @@ public abstract class BaseIconCache {
     private final Looper mBgLooper;
 
     public BaseIconCache(Context context, String dbFileName, Looper bgLooper,
-            int iconDpi, int iconPixelSize) {
+            int iconDpi, int iconPixelSize, boolean inMemoryCache) {
         mContext = context;
         mDbFileName = dbFileName;
         mPackageManager = context.getPackageManager();
         mBgLooper = bgLooper;
         mWorkerHandler = new Handler(mBgLooper);
+
+        if (inMemoryCache) {
+            mCache = new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
+        } else {
+            // Use a dummy cache
+            mCache = new AbstractMap<ComponentKey, CacheEntry>() {
+                @Override
+                public Set<Entry<ComponentKey, CacheEntry>> entrySet() {
+                    return Collections.emptySet();
+                }
+
+                @Override
+                public CacheEntry put(ComponentKey key, CacheEntry value) {
+                    return value;
+                }
+            };
+        }
 
         if (BitmapRenderer.USE_HARDWARE_BITMAP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mDecodeOptions = new BitmapFactory.Options();
@@ -137,27 +157,20 @@ public abstract class BaseIconCache {
         mCache.clear();
     }
 
-    private Drawable getFullResDefaultActivityIcon() {
-        return Resources.getSystem().getDrawableForDensity(
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                        ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
-                mIconDpi);
-    }
-
     private Drawable getFullResIcon(Resources resources, int iconId) {
         if (resources != null && iconId != 0) {
             try {
                 return resources.getDrawableForDensity(iconId, mIconDpi);
             } catch (Resources.NotFoundException e) { }
         }
-        return getFullResDefaultActivityIcon();
+        return getFullResDefaultActivityIcon(mIconDpi);
     }
 
     public Drawable getFullResIcon(String packageName, int iconId) {
         try {
             return getFullResIcon(mPackageManager.getResourcesForApplication(packageName), iconId);
         } catch (PackageManager.NameNotFoundException e) { }
-        return getFullResDefaultActivityIcon();
+        return getFullResDefaultActivityIcon(mIconDpi);
     }
 
     public Drawable getFullResIcon(ActivityInfo info) {
@@ -165,13 +178,12 @@ public abstract class BaseIconCache {
             return getFullResIcon(mPackageManager.getResourcesForApplication(info.applicationInfo),
                     info.getIconResource());
         } catch (PackageManager.NameNotFoundException e) { }
-        return getFullResDefaultActivityIcon();
+        return getFullResDefaultActivityIcon(mIconDpi);
     }
 
-    protected BitmapInfo makeDefaultIcon(UserHandle user) {
+    private BitmapInfo makeDefaultIcon(UserHandle user) {
         try (BaseIconFactory li = getIconFactory()) {
-            return li.createBadgedIconBitmap(
-                    getFullResDefaultActivityIcon(), user, VERSION.SDK_INT);
+            return li.makeDefaultIcon(user);
         }
     }
 

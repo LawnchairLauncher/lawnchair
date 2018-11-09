@@ -1,5 +1,10 @@
 package com.android.launcher3.icons;
 
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
+import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,29 +23,26 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
-import static android.graphics.Paint.DITHER_FLAG;
-import static android.graphics.Paint.FILTER_BITMAP_FLAG;
-import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
-
 /**
  * This class will be moved to androidx library. There shouldn't be any dependency outside
  * this package.
  */
 public class BaseIconFactory implements AutoCloseable {
 
+    private static final String TAG = "BaseIconFactory";
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
     static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     private final Rect mOldBounds = new Rect();
-    private final Context mContext;
+    protected final Context mContext;
     private final Canvas mCanvas;
     private final PackageManager mPm;
     private final ColorExtractor mColorExtractor;
     private boolean mDisableColorExtractor;
 
-    private int mFillResIconDpi;
-    private int mIconBitmapSize;
+    protected final int mFillResIconDpi;
+    protected final int mIconBitmapSize;
 
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
@@ -302,7 +304,21 @@ public class BaseIconFactory implements AutoCloseable {
     }
 
     @Override
-    public void close() { }
+    public void close() {
+        clear();
+    }
+
+    public BitmapInfo makeDefaultIcon(UserHandle user) {
+        return createBadgedIconBitmap(getFullResDefaultActivityIcon(mFillResIconDpi),
+                user, Build.VERSION.SDK_INT);
+    }
+
+    public static Drawable getFullResDefaultActivityIcon(int iconDpi) {
+        return Resources.getSystem().getDrawableForDensity(
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
+                iconDpi);
+    }
 
     /**
      * An extension of {@link BitmapDrawable} which returns the bitmap pixel size as intrinsic size.
