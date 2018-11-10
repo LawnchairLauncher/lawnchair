@@ -135,7 +135,7 @@
     <string name="action_decrease_height" msgid="282377193880900022">"הקטן גובה"</string>
     <string name="widget_resized" msgid="9130327887929620">"גודל הווידג\'ט שונה - רוחב <xliff:g id="NUMBER_0">%1$s</xliff:g> גובה <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"קיצורי דרך"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"קיצורי דרך והודעות"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"קיצורי דרך והתראות"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגור"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ההתראה נסגרה"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישיות"</string>
@@ -144,9 +144,8 @@
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ניתן למצוא כאן את אפליקציות העבודה"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"לכל אפליקציית עבודה יש תג ואבטחתה מטופלת בידי הארגון. אפשר להעביר אפליקציות אל מסך דף הבית כדי להקל את הגישה אליהן."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"מנוהל בידי הארגון"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"הודעות ואפליקציות כבויות"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"התראות ואפליקציות כבויות"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"סגירה"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"סגור"</string>
-    <!-- no translation found for remote_action_failed (1383965239183576790) -->
-    <skip />
+    <string name="remote_action_failed" msgid="1383965239183576790">"הפעולה נכשלה: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
