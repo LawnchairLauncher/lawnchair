@@ -90,7 +90,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val shadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
     private var shadowBitmap = generateShadowBitmap()
 
-    private val enableShadow get() = prefs.dockShadow
+    private val enableShadow get() = prefs.dockShadow && !useFlatColor
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
@@ -121,6 +121,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.reInitUi()
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
+        blurDrawable?.alpha = 0
     }
 
     override fun onAttachedToWindow() {
@@ -157,11 +158,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable?.stopListening()
     }
 
-    override fun setProgress(progress: Float) {
-        blurDrawable?.alpha = if (useFlatColor) ((1 - progress) * 255).toInt() else 255
-        super.setProgress(progress)
-    }
-
     override fun onDrawFlatColor(canvas: Canvas) {
         blurDrawable?.draw(canvas)
     }
@@ -176,34 +172,25 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             val f = paddingLeft.toFloat() - shadowBlur
             val f2 = scrimHeight - shadowBlur
             val f3 = shadowBlur + width
-            shadowHelper.paint.alpha = getShadowAlpha()
             if (paddingLeft <= 0 && paddingRight <= 0) {
                 shadowHelper.draw(shadowBitmap, canvas, f, f2, f3)
             } else {
                 shadowHelper.drawVerticallyStretched(shadowBitmap, canvas, f, f2, f3, scrimHeight)
             }
-            shadowHelper.paint.alpha = 255
         }
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
     }
 
     override fun updateColors() {
         super.updateColors()
-        if (useFlatColor) {
-            blurDrawable?.alpha = ((1 - mProgress) * 255).toInt()
-        } else {
-            if (mProgress >= mMidProgress) {
-                blurDrawable?.alpha = Color.alpha(mShelfColor)
-            } else {
-                blurDrawable?.alpha = 255
-            }
+        val alpha = when {
+            useFlatColor -> ((1 - mProgress) * 255).toInt()
+            mProgress <= mMidProgress -> 255
+            else -> Math.round(255 * ACCEL_2.getInterpolation(
+                    (1 - mProgress) / (1 - mMidProgress)))
         }
-    }
-
-    private fun getShadowAlpha(): Int {
-        if (mProgress <= mMidProgress) return 255
-        return Math.round(255 * ACCEL_2.getInterpolation(
-                (1 - mProgress) / (1 - mMidProgress)))
+        blurDrawable?.alpha = alpha
+        shadowHelper.paint.alpha = alpha
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
