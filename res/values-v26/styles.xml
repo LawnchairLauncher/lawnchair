@@ -25,10 +25,10 @@
     </style>
     <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->`
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
-    <style name="WidgetContainerTheme.Black" parent="LauncherTheme.Black">
+    <style name="WidgetContainerTheme.Black" parent="AppTheme.Black">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
         <item name="android:colorPrimaryDark">#000000</item>
         <item name="bottomSheetNavBarColor">#00000000</item>

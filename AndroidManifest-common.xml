@@ -18,7 +18,6 @@
 */
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3">
 
     <!--
@@ -36,7 +35,6 @@
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
 
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
@@ -50,13 +48,11 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true"
-        tools:replace="android:label">
+        android:supportsRtl="true" >
 
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
@@ -90,12 +86,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
-            android:name="com.android.launcher3.uioverrides.WallpaperManagerCompat$ColorExtractionService"
-            android:exported="false"
-            android:process=":wallpaper_chooser"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
             android:name="com.android.launcher3.notification.NotificationListener"
             android:label="@string/icon_badging_service_title"
             android:enabled="@bool/notification_badging_enabled"
@@ -106,7 +96,7 @@
         </service>
 
         <meta-data android:name="android.nfc.disable_beam_default"
-                       android:value="true" />
+            android:value="true" />
 
         <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
@@ -126,9 +116,6 @@
         <meta-data
             android:name="com.android.launcher3.launcher_dump_provider"
             android:value="com.android.launcher3.LauncherProvider" />
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts"/>
 
     </application>
 </manifest>

@@ -30,14 +30,14 @@ pipeline:
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
-      - bash ./gradlew assembleQuickstepCiOptimized;
+      - bash ./gradlew assembleQuickstepLawnchairCiOptimized;
 
   # Step 3: Upload to Telegram or Transfer.sh, depending on the event
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: build/outputs/apk/quickstepCi/optimized/LawnchairWIP-quickstep-ci-optimized.apk
-    mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
+    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/LawnchairWIP-quickstep-lawnchair-ci-optimized.apk
+    mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
     environment:

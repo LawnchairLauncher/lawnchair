@@ -81,7 +81,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    flavorDimensions "default", "build"
+    flavorDimensions "default", "custom", "build"
 
     productFlavors {
         aosp {
@@ -100,6 +100,10 @@ android {
             dimension "default"
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
+        }
+        
+        lawnchair {
+            dimension "custom"
         }
 
         dev {
@@ -174,11 +178,17 @@ android {
             java.srcDirs = ['src_flags', 'quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
+        
+        lawnchair {
+            res.srcDirs = ['lawnchair/res']
+            java.srcDirs = ['lawnchair/src']
+            manifest.srcFile "lawnchair/AndroidManifest.xml"
+        }
     }
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:libs/framework.jar')
+            options.compilerArgs.add('-Xbootclasspath/p:lawnchair/libs/framework.jar')
         }
     }
 }

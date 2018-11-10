@@ -24,29 +24,12 @@
 
     <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="28"/>
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
-    <uses-permission android:name="android.permission.BIND_APPWIDGET"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.REMOVE_TASKS"/>
-    <uses-permission android:name="android.permission.REAL_GET_TASKS"/>
-    <uses-permission android:name="android.permission.READ_FRAME_BUFFER"/>
-    <uses-permission android:name="android.permission.GET DETAILED TASKS"/>
-    <uses-permission android:name="android.permission.ACCESS_INSTANT_APPS"/>
-    <uses-permission android:name="android.permission.MANAGE_ACTIVITY_STACKS"/>
-    <uses-permission android:name="android.permission.START_TASKS_FROM_RECENTS"/>
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS"/>
-    <uses-permission android:name="android.permission.CREATE_USERS"/>
-    <uses-permission android:name="android.permission.MANAGE_USERS"/>
-    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
-    <uses-permission android:name="android.permission.MANAGE_DEVICE_ADMINS"/>
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
-
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:theme="@style/AppTheme"
         android:largeHeap="@bool/config_largeHeap"
