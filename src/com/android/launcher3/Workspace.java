@@ -1625,7 +1625,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
             // We want the point to be mapped to the dragTarget.
-            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+            mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
 
             int spanX;
             int spanY;
@@ -1827,7 +1827,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // We want the point to be mapped to the dragTarget.
         if (dropTargetLayout != null) {
-            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+            mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
         }
 
         boolean droppedOnOriginalCell = false;
@@ -2255,7 +2255,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Handle the drag over
         if (mDragTargetLayout != null) {
             // We want the point to be mapped to the dragTarget.
-            mapPointFromDropLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+            mapPointFromDropLayout(mDragTargetLayout, mDragViewVisualCenter);
 
             int minSpanX = item.spanX;
             int minSpanY = item.spanY;

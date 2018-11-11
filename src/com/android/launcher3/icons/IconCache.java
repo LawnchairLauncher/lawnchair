@@ -18,6 +18,7 @@ package com.android.launcher3.icons;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -31,13 +32,16 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 
@@ -56,15 +60,29 @@ public class IconCache extends BaseIconCache {
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
 
     private final LauncherAppsCompat mLauncherApps;
+    private final UserManagerCompat mUserManager;
+    private final InstantAppResolver mInstantAppResolver;
 
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
-        super(context, inv.fillResIconDpi, inv.iconBitmapSize);
+        super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
+                inv.fillResIconDpi, inv.iconBitmapSize);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
         mLauncherActivityInfoCachingLogic = new LauncherActivtiyCachingLogic(this);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
+        mUserManager = UserManagerCompat.getInstance(mContext);
+        mInstantAppResolver = InstantAppResolver.newInstance(mContext);
+    }
 
+    @Override
+    protected long getSerialNumberForUser(UserHandle user) {
+        return mUserManager.getSerialNumberForUser(user);
+    }
+
+    @Override
+    protected boolean isInstantApp(ApplicationInfo info) {
+        return mInstantAppResolver.isInstantApp(info);
     }
 
     /**

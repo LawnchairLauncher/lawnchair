@@ -36,7 +36,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
-import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
 /**

@@ -32,6 +32,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
+import com.android.launcher3.icons.BitmapRenderer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
