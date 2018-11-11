@@ -41,7 +41,6 @@ class LawnchairShortcutActivity : SettingsBaseActivity() {
             finish()
         }
         setContentView(R.layout.preference_spring_recyclerview)
-        ThemeManager.getInstance(this).addOverride(ThemeOverride(themeSet, this))
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val recyclerView = findViewById<RecyclerView>(R.id.list)

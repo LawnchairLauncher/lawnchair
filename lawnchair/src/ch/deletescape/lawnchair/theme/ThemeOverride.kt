@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.theme
 
 import android.app.Activity
+import android.content.Context
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.lang.ref.WeakReference
@@ -44,22 +45,33 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
 
     val isAlive get() = listener.isAlive
 
+    fun applyTheme(context: Context) {
+        listener.applyTheme(getTheme(context))
+    }
+
     fun applyTheme(themeFlags: Int) {
+        listener.applyTheme(getTheme(themeFlags))
+    }
+
+    fun getTheme(context: Context): Int {
+        return getTheme(ThemeManager.getInstance(context).getCurrentFlags())
+    }
+
+    fun getTheme(themeFlags: Int): Int {
         val isDark = ThemeManager.isDark(themeFlags)
         val isDarkText = ThemeManager.isDarkText(themeFlags) && Utilities.ATLEAST_NOUGAT
         val isBlack = isDark && ThemeManager.isBlack(themeFlags)
-        listener.applyTheme(when {
+        return when {
             isBlack && isDarkText -> themeSet.blackDarkTextTheme
             isBlack -> themeSet.blackTheme
             isDark && isDarkText -> themeSet.darkDarkTextTheme
             isDark -> themeSet.darkTheme
             isDarkText -> themeSet.darkTextTheme
             else -> themeSet.lightTheme
-        })
+        }
     }
 
     fun onThemeChanged(themeFlags: Int) {
-        applyTheme(themeFlags)
         listener.reloadTheme()
     }
 

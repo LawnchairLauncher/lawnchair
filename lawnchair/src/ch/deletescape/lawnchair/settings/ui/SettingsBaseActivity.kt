@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -33,14 +34,19 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @SuppressLint("Registered")
-open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChangeListener {
+open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChangeListener, ThemeManager.ThemeableActivity {
     val decorLayout by lazy { DecorLayout(this, window) }
 
     protected open val themeSet: ThemeOverride.ThemeSet get() = ThemeOverride.Settings()
+    private lateinit var themeOverride: ThemeOverride
+    private var currentTheme = 0
+    private var paused = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         hookGoogleSansDialogTitle()
-        ThemeManager.getInstance(this).addOverride(ThemeOverride(themeSet, this))
+        themeOverride = ThemeOverride(themeSet, this)
+        themeOverride.applyTheme(this)
+        currentTheme = themeOverride.getTheme(this)
 
         super.onCreate(savedInstanceState)
         super.setContentView(decorLayout)
@@ -98,5 +104,27 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChang
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         ColorEngine.getInstance(this).removeAccentChangeListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        paused = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        paused = true
+    }
+
+    override fun onThemeChanged() {
+        if (currentTheme == themeOverride.getTheme(this)) return
+        if (paused) {
+            recreate()
+        } else {
+            val intent = intent
+            finish()
+            startActivity(intent, ActivityOptions.makeCustomAnimation(
+                    this, android.R.anim.fade_in, android.R.anim.fade_out).toBundle())
+        }
     }
 }

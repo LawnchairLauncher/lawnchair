@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.iconpack
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
-import ch.deletescape.lawnchair.reloadIcons
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
@@ -30,7 +29,7 @@ class ApplyIconPackActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeManager.getInstance(this).addOverride(ThemeOverride(themeSet, this))
+        ThemeOverride(themeSet, this).applyTheme(this)
 
         prefs.bulkEdit {
             val packageName = intent.getStringExtra("packageName")

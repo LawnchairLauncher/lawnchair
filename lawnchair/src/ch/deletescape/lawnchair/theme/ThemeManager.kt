@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.theme
 
 import android.content.Context
 import ch.deletescape.lawnchair.ensureOnMainThread
+import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Utilities
@@ -42,6 +43,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
 
+    private val app = context.lawnchairApp
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
     private val listeners = HashSet<ThemeOverride>()
     private val prefs = Utilities.getLawnchairPrefs(context)
@@ -62,6 +64,8 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
         }
         themeOverride.applyTheme(themeFlags)
     }
+
+    fun getCurrentFlags() = themeFlags
 
     private fun removeDeadListeners() {
         val it = listeners.iterator()
@@ -88,10 +92,26 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
         if (supportsDarkText) themeFlags = themeFlags or THEME_DARK_TEXT
         if (isDark) themeFlags = themeFlags or THEME_DARK
         if (isBlack) themeFlags = themeFlags or THEME_USE_BLACK
+        reloadActivities()
         synchronized(listeners) {
             removeDeadListeners()
             listeners.forEach { it.onThemeChanged(themeFlags) }
         }
+    }
+
+    fun reloadActivities() {
+        HashSet(app.activityHandler.activities).forEach {
+            if (it is ThemeableActivity) {
+                it.onThemeChanged()
+            } else {
+                it.recreate()
+            }
+        }
+    }
+
+    interface ThemeableActivity {
+
+        fun onThemeChanged()
     }
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {

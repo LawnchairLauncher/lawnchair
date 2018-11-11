@@ -29,7 +29,6 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
@@ -77,7 +76,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         // Register theme override
         ThemeOverride themeOverride = new ThemeOverride(getLauncherThemeSet(), this);
-        ThemeManager.Companion.getInstance(this).addOverride(themeOverride);
+        themeOverride.applyTheme(this);
     }
 
     @NonNull
