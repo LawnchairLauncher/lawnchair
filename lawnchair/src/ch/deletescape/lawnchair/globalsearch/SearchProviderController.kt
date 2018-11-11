@@ -20,11 +20,30 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
 
     private var themeRes: Int = 0
 
+    private val listeners = HashSet<OnProviderChangeListener>()
+
     val isGoogle get() = searchProvider is GoogleSearchProvider
 
     init {
         ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.Launcher(), ThemeListener()))
         ColorEngine.getInstance(context).addAccentChangeListener(this)
+    }
+
+    fun addOnProviderChangeListener(listener: OnProviderChangeListener) {
+        listeners.add(listener)
+    }
+
+    fun removeOnProviderChangeListener(listener: OnProviderChangeListener) {
+        listeners.remove(listener)
+    }
+
+    fun onSearchProviderChanged() {
+        cache = null
+        notifyProviderChanged()
+    }
+
+    private fun notifyProviderChanged() {
+        HashSet(listeners).forEach(OnProviderChangeListener::onSearchProviderChanged)
     }
 
     val searchProvider: SearchProvider
@@ -40,14 +59,16 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
                         cache = prov
                     }
                 } catch (ignored: Exception) { }
-                if(cache == null) cache = GoogleSearchProvider(context)
+                if (cache == null) cache = GoogleSearchProvider(context)
                 cached = cache!!::class.java.name
+                notifyProviderChanged()
             }
             return cache!!
         }
 
     override fun onAccentChange(color: Int, foregroundColor: Int) {
         cache = null
+        notifyProviderChanged()
     }
 
     inner class ThemeListener : ThemeOverride.ThemeOverrideListener {
@@ -60,7 +81,13 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
 
         override fun reloadTheme() {
             cache = null
+            notifyProviderChanged()
         }
+    }
+
+    interface OnProviderChangeListener {
+
+        fun onSearchProviderChanged()
     }
 
     companion object : SingletonHolder<SearchProviderController, Context>(ensureOnMainThread(useApplicationContext(::SearchProviderController))) {

@@ -24,6 +24,7 @@ import android.net.Uri
 import android.os.Looper
 import android.text.TextUtils
 import android.util.TypedValue
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
@@ -168,7 +169,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
 
     // Search
-    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider), doNothing)
+    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
+        SearchProviderController.getInstance(context).onSearchProviderChanged()
+    }
 
     // Gestures
     val doubleTapDelay = 350L

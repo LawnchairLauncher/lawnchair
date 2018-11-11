@@ -65,7 +65,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
         };
         this.Ds = k.getInstance(context);
         setOnClickListener(this);
-        Utilities.getLawnchairPrefs(getContext()).addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, "pref_globalSearchProvider");
     }
 
     protected void onAttachedToWindow() {

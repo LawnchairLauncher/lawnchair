@@ -49,7 +49,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
-public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener, OnClickListener, OnLongClickListener, Insettable {
+public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener,
+        OnClickListener, OnLongClickListener, Insettable, SearchProviderController.OnProviderChangeListener {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     private static final Rect CS = new Rect();
     protected final TextPaint CT;
@@ -120,6 +121,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         super.onAttachedToWindow();
         dy().registerOnSharedPreferenceChangeListener(this);
         this.Dn.setDelegateView(this.mMicIconView);
+        SearchProviderController.Companion.getInstance(getContext()).addOnProviderChangeListener(this);
     }
 
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -170,6 +172,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected void onDetachedFromWindow() {
         Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        SearchProviderController.Companion.getInstance(getContext()).removeOnProviderChangeListener(this);
         super.onDetachedFromWindow();
     }
 
@@ -446,9 +449,13 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         switch (str) {
             case "opa_enabled":
             case "opa_assistant":
-            case "pref_globalSearchProvider":
                 loadPreferences(sharedPreferences);
         }
+    }
+
+    @Override
+    public void onSearchProviderChanged() {
+        loadPreferences(Utilities.getPrefs(getContext()));
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
