@@ -46,6 +46,11 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "boolean", "FEATURE_QUINOA", "${!(System.getenv("TRAVIS") == "true" && System.getenv("DRONE_BRANCH") == "alpha")}"
+
+        ndk {
+            // Hoko currently has no 64bit build of its lib
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
         debug {
@@ -224,6 +229,7 @@ dependencies {
     implementation 'me.jfenn:attribouter:0.0.8'
     implementation 'net.aksingh:owm-japis:2.5.2.2'
     implementation 'com.github.LawnchairLauncher:chroma:1.1.0'
+    implementation 'com.hoko:hoko-blur:1.3.2'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 

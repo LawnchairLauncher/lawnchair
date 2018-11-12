@@ -17,15 +17,13 @@
 
 package ch.deletescape.lawnchair.blur
 
-import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import android.view.View
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider.Companion.DOWNSAMPLE_FACTOR
+import com.hoko.blur.HokoBlur
+import com.hoko.blur.task.AsyncBlurTask
 
 class BlurDrawable internal constructor(
         private val mProvider: BlurWallpaperProvider,
@@ -71,10 +69,6 @@ class BlurDrawable internal constructor(
     private var mBitmapToBlur: Bitmap? = null
     private var mBlurredBitmap: Bitmap? = null
     private var mBlurringCanvas: Canvas? = null
-    private var mRenderScript: RenderScript? = null
-    private var mBlurScript: ScriptIntrinsicBlur? = null
-    private var mBlurInput: Allocation? = null
-    private var mBlurOutput: Allocation? = null
     //    private var mTempBitmap: Bitmap? = null
     private var mBlurInvalid: Boolean = false
 
@@ -97,10 +91,6 @@ class BlurDrawable internal constructor(
     private var mBottomCanvas = Canvas()
 
     private var mAlpha = 255
-
-    init {
-        initializeRenderScript(mProvider.context)
-    }
 
     fun setBlurredView(blurredView: View) {
         mBlurredView = blurredView
@@ -135,11 +125,13 @@ class BlurDrawable internal constructor(
                 mRoundPath.addRoundRect(mRect, mRadii, Path.Direction.CW)
                 mClipPaint.color = -1
                 if (mTopRounded) {
+                    mTopRoundBitmap?.recycle()
                     mTopRoundBitmap = Bitmap.createBitmap(width, mTopRadius.toInt(),
                             Bitmap.Config.ARGB_8888)
                     mTopCanvas.setBitmap(mTopRoundBitmap)
                 }
                 if (mBottomRounded) {
+                    mBottomRoundBitmap?.recycle()
                     mBottomRoundBitmap = Bitmap.createBitmap(width, mBottomRadius.toInt(),
                             Bitmap.Config.ARGB_8888)
                     mBottomCanvas.setBitmap(mBottomRoundBitmap)
@@ -151,7 +143,7 @@ class BlurDrawable internal constructor(
 
     override fun draw(canvas: Canvas) {
         val toDraw = bitmap
-        if (!mShouldDraw || toDraw == null) return
+        if (!mShouldDraw || toDraw == null || toDraw.isRecycled) return
 
         // Don't draw when completely off screen
         if (bounds.top > canvas.height) return
@@ -191,7 +183,13 @@ class BlurDrawable internal constructor(
             canvas.drawRect(mRect, mOpacityPaint)
         }
 
-        canvas.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.wallpaperYOffset, mPaint)
+        // Check again if the bitmap is recycled
+        if (toDraw.isRecycled) return
+        try {
+            canvas.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.wallpaperYOffset, mPaint)
+        } catch (e: Exception) {
+            Log.e("BlurDrawable", "Failed to draw blurred bitmasp", e)
+        }
         if (mTopRounded) {
             mTopCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - mRect.top, mCornerPaint)
         }
@@ -214,9 +212,8 @@ class BlurDrawable internal constructor(
                 blur()
 
                 mBlurringCanvas = null
+                mBitmapToBlur?.recycle()
                 mBitmapToBlur = null
-                mBlurInput = null
-                mBlurOutput = null
 
                 Log.d("BlurView", "Took " + (System.currentTimeMillis() - startTime) + "ms to blur")
             }
@@ -248,11 +245,6 @@ class BlurDrawable internal constructor(
         }
     }
 
-    private fun initializeRenderScript(context: Context) {
-        mRenderScript = RenderScript.create(context)
-        mBlurScript = ScriptIntrinsicBlur.create(mRenderScript, Element.U8_4(mRenderScript))
-    }
-
     private fun prepare(): Boolean {
         if (mBlurredView == null) return false
         if (!mBlurInvalid) return true
@@ -267,43 +259,35 @@ class BlurDrawable internal constructor(
             mBlurredViewWidth = width
             mBlurredViewHeight = height
 
-            var scaledWidth = width / mDownsampleFactor
-            var scaledHeight = height / mDownsampleFactor
-
-            // The following manipulation is to avoid some RenderScript artifacts at the edge.
-            scaledWidth = scaledWidth - scaledWidth % 4 + 4
-            scaledHeight = scaledHeight - scaledHeight % 4 + 4
-
-            if (mBitmapToBlur == null || mBlurredBitmap == null
-                    || mBlurredBitmap!!.width != scaledWidth
-                    || mBlurredBitmap!!.height != scaledHeight) {
-                mBitmapToBlur = Bitmap.createBitmap(scaledWidth, scaledHeight,
-                        Bitmap.Config.ARGB_8888)
-                if (mBitmapToBlur == null) {
-                    return false
-                }
-
-                mBlurredBitmap = Bitmap.createBitmap(scaledWidth, scaledHeight,
-                        Bitmap.Config.ARGB_8888)
-                if (mBlurredBitmap == null) {
-                    return false
-                }
+            if (mBitmapToBlur == null) {
+                return false
             }
-
-            mBlurringCanvas = Canvas(mBitmapToBlur!!)
-            mBlurringCanvas!!.scale(1f / mDownsampleFactor, 1f / mDownsampleFactor)
-            mBlurInput = Allocation.createFromBitmap(mRenderScript, mBitmapToBlur,
-                    Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT)
-            mBlurOutput = Allocation.createTyped(mRenderScript, mBlurInput!!.type)
         }
         return true
     }
 
     private fun blur() {
-        mBlurInput!!.copyFrom(mBitmapToBlur)
-        mBlurScript!!.setInput(mBlurInput)
-        mBlurScript!!.forEach(mBlurOutput)
-        mBlurOutput!!.copyTo(mBlurredBitmap)
+        HokoBlur.with(mProvider.context)
+                .scheme(HokoBlur.SCHEME_OPENGL)
+                .mode(HokoBlur.MODE_STACK)
+                .radius(mProvider.blurRadius)
+                .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
+                .forceCopy(false)
+                .needUpscale(false)
+                .processor()
+                .asyncBlur(mBitmapToBlur, object : AsyncBlurTask.Callback {
+                    override fun onBlurSuccess(bitmap: Bitmap?) {
+                        mBlurredBitmap?.recycle()
+                        mBlurredBitmap = bitmap
+                        invalidateSelf()
+                    }
+
+                    override fun onBlurFailed(error: Throwable?) {
+                        mBlurredBitmap?.recycle()
+                        mBlurredBitmap = mBitmapToBlur
+                        invalidateBlur()
+                    }
+                })
     }
 
     val bitmap: Bitmap?
@@ -340,7 +324,6 @@ class BlurDrawable internal constructor(
     }
 
     override fun onWallpaperChanged() {
-        mBlurScript!!.setRadius(mProvider.blurRadius.toFloat())
         mBlurInvalid = true
         if (!mUseTransparency)
             invalidateSelf()

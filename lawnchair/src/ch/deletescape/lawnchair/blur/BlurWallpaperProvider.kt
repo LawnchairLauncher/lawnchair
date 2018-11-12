@@ -24,10 +24,6 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.support.v4.graphics.ColorUtils
 import android.util.DisplayMetrics
 import android.util.Log
@@ -38,7 +34,10 @@ import ch.deletescape.lawnchair.*
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.hoko.blur.HokoBlur
+import com.hoko.blur.task.AsyncBlurTask
 import java.util.*
+import java.util.concurrent.Future
 
 class BlurWallpaperProvider(val context: Context, private val forceDisable: Boolean) {
 
@@ -59,7 +58,6 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
         }
     }
 
-    private val mPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val mVibrancyPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val mColorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
@@ -72,6 +70,8 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
     private val sCanvas = Canvas()
 
     private val mUpdateRunnable = Runnable { updateWallpaper() }
+
+    private var blurFuture: Future<Any>? = null
 
     init {
         isEnabled = !forceDisable && mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
@@ -99,7 +99,7 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
 
         updateBlurRadius()
 
-        var wallpaper = upscaleToScreenSize((mWallpaperManager.drawable as BitmapDrawable).bitmap)
+        var wallpaper = scaleToScreenSize((mWallpaperManager.drawable as BitmapDrawable).bitmap)
         val wallpaperHeight = wallpaper.height
         wallpaperYOffset = if (wallpaperHeight > mDisplayHeight) {
             (wallpaperHeight - mDisplayHeight) * 0.5f
@@ -109,24 +109,44 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
 
         mWallpaperWidth = wallpaper.width
 
-        this.wallpaper = null
+        placeholder?.recycle()
         placeholder = createPlaceholder(wallpaper.width, wallpaper.height)
         launcher?.runOnUiThread(mNotifyRunnable)
         if (prefs.enableVibrancy) {
             wallpaper = applyVibrancy(wallpaper)
         }
-        try {
-            Log.d("BWP", "starting blur")
-            this.wallpaper = blur(wallpaper)
-            Log.d("BWP", "blur done")
-            launcher?.runOnUiThread(mNotifyRunnable)
-        } catch(oom: OutOfMemoryError){
-            prefs.enableBlur = false
-            launcher?.runOnUiThread { Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show() }
-        }
+        Log.d("BWP", "starting blur")
+        blurFuture?.cancel(true)
+        blurFuture = HokoBlur.with(context)
+                .scheme(HokoBlur.SCHEME_OPENGL)
+                .mode(HokoBlur.MODE_STACK)
+                .radius(blurRadius)
+                .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
+                .forceCopy(false)
+                .needUpscale(true)
+                .processor()
+                .asyncBlur(wallpaper, object : AsyncBlurTask.Callback {
+                    override fun onBlurSuccess(bitmap: Bitmap) {
+                        this@BlurWallpaperProvider.wallpaper?.recycle()
+                        this@BlurWallpaperProvider.wallpaper = bitmap
+                        Log.d("BWP", "blur done")
+                        blurFuture = null
+                        launcher?.runOnUiThread(mNotifyRunnable)
+                        wallpaper.recycle()
+                    }
+
+                    override fun onBlurFailed(error: Throwable?) {
+                        if (error is OutOfMemoryError) {
+                            prefs.enableBlur = false
+                            launcher?.runOnUiThread { Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show() }
+                        }
+                        blurFuture = null
+                        wallpaper.recycle()
+                    }
+                })
     }
 
-    private fun upscaleToScreenSize(bitmap: Bitmap): Bitmap {
+    private fun scaleToScreenSize(bitmap: Bitmap): Bitmap {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = wm.defaultDisplay
         display.getRealMetrics(mDisplayMetrics)
@@ -135,14 +155,8 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
         val height = mDisplayMetrics.heightPixels
         mDisplayHeight = height
 
-        var widthFactor = 0f
-        var heightFactor = 0f
-        if (width > bitmap.width) {
-            widthFactor = width.toFloat() / bitmap.width
-        }
-        if (height > bitmap.height) {
-            heightFactor = height.toFloat() / bitmap.height
-        }
+        val widthFactor = width.toFloat() / bitmap.width
+        val heightFactor = height.toFloat() / bitmap.height
 
         val upscaleFactor = Math.max(widthFactor, heightFactor)
         if (upscaleFactor <= 0) {
@@ -152,34 +166,6 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
         val scaledWidth = Math.max(width, (bitmap.width * upscaleFactor).ceilToInt())
         val scaledHeight = Math.max(height, (bitmap.height * upscaleFactor).ceilToInt())
         return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false)
-    }
-
-    fun blur(image: Bitmap): Bitmap {
-        val width = (image.width.toDouble() / DOWNSAMPLE_FACTOR).ceilToInt()
-        val height = (image.height.toDouble() / DOWNSAMPLE_FACTOR).ceilToInt()
-
-        val inputBitmap = Bitmap.createScaledBitmap(image, width, height, false)
-        val outputBitmap = Bitmap.createBitmap(inputBitmap)
-
-        val rs = RenderScript.create(context)
-        val theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
-        val tmpIn = Allocation.createFromBitmap(rs, inputBitmap)
-        val tmpOut = Allocation.createFromBitmap(rs, outputBitmap)
-        theIntrinsic.setRadius(blurRadius.toFloat())
-        theIntrinsic.setInput(tmpIn)
-        theIntrinsic.forEach(tmpOut)
-        tmpOut.copyTo(outputBitmap)
-
-        // Have to scale it back to full resolution because antialiasing is too expensive to be done each frame
-        val bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-
-        val canvas = Canvas(bitmap)
-        canvas.save()
-        canvas.scale(image.width.toFloat() / width, image.height.toFloat() / height)
-        canvas.drawBitmap(outputBitmap, 0f, 0f, mPaint)
-        canvas.restore()
-
-        return bitmap
     }
 
     private fun createPlaceholder(width: Int, height: Int): Bitmap {

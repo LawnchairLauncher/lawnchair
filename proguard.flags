@@ -225,3 +225,5 @@
 
 -keep class me.jfenn.** { *; }
 -keep class net.aksingh.owmjapis.** { *; }
+
+-keep class com.hoko.blur.opengl.functor.** { *; }
