@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
+import com.android.launcher3.icons.cache.CachingLogic;
+
 public class LauncherActivtiyCachingLogic implements CachingLogic<LauncherActivityInfo> {
 
     private final IconCache mCache;

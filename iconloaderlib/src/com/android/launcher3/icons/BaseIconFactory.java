@@ -1,5 +1,10 @@
 package com.android.launcher3.icons;
 
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
+import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,28 +23,26 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
-import static android.graphics.Paint.DITHER_FLAG;
-import static android.graphics.Paint.FILTER_BITMAP_FLAG;
-import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
-
 /**
  * This class will be moved to androidx library. There shouldn't be any dependency outside
  * this package.
  */
-public class BaseIconFactory {
+public class BaseIconFactory implements AutoCloseable {
 
+    private static final String TAG = "BaseIconFactory";
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
-    public static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     private final Rect mOldBounds = new Rect();
-    private final Context mContext;
+    protected final Context mContext;
     private final Canvas mCanvas;
     private final PackageManager mPm;
     private final ColorExtractor mColorExtractor;
     private boolean mDisableColorExtractor;
 
-    private int mFillResIconDpi;
-    private int mIconBitmapSize;
+    protected final int mFillResIconDpi;
+    protected final int mIconBitmapSize;
 
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
@@ -113,6 +116,29 @@ public class BaseIconFactory {
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
             boolean shrinkNonAdaptiveIcons, boolean isInstantApp) {
         return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, null);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk, boolean isInstantApp) {
+        return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, null);
+    }
+
+    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
+            int iconAppTargetSdk, boolean isInstantApp, float[] scale) {
+        boolean shrinkNonAdaptiveIcons = ATLEAST_P ||
+                (ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
+        return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, scale);
+    }
+
+    public Bitmap createScaledBitmapWithoutShadow(Drawable icon, int iconAppTargetSdk) {
+        boolean shrinkNonAdaptiveIcons = ATLEAST_P ||
+                (ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O);
+        return  createScaledBitmapWithoutShadow(icon, shrinkNonAdaptiveIcons);
     }
 
     /**
@@ -275,6 +301,23 @@ public class BaseIconFactory {
         icon.setBounds(mOldBounds);
         mCanvas.setBitmap(null);
         return bitmap;
+    }
+
+    @Override
+    public void close() {
+        clear();
+    }
+
+    public BitmapInfo makeDefaultIcon(UserHandle user) {
+        return createBadgedIconBitmap(getFullResDefaultActivityIcon(mFillResIconDpi),
+                user, Build.VERSION.SDK_INT);
+    }
+
+    public static Drawable getFullResDefaultActivityIcon(int iconDpi) {
+        return Resources.getSystem().getDrawableForDensity(
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
+                iconDpi);
     }
 
     /**

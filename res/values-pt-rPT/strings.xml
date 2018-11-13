@@ -145,4 +145,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"As notificações e as aplicações estão desativadas."</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Fechar"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Fechado"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"Falhou: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

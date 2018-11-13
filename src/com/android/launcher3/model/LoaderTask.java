@@ -45,7 +45,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
-import com.android.launcher3.icons.IconCacheUpdateHandler;
+import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;

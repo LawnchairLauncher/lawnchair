@@ -145,4 +145,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"Ilmoitukset ja sovellukset ovat poissa käytöstä"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Sulje"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Suljettu"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"Epäonnistui: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

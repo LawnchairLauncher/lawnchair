@@ -299,6 +299,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
             });
         } else {
             mIconView.setDrawable(null);
+            mIconView.setOnClickListener(null);
             mIconView.setOnLongClickListener(null);
         }
     }

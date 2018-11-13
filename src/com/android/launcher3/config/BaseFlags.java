@@ -17,20 +17,19 @@
 package com.android.launcher3.config;
 
 import static androidx.core.util.Preconditions.checkNotNull;
-
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
-
+import androidx.annotation.GuardedBy;
+import androidx.annotation.Keep;
+import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import androidx.annotation.GuardedBy;
-import androidx.annotation.Keep;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -87,7 +86,8 @@ abstract class BaseFlags {
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
-    public static final TogglableFlag QUICK_SWITCH = new TogglableFlag("QUICK_SWITCH", false,
+    public static final ToggleableGlobalSettingsFlag QUICK_SWITCH
+            = new ToggleableGlobalSettingsFlag("navbar_quick_switch_enabled", false,
             "Swiping right on the nav bar while in an app switches to the previous app");
 
     /**
@@ -99,11 +99,9 @@ abstract class BaseFlags {
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
-            SharedPreferences sharedPreferences =
-                    context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
             synchronized (sLock) {
                 for (TogglableFlag flag : sFlags) {
-                    flag.currentValue = sharedPreferences.getBoolean(flag.key, flag.defaultValue);
+                    flag.initialize(context);
                 }
             }
         } else {
@@ -130,7 +128,7 @@ abstract class BaseFlags {
         return new ArrayList<>(flagsByKey.values());
     }
 
-    public static final class TogglableFlag {
+    public static class TogglableFlag {
         private final String key;
         private final boolean defaultValue;
         private final String description;
@@ -148,8 +146,33 @@ abstract class BaseFlags {
             }
         }
 
-        String getKey() {
+        /** Set the value of this flag. This should only be used in tests. */
+        @VisibleForTesting
+        void setForTests(boolean value) {
+            currentValue = value;
+        }
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+        public String getKey() {
             return key;
+        }
+        void initialize(Context context) {
+            currentValue = getFromStorage(context, defaultValue);
+        }
+
+        void updateStorage(Context context, boolean value) {
+            SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
+                    Context.MODE_PRIVATE).edit();
+            if (value == defaultValue) {
+                editor.remove(key).apply();
+            } else {
+                editor.putBoolean(key, value).apply();
+            }
+        }
+
+        boolean getFromStorage(Context context, boolean defaultValue) {
+            return context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
+                    .getBoolean(key, defaultValue);
         }
 
         boolean getDefaultValue() {
@@ -198,6 +221,39 @@ abstract class BaseFlags {
             h$ *= 1000003;
             h$ ^= description.hashCode();
             return h$;
+        }
+    }
+
+    /**
+     * Stores the FeatureFlag's value in Settings.Global instead of our SharedPrefs.
+     * This is useful if we want to be able to control this flag from another process.
+     */
+    public static final class ToggleableGlobalSettingsFlag extends TogglableFlag {
+        private ContentResolver contentResolver;
+
+        ToggleableGlobalSettingsFlag(String key, boolean defaultValue, String description) {
+            super(key, defaultValue, description);
+        }
+
+        @Override
+        public void initialize(Context context) {
+            contentResolver = context.getContentResolver();
+            super.initialize(context);
+        }
+
+        @Override
+        void updateStorage(Context context, boolean value) {
+            Settings.Global.putInt(contentResolver, getKey(), value ? 1 : 0);
+        }
+
+        @Override
+        boolean getFromStorage(Context context, boolean defaultValue) {
+            return Settings.Global.getInt(contentResolver, getKey(), defaultValue ? 1 : 0) == 1;
+        }
+
+        @Override
+        public boolean get() {
+            return getFromStorage(null, getDefaultValue());
         }
     }
 }

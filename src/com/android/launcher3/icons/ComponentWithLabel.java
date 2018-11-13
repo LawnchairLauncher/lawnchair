@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 
+import com.android.launcher3.icons.cache.CachingLogic;
+
 public interface ComponentWithLabel {
 
     ComponentName getComponent();

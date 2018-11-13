@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.icons;
+package com.android.launcher3.icons.cache;
 
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
@@ -27,7 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
-import com.android.launcher3.icons.BaseIconCache.IconDB;
+import com.android.launcher3.icons.cache.BaseIconCache.IconDB;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,7 +83,8 @@ public class IconCacheUpdateHandler {
 
     private void createPackageInfoMap() {
         PackageManager pm = mIconCache.mPackageManager;
-        for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
+        for (PackageInfo info :
+                pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES)) {
             mPkgInfoMap.put(info.packageName, info);
         }
     }
@@ -122,6 +123,7 @@ public class IconCacheUpdateHandler {
      * the DB and are updated.
      * @return The set of packages for which icons have updated.
      */
+    @SuppressWarnings("unchecked")
     private <T> void updateIconsPerUser(UserHandle user, HashMap<ComponentName, T> componentMap,
             CachingLogic<T> cachingLogic, OnUpdateCallback onUpdateCallback) {
         Set<String> ignorePackages = mPackagesToIgnore.get(user);
@@ -171,7 +173,7 @@ public class IconCacheUpdateHandler {
                 T app = componentMap.remove(component);
                 if (version == info.versionCode && updateTime == info.lastUpdateTime &&
                         TextUtils.equals(c.getString(systemStateIndex),
-                                mIconCache.mIconProvider.getIconSystemState(info.packageName))) {
+                                mIconCache.getIconSystemState(info.packageName))) {
 
                     if (mFilterMode == MODE_CLEAR_VALID_ITEMS) {
                         mItemsToDelete.put(rowId, false);

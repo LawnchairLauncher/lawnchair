@@ -24,6 +24,7 @@
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Aplicaciones recientes"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No hay elementos recientes"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"Cerrar"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Ajustes de uso de la aplicación"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Aplicaciones recientes"</string>
 </resources>
