@@ -36,6 +36,7 @@ import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.views.ActivityContext;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -44,7 +45,8 @@ import java.util.ArrayList;
 
 import androidx.annotation.IntDef;
 
-public abstract class BaseActivity extends Activity implements UserEventDelegate, LogStateProvider{
+public abstract class BaseActivity extends Activity
+        implements UserEventDelegate, LogStateProvider, ActivityContext {
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
@@ -100,12 +102,9 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     // animation
     @InvisibilityFlags private int mForceInvisible;
 
+    @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
-    }
-
-    public AccessibilityDelegate getAccessibilityDelegate() {
-        return null;
     }
 
     public int getCurrentState() { return StatsLogUtils.LAUNCHER_STATE_BACKGROUND; }

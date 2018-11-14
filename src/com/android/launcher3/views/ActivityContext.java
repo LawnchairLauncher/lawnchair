@@ -18,10 +18,15 @@ package com.android.launcher3.views;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.view.ContextThemeWrapper;
+import android.view.View.AccessibilityDelegate;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.badge.BadgeInfo;
 
 /**
- * An interface to be used along with a context. This allows a generic class to depend on Context
- * subclass instead of an Activity.
+ * An interface to be used along with a context for various activities in Launcher. This allows a
+ * generic class to depend on Context subclass instead of an Activity.
  */
 public interface ActivityContext {
 
@@ -29,7 +34,27 @@ public interface ActivityContext {
         return false;
     }
 
+    default BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+        return null;
+    }
+
+    /**
+     * For items with tree hierarchy, notifies the activity to invalidate the parent when a root
+     * is invalidated
+     * @param info info associated with a root node.
+     */
+    default void invalidateParent(ItemInfo info) { }
+
+    default AccessibilityDelegate getAccessibilityDelegate() {
+        return null;
+    }
+
+    /**
+     * The root view to support drag-and-drop and popup support.
+     */
     BaseDragLayer getDragLayer();
+
+    DeviceProfile getDeviceProfile();
 
     static ActivityContext lookupContext(Context context) {
         if (context instanceof ActivityContext) {

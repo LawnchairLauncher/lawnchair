@@ -44,7 +44,7 @@ import com.android.launcher3.views.ActivityContext;
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements WallpaperColorInfo.OnChangeListener, ActivityContext {
+        implements WallpaperColorInfo.OnChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -139,15 +139,9 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
-    public abstract BaseDragLayer getDragLayer();
-
     public abstract <T extends View> T getOverviewPanel();
 
     public abstract View getRootView();
-
-    public abstract BadgeInfo getBadgeInfoForItem(ItemInfo info);
-
-    public abstract void invalidateParent(ItemInfo info);
 
     public Rect getViewBounds(View v) {
         int[] pos = new int[2];
