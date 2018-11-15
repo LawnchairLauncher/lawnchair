@@ -23,7 +23,7 @@ import android.os.Looper;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.HandlerRunnable;
+import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;

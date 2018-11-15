@@ -145,4 +145,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"ஆப்ஸும் அறிவிப்புகளும் ஆஃப் செய்யப்பட்டுள்ளன"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"மூடுக"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"மூடப்பட்டது"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

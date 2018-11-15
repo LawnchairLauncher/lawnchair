@@ -24,6 +24,7 @@
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"概覽"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"最近沒有任何項目"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"關閉"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"應用程式使用情況設定"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"全部清除"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"最近使用的應用程式"</string>
 </resources>
