@@ -22,10 +22,12 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
+import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 
@@ -59,6 +61,11 @@ class LawnchairApp : Application() {
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             false
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ThemeManager.getInstance(this).updateNightMode(newConfig)
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {

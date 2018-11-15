@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.theme
 
 import android.content.Context
+import android.content.res.Configuration
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.useApplicationContext
@@ -48,13 +49,20 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
     private val listeners = HashSet<ThemeOverride>()
     private val prefs = Utilities.getLawnchairPrefs(context)
     private var themeFlags = 0
+    private var usingNightMode: Boolean? = null
+        set(value) {
+            if (value != field) {
+                field = value
+                onExtractedColorsChanged(wallpaperColorInfo)
+            }
+        }
 
     val isDark get() = themeFlags and THEME_DARK != 0
     val supportsDarkText get() = themeFlags and THEME_DARK_TEXT != 0
 
     init {
         wallpaperColorInfo.addOnChangeListener(this)
-        onExtractedColorsChanged(null)
+        updateNightMode(context.lawnchairApp.resources.configuration)
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
@@ -86,7 +94,10 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
             isDark = isDark(theme)
         } else {
             supportsDarkText = wallpaperColorInfo.supportsDarkText()
-            isDark = wallpaperColorInfo.isDark
+            isDark = if ((theme and THEME_AUTO_NIGHT_MODE == 0))
+                wallpaperColorInfo.isDark
+            else
+                usingNightMode == true
         }
         themeFlags = 0
         if (supportsDarkText) themeFlags = themeFlags or THEME_DARK_TEXT
@@ -99,7 +110,7 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
         }
     }
 
-    fun reloadActivities() {
+    private fun reloadActivities() {
         HashSet(app.activityHandler.activities).forEach {
             if (it is ThemeableActivity) {
                 it.onThemeChanged()
@@ -109,6 +120,11 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
         }
     }
 
+    fun updateNightMode(newConfig: Configuration) {
+        val nightMode = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        usingNightMode = nightMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
     interface ThemeableActivity {
 
         fun onThemeChanged()
@@ -116,10 +132,11 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
-        private const val THEME_AUTO = 1                // 0001
-        private const val THEME_DARK_TEXT = 1 shl 1     // 0010
-        private const val THEME_DARK = 1 shl 2          // 0100
-        private const val THEME_USE_BLACK = 1 shl 3     // 1000
+        private const val THEME_AUTO = 1                     // 00001
+        private const val THEME_DARK_TEXT = 1 shl 1          // 00010
+        private const val THEME_DARK = 1 shl 2               // 00100
+        private const val THEME_USE_BLACK = 1 shl 3          // 01000
+        private const val THEME_AUTO_NIGHT_MODE = 1 shl 4    // 10000
 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0
         fun isDark(flags: Int) = (flags and THEME_DARK) != 0

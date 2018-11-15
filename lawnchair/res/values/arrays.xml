@@ -2,7 +2,7 @@
 <resources>
     <string-array name="themes">
         <item>@string/theme_auto</item>
-        <item>@string/theme_auto_black</item>
+        <item>@string/theme_auto_night_mode</item>
         <item>@string/theme_light</item>
         <item>@string/theme_dark_text</item>
         <item>@string/theme_dark</item>
@@ -12,14 +12,14 @@
     </string-array>
 
     <string-array name="themeValues">
-        <item>1</item>  <!-- 0001 -->
-        <item>9</item>  <!-- 1001 -->
-        <item>0</item>  <!-- 0000 -->
-        <item>2</item>  <!-- 0010 -->
-        <item>4</item>  <!-- 0100 -->
-        <item>6</item>  <!-- 0110 -->
-        <item>12</item> <!-- 1100 -->
-        <item>14</item> <!-- 1110 -->
+        <item>1</item>  <!-- 00001 -->
+        <item>17</item> <!-- 10001 -->
+        <item>0</item>  <!-- 00000 -->
+        <item>2</item>  <!-- 00010 -->
+        <item>4</item>  <!-- 00100 -->
+        <item>6</item>  <!-- 00110 -->
+        <item>12</item> <!-- 01100 -->
+        <item>14</item> <!-- 01110 -->
     </string-array>
 
     <string-array name="dockStyles">

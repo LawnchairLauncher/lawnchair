@@ -60,4 +60,16 @@
     <!-- Actions -->
     <string name="lawnchair_actions">Actions</string>
     <string name="lawnchair_action_failed">Failed to trigger action</string>
+
+    <!-- Themes -->
+    <string name="theme_pref_title">Launcher theme</string>
+    <string name="theme_auto">Follow wallpaper</string>
+    <string name="theme_auto_night_mode">Follow night mode</string>
+    <string name="theme_auto_black">Auto (with OLED black)</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark_text">Light (with dark text)</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_dark_text">Dark (with dark text)</string>
+    <string name="theme_black">Black</string>
+    <string name="theme_black_dark_text">Black (with dark text)</string>
 </resources>

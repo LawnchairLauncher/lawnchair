@@ -439,15 +439,6 @@
     <string name="hotseat_show_arrow">Show arrow</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_p_style">Android P style dock</string>
-    <string name="theme_pref_title">Launcher theme</string>
-    <string name="theme_auto">Auto</string>
-    <string name="theme_auto_black">Auto (with OLED black)</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark_text">Light (with dark text)</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_dark_dark_text">Dark (with dark text)</string>
-    <string name="theme_black">Black</string>
-    <string name="theme_black_dark_text">Black (with dark text)</string>
     <string name="dock_style_pref_title">Dock style</string>
     <string name="dock_style_p">Rounded</string>
     <string name="dock_style_o">Gradient</string>
