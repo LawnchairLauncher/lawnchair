@@ -126,6 +126,12 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         return (T) view;
     }
 
+    public <T extends View> T inflateAndAdd(int resId, ViewGroup container, int index) {
+        View view = mInflater.inflate(resId, container, false);
+        container.addView(view, index);
+        return (T) view;
+    }
+
     /**
      * Called when all view inflation and reordering in complete.
      */
