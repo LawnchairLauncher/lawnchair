@@ -87,7 +87,7 @@ abstract class BaseFlags {
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
     public static final ToggleableGlobalSettingsFlag QUICK_SWITCH
-            = new ToggleableGlobalSettingsFlag("navbar_quick_switch_enabled", false,
+            = new ToggleableGlobalSettingsFlag("QUICK_SWITCH", false,
             "Swiping right on the nav bar while in an app switches to the previous app");
 
     /**
