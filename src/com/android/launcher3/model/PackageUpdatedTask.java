@@ -23,6 +23,8 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -97,6 +99,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageSet, mUser);
         switch (mOp) {
             case OP_ADD: {
+                LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
                 for (int i = 0; i < N; i++) {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
@@ -104,9 +107,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         appsList.removePackage(packages[i], Process.myUserHandle());
                     }
                     appsList.addPackage(context, packages[i], mUser);
-
-                    // Automatically add homescreen icon for work profile apps for below O device.
-                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                    if (prefs.getAutoAddInstalled() && !LawnchairUtilsKt
+                            .workspaceContains(dataModel, packages[i])) {
+                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                    } else if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                        // Automatically add homescreen icon for work profile apps for below O device.
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }

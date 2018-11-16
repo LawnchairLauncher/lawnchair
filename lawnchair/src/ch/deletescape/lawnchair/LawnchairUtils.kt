@@ -50,6 +50,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
@@ -419,4 +420,8 @@ fun AlertDialog.applyAccent() {
     getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
     getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
     getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
+}
+
+fun BgDataModel.workspaceContains(packageName: String): Boolean {
+    return this.workspaceItems.any { it.targetComponent.packageName == packageName }
 }

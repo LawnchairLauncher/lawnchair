@@ -110,6 +110,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val gridSize by gridSizeDelegate
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
+    val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
