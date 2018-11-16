@@ -42,7 +42,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
         get() = opacity.toFloat() / 255f
         set(value) { opacity = (value * 255f).roundToInt() }
 
-    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = true, defaultRadius = 16f, defaultArrow = false)
+    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = false, defaultRadius = 16f, defaultArrow = false)
     private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true)
     private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager)
     private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultOpacity = 0)
