@@ -32,12 +32,13 @@ import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.ACCEL_2
 import com.android.launcher3.graphics.NinePatchDrawHelper
 import com.android.launcher3.graphics.ShadowGenerator
+import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
+import kotlin.math.min
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -91,6 +92,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val enableShadow get() = prefs.dockShadow && !useFlatColor
 
+    private var fullDockHeight = 0f
+
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
         return if (BlurWallpaperProvider.isEnabled) {
@@ -121,6 +124,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
+        fullDockHeight = mShiftRange - OverviewState.getDefaultSwipeHeight(mLauncher) + mTopOffset
+        if (!prefs.dockStyles.currentStyle.enableGradient) {
+            updateColors()
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -187,14 +194,21 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun updateColors() {
         super.updateColors()
+        val fillDock = !prefs.dockStyles.currentStyle.enableGradient
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            mProgress <= mMidProgress -> 255
+            fillDock || mProgress <= mMidProgress -> 255
             else -> Math.round(255 * ACCEL_2.getInterpolation(
                     (1 - mProgress) / (1 - mMidProgress)))
         }
         blurDrawable?.alpha = alpha
         shadowHelper.paint.alpha = alpha
+        if (fillDock) {
+            mShelfTop = min(mShelfTop, fullDockHeight)
+            if (mProgress >= mMidProgress) {
+                mShelfColor = ColorUtils.setAlphaComponent(mEndScrim, mMidAlpha)
+            }
+        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

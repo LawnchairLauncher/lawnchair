@@ -440,6 +440,7 @@
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_p_style">Android P style dock</string>
     <string name="dock_style_pref_title">Dock style</string>
+    <string name="dock_style_default">Default</string>
     <string name="dock_style_p">Rounded</string>
     <string name="dock_style_o">Gradient</string>
     <string name="dock_style_n">Flat</string>
@@ -466,7 +467,8 @@
     <string name="dock_shadow">Dock shadow</string>
     <string name="dock_radius">Dock corner radius</string>
     <string name="dock_gradient">Use gradient dock</string>
-    
+    <string name="dock_fill">Fill when collapsed</string>
+
     <!-- Categories -->
     <string name="pref_category_icons">Icons</string>
     <string name="pref_category_aag">At a glance</string>

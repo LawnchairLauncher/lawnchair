@@ -27,18 +27,19 @@ class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitc
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle
+    private val inverted = key == "enableGradient"
 
     @Suppress("UNCHECKED_CAST")
     private val property = DockStyle.properties[key] as KMutableProperty1<DockStyle, Boolean>
 
-    private val onChangeListener = { isChecked = property.get(currentStyle) }
+    private val onChangeListener = { isChecked = getPersistedBoolean(false) }
 
     init {
-        isChecked = property.get(currentStyle)
+        isChecked = getPersistedBoolean(false)
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
-        isChecked = property.get(currentStyle)
+        isChecked = getPersistedBoolean(false)
     }
 
     override fun onAttached() {
@@ -52,11 +53,12 @@ class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitc
     }
 
     override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {
+        if (inverted) return !property.get(currentStyle)
         return property.get(currentStyle)
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
-        property.set(currentStyle, value)
+        property.set(currentStyle, if (inverted) !value else value)
         return true
     }
 }

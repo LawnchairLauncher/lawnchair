@@ -18,20 +18,19 @@
 
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableGradient"
-            android:title="@string/dock_gradient"
+            android:title="@string/dock_fill"
             android:dependency="pref_dockPreset"
-            android:disableDependentsState="true"
             android:persistent="true" />
  
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableShadow"
             android:title="@string/dock_shadow"
-            android:dependency="enableGradient" />
+            android:dependency="pref_dockPreset" />
 
         <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
             android:key="radius"
             android:title="@string/dock_radius"
-            android:dependency="enableGradient"
+            android:dependency="pref_dockPreset"
             app:minValue="0"
             app:maxValue="24"
             app:steps="24"

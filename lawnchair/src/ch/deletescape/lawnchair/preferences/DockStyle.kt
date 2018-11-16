@@ -42,11 +42,11 @@ abstract class DockStyle(protected val manager: StyleManager) {
         get() = opacity.toFloat() / 255f
         set(value) { opacity = (value * 255f).roundToInt() }
 
-    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultShadow = false, defaultRadius = 16f, defaultArrow = false)
+    private class RoundedStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultShadow = false, defaultRadius = 16f, defaultArrow = false)
     private class GradientStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true)
     private class FlatStyle(manager: StyleManager) : PredefinedStyle(manager)
     private class TransparentStyle(manager: StyleManager) : PredefinedStyle(manager, defaultGradient = true, defaultOpacity = 0)
-    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultGradient = true, defaultHide = true) {
+    private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultGradient = true, defaultRadius = 16f, defaultHide = true) {
         override var enableArrow
             get() = showArrowProperty.get()
             set(value) { setProp(showArrowProperty, value, defaultArrow) }
