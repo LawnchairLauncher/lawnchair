@@ -27,9 +27,11 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -59,6 +61,20 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
                 }
             };
 
+    public static final Property<AllAppsTransitionController, Float> SCRIM_PROGRESS =
+            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    return controller.mScrimProgress;
+                }
+
+                @Override
+                public void set(AllAppsTransitionController controller, Float progress) {
+                    controller.setScrimProgress(progress);
+                }
+            };
+
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
 
@@ -74,13 +90,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private float mScrimProgress;
 
     private float mScrollRangeDelta = 0;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mShiftRange = mLauncher.getDeviceProfile().heightPx;
-        mProgress = 1f;
+        mProgress = mScrimProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
@@ -119,7 +136,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     public void setProgress(float progress) {
         mProgress = progress;
-        mScrimView.setProgress(progress);
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
@@ -145,13 +161,20 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mProgress;
     }
 
+    public void setScrimProgress(float progress) {
+        mScrimProgress = progress;
+        mScrimView.setProgress(progress);
+    }
+
     /**
      * Sets the vertical transition progress to {@param state} and updates all the dependent UI
      * accordingly.
      */
     @Override
     public void setState(LauncherState state) {
-        setProgress(state.getVerticalProgress(mLauncher));
+        float targetProgress = state.getVerticalProgress(mLauncher);
+        setProgress(targetProgress);
+        setScrimProgress(getScrimProgress(state, targetProgress));
         setAlphas(state, null, new AnimatorSetBuilder());
         onProgressAnimationEnd();
     }
@@ -164,7 +187,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setStateWithAnimation(LauncherState toState,
                                       AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
-        if (Float.compare(mProgress, targetProgress) == 0) {
+        float targetScrimProgress = getScrimProgress(toState, targetProgress);
+        if (Float.compare(mProgress, targetProgress) == 0
+                && Float.compare(mScrimProgress, targetScrimProgress) == 0) {
             setAlphas(toState, config, builder);
             // Fail fast
             onProgressAnimationEnd();
@@ -186,6 +211,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         anim.addListener(getProgressAnimatorListener());
 
         builder.play(anim);
+
+        ObjectAnimator scrimAnim =
+                ObjectAnimator.ofFloat(this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
+        scrimAnim.setDuration(config.duration);
+        scrimAnim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        scrimAnim.addListener(getProgressAnimatorListener());
+
+        builder.play(scrimAnim);
 
         setAlphas(toState, config, builder);
     }
@@ -259,5 +292,13 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     public void reset() {
         setProgress(1f);
+    }
+
+    private float getScrimProgress(LauncherState state, float targetProgress) {
+        if (Utilities.getLawnchairPrefs(mLauncher).getDockGradientStyle()) return targetProgress;
+        if (state == LauncherState.NORMAL || state == LauncherState.OVERVIEW) {
+            return OverviewState.getNormalVerticalProgress(mLauncher);
+        }
+        return targetProgress;
     }
 }

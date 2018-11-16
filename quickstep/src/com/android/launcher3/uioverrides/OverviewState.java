@@ -119,6 +119,10 @@ public class OverviewState extends LauncherState {
             // We have no all apps content, so we're still at the fully down progress.
             return super.getVerticalProgress(launcher);
         }
+        return getNormalVerticalProgress(launcher);
+    }
+
+    public static float getNormalVerticalProgress(Launcher launcher) {
         return 1 - (getDefaultSwipeHeight(launcher)
                 / launcher.getAllAppsController().getShiftRange());
     }

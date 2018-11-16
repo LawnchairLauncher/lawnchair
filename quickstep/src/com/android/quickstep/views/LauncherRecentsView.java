@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherAppTransitionManagerImpl.ALL_APPS_PR
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SCRIM_PROGRESS;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -139,6 +140,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         }
         anim.play(ObjectAnimator.ofFloat(
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
+        anim.play(ObjectAnimator.ofFloat(
+                mActivity.getAllAppsController(), SCRIM_PROGRESS, allAppsProgressOffscreen));
 
         ObjectAnimator dragHandleAnim = ObjectAnimator.ofInt(
                 mActivity.findViewById(R.id.scrim_view), ScrimView.DRAG_HANDLE_ALPHA, 0);

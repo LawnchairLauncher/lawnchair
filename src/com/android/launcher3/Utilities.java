@@ -76,6 +76,7 @@ import com.android.launcher3.config.FeatureFlags;
 
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.uioverrides.OverviewState;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -928,5 +929,13 @@ public final class Utilities {
         } else {
             return task.icon;
         }
+    }
+
+    public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
+        if (Utilities.getLawnchairPrefs(launcher).getDockGradientStyle()) return targetProgress;
+        if (toState == LauncherState.OVERVIEW) {
+            return OverviewState.getNormalVerticalProgress(launcher);
+        }
+        return targetProgress;
     }
 }

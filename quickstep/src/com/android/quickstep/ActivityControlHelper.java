@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SCRIM_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
@@ -52,6 +53,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -269,6 +271,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         controller, ALL_APPS_PROGRESS, startProgress, endProgress);
                 shiftAnim.setInterpolator(LINEAR);
                 anim.play(shiftAnim);
+
+                float scrimEndProgress = Utilities.getScrimProgress(activity, endState, endProgress);
+                ObjectAnimator scrimAnim = ObjectAnimator.ofFloat(
+                        controller, SCRIM_PROGRESS, scrimEndProgress + progressDelta, scrimEndProgress);
+                scrimAnim.setInterpolator(LINEAR);
+                anim.play(scrimAnim);
 
                 // Since we are changing the start position of the UI, reapply the state, at the end
                 anim.addListener(new AnimationSuccessListener() {

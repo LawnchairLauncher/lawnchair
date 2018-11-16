@@ -32,13 +32,15 @@ import ch.deletescape.lawnchair.blurWallpaperProvider
 import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import com.android.launcher3.anim.Interpolators
+import com.android.launcher3.anim.Interpolators.ACCEL
 import com.android.launcher3.anim.Interpolators.ACCEL_2
 import com.android.launcher3.graphics.NinePatchDrawHelper
 import com.android.launcher3.graphics.ShadowGenerator
 import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
-import kotlin.math.min
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -59,12 +61,11 @@ import kotlin.math.min
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val key_radius = "pref_dockRadius"
-    private val key_gradient = "pref_dockGradient"
     private val key_opacity = "pref_allAppsOpacitySB"
     private val key_dock_opacity = "pref_hotseatCustomOpacity"
     private val key_dock_arrow = "pref_hotseatShowArrow"
 
-    private val prefsToWatch = arrayOf(key_radius, key_gradient, key_opacity, key_dock_opacity, key_dock_arrow)
+    private val prefsToWatch = arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -91,8 +92,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private var shadowBitmap = generateShadowBitmap()
 
     private val enableShadow get() = prefs.dockShadow && !useFlatColor
-
-    private var fullDockHeight = 0f
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
@@ -124,10 +123,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
-        fullDockHeight = mShiftRange - OverviewState.getDefaultSwipeHeight(mLauncher) + mTopOffset
-        if (!prefs.dockStyles.currentStyle.enableGradient) {
-            updateColors()
-        }
     }
 
     override fun onAttachedToWindow() {
@@ -152,9 +147,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
             key_dock_opacity -> {
                 mMidAlpha = prefs.dockOpacity.takeIf { it >= 0 } ?: Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha)
-            }
-            key_gradient -> if (!force) {
-                reInitUi()
             }
             key_dock_arrow -> {
                 updateDragHandleVisibility()
@@ -194,21 +186,19 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun updateColors() {
         super.updateColors()
-        val fillDock = !prefs.dockStyles.currentStyle.enableGradient
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            fillDock || mProgress <= mMidProgress -> 255
-            else -> Math.round(255 * ACCEL_2.getInterpolation(
+            mProgress >= mMidProgress -> Math.round(255 * ACCEL_2.getInterpolation(
                     (1 - mProgress) / (1 - mMidProgress)))
+            else -> {
+                val startAlpha = if (mMidProgress >= 1f) 0f else 255f
+                Math.round(
+                        Utilities.mapToRange(mProgress, 0.toFloat(), mMidProgress, 255f,
+                                startAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)))
+            }
         }
         blurDrawable?.alpha = alpha
         shadowHelper.paint.alpha = alpha
-        if (fillDock) {
-            mShelfTop = min(mShelfTop, fullDockHeight)
-            if (mProgress >= mMidProgress) {
-                mShelfColor = ColorUtils.setAlphaComponent(mEndScrim, mMidAlpha)
-            }
-        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -216,5 +206,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         if (useFlatColor) {
             blurDrawable?.setBounds(left, top, right, bottom)
         }
+    }
+
+    override fun getMidProgress(): Float {
+        if (!prefs.dockGradientStyle) return OverviewState.getNormalVerticalProgress(mLauncher)
+        return super.getMidProgress()
     }
 }

@@ -110,7 +110,7 @@ public class ShelfScrimView extends ScrimView {
             mRemainingScreenPathValid = false;
             mShiftRange = mLauncher.getAllAppsController().getShiftRange();
 
-            mMidProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            mMidProgress = getMidProgress();
             mMidAlpha = mMidProgress >= 1 ? 0
                     : Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
 
@@ -217,5 +217,9 @@ public class ShelfScrimView extends ScrimView {
     protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
             float rx, float ry, Paint paint) {
         canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
+    }
+
+    protected float getMidProgress() {
+        return OVERVIEW.getVerticalProgress(mLauncher);
     }
 }

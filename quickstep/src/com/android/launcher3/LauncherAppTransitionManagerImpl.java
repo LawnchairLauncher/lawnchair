@@ -26,6 +26,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SCRIM_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -380,6 +381,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else if (mLauncher.isInState(OVERVIEW)) {
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
             launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
+                    allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
+            launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, SCRIM_PROGRESS,
                     allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
 
             RecentsView overview = mLauncher.getOverviewPanel();
