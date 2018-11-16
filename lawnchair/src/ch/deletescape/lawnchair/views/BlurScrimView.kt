@@ -61,10 +61,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_gradient = "pref_dockGradient"
     private val key_opacity = "pref_allAppsOpacitySB"
     private val key_dock_opacity = "pref_hotseatCustomOpacity"
+    private val key_dock_arrow = "pref_hotseatShowArrow"
 
-    init {
-        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener(this, key_radius, key_gradient, key_opacity, key_dock_opacity)
-    }
+    private val prefsToWatch = arrayOf(key_radius, key_gradient, key_opacity, key_dock_opacity, key_dock_arrow)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -127,6 +126,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
         blurDrawable?.startListening()
     }
 
@@ -149,12 +149,16 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             key_gradient -> if (!force) {
                 reInitUi()
             }
+            key_dock_arrow -> {
+                updateDragHandleVisibility()
+            }
         }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
+        prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
         blurDrawable?.stopListening()
     }
 
