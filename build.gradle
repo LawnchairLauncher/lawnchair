@@ -48,8 +48,7 @@ android {
         buildConfigField "boolean", "FEATURE_QUINOA", "${!(System.getenv("TRAVIS") == "true" && System.getenv("DRONE_BRANCH") == "alpha")}"
 
         ndk {
-            // Hoko currently has no 64bit build of its lib
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
     }
     buildTypes {
@@ -106,7 +105,7 @@ android {
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
-        
+
         lawnchair {
             dimension "custom"
         }
@@ -183,7 +182,7 @@ android {
             java.srcDirs = ['src_flags', 'quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
-        
+
         lawnchair {
             res.srcDirs = ['lawnchair/res']
             java.srcDirs = ['lawnchair/src']
@@ -229,7 +228,7 @@ dependencies {
     implementation 'me.jfenn:attribouter:0.0.8'
     implementation 'net.aksingh:owm-japis:2.5.2.2'
     implementation 'com.github.LawnchairLauncher:chroma:1.1.0'
-    implementation 'com.hoko:hoko-blur:1.3.2'
+    implementation 'com.github.LawnchairLauncher:hoko-lite:master-SNAPSHOT'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
