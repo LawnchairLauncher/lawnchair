@@ -235,7 +235,8 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
         if (availw < 0)
             xPixels += (availw * (offset - .5f) + .5f).toInt()
 
-        mOffset = (-xPixels).toFloat()
+        mOffset = Utilities.boundToRange((-xPixels).toFloat(),
+                0f, (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat())
 
         for (listener in mListeners) {
             listener.onOffsetChanged(mOffset)
