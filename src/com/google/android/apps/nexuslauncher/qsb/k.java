@@ -35,22 +35,22 @@ public class k {
         return 0x99FAFAFA;
     }
 
-    public final int ec() {
+    public final int micOpacity() {
         // pixel_2018_qsb_mic_opacity
         return Color.alpha(getBackgroundColor());
     }
 
-    public final float ed() {
+    public final float micStrokeWidth() {
         // pixel_2018_qsb_mic_stroke_width_dp
         return 0f;
     }
 
-    public final String ee() {
+    public final String hintTextValue() {
         // pixel_2017_qsb_hint_text_value
         return "";
     }
 
-    public final boolean ef() {
+    public final boolean useTwoBubbles() {
         // pixel_2018_qsb_use_two_bubbles
         return false;
     }
@@ -60,7 +60,7 @@ public class k {
         return false;
     }
 
-    public final boolean eh() {
+    public final boolean hintIsForAssistant() {
         // pixel_2018_qsb_hint_is_for_assistant
         return false;
     }

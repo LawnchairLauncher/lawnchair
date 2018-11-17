@@ -1,18 +1,15 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
 import com.android.launcher3.util.ComponentKey;
-import com.google.android.apps.nexuslauncher.allapps.PredictionRowView;
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 
 import java.util.ArrayList;
@@ -79,7 +76,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     private void dV() {
-        this.DJ.aD(0);
+        this.DJ.setShadowAlpha(0);
         mAppsView.onSearchResultsChanged();
     }
 }

@@ -54,9 +54,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     private static final Rect CS = new Rect();
     protected final TextPaint CT;
-    protected final Paint CU;
+    protected final Paint mMicStrokePaint;
     protected final Paint CV;
-    protected final NinePatchDrawHelper CW;
+    protected final NinePatchDrawHelper mShadowHelper;
     protected final NexusLauncherActivity mActivity;
     protected final int CY;
     protected final int CZ;
@@ -64,13 +64,13 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected Bitmap Db;
     protected int Dc;
     protected int Dd;
-    protected float De;
+    protected float micStrokeWidth;
     private ImageView mLogoIconView;
     protected ImageView mMicIconView;
     protected String Dg;
     protected boolean Dh;
     protected int Di;
-    protected boolean Dj;
+    protected boolean mUseTwoBubbles;
     private final int Dk;
     private final int Dl;
     private final int Dm;
@@ -97,9 +97,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     public AbstractQsbLayout(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.CT = new TextPaint();
-        this.CU = new Paint(1);
+        this.mMicStrokePaint = new Paint(1);
         this.CV = new Paint(1);
-        this.CW = new NinePatchDrawHelper();
+        this.mShadowHelper = new NinePatchDrawHelper();
         this.Di = 0;
         this.mActivity = (NexusLauncherActivity) Launcher.getLauncher(context);
         this.Do = Themes.getAttrBoolean(this.mActivity, R.attr.isWorkspaceDarkText);
@@ -114,7 +114,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         this.mIsRtl = Utilities.isRtl(getResources());
         this.Dn = new TransformingTouchDelegate(this);
         setTouchDelegate(this.Dn);
-        this.CV.setColor(-1);
+        this.CV.setColor(Color.WHITE);
     }
 
     protected void onAttachedToWindow() {
@@ -193,10 +193,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public final void h(float f) {
-        this.De = TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
-        this.CU.setStrokeWidth(this.De);
-        this.CU.setStyle(Style.STROKE);
-        this.CU.setColor(-4341306);
+        this.micStrokeWidth = TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
+        this.mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
+        this.mMicStrokePaint.setStyle(Style.STROKE);
+        this.mMicStrokePaint.setColor(0xFFBDC1C6);
     }
 
     public void setInsets(Rect rect) {
@@ -237,7 +237,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         dB();
         Canvas canvas2 = canvas;
         a(this.mShadowBitmap, canvas2);
-        if (this.Dj) {
+        if (this.mUseTwoBubbles) {
             int paddingLeft;
             int paddingLeft2;
             if (Db == null) {
@@ -256,7 +256,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             }
             Bitmap bitmap2 = Db;
             i = a(bitmap2);
-            int paddingTop = getPaddingTop() - ((bitmap2.getHeight() - dC()) / 2);
+            int paddingTop = getPaddingTop() - ((bitmap2.getHeight() - getHeightWithoutPadding()) / 2);
             if (mIsRtl) {
                 paddingLeft = getPaddingLeft() - i;
                 paddingLeft2 = getPaddingLeft() + i;
@@ -265,30 +265,30 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                 paddingLeft = ((getWidth() - getPaddingRight()) - dG()) - i;
                 paddingLeft2 = getWidth() - getPaddingRight();
             }
-            CW.draw(bitmap2, canvas2, (float) paddingLeft, (float) paddingTop, (float) (paddingLeft2 + i));
+            mShadowHelper.draw(bitmap2, canvas2, (float) paddingLeft, (float) paddingTop, (float) (paddingLeft2 + i));
         }
-        if (De > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
+        if (micStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
             int i2;
             i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
             int paddingTop2 = getPaddingTop();
             int paddingLeft3 = mIsRtl ? getPaddingLeft() + dG() : getWidth() - getPaddingRight();
             int paddingBottom = LauncherAppState.getInstance(getContext()).getInvariantDeviceProfile().iconBitmapSize - getPaddingBottom();
             float f = ((float) (paddingBottom - paddingTop2)) * 0.5f;
-            int i3 = (int) (De / 2.0f);
-            if (Dj) {
+            int i3 = (int) (micStrokeWidth / 2.0f);
+            if (mUseTwoBubbles) {
                 i2 = i3;
             } else {
                 i2 = i3;
                 canvas2.drawRoundRect((float) (i + i3), (float) (paddingTop2 + i3), (float) (paddingLeft3 - i3), (float) ((paddingBottom - i3) + 1), f, f, CV);
             }
-            canvas2.drawRoundRect((float) (i + i2), (float) (paddingTop2 + i2), (float) (paddingLeft3 - i2), (float) ((paddingBottom - i2) + 1), f, f, CU);
+            canvas2.drawRoundRect((float) (i + i2), (float) (paddingTop2 + i2), (float) (paddingLeft3 - i2), (float) ((paddingBottom - i2) + 1), f, f, mMicStrokePaint);
         }
         super.draw(canvas);
     }
 
     protected final void a(Bitmap bitmap, Canvas canvas) {
         int a = a(bitmap);
-        int paddingTop = getPaddingTop() - ((bitmap.getHeight() - dC()) / 2);
+        int paddingTop = getPaddingTop() - ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
         int paddingLeft = getPaddingLeft() - a;
         int width = (getWidth() - getPaddingRight()) + a;
         if (this.mIsRtl) {
@@ -296,7 +296,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         } else {
             width -= dF();
         }
-        this.CW.draw(bitmap, canvas, (float) paddingLeft, (float) paddingTop, (float) width);
+        this.mShadowHelper.draw(bitmap, canvas, (float) paddingLeft, (float) paddingTop, (float) width);
     }
 
     private Bitmap aB(int i) {
@@ -305,7 +305,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected final Bitmap c(float f, float f2, int i) {
-        int dC = dC();
+        int dC = getHeightWithoutPadding();
         int i2 = dC + 20;
         Builder builder = new Builder(i);
         builder.shadowBlur = f;
@@ -322,18 +322,18 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected final int a(Bitmap bitmap) {
-        return (bitmap.getWidth() - (dC() + 20)) / 2;
+        return (bitmap.getWidth() - (getHeightWithoutPadding() + 20)) / 2;
     }
 
-    protected final int dC() {
+    protected final int getHeightWithoutPadding() {
         return (getHeight() - getPaddingTop()) - getPaddingBottom();
     }
 
     protected final int dD() {
-        return this.Dj ? this.Da : this.Da + this.CY;
+        return this.mUseTwoBubbles ? this.Da : this.Da + this.CY;
     }
 
-    protected final void a(String str, TextView textView) {
+    protected final void setHintText(String str, TextView textView) {
         String str2;
         if (TextUtils.isEmpty(str) || !dE()) {
             str2 = str;
@@ -358,7 +358,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected final boolean dE() {
         if (!this.Dh) {
-            if (!this.Dj) {
+            if (!this.mUseTwoBubbles) {
                 return false;
             }
         }
@@ -366,11 +366,11 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected final int dF() {
-        return this.Dj ? dG() + this.CZ : 0;
+        return this.mUseTwoBubbles ? dG() + this.CZ : 0;
     }
 
     protected final int dG() {
-        if (!this.Dj || TextUtils.isEmpty(this.Dg)) {
+        if (!this.mUseTwoBubbles || TextUtils.isEmpty(this.Dg)) {
             return this.Da;
         }
         return (((int) this.CT.measureText(this.Dg)) + this.CY) + this.Da;

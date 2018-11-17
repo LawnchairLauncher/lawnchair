@@ -139,10 +139,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     }
 
     private void setColors() {
-        Dj = Ds.ef();
+        mUseTwoBubbles = Ds.useTwoBubbles();
         View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
         ay(getResources().getColor(mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default));
-        az(ColorUtils.setAlphaComponent(Dc, Ds.ec()));
+        az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
     }
 
     private boolean isGoogleColored() {

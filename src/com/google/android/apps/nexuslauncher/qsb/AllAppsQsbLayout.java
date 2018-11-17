@@ -31,12 +31,12 @@ import com.google.android.apps.nexuslauncher.search.SearchThread;
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, OnChangeListener, o {
     private final k Ds;
     private final int Dt;
-    private int Du;
+    private int mShadowAlpha;
     private Bitmap Dv;
     private boolean mUseFallbackSearch;
     private FallbackAppsSearchView mFallback;
     private float Dy;
-    private TextView Dz;
+    private TextView mHint;
     private AllAppsContainerView mAppsView;
     boolean mDoNotRemoveFallback;
 
@@ -50,16 +50,17 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public AllAppsQsbLayout(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.Du = 0;
+        this.mShadowAlpha = 0;
         setOnClickListener(this);
         this.Ds = k.getInstance(context);
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getTranslationY();
+        setClipToPadding(false);
     }
 
     protected void onFinishInflate() {
         super.onFinishInflate();
-        Dz = findViewById(R.id.qsb_hint);
+        mHint = findViewById(R.id.qsb_hint);
     }
 
     public void setInsets(Rect rect) {
@@ -71,7 +72,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             this.mActivity.mAllAppsController.setScrollRangeDelta(0.0f);
             return;
         }
-        this.mActivity.mAllAppsController.setScrollRangeDelta(((float) HotseatQsbWidget.c(this.mActivity)) + (((float) (marginLayoutParams.height + marginLayoutParams.topMargin)) + this.Dy));
+        float range = ((float) HotseatQsbWidget.c(this.mActivity)) + (
+                ((float) (marginLayoutParams.height + marginLayoutParams.topMargin)) + this.Dy);
+        this.mActivity.mAllAppsController.setScrollRangeDelta(Math.round(range));
     }
 
     protected void onAttachedToWindow() {
@@ -116,7 +119,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                aD(((BaseRecyclerView) recyclerView).getCurrentScrollY());
+                setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
             }
         });
         mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(true);
@@ -129,10 +132,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void dN() {
         az(this.Dc);
-        h(this.Ds.ed());
-        this.Dh = this.Ds.eh();
-        this.Dj = this.Ds.ef();
-        a(this.Ds.ee(), this.Dz);
+        h(this.Ds.micStrokeWidth());
+        this.Dh = this.Ds.hintIsForAssistant();
+        this.mUseTwoBubbles = this.Ds.useTwoBubbles();
+        setHintText(this.Ds.hintTextValue(), this.mHint);
         dH();
     }
 
@@ -193,7 +196,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public final void resetSearch() {
-        aD(0);
+        setShadowAlpha(0);
         if (mUseFallbackSearch) {
             resetFallbackView();
         } else if (!mDoNotRemoveFallback) {
@@ -235,21 +238,21 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public void draw(Canvas canvas) {
-        if (this.Du > 0) {
+        if (this.mShadowAlpha > 0) {
             if (this.Dv == null) {
                 this.Dv = c(getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius), getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset), 0);
             }
-            this.CW.paint.setAlpha(this.Du);
+            this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
             a(this.Dv, canvas);
-            this.CW.paint.setAlpha(255);
+            this.mShadowHelper.paint.setAlpha(255);
         }
         super.draw(canvas);
     }
 
-    final void aD(int i) {
+    final void setShadowAlpha(int i) {
         i = Utilities.boundToRange(i, 0, 255);
-        if (this.Du != i) {
-            this.Du = i;
+        if (this.mShadowAlpha != i) {
+            this.mShadowAlpha = i;
             invalidate();
         }
     }
