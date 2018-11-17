@@ -485,7 +485,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         // Swap the two views in place.
         ((ViewGroup) mDragLayer.getParent()).addView(mFloatingView);
-        v.setVisibility(View.INVISIBLE);
+        if (v instanceof BubbleTextView) {
+            ((BubbleTextView) v).setIconVisible(false);
+            ((BubbleTextView) v).forceHideBadge(true);
+        } else {
+            v.setVisibility(View.INVISIBLE);
+        }
 
         int[] dragLayerBounds = new int[2];
         mDragLayer.getLocationOnScreen(dragLayerBounds);
@@ -558,11 +563,24 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         alpha.setInterpolator(LINEAR);
         appOpenAnimator.play(alpha);
 
+        if (v instanceof BubbleTextView) {
+            ((BubbleTextView) v).setTextVisibility(!reversed && ((BubbleTextView) v).shouldTextBeVisible());
+            ObjectAnimator textAlpha = ((BubbleTextView) v).createTextAlphaAnimator(reversed);
+            textAlpha.setDuration(APP_LAUNCH_ALPHA_DURATION);
+            appOpenAnimator.play(textAlpha);
+        }
+
         appOpenAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Reset launcher to normal state
-                v.setVisibility(View.VISIBLE);
+                if (v instanceof BubbleTextView) {
+                    ((BubbleTextView) v).setIconVisible(true);
+                    ((BubbleTextView) v).setTextVisibility(((BubbleTextView) v).shouldTextBeVisible());
+                    ((BubbleTextView) v).forceHideBadge(false);
+                } else {
+                    v.setVisibility(View.VISIBLE);
+                }
                 ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
             }
         });
