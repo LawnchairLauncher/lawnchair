@@ -178,9 +178,7 @@ public class ShelfScrimView extends ScrimView {
             return;
         }
 
-        if (Color.alpha(mShelfColor) == 0) {
-            return;
-        } else if (mProgress <= 0) {
+        if (mProgress <= 0) {
             onDrawFlatColor(canvas);
             canvas.drawColor(mShelfColor);
             return;

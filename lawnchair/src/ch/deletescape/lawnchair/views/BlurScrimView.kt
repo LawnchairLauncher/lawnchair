@@ -140,7 +140,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             key_opacity -> {
                 mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
                 mEndScrim = ColorUtils.setAlphaComponent(mEndScrim, mEndAlpha)
-                mMaxScrimAlpha = mEndAlpha
                 mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
                         mScrimColor, mMaxScrimAlpha))
                 mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
