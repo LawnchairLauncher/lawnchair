@@ -17,15 +17,12 @@
 
 package ch.deletescape.lawnchair
 
+import android.animation.TimeInterpolator
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.RectF
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
@@ -43,8 +40,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckedTextView
-import android.widget.ListView
+import android.view.animation.Interpolator
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.*
@@ -424,4 +420,33 @@ fun AlertDialog.applyAccent() {
 
 fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent.packageName == packageName }
+}
+
+fun findInContainers(op: Workspace.ItemOperator, vararg containers: ShortcutAndWidgetContainer): View? {
+    containers.forEach { container ->
+        // map over all the shortcuts on the page
+        val itemCount = container.childCount
+        for (itemIdx in 0 until itemCount) {
+            val item = container.getChildAt(itemIdx)
+            val info = item.tag as ItemInfo?
+            if (op.evaluate(info, item)) {
+                return item
+            }
+        }
+    }
+    return null
+}
+
+class ReverseOutputInterpolator(private val base: Interpolator) : Interpolator {
+
+    override fun getInterpolation(input: Float): Float {
+        return 1 - base.getInterpolation(input)
+    }
+}
+
+class ReverseInputInterpolator(private val base: Interpolator) : Interpolator {
+
+    override fun getInterpolation(input: Float): Float {
+        return base.getInterpolation(1 - input)
+    }
 }
