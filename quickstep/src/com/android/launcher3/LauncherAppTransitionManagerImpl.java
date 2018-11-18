@@ -135,6 +135,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private final float mWorkspaceTransY;
     private final float mClosingWindowTransY;
 
+    private final float mContentScale = 0.9f;
+    private final boolean mUseScaleAnim = true;
+
     protected DeviceProfile mDeviceProfile;
     private View mFloatingView;
 
@@ -349,6 +352,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         float[] trans = isAppOpening
                 ? new float[] {0, mContentTransY}
                 : new float[] {-mContentTransY, 0};
+        float[] scale = isAppOpening
+                ? new float[] {1, mContentScale}
+                : new float[] {mContentScale, 1};
 
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
@@ -356,7 +362,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             final float startAlpha = appsView.getAlpha();
             final float startY = appsView.getTranslationY();
             appsView.setAlpha(alphas[0]);
-            appsView.setTranslationY(trans[0]);
+            if (mUseScaleAnim) {
+                appsView.setScaleX(scale[0]);
+                appsView.setScaleY(scale[0]);
+            } else {
+                appsView.setTranslationY(trans[0]);
+            }
 
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(217);
@@ -368,16 +379,25 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     appsView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
-            ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(AGGRESSIVE_EASE);
-            transY.setDuration(350);
-
             launcherAnimator.play(alpha);
-            launcherAnimator.play(transY);
+
+            if (mUseScaleAnim) {
+                ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(appsView, Utilities.VIEW_SCALE, scale);
+                scaleAnim.setInterpolator(AGGRESSIVE_EASE);
+                scaleAnim.setDuration(350);
+                launcherAnimator.play(scaleAnim);
+            } else {
+                ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
+                transY.setInterpolator(AGGRESSIVE_EASE);
+                transY.setDuration(350);
+                launcherAnimator.play(transY);
+            }
 
             endListener = () -> {
                 appsView.setAlpha(startAlpha);
                 appsView.setTranslationY(startY);
+                appsView.setScaleX(1f);
+                appsView.setScaleY(1f);
                 appsView.setLayerType(View.LAYER_TYPE_NONE, null);
             };
         } else if (mLauncher.isInState(OVERVIEW)) {
@@ -408,11 +428,20 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
 
-            mDragLayer.setTranslationY(trans[0]);
-            ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(AGGRESSIVE_EASE);
-            transY.setDuration(350);
-            launcherAnimator.play(transY);
+            if (mUseScaleAnim) {
+                mDragLayer.setScaleX(scale[0]);
+                mDragLayer.setScaleY(scale[0]);
+                ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(mDragLayer, Utilities.VIEW_SCALE, scale);
+                scaleAnim.setInterpolator(AGGRESSIVE_EASE);
+                scaleAnim.setDuration(350);
+                launcherAnimator.play(scaleAnim);
+            } else {
+                mDragLayer.setTranslationY(trans[0]);
+                ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
+                transY.setInterpolator(AGGRESSIVE_EASE);
+                transY.setDuration(350);
+                launcherAnimator.play(transY);
+            }
 
             mDragLayer.getScrim().hideSysUiScrim(true);
             // Pause page indicator animations as they lead to layer trashing.
@@ -831,9 +860,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
 
-            mDragLayer.setTranslationY(-mWorkspaceTransY);;
-            workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
-                    -mWorkspaceTransY, 0));
+            if (mUseScaleAnim) {
+                mDragLayer.setScaleX(mContentScale);
+                mDragLayer.setScaleY(mContentScale);
+                workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, Utilities.VIEW_SCALE,
+                        mContentScale, 1));
+            } else {
+                mDragLayer.setTranslationY(-mWorkspaceTransY);
+                workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
+                        -mWorkspaceTransY, 0));
+            }
 
             mDragLayerAlpha.setValue(0);
             workspaceAnimator.play(ObjectAnimator.ofFloat(
@@ -864,6 +900,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mDragLayerAlpha.setValue(1f);
         mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
         mDragLayer.setTranslationY(0f);
+        mDragLayer.setScaleX(1f);
+        mDragLayer.setScaleY(1f);
         mDragLayer.getScrim().hideSysUiScrim(false);
     }
 

@@ -39,6 +39,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
@@ -48,6 +49,7 @@ import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.pm.ShortcutInfoCompat;
@@ -58,8 +60,10 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TtsSpan;
 import android.util.DisplayMetrics;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Pair;
+import android.util.Property;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -942,4 +946,18 @@ public final class Utilities {
     public static int getUserId() {
         return UserHandle.myUserId();
     }
+
+    @RequiresApi(VERSION_CODES.O)
+    public static final Property<View, Float> VIEW_SCALE = new FloatProperty<View>("scale") {
+        @Override
+        public void setValue(View object, float value) {
+            object.setScaleX(value);
+            object.setScaleY(value);
+        }
+
+        @Override
+        public Float get(View object) {
+            return object.getScaleX();
+        }
+    };
 }
