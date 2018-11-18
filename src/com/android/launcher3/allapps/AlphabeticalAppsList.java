@@ -261,7 +261,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
-        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
+        boolean localeRequiresSectionSorting =
+                curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage()) &&
+                        curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
         if (localeRequiresSectionSorting) {
             // Compute the section headers. We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
