@@ -437,6 +437,19 @@ fun findInContainers(op: Workspace.ItemOperator, vararg containers: ShortcutAndW
     return null
 }
 
+fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup): View? {
+    views.forEach { view ->
+        view.forEachChild { item ->
+            val info = item.tag as ItemInfo?
+            Log.d("LcUtils", "findInViews: found child ${item::class.java.simpleName}} with tag $info")
+            if (op.evaluate(info, item)) {
+                return item
+            }
+        }
+    }
+    return null
+}
+
 class ReverseOutputInterpolator(private val base: Interpolator) : Interpolator {
 
     override fun getInterpolation(input: Float): Float {

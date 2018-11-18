@@ -26,7 +26,8 @@ import android.view.View
 import com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppTransitionManagerImpl
-import com.android.launcher3.LauncherState
+import com.android.launcher3.LauncherState.ALL_APPS
+import com.android.launcher3.LauncherState.NORMAL
 import com.android.launcher3.Utilities
 import com.android.launcher3.Workspace
 import com.android.launcher3.util.ComponentKey
@@ -83,7 +84,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     }
 
     private fun allowWindowIconTransition(targets: Array<out RemoteAnimationTargetCompat>): Boolean {
-        if (!launcher.isInState(LauncherState.NORMAL)) return false
+        if (!launcher.isInState(NORMAL) && !launcher.isInState(ALL_APPS)) return false
         if (launcher.hasSomeInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS)) return false
         return launcherIsATargetWithMode(targets, MODE_OPENING) || launcher.isForceInvisible
     }
@@ -103,9 +104,23 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     }
 
     private fun findIconForComponent(component: ComponentKey): View? {
+        return when {
+            launcher.isInState(NORMAL) -> findWorkspaceIconForComponent(component)
+            launcher.isInState(ALL_APPS) -> findAllAppsIconForComponent(component)
+            else -> null
+        }
+    }
+
+    private fun findWorkspaceIconForComponent(component: ComponentKey): View? {
         return findInContainers(Workspace.ItemOperator { info, _ ->
             info?.targetComponent == component.componentName && info?.user == component.user
         }, launcher.workspace.currentContainer, launcher.hotseat.layout.shortcutsAndWidgets)
+    }
+
+    private fun findAllAppsIconForComponent(component: ComponentKey): View? {
+        return findInViews(Workspace.ItemOperator { info, _ ->
+            info?.targetComponent == component.componentName && info?.user == component.user
+        }, launcher.allAppsController.appsView.activeRecyclerView)
     }
 
     companion object {

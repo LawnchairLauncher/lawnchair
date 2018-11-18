@@ -303,4 +303,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
         return targetProgress;
     }
+
+    public AllAppsContainerView getAppsView() {
+        return mAppsView;
+    }
 }
