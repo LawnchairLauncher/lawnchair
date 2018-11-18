@@ -3,7 +3,9 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -296,7 +298,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     private float getScrimProgress(LauncherState state, float targetProgress) {
         if (Utilities.getLawnchairPrefs(mLauncher).getDockGradientStyle()) return targetProgress;
-        if (state == LauncherState.NORMAL || state == LauncherState.OVERVIEW) {
+        if (state == NORMAL || state == SPRING_LOADED || state == OVERVIEW) {
             return OverviewState.getNormalVerticalProgress(mLauncher);
         }
         return targetProgress;
