@@ -938,4 +938,8 @@ public final class Utilities {
         }
         return targetProgress;
     }
+
+    public static int getUserId() {
+        return UserHandle.myUserId();
+    }
 }

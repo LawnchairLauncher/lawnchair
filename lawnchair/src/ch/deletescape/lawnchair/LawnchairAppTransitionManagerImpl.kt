@@ -27,10 +27,13 @@ import com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppTransitionManagerImpl
 import com.android.launcher3.LauncherState
+import com.android.launcher3.Utilities
 import com.android.launcher3.Workspace
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.TaskUtils
 import com.android.quickstep.views.RecentsView
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan
+import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING
@@ -42,10 +45,9 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
 
     override fun getClosingWindowAnimators(targets: Array<out RemoteAnimationTargetCompat>): Animator {
         if (allowWindowIconTransition(targets)) {
-            val recentsView = launcher.getOverviewPanel<RecentsView<*>>()
             targets.forEach {
                 if (it.mode == MODE_CLOSING) {
-                    recentsView.getTaskView(it.taskId)?.task?.let { task ->
+                    loadTask(it.taskId)?.let { task ->
                         val component = TaskUtils.getLaunchComponentKeyForTask(task.key)
                         findIconForComponent(component)?.let { v ->
                             val anim = AnimatorSet()
@@ -61,6 +63,23 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
             }
         }
         return super.getClosingWindowAnimators(targets)
+    }
+
+    private fun loadTask(taskId: Int): Task? {
+        val recentsView = launcher.getOverviewPanel<RecentsView<*>>()
+        val plan = RecentsTaskLoadPlan(launcher)
+        val launchOpts = RecentsTaskLoadPlan.Options()
+        launchOpts.runningTaskId = taskId
+        launchOpts.numVisibleTasks = 1
+        launchOpts.onlyLoadForCache = true
+        launchOpts.onlyLoadPausedActivities = false
+        launchOpts.loadThumbnails = false
+        val preloadOpts = RecentsTaskLoadPlan.PreloadOptions()
+        preloadOpts.loadTitles = false
+        val recentsTaskLoader = recentsView.model.recentsTaskLoader
+        plan.preloadPlan(preloadOpts, recentsTaskLoader, -1, Utilities.getUserId())
+        recentsTaskLoader.loadTasks(plan, launchOpts)
+        return plan.taskStack.findTaskWithId(taskId)
     }
 
     private fun allowWindowIconTransition(targets: Array<out RemoteAnimationTargetCompat>): Boolean {

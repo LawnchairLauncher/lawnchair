@@ -1382,4 +1382,8 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
     protected boolean isPageOrderFlipped() {
         return true;
     }
+
+    public RecentsModel getModel() {
+        return mModel;
+    }
 }
