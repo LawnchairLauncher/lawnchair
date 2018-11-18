@@ -188,7 +188,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
             mProgress >= mMidProgress -> Math.round(255 * ACCEL_2.getInterpolation(
-                    (1 - mProgress) / (1 - mMidProgress)))
+                    Math.max(0f, 1 - mProgress) / (1 - mMidProgress)))
             else -> {
                 val startAlpha = if (mMidProgress >= 1f) 0f else 255f
                 Math.round(
