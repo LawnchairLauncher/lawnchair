@@ -72,4 +72,8 @@
     <string name="theme_dark_dark_text">Dark (with dark text)</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black (with dark text)</string>
+
+    <!-- Per app options -->
+    <string name="hide_from_predictions">Hide in suggestions</string>
+    <string name="hide_from_predictions_summary">Never show this app in the suggested apps strip</string>
 </resources>

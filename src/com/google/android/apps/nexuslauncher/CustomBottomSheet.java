@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.*;
@@ -126,7 +127,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_HIDE = "pref_app_hide";
+        private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
         private SwitchPreference mPrefHide;
+        private SwitchPreference mPrefHidePredictions;
+        private LawnchairPreferences prefs;
 
         private ComponentKey mKey;
 
@@ -135,10 +139,18 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.app_edit_prefs);
 
-            if (!Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
+            prefs = Utilities.getLawnchairPrefs(getActivity());
+
+            if (!prefs.getShowDebugInfo()) {
                 getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
             } else {
                 getPreferenceScreen().findPreference("componentName").setOnPreferenceClickListener(this);
+            }
+
+            mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
+                    .findPreference(PREF_HIDE_FROM_PREDICTIONS);
+            if (!prefs.getShowPredictions()) {
+                getPreferenceScreen().removePreference(mPrefHidePredictions);
             }
         }
 
@@ -151,7 +163,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
             mPrefHide.setOnPreferenceChangeListener(this);
 
-            if (Utilities.getLawnchairPrefs(getActivity()).getShowDebugInfo()) {
+            mPrefHidePredictions.setChecked(CustomAppPredictor.isHiddenApp(context, mKey));
+            mPrefHidePredictions.setOnPreferenceChangeListener(this);
+
+            if (prefs.getShowDebugInfo()) {
                 getPreferenceScreen().findPreference("componentName").setSummary(mKey.toString());
             }
         }
@@ -164,6 +179,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 case PREF_HIDE:
                     CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
                     break;
+                case PREF_HIDE_FROM_PREDICTIONS:
+                    CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
             }
             return true;
         }

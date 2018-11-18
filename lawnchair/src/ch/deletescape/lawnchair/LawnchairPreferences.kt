@@ -159,6 +159,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
+    val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
@@ -185,6 +186,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
+    var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey(context, key)

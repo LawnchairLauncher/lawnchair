@@ -21,6 +21,13 @@
         android:title="@string/hide_app"
         android:summary="@string/hide_app_sum"
         android:defaultValue="false"
+        android:persistent="false"/>
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        android:key="pref_app_prediction_hide"
+        android:title="@string/hide_from_predictions"
+        android:summary="@string/hide_from_predictions_summary"
+        android:defaultValue="false"
         android:persistent="false" />
 
     <PreferenceCategory
