@@ -1400,6 +1400,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mModel.stopLoader();
             LauncherAppState.getInstance(this).setLauncher(null);
         }
+        mAppTransitionManager.destroy();
         mRotationHelper.destroy();
 
         try {

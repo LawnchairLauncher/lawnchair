@@ -48,6 +48,18 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_useWindowToIcon"
+        android:title="Use window to icon transition"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_useScaleAnim"
+        android:title="Use scale animation for transitions"
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <Preference
         android:key="addSettingsShortcut"
         android:title="@string/add_settings_shortcut_title" />

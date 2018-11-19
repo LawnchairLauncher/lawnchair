@@ -47,7 +47,6 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -59,7 +58,6 @@ import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -120,6 +118,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     public static final int RECENTS_QUICKSCRUB_LAUNCH_DURATION = 300;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
+    private static final int CLOSING_TRANSITION_SCALE_DURATION_MS = 500;
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
@@ -136,7 +135,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private final float mClosingWindowTransY;
 
     private final float mContentScale = 0.9f;
-    private final boolean mUseScaleAnim = true;
+    private boolean mUseScaleAnim = false;
 
     protected DeviceProfile mDeviceProfile;
     private View mFloatingView;
@@ -807,11 +806,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 new SyncRtSurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
-        int duration = CLOSING_TRANSITION_DURATION_MS;
+        int duration = mUseScaleAnim ? CLOSING_TRANSITION_SCALE_DURATION_MS : CLOSING_TRANSITION_DURATION_MS;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
-            FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DEACCEL_1_7);
+            FloatProp mScale = new FloatProp(1f, mUseScaleAnim ? 0f : 1f, 0, duration, DEACCEL_1_7);
             FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
 
             @Override
@@ -824,7 +823,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         matrix.setScale(mScale.value, mScale.value,
                                 target.sourceContainerBounds.centerX(),
                                 target.sourceContainerBounds.centerY());
-                        matrix.postTranslate(0, mDy.value);
+                        if (!mUseScaleAnim) {
+                            matrix.postTranslate(0, mDy.value);
+                        }
                         matrix.postTranslate(target.position.x, target.position.y);
                         alpha = mAlpha.value;
                     } else {
@@ -907,5 +908,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private boolean hasControlRemoteAppTransitionPermission() {
         return Utilities.hasPermission(mLauncher, CONTROL_REMOTE_APP_TRANSITION_PERMISSION);
+    }
+
+    public boolean getUseScaleAnim() {
+        return mUseScaleAnim;
+    }
+
+    public void setUseScaleAnim(boolean useScaleAnim) {
+        mUseScaleAnim = useScaleAnim;
     }
 }

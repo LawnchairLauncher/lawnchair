@@ -169,6 +169,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
+    val useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
+    val useWindowToIcon by BooleanPref("pref_useWindowToIcon", false, doNothing)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {

@@ -40,9 +40,25 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSI
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING
 
 @Keep
-class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitionManagerImpl(context) {
+class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitionManagerImpl(context), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val launcher = Launcher.getLauncher(context)
+    private val prefsToListen = arrayOf("pref_useScaleAnim", "pref_useWindowToIcon")
+    private var useWindowToIcon = false
+
+    init {
+        Utilities.getLawnchairPrefs(launcher).addOnPreferenceChangeListener(this, *prefsToListen)
+    }
+
+    override fun destroy() {
+        super.destroy()
+        Utilities.getLawnchairPrefs(launcher).removeOnPreferenceChangeListener(this, *prefsToListen)
+    }
+
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        useScaleAnim = prefs.useScaleAnim
+        useWindowToIcon = prefs.useWindowToIcon
+    }
 
     override fun getClosingWindowAnimators(targets: Array<out RemoteAnimationTargetCompat>): Animator {
         if (allowWindowIconTransition(targets)) {
@@ -84,6 +100,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     }
 
     private fun allowWindowIconTransition(targets: Array<out RemoteAnimationTargetCompat>): Boolean {
+        if (!useWindowToIcon) return false
         if (!launcher.isInState(NORMAL) && !launcher.isInState(ALL_APPS)) return false
         if (launcher.hasSomeInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS)) return false
         return launcherIsATargetWithMode(targets, MODE_OPENING) || launcher.isForceInvisible

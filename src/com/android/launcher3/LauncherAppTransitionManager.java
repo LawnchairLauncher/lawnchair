@@ -58,4 +58,8 @@ public class LauncherAppTransitionManager {
         }
         return null;
     }
+
+    public void destroy() {
+
+    }
 }
