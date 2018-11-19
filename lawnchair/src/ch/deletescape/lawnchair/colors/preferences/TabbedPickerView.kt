@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.colors.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -79,6 +80,9 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         }
         viewPager.childFilter = { it is ChromaView }
         tabLayout.setupWithViewPager(viewPager)
+        val color = engine.accent
+        tabLayout.tabRippleColor = ColorStateList.valueOf(color)
+        tabLayout.setSelectedTabIndicatorColor(color)
         if (engine.accentResolver is RGBColorResolver) {
             viewPager.currentItem = 1
         }
