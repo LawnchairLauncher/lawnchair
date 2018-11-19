@@ -298,59 +298,49 @@ public class LauncherIcons implements AutoCloseable {
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     private Bitmap createIconBitmap(Drawable icon, float scale) {
-        int width = mIconBitmapSize;
-        int height = mIconBitmapSize;
-
-        if (icon instanceof PaintDrawable) {
-            PaintDrawable painter = (PaintDrawable) icon;
-            painter.setIntrinsicWidth(width);
-            painter.setIntrinsicHeight(height);
-        } else if (icon instanceof BitmapDrawable) {
-            // Ensure the bitmap has a density.
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            if (bitmap != null && bitmap.getDensity() == Bitmap.DENSITY_NONE) {
-                bitmapDrawable.setTargetDensity(mContext.getResources().getDisplayMetrics());
-            }
-        }
-
-        int sourceWidth = icon.getIntrinsicWidth();
-        int sourceHeight = icon.getIntrinsicHeight();
-        if (sourceWidth > 0 && sourceHeight > 0) {
-            // Scale the icon proportionally to the icon dimensions
-            final float ratio = (float) sourceWidth / sourceHeight;
-            if (sourceWidth > sourceHeight) {
-                height = (int) (width / ratio);
-            } else if (sourceHeight > sourceWidth) {
-                width = (int) (height * ratio);
-            }
-        }
-        // no intrinsic size --> use default size
-        int textureWidth = mIconBitmapSize;
-        int textureHeight = mIconBitmapSize;
-
-        Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+        Bitmap bitmap = Bitmap.createBitmap(mIconBitmapSize, mIconBitmapSize,
                 Bitmap.Config.ARGB_8888);
         mCanvas.setBitmap(bitmap);
-
-        final int left = (textureWidth-width) / 2;
-        final int top = (textureHeight-height) / 2;
-
         mOldBounds.set(icon.getBounds());
+
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
-            int offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
-            int size = Math.max(width, height);
-            icon.setBounds(offset, offset, size - offset, size - offset);
+            int offset = Math.max((int) Math.ceil(BLUR_FACTOR * mIconBitmapSize),
+                    Math.round(mIconBitmapSize * (1 - scale) / 2 ));
+            icon.setBounds(offset, offset, mIconBitmapSize - offset, mIconBitmapSize - offset);
+            icon.draw(mCanvas);
         } else {
-            icon.setBounds(left, top, left+width, top+height);
+            if (icon instanceof BitmapDrawable) {
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+                Bitmap b = bitmapDrawable.getBitmap();
+                if (bitmap != null && b.getDensity() == Bitmap.DENSITY_NONE) {
+                    bitmapDrawable.setTargetDensity(mContext.getResources().getDisplayMetrics());
+                }
+            }
+            int width = mIconBitmapSize;
+            int height = mIconBitmapSize;
+
+            int intrinsicWidth = icon.getIntrinsicWidth();
+            int intrinsicHeight = icon.getIntrinsicHeight();
+            if (intrinsicWidth > 0 && intrinsicHeight > 0) {
+                // Scale the icon proportionally to the icon dimensions
+                final float ratio = (float) intrinsicWidth / intrinsicHeight;
+                if (intrinsicWidth > intrinsicHeight) {
+                    height = (int) (width / ratio);
+                } else if (intrinsicHeight > intrinsicWidth) {
+                    width = (int) (height * ratio);
+                }
+            }
+            final int left = (mIconBitmapSize - width) / 2;
+            final int top = (mIconBitmapSize - height) / 2;
+            icon.setBounds(left, top, left + width, top + height);
+            mCanvas.save();
+            mCanvas.scale(scale, scale, mIconBitmapSize / 2, mIconBitmapSize / 2);
+            icon.draw(mCanvas);
+            mCanvas.restore();
+
         }
-        mCanvas.save();
-        mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
-        icon.draw(mCanvas);
-        mCanvas.restore();
         icon.setBounds(mOldBounds);
         mCanvas.setBitmap(null);
-
         return bitmap;
     }
 
