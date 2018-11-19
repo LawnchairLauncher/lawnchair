@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
@@ -38,14 +39,15 @@
         <TextView
             android:id="@+id/txtValue"
             android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@android:id/summary" />
+            android:layout_height="30dp"
+            android:layout_below="@android:id/summary"
+            android:gravity="center|end"
+            tools:text="100"/>
 
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/txtValue"
+            android:layout_height="30dp"
             android:layout_below="@android:id/summary"
             android:layout_toEndOf="@id/txtValue"
             android:layout_alignParentEnd="true" />
