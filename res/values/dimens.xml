@@ -279,7 +279,7 @@
     <dimen name="smartspace_preview_widget_margin">24dp</dimen>
     <dimen name="color_preview_height">80dp</dimen>
     <dimen name="color_preview_width">100dp</dimen>
-    <dimen name="chroma_view_height">436dp</dimen>
+    <dimen name="chroma_view_height">505dp</dimen>
 
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
