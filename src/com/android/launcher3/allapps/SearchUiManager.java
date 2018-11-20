@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.animation.Interpolator;
 
@@ -40,6 +41,11 @@ public interface SearchUiManager {
      * some UI beforehand.
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
+
+    /**
+     * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
+     */
+    float getScrollRangeDelta(Rect insets);
 
     /**
      * Called as part of state transition to update the content UI
