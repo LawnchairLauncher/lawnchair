@@ -18,6 +18,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +34,8 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -102,19 +105,23 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
     }
 
-    public static class SplitScreen extends TaskSystemShortcut {
+    public static abstract class MultiWindow extends TaskSystemShortcut {
 
         private Handler mHandler;
 
-        public SplitScreen() {
-            super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
+        public MultiWindow(int iconRes, int textRes) {
+            super(iconRes, textRes);
             mHandler = new Handler(Looper.getMainLooper());
         }
+
+        protected abstract boolean isAvailable(BaseDraggingActivity activity);
+        protected abstract ActivityOptions makeLaunchOptions();
+        protected abstract boolean onActivityStarted(BaseDraggingActivity activity);
 
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
-            if (activity.getDeviceProfile().isMultiWindowMode) {
+            if (!isAvailable(activity)) {
                 return null;
             }
             final Task task  = taskView.getTask();
@@ -153,22 +160,13 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
                 dismissTaskMenuView(activity);
 
-                final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
-                if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
-                    return;
-                }
-                boolean dockTopOrLeft = navBarPosition != WindowManagerWrapper.NAV_BAR_POS_LEFT;
-                if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
-                        ActivityOptionsCompat.makeSplitScreenOptions(dockTopOrLeft))) {
-                    ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
-                    try {
-                        sysUiProxy.onSplitScreenInvoked();
-                    } catch (RemoteException e) {
-                        Log.w(TAG, "Failed to notify SysUI of split screen: ", e);
+                ActivityOptions options = makeLaunchOptions();
+                if (options != null
+                        && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
+                                options)) {
+                    if (!onActivityStarted(activity)) {
                         return;
                     }
-                    activity.getUserEventDispatcher().logActionOnControl(TAP,
-                            LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
                     // Add a device profile change listener to kick off animating the side tasks
                     // once we enter multiwindow mode and relayout
                     activity.addOnDeviceProfileChangeListener(onDeviceProfileChangeListener);
@@ -208,6 +206,64 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             future, animStartedListener, mHandler, true /* scaleUp */);
                 }
             });
+        }
+    }
+
+    public static class SplitScreen extends MultiWindow {
+        public SplitScreen() {
+            super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
+        }
+
+        @Override
+        protected boolean isAvailable(BaseDraggingActivity activity) {
+            // Don't show menu-item if already in multi-window
+            return !activity.getDeviceProfile().isMultiWindowMode;
+        }
+
+        @Override
+        protected ActivityOptions makeLaunchOptions() {
+            final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
+            if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
+                return null;
+            }
+            boolean dockTopOrLeft = navBarPosition != WindowManagerWrapper.NAV_BAR_POS_LEFT;
+            return ActivityOptionsCompat.makeSplitScreenOptions(dockTopOrLeft);
+        }
+
+        @Override
+        protected boolean onActivityStarted(BaseDraggingActivity activity) {
+            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
+            try {
+                sysUiProxy.onSplitScreenInvoked();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to notify SysUI of split screen: ", e);
+                return false;
+            }
+            activity.getUserEventDispatcher().logActionOnControl(TAP,
+                    LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
+            return true;
+        }
+    }
+
+    public static class Freeform extends MultiWindow {
+        public Freeform() {
+            super(R.drawable.ic_split_screen, R.string.recent_task_option_freeform);
+        }
+
+        @Override
+        protected boolean isAvailable(BaseDraggingActivity activity) {
+            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity);
+        }
+
+        @Override
+        protected ActivityOptions makeLaunchOptions() {
+            return ActivityOptionsCompat.makeFreeformOptions();
+        }
+
+        @Override
+        protected boolean onActivityStarted(BaseDraggingActivity activity) {
+            Launcher.getLauncher(activity).getStateManager().goToState(LauncherState.NORMAL);
+            return true;
         }
     }
 
