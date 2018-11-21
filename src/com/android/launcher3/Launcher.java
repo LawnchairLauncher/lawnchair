@@ -122,6 +122,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -940,6 +941,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView);
+        mHotseat.setOnInterceptTouchListener(mWorkspace::onInterceptHotseatTouch);
     }
 
     /**
@@ -2389,6 +2391,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public static Launcher getLauncher(Context context) {
         return (Launcher) fromContext(context);
+    }
+
+    /**
+     * Just a wrapper around the type cast to allow easier tracking of calls.
+     */
+    public static <T extends Launcher> T cast(ActivityContext activityContext) {
+        return (T) activityContext;
     }
 
     /**

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
@@ -43,12 +44,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     private int mCountX;
 
-    private Launcher mLauncher;
+    private ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
 
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
     }
@@ -92,7 +93,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     public void setupLp(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = mLauncher.getDeviceProfile();
+            DeviceProfile profile = mActivity.getDeviceProfile();
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
                     profile.appWidgetScale.x, profile.appWidgetScale.y);
         } else {
@@ -107,12 +108,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mLauncher.getDeviceProfile().getCellHeight(mContainerType));
+                mActivity.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final DeviceProfile profile = mLauncher.getDeviceProfile();
+        final DeviceProfile profile = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
@@ -149,7 +150,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                     LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
 
                     // Scale and center the widget to fit within its cells.
-                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    DeviceProfile profile = mActivity.getDeviceProfile();
                     float scaleX = profile.appWidgetScale.x;
                     float scaleY = profile.appWidgetScale.y;
 
