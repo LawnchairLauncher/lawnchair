@@ -66,6 +66,8 @@
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
+    <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
+    <string name="label_application">App</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->

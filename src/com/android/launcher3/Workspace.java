@@ -79,7 +79,6 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -107,8 +106,8 @@ import java.util.Set;
  */
 public class Workspace extends PagedView<WorkspacePageIndicator>
         implements DropTarget, DragSource, View.OnTouchListener,
-        DragController.DragListener, Insettable, LauncherStateManager.StateHandler {
-    private static final String TAG = "Launcher.Workspace";
+        DragController.DragListener, Insettable, LauncherStateManager.StateHandler,
+        WorkspaceLayoutManager {
 
     /** The value that {@link #mTransitionProgress} must be greater than for
      * {@link #transitionStateShouldAllowDrop()} to return true. */
@@ -129,11 +128,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public static final boolean MAP_NO_RECURSE = false;
     public static final boolean MAP_RECURSE = true;
-
-    // The screen id used for the empty screen always present to the right.
-    public static final int EXTRA_EMPTY_SCREEN_ID = -201;
-    // The is the first screen. It is always present, even if its empty.
-    public static final int FIRST_SCREEN_ID = 0;
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
@@ -740,6 +734,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return newId;
     }
 
+    @Override
+    public Hotseat getHotseat() {
+        return mLauncher.getHotseat();
+    }
+
+    @Override
+    public void onAddDropTarget(DropTarget target) {
+        mDragController.addDropTarget(target);
+    }
+
+    @Override
     public CellLayout getScreenWithId(int screenId) {
         return mWorkspaceScreens.get(screenId);
     }
@@ -832,107 +837,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (pageShift >= 0) {
             setCurrentPage(currentPage - pageShift);
-        }
-    }
-
-    /**
-     * At bind time, we use the rank (screenId) to compute x and y for hotseat items.
-     * See {@link #addInScreen}.
-     */
-    public void addInScreenFromBind(View child, ItemInfo info) {
-        int x = info.cellX;
-        int y = info.cellY;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            int screenId = (int) info.screenId;
-            x = mLauncher.getHotseat().getCellXFromOrder(screenId);
-            y = mLauncher.getHotseat().getCellYFromOrder(screenId);
-        }
-        addInScreen(child, info.container, info.screenId, x, y, info.spanX, info.spanY);
-    }
-
-    /**
-     * Adds the specified child in the specified screen based on the {@param info}
-     * See {@link #addInScreen(View, int, int, int, int, int, int)}.
-     */
-    public void addInScreen(View child, ItemInfo info) {
-        addInScreen(child, info.container, info.screenId, info.cellX, info.cellY,
-                info.spanX, info.spanY);
-    }
-
-    /**
-     * Adds the specified child in the specified screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param screenId The screen in which to add the child.
-     * @param x The X position of the child in the screen's grid.
-     * @param y The Y position of the child in the screen's grid.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    private void addInScreen(View child, int container, int screenId, int x, int y,
-            int spanX, int spanY) {
-        if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            if (getScreenWithId(screenId) == null) {
-                Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
-                // DEBUGGING - Print out the stack trace to see where we are adding from
-                new Throwable().printStackTrace();
-                return;
-            }
-        }
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            // This should never happen
-            throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
-        }
-
-        final CellLayout layout;
-        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            layout = mLauncher.getHotseat();
-
-            // Hide folder title in the hotseat
-            if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(false);
-            }
-        } else {
-            // Show folder title if not in the hotseat
-            if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(true);
-            }
-            layout = getScreenWithId(screenId);
-        }
-
-        ViewGroup.LayoutParams genericLp = child.getLayoutParams();
-        CellLayout.LayoutParams lp;
-        if (genericLp == null || !(genericLp instanceof CellLayout.LayoutParams)) {
-            lp = new CellLayout.LayoutParams(x, y, spanX, spanY);
-        } else {
-            lp = (CellLayout.LayoutParams) genericLp;
-            lp.cellX = x;
-            lp.cellY = y;
-            lp.cellHSpan = spanX;
-            lp.cellVSpan = spanY;
-        }
-
-        if (spanX < 0 && spanY < 0) {
-            lp.isLockedToGrid = false;
-        }
-
-        // Get the canonical child id to uniquely represent this view in this screen
-        ItemInfo info = (ItemInfo) child.getTag();
-        int childId = mLauncher.getViewIdForItem(info);
-
-        boolean markCellsAsOccupied = !(child instanceof Folder);
-        if (!layout.addViewToCellLayout(child, -1, childId, lp, markCellsAsOccupied)) {
-            // TODO: This branch occurs when the workspace is adding views
-            // outside of the defined grid
-            // maybe we should be deleting these items from the LauncherModel?
-            Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
-        }
-
-        child.setHapticFeedbackEnabled(false);
-        child.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
-        if (child instanceof DropTarget) {
-            mDragController.addDropTarget((DropTarget) child);
         }
     }
 
