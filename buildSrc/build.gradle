@@ -1,0 +1,16 @@
+// Copyright (c) 2016, the R8 project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+    compile group: 'org.smali', name: 'smali', version: '2.2.5'
+    compile gradleApi()
+    compile localGroovy()
+}

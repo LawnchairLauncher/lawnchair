@@ -1,0 +1,10 @@
+dex2jar - Tools to work with android .dex and java .class files
+Copyright (c) 2009-2014 Panxiaobo
+
+contributors
+  - Bob Pan <pxb1988#gmail.com>
+  - Enea Stanzani <aeneas.ltr#gmail.com>
+  - t3stwhat <t3stwhat#gmail.com>
+  - paulhooijenga <paulhooijenga#gmail.com>
+  - yyjdelete <yyjdelete#gmail.com>
+  - jcmdev0 <jcmdev0#gmail.com>

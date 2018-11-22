@@ -203,6 +203,8 @@ afterEvaluate {
     }
 }
 
+apply from: 'lawnchair/smali.gradle'
+
 repositories {
     google()
     mavenCentral()
