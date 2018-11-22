@@ -58,7 +58,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super.onFinishInflate();
         mPredictionRowView = findViewById(R.id.prediction_row);
         mActionsRowView = findViewById(R.id.actions_row);
-        setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW);
+        setShowAllAppsLabel(false);
     }
 
     @Override

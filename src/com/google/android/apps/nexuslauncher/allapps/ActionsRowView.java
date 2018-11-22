@@ -198,7 +198,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
     }
 
     public void setDisabled(boolean disabled) {
-        this.mDisabled = true; // Disable this for now
+        this.mDisabled = disabled;
         updateVisibility();
     }
 
