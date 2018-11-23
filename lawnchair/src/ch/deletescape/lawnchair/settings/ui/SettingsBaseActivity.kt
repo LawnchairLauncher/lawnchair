@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.settings.ui
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -48,7 +49,7 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChang
         themeOverride.applyTheme(this)
         currentTheme = themeOverride.getTheme(this)
 
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState ?: intent.getBundleExtra("state"))
         super.setContentView(decorLayout)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -116,14 +117,23 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChang
         paused = true
     }
 
+    protected open fun createRelaunchIntent(): Intent {
+        val state = Bundle()
+        onSaveInstanceState(state)
+        return intent.putExtra("state", state)
+    }
+
+    protected fun getRelaunchInstanceState(savedInstanceState: Bundle?): Bundle? {
+        return savedInstanceState ?: intent.getBundleExtra("state")
+    }
+
     override fun onThemeChanged() {
         if (currentTheme == themeOverride.getTheme(this)) return
         if (paused) {
             recreate()
         } else {
-            val intent = intent
             finish()
-            startActivity(intent, ActivityOptions.makeCustomAnimation(
+            startActivity(createRelaunchIntent(), ActivityOptions.makeCustomAnimation(
                     this, android.R.anim.fade_in, android.R.anim.fade_out).toBundle())
         }
     }
