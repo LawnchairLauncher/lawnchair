@@ -14,16 +14,16 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView.AdapterHolder;
 import com.android.launcher3.allapps.FloatingHeaderView;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.util.ComponentKeyMapper;
-import com.google.android.apps.nexuslauncher.CustomAppPredictor;
+import com.google.android.apps.nexuslauncher.PredictionUiStateManager;
+import com.google.android.apps.nexuslauncher.PredictionUiStateManager.AppPredictionConsumer;
 import com.google.android.apps.nexuslauncher.allapps.PredictionRowView.DividerType;
+import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper;
 import java.util.List;
 
 @TargetApi(26)
 public class PredictionsFloatingHeader extends FloatingHeaderView implements Insettable,
-        CustomAppPredictor.UiManager.Listener {
+        AppPredictionConsumer {
     private static final FloatProperty<PredictionsFloatingHeader> CONTENT_ALPHA = new FloatProperty<PredictionsFloatingHeader>("contentAlpha") {
         public void setValue(PredictionsFloatingHeader predictionsFloatingHeader, float f) {
             predictionsFloatingHeader.setContentAlpha(f);
@@ -39,7 +39,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     private boolean mIsCollapsed;
     private boolean mIsVerticalLayout;
     private PredictionRowView mPredictionRowView;
-    private final CustomAppPredictor.UiManager mPredictionUiStateManager;
+    private final PredictionUiStateManager mPredictionUiStateManager;
     private boolean mShowAllAppsLabel;
 
     public PredictionsFloatingHeader(Context context) {
@@ -50,7 +50,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super(context, attributeSet);
         mContentAlpha = 1.0f;
         mHeaderTopPadding = context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        mPredictionUiStateManager = ((CustomAppPredictor) Launcher.getLauncher(context).getUserEventDispatcher()).getUiManager();
+        mPredictionUiStateManager = PredictionUiStateManager.getInstance(context);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
 
     @Override
     public void setup(AdapterHolder[] adapterHolderArr, boolean z) {
-        mPredictionRowView.setup(this, mPredictionUiStateManager.isEnabled());
+        mPredictionRowView.setup(this, mPredictionUiStateManager.arePredictionsEnabled());
         mActionsRowView.setup(this);
         mTabsHidden = z;
         ActionsRowView actionsRowView = mActionsRowView;
@@ -166,7 +166,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public boolean hasVisibleContent() {
-        return mPredictionUiStateManager.isEnabled();
+        return mPredictionUiStateManager.arePredictionsEnabled();
     }
 
     public void setCollapsed(boolean collapsed) {
@@ -178,26 +178,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
+    @Override
     public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
         mPredictionRowView.setPredictedApps(z, list);
-    }
-
-    @Override
-    public void onPredictionsUpdated() {
-        setPredictedApps(mPredictionUiStateManager.isEnabled(), mPredictionUiStateManager.getPredictions());
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        mPredictionUiStateManager.addListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        mPredictionUiStateManager.removeListener(this);
     }
 }

@@ -83,6 +83,7 @@ import com.android.launcher3.views.ButtonPreference;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.PixelBridge;
+import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -504,6 +505,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             switch (preference.getKey()) {
                 case SHOW_PREDICTIONS_PREF:
                     if ((boolean) newValue) {
+                        ReflectionClient.getInstance(getContext()).setEnabled(true);
                         return true;
                     }
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
@@ -572,6 +574,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     ((TwoStatePreference) preference).setChecked(false);
                 }
             }
+            ReflectionClient.getInstance(getContext()).setEnabled(false);
         }
 
         public Dialog onCreateDialog(final Bundle bundle) {
