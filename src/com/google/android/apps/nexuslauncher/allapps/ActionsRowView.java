@@ -18,10 +18,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -31,7 +28,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.allapps.ActionsController.UpdateListener;
@@ -62,7 +58,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
         this.mIsCollapsed = false;
         setOrientation(LinearLayout.HORIZONTAL);
         this.mLauncher = Launcher.getLauncher(getContext());
-        this.mIsDarkTheme = WallpaperColorInfo.getInstance(context).isDark();
+        this.mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         this.mSpacing = context.getResources().getDimensionPixelSize(R.dimen.all_apps_action_spacing);
         this.mActionAccessibilityDelegate = new LauncherAccessibilityDelegate(this.mLauncher) {
             public void addSupportedActions(View view, AccessibilityNodeInfo accessibilityNodeInfo, boolean z) {
@@ -148,7 +144,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
                 if (this.mIsDarkTheme) {
                     GradientDrawable gradientDrawable = (GradientDrawable) actionView.getBackground();
                     gradientDrawable.mutate();
-                    gradientDrawable.setColor(872415231);
+                    gradientDrawable.setColor(0x33FFFFFF);
                 }
                 LayoutParams layoutParams = new LinearLayout.LayoutParams(0, -1);
                 layoutParams.weight = 1.0f;
