@@ -8,10 +8,13 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
@@ -25,7 +28,6 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.BitmapRenderer;
-import com.android.launcher3.graphics.BitmapRenderer.Renderer;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -77,6 +79,10 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         setOnLongClickListener(this);
         setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
         setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.action_view_compound_drawable_padding));
+
+        BaseDraggingActivity activity = LawnchairUtilsKt.getBaseDraggingActivityOrNull(context);
+        DeviceProfile grid = activity.getDeviceProfile();
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
     }
 
     public void setAction(Action action, int i) {
