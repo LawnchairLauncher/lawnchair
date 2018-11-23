@@ -441,7 +441,6 @@ fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup): View? {
     views.forEach { view ->
         view.forEachChild { item ->
             val info = item.tag as ItemInfo?
-            Log.d("LcUtils", "findInViews: found child ${item::class.java.simpleName}} with tag $info")
             if (op.evaluate(info, item)) {
                 return item
             }
