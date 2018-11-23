@@ -15,6 +15,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -61,6 +62,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
                 final ItemInfo itemInfo) {
+            if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+                return null;
+            }
             if (itemInfo.getTargetComponent() == null) {
                 return null;
             }
