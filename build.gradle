@@ -231,7 +231,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'me.jfenn:attribouter:0.0.8'
     implementation 'net.aksingh:owm-japis:2.5.2.2'
-    implementation 'com.github.LawnchairLauncher:chroma:1.2.1'
+    implementation 'com.github.LawnchairLauncher:chroma:1.2.3'
     implementation 'com.github.LawnchairLauncher:hoko-lite:master-SNAPSHOT'
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
