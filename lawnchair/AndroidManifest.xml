@@ -106,6 +106,13 @@
             android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity" />
 
         <activity
+            android:autoRemoveFromRecents="true"
+            android:label="@string/about"
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsAboutActivity"
+            android:theme="@style/SettingsTheme.V2"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity" />
+
+        <activity
             android:name="com.android.launcher3.SettingsActivity"
             tools:node="remove" />
 

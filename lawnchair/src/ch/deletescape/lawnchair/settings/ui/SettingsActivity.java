@@ -94,7 +94,6 @@ import java.io.IOException;
 import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import me.jfenn.attribouter.Attribouter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -128,18 +127,16 @@ public class SettingsActivity extends SettingsBaseActivity implements
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0;
 
-        boolean showSearch = BuildConfig.FEATURE_SETTINGS_SEARCH && !isSubSettings;
+        boolean showSearch = shouldShowSearch();
 
         super.onCreate(savedInstanceState);
         getDecorLayout().setHideToolbar(showSearch);
-        getDecorLayout().setUseLargeTitle(!isSubSettings);
+        getDecorLayout().setUseLargeTitle(shouldUseLargeTitle());
         setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
 
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
         if (savedInstanceState == null) {
-            Fragment fragment = content != 0
-                    ? SubSettingsFragment.newInstance(getIntent())
-                    : new LauncherSettingsFragment();
+            Fragment fragment = createLaunchFragment(content);
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content, fragment)
@@ -160,6 +157,20 @@ public class SettingsActivity extends SettingsBaseActivity implements
             navView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             navView.setBackground(null);
         }
+    }
+
+    protected Fragment createLaunchFragment(int content) {
+        return content != 0
+                ? SubSettingsFragment.newInstance(getIntent())
+                : new LauncherSettingsFragment();
+    }
+
+    protected boolean shouldUseLargeTitle() {
+        return !isSubSettings;
+    }
+
+    protected boolean shouldShowSearch() {
+        return BuildConfig.FEATURE_SETTINGS_SEARCH && !isSubSettings;
     }
 
     @Override
@@ -189,11 +200,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
             intent.putExtra(SubSettingsFragment.HAS_PREVIEW, ((SubPreference) preference).hasPreview());
             startActivity(intent);
             return true;
-        } else if(preference instanceof ColorPickerPreference){
+        } else if (preference instanceof ColorPickerPreference) {
             ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
             return true;
-        } else if(preference.getKey().equals("about")){
-            fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
         }  else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
@@ -414,7 +423,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
             if (preference.getKey() != null && "about".equals(preference.getKey())){
-                ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, preference);
+                startActivity(new Intent(getActivity(), SettingsAboutActivity.class));
                 return true;
             }
             return super.onPreferenceTreeClick(preference);
