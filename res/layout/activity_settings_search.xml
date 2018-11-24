@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_panel"
@@ -22,41 +22,10 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/search_bar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.CardView
-            android:id="@+id/search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/search_bar_margin"
-            app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="?android:attr/colorBackground"
-            app:cardElevation="2dp">
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/search_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/search_bar_height"
-                android:background="?android:attr/selectableItemBackground"
-                android:theme="?android:attr/actionBarTheme"
-                app:contentInsetStartWithNavigation="0dp">
-                <SearchView
-                    android:id="@+id/search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:iconifiedByDefault="false"
-                    android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:searchIcon="@null"/>
-            </android.support.v7.widget.Toolbar>
-        </android.support.v7.widget.CardView>
-    </FrameLayout>
-
-    <FrameLayout
         android:id="@+id/layout_results"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/search_bar_negative_margin"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/search_results_top_margin"
         android:orientation="vertical">
 
         <!-- Padding is included in the background -->
@@ -102,4 +71,34 @@
 
     </FrameLayout>
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/search_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/search_bar_margin"
+            app:cardCornerRadius="24dp"
+            app:cardBackgroundColor="?android:attr/colorBackground"
+            app:cardElevation="2dp">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/search_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/search_bar_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:theme="?android:attr/actionBarTheme"
+                app:contentInsetStartWithNavigation="0dp">
+                <SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:iconifiedByDefault="false"
+                    android:imeOptions="actionSearch|flagNoExtractUi"
+                    android:searchIcon="@null"/>
+            </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+
+</FrameLayout>

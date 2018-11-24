@@ -40,4 +40,7 @@
 
     <!-- Dashboard tile image margin start / end -->
     <dimen name="dashboard_tile_image_margin">24dp</dimen>
+
+    <!-- search_bar_margin + search_bar_height -->
+    <dimen name="search_results_top_margin">64dp</dimen>
 </resources>
