@@ -196,9 +196,9 @@
     <string name="icon_badging_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
-    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
+    <string name="auto_add_shortcuts_label">Add new apps to desktop</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
-    <string name="auto_add_shortcuts_description">Automatically add shortcuts to newly installed apps to the home screen</string>
+    <string name="auto_add_shortcuts_description">Automatically add shortcuts to newly installed apps to the desktop</string>
 
     <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
     <string name="icon_shape_override_label">Change icon shape</string>
@@ -359,7 +359,7 @@
     <string name="about_summary_title">Summary</string>
     <string name="pixel_ui_pref_title">Theme</string>
     <string name="action_edit">Edit</string>
-    <string name="hide_app_sum">Hide apps from the app drawer</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="pixel_ui_pref_summary">General appearance settings</string>
@@ -368,7 +368,7 @@
     <string name="search_pref_title">Search</string>
     <string name="search_pref_summary">Customize the search experience</string>
     <string name="general_pref_title">Desktop</string>
-    <string name="general_pref_summary">Customize the home screen</string>
+    <string name="general_pref_summary">Customize the desktop</string>
     <string name="about_pref_summary">Get to know the Lawnchair team</string>
     <string name="hidden_app">Hide apps</string>
     <string name="hide_app_selected">&#160; hidden</string>
@@ -377,8 +377,8 @@
     <string name="hide_dock_gradient">Disable gradient</string>
     <string name="dock_pref_summary">Customize the dock</string>
     <string name="dock_pref_title">Dock</string>
-    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
-    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels</string>
     <string name="backups">Backups</string>
     <string name="new_backup">Create</string>
     <string name="restore_backup">Restore</string>
@@ -409,7 +409,7 @@
     <string name="restore_read_meta_fail">Invalid backup file</string>
     <string name="backup_share_title">Share backup</string>
     <string name="backup_share_text">Lawnchair backup file</string>
-    <string name="full_width_widgets_pref_summary">Allow widgets to take up the full width of the home screen</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to take up the full width of the desktop</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="hide_apps">Hide apps</string>
     <string name="hide_apps_sum">Hide apps from the app drawer</string>
@@ -432,7 +432,7 @@
     <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Enable blur</string>
-    <string name="blur_pref_summary">Apply a blur effect to parts of the interface. Not compatible with live wallpapers.</string>
+    <string name="blur_pref_summary">Applies a blur effect to parts of the interface. Not compatible with live wallpapers.</string>
     <string name="blur_radius_pref_title">Blur strength</string>
     <string name="blur_oom">Error while bluring wallpaper. Try lowering its resolution and try again.</string>
     <string name="dock_colored_google">Colored icons</string>
@@ -553,7 +553,7 @@
     <string name="pref_show_as_assistant_title">Show as Assistant</string>
     <string name="pref_show_as_assistant_summary">Display an Assistant button instead of voice search if supported</string>
     <string name="current_weather_provider">Current weather provider</string>
-    <string name="smartspace_time_24_h">Show time in 24 hours</string>
+    <string name="smartspace_time_24_h">Use 24-hour format</string>
     <string name="weather_provider_disabled">Disabled</string>
     <string name="weather_provider_widget">Google app widget</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
@@ -583,12 +583,12 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Show Pixel style search bar</string>
+    <string name="title_use_pill_qsb">Use pill style search bar</string>
     <string name="weather_provider_testing">Debug</string>
     <string name="backup_generate_report">Generate bug report</string>
     <string name="show_top_shadow_pref_title">Show top shadow</string>
-    <string name="show_top_shadow_pref_summary">Display a shadow under the status bar</string>
-    <string name="two_row_dock">Two row dock</string>
+    <string name="show_top_shadow_pref_summary">Displays a shadow under the status bar</string>
+    <string name="two_row_dock">Two-row dock</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="iconpack_none">None</string>
     <string name="reset">Reset</string>
