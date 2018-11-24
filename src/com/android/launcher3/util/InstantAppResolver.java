@@ -19,6 +19,7 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.Keep;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
@@ -57,6 +58,7 @@ public class InstantAppResolver {
         return false;
     }
 
+    @Keep
     public List<ApplicationInfo> getInstantApps() {
         return Collections.emptyList();
     }

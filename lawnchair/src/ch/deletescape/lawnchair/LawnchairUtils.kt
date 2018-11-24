@@ -418,6 +418,13 @@ fun AlertDialog.applyAccent() {
     getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
 }
 
+fun android.app.AlertDialog.applyAccent() {
+    val color = ColorEngine.getInstance(context!!).accent
+    getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
+    getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
+    getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
+}
+
 fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent.packageName == packageName }
 }

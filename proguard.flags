@@ -227,3 +227,7 @@
 -keep class net.aksingh.owmjapis.** { *; }
 
 -keep class com.hoko.blur.opengl.functor.** { *; }
+
+-keep class com.google.protobuf.nano.WireFormatNano {
+  static java.lang.String[] EMPTY_STRING_ARRAY;
+}

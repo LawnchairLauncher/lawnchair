@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.ArraySet;
@@ -177,6 +178,7 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
+    @Keep
     public static void setStatusBarNotificationsChangedListener
             (StatusBarNotificationsChangedListener listener) {
         sStatusBarNotificationsChangedListener = listener;
@@ -186,6 +188,7 @@ public class NotificationListener extends NotificationListenerService {
         sNotificationsChangedListener = null;
     }
 
+    @Keep
     public static void removeStatusBarNotificationsChangedListener() {
         sStatusBarNotificationsChangedListener = null;
     }

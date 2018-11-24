@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -32,14 +33,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
-import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
