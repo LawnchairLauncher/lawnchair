@@ -6,7 +6,7 @@
 # static fields
 .field static TAG:Ljava/lang/String; = "Reflection.SnsrFactory"
 
-.field static aH:Z = true
+.field static aH:Z = false
 
 .field public static aI:Lcom/google/android/apps/nexuslauncher/reflection/i;
 
