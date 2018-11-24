@@ -21,12 +21,18 @@ import android.content.Context
 import android.graphics.Canvas
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.support.annotation.Keep
+import ch.deletescape.lawnchair.colors.ColorEngine
+
 
 open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : RecyclerView(context, attrs, defStyleAttr) {
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val springManager = SpringEdgeEffect.Manager(this)
+    private val scrollBarColor by lazy { ColorEngine.getInstance(context).accent }
 
     open val shouldTranslateSelf = true
 
@@ -46,5 +52,25 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
             super.dispatchDraw(canvas)
             false
         }
+    }
+
+    /**
+     * Called by Android [android.view.View.onDrawScrollBars]
+     */
+    @Keep
+    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
+    }
+
+    /**
+     * Called by Android [android.view.View.onDrawScrollBars]
+     */
+    @Keep
+    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
     }
 }
