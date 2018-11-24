@@ -36,6 +36,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.ColorResolver;
 import com.android.launcher3.R;
 
 public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter {
@@ -103,7 +105,8 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         mNormalBackgroundRes = outValue.resourceId;
         context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
         mInvisibleBackground = ColorUtils.setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
-        mHighlightColor = ContextCompat.getColor(context, R.color.preference_highligh_color);
+        int accent = ColorEngine.Companion.getInstance(context).getAccent();
+        mHighlightColor = ColorUtils.setAlphaComponent(accent, (int) (255 * 0.26));
     }
 
     @Override
