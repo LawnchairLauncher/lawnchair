@@ -35,6 +35,8 @@ import android.support.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.root.IRootHelper
+import ch.deletescape.lawnchair.root.RootHelperManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.json.JSONObject
@@ -127,72 +129,8 @@ class SleepGestureHandlerRoot(context: Context, config: JSONObject?) : GestureHa
 
     override val displayName = context.getString(R.string.action_sleep_root)!!
 
-    private var currentSession: Session? = null
-    private val destroy = Runnable { currentSession?.destroy() }
-    private val sleep = Runnable {
-        getSuSession().run {
-            write("sendevent /dev/input/event1 1 116 1\n")
-            write("sendevent /dev/input/event1 0 0 0\n")
-            write("sendevent /dev/input/event1 1 116 0\n")
-            write("sendevent /dev/input/event1 0 0 0\n")
-        }
-    }
-
-    private fun getSuSession(): Session {
-        if (currentSession == null || !currentSession!!.isAlive) {
-            currentSession = Session()
-        }
-        return currentSession!!
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        suHandler.post(destroy)
-    }
-
     override fun onGestureTrigger(controller: GestureController) {
-        suHandler.post(sleep)
-    }
-
-    class Session {
-
-        private val process = Runtime.getRuntime().exec("su")!!
-        private val outputStream = DataOutputStream(process.outputStream)
-
-        val isAlive get() = isAlive(process)
-
-        fun write(string: String) {
-            try {
-                outputStream.writeBytes(string)
-                outputStream.flush()
-            } catch (e: IOException) {
-            } catch (e: InterruptedException) {
-            }
-        }
-
-        fun destroy() {
-            try {
-                if (isAlive) {
-                    outputStream.writeBytes("exit\n")
-                    outputStream.flush()
-                    outputStream.close()
-                }
-                process.waitFor()
-                process.destroy()
-            } catch (e: IOException) {
-            } catch (e: InterruptedException) {
-            }
-        }
-
-        private fun isAlive(process: Process?): Boolean {
-            if (process == null) return false
-            return try {
-                process.exitValue()
-                false
-            } catch (e: IllegalThreadStateException) {
-                true
-            }
-        }
+        RootHelperManager.getInstance(context).run(IRootHelper::goToSleep)
     }
 }
 
