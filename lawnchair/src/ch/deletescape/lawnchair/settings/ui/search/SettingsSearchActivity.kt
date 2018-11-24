@@ -35,6 +35,8 @@ import kotlinx.android.synthetic.main.activity_settings_search.*
 import android.support.v7.util.DiffUtil
 import android.text.TextUtils
 import android.view.MenuItem
+import android.widget.Toast
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
@@ -100,6 +102,12 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
     private fun doSearch(query: String) {
         if (query == currentQuery) return
         currentQuery = query
+        // Find any matching debug command and invoke it
+        debugCommands[query]?.let { command ->
+            command.invoke()
+            onBackPressed()
+            return
+        }
         val matches = if (query.isEmpty())
             emptyList()
         else
@@ -207,5 +215,16 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
+    }
+
+    companion object {
+        val prefs = LawnchairPreferences.getInstanceNoCreate()
+        @Suppress("DIVISION_BY_ZERO")
+        val debugCommands = mapOf(
+                Pair("!!restart", prefs.restart),
+                Pair("!!peru", { prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled }),
+                Pair("!!kys", { 1 / 0 }),
+                Pair("uuddlrlrba", { Toast.makeText(prefs.context, "ok, we get it, you're a gamer", Toast.LENGTH_LONG).show() })
+        )
     }
 }
