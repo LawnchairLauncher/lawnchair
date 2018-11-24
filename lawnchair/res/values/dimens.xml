@@ -19,4 +19,25 @@
 <resources>
     <dimen name="action_view_compound_drawable_padding">5dp</dimen>
     <dimen name="all_apps_action_spacing">8dp</dimen>
+
+    <!-- Dashboard padding in its container -->
+    <dimen name="dashboard_padding_start">0dp</dimen>
+    <dimen name="dashboard_padding_end">0dp</dimen>
+    <dimen name="dashboard_padding_top">0dp</dimen>
+    <dimen name="dashboard_padding_bottom">0dp</dimen>
+
+    <!-- The following two margins need to match, with the caveat that
+     the second should be negative. The second one ensures that the icons and text
+     align despite the additional padding caused by the search bar's card background. -->
+    <dimen name="search_bar_margin">16dp</dimen>
+    <dimen name="search_bar_negative_margin">-16dp</dimen>
+
+    <dimen name="search_bar_height">48dp</dimen>
+    <dimen name="search_bar_text_size">16dp</dimen>
+
+    <!-- Dashboard image tile size -->
+    <dimen name="dashboard_tile_image_size">24dp</dimen>
+
+    <!-- Dashboard tile image margin start / end -->
+    <dimen name="dashboard_tile_image_margin">24dp</dimen>
 </resources>

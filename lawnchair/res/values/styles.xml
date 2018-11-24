@@ -275,4 +275,10 @@
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="TextAppearance.Settings.SearchBar" parent="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle">
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">@dimen/search_bar_text_size</item>
+    </style>
 </resources>

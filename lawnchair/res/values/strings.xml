@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Lawnstep -->
     <string name="quickstep_pref_title">Lawnstep</string>
     <string name="quickstep_pref_summary">Customize the recent apps screen</string>
@@ -76,4 +76,20 @@
     <!-- Per app options -->
     <string name="hide_from_predictions">Hide in suggestions</string>
     <string name="hide_from_predictions_summary">Never show this app in the suggested apps strip</string>
+
+    <!-- SEARCH STRINGS -->
+
+    <!-- Button to clear all search history in Settings [CHAR LIMIT=40]-->
+    <string name="search_clear_history">Clear history</string>
+
+    <!-- DO NOT TRANSLATE Summary placeholder -->
+    <string name="summary_placeholder" translatable="false">&#160;</string>
+
+    <!-- Search breadcrumb connector symbol -->
+    <string name="search_breadcrumb_connector" translatable="false">
+        <xliff:g name="first_item">%1$s</xliff:g> > <xliff:g name="second_item">%2$s</xliff:g>
+    </string>
+
+    <string name="search_no_results">No results</string>
+    <string name="search_menu">Search settings</string>
 </resources>

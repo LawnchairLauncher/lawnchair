@@ -36,35 +36,46 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
+import android.widget.Toolbar;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.colors.overrides.ThemedEditTextPreferenceDialogFragmentCompat;
 import ch.deletescape.lawnchair.colors.overrides.ThemedListPreferenceDialogFragment;
 import ch.deletescape.lawnchair.colors.overrides.ThemedMultiSelectListPreferenceDialogFragmentCompat;
+import ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference;
+import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
+import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
+import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
+import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.settings.ui.search.SettingsSearchActivity;
+import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
-
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
@@ -75,31 +86,25 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
-
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.PixelBridge;
 import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
-
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.gestures.ui.GesturePreference;
-import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
-import ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference;
-import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
-import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
-import ch.deletescape.lawnchair.theme.ThemeOverride;
+import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import me.jfenn.attribouter.Attribouter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends SettingsBaseActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, FragmentManager.OnBackStackChangedListener {
+public class SettingsActivity extends SettingsBaseActivity implements
+        OnPreferenceStartFragmentCallback, OnBackStackChangedListener, OnClickListener {
+
+    public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
+
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
@@ -120,14 +125,17 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
 
-        super.onCreate(savedInstanceState);
-        getDecorLayout().setUseLargeTitle(true);
-        setContentView(R.layout.activity_settings);
-
-        mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
-
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0;
+
+        boolean showSearch = BuildConfig.FEATURE_SETTINGS_SEARCH;
+
+        super.onCreate(savedInstanceState);
+        getDecorLayout().setHideToolbar(showSearch);
+        getDecorLayout().setUseLargeTitle(!isSubSettings);
+        setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
+
+        mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
         if (savedInstanceState == null) {
             Fragment fragment = content != 0
                     ? SubSettingsFragment.newInstance(getIntent())
@@ -142,6 +150,23 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         sharedPrefs = Utilities.getLawnchairPrefs(this);
         updateUpButton();
+
+        if (showSearch) {
+            Toolbar toolbar = findViewById(R.id.search_action_bar);
+            toolbar.setOnClickListener(this);
+
+            View navView = toolbar.getNavigationView();
+            navView.setClickable(false);
+            navView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            navView.setBackground(null);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.search_action_bar) {
+            startActivity(new Intent(this, SettingsSearchActivity.class));
+        }
     }
 
     @NotNull
@@ -192,7 +217,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     private void updateUpButton(boolean enabled) {
         if (getSupportActionBar() == null) return;
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
-        getDecorLayout().setUseLargeTitle(!enabled);
     }
 
     @Override
@@ -209,12 +233,70 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         updateUpButton();
     }
 
-    public abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+    public abstract static class BaseFragment extends PreferenceFragmentCompat {
+
+        private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
+
+        private HighlightablePreferenceGroupAdapter mAdapter;
+        private boolean mPreferenceHighlighted = false;
+
+        private RecyclerView.Adapter mCurrentRootAdapter;
+        private boolean mIsDataSetObserverRegistered = false;
+        private RecyclerView.AdapterDataObserver mDataSetObserver =
+                new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeChanged(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeInserted(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeRemoved(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                        onDataSetChanged();
+                    }
+                };
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            if (savedInstanceState != null) {
+                mPreferenceHighlighted = savedInstanceState.getBoolean(SAVE_HIGHLIGHTED_KEY);
+            }
+        }
+
+        public void highlightPreferenceIfNeeded() {
+            if (!isAdded()) {
+                return;
+            }
+            if (mAdapter != null) {
+                mAdapter.requestHighlight(Objects.requireNonNull(getView()), getListView());
+            }
+        }
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
             RecyclerView recyclerView = (RecyclerView) inflater
-                    .inflate(R.layout.preference_spring_recyclerview, parent, false);
+                    .inflate(getRecyclerViewLayoutRes(), parent, false);
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
@@ -223,23 +305,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             return recyclerView;
         }
 
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            ListView listView = (ListView) parent;
-            ListAdapter listAdapter = listView.getAdapter();
-            Object item = listAdapter.getItem(position);
-
-            if (item instanceof SubPreference) {
-                SubPreference subPreference = (SubPreference) item;
-                if (subPreference.onLongClick(null)) {
-                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
-        }
+        abstract protected int getRecyclerViewLayoutRes();
 
         @Override
         public void setDivider(Drawable divider) {
@@ -249,6 +315,71 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public void setDividerHeight(int height) {
             super.setDividerHeight(0);
+        }
+
+        @Override
+        protected Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
+            final Bundle arguments = getActivity().getIntent().getExtras();
+            mAdapter = new HighlightablePreferenceGroupAdapter(preferenceScreen,
+                    arguments == null
+                            ? null : arguments.getString(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY),
+                    mPreferenceHighlighted);
+            return mAdapter;
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            if (mAdapter != null) {
+                outState.putBoolean(SAVE_HIGHLIGHTED_KEY, mAdapter.isHighlightRequested());
+            }
+        }
+
+        protected void onDataSetChanged() {
+            highlightPreferenceIfNeeded();
+        }
+
+        public int getInitialExpandedChildCount() {
+            return -1;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            highlightPreferenceIfNeeded();
+        }
+
+        @Override
+        protected void onBindPreferences() {
+            registerObserverIfNeeded();
+        }
+
+        @Override
+        protected void onUnbindPreferences() {
+            unregisterObserverIfNeeded();
+        }
+
+        public void registerObserverIfNeeded() {
+            if (!mIsDataSetObserverRegistered) {
+                if (mCurrentRootAdapter != null) {
+                    mCurrentRootAdapter.unregisterAdapterDataObserver(mDataSetObserver);
+                }
+                mCurrentRootAdapter = getListView().getAdapter();
+                mCurrentRootAdapter.registerAdapterDataObserver(mDataSetObserver);
+                mIsDataSetObserverRegistered = true;
+                onDataSetChanged();
+            }
+        }
+
+        public void unregisterObserverIfNeeded() {
+            if (mIsDataSetObserverRegistered) {
+                if (mCurrentRootAdapter != null) {
+                    mCurrentRootAdapter.unregisterAdapterDataObserver(mDataSetObserver);
+                    mCurrentRootAdapter = null;
+                }
+                mIsDataSetObserverRegistered = false;
+            }
         }
     }
 
@@ -304,6 +435,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     }
                 }
             }
+        }
+
+        @Override
+        protected int getRecyclerViewLayoutRes() {
+            return BuildConfig.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
+                    : R.layout.preference_spring_recyclerview;
         }
     }
 
@@ -561,6 +698,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
             }
             return false;
+        }
+
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_spring_recyclerview;
         }
     }
 

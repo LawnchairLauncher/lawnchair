@@ -45,7 +45,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField "boolean", "FEATURE_QUINOA", "${!(System.getenv("TRAVIS") == "true" && System.getenv("DRONE_BRANCH") == "alpha")}"
+        def isPublicBuild = System.getenv("TRAVIS") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
+        buildConfigField "boolean", "FEATURE_QUINOA", "${!isPublicBuild}"
+        buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "${!isPublicBuild}"
 
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"

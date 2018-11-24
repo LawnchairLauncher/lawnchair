@@ -65,17 +65,28 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
     var useLargeTitle: Boolean = false
         set(value) {
-            largeTitle.visibility = if (value) View.VISIBLE else View.GONE
-            toolbar.visibility = if (value) View.GONE else View.VISIBLE
-            updateContentTopMargin(value)
+            field = value
+            updateToolbar()
         }
 
-    private fun updateContentTopMargin(value: Boolean) {
+    var hideToolbar: Boolean = false
+        set(value) {
+            field = value
+            updateToolbar()
+        }
+
+    private fun updateToolbar() {
+        largeTitle.visibility = if (useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
+        toolbar.visibility = if (!useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
+        updateContentTopMargin()
+    }
+
+    private fun updateContentTopMargin() {
         val layoutParams = contentFrame.layoutParams as LayoutParams
-        if (value) {
-            layoutParams.topMargin = context.resources.getDimensionPixelSize(R.dimen.large_title_height)
-        } else {
-            layoutParams.topMargin = context.getDimenAttr(R.attr.actionBarSize)
+        layoutParams.topMargin = when {
+            hideToolbar -> 0
+            useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
+            else -> context.getDimenAttr(R.attr.actionBarSize)
         }
     }
 
@@ -89,7 +100,7 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
         largeTitle = findViewById(R.id.large_title)
         largeTitle.setOnClickListener(this)
 
-        updateContentTopMargin(false)
+        updateContentTopMargin()
 
         if (BlurWallpaperProvider.isEnabled) {
             findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
