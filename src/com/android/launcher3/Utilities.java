@@ -81,6 +81,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -933,6 +934,10 @@ public final class Utilities {
         } else {
             return task.icon;
         }
+    }
+
+    public static ComponentKey getKeyForTask(Task task) {
+        return new ComponentKey(task.key.sourceComponent, UserHandle.of(task.key.userId));
     }
 
     public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
