@@ -51,6 +51,7 @@ import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,7 +60,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toolbar;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
@@ -151,11 +151,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (showSearch) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setOnClickListener(this);
-
-            View navView = toolbar.getNavigationView();
-            navView.setClickable(false);
-            navView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-            navView.setBackground(null);
         }
     }
 

@@ -34,23 +34,22 @@
             app:cardCornerRadius="24dp"
             app:cardBackgroundColor="?android:attr/colorBackground"
             app:cardElevation="2dp">
-            <Toolbar
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/search_action_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/search_bar_height"
                 android:background="?android:attr/selectableItemBackground"
-                android:contentInsetStartWithNavigation="64dp"
-                android:contentInsetStart="64dp"
-                android:contentInsetEnd="64dp"
-                android:navigationIcon="@drawable/ic_search"
-                android:theme="?android:attr/actionBarTheme">
+                app:contentInsetStartWithNavigation="64dp"
+                app:contentInsetEnd="64dp"
+                app:navigationIcon="@drawable/ic_search"
+                android:theme="@style/SettingsTheme.Search.Toolbar">
                 <TextView
                     android:id="@+id/search_action_bar_title"
                     style="@style/TextAppearance.Settings.SearchBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/search_menu" />
-            </Toolbar>
+            </android.support.v7.widget.Toolbar>
         </android.support.v7.widget.CardView>
     </FrameLayout>
 

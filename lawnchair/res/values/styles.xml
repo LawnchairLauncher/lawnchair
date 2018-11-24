@@ -281,4 +281,14 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textSize">@dimen/search_bar_text_size</item>
     </style>
+
+    <style name="SettingsTheme.Search" />
+
+    <style name="SettingsTheme.Search.Toolbar" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="toolbarNavigationButtonStyle">@style/SettingsTheme.Search.Toolbar.Button.Navigation</item>
+    </style>
+
+    <style name="SettingsTheme.Search.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

@@ -39,7 +39,6 @@
                 android:layout_height="@dimen/search_bar_height"
                 android:background="?android:attr/selectableItemBackground"
                 android:theme="?android:attr/actionBarTheme"
-                android:contentInsetStart="0dp"
                 app:contentInsetStartWithNavigation="0dp">
                 <SearchView
                     android:id="@+id/search_view"
