@@ -128,7 +128,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0;
 
-        boolean showSearch = BuildConfig.FEATURE_SETTINGS_SEARCH;
+        boolean showSearch = BuildConfig.FEATURE_SETTINGS_SEARCH && !isSubSettings;
 
         super.onCreate(savedInstanceState);
         getDecorLayout().setHideToolbar(showSearch);

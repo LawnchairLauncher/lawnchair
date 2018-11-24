@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 
 /*
@@ -78,6 +79,7 @@ class CenteredToolbar @JvmOverloads constructor(
                 inflateTitle()
             }
         }
+        mSubtitleTextView?.isVisible = !TextUtils.isEmpty(subtitle)
         if (mSubtitleTextView != null) {
             mSubtitleTextView!!.text = subtitle
         }

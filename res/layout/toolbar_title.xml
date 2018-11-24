@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="?actionBarSize"
     android:layout_gravity="center"
+    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -28,5 +29,6 @@
         android:gravity="center"
         android:singleLine="true"
         android:textAppearance="?subtitleTextAppearance"
+        android:visibility="gone"
         tools:text="Subtitle" />
 </LinearLayout>
