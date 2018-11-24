@@ -120,6 +120,18 @@ class SpringEdgeEffect(
             return result
         }
 
+        inline fun withSpringNegative(canvas: Canvas, allow: Boolean = true, body: () -> Boolean): Boolean {
+            val result: Boolean
+            if ((shiftX == 0f && shiftY == 0f) || !allow) {
+                result = body()
+            } else {
+                canvas.translate(-shiftX, -shiftY)
+                result = body()
+                canvas.translate(shiftX, shiftY)
+            }
+            return result
+        }
+
         fun createFactory() = SpringEdgeEffectFactory()
 
         inner class SpringEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {

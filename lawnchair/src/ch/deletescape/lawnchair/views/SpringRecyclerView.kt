@@ -59,9 +59,12 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
      */
     @Keep
     protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
+        springManager.withSpringNegative(canvas, shouldTranslateSelf) {
+            scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
+            scrollBar.setBounds(l, t, r, b)
+            scrollBar.draw(canvas)
+            false
+        }
     }
 
     /**
@@ -69,8 +72,11 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
      */
     @Keep
     protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
+        springManager.withSpringNegative(canvas, shouldTranslateSelf) {
+            scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
+            scrollBar.setBounds(l, t, r, b)
+            scrollBar.draw(canvas)
+            false
+        }
     }
 }

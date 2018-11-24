@@ -70,7 +70,7 @@
             android:paddingEnd="@dimen/dashboard_padding_end"
             android:paddingTop="@dimen/search_bar_margin"
             android:paddingBottom="@dimen/dashboard_padding_bottom"
-            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"/>
 
         <LinearLayout
