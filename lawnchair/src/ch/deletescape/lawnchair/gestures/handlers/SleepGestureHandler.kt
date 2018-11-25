@@ -39,13 +39,11 @@ import ch.deletescape.lawnchair.root.IRootHelper
 import ch.deletescape.lawnchair.root.RootHelperManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import eu.chainfire.libsuperuser.Shell
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.io.IOException
 import java.lang.reflect.Method
-
-private val suThread = HandlerThread("su").apply { start() }
-private val suHandler = Handler(suThread.looper)
 
 @Keep
 class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
@@ -56,13 +54,16 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
     }
 
     // Preferred methods should appear earlier in the list
-    private val method: SleepMethod? = listOf(
-            SleepMethodPowerManager(context),
-            SleepMethodPieAccessibility(context),
-            SleepMethodDeviceAdmin(context)
-    ).firstOrNull { it.supported }
+    private val method: SleepMethod? by lazy {
+        listOf(
+                SleepMethodPowerManager(context),
+                SleepMethodRoot(context),
+                SleepMethodPieAccessibility(context),
+                SleepMethodDeviceAdmin(context)
+        ).firstOrNull { it.supported }
+    }
 
-    override val isAvailable = method != null
+    override val isAvailable = true // At least the device admin method is always going to work
 
     abstract class SleepMethod(protected val context: Context) {
         abstract val supported: Boolean
@@ -88,6 +89,15 @@ class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMetho
 
     override fun sleep(controller: GestureController) {
         goToSleep(SystemClock.uptimeMillis())
+    }
+
+}
+
+class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(context) {
+    override val supported = Shell.SU.available()
+
+    override fun sleep(controller: GestureController) {
+        RootHelperManager.getInstance(context).run(IRootHelper::goToSleep)
     }
 
 }
@@ -121,16 +131,6 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
         override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
             return context.getString(R.string.dt2s_admin_warning)
         }
-    }
-}
-
-@Keep
-class SleepGestureHandlerRoot(context: Context, config: JSONObject?) : GestureHandler(context, config) {
-
-    override val displayName = context.getString(R.string.action_sleep_root)!!
-
-    override fun onGestureTrigger(controller: GestureController) {
-        RootHelperManager.getInstance(context).run(IRootHelper::goToSleep)
     }
 }
 

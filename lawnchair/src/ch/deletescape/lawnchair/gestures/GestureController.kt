@@ -80,7 +80,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         private const val TAG = "GestureController"
         private val LEGACY_SLEEP_HANDLERS = listOf(
                 "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerDeviceAdmin",
-                "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerAccessibility")
+                "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerAccessibility",
+                "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerRoot")
 
         fun createGestureHandler(context: Context, jsonString: String, fallback: GestureHandler): GestureHandler {
             if (!TextUtils.isEmpty(jsonString)) {
@@ -125,7 +126,6 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 // BlankGestureHandler(context, null), -> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
-                SleepGestureHandlerRoot(context, null),
                 OpenDrawerGestureHandler(context, null),
                 OpenWidgetsGestureHandler(context, null),
                 OpenSettingsGestureHandler(context, null),
