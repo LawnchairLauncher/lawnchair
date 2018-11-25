@@ -62,11 +62,17 @@ class SearchIndex(private val context: Context) {
                     val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
                     val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
                     val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
-                    indexScreen(content, SettingsScreen(title!!, parent, content, hasPreview))
+                    indexScreen(content, SettingsScreen(title!!, title, findScreen(parent), content, hasPreview))
                     skip(parser)
                 }
                 parser.name == StyledPreferenceCategory::class.java.name -> {
-                    indexSection(parser, parent)
+                    val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                    if (parent != null) {
+                        indexSection(parser, SettingsCategory(parent.title, title!!,
+                                parent, parent.contentRes, parent.hasPreview))
+                    } else {
+                        indexSection(parser, null)
+                    }
                 }
                 else -> {
                     val key = parser.getAttributeValue(nsAndroid, attrKey)
@@ -79,6 +85,13 @@ class SearchIndex(private val context: Context) {
                 }
             }
         }
+    }
+
+    private tailrec fun findScreen(screen: SettingsScreen?): SettingsScreen? {
+        return if (screen is SettingsCategory)
+            findScreen(screen.parent)
+        else
+            screen
     }
 
     private fun parseIdentifier(identifier: String): Int {
@@ -106,14 +119,20 @@ class SearchIndex(private val context: Context) {
         }
     }
 
-    inner class SettingsScreen(val title: String, private val parent: SettingsScreen?,
-                               val contentRes: Int, val hasPreview: Boolean) {
+    inner class SettingsCategory(title: String, categoryTitle: String,
+                                 parent: SettingsScreen?, contentRes: Int,
+                                 hasPreview: Boolean)
+        : SettingsScreen(title, categoryTitle, parent, contentRes, hasPreview)
+
+    open inner class SettingsScreen(val title: String, val categoryTitle: String,
+                                    val parent: SettingsScreen?,
+                                    val contentRes: Int, val hasPreview: Boolean) {
 
         val breadcrumbs: String get() {
             return if (parent == null) {
-                title
+                categoryTitle
             } else {
-                context.getString(R.string.search_breadcrumb_connector, parent.breadcrumbs, title)
+                context.getString(R.string.search_breadcrumb_connector, parent.breadcrumbs, categoryTitle)
             }
         }
     }
