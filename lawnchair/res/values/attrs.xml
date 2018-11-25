@@ -37,6 +37,10 @@
         <attr name="gestureClass" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="ControlledPreference">
+        <attr name="controllerClass" format="string" />
+    </declare-styleable>
+
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />

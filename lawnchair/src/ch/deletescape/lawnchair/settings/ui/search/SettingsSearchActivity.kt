@@ -108,7 +108,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         currentQuery = query
         // Find any matching debug command and invoke it
         debugCommands[query]?.let { command ->
-            command.invoke()
+            command.invoke(this)
             onBackPressed()
             return
         }
@@ -224,11 +224,15 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
     companion object {
         val prefs = LawnchairPreferences.getInstanceNoCreate()
         @Suppress("DIVISION_BY_ZERO")
-        val debugCommands = mapOf(
-                Pair("!!restart", prefs.restart),
-                Pair("!!peru", { prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled }),
-                Pair("!!kys", { 1 / 0 }),
-                Pair("uuddlrlrba", { Toast.makeText(prefs.context, "ok, we get it, you're a gamer", Toast.LENGTH_LONG).show() })
+        val debugCommands = mapOf<String, (SettingsSearchActivity) -> Unit>(
+                Pair("!!restart", { _ -> prefs.restart() }),
+                Pair("!!peru", { it ->
+                    prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled
+                    it.finishAffinity()
+                    it.startActivity(Intent(it, SettingsActivity::class.java))
+                }),
+                Pair("!!kys", { _ -> 1 / 0 }),
+                Pair("uuddlrlrba", { _ -> Toast.makeText(prefs.context, "ok, we get it, you're a gamer", Toast.LENGTH_LONG).show() })
         )
     }
 }

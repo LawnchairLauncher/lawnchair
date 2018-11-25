@@ -71,6 +71,7 @@
         android:title="@string/quickstep_pref_title"
         android:icon="@drawable/ic_lawnstep"
         app:content="@xml/lawnchair_quickstep_preferences"
+        app:controllerClass=".LawnstepController"
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.preferences.StyledIconPreference
@@ -91,6 +92,7 @@
         android:icon="@drawable/ic_settings_development"
         android:title="@string/developer_options_title"
         app:content="@xml/lawnchair_dev_options_preference"
+        app:controllerClass=".DeveloperOptionsController"
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.preferences.StyledIconPreference

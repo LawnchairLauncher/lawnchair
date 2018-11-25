@@ -29,13 +29,24 @@ import android.util.Log
 import android.view.View
 import android.widget.Switch
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.settings.ui.ControlledPreference
+import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import com.android.launcher3.util.Themes
 
-open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet?) : SwitchPreference(context, attrs), ColorEngine.OnAccentChangeListener {
+open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet?) :
+        SwitchPreference(context, attrs), ColorEngine.OnAccentChangeListener, ControlledPreference {
 
     private val normalLight = android.support.v7.preference.R.color.switch_thumb_normal_material_light
     private val disabledLight = android.support.v7.appcompat.R.color.switch_thumb_disabled_material_light
     private var checkableView: View? = null
+
+    private val delegate = ControlledPreference.Delegate(context)
+
+    override val controller get() = delegate.controller
+
+    init {
+        delegate.parseAttributes(attrs)
+    }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)

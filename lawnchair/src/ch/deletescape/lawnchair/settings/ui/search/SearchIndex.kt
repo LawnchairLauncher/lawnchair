@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.settings.ui.search
 
 import android.content.Context
 import ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.settings.ui.SubPreference
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -36,6 +37,7 @@ class SearchIndex(private val context: Context) {
     private val attrSummary = "summary"
     private val attrContent = "content"
     private val attrHasPreview = "hasPreview"
+    private val attrControllerClass = "controllerClass"
 
     val entries = ArrayList<SettingsEntry>()
 
@@ -59,10 +61,13 @@ class SearchIndex(private val context: Context) {
             }
             when {
                 parser.name == SubPreference::class.java.name -> {
-                    val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
-                    val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
-                    val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
-                    indexScreen(content, SettingsScreen(title!!, title, findScreen(parent), content, hasPreview))
+                    val controller = createController(parser)
+                    if (controller?.isVisible != false) {
+                        val title = controller?.title ?: parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                        val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
+                        val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
+                        indexScreen(content, SettingsScreen(title!!, title, findScreen(parent), content, hasPreview))
+                    }
                     skip(parser)
                 }
                 parser.name == StyledPreferenceCategory::class.java.name -> {
@@ -75,16 +80,25 @@ class SearchIndex(private val context: Context) {
                     }
                 }
                 else -> {
-                    val key = parser.getAttributeValue(nsAndroid, attrKey)
-                    val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
-                    val summary = parseString(parser.getAttributeValue(nsAndroid, attrSummary))
-                    if (parent != null && key != null && title != null) {
-                        entries.add(SettingsEntry(key, title, summary, parent))
+                    val controller = createController(parser)
+                    if (controller?.isVisible != false) {
+                        val key = parser.getAttributeValue(nsAndroid, attrKey)
+                        val title = controller?.title ?: parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                        val summary = parseString(parser.getAttributeValue(nsAndroid, attrSummary))
+                        if (parent != null && key != null && title != null) {
+                            entries.add(SettingsEntry(key, title, summary, parent))
+                        }
                     }
+
                     skip(parser)
                 }
             }
         }
+    }
+
+    private fun createController(parser: XmlPullParser): PreferenceController? {
+        val controllerClass = parseString(parser.getAttributeValue(nsApp, attrControllerClass))
+        return PreferenceController.create(context, controllerClass)
     }
 
     private tailrec fun findScreen(screen: SettingsScreen?): SettingsScreen? {

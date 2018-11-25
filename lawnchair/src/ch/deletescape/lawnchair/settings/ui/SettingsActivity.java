@@ -406,14 +406,32 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 mIsDataSetObserverRegistered = false;
             }
         }
+
+        void onPreferencesAdded(PreferenceGroup group) {
+            for (int i = 0; i < group.getPreferenceCount(); i++) {
+                Preference preference = group.getPreference(i);
+
+                if (preference instanceof PreferenceGroup) {
+                    onPreferencesAdded((PreferenceGroup) preference);
+                    continue;
+                }
+
+                if (!(preference instanceof ControlledPreference)) continue;
+
+                PreferenceController controller = ((ControlledPreference) preference).getController();
+                if (controller != null) {
+                    if (!controller.onPreferenceAdded(preference)) {
+                        i--;
+                    }
+                }
+            }
+        }
     }
 
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends BaseFragment implements LawnchairPreferences.OnPreferenceChangeListener {
-
-        private Preference mDeveloperOptions;
+    public static class LauncherSettingsFragment extends BaseFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -424,10 +442,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
-            Utilities.getLawnchairPrefs(getActivity()).addOnPreferenceChangeListener("pref_developerOptionsReallyEnabled", this);
-            if (!TouchInteractionService.isConnected()) {
-                getPreferenceScreen().removePreference(findPreference("quickstep"));
-            }
+            onPreferencesAdded(getPreferenceScreen());
         }
 
         @Override
@@ -443,23 +458,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 return true;
             }
             return super.onPreferenceTreeClick(preference);
-        }
-
-        @Override
-        public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
-            if("pref_developerOptionsReallyEnabled".equals(key)){
-                if (prefs.getDeveloperOptionsEnabled()) {
-                    if(mDeveloperOptions != null){
-                        getPreferenceScreen().addPreference(mDeveloperOptions);
-                        mDeveloperOptions = null;
-                    }
-                } else {
-                    mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
-                    if(mDeveloperOptions != null) {
-                        getPreferenceScreen().removePreference(mDeveloperOptions);
-                    }
-                }
-            }
         }
 
         @Override
@@ -493,55 +491,15 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
-                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
-
-                ContentResolver resolver = getActivity().getContentResolver();
-
-                // Setup allow rotation preference
-                Preference rotationPref = findPreference(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY);
-                if (getResources().getBoolean(R.bool.allow_rotation)) {
-                    // Launcher supports rotation by default. No need to show this setting.
-                    rotationPref.getParent().removePreference(rotationPref);
-                } else {
-                    // Initialize the UI once
-                    rotationPref.setDefaultValue(RotationHelper.getAllowRotationDefaultValue());
-                }
-
-                ButtonPreference iconBadgingPref =
-                        (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-                if (!Utilities.ATLEAST_OREO) {
-                    Preference addIconPref = findPreference(
-                            SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY);
-                    addIconPref.getParent().removePreference(addIconPref);
-                }
-                if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                    iconBadgingPref.getParent().removePreference(iconBadgingPref);
-                } else {
+                if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                    ButtonPreference iconBadgingPref =
+                            (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
                     // Listen to system notification badge settings while this UI is active.
                     mIconBadgingObserver = new IconBadgingObserver(
-                            iconBadgingPref, resolver, getFragmentManager());
+                            iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
                     mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.lawnchair_theme_preferences) {
-                ListPreference iconShapeOverride = (ListPreference) findPreference(IconShapeOverride.KEY_PREFERENCE);
-                if (iconShapeOverride != null) {
-                    if (Utilities.getLawnchairPrefs(mContext).getDeveloperOptionsEnabled()) {
-                        iconShapeOverride.setEntries(R.array.alt_icon_shape_override_paths_names);
-                        iconShapeOverride.setEntryValues(R.array.alt_icon_shape_override_paths_values);
-                    }
-                    if (IconShapeOverride.isSupported(getActivity())) {
-                        IconShapeOverride.handlePreferenceUi(iconShapeOverride);
-                    } else {
-                        iconShapeOverride.getParent().removePreference(iconShapeOverride);
-                        Preference legacyTreatmentPref = findPreference(
-                                "pref_enableLegacyTreatment");
-                        legacyTreatmentPref.getParent().removePreference(legacyTreatmentPref);
-                        Preference coloredLegacyTreatmentPref = findPreference(
-                                "pref_colorizeGeneratedBackgrounds");
-                        coloredLegacyTreatmentPref.getParent()
-                                .removePreference(coloredLegacyTreatmentPref);
-                    }
-                }
                 IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
                 Preference packMaskingPreference = findPreference("pref_iconPackMasking");
                 PreferenceGroup parent = packMaskingPreference.getParent();
@@ -563,33 +521,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
                 findPreference("screenshot").setOnPreferenceClickListener(this);
-            } else if (getContent() == R.xml.lawnchair_quickstep_preferences) {
-                if (OverviewInteractionState.isSwipeUpSettingsAvailable()) {
-
-                }
             }
         }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(getContent());
-        }
-
-        private String getDisplayGoogleTitle() {
-            CharSequence charSequence = null;
-            try {
-                Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
-                int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
-                if (identifier != 0) {
-                    charSequence = resourcesForApplication.getString(identifier);
-                }
-            }
-            catch (PackageManager.NameNotFoundException ex) {
-            }
-            if (TextUtils.isEmpty(charSequence)) {
-                charSequence = mContext.getString(R.string.title_google_app);
-            }
-            return mContext.getString(R.string.title_show_google_app, charSequence);
+            onPreferencesAdded(getPreferenceScreen());
         }
 
         private int getContent() {

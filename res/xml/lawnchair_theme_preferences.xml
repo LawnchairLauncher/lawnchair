@@ -16,23 +16,26 @@
             android:defaultValue="true"
             android:key="pref_iconPackMasking"
             android:summary="@string/pref_icon_pack_masking_summary"
-            android:title="@string/pref_icon_pack_masking"/>
+            android:title="@string/pref_icon_pack_masking"
+            app:controllerClass=".IconPackMaskingController"/>
 
-        <ListPreference
+        <ch.deletescape.lawnchair.settings.ui.ControlledListPreference
             android:defaultValue=""
             android:entries="@array/icon_shape_override_paths_names"
             android:entryValues="@array/icon_shape_override_paths_values"
             android:key="pref_override_icon_shape"
             android:persistent="false"
             android:summary="%s"
-            android:title="@string/icon_shape_override_label" />
+            android:title="@string/icon_shape_override_label"
+            app:controllerClass=".IconShapeOverrideController" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_legacy_treatment"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"
-            android:title="@string/pref_legacy_treatment_title"/>
+            android:title="@string/pref_legacy_treatment_title"
+            app:controllerClass=".IconShapeOverrideController"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_colorized_legacy_treatment"
@@ -40,7 +43,8 @@
             android:persistent="true"
             android:dependency="pref_enableLegacyTreatment"
             android:summary="@string/pref_legacy_colored_backgrounds_summary"
-            android:title="@string/pref_legacy_colored_backgrounds"/>
+            android:title="@string/pref_legacy_colored_backgrounds"
+            app:controllerClass=".IconShapeOverrideController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

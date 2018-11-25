@@ -14,7 +14,8 @@
             android:defaultValue="true"
             android:key="pref_enable_minus_one"
             android:summary="@string/pref_show_google_now_summary"
-            android:title="@string/title_show_google_app" />
+            android:title="@string/title_show_google_app"
+            app:controllerClass=".MinusOneController"/>
 
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
@@ -45,7 +46,8 @@
             android:key="pref_add_icon_to_home"
             android:persistent="true"
             android:summary="@string/auto_add_shortcuts_description"
-            android:title="@string/auto_add_shortcuts_label" />
+            android:title="@string/auto_add_shortcuts_label"
+            app:controllerClass=".AddIconToHomeController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -69,7 +71,8 @@
             android:defaultValue="@bool/allow_rotation"
             android:key="pref_allowRotation"
             android:persistent="true"
-            android:title="@string/allow_rotation_title" />
+            android:title="@string/allow_rotation_title"
+            app:controllerClass=".AllowRotationController"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_hide_statusbar"
