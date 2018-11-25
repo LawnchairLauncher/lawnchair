@@ -17,7 +17,7 @@
 
 package ch.deletescape.lawnchair
 
-import android.animation.TimeInterpolator
+import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
@@ -34,7 +34,6 @@ import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
-import android.util.Log
 import android.util.Property
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -285,6 +284,24 @@ fun AppCompatActivity.hookGoogleSansDialogTitle() {
     }
 }
 
+fun Activity.hookGoogleSansDialogTitle() {
+    val activity = this
+    layoutInflater.factory2 = object : LayoutInflater.Factory2 {
+        override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
+            if (name == "com.android.internal.widget.DialogTitle") {
+                return (Class.forName(name).getConstructor(Context::class.java, AttributeSet::class.java)
+                        .newInstance(context, attrs) as TextView).apply { setGoogleSans(Typeface.BOLD) }
+            }
+            return activity.onCreateView(parent, name, context, attrs)
+        }
+
+        override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+            return onCreateView(null, name, context, attrs)
+        }
+
+    }
+}
+
 fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.OptionItem) {
     val launcher = Launcher.getLauncher(view.context)
     OptionsPopupView.show(launcher, rect ?: RectF(launcher.getViewBounds(view)), items.toList())
@@ -412,17 +429,22 @@ fun Drawable.toBitmap(): Bitmap {
 }
 
 fun AlertDialog.applyAccent() {
-    val color = ColorEngine.getInstance(context!!).accent
+    val color = ColorEngine.getInstance(context).accent
     getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
     getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
     getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
 }
 
 fun android.app.AlertDialog.applyAccent() {
-    val color = ColorEngine.getInstance(context!!).accent
-    getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
-    getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
-    getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
+    val color = ColorEngine.getInstance(context).accent
+    val buttons = listOf(
+            getButton(AlertDialog.BUTTON_NEGATIVE),
+            getButton(AlertDialog.BUTTON_NEUTRAL),
+            getButton(AlertDialog.BUTTON_POSITIVE))
+    buttons.forEach {
+        it.setTextColor(color)
+        it.setGoogleSans(Typeface.BOLD)
+    }
 }
 
 fun BgDataModel.workspaceContains(packageName: String): Boolean {

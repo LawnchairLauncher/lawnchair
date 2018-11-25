@@ -52,6 +52,7 @@
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
@@ -82,6 +83,7 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
+        <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">

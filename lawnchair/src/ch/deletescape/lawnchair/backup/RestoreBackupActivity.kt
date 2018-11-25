@@ -35,6 +35,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.provider.RestoreDbTask
 
 class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback, ColorEngine.OnAccentChangeListener {
     private val backupName by lazy { findViewById<AppCompatEditText>(R.id.name) }
@@ -195,6 +196,10 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                     Utilities.getLawnchairPrefs(this@RestoreBackupActivity).blockingEdit {
                         restoreSuccess = true
                     }
+                }
+
+                if (result and LawnchairBackup.INCLUDE_HOMESCREEN != 0) {
+                    RestoreDbTask.setPending(context, true)
                 }
 
                 Handler().postDelayed({

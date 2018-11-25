@@ -77,7 +77,7 @@ public class RestoreDbTask {
         }
 
         // Mark all items as restored.
-        boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
+        boolean keepAllIcons = true;
         ContentValues values = new ContentValues();
         values.put(Favorites.RESTORED, ShortcutInfo.FLAG_RESTORED_ICON
                 | (keepAllIcons ? ShortcutInfo.FLAG_RESTORE_STARTED : 0));
@@ -130,11 +130,11 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
+        return Utilities.getDevicePrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
     }
 
     public static void setPending(Context context, boolean isPending) {
         FileLog.d(TAG, "Restore data received through full backup " + isPending);
-        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
+        Utilities.getDevicePrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
 }

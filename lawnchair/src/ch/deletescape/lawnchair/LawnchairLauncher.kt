@@ -65,6 +65,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
         super.onCreate(savedInstanceState)
 
+        hookGoogleSansDialogTitle()
+
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
         Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
     }

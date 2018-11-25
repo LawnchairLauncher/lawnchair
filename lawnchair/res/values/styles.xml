@@ -159,6 +159,7 @@
         <item name="android:windowBackground">@drawable/dialog_material_background</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
+        <item name="android:buttonStyle">@style/SettingsTheme.V2.Button</item>
     </style>
 
     <style name="SettingsTheme.V2.Dark" parent="@style/Theme.AppCompat.NoActionBar">
@@ -184,6 +185,7 @@
         <item name="android:windowBackground">@drawable/dialog_material_background</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
+        <item name="android:buttonStyle">@style/SettingsTheme.V2.Button</item>
     </style>
 
     <style name="SettingsTheme.V2.Black" parent="@style/SettingsTheme.V2.Dark">

@@ -23,9 +23,9 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Process;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
