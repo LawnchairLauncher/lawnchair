@@ -76,6 +76,13 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
 
         search_view.setOnQueryTextListener(this)
         search_view.requestFocus()
+
+        overridePendingTransition(R.anim.fade_in_short, R.anim.fade_out_short)
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.fade_in_short, R.anim.fade_out_short)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -228,8 +235,8 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                 Pair("!!restart", { _ -> prefs.restart() }),
                 Pair("!!peru", { it ->
                     prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled
-                    it.finishAffinity()
-                    it.startActivity(Intent(it, SettingsActivity::class.java))
+                    it.startActivity(Intent(it, SettingsActivity::class.java)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                 }),
                 Pair("!!kys", { _ -> 1 / 0 }),
                 Pair("uuddlrlrba", { _ -> Toast.makeText(prefs.context, "ok, we get it, you're a gamer", Toast.LENGTH_LONG).show() })
