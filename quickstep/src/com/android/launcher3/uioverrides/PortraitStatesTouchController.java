@@ -24,6 +24,7 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRE
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -114,10 +115,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         } else {
-            // For all other states, only listen if the event originated below the hotseat height
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-            int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-            mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
+            // For all other states, only listen if the event originated from the navbar
+            mStartedFromHotseat = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
             if (!mStartedFromHotseat && !mLauncher.isInState(NORMAL)) {
                 return false;
             }
