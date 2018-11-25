@@ -20,12 +20,14 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import com.android.launcher3.BuildConfig;
 import com.google.android.libraries.launcherclient.ILauncherOverlay;
 import com.google.android.libraries.launcherclient.ILauncherOverlayCallback;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {
-    public final static boolean BRIDGE_USE = true;
+    public final static boolean BRIDGE_USE = !BuildConfig.DEBUG;
+    public final static boolean SMARTSPACE_BRIDGE_USE = true;
     public final static String BRIDGE_PACKAGE = "com.google.android.apps.nexuslauncher";
 
     private static int apiVersion = -1;
@@ -310,6 +312,13 @@ public class LauncherClient {
         }
     }
 
+    private int verifyAndGetAnimationFlags(int duration) {
+        if ((duration <= 0) || (duration > 2047)) {
+            throw new IllegalArgumentException("Invalid duration");
+        }
+        return 0x1 | duration << 2;
+    }
+
     public final void hideOverlay(boolean feedRunning) {
         if (mOverlay != null) {
             try {
@@ -319,7 +328,16 @@ public class LauncherClient {
         }
     }
 
-    /* Only used for accessibility
+    public final void hideOverlay(int duration) {
+        if (mOverlay != null) {
+            try {
+                mOverlay.closeOverlay(verifyAndGetAnimationFlags(duration));
+            } catch (RemoteException ignored) {
+            }
+        }
+    }
+
+    // Only used for accessibility
     public final void showOverlay(boolean feedRunning) {
         if (mOverlay != null) {
             try {
@@ -328,7 +346,6 @@ public class LauncherClient {
             }
         }
     }
-    */
 
     public final boolean startSearch(byte[] bArr, Bundle bundle) {
         if (apiVersion >= 6 && mOverlay != null) {
