@@ -170,6 +170,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
+    public void onAccentChange(int color, int foregroundColor) {
+        super.onAccentChange(color, foregroundColor);
+
+        if (shouldShowSearch()) {
+            Drawable search = getResources().getDrawable(R.drawable.ic_settings_search, null);
+            search.setTint(color);
+
+            Toolbar toolbar = findViewById(R.id.search_action_bar);
+            toolbar.setNavigationIcon(search);
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_action_bar) {
             startActivity(new Intent(this, SettingsSearchActivity.class));

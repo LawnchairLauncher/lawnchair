@@ -52,7 +52,7 @@
 
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_settings_search"
         android:summary="@string/search_pref_summary"
         android:title="@string/search_pref_title"
         app:content="@xml/lawnchair_search_preferences"

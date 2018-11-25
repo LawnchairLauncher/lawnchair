@@ -47,7 +47,7 @@
                 android:background="?android:attr/selectableItemBackground"
                 app:contentInsetStartWithNavigation="64dp"
                 app:contentInsetEnd="64dp"
-                app:navigationIcon="@drawable/ic_search"
+                app:navigationIcon="@drawable/ic_settings_search"
                 android:theme="@style/SettingsTheme.Search.Toolbar">
                 <TextView
                     android:id="@+id/search_action_bar_title"
