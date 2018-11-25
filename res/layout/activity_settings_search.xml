@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:paddingTop="35dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:alpha="0">
 
             <Space
                 android:layout_width="match_parent"

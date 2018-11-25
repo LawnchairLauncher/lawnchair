@@ -116,8 +116,8 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
             emptyList()
         else
             searchIndex.entries.filter { it.title.toLowerCase().contains(query.toLowerCase()) }
-        list_results.isVisible = matches.isNotEmpty() || query.isEmpty()
-        no_results_layout.isVisible = matches.isEmpty() && !query.isEmpty()
+        val showNoResults = matches.isEmpty() && !query.isEmpty()
+        no_results_layout.animate().alpha(if (showNoResults) 1f else 0f).start()
         searchAdapter.postSearchResults(matches)
     }
 
