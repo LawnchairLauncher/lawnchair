@@ -56,9 +56,13 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
 
         setContentView(R.layout.activity_settings_search)
 
-        list_results.adapter = searchAdapter
-        list_results.layoutManager = LinearLayoutManager(this)
-        list_results.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        val listResults = list_results
+        listResults.shouldTranslateSelf = false
+        listResults.isVerticalFadingEdgeEnabled = true
+        listResults.isTopFadingEdgeEnabled = false
+        listResults.adapter = searchAdapter
+        listResults.layoutManager = LinearLayoutManager(this)
+        listResults.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy != 0) {

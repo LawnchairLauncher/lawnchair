@@ -75,6 +75,7 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.settings.ui.search.SettingsSearchActivity;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
+import ch.deletescape.lawnchair.views.SpringRecyclerView;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
@@ -299,8 +300,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
-            RecyclerView recyclerView = (RecyclerView) inflater
+            SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
+            recyclerView.setShouldTranslateSelf(false);
+            recyclerView.setVerticalFadingEdgeEnabled(true);
+            recyclerView.setTopFadingEdgeEnabled(getTopFadingEdgeEnabled());
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
@@ -310,6 +314,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         abstract protected int getRecyclerViewLayoutRes();
+
+        protected boolean getTopFadingEdgeEnabled() {
+            return true;
+        }
 
         @Override
         public void setDivider(Drawable divider) {
@@ -445,6 +453,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
         protected int getRecyclerViewLayoutRes() {
             return BuildConfig.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
                     : R.layout.preference_spring_recyclerview;
+        }
+
+        @Override
+        protected boolean getTopFadingEdgeEnabled() {
+            return false;
         }
     }
 

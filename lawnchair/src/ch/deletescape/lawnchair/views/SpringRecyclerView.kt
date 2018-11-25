@@ -40,7 +40,9 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
         if (useAccentColor) ColorEngine.getInstance(context).accent else colorControlNormal
     }
 
-    open val shouldTranslateSelf = true
+    open var shouldTranslateSelf = true
+
+    var isTopFadingEdgeEnabled = true
 
     init {
         edgeEffectFactory = springManager.createFactory()
@@ -58,6 +60,10 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
             super.dispatchDraw(canvas)
             false
         }
+    }
+
+    override fun getTopFadingEdgeStrength(): Float {
+        return if (isTopFadingEdgeEnabled) super.getTopFadingEdgeStrength() else 0f
     }
 
     /**
