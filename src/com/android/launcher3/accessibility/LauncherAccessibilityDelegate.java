@@ -2,12 +2,12 @@ package com.android.launcher3.accessibility;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
