@@ -49,7 +49,7 @@ abstract class CustomInfoProvider<in T : ItemInfo> {
         }
 
         fun isEditable(info: ItemInfo): Boolean {
-            return info is AppInfo || info is ShortcutInfo
+            return info is AppInfo || (info is ShortcutInfo && !info.hasPromiseIconUi())
         }
     }
 }
