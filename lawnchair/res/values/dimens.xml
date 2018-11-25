@@ -43,4 +43,7 @@
 
     <!-- search_bar_margin + search_bar_height -->
     <dimen name="search_results_top_margin">64dp</dimen>
+    <dimen name="dashboard_tile_minimum_height">72dp</dimen>
+    <dimen name="dashboard_tile_foreground_image_size">24dp</dimen>
+    <dimen name="dashboard_tile_foreground_image_inset">6dp</dimen>
 </resources>

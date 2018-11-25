@@ -25,6 +25,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.getColorAccent
+import ch.deletescape.lawnchair.getColorAttr
 
 
 open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : RecyclerView(context, attrs, defStyleAttr) {
@@ -32,7 +34,11 @@ open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAt
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val springManager = SpringEdgeEffect.Manager(this)
-    private val scrollBarColor by lazy { ColorEngine.getInstance(context).accent }
+    private val scrollBarColor by lazy {
+        val colorControlNormal = context.getColorAttr(android.R.attr.colorControlNormal)
+        val useAccentColor = colorControlNormal == context.getColorAccent()
+        if (useAccentColor) ColorEngine.getInstance(context).accent else colorControlNormal
+    }
 
     open val shouldTranslateSelf = true
 

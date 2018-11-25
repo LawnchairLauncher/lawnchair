@@ -133,7 +133,6 @@
         <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
-        <item name="android:colorControlNormal">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
@@ -170,7 +169,6 @@
         <item name="actionBarTheme">@style/SettingsTheme.V2.Dark.ActionBar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
-        <item name="android:colorControlNormal">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="useLightSystemBars">false</item>
@@ -293,4 +291,7 @@
     <style name="SettingsTheme.Search.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="TextAppearance.Small" parent="@android:style/TextAppearance.Material.Small" />
+    <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead" />
 </resources>

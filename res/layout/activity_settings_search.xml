@@ -25,7 +25,7 @@
         android:id="@+id/layout_results"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/search_results_top_margin"
+        android:layout_marginTop="40dp"
         android:orientation="vertical">
 
         <!-- Padding is included in the background -->
@@ -36,7 +36,7 @@
             android:clipToPadding="false"
             android:paddingStart="@dimen/dashboard_padding_start"
             android:paddingEnd="@dimen/dashboard_padding_end"
-            android:paddingTop="@dimen/search_bar_margin"
+            android:paddingTop="40dp"
             android:paddingBottom="@dimen/dashboard_padding_bottom"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"/>

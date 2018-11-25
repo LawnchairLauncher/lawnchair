@@ -16,12 +16,18 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginTop="40dp" />
+
     <FrameLayout
         android:id="@+id/search_bar_container"
         android:layout_width="match_parent"
@@ -52,10 +58,4 @@
             </android.support.v7.widget.Toolbar>
         </android.support.v7.widget.CardView>
     </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/content"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/search_bar_negative_margin" />
-</LinearLayout>
+</FrameLayout>
