@@ -312,10 +312,26 @@ public class LauncherClient {
         }
     }
 
+    private int verifyAndGetAnimationFlags(int duration) {
+        if ((duration <= 0) || (duration > 2047)) {
+            throw new IllegalArgumentException("Invalid duration");
+        }
+        return 0x1 | duration << 2;
+    }
+
     public final void hideOverlay(boolean feedRunning) {
         if (mOverlay != null) {
             try {
                 mOverlay.closeOverlay(feedRunning ? 1 : 0);
+            } catch (RemoteException ignored) {
+            }
+        }
+    }
+
+    public final void hideOverlay(int duration) {
+        if (mOverlay != null) {
+            try {
+                mOverlay.closeOverlay(verifyAndGetAnimationFlags(duration));
             } catch (RemoteException ignored) {
             }
         }
