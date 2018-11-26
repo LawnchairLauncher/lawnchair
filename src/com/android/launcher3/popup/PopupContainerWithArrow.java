@@ -391,7 +391,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     private void initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info) {
-        View view = inflateAndAdd(resId, container);
+        View view = inflateAndAdd(
+                resId, container, getInsertIndexForSystemShortcut(container, info));
         if (view instanceof DeepShortcutView) {
             // Expanded system shortcut, with both icon and text shown on white background.
             final DeepShortcutView shortcutView = (DeepShortcutView) view;
@@ -403,6 +404,17 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         view.setTag(info);
         view.setOnClickListener(info.getOnClickListener(mLauncher,
                 (ItemInfo) mOriginalIcon.getTag()));
+    }
+
+    /**
+     * Returns an index for inserting a shortcut into a container.
+     */
+    private int getInsertIndexForSystemShortcut(ViewGroup container, SystemShortcut shortcut) {
+        final View separator = container.findViewById(R.id.separator);
+
+        return separator != null && shortcut.isLeftGroup() ?
+                container.indexOfChild(separator) :
+                container.getChildCount();
     }
 
     /**
