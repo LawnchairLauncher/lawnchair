@@ -24,7 +24,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
-
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -60,7 +59,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
-
+import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -90,8 +89,6 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
 
 /**
  * A list of recent tasks.
@@ -893,8 +890,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
             boolean shouldRemoveTask, long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
-            throw new IllegalStateException("Another pending animation is still running");
+        if (mPendingAnimation != null) {
+            mPendingAnimation.finish(false, Touch.SWIPE);
         }
         AnimatorSet anim = new AnimatorSet();
         PendingAnimation pendingAnimation = new PendingAnimation(anim);

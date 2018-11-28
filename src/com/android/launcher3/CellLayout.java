@@ -62,6 +62,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
@@ -82,7 +83,7 @@ public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
-    private final Launcher mLauncher;
+    protected final ActivityContext mActivity;
     @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -106,7 +107,6 @@ public class CellLayout extends ViewGroup {
     private GridOccupancy mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
-    private final StylusEventHelper mStylusEventHelper;
 
     private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
@@ -201,9 +201,9 @@ public class CellLayout extends ViewGroup {
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
         setClipToPadding(false);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = ActivityContext.lookupContext(context);
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivity.getDeviceProfile();
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -286,8 +286,6 @@ public class CellLayout extends ViewGroup {
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context, mContainerType);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
-
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         addView(mShortcutsAndWidgets);
     }
 
@@ -335,20 +333,6 @@ public class CellLayout extends ViewGroup {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean handled = super.onTouchEvent(ev);
-        // Stylus button press on a home screen should not switch between overview mode and
-        // the home screen mode, however, once in overview mode stylus button press should be
-        // enabled to allow rearranging the different home screens. So check what mode
-        // the workspace is in, and only perform stylus button presses while in overview mode.
-        if (mLauncher.isInState(LauncherState.OVERVIEW)
-                && mStylusEventHelper.onMotionEvent(ev)) {
-            return true;
-        }
-        return handled;
     }
 
     public void enableHardwareLayer(boolean hasLayer) {
@@ -504,7 +488,7 @@ public class CellLayout extends ViewGroup {
 
     public void setFolderLeaveBehindCell(int x, int y) {
         View child = getChildAt(x, y);
-        mFolderLeaveBehind.setup(mLauncher, null,
+        mFolderLeaveBehind.setup(getContext(), mActivity, null,
                 child.getMeasuredWidth(), child.getPaddingTop());
 
         mFolderLeaveBehind.delegateCellX = x;
@@ -945,7 +929,7 @@ public class CellLayout extends ViewGroup {
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
                 if (v instanceof LauncherAppWidgetHostView) {
-                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    DeviceProfile profile = mActivity.getDeviceProfile();
                     Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
                 }
             } else {
@@ -2047,7 +2031,7 @@ public class CellLayout extends ViewGroup {
                     .translationY(initDeltaY)
                     .build(child)
                     .setDuration(REORDER_ANIMATION_DURATION);
-            mLauncher.getDragController().addFirstFrameAnimationHelper(a);
+            Launcher.cast(mActivity).getDragController().addFirstFrameAnimationHelper(a);
             a.setInterpolator(DEACCEL_1_5);
             a.start();
         }
@@ -2063,7 +2047,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement() {
         mTmpOccupied.copyTo(mOccupied);
 
-        int screenId = mLauncher.getWorkspace().getIdForScreen(this);
+        int screenId = Launcher.cast(mActivity).getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
@@ -2089,8 +2073,8 @@ public class CellLayout extends ViewGroup {
                 info.spanY = lp.cellVSpan;
 
                 if (requiresDbUpdate) {
-                    mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
-                            info.cellX, info.cellY, info.spanX, info.spanY);
+                    Launcher.cast(mActivity).getModelWriter().modifyItemInDatabase(info, container,
+                            screenId, info.cellX, info.cellY, info.spanX, info.spanY);
                 }
             }
         }

@@ -71,6 +71,13 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         mAccessibilityActionId = other.mAccessibilityActionId;
     }
 
+    /**
+     * Should be in the left group of icons in app's context menu header.
+     */
+    public boolean isLeftGroup() {
+        return false;
+    }
+
     public void setIconAndLabelFor(View iconView, TextView labelView) {
         if (mIcon != null) {
             mIcon.loadDrawableAsync(iconView.getContext(),

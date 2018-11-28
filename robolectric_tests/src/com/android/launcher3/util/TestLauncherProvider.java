@@ -23,11 +23,6 @@ public class TestLauncherProvider extends LauncherProvider {
         }
     }
 
-    public SQLiteOpenHelper getHelper() {
-        createDbIfNotExists();
-        return mOpenHelper;
-    }
-
     @Override
     protected void notifyListeners() { }
 

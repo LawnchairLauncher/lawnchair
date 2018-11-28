@@ -26,10 +26,8 @@ import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 
 /**
  * Handles the user event logging in Q.
- * Since the AOSP Launcher3 doesn't take part in the StatsLog logging, the class
- * itself is abstract.
  */
-public abstract class StatsLogManager implements ResourceBasedOverride {
+public class StatsLogManager implements ResourceBasedOverride {
 
     protected LogStateProvider mStateProvider;
     public static StatsLogManager newInstance(Context context, LogStateProvider stateProvider) {

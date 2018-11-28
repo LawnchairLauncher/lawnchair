@@ -15,9 +15,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Pair;
 
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
@@ -30,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +35,7 @@ import java.util.List;
 /**
  * Tests for {@link AddWorkspaceItemsTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
     private final ComponentName mComponent1 = new ComponentName("a", "b");
@@ -174,7 +171,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     private void commitScreensToDb() throws Exception {
-        LauncherSettings.Settings.call(mProviderRule.getResolver(),
+        LauncherSettings.Settings.call(targetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
 
         Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -189,6 +186,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
         }
-        mProviderRule.getResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
+        targetContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
     }
 }

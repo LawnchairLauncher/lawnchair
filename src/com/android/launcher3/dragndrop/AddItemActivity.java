@@ -58,6 +58,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.Provider;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
@@ -312,6 +313,11 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         super.onRestoreInstanceState(savedInstanceState);
         mPendingBindWidgetId = savedInstanceState
                 .getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
+    }
+
+    @Override
+    public BaseDragLayer getDragLayer() {
+        throw new UnsupportedOperationException();
     }
 
     private void logCommand(int command) {
