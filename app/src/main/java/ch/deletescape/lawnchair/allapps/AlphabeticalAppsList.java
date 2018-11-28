@@ -311,7 +311,9 @@ public class AlphabeticalAppsList {
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
         TreeMap<String, ArrayList<AppInfo>> sectionMap;
-        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
+        boolean localeRequiresSectionSorting =
+                Locale.SIMPLIFIED_CHINESE.getLanguage().equals(curLocale.getLanguage())
+                && Locale.SIMPLIFIED_CHINESE.getCountry().equals(curLocale.getCountry());
         if (localeRequiresSectionSorting) {
             // Compute the section headers.  We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
