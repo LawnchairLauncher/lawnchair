@@ -72,5 +72,8 @@ class RootHelperManager(private val context: Context) {
         }
     }
 
-    companion object : SingletonHolder<RootHelperManager, Context>(ensureOnMainThread(useApplicationContext(::RootHelperManager)))
+    companion object : SingletonHolder<RootHelperManager, Context>(ensureOnMainThread(useApplicationContext(::RootHelperManager))) {
+
+        val isAvailable by lazy { Shell.SU.available() }
+    }
 }

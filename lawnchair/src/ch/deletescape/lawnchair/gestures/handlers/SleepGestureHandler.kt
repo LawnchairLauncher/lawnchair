@@ -94,7 +94,7 @@ class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMetho
 }
 
 class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(context) {
-    override val supported = Shell.SU.available()
+    override val supported = RootHelperManager.isAvailable
 
     override fun sleep(controller: GestureController) {
         RootHelperManager.getInstance(context).run(IRootHelper::goToSleep)

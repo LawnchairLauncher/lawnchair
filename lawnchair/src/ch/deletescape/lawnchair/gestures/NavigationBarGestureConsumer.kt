@@ -25,12 +25,14 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
+import android.os.SystemClock
 import android.support.annotation.Keep
 import android.support.v4.content.ContextCompat
 import android.view.*
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.root.RootHelperManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.quickstep.OverviewInteractionState
@@ -53,6 +55,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
     private val lastPos = PointF()
     private var navBarSize = 0
     private var downFraction = 0f
+    private var downTime:Long = 0
 
     private var gestureHandler: GestureHandler? = null
 
@@ -82,6 +85,8 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
                 passedInitialSlop = false
                 quickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx()
                 quickScrubDragSlop = NavigationBarCompat.getQuickScrubTouchSlopPx()
+
+                downTime = SystemClock.uptimeMillis()
 
                 downPos.set(ev.x, ev.y)
                 lastPos.set(downPos)
@@ -116,8 +121,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
                         passedInitialSlop = true
 
                         if (!inQuickScrub) {
-                            if (context.lawnchairApp.performGlobalAction(
-                                            AccessibilityService.GLOBAL_ACTION_BACK)) {
+                            if (performBackPress()) {
                                 playClickEffect()
                             }
                         }
@@ -127,6 +131,17 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
         }
 
         super.accept(ev)
+    }
+
+    private fun performBackPress(): Boolean {
+        if (RootHelperManager.isAvailable) {
+            RootHelperManager.getInstance(context).run {
+                it.sendKeyEvent(KeyEvent.KEYCODE_BACK, KeyEvent.ACTION_DOWN, 0, downTime, SystemClock.uptimeMillis())
+                it.sendKeyEvent(KeyEvent.KEYCODE_BACK, KeyEvent.ACTION_UP, 0, downTime, SystemClock.uptimeMillis())
+            }
+            return true
+        }
+        return context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
     }
 
     private fun playClickEffect() {
