@@ -547,6 +547,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
+        newScreen.getShortcutsAndWidgets().setId(R.id.workspace_page_container);
         int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
         int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
@@ -2386,7 +2387,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private void manageFolderFeedback(CellLayout targetLayout,
             int[] targetCell, float distance, DragObject dragObject) {
-        if (distance > mMaxDistanceForFolderCreation) return;
+        if (distance > mMaxDistanceForFolderCreation) {
+            if (mDragMode != DRAG_MODE_NONE) {
+                setDragMode(DRAG_MODE_NONE);
+            }
+            return;
+        }
 
         final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
         ItemInfo info = dragObject.dragInfo;

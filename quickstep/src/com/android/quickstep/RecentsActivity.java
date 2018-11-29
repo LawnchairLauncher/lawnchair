@@ -20,6 +20,7 @@ import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 
 import static com.android.launcher3.LauncherAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -52,7 +53,6 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -70,7 +70,6 @@ public class RecentsActivity extends BaseDraggingActivity {
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private RecentsRootView mRecentsRootView;
     private FallbackRecentsView mFallbackRecentsView;
-    private RecentsViewContainer mOverviewPanelContainer;
 
     private Configuration mOldConfig;
 
@@ -84,7 +83,6 @@ public class RecentsActivity extends BaseDraggingActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
-        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
 
         mRecentsRootView.setup();
 
@@ -166,10 +164,6 @@ public class RecentsActivity extends BaseDraggingActivity {
         return (T) mFallbackRecentsView;
     }
 
-    public RecentsViewContainer getOverviewPanelContainer() {
-        return mOverviewPanelContainer;
-    }
-
     @Override
     public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
         return null;
@@ -193,7 +187,8 @@ public class RecentsActivity extends BaseDraggingActivity {
         };
         return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
                 runner, RECENTS_LAUNCH_DURATION,
-                RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION));
+                RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
+                        - STATUS_BAR_TRANSITION_PRE_DELAY));
     }
 
     /**
