@@ -27,7 +27,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,11 +43,11 @@ import android.widget.TextView;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.badge.BadgeInfo;
-import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
@@ -74,12 +73,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
         @Override
         public Float get(BubbleTextView bubbleTextView) {
-            return bubbleTextView.mBadgeScale;
+            return bubbleTextView.mDotParams.scale;
         }
 
         @Override
         public void set(BubbleTextView bubbleTextView, Float value) {
-            bubbleTextView.mBadgeScale = value;
+            bubbleTextView.mDotParams.scale = value;
             bubbleTextView.invalidate();
         }
     };
@@ -117,14 +116,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private BadgeInfo mBadgeInfo;
-    private BadgeRenderer mBadgeRenderer;
-    private int mBadgeColor;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mBadgeScale;
+    private DotRenderer mDotRenderer;
+    @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
+    private DotRenderer.DrawParams mDotParams;
     private Animator mBadgeScaleAnim;
     private boolean mForceHideBadge;
-    private Point mTempSpaceForBadgeOffset = new Point();
-    private Rect mTempIconBounds = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
@@ -176,6 +172,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
+        mDotParams = new DotRenderer.DrawParams();
+
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
@@ -193,9 +191,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      */
     public void reset() {
         mBadgeInfo = null;
-        mBadgeColor = Color.TRANSPARENT;
+        mDotParams.color = Color.TRANSPARENT;
         cancelBadgeScaleAnim();
-        mBadgeScale = 0f;
+        mDotParams.scale = 0f;
         mForceHideBadge = false;
     }
 
@@ -259,7 +257,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
                 .newIcon(getContext(), info);
-        mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
         setText(info.title);
@@ -383,14 +381,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * @param canvas The canvas to draw to.
      */
     protected void drawBadgeIfNecessary(Canvas canvas) {
-        if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
-            getIconBounds(mTempIconBounds);
-            mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
+        if (!mForceHideBadge && (hasBadge() || mDotParams.scale > 0)) {
+            getIconBounds(mDotParams.iconBounds);
+            mDotParams.spaceForOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
-            mBadgeRenderer.draw(canvas, mBadgeColor, mTempIconBounds, mBadgeScale,
-                    mTempSpaceForBadgeOffset);
+            mDotRenderer.draw(canvas, mDotParams);
             canvas.translate(-scrollX, -scrollY);
         }
     }
@@ -545,14 +542,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
             boolean isBadged = mBadgeInfo != null;
             float newBadgeScale = isBadged ? 1f : 0;
-            mBadgeRenderer = mActivity.getDeviceProfile().mBadgeRenderer;
+            mDotRenderer = mActivity.getDeviceProfile().mDotRenderer;
             if (wasBadged || isBadged) {
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
                     animateBadgeScale(newBadgeScale);
                 } else {
                     cancelBadgeScaleAnim();
-                    mBadgeScale = newBadgeScale;
+                    mDotParams.scale = newBadgeScale;
                     invalidate();
                 }
             }
