@@ -304,6 +304,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         mNavBarScrimHeight = insets.bottom;
         InsettableFrameLayout.dispatchInsets(this, insets);
+        mLauncher.getAllAppsController()
+                .setScrollRangeDelta(mSearchUiManager.getScrollRangeDelta(insets));
     }
 
     @Override

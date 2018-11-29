@@ -221,7 +221,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     /**
      * Updates the total scroll range but does not update the UI.
      */
-    public void setScrollRangeDelta(float delta) {
+    void setScrollRangeDelta(float delta) {
         mScrollRangeDelta = delta;
         mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
 

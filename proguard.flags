@@ -50,3 +50,4 @@
 -dontwarn android.app.**
 -dontwarn android.view.**
 -dontwarn android.os.**
+-dontwarn android.graphics.**

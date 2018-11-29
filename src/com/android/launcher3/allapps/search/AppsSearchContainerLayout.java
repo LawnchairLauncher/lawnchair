@@ -208,13 +208,16 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
         requestLayout();
+    }
 
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        if (dp.isVerticalBarLayout()) {
-            mLauncher.getAllAppsController().setScrollRangeDelta(0);
+    @Override
+    public float getScrollRangeDelta(Rect insets) {
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            return 0;
         } else {
-            mLauncher.getAllAppsController().setScrollRangeDelta(
-                    insets.bottom + mlp.topMargin + mFixedTranslationY);
+            int topMargin = Math.round(Math.max(
+                    -mFixedTranslationY, insets.top - mMarginTopAdjusting));
+           return insets.bottom + topMargin + mFixedTranslationY;
         }
     }
 

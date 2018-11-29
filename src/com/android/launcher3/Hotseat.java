@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -31,8 +30,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends CellLayout implements LogContainerProvider, Insettable {
-
-    private final Launcher mLauncher;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
@@ -47,7 +44,6 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = Launcher.getLauncher(context);
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
@@ -59,24 +55,15 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
 
-    void resetLayout(boolean hasVerticalHotseat) {
+    public void resetLayout(boolean hasVerticalHotseat) {
         removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
-        InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
+        InvariantDeviceProfile idp = mActivity.getDeviceProfile().inv;
         if (hasVerticalHotseat) {
             setGridSize(1, idp.numHotseatIcons);
         } else {
             setGridSize(idp.numHotseatIcons, 1);
         }
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // We don't want any clicks to go through to the hotseat unless the workspace is in
-        // the normal state or an accessible drag is in progress.
-        return (!mLauncher.getWorkspace().workspaceIconsCanBeDragged()
-                && !mLauncher.getAccessibilityDelegate().isInAccessibleDrag())
-                || super.onInterceptTouchEvent(ev);
     }
 
     @Override
@@ -89,7 +76,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivity.getDeviceProfile();
 
         if (grid.isVerticalBarLayout()) {
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;

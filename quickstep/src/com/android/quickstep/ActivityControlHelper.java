@@ -29,7 +29,6 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
-
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -44,7 +43,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -76,9 +76,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -156,10 +153,21 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         public void onQuickInteractionStart(Launcher activity, RunningTaskInfo taskInfo,
                 boolean activityVisible, TouchInteractionLog touchInteractionLog) {
             LauncherState fromState = activity.getStateManager().getState();
-            activity.getStateManager().goToState(FAST_OVERVIEW, activityVisible);
-
             QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
                     .getQuickScrubController();
+            boolean isQuickSwitch = controller.isQuickSwitch();
+            boolean animate = activityVisible;
+            if (isQuickSwitch && fromState == FAST_OVERVIEW && !animate) {
+                // We can already be in FAST_OVERVIEW if createActivityController() was called
+                // before us. This could happen, for instance, when launcher is slow to load when
+                // starting quick switch, causing us to call onQuickScrubStart() on the background
+                // thread. In this case, we also hadn't set isQuickSwitch = true before setting
+                // FAST_OVERVIEW, so we need to reapply FAST_OVERVIEW to take that into account.
+                activity.getStateManager().reapplyState();
+            } else {
+                activity.getStateManager().goToState(FAST_OVERVIEW, animate);
+            }
+
             controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this,
                     touchInteractionLog);
 

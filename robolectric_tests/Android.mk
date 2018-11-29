@@ -29,6 +29,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 LOCAL_JAVA_LIBRARIES := \
     platform-robolectric-3.6.1-prebuilt
 
+LOCAL_JAVA_RESOURCE_DIRS := resources config
+
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 LOCAL_MODULE_TAGS := optional
 

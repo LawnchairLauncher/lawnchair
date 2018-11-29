@@ -107,7 +107,8 @@ public class PreviewItemManager {
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
 
-            mIcon.mBackground.setup(mIcon.mLauncher, mIcon, mTotalWidth, mIcon.getPaddingTop());
+            mIcon.mBackground.setup(mIcon.mLauncher, mIcon.mLauncher, mIcon, mTotalWidth,
+                    mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
 

@@ -475,6 +475,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onViewAdded(child);
     }
 
+    protected boolean onInterceptHotseatTouch(View v, MotionEvent ev) {
+        // We don't want any clicks to go through to the hotseat unless the workspace is in
+        // the normal state or an accessible drag is in progress.
+        return !workspaceIconsCanBeDragged()
+                && !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+    }
+
     /**
      * Initializes and binds the first page
      * @param qsb an existing qsb to recycle or null.
@@ -2442,7 +2449,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             this.cellY = cellY;
 
             BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
-            bg.setup(mLauncher, null, cell.getMeasuredWidth(), cell.getPaddingTop());
+            bg.setup(mLauncher, mLauncher, null, cell.getMeasuredWidth(), cell.getPaddingTop());
 
             // The full preview background should appear behind the icon
             bg.isClipping = false;

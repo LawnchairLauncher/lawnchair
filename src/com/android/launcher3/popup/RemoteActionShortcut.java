@@ -76,4 +76,9 @@ public class RemoteActionShortcut extends SystemShortcut<Launcher> {
                     LauncherLogProto.ControlType.REMOTE_ACTION_SHORTCUT, view);
         };
     }
+
+    @Override
+    public boolean isLeftGroup() {
+        return true;
+    }
 }
