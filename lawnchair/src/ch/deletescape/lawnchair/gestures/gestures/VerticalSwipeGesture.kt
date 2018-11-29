@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair.gestures.gestures
 
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
-import ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler
-import ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler
-import ch.deletescape.lawnchair.gestures.handlers.StartAppSearchGestureHandler
+import ch.deletescape.lawnchair.gestures.handlers.*
+import com.android.launcher3.LauncherState
+import com.android.launcher3.LauncherState.ALL_APPS
 
 class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) {
 
@@ -29,16 +29,23 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
 
     private val swipeUpHandler by controller.createHandlerPref("pref_gesture_swipe_up",
             OpenDrawerGestureHandler(controller.launcher, null))
+    private val dockSwipeUpHandler by controller.createHandlerPref("pref_gesture_dock_swipe_up",
+            OpenDrawerGestureHandler(controller.launcher, null))
     private val swipeDownHandler by controller.createHandlerPref("pref_gesture_swipe_down",
             NotificationsOpenGestureHandler(controller.launcher, null))
 
-    val customSwipeUp get() = swipeUpHandler !is OpenDrawerGestureHandler
+    val customSwipeUp get() = swipeUpHandler !is VerticalSwipeGestureHandler
+    val customDockSwipeUp get() = dockSwipeUpHandler !is VerticalSwipeGestureHandler
     val customSwipeDown get() = swipeDownHandler !is NotificationsOpenGestureHandler
 
     val swipeUpAppsSearch get() = swipeUpHandler is StartAppSearchGestureHandler
 
     fun onSwipeUp() {
         swipeUpHandler.onGestureTrigger(controller)
+    }
+
+    fun onDockSwipeUp() {
+        dockSwipeUpHandler.onGestureTrigger(controller)
     }
 
     fun onSwipeDown() {
@@ -48,6 +55,14 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
     fun onSwipeUpAllAppsComplete() {
         if (swipeUpAppsSearch) {
             controller.launcher.appsView.searchUiManager.startSearch()
+        }
+    }
+
+    fun getTargetState(fromDock: Boolean): LauncherState {
+        return if (fromDock) {
+            (dockSwipeUpHandler as? StateChangeGestureHandler)?.getTargetState() ?: ALL_APPS
+        } else {
+            (swipeUpHandler as? StateChangeGestureHandler)?.getTargetState() ?: ALL_APPS
         }
     }
 }

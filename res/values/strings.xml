@@ -542,6 +542,7 @@
     <string name="gesture_long_press">Long press</string>
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_dock_swipe_up">Swipe up from dock</string>
 
     <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>

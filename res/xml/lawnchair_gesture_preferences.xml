@@ -43,4 +43,11 @@
         android:persistent="true"
         android:title="@string/gesture_swipe_up"
         app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture"/>
+
+    <ch.deletescape.lawnchair.gestures.ui.GesturePreference
+        android:defaultValue="@string/action_open_drawer_class"
+        android:key="pref_gesture_dock_swipe_up"
+        android:persistent="true"
+        android:title="@string/gesture_dock_swipe_up"
+        app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture"/>
 </android.support.v7.preference.PreferenceScreen>

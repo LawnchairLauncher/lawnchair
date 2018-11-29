@@ -79,8 +79,11 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     }
 
     private fun getSwipeDirection(ev: MotionEvent): Int {
-        return if (gesture.customSwipeUp && !isOverHotseat(ev)) SwipeDetector.DIRECTION_BOTH
-        else SwipeDetector.DIRECTION_NEGATIVE
+        return when {
+            gesture.customSwipeUp && !isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
+            gesture.customDockSwipeUp && isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
+            else -> SwipeDetector.DIRECTION_NEGATIVE
+        }
     }
 
     override fun onDragStart(start: Boolean) {
@@ -107,6 +110,11 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 if (velocity < -triggerVelocity && state == GestureState.Free) {
                     state = GestureState.Triggered
                     gesture.onSwipeUp()
+                }
+            } else if (gesture.customDockSwipeUp) {
+                if (velocity < -triggerVelocity && state == GestureState.Free) {
+                    state = GestureState.Triggered
+                    gesture.onDockSwipeUp()
                 }
             }
         }

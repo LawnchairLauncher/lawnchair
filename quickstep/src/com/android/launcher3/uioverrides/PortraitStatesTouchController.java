@@ -28,11 +28,11 @@ import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -73,8 +73,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
 
+    private boolean mGoToOverview;
     private boolean mStartedFromHotseat;
-
 
     public PortraitStatesTouchController(Launcher l) {
         super(l, SwipeDetector.VERTICAL);
@@ -82,6 +82,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
+        mGoToOverview = false;
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
                 // TODO: Animate to finish instead.
@@ -108,18 +112,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             }
         } else if (mLauncher.isInState(OVERVIEW)) {
             // For overview, only listen if the event originated below the shelf height
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-            int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-            mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
-            if (!mStartedFromHotseat && !mLauncher.isInState(NORMAL)) {
-                return false;
-            }
-        } else {
-            // For all other states, only listen if the event originated from the navbar
-            mStartedFromHotseat = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
-            if (!mStartedFromHotseat && !mLauncher.isInState(NORMAL)) {
-                return false;
-            }
+            if (!mStartedFromHotseat) return false;
+            mGoToOverview = true;
+        } else if ((ev.getEdgeFlags() & EDGE_NAV_BAR) != 0) {
+            mGoToOverview = true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
@@ -136,7 +132,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? ALL_APPS : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
-            return TouchInteractionService.isConnected() && mStartedFromHotseat ? OVERVIEW : ALL_APPS;
+            if (TouchInteractionService.isConnected() && mGoToOverview) {
+                return OVERVIEW;
+            }
+            if (mLauncher instanceof LawnchairLauncher) {
+                return ((LawnchairLauncher) mLauncher).getGestureController()
+                        .getVerticalSwipeGesture().getTargetState(mStartedFromHotseat);
+            } else {
+                return ALL_APPS;
+            }
         }
         return fromState;
     }
