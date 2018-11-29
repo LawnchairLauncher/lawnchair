@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
@@ -585,6 +586,21 @@ public final class Utilities {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
+    }
+
+    /**
+     * Parses a string encoded using {@link #getPointString(int, int)}
+     */
+    public static Point parsePoint(String point) {
+        String[] split = point.split(",");
+        return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+    }
+
+    /**
+     * Encodes a point to string to that it can be persisted atomically.
+     */
+    public static String getPointString(int x, int y) {
+        return String.format(Locale.ENGLISH, "%d,%d", x, y);
     }
 
     public interface Consumer<T> {

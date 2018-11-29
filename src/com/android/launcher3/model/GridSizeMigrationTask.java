@@ -1,5 +1,8 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Utilities.getPointString;
+import static com.android.launcher3.Utilities.parsePoint;
+
 import android.content.ComponentName;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -875,15 +878,6 @@ public class GridSizeMigrationTask {
             dup.add(e.copy());
         }
         return dup;
-    }
-
-    private static Point parsePoint(String point) {
-        String[] split = point.split(",");
-        return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
-    }
-
-    private static String getPointString(int x, int y) {
-        return String.format(Locale.ENGLISH, "%d,%d", x, y);
     }
 
     public static void markForMigration(

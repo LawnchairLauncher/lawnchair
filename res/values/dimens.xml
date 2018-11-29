@@ -36,7 +36,7 @@
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <!-- Extra bottom padding for non-tall devices. -->
     <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_extra_vertical_size">34dp</dimen>
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Hotseat/all-apps scrim -->

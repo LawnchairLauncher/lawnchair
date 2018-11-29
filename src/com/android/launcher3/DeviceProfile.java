@@ -207,11 +207,10 @@ public class DeviceProfile {
         // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
         hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
                 ? edgeMarginPx : 0;
-        hotseatBarSizePx = isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm) + hotseatBarSidePaddingStartPx
-                        + hotseatBarSidePaddingEndPx
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
-                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+        hotseatBarSizePx = Utilities.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
+                ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
+                : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
+                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);

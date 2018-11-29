@@ -44,7 +44,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -378,18 +377,13 @@ public class ImportDataTask {
         return false;
     }
 
-    private static int getMyHotseatLayoutId(Context context) {
-        return LauncherAppState.getIDP(context).numHotseatIcons <= 5
-                ? R.xml.dw_phone_hotseat
-                : R.xml.dw_tablet_hotseat;
-    }
-
     /**
      * Extension of {@link DefaultLayoutParser} which only allows icons and shortcuts.
      */
     private static class HotseatLayoutParser extends DefaultLayoutParser {
         public HotseatLayoutParser(Context context, LayoutParserCallback callback) {
-            super(context, null, callback, context.getResources(), getMyHotseatLayoutId(context));
+            super(context, null, callback, context.getResources(),
+                    LauncherAppState.getIDP(context).defaultLayoutId);
         }
 
         @Override
@@ -434,6 +428,12 @@ public class ImportDataTask {
                 // No need to add more items.
                 return 0;
             }
+            if (!Integer.valueOf(Favorites.CONTAINER_HOTSEAT)
+                    .equals(values.getAsInteger(Favorites.CONTAINER))) {
+                // Ignore items which are not for hotseat.
+                return 0;
+            }
+
             Intent intent;
             try {
                 intent = Intent.parseUri(values.getAsString(Favorites.INTENT), 0);
