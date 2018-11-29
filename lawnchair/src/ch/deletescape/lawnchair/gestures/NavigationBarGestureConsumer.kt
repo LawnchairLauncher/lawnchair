@@ -66,8 +66,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
     private var quickScrubDragSlop = 0
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private val isRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
-    private val swipeForBack = downTarget == NavigationBarCompat.HIT_TARGET_HOME &&
-            launcher != null && context.lawnchairPrefs.swipeLeftToGoBack
+    private val swipeForBack = launcher != null && context.lawnchairPrefs.swipeLeftToGoBack
 
     override fun accept(ev: MotionEvent) {
         when (ev.actionMasked) {
@@ -133,6 +132,8 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
     private fun playClickEffect() {
         val audioManager = ContextCompat.getSystemService(context, AudioManager::class.java)
         audioManager?.playSoundEffect(SoundEffectConstants.CLICK)
+        launcher?.rootView?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING)
     }
 
     private fun getVerticalDisplacement(ev: MotionEvent): Float {
