@@ -101,11 +101,11 @@ public class BaseIconFactory implements AutoCloseable {
     }
 
     public BitmapInfo createIconBitmap(Bitmap icon) {
-        if (mIconBitmapSize == icon.getWidth() && mIconBitmapSize == icon.getHeight()) {
-            return BitmapInfo.fromBitmap(icon);
+        if (mIconBitmapSize != icon.getWidth() || mIconBitmapSize != icon.getHeight()) {
+            icon = createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f);
         }
-        return BitmapInfo.fromBitmap(
-                createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f));
+
+        return BitmapInfo.fromBitmap(icon, mDisableColorExtractor ? null : mColorExtractor);
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
