@@ -420,8 +420,6 @@ public class LauncherStateManager {
         }
 
         UiFactory.onLauncherStateOrResumeChanged(mLauncher);
-
-        mLauncher.getDragLayer().requestFocus();
     }
 
     public void onWindowFocusChanged() {
