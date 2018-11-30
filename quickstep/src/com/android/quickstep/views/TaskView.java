@@ -268,14 +268,9 @@ public class TaskView extends FrameLayout implements PageCallbacks {
                         setIcon(task.icon);
                         mDigitalWellBeingToast.initialize(
                                 mTask,
-                                (appRemainingTimeMs, isGroupLimit) -> {
+                                (appRemainingTimeMs, isGroupLimit, contentDescription) -> {
                                     mAppRemainingTimeMs = appRemainingTimeMs;
-                                    setContentDescription(
-                                            hasRemainingTime() ?
-                                                    task.titleDescription + ". "
-                                                            + DigitalWellBeingToast.getText(
-                                                            appRemainingTimeMs, isGroupLimit) :
-                                                    task.titleDescription);
+                                    setContentDescription(contentDescription);
                                 });
                     });
         } else {
