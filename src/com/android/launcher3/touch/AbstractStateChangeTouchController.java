@@ -372,8 +372,7 @@ public abstract class AbstractStateChangeTouchController
 
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
-        final float interpolatedProgress = mCurrentAnimation.getInterpolator()
-                .getInterpolation(progress);
+        final float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
             targetState =
                     Float.compare(Math.signum(velocity), Math.signum(mProgressMultiplier)) == 0

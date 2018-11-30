@@ -243,7 +243,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             fling = false;
         }
         float progress = mCurrentAnimation.getProgressFraction();
-        float interpolatedProgress = mCurrentAnimation.getInterpolator().getInterpolation(progress);
+        float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
             logAction = Touch.FLING;
             boolean goingUp = velocity < 0;

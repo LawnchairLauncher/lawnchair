@@ -154,6 +154,10 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         return mCurrentFraction;
     }
 
+    public float getInterpolatedProgress() {
+        return getInterpolator().getInterpolation(mCurrentFraction);
+    }
+
     /**
      * Sets the action to be called when the animation is completed. Also clears any
      * previously set action.
