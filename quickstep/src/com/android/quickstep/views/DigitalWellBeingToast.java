@@ -34,7 +34,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 public final class DigitalWellBeingToast extends LinearLayout {
     public interface InitializeCallback {
-        void call(long t, boolean b);
+        void call(long remainingTimeMs, boolean isGroupLimit, String contentDescription);
     }
 
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
@@ -66,7 +66,10 @@ public final class DigitalWellBeingToast extends LinearLayout {
             final boolean isGroupLimit = true;
             post(() -> {
                 setRemainingTime(appRemainingTimeMs, isGroupLimit);
-                callback.call(appRemainingTimeMs, isGroupLimit);
+                callback.call(
+                        appRemainingTimeMs,
+                        isGroupLimit,
+                        getContentDescriptionForTask(task, appRemainingTimeMs, isGroupLimit));
             });
         });
     }
@@ -93,5 +96,15 @@ public final class DigitalWellBeingToast extends LinearLayout {
             Log.e(TAG, "Failed to open app usage settings for task "
                     + mTask.getTopComponent().getPackageName(), e);
         }
+    }
+
+    private String getContentDescriptionForTask(
+            Task task, long appRemainingTimeMs, boolean isGroupLimit) {
+        return appRemainingTimeMs > 0 ?
+                getResources().getString(
+                        R.string.task_contents_description_with_remaining_time,
+                        task.titleDescription,
+                        getText(appRemainingTimeMs, isGroupLimit)) :
+                task.titleDescription;
     }
 }
