@@ -128,6 +128,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_HIDE = "pref_app_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
+        private final static boolean HIDE_PREDICTION_OPTION = true;
         private SwitchPreference mPrefHide;
         private SwitchPreference mPrefHidePredictions;
         private LawnchairPreferences prefs;
@@ -149,7 +150,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
                     .findPreference(PREF_HIDE_FROM_PREDICTIONS);
-            if (!prefs.getShowPredictions()) {
+            if (!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
             }
         }
