@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -55,7 +56,15 @@ public class AlphaUpdateListener extends AnimationSuccessListener
             view.setVisibility(View.INVISIBLE);
         } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
                 && view.getVisibility() != View.VISIBLE) {
-            view.setVisibility(View.VISIBLE);
+            if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = ((ViewGroup) view);
+                int oldFocusability = viewGroup.getDescendantFocusability();
+                viewGroup.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                viewGroup.setVisibility(View.VISIBLE);
+                viewGroup.setDescendantFocusability(oldFocusability);
+            } else {
+                view.setVisibility(View.VISIBLE);
+            }
         }
     }
 }
