@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.colors.ColorEngine;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
@@ -300,6 +301,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView searchView = (TextView) holder.itemView;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
+                    int accent = ColorEngine.Companion.getInstance(searchView.getContext())
+                            .getAccent();
+                    searchView.setTextColor(accent);
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
