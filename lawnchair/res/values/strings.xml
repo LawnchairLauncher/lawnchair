@@ -92,4 +92,5 @@
 
     <string name="search_no_results">No results</string>
     <string name="search_menu">Search settings</string>
+    <string name="search_provider_s_finder">S Finder</string>
 </resources>

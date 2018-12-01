@@ -94,6 +94,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
+                SFinderSearchProvider(context),
                 if (BuildConfig.FEATURE_QUINOA) {
                     SesameSearchProvider(context)
                 } else {
