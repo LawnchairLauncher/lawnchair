@@ -29,7 +29,7 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
-import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
 
 public class DeviceProfile {
@@ -129,7 +129,7 @@ public class DeviceProfile {
     private boolean mIsSeascape;
 
     // Icon badges
-    public BadgeRenderer mBadgeRenderer;
+    public DotRenderer mDotRenderer;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -233,7 +233,7 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(iconSizePx);
+        mDotRenderer = new DotRenderer(iconSizePx);
     }
 
     public DeviceProfile copy(Context context) {

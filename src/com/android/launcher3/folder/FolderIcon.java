@@ -24,7 +24,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -57,11 +56,11 @@ import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -111,11 +110,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
-    private BadgeRenderer mBadgeRenderer;
-    @ViewDebug.ExportedProperty(category = "launcher")
+    private DotRenderer mDotRenderer;
+    @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
+    private DotRenderer.DrawParams mDotParams;
     private float mBadgeScale;
     private Animator mBadgeScaleAnim;
-    private Point mTempSpaceForBadgeOffset = new Point();
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -147,6 +146,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
+        mDotParams = new DotRenderer.DrawParams();
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
@@ -174,7 +174,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
+        icon.mDotRenderer = launcher.getDeviceProfile().mDotRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
@@ -492,13 +492,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void drawBadge(Canvas canvas) {
         if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-            BubbleTextView.getIconBounds(this, mTempBounds, mLauncher.getDeviceProfile().iconSizePx);
+            Rect iconBounds = mDotParams.iconBounds;
+            BubbleTextView.getIconBounds(this, iconBounds, mLauncher.getDeviceProfile().iconSizePx);
 
             // If we are animating to the accepting state, animate the badge out.
-            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
-            mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
-            mBadgeRenderer.draw(canvas, mBackground.getBadgeColor(), mTempBounds,
-                    badgeScale, mTempSpaceForBadgeOffset);
+            mDotParams.scale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
+            mDotParams.spaceForOffset.set(getWidth() - iconBounds.right, iconBounds.top);
+            mDotParams.color = mBackground.getBadgeColor();
+            mDotRenderer.draw(canvas, mDotParams);
         }
     }
 
