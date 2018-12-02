@@ -14,7 +14,9 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import ch.deletescape.lawnchair.LawnchairAppFilter;
 import com.android.launcher3.AllAppsList;
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
@@ -39,6 +41,8 @@ public class AppSearchProvider extends ContentProvider
     private final PipeDataWriter<Future> mPipeDataWriter;
     private LooperExecutor mLooper;
     private LauncherAppState mApp;
+
+    private AppFilter mBaseFilter;
 
     public AppSearchProvider() {
         mPipeDataWriter = new PipeDataWriter<Future>() {
@@ -176,6 +180,10 @@ public class AppSearchProvider extends ContentProvider
         throw new UnsupportedOperationException();
     }
 
+    public AppFilter getBaseFilter() {
+        if (mBaseFilter == null) mBaseFilter = new LawnchairAppFilter(getContext());
+        return mBaseFilter;
+    }
 
     class f implements Callable<List<AppInfo>>, LauncherModel.ModelUpdateTask
     {
@@ -201,7 +209,7 @@ public class AppSearchProvider extends ContentProvider
                 return Collections.emptyList();
             }
             final ArrayList<AppInfo> list = new ArrayList<>();
-            final List<AppInfo> data = DefaultAppSearchAlgorithm.getApps(mApp.getContext(), mAllAppsList.data);
+            final List<AppInfo> data = DefaultAppSearchAlgorithm.getApps(mApp.getContext(), mAllAppsList.data, getBaseFilter());
             final DefaultAppSearchAlgorithm.StringMatcher instance = DefaultAppSearchAlgorithm.StringMatcher.getInstance();
 
             for (final AppInfo appInfo : data) {

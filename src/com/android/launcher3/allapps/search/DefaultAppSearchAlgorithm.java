@@ -21,6 +21,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.Handler;
 import android.os.UserHandle;
 
+import ch.deletescape.lawnchair.LawnchairAppFilter;
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
@@ -46,10 +48,13 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
 
+    private final AppFilter mBaseFilter;
+
     public DefaultAppSearchAlgorithm(Context context, List<AppInfo> apps) {
         mContext = context;
         mApps = apps;
         mResultHandler = new Handler();
+        mBaseFilter = new LawnchairAppFilter(context);
     }
 
     @Override
@@ -78,7 +83,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         final String queryTextLower = query.toLowerCase();
         final ArrayList<ComponentKey> result = new ArrayList<>();
         StringMatcher matcher = StringMatcher.getInstance();
-        for (AppInfo info : getApps(mContext, mApps)) {
+        for (AppInfo info : getApps(mContext, mApps, mBaseFilter)) {
             if (matches(info, queryTextLower, matcher)) {
                 result.add(info.toComponentKey());
             }
@@ -86,7 +91,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return result;
     }
 
-    public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps) {
+    public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps, AppFilter filter) {
         if (!Utilities.getPrefs(context).getBoolean(SEARCH_HIDDEN_APPS, false)) {
             return defaultApps;
         }
@@ -95,6 +100,9 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
             final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
             for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+                if (!filter.shouldShowApp(info.getComponentName(), user)) {
+                    continue;
+                }
                 if (!duplicatePreventionCache.contains(info.getComponentName())) {
                     duplicatePreventionCache.add(info.getComponentName());
                     final AppInfo appInfo = new AppInfo(context, info, user);
