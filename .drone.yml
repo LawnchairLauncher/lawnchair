@@ -26,9 +26,9 @@ pipeline:
     secrets: [ store_password, key_password ]
     environment:
       - MAJOR_MINOR=2.0
-      - TRAVIS=true
-      - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
-      - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
+      - CI_BUILD=true
+      - CI_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
+      - CI_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleQuickstepLawnchairCiOptimized;
 
@@ -36,7 +36,7 @@ pipeline:
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/LawnchairWIP-quickstep-lawnchair-ci-optimized.apk
+    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/LawnchairAlpha-quickstep-lawnchair-ci-optimized.apk
     mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
