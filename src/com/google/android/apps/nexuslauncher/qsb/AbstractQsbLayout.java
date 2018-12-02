@@ -458,7 +458,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         loadPreferences(Utilities.getPrefs(getContext()));
     }
 
-    private void loadPreferences(SharedPreferences sharedPreferences) {
+    protected void loadPreferences(SharedPreferences sharedPreferences) {
         mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
         mLogoIconView.setImageDrawable(getIcon());
         mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
@@ -13,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
@@ -39,6 +41,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private TextView mHint;
     private AllAppsContainerView mAppsView;
     boolean mDoNotRemoveFallback;
+    private LawnchairPreferences prefs;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -56,6 +59,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getTranslationY();
         setClipToPadding(false);
+        prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
     }
 
     protected void onFinishInflate() {
@@ -84,6 +88,34 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         onExtractedColorsChanged(instance);
         dN();
         Ds.a(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
+        super.onSharedPreferenceChanged(sharedPreferences, str);
+        if (str.equals("pref_allAppsGoogleSearch")) {
+            loadPreferences(sharedPreferences);
+        }
+    }
+
+    @Override
+    protected Drawable getIcon(boolean colored) {
+        if (prefs.getAllAppsGlobalSearch()) {
+            return super.getIcon(colored);
+        } else {
+            return new AppSearchSearchProvider(getContext()).getIcon(colored);
+        }
+    }
+
+    @Override
+    protected Drawable getMicIcon(boolean colored) {
+        if (prefs.getAllAppsGlobalSearch()) {
+            mMicIconView.setVisibility(View.VISIBLE);
+            return super.getMicIcon(colored);
+        } else {
+            mMicIconView.setVisibility(View.GONE);
+            return null;
+        }
     }
 
     protected void onDetachedFromWindow() {
@@ -185,7 +217,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private boolean shouldUseFallbackSearch(SearchProvider provider) {
         return !Utilities
-                .getLawnchairPrefs(getContext()).getAllAppsGoogleSearch() || provider instanceof AppSearchSearchProvider
+                .getLawnchairPrefs(getContext()).getAllAppsGlobalSearch()
+                || provider instanceof AppSearchSearchProvider
                 || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 

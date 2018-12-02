@@ -151,7 +151,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
-    val allAppsGoogleSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
     val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
