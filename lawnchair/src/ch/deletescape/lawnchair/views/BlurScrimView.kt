@@ -119,10 +119,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun reInitUi() {
-        super.reInitUi()
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
+        super.reInitUi()
     }
 
     override fun onAttachedToWindow() {
@@ -161,7 +161,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun onDrawFlatColor(canvas: Canvas) {
-        blurDrawable?.draw(canvas)
+        blurDrawable?.run {
+            setBounds(0, 0, width, (height + mRadius).toInt())
+            draw(canvas)
+        }
     }
 
     override fun onDrawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint) {

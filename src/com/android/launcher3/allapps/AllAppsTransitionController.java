@@ -168,6 +168,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mScrimView.setProgress(progress);
     }
 
+    public float getScrimProgress() {
+        return mScrimProgress;
+    }
+
     /**
      * Sets the vertical transition progress to {@param state} and updates all the dependent UI
      * accordingly.

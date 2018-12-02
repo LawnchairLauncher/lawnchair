@@ -404,7 +404,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
                     allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
             launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, SCRIM_PROGRESS,
-                    allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
+                    allAppsController.getScrimProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
 
             RecentsView overview = mLauncher.getOverviewPanel();
             ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,

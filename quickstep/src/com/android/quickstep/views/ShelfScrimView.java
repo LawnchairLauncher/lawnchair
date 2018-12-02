@@ -178,11 +178,11 @@ public class ShelfScrimView extends ScrimView {
             return;
         }
 
-        if (mProgress <= 0) {
-            onDrawFlatColor(canvas);
-            canvas.drawColor(mShelfColor);
-            return;
-        }
+//        if (mProgress <= 0) {
+//            onDrawFlatColor(canvas);
+//            canvas.drawColor(mShelfColor);
+//            return;
+//        }
 
         int height = getHeight();
         int width = getWidth();
