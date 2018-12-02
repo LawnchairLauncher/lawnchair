@@ -21,7 +21,7 @@ public class CustomAppFilter extends LawnchairAppFilter {
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
         return super.shouldShowApp(componentName, user)
-                && user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user));
+                && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
     }
 
     static void resetAppFilter(Context context) {
