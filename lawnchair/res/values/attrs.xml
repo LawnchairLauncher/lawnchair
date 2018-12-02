@@ -38,6 +38,7 @@
     </declare-styleable>
 
     <declare-styleable name="ControlledPreference">
+        <attr name="searchTitle" format="string" />
         <attr name="controllerClass" format="string" />
     </declare-styleable>
 

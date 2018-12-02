@@ -38,6 +38,7 @@ class SearchIndex(private val context: Context) {
     private val attrContent = "content"
     private val attrHasPreview = "hasPreview"
     private val attrControllerClass = "controllerClass"
+    private val attrSearchTitle = "searchTitle"
 
     val entries = ArrayList<SettingsEntry>()
 
@@ -63,7 +64,7 @@ class SearchIndex(private val context: Context) {
                 parser.name == SubPreference::class.java.name -> {
                     val controller = createController(parser)
                     if (controller?.isVisible != false) {
-                        val title = controller?.title ?: parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                        val title = getTitle(parser, controller)
                         val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
                         val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
                         indexScreen(content, SettingsScreen(title!!, title, findScreen(parent), content, hasPreview))
@@ -83,7 +84,7 @@ class SearchIndex(private val context: Context) {
                     val controller = createController(parser)
                     if (controller?.isVisible != false) {
                         val key = parser.getAttributeValue(nsAndroid, attrKey)
-                        val title = controller?.title ?: parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                        val title = getTitle(parser, controller)
                         val summary = parseString(parser.getAttributeValue(nsAndroid, attrSummary))
                         if (parent != null && key != null && title != null) {
                             entries.add(SettingsEntry(key, title, summary, parent))
@@ -94,6 +95,12 @@ class SearchIndex(private val context: Context) {
                 }
             }
         }
+    }
+
+    private fun getTitle(parser: XmlPullParser, controller: PreferenceController?): String? {
+        return controller?.title ?:
+            parseString(parser.getAttributeValue(nsApp, attrSearchTitle)) ?:
+            parseString(parser.getAttributeValue(nsAndroid, attrTitle))
     }
 
     private fun createController(parser: XmlPullParser): PreferenceController? {

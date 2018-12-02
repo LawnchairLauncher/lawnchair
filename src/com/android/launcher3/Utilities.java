@@ -348,6 +348,10 @@ public final class Utilities {
         } else {
             packageName = cn.getPackageName();
         }
+        return isSystemApp(pm, packageName);
+    }
+
+    public static boolean isSystemApp(PackageManager pm, String packageName) {
         if (packageName != null) {
             try {
                 PackageInfo info = pm.getPackageInfo(packageName, 0);

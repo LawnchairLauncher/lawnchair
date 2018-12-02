@@ -344,8 +344,6 @@
     <string name="msg_minus_one_on_left">To the left of the main home screen</string>
     <string name="about">About</string>
     <string name="title_google_app">Google app</string>
-    <string name="title_app_suggestions">Display app suggestions</string>
-    <string name="summary_app_suggestions">At the top of the app drawer</string>
     <string name="about_app_version">Version</string>
     <string name="app_releases_url">https://play.google.com/store/apps/details?id=amirz.rootless.nexuslauncher</string>
     <string name="app_donate_url">https://play.google.com/store/apps/details?id=amirz.donation</string>
@@ -639,7 +637,6 @@
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
     <string name="hotseat_qsb_preferences">Preferences</string>
-    <string name="title_app_suggestions_in_search">App suggestions</string>
     <string name="pref_hide_statusbar">Hide status bar</string>
     <string name="pref_recents_radius">Task radius</string>
     <string name="automatic_short">Auto</string>
