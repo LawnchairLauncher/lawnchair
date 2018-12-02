@@ -150,7 +150,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
                     .findPreference(PREF_HIDE_FROM_PREDICTIONS);
-            if (!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION) {
+            if ((!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION)
+                    && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
             }
         }
@@ -164,8 +165,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
             mPrefHide.setOnPreferenceChangeListener(this);
 
-            mPrefHidePredictions.setChecked(CustomAppPredictor.isHiddenApp(context, mKey));
-            mPrefHidePredictions.setOnPreferenceChangeListener(this);
+            if (mPrefHidePredictions != null) {
+                mPrefHidePredictions.setChecked(CustomAppPredictor.isHiddenApp(context, mKey));
+                mPrefHidePredictions.setOnPreferenceChangeListener(this);
+            }
 
             if (prefs.getShowDebugInfo()) {
                 getPreferenceScreen().findPreference("componentName").setSummary(mKey.toString());
