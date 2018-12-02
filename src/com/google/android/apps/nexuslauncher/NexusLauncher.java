@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.View;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -114,7 +115,11 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            PredictionUiStateManager.getInstance(mLauncher).setTargetAppsView(mLauncher.getAppsView());
+            PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
+            predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
+            if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
+                predictionUiStateManager.switchClient(Client.OVERVIEW);
+            }
         }
 
         public void onDestroy() {
