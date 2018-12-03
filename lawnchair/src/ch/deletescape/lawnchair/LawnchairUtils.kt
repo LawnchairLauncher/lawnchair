@@ -448,7 +448,7 @@ fun android.app.AlertDialog.applyAccent() {
 }
 
 fun BgDataModel.workspaceContains(packageName: String): Boolean {
-    return this.workspaceItems.any { it.targetComponent.packageName == packageName }
+    return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
 }
 
 fun findInContainers(op: Workspace.ItemOperator, vararg containers: ShortcutAndWidgetContainer): View? {
