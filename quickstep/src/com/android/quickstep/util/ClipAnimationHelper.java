@@ -21,6 +21,7 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
@@ -30,6 +31,8 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 import android.view.animation.Interpolator;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -49,8 +52,6 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiFunction;
-
-import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation
@@ -82,6 +83,10 @@ public class ClipAnimationHelper {
     private final Matrix mTmpMatrix = new Matrix();
     private final RectF mTmpRectF = new RectF();
     private final RectF mCurrentRectWithInsets = new RectF();
+    // Corner radius of windows, in pixels
+    private final float mWindowCornerRadius;
+    // Corner radius of windows when they're in overview mode.
+    private final float mTaskCornerRadius;
 
     private float mTargetScale = 1f;
     private float mOffsetScale = 1f;
@@ -94,6 +99,11 @@ public class ClipAnimationHelper {
 
     private BiFunction<RemoteAnimationTargetCompat, Float, Float> mTaskAlphaCallback =
             (t, a1) -> a1;
+
+    public ClipAnimationHelper(Context context) {
+        mTaskCornerRadius = context.getResources().getDimension(R.dimen.task_corner_radius);
+        mWindowCornerRadius  = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
+    }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
@@ -168,11 +178,15 @@ public class ClipAnimationHelper {
             Rect crop = app.sourceContainerBounds;
             float alpha = 1f;
             int layer;
+            float cornerRadius = 0f;
             if (app.mode == targetSet.targetMode) {
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
                     mClipRectF.roundOut(crop);
+                    float scale = crop.width() / currentRect.width();
+                    cornerRadius = Utilities.mapRange(progress, mWindowCornerRadius,
+                            mTaskCornerRadius * scale);
                 }
 
                 if (app.isNotInRecents
@@ -186,7 +200,7 @@ public class ClipAnimationHelper {
                 crop = null;
                 layer = Integer.MAX_VALUE;
             }
-            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer);
+            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer, cornerRadius);
         }
         applyParams(syncTransactionApplier, params);
         return currentRect;
@@ -315,7 +329,7 @@ public class ClipAnimationHelper {
                 -mSourceWindowClipInsets.top * insetProgress,
                 ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
                 ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
-                ttv.getCornerRadius() * progress);
+                Utilities.mapRange(progress, mWindowCornerRadius, ttv.getCornerRadius()));
     }
 
     public RectF getTargetRect() {
