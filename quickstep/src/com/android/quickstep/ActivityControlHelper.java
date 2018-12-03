@@ -549,7 +549,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 public void finish() { }
 
                 @Override
-                public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect) { }
+                public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
+                        float cornerRadius) { }
             };
         }
 
@@ -627,7 +628,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         void finish();
 
-        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect);
+        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
+                float cornerRadius);
     }
 
     interface ActivityInitListener {
