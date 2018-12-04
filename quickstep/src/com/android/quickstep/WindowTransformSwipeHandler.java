@@ -175,7 +175,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
-    private final ClipAnimationHelper mClipAnimationHelper = new ClipAnimationHelper();
+    private final ClipAnimationHelper mClipAnimationHelper;
 
     protected Runnable mGestureEndCallback;
     protected boolean mIsGoingToHome;
@@ -255,6 +255,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mTouchInteractionLog = touchInteractionLog;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewTouchProxyHandler);
+        mClipAnimationHelper = new ClipAnimationHelper(context);
 
         initStateCallbacks();
     }
@@ -600,7 +601,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void updateFinalShiftUi() {
         if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
             mLayoutListener.update(mCurrentShift.value > 1, mUiLongSwipeMode,
-                    mClipAnimationHelper.getCurrentRectWithInsets());
+                    mClipAnimationHelper.getCurrentRectWithInsets(),
+                    mClipAnimationHelper.getCurrentCornerRadius());
         }
 
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;

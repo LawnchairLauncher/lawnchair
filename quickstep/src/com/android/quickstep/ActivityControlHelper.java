@@ -328,7 +328,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             float prevRvScale = recentsView.getScaleX();
             float targetRvScale = endState.getOverviewScaleAndTranslationYFactor(launcher)[0];
             SCALE_PROPERTY.set(recentsView, targetRvScale);
-            ClipAnimationHelper clipHelper = new ClipAnimationHelper();
+            ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             SCALE_PROPERTY.set(recentsView, prevRvScale);
 
@@ -549,7 +549,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 public void finish() { }
 
                 @Override
-                public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect) { }
+                public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
+                        float cornerRadius) { }
             };
         }
 
@@ -627,7 +628,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         void finish();
 
-        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect);
+        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
+                float cornerRadius);
     }
 
     interface ActivityInitListener {
