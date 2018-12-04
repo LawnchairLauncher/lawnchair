@@ -16,14 +16,15 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_SIZE;
 
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -97,6 +98,7 @@ public class LauncherAppState {
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
+        new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
             mNotificationDotsObserver = null;
@@ -121,7 +123,7 @@ public class LauncherAppState {
             return;
         }
 
-        if ((changeFlags & CHANGE_FLAG_ICON_SIZE) != 0) {
+        if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) != 0) {
             LauncherIcons.clearPool();
             mIconCache.updateIconParams(idp.fillResIconDpi, idp.iconBitmapSize);
         }
