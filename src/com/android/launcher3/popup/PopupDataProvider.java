@@ -115,8 +115,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 dotInfo = new DotInfo(packageUserKey);
                 mPackageUserToDotInfos.put(packageUserKey, dotInfo);
             }
-            dotInfo.addOrUpdateNotificationKey(NotificationKeyData
-                    .fromNotification(notification));
+            dotInfo.addOrUpdateNotificationKey(NotificationKeyData.fromNotification(notification));
         }
 
         // Add and remove from updatedDots so it contains the PackageUserKeys of updated dots.
@@ -126,9 +125,10 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (prevDot == null) {
                 updatedDots.put(packageUserKey, newDot);
             } else {
-                if (!prevDot.shouldBeInvalidated(newDot)) {
-                    updatedDots.remove(packageUserKey);
-                }
+                // No need to update the dot if it already existed (no visual change).
+                // Note that if the dot was removed entirely, we wouldn't reach this point because
+                // this loop only includes active notifications added above.
+                updatedDots.remove(packageUserKey);
             }
         }
 
