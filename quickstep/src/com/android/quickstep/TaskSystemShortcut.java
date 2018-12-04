@@ -18,7 +18,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -50,7 +49,6 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
-import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -117,7 +115,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         protected abstract boolean isAvailable(BaseDraggingActivity activity);
-        protected abstract ActivityOptions makeLaunchOptions(Activity activity);
+        protected abstract ActivityOptions makeLaunchOptions();
         protected abstract boolean onActivityStarted(BaseDraggingActivity activity);
 
         @Override
@@ -162,7 +160,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
                 dismissTaskMenuView(activity);
 
-                ActivityOptions options = makeLaunchOptions(activity);
+                ActivityOptions options = makeLaunchOptions();
                 if (options != null
                         && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                                 options)) {
@@ -224,10 +222,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected ActivityOptions makeLaunchOptions(Activity activity) {
-            final ActivityCompat act = new ActivityCompat(activity);
-            final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition(
-                    act.getDisplayId());
+        protected ActivityOptions makeLaunchOptions() {
+            final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
             if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
                 return null;
             }
@@ -261,7 +257,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected ActivityOptions makeLaunchOptions(Activity activity) {
+        protected ActivityOptions makeLaunchOptions() {
             return ActivityOptionsCompat.makeFreeformOptions();
         }
 
