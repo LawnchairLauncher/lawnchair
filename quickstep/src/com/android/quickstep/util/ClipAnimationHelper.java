@@ -88,8 +88,6 @@ public class ClipAnimationHelper {
     // Corner radius of windows when they're in overview mode.
     private final float mTaskCornerRadius;
 
-    // Corner radius currently applied to transformed window.
-    private float mCurrentCornerRadius;
     private float mTargetScale = 1f;
     private float mOffsetScale = 1f;
     private Interpolator mInterpolator = LINEAR;
@@ -181,15 +179,14 @@ public class ClipAnimationHelper {
             float alpha = 1f;
             int layer;
             float cornerRadius = 0f;
-            float scale = currentRect.width() / crop.width();
             if (app.mode == targetSet.targetMode) {
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
                     mClipRectF.roundOut(crop);
+                    float scale = crop.width() / currentRect.width();
                     cornerRadius = Utilities.mapRange(progress, mWindowCornerRadius,
-                            mTaskCornerRadius);
-                    mCurrentCornerRadius = cornerRadius;
+                            mTaskCornerRadius * scale);
                 }
 
                 if (app.isNotInRecents
@@ -203,11 +200,7 @@ public class ClipAnimationHelper {
                 crop = null;
                 layer = Integer.MAX_VALUE;
             }
-
-            // Since radius is in Surface space, but we draw the rounded corners in screen space, we
-            // have to undo the scale.
-            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
-                    cornerRadius / scale);
+            params[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer, cornerRadius);
         }
         applyParams(syncTransactionApplier, params);
         return currentRect;
@@ -345,9 +338,5 @@ public class ClipAnimationHelper {
 
     public RectF getSourceRect() {
         return mSourceRect;
-    }
-
-    public float getCurrentCornerRadius() {
-        return mCurrentCornerRadius;
     }
 }

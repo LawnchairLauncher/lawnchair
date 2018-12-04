@@ -601,8 +601,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void updateFinalShiftUi() {
         if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
             mLayoutListener.update(mCurrentShift.value > 1, mUiLongSwipeMode,
-                    mClipAnimationHelper.getCurrentRectWithInsets(),
-                    mClipAnimationHelper.getCurrentCornerRadius());
+                    mClipAnimationHelper.getCurrentRectWithInsets());
         }
 
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
