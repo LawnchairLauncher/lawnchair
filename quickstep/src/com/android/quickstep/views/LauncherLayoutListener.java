@@ -43,7 +43,6 @@ public class LauncherLayoutListener extends AbstractFloatingView
     private final Paint mPaint = new Paint();
     private WindowTransformSwipeHandler mHandler;
     private RectF mCurrentRect;
-    private float mCornerRadius;
 
     public LauncherLayoutListener(Launcher launcher) {
         super(launcher, null);
@@ -53,15 +52,13 @@ public class LauncherLayoutListener extends AbstractFloatingView
     }
 
     @Override
-    public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
-            float cornerRadius) {
+    public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect) {
         if (shouldFinish) {
             finish();
             return;
         }
 
         mCurrentRect = currentRect;
-        mCornerRadius = cornerRadius;
 
         setWillNotDraw(mCurrentRect == null || isLongSwipe);
         invalidate();
@@ -124,6 +121,6 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        canvas.drawRect(mCurrentRect, mPaint);
     }
 }
