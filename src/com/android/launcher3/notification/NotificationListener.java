@@ -77,7 +77,7 @@ public class NotificationListener extends NotificationListenerService {
     /** The last notification key that was dismissed from launcher UI */
     private String mLastKeyDismissedByLauncher;
 
-    private SecureSettingsObserver mNotificationBadgingObserver;
+    private SecureSettingsObserver mNotificationDotsObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
@@ -169,7 +169,7 @@ public class NotificationListener extends NotificationListenerService {
         if (notificationListener != null) {
             notificationListener.onNotificationFullRefresh();
         } else if (!sIsCreated && sNotificationsChangedListener != null) {
-            // User turned off badging globally, so we unbound this service;
+            // User turned off dots globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
                     Collections.<StatusBarNotification>emptyList());
@@ -194,16 +194,16 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerConnected();
         sIsConnected = true;
 
-        mNotificationBadgingObserver =
-                newNotificationSettingsObserver(this, this::onNotificationBadgingChanged);
-        mNotificationBadgingObserver.register();
-        mNotificationBadgingObserver.dispatchOnChange();
+        mNotificationDotsObserver =
+                newNotificationSettingsObserver(this, this::onNotificationSettingsChanged);
+        mNotificationDotsObserver.register();
+        mNotificationDotsObserver.dispatchOnChange();
 
         onNotificationFullRefresh();
     }
 
-    private void onNotificationBadgingChanged(boolean isNotificationBadgingEnabled) {
-        if (!isNotificationBadgingEnabled && sIsConnected) {
+    private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
+        if (!areNotificationDotsEnabled && sIsConnected) {
             requestUnbind();
         }
     }
@@ -216,7 +216,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
-        mNotificationBadgingObserver.unregister();
+        mNotificationDotsObserver.unregister();
     }
 
     @Override

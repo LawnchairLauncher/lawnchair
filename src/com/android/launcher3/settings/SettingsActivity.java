@@ -54,7 +54,7 @@ public class SettingsActivity extends Activity
     private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
 
-    private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
+    private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
@@ -120,7 +120,7 @@ public class SettingsActivity extends Activity
      */
     public static class LauncherSettingsFragment extends PreferenceFragment {
 
-        private SecureSettingsObserver mIconBadgingObserver;
+        private SecureSettingsObserver mNotificationDotsObserver;
 
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
@@ -165,21 +165,21 @@ public class SettingsActivity extends Activity
          */
         protected boolean initPreference(Preference preference) {
             switch (preference.getKey()) {
-                case ICON_BADGING_PREFERENCE_KEY:
+                case NOTIFICATION_DOTS_PREFERENCE_KEY:
                     if (!Utilities.ATLEAST_OREO ||
-                            !getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                            !getResources().getBoolean(R.bool.notification_dots_enabled)) {
                         return false;
                     }
 
-                    // Listen to system notification badge settings while this UI is active.
-                    mIconBadgingObserver = newNotificationSettingsObserver(
-                            getActivity(), (IconBadgingPreference) preference);
-                    mIconBadgingObserver.register();
+                    // Listen to system notification dot settings while this UI is active.
+                    mNotificationDotsObserver = newNotificationSettingsObserver(
+                            getActivity(), (NotificationDotsPreference) preference);
+                    mNotificationDotsObserver.register();
                     // Also listen if notification permission changes
-                    mIconBadgingObserver.getResolver().registerContentObserver(
+                    mNotificationDotsObserver.getResolver().registerContentObserver(
                             Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS), false,
-                            mIconBadgingObserver);
-                    mIconBadgingObserver.dispatchOnChange();
+                            mNotificationDotsObserver);
+                    mNotificationDotsObserver.dispatchOnChange();
                     return true;
 
                 case ADD_ICON_PREFERENCE_KEY:
@@ -245,9 +245,9 @@ public class SettingsActivity extends Activity
 
         @Override
         public void onDestroy() {
-            if (mIconBadgingObserver != null) {
-                mIconBadgingObserver.unregister();
-                mIconBadgingObserver = null;
+            if (mNotificationDotsObserver != null) {
+                mNotificationDotsObserver.unregister();
+                mNotificationDotsObserver = null;
             }
             super.onDestroy();
         }

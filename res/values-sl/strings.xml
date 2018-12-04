@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To je sistemska aplikacija in je ni mogoče odstraniti."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovana mapa"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogočena"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestilo</item>
       <item quantity="two">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestili</item>
       <item quantity="few">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestila</item>
@@ -85,13 +85,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Onemogočil skrbnik."</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Omogočanje sukanja začetnega zaslona"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Ko se telefon zasuka"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Obvestilne pike"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Vklopljeno"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Izklopljeno"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"Obvestilne pike"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Vklopljeno"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Izklopljeno"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Potreben je dostop do obvestil"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz obvestilnih pik vklopite obvestila aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Spremeni nastavitve"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Pokaži obvestilne pike"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"Pokaži obvestilne pike"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikono na začetni zaslon"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Spremeni obliko ikon"</string>

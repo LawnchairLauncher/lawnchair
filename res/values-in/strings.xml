@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ini adalah aplikasi sistem dan tidak dapat dicopot pemasangannya."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder Tanpa Nama"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> dinonaktifkan"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, memiliki <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifikasi</item>
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, memiliki <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notifikasi</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dinonaktifkan oleh admin"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan layar Utama diputar"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Saat ponsel diputar"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Titik notifikasi"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktif"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Nonaktif"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"Titik notifikasi"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Aktif"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Nonaktif"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Perlu akses notifikasi"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Guna menampilkan Titik Notifikasi, aktifkan notifikasi aplikasi untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ubah setelan"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Tampilkan titik notifikasi"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"Tampilkan titik notifikasi"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke Layar utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk aplikasi baru"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Ubah bentuk ikon"</string>

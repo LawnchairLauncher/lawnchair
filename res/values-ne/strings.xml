@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, यसमा <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाहरू छन्‌</item>
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, यसमा <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> सूचना छ</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"सूचनाको प्रतीक जनाउने थोप्लोहरू"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"सक्रिय छ"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"निष्क्रिय छ"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"सूचनाको प्रतीक जनाउने थोप्लोहरू"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"सक्रिय छ"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"निष्क्रिय छ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनासम्बन्धी पहुँच आवश्यक हुन्छ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को अनुप्रयोगसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>

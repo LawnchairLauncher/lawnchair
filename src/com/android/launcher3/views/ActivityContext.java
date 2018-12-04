@@ -22,7 +22,7 @@ import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 
 /**
  * An interface to be used along with a context for various activities in Launcher. This allows a
@@ -34,7 +34,7 @@ public interface ActivityContext {
         return false;
     }
 
-    default BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+    default DotInfo getDotInfoForItem(ItemInfo info) {
         return null;
     }
 

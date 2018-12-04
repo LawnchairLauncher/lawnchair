@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ово је системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Неименовани директоријум"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Апликација <xliff:g id="APP_NAME">%1$s</xliff:g> је онемогућена"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> има <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> обавештење</item>
       <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> има <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> обавештења</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> има <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> обавештења</item>
@@ -84,13 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Администратор је онемогућио"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволи ротацију почетног екрана"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Када се телефон ротира"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Тачке за обавештења"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Укључено"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Искључено"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"Тачке за обавештења"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Укључено"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Искључено"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Потребан је приступ за обавештења"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Да бисте приказали тачке за обавештења, укључите обавештења за апликацију <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Промените подешавања"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Приказуј тачке за обавештења"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"Приказуј тачке за обавештења"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Додај икону на почетни екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нове апликације"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Промените облик икона"</string>

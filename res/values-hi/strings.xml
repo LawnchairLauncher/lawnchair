@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"सूचना बिंदु"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"चालू"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"बंद"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"सूचना बिंदु"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"चालू"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के एक्सेस की ज़रूरत है"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकॉन जोड़ें"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकॉन का आकार बदलें"</string>
