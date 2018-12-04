@@ -175,7 +175,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
-    private final ClipAnimationHelper mClipAnimationHelper;
+    private final ClipAnimationHelper mClipAnimationHelper = new ClipAnimationHelper();
 
     protected Runnable mGestureEndCallback;
     protected boolean mIsGoingToHome;
@@ -255,7 +255,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mTouchInteractionLog = touchInteractionLog;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewTouchProxyHandler);
-        mClipAnimationHelper = new ClipAnimationHelper(context);
 
         initStateCallbacks();
     }
