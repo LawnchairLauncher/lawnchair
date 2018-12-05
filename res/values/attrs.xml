@@ -148,4 +148,9 @@
         <attr name="numMinRows" format="integer" />
         <attr name="numMinColumns" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="PreviewFragment">
+        <attr name="android:name" />
+        <attr name="android:id" />
+    </declare-styleable>
 </resources>

@@ -225,8 +225,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
-        getPageAt(pageNo).addViewToCellLayout(
-                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+        getPageAt(pageNo).addViewToCellLayout(view, -1, item.getViewId(), lp, true);
     }
 
     @SuppressLint("InflateParams")
@@ -351,8 +350,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 }
                 lp.cellX = info.cellX;
                 lp.cellY = info.cellY;
-                currentPage.addViewToCellLayout(
-                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
+                currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
 
                 if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
