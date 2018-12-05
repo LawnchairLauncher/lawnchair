@@ -149,8 +149,6 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
     private TaskIconCache.IconLoadRequest mIconLoadRequest;
 
-    private long mAppRemainingTimeMs = -1;
-
     public TaskView(Context context) {
         this(context, null);
     }
@@ -206,10 +204,6 @@ public class TaskView extends FrameLayout implements PageCallbacks {
 
     public TaskOverlayFactory.TaskOverlay getTaskOverlay() {
         return mSnapshotView.getTaskOverlay();
-    }
-
-    private boolean hasRemainingTime() {
-        return mAppRemainingTimeMs > 0;
     }
 
     public void launchTask(boolean animate) {
@@ -268,9 +262,9 @@ public class TaskView extends FrameLayout implements PageCallbacks {
                         setIcon(task.icon);
                         mDigitalWellBeingToast.initialize(
                                 mTask,
-                                (appRemainingTimeMs, isGroupLimit, contentDescription) -> {
-                                    mAppRemainingTimeMs = appRemainingTimeMs;
+                                (saturation, contentDescription) -> {
                                     setContentDescription(contentDescription);
+                                    mSnapshotView.setSaturation(saturation);
                                 });
                     });
         } else {
@@ -444,7 +438,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
             }
         }
 
-        if (hasRemainingTime()) {
+        if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
             info.addAction(
                     new AccessibilityNodeInfo.AccessibilityAction(
                             R.string.accessibility_app_usage_settings,
