@@ -92,18 +92,4 @@ public class DotInfo {
     public int getNotificationCount() {
         return Math.min(mTotalCount, MAX_COUNT);
     }
-
-    /**
-     * TODO: this is outdated now that we only show dots instead of icons/numbers. can remove?
-     * Whether newDot represents the same PackageUserKey as this badge, and icons with
-     * this badge should be invalidated. So, for instance, if a badge has 3 notifications
-     * and one of those notifications is updated, this method should return false because
-     * the badge still says "3" and the contents of those notifications are only retrieved
-     * upon long-click. This method always returns true when adding or removing notifications,
-     * or if the badge has a notification icon to show.
-     */
-    public boolean shouldBeInvalidated(DotInfo newDot) {
-        return mPackageUserKey.equals(newDot.mPackageUserKey)
-                && (getNotificationCount() != newDot.getNotificationCount());
-    }
 }
