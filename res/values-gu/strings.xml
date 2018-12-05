@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"અનામી ફોલ્ડર"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"બંધ"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"બંધ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"નોટિફિકેશનનો ઍક્સેસની જરૂરી છે"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"નોટિફિકેશન માટેનું ચિહ્ન બતાવો"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"નોટિફિકેશન માટેનું ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>

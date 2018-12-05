@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Questa è un\'app di sistema e non può essere disinstallata."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Cartella senza nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"App <xliff:g id="APP_NAME">%1$s</xliff:g> disattivata"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ha <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifiche</item>
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> ha <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notifica</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disattivata dall\'amministratore"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Consenti rotazione della schermata Home"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Con il telefono ruotato"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Indicatori notifica"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Attiva"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Non attiva"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"Indicatori notifica"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Attiva"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Non attiva"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Accesso alle notifiche necessario"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Per mostrare gli indicatori di notifica, attiva le notifiche per l\'app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifica impostazioni"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Mostra indicatori di notifica"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"Mostra indicatori di notifica"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Aggiungi icone alla schermata Home"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Per le nuove app"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Cambia la forma delle icone"</string>

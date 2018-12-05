@@ -110,8 +110,8 @@
 
         <service
             android:name="com.android.launcher3.notification.NotificationListener"
-            android:label="@string/icon_badging_service_title"
-            android:enabled="@bool/notification_badging_enabled"
+            android:label="@string/notification_dots_service_title"
+            android:enabled="@bool/notification_dots_enabled"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />

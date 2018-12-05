@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ဤအပ်ပလီကေးရှင်းမှာ စစ်စတန်ပိုင်းဆိုင်ရာ အပ်ပလီကေးရှင်းဖြစ်ပါသည်။ ထုတ်ပစ်၍ မရပါ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"အမည်မရှိအကန့်"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို ပိတ်ထားသည်"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> တွင် အကြောင်းကြားချက် <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ခု ရှိသည်</item>
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> တွင် အကြောင်းကြားချက် <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> ခု ရှိသည်</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"သင့်စီမံခန့်ခွဲသူက ပိတ်လိုက်ပါသည်"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ပင်မစာမျက်နှာလှည့်ခြင်းကို ခွင့်ပြုပါ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ဖုန်းကိုလှည့်ထားစဉ်"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"အကြောင်းကြားချက်အမှတ်အသားများ"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ဖွင့်ထားသည်"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ပိတ်ထားသည်"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"အကြောင်းကြားချက်အမှတ်အသားများ"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"ဖွင့်ထားသည်"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"ပိတ်ထားသည်"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"အကြောင်းကြားချက် အသုံးပြုခွင့် လိုအပ်သည်"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"အကြောင်းကြားချက် အစက်များကို ပြသရန် <xliff:g id="NAME">%1$s</xliff:g> အတွက် အက်ပ်အကြောင်းကြားချက်များကို ဖွင့်ပါ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ဆက်တင်များ ပြောင်းရန်"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"အကြောင်းကြားချက် အမှတ်အသားများကို ပြရန်"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"အကြောင်းကြားချက် အမှတ်အသားများကို ပြရန်"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ပင်မစာမျက်နှာသို့ သင်္ကေတပုံ ထည့်ရန်"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"အက်ပ်အသစ်များအတွက်"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"သင်္ကေတပုံစံကို ပြောင်းရန်"</string>

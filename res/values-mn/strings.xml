@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Энэ апп нь системийн апп ба устгах боломжгүй."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Нэргүй фолдер"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g>-г идэвхгүй болгосон"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> мэдэгдэл байна</item>
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> мэдэгдэл байна</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Таны админ идэвхгүй болгосон"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Нүүр дэлгэцийг эргүүлэхийг зөвшөөрөх"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Утсыг эргүүлсэн үед"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Мэдэгдлийн цэг"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Асаалттай"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Унтраалттай"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"Мэдэгдлийн цэг"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Асаалттай"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Унтраалттай"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Мэдэгдлийн хандалт шаардлагатай"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Мэдэгдлийн цэгийг харуулахын тулд <xliff:g id="NAME">%1$s</xliff:g>-д аппын мэдэгдлийг асаана уу"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Тохиргоог өөрчлөх"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Мэдэгдлийн цэгийг харуулах"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"Мэдэгдлийн цэгийг харуулах"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Нүүр хуудаст дүрс тэмдэг нэмэх"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Шинэ аппад зориулсан"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Дүрс тэмдгийн хэлбэрийг өөрчлөх"</string>

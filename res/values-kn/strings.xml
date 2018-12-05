@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ನಿಮ್ಮ ನಿರ್ವಾಹಕರು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ್ದಾರೆ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ಆನ್"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ಆಫ್"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"ಆನ್"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"ಆಫ್"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ಅಧಿಸೂಚನೆ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ಮುಖಪುಟದ ಪರದೆಗೆ ಐಕಾನ್ ಸೇರಿಸಿ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ಐಕಾನ್ ಆಕಾರವನ್ನು ಬದಲಿಸಿ"</string>

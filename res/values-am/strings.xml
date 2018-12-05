@@ -64,7 +64,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ስም-አልባ አቃፊ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ተሰናክሏል"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያዎች አለው</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያዎች አለው</item>
     </plurals>
@@ -83,13 +83,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"በእርስዎ አስተዳዳሪ የተሰናከለ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"የመነሻ ማያ ገጽ ማሽከርከርን ይፍቀዱ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ስልኩ ሲዞር"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"የማሳወቂያ ነጥቦች"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"በርቷል"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ጠፍቷል"</string>
+    <string name="notification_dots_title" msgid="874121399231955394">"የማሳወቂያ ነጥቦች"</string>
+    <string name="notification_dots_desc_on" msgid="2627952638544674079">"በርቷል"</string>
+    <string name="notification_dots_desc_off" msgid="5503319969924580241">"ጠፍቷል"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"የማሳወቂያ መዳረሻ ያስፈልጋል"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"የማሳወቂያ ነጥቦችን ለማሳየት የመተግብሪያ ማሳወቂያዎችን ለ<xliff:g id="NAME">%1$s</xliff:g> ያብሩ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ቅንብሮችን ቀይር"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"የማሳወቂያ ነጥቦችን አሳይ"</string>
+    <string name="notification_dots_service_title" msgid="2309733118428242174">"የማሳወቂያ ነጥቦችን አሳይ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"አዶ ወደ የመነሻ ማያ ገጽ አክል"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ለአዲስ መተግበሪያዎች"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"የአዶ ቅርፅ ለውጥ"</string>

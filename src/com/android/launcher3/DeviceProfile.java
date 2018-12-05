@@ -128,7 +128,7 @@ public class DeviceProfile {
     private final Rect mHotseatPadding = new Rect();
     private boolean mIsSeascape;
 
-    // Icon badges
+    // Notification dots
     public DotRenderer mDotRenderer;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,

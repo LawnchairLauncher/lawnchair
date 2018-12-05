@@ -77,7 +77,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
@@ -465,8 +465,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
-        return mPopupDataProvider.getBadgeInfoForItem(info);
+    public DotInfo getDotInfoForItem(ItemInfo info) {
+        return mPopupDataProvider.getDotInfoForItem(info);
     }
 
     @Override
@@ -1097,13 +1097,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     };
 
-    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
-        mWorkspace.updateIconBadges(updatedBadges);
-        mAppsView.getAppsStore().updateIconBadges(updatedBadges);
+    public void updateNotificationDots(final Set<PackageUserKey> updatedDots) {
+        mWorkspace.updateNotificationDots(updatedDots);
+        mAppsView.getAppsStore().updateNotificationDots(updatedDots);
 
         PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
         if (popup != null) {
-            popup.updateNotificationHeader(updatedBadges);
+            popup.updateNotificationHeader(updatedDots);
         }
     }
 

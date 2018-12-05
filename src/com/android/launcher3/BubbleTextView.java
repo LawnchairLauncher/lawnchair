@@ -42,7 +42,7 @@ import android.view.ViewDebug;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
@@ -69,8 +69,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
 
-    private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
-            = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
+    private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
+            = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
         @Override
         public Float get(BubbleTextView bubbleTextView) {
             return bubbleTextView.mDotParams.scale;
@@ -115,12 +115,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private float mTextAlpha = 1;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private BadgeInfo mBadgeInfo;
+    private DotInfo mDotInfo;
     private DotRenderer mDotRenderer;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private DotRenderer.DrawParams mDotParams;
-    private Animator mBadgeScaleAnim;
-    private boolean mForceHideBadge;
+    private Animator mDotScaleAnim;
+    private boolean mForceHideDot;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
@@ -190,29 +190,29 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Resets the view so it can be recycled.
      */
     public void reset() {
-        mBadgeInfo = null;
+        mDotInfo = null;
         mDotParams.color = Color.TRANSPARENT;
-        cancelBadgeScaleAnim();
+        cancelDotScaleAnim();
         mDotParams.scale = 0f;
-        mForceHideBadge = false;
+        mForceHideDot = false;
     }
 
-    private void cancelBadgeScaleAnim() {
-        if (mBadgeScaleAnim != null) {
-            mBadgeScaleAnim.cancel();
+    private void cancelDotScaleAnim() {
+        if (mDotScaleAnim != null) {
+            mDotScaleAnim.cancel();
         }
     }
 
-    private void animateBadgeScale(float... badgeScales) {
-        cancelBadgeScaleAnim();
-        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
-        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+    private void animateDotScale(float... dotScales) {
+        cancelDotScaleAnim();
+        mDotScaleAnim = ObjectAnimator.ofFloat(this, DOT_SCALE_PROPERTY, dotScales);
+        mDotScaleAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mBadgeScaleAnim = null;
+                mDotScaleAnim = null;
             }
         });
-        mBadgeScaleAnim.start();
+        mDotScaleAnim.start();
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
@@ -226,7 +226,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             applyPromiseState(promiseStateChanged);
         }
 
-        applyBadgeState(info, false /* animate */);
+        applyDotState(info, false /* animate */);
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
@@ -242,7 +242,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
             applyProgressLevel(promiseAppInfo.level);
         }
-        applyBadgeState(info, false /* animate */);
+        applyDotState(info, false /* animate */);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -366,22 +366,22 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @SuppressWarnings("wrongcall")
-    protected void drawWithoutBadge(Canvas canvas) {
+    protected void drawWithoutDot(Canvas canvas) {
         super.onDraw(canvas);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        drawBadgeIfNecessary(canvas);
+        drawDotIfNecessary(canvas);
     }
 
     /**
-     * Draws the icon badge in the top right corner of the icon bounds.
+     * Draws the notification dot in the top right corner of the icon bounds.
      * @param canvas The canvas to draw to.
      */
-    protected void drawBadgeIfNecessary(Canvas canvas) {
-        if (!mForceHideBadge && (hasBadge() || mDotParams.scale > 0)) {
+    protected void drawDotIfNecessary(Canvas canvas) {
+        if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
             mDotParams.spaceForOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
             final int scrollX = getScrollX();
@@ -392,21 +392,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    public void forceHideBadge(boolean forceHideBadge) {
-        if (mForceHideBadge == forceHideBadge) {
+    public void forceHideDot(boolean forceHideDot) {
+        if (mForceHideDot == forceHideDot) {
             return;
         }
-        mForceHideBadge = forceHideBadge;
+        mForceHideDot = forceHideDot;
 
-        if (forceHideBadge) {
+        if (forceHideDot) {
             invalidate();
-        } else if (hasBadge()) {
-            animateBadgeScale(0, 1);
+        } else if (hasDot()) {
+            animateDotScale(0, 1);
         }
     }
 
-    private boolean hasBadge() {
-        return mBadgeInfo != null;
+    private boolean hasDot() {
+        return mDotInfo != null;
     }
 
     public void getIconBounds(Rect outBounds) {
@@ -536,28 +536,28 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return null;
     }
 
-    public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
+    public void applyDotState(ItemInfo itemInfo, boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
-            boolean wasBadged = mBadgeInfo != null;
-            mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
-            boolean isBadged = mBadgeInfo != null;
-            float newBadgeScale = isBadged ? 1f : 0;
+            boolean wasDotted = mDotInfo != null;
+            mDotInfo = mActivity.getDotInfoForItem(itemInfo);
+            boolean isDotted = mDotInfo != null;
+            float newDotScale = isDotted ? 1f : 0;
             mDotRenderer = mActivity.getDeviceProfile().mDotRenderer;
-            if (wasBadged || isBadged) {
-                // Animate when a badge is first added or when it is removed.
-                if (animate && (wasBadged ^ isBadged) && isShown()) {
-                    animateBadgeScale(newBadgeScale);
+            if (wasDotted || isDotted) {
+                // Animate when a dot is first added or when it is removed.
+                if (animate && (wasDotted ^ isDotted) && isShown()) {
+                    animateDotScale(newDotScale);
                 } else {
-                    cancelBadgeScaleAnim();
-                    mDotParams.scale = newBadgeScale;
+                    cancelDotScaleAnim();
+                    mDotParams.scale = newDotScale;
                     invalidate();
                 }
             }
             if (itemInfo.contentDescription != null) {
-                if (hasBadge()) {
-                    int count = mBadgeInfo.getNotificationCount();
+                if (hasDot()) {
+                    int count = mDotInfo.getNotificationCount();
                     setContentDescription(getContext().getResources().getQuantityString(
-                            R.plurals.badged_app_label, count, itemInfo.contentDescription, count));
+                            R.plurals.dotted_app_label, count, itemInfo.contentDescription, count));
                 } else {
                     setContentDescription(itemInfo.contentDescription);
                 }
