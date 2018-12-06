@@ -212,7 +212,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
                 }
                 break;
         }
-        return false;
+        // We want to keep receiving though events to be able to cancel long press on ACTION_UP
+        return true;
     }
 
     @Override
