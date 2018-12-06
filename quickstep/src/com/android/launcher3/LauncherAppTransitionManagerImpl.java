@@ -215,7 +215,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         playIconAnimators(anim, v, windowTargetBounds, !isAllOpeningTargetTrs);
                         if (launcherClosing) {
                             Pair<AnimatorSet, Runnable> launcherContentAnimator =
-                                    getLauncherContentAnimator(true /* isAppOpening */);
+                                    getLauncherContentAnimator(true /* isAppOpening */,
+                                            new float[] {0, mContentTransY});
                             anim.play(launcherContentAnimator.first);
                             anim.addListener(new AnimatorListenerAdapter() {
                                 @Override
@@ -350,17 +351,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      *
      * @param isAppOpening True when this is called when an app is opening.
      *                     False when this is called when an app is closing.
+     * @param trans Array that contains the start and end translation values for the content.
      */
-    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening) {
+    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
+            float[] trans) {
         AnimatorSet launcherAnimator = new AnimatorSet();
         Runnable endListener;
 
         float[] alphas = isAppOpening
                 ? new float[] {1, 0}
                 : new float[] {0, 1};
-        float[] trans = isAppOpening
-                ? new float[] {0, mContentTransY}
-                : new float[] {-mContentTransY, 0};
 
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
@@ -681,10 +681,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
             definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
                     WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
-                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(),
+                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(false /* fromUnlock */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
 
-            // TODO: Transition for unlock to home TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER
+            definition.addRemoteAnimation(
+                    WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
+                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(true /* fromUnlock */),
+                            CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
             new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
         }
     }
@@ -697,7 +700,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * @return Runner that plays when user goes to Launcher
      *         ie. pressing home, swiping up from nav bar.
      */
-    private RemoteAnimationRunnerCompat getWallpaperOpenRunner() {
+    private RemoteAnimationRunnerCompat getWallpaperOpenRunner(boolean fromUnlock) {
         return new LauncherAnimationRunner(mHandler, false /* startAtFrontOfQueue */) {
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
@@ -723,7 +726,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 if (anim == null) {
                     anim = new AnimatorSet();
-                    anim.play(getClosingWindowAnimators(targetCompats));
+                    anim.play(fromUnlock
+                            ? getUnlockWindowAnimator(targetCompats)
+                            : getClosingWindowAnimators(targetCompats));
 
                     // Normally, we run the launcher content animation when we are transitioning
                     // home, but if home is already visible, then we don't want to animate the
@@ -737,7 +742,21 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                             || mLauncher.isForceInvisible()) {
                         // Only register the content animation for cancellation when state changes
                         mLauncher.getStateManager().setCurrentAnimation(anim);
-                        createLauncherResumeAnimation(anim);
+                        if (fromUnlock) {
+                            Pair<AnimatorSet, Runnable> contentAnimator =
+                                    getLauncherContentAnimator(false /* isAppOpening */,
+                                            new float[] {mContentTransY, 0});
+                            contentAnimator.first.setStartDelay(0);
+                            anim.play(contentAnimator.first);
+                            anim.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    contentAnimator.second.run();
+                                }
+                            });
+                        } else {
+                            createLauncherResumeAnimation(anim);
+                        }
                     }
                 }
 
@@ -745,6 +764,31 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 result.setAnimation(anim);
             }
         };
+    }
+
+    /**
+     * Animator that controls the transformations of the windows when unlocking the device.
+     */
+    private Animator getUnlockWindowAnimator(RemoteAnimationTargetCompat[] targets) {
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
+        ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
+        unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
+        float cornerRadius = RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
+        unlockAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                SurfaceParams[] params = new SurfaceParams[targets.length];
+                for (int i = targets.length - 1; i >= 0; i--) {
+                    RemoteAnimationTargetCompat target = targets[i];
+                    params[i] = new SurfaceParams(target.leash, 1f, null,
+                            target.sourceContainerBounds,
+                            RemoteAnimationProvider.getLayer(target, MODE_OPENING), cornerRadius);
+                }
+                surfaceApplier.scheduleApply(params);
+            }
+        });
+        return unlockAnimator;
     }
 
     /**
@@ -801,7 +845,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)) {
             Pair<AnimatorSet, Runnable> contentAnimator =
-                    getLauncherContentAnimator(false /* isAppOpening */);
+                    getLauncherContentAnimator(false /* isAppOpening */,
+                            new float[] {-mContentTransY, 0});
             contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
             anim.play(contentAnimator.first);
             anim.addListener(new AnimatorListenerAdapter() {
