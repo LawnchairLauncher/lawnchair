@@ -28,6 +28,9 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.ColorSelectListener
+import android.view.WindowManager
+
+
 
 class ColorPickerPreference(context: Context, attrs: AttributeSet?)
     : Preference(context, attrs), ColorEngine.OnAccentChangeListener {

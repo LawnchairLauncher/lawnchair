@@ -78,7 +78,9 @@ class ColorPickerDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        (dialog as AlertDialog).applyAccent()
+        val dialog = (dialog as AlertDialog)
+        dialog.applyAccent()
+        dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
