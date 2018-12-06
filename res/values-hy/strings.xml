@@ -39,6 +39,8 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Հավելվածների բեռնում…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"«<xliff:g id="QUERY">%1$s</xliff:g>» հարցմանը համապատասխանող հավելվածներ չեն գտնվել"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Որոնել այլ հավելվածներ"</string>
+    <!-- no translation found for label_application (8531721983832654978) -->
+    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"Ծանուցումներ"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Կրկնակի հպեք և պահեք՝ դյուրանցում ընտրելու համար։"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Կրկնակի հպեք և պահեք՝ դյուրանցում ընտրելու համար կամ օգտվեք հարմարեցրած գործողություններից:"</string>
@@ -64,10 +66,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Սա համակարգային ծրագիր է և չի կարող ապատեղադրվել:"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Անանուն պանակ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն անջատված է"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ունի <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ծանուցում</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ունի <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ծանուցում</item>
-    </plurals>
+    <!-- no translation found for dotted_app_label (5194538107138265416) -->
     <string name="default_scroll_format" msgid="7475544710230993317">"Էջ %1$d՝ %2$d-ից"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Հիմնական էկրան %1$d` %2$d-ից"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Հիմնական էկրանի նոր էջ"</string>
@@ -83,13 +82,17 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Անջատվել է ձեր ադմինիստրատորի կողմից"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Թույլ տալ հիմնական էկրանի պտտումը"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Հեռախոսը պտտելու դեպքում"</string>
-    <string name="notification_dots_title" msgid="874121399231955394">"Ծանուցումների կետիկներ"</string>
-    <string name="notification_dots_desc_on" msgid="2627952638544674079">"Միացված է"</string>
-    <string name="notification_dots_desc_off" msgid="5503319969924580241">"Անջատված է"</string>
+    <!-- no translation found for notification_dots_title (9062440428204120317) -->
+    <skip />
+    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
+    <skip />
+    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
+    <skip />
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Անհրաժեշտ է ծանուցման թույլտվություն"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ծանուցումների կետիկները ցուցադրելու համար միացրեք ծանուցումները <xliff:g id="NAME">%1$s</xliff:g>-ի համար"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Փոխել կարգավորումները"</string>
-    <string name="notification_dots_service_title" msgid="2309733118428242174">"Ցուցադրել ծանուցումների կետիկները"</string>
+    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ավելացնել պատկերակը Հիմնական էկրանին"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Նոր հավելվածների համար"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Փոխել պատկերակների տեսքը"</string>
@@ -101,7 +104,7 @@
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Արցունքաձև"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Պատկերակների տեսքի փոփոխությունները կիրառվում են"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Անհայտ է"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"Հեռացնել"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Ապատեղադրել"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Գտնել"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Այս ծրագիրը տեղադրված չէ:"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Այս պատկերակի ծրագիրը տեղադրված չէ: Դուք կարող եք հեռացնել այն կամ գտնել ծրագիրը և տեղադրել այն ձեռքով:"</string>
