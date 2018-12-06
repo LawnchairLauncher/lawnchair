@@ -326,7 +326,7 @@ public class OverviewCommandHelper {
                 return anim;
             }
 
-            final ClipAnimationHelper clipHelper = new ClipAnimationHelper();
+            final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
 
             // At this point, the activity is already started and laid-out. Get the home-bounds
             // relative to the screen using the rootView of the activity.
