@@ -17,13 +17,16 @@
 package com.android.quickstep.views;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -32,7 +35,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewGroup;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -50,8 +53,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
  */
 public class TaskThumbnailView extends View {
 
-    private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
-    private static final LightingColorFilter[] sHighlightFilterCache = new LightingColorFilter[256];
+    private final static ColorMatrix COLOR_MATRIX = new ColorMatrix();
+    private final static ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -85,6 +88,7 @@ public class TaskThumbnailView extends View {
 
     private float mDimAlpha = 1f;
     private float mDimAlphaMultiplier = 1f;
+    private float mSaturation = 1f;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -145,6 +149,11 @@ public class TaskThumbnailView extends View {
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
+        updateThumbnailPaintFilter();
+    }
+
+    public void setSaturation(float saturation) {
+        mSaturation = saturation;
         updateThumbnailPaintFilter();
     }
 
@@ -221,7 +230,7 @@ public class TaskThumbnailView extends View {
     private void updateThumbnailPaintFilter() {
         int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
         if (mBitmapShader != null) {
-            LightingColorFilter filter = getDimmingColorFilter(mul, mIsDarkTextTheme);
+            ColorFilter filter = getColorFilter(mul, mIsDarkTextTheme, mSaturation);
             mPaint.setColorFilter(filter);
             mBackgroundPaint.setColorFilter(filter);
         } else {
@@ -313,25 +322,34 @@ public class TaskThumbnailView extends View {
         updateThumbnailMatrix();
     }
 
-    private static LightingColorFilter getDimmingColorFilter(int intensity, boolean shouldLighten) {
+    /**
+     * @param intensity multiplier for color values. 0 - make black (white if shouldLighten), 255 -
+     *                  leave unchanged.
+     */
+    private static ColorFilter getColorFilter(int intensity, boolean shouldLighten,
+            float saturation) {
         intensity = Utilities.boundToRange(intensity, 0, 255);
-        if (intensity == 255) {
+
+        if (intensity == 255 && saturation == 1) {
             return null;
         }
-        if (shouldLighten) {
-            if (sHighlightFilterCache[intensity] == null) {
-                int colorAdd = 255 - intensity;
-                sHighlightFilterCache[intensity] = new LightingColorFilter(
-                        Color.argb(255, intensity, intensity, intensity),
-                        Color.argb(255, colorAdd, colorAdd, colorAdd));
-            }
-            return sHighlightFilterCache[intensity];
-        } else {
-            if (sDimFilterCache[intensity] == null) {
-                sDimFilterCache[intensity] = new LightingColorFilter(
-                        Color.argb(255, intensity, intensity, intensity), 0);
-            }
-            return sDimFilterCache[intensity];
+
+        final float intensityScale = intensity / 255f;
+        COLOR_MATRIX.setScale(intensityScale, intensityScale, intensityScale, 1);
+
+        if (saturation != 1) {
+            SATURATION_COLOR_MATRIX.setSaturation(saturation);
+            COLOR_MATRIX.postConcat(SATURATION_COLOR_MATRIX);
         }
+
+        if (shouldLighten) {
+            final float[] colorArray = COLOR_MATRIX.getArray();
+            final int colorAdd = 255 - intensity;
+            colorArray[4] = colorAdd;
+            colorArray[9] = colorAdd;
+            colorArray[14] = colorAdd;
+        }
+
+        return new ColorMatrixColorFilter(COLOR_MATRIX);
     }
 }

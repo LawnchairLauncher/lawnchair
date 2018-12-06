@@ -42,6 +42,7 @@
         android:importantForAccessibility="noHideDescendants"
         android:background="#800000FF"
         android:layout_gravity="bottom"
+        android:visibility="gone"
     >
         <TextView
             android:id="@+id/remaining_time"

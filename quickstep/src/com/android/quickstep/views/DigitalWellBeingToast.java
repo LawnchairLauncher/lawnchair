@@ -34,7 +34,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 public final class DigitalWellBeingToast extends LinearLayout {
     public interface InitializeCallback {
-        void call(long remainingTimeMs, boolean isGroupLimit, String contentDescription);
+        void call(float saturation, String contentDescription);
     }
 
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
@@ -49,34 +49,33 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
     }
 
-    private void setRemainingTime(long remainingTime, boolean isGroupLimit) {
-        final TextView remainingTimeText = findViewById(R.id.remaining_time);
-        if (remainingTime <= 0) {
-            setVisibility(GONE);
-        } else {
-            setVisibility(VISIBLE);
-            remainingTimeText.setText(getText(remainingTime, isGroupLimit));
-        }
-    }
-
     public void initialize(Task task, InitializeCallback callback) {
         mTask = task;
         Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
+            final long appUsageLimitTimeMs = -1;
             final long appRemainingTimeMs = -1;
             final boolean isGroupLimit = true;
             post(() -> {
-                setRemainingTime(appRemainingTimeMs, isGroupLimit);
+                final TextView remainingTimeText = findViewById(R.id.remaining_time);
+                if (appUsageLimitTimeMs < 0) {
+                    setVisibility(GONE);
+                } else {
+                    setVisibility(VISIBLE);
+                    remainingTimeText.setText(getText(appRemainingTimeMs, isGroupLimit));
+                }
+
                 callback.call(
-                        appRemainingTimeMs,
-                        isGroupLimit,
+                        appUsageLimitTimeMs >= 0 && appRemainingTimeMs < 0 ? 0 : 1,
                         getContentDescriptionForTask(task, appRemainingTimeMs, isGroupLimit));
             });
         });
     }
 
     public static String getText(long remainingTime, boolean isGroupLimit) {
-        return "Remaining time:" + (remainingTime + 119999) / 120000
-                + " min " + (isGroupLimit ? "for group" : "for the app");
+        return remainingTime < 0 ?
+                "Grayed" :
+                "Remaining time:" + (remainingTime + 59999) / 60000
+                        + " min " + (isGroupLimit ? "for group" : "for the app");
     }
 
     public void openAppUsageSettings() {
