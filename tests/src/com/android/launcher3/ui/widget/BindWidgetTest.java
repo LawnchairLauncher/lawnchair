@@ -297,10 +297,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         if (screenId > Workspace.FIRST_SCREEN_ID) {
             screenId = Workspace.FIRST_SCREEN_ID;
         }
-        ContentValues v = new ContentValues();
-        v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-        v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, 0);
-        mResolver.insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
 
         // Insert the item
         ContentWriter writer = new ContentWriter(mTargetContext);
