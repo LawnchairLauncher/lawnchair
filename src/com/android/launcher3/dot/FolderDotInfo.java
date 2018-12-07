@@ -14,52 +14,51 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badge;
+package com.android.launcher3.dot;
 
 import android.view.ViewDebug;
 
 import com.android.launcher3.Utilities;
 
 /**
- * Subclass of BadgeInfo that only contains the badge count, which is
+ * Subclass of DotInfo that only contains the dot count, which is
  * the sum of all the Folder's items' notifications (each counts as 1).
  */
-public class FolderBadgeInfo extends BadgeInfo {
+public class FolderDotInfo extends DotInfo {
 
     private static final int MIN_COUNT = 0;
 
     private int mNumNotifications;
 
-    public FolderBadgeInfo() {
+    public FolderDotInfo() {
         super(null);
     }
 
-    public void addBadgeInfo(BadgeInfo badgeToAdd) {
-        if (badgeToAdd == null) {
+    public void addDotInfo(DotInfo dotToAdd) {
+        if (dotToAdd == null) {
             return;
         }
-        mNumNotifications += badgeToAdd.getNotificationKeys().size();
+        mNumNotifications += dotToAdd.getNotificationKeys().size();
         mNumNotifications = Utilities.boundToRange(
-                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
+                mNumNotifications, MIN_COUNT, DotInfo.MAX_COUNT);
     }
 
-    public void subtractBadgeInfo(BadgeInfo badgeToSubtract) {
-        if (badgeToSubtract == null) {
+    public void subtractDotInfo(DotInfo dotToSubtract) {
+        if (dotToSubtract == null) {
             return;
         }
-        mNumNotifications -= badgeToSubtract.getNotificationKeys().size();
+        mNumNotifications -= dotToSubtract.getNotificationKeys().size();
         mNumNotifications = Utilities.boundToRange(
-                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
+                mNumNotifications, MIN_COUNT, DotInfo.MAX_COUNT);
     }
 
     @Override
     public int getNotificationCount() {
-        // This forces the folder badge to always show up as a dot.
-        return 0;
+        return mNumNotifications;
     }
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    public boolean hasBadge() {
+    public boolean hasDot() {
         return mNumNotifications > 0;
     }
 }

@@ -165,6 +165,15 @@ public class LoaderCursor extends CursorWrapper {
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
     protected boolean loadIcon(ShortcutInfo info) {
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            return loadIcon(info, li);
+        }
+    }
+
+    /**
+     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
+     */
+    protected boolean loadIcon(ShortcutInfo info, LauncherIcons li) {
         if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
             String packageName = getString(iconPackageIndex);
             String resourceName = getString(iconResourceIndex);
@@ -172,9 +181,7 @@ public class LoaderCursor extends CursorWrapper {
                 info.iconResource = new ShortcutIconResource();
                 info.iconResource.packageName = packageName;
                 info.iconResource.resourceName = resourceName;
-                LauncherIcons li = LauncherIcons.obtain(mContext);
                 BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                li.recycle();
                 if (iconInfo != null) {
                     info.applyFrom(iconInfo);
                     return true;
@@ -184,11 +191,11 @@ public class LoaderCursor extends CursorWrapper {
 
         // Failed to load from resource, try loading from DB.
         byte[] data = getBlob(iconIndex);
-        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+        try {
             info.applyFrom(li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)));
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Failed to load icon for info " + info, e);
+            Log.e(TAG, "Failed to decode byte array for info " + info, e);
             return false;
         }
     }

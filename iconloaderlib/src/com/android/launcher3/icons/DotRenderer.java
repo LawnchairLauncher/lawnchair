@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badge;
+package com.android.launcher3.icons;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.graphics.Paint.FILTER_BITMAP_FLAG;
@@ -26,24 +26,22 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
-
-import com.android.launcher3.icons.ShadowGenerator;
+import android.view.ViewDebug;
 
 /**
- * Contains parameters necessary to draw a badge for an icon (e.g. the size of the badge).
- * @see BadgeInfo for the data to draw
+ * Used to draw a notification dot on top of an icon.
  */
-public class BadgeRenderer {
+public class DotRenderer {
 
-    private static final String TAG = "BadgeRenderer";
+    private static final String TAG = "DotRenderer";
 
-    // The badge sizes are defined as percentages of the app icon size.
+    // The dot size is defined as a percentage of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
 
     // Extra scale down of the dot
     private static final float DOT_SCALE = 0.6f;
 
-    // Used to expand the width of the badge for each additional digit.
+    // Offset the dot slightly away from the icon if there's space.
     private static final float OFFSET_PERCENTAGE = 0.02f;
 
     private final float mDotCenterOffset;
@@ -54,7 +52,7 @@ public class BadgeRenderer {
     private final Bitmap mBackgroundWithShadow;
     private final float mBitmapOffset;
 
-    public BadgeRenderer(int iconSizePx) {
+    public DotRenderer(int iconSizePx) {
         mDotCenterOffset = SIZE_PERCENTAGE * iconSizePx;
         mOffset = (int) (OFFSET_PERCENTAGE * iconSizePx);
 
@@ -68,33 +66,47 @@ public class BadgeRenderer {
     }
 
     /**
-     * Draw a circle in the top right corner of the given bounds, and draw
-     * {@link BadgeInfo#getNotificationCount()} on top of the circle.
-     * @param color The color (based on the icon) to use for the badge.
-     * @param iconBounds The bounds of the icon being badged.
-     * @param badgeScale The progress of the animation, from 0 to 1.
-     * @param spaceForOffset How much space is available to offset the badge up and to the right.
+     * Draw a circle on top of the canvas according to the given params.
      */
-    public void draw(
-            Canvas canvas, int color, Rect iconBounds, float badgeScale, Point spaceForOffset) {
-        if (iconBounds == null || spaceForOffset == null) {
+    public void draw(Canvas canvas, DrawParams params) {
+        if (params == null) {
             Log.e(TAG, "Invalid null argument(s) passed in call to draw.");
             return;
         }
         canvas.save();
-        // We draw the badge relative to its center.
-        float badgeCenterX = iconBounds.right - mDotCenterOffset / 2;
-        float badgeCenterY = iconBounds.top + mDotCenterOffset / 2;
+        // We draw the dot relative to its center.
+        float dotCenterX = params.leftAlign
+                ? params.iconBounds.left + mDotCenterOffset / 2
+                : params.iconBounds.right - mDotCenterOffset / 2;
+        float dotCenterY = params.iconBounds.top + mDotCenterOffset / 2;
 
-        int offsetX = Math.min(mOffset, spaceForOffset.x);
-        int offsetY = Math.min(mOffset, spaceForOffset.y);
-        canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
-        canvas.scale(badgeScale, badgeScale);
+        int offsetX = Math.min(mOffset, params.spaceForOffset.x);
+        int offsetY = Math.min(mOffset, params.spaceForOffset.y);
+        canvas.translate(dotCenterX + offsetX, dotCenterY - offsetY);
+        canvas.scale(params.scale, params.scale);
 
         mCirclePaint.setColor(Color.BLACK);
         canvas.drawBitmap(mBackgroundWithShadow, mBitmapOffset, mBitmapOffset, mCirclePaint);
-        mCirclePaint.setColor(color);
+        mCirclePaint.setColor(params.color);
         canvas.drawCircle(0, 0, mCircleRadius, mCirclePaint);
         canvas.restore();
+    }
+
+    public static class DrawParams {
+        /** The color (possibly based on the icon) to use for the dot. */
+        @ViewDebug.ExportedProperty(category = "notification dot", formatToHexString = true)
+        public int color;
+        /** The bounds of the icon that the dot is drawn on top of. */
+        @ViewDebug.ExportedProperty(category = "notification dot")
+        public Rect iconBounds = new Rect();
+        /** The progress of the animation, from 0 to 1. */
+        @ViewDebug.ExportedProperty(category = "notification dot")
+        public float scale;
+        /** Overrides internally calculated offset if specified value is smaller. */
+        @ViewDebug.ExportedProperty(category = "notification dot")
+        public Point spaceForOffset = new Point();
+        /** Whether the dot should align to the top left of the icon rather than the top right. */
+        @ViewDebug.ExportedProperty(category = "notification dot")
+        public boolean leftAlign;
     }
 }

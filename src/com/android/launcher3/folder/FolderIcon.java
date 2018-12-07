@@ -24,7 +24,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -57,11 +56,11 @@ import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.badge.FolderBadgeInfo;
+import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -110,23 +109,23 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private Alarm mOpenAlarm = new Alarm();
 
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
-    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
-    private BadgeRenderer mBadgeRenderer;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mBadgeScale;
-    private Animator mBadgeScaleAnim;
-    private Point mTempSpaceForBadgeOffset = new Point();
+    private FolderDotInfo mDotInfo = new FolderDotInfo();
+    private DotRenderer mDotRenderer;
+    @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
+    private DotRenderer.DrawParams mDotParams;
+    private float mDotScale;
+    private Animator mDotScaleAnim;
 
-    private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
-            = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
+    private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
+            = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
         @Override
         public Float get(FolderIcon folderIcon) {
-            return folderIcon.mBadgeScale;
+            return folderIcon.mDotScale;
         }
 
         @Override
         public void set(FolderIcon folderIcon, Float value) {
-            folderIcon.mBadgeScale = value;
+            folderIcon.mDotScale = value;
             folderIcon.invalidate();
         }
     };
@@ -147,6 +146,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
+        mDotParams = new DotRenderer.DrawParams();
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
@@ -174,7 +174,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
+        icon.mDotRenderer = launcher.getDeviceProfile().mDotRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
@@ -382,9 +382,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 itemReturnedOnFailedDrop);
     }
 
-    public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
-        updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
-        mBadgeInfo = badgeInfo;
+    public void setDotInfo(FolderDotInfo dotInfo) {
+        updateDotScale(mDotInfo.hasDot(), dotInfo.hasDot());
+        mDotInfo = dotInfo;
     }
 
     public ClippedFolderIconLayoutRule getLayoutRule() {
@@ -392,41 +392,41 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     /**
-     * Sets mBadgeScale to 1 or 0, animating if wasBadged or isBadged is false
-     * (the badge is being added or removed).
+     * Sets mDotScale to 1 or 0, animating if wasDotted or isDotted is false
+     * (the dot is being added or removed).
      */
-    private void updateBadgeScale(boolean wasBadged, boolean isBadged) {
-        float newBadgeScale = isBadged ? 1f : 0f;
-        // Animate when a badge is first added or when it is removed.
-        if ((wasBadged ^ isBadged) && isShown()) {
-            animateBadgeScale(newBadgeScale);
+    private void updateDotScale(boolean wasDotted, boolean isDotted) {
+        float newDotScale = isDotted ? 1f : 0f;
+        // Animate when a dot is first added or when it is removed.
+        if ((wasDotted ^ isDotted) && isShown()) {
+            animateDotScale(newDotScale);
         } else {
-            cancelBadgeScaleAnim();
-            mBadgeScale = newBadgeScale;
+            cancelDotScaleAnim();
+            mDotScale = newDotScale;
             invalidate();
         }
     }
 
-    private void cancelBadgeScaleAnim() {
-        if (mBadgeScaleAnim != null) {
-            mBadgeScaleAnim.cancel();
+    private void cancelDotScaleAnim() {
+        if (mDotScaleAnim != null) {
+            mDotScaleAnim.cancel();
         }
     }
 
-    public void animateBadgeScale(float... badgeScales) {
-        cancelBadgeScaleAnim();
-        mBadgeScaleAnim = ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
-        mBadgeScaleAnim.addListener(new AnimatorListenerAdapter() {
+    public void animateDotScale(float... dotScales) {
+        cancelDotScaleAnim();
+        mDotScaleAnim = ObjectAnimator.ofFloat(this, DOT_SCALE_PROPERTY, dotScales);
+        mDotScaleAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mBadgeScaleAnim = null;
+                mDotScaleAnim = null;
             }
         });
-        mBadgeScaleAnim.start();
+        mDotScaleAnim.start();
     }
 
-    public boolean hasBadge() {
-        return mBadgeInfo != null && mBadgeInfo.hasBadge();
+    public boolean hasDot() {
+        return mDotInfo != null && mDotInfo.hasDot();
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
@@ -487,18 +487,19 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mBackground.drawBackgroundStroke(canvas);
         }
 
-        drawBadge(canvas);
+        drawDot(canvas);
     }
 
-    public void drawBadge(Canvas canvas) {
-        if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-            BubbleTextView.getIconBounds(this, mTempBounds, mLauncher.getDeviceProfile().iconSizePx);
+    public void drawDot(Canvas canvas) {
+        if ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0) {
+            Rect iconBounds = mDotParams.iconBounds;
+            BubbleTextView.getIconBounds(this, iconBounds, mLauncher.getDeviceProfile().iconSizePx);
 
-            // If we are animating to the accepting state, animate the badge out.
-            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
-            mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
-            mBadgeRenderer.draw(canvas, mBackground.getBadgeColor(), mTempBounds,
-                    badgeScale, mTempSpaceForBadgeOffset);
+            // If we are animating to the accepting state, animate the dot out.
+            mDotParams.scale = Math.max(0, mDotScale - mBackground.getScaleProgress());
+            mDotParams.spaceForOffset.set(getWidth() - iconBounds.right, iconBounds.top);
+            mDotParams.color = mBackground.getDotColor();
+            mDotRenderer.draw(canvas, mDotParams);
         }
     }
 
@@ -566,20 +567,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     public void onAdd(ShortcutInfo item, int rank) {
-        boolean wasBadged = mBadgeInfo.hasBadge();
-        mBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(item));
-        boolean isBadged = mBadgeInfo.hasBadge();
-        updateBadgeScale(wasBadged, isBadged);
+        boolean wasDotted = mDotInfo.hasDot();
+        mDotInfo.addDotInfo(mLauncher.getDotInfoForItem(item));
+        boolean isDotted = mDotInfo.hasDot();
+        updateDotScale(wasDotted, isDotted);
         invalidate();
         requestLayout();
     }
 
     @Override
     public void onRemove(ShortcutInfo item) {
-        boolean wasBadged = mBadgeInfo.hasBadge();
-        mBadgeInfo.subtractBadgeInfo(mLauncher.getBadgeInfoForItem(item));
-        boolean isBadged = mBadgeInfo.hasBadge();
-        updateBadgeScale(wasBadged, isBadged);
+        boolean wasDotted = mDotInfo.hasDot();
+        mDotInfo.subtractDotInfo(mLauncher.getDotInfoForItem(item));
+        boolean isDotted = mDotInfo.hasDot();
+        updateDotScale(wasDotted, isDotted);
         invalidate();
         requestLayout();
     }

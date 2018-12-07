@@ -43,6 +43,7 @@ import android.util.MutableInt;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
@@ -493,12 +494,12 @@ public class LoaderTask implements Runnable {
                                     }
                                     info = new ShortcutInfo(pinnedShortcut, context);
                                     final ShortcutInfo finalInfo = info;
-                                    // If the pinned deep shortcut is no longer published,
-                                    // use the last saved icon instead of the default.
-                                    Provider<Bitmap> fallbackIconProvider = () ->
-                                            c.loadIcon(finalInfo) ? finalInfo.iconBitmap : null;
 
                                     LauncherIcons li = LauncherIcons.obtain(context);
+                                    // If the pinned deep shortcut is no longer published,
+                                    // use the last saved icon instead of the default.
+                                    Provider<ItemInfoWithIcon> fallbackIconProvider = () ->
+                                            c.loadIcon(finalInfo, li) ? finalInfo : null;
                                     info.applyFrom(li.createShortcutIcon(pinnedShortcut,
                                             true /* badged */, fallbackIconProvider));
                                     li.recycle();

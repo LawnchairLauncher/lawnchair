@@ -77,7 +77,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
@@ -460,21 +460,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return !isWorkspaceLoading();
     }
 
-    public int getViewIdForItem(ItemInfo info) {
-        // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
-        // This cast is safe as long as the id < 0x00FFFFFF
-        // Since we jail all the dynamically generated views, there should be no clashes
-        // with any other views.
-        return (int) info.id;
-    }
-
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
     }
 
     @Override
-    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
-        return mPopupDataProvider.getBadgeInfoForItem(info);
+    public DotInfo getDotInfoForItem(ItemInfo info) {
+        return mPopupDataProvider.getDotInfoForItem(info);
     }
 
     @Override
@@ -1105,13 +1097,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     };
 
-    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
-        mWorkspace.updateIconBadges(updatedBadges);
-        mAppsView.getAppsStore().updateIconBadges(updatedBadges);
+    public void updateNotificationDots(final Set<PackageUserKey> updatedDots) {
+        mWorkspace.updateNotificationDots(updatedDots);
+        mAppsView.getAppsStore().updateNotificationDots(updatedDots);
 
         PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
         if (popup != null) {
-            popup.updateNotificationHeader(updatedBadges);
+            popup.updateNotificationHeader(updatedDots);
         }
     }
 

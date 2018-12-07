@@ -44,6 +44,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.FragmentWithPreview;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
@@ -78,7 +79,7 @@ public class QsbContainerView extends FrameLayout {
     /**
      * A fragment to display the QSB.
      */
-    public static class QsbFragment extends Fragment {
+    public static class QsbFragment extends FragmentWithPreview {
 
         public static final int QSB_WIDGET_HOST_ID = 1026;
         private static final int REQUEST_BIND_QSB = 1;
@@ -93,14 +94,13 @@ public class QsbContainerView extends FrameLayout {
         private int mOrientation;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public void onInit(Bundle savedInstanceState) {
             mQsbWidgetHost = createHost();
             mOrientation = getContext().getResources().getConfiguration().orientation;
         }
 
         protected QsbWidgetHost createHost() {
-            return new QsbWidgetHost(getActivity(), QSB_WIDGET_HOST_ID,
+            return new QsbWidgetHost(getContext(), QSB_WIDGET_HOST_ID,
                     (c) -> new QsbWidgetHostView(c));
         }
 
@@ -110,7 +110,7 @@ public class QsbContainerView extends FrameLayout {
         public View onCreateView(
                 LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            mWrapper = new FrameLayout(getActivity());
+            mWrapper = new FrameLayout(getContext());
 
             // Only add the view when enabled
             if (isQsbEnabled()) {
@@ -126,16 +126,16 @@ public class QsbContainerView extends FrameLayout {
                 return getDefaultView(container, false /* show setup icon */);
             }
             Bundle opts = createBindOptions();
-            Activity activity = getActivity();
-            AppWidgetManager widgetManager = AppWidgetManager.getInstance(activity);
+            Context context = getContext();
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
 
-            int widgetId = Utilities.getPrefs(activity).getInt(mKeyWidgetId, -1);
+            int widgetId = Utilities.getPrefs(context).getInt(mKeyWidgetId, -1);
             AppWidgetProviderInfo widgetInfo = widgetManager.getAppWidgetInfo(widgetId);
             boolean isWidgetBound = (widgetInfo != null) &&
                     widgetInfo.provider.equals(mWidgetInfo.provider);
 
             int oldWidgetId = widgetId;
-            if (!isWidgetBound) {
+            if (!isWidgetBound && !isInPreviewMode()) {
                 if (widgetId > -1) {
                     // widgetId is already bound and its not the correct provider. reset host.
                     mQsbWidgetHost.deleteHost();
@@ -155,14 +155,16 @@ public class QsbContainerView extends FrameLayout {
             }
 
             if (isWidgetBound) {
-                mQsb = (QsbWidgetHostView) mQsbWidgetHost.createView(activity, widgetId, mWidgetInfo);
+                mQsb = (QsbWidgetHostView) mQsbWidgetHost.createView(context, widgetId, mWidgetInfo);
                 mQsb.setId(R.id.qsb_widget);
 
-                if (!Utilities.containsAll(AppWidgetManager.getInstance(activity)
-                        .getAppWidgetOptions(widgetId), opts)) {
-                    mQsb.updateAppWidgetOptions(opts);
+                if (!isInPreviewMode()) {
+                    if (!Utilities.containsAll(AppWidgetManager.getInstance(context)
+                            .getAppWidgetOptions(widgetId), opts)) {
+                        mQsb.updateAppWidgetOptions(opts);
+                    }
+                    mQsbWidgetHost.startListening();
                 }
-                mQsbWidgetHost.startListening();
                 return mQsb;
             }
 
@@ -171,7 +173,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private void saveWidgetId(int widgetId) {
-            Utilities.getPrefs(getActivity()).edit().putInt(mKeyWidgetId, widgetId).apply();
+            Utilities.getPrefs(getContext()).edit().putInt(mKeyWidgetId, widgetId).apply();
         }
 
         @Override
@@ -206,7 +208,7 @@ public class QsbContainerView extends FrameLayout {
                 return;
             }
 
-            if (mWrapper != null && getActivity() != null) {
+            if (mWrapper != null && getContext() != null) {
                 mWrapper.removeAllViews();
                 mWrapper.addView(createQsb(mWrapper));
             }
@@ -217,10 +219,10 @@ public class QsbContainerView extends FrameLayout {
         }
 
         protected Bundle createBindOptions() {
-            InvariantDeviceProfile idp = LauncherAppState.getIDP(getActivity());
+            InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
 
             Bundle opts = new Bundle();
-            Rect size = AppWidgetResizeFrame.getWidgetSizeRanges(getActivity(),
+            Rect size = AppWidgetResizeFrame.getWidgetSizeRanges(getContext(),
                     idp.numColumns, 1, null);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, size.left);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, size.top);
@@ -252,14 +254,14 @@ public class QsbContainerView extends FrameLayout {
          */
         protected AppWidgetProviderInfo getSearchWidgetProvider() {
             SearchManager searchManager =
-                    (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+                    (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
             ComponentName searchComponent = searchManager.getGlobalSearchActivity();
             if (searchComponent == null) return null;
             String providerPkg = searchComponent.getPackageName();
 
             AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
             for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
                 if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
                     if ((info.widgetCategory

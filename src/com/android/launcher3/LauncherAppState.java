@@ -50,7 +50,7 @@ public class LauncherAppState {
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
-    private final SecureSettingsObserver mNotificationBadgingObserver;
+    private final SecureSettingsObserver mNotificationDotsObserver;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -98,19 +98,19 @@ public class LauncherAppState {
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
 
-        if (!mContext.getResources().getBoolean(R.bool.notification_badging_enabled)) {
-            mNotificationBadgingObserver = null;
+        if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
+            mNotificationDotsObserver = null;
         } else {
-            // Register an observer to rebind the notification listener when badging is re-enabled.
-            mNotificationBadgingObserver =
+            // Register an observer to rebind the notification listener when dots are re-enabled.
+            mNotificationDotsObserver =
                     newNotificationSettingsObserver(mContext, this::onNotificationSettingsChanged);
-            mNotificationBadgingObserver.register();
-            mNotificationBadgingObserver.dispatchOnChange();
+            mNotificationDotsObserver.register();
+            mNotificationDotsObserver.dispatchOnChange();
         }
     }
 
-    protected void onNotificationSettingsChanged(boolean isNotificationBadgingEnabled) {
-        if (isNotificationBadgingEnabled) {
+    protected void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
+        if (areNotificationDotsEnabled) {
             NotificationListener.requestRebind(new ComponentName(
                     mContext, NotificationListener.class));
         }
@@ -137,8 +137,8 @@ public class LauncherAppState {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
         PackageInstallerCompat.getInstance(mContext).onStop();
-        if (mNotificationBadgingObserver != null) {
-            mNotificationBadgingObserver.unregister();
+        if (mNotificationDotsObserver != null) {
+            mNotificationDotsObserver.unregister();
         }
     }
 

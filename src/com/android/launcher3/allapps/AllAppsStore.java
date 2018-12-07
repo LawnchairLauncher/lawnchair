@@ -121,12 +121,12 @@ public class AllAppsStore {
         mIconContainers.remove(container);
     }
 
-    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+    public void updateNotificationDots(Set<PackageUserKey> updatedDots) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
                 ItemInfo info = (ItemInfo) child.getTag();
-                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
-                    child.applyBadgeState(info, true /* animate */);
+                if (mTempKey.updateFromItemInfo(info) && updatedDots.contains(mTempKey)) {
+                    child.applyDotState(info, true /* animate */);
                 }
             }
         });

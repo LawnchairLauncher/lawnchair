@@ -22,7 +22,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3" >
 
-    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="28"/>
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
 
     <application

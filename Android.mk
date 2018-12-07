@@ -82,7 +82,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
-    $(call all-proto-files-under, proto_overrides)
+    $(call all-proto-files-under, proto_overrides) \
+    $(call all-java-files-under, src_build_config) \
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 

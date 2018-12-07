@@ -23,7 +23,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
@@ -53,8 +53,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     /** Maps launcher activity components to a count of how many shortcuts they have. */
     private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
-    /** Maps packages to their BadgeInfo's . */
-    private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos = new HashMap<>();
+    /** Maps packages to their DotInfo's . */
+    private Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
     /** Maps packages to their Widgets */
     private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
 
@@ -65,83 +65,83 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     @Override
     public void onNotificationPosted(PackageUserKey postedPackageUserKey,
             NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
-        BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
-        boolean badgeShouldBeRefreshed;
-        if (badgeInfo == null) {
+        DotInfo dotInfo = mPackageUserToDotInfos.get(postedPackageUserKey);
+        boolean dotShouldBeRefreshed;
+        if (dotInfo == null) {
             if (!shouldBeFilteredOut) {
-                BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
-                newBadgeInfo.addOrUpdateNotificationKey(notificationKey);
-                mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
-                badgeShouldBeRefreshed = true;
+                DotInfo newDotInfo = new DotInfo(postedPackageUserKey);
+                newDotInfo.addOrUpdateNotificationKey(notificationKey);
+                mPackageUserToDotInfos.put(postedPackageUserKey, newDotInfo);
+                dotShouldBeRefreshed = true;
             } else {
-                badgeShouldBeRefreshed = false;
+                dotShouldBeRefreshed = false;
             }
         } else {
-            badgeShouldBeRefreshed = shouldBeFilteredOut
-                    ? badgeInfo.removeNotificationKey(notificationKey)
-                    : badgeInfo.addOrUpdateNotificationKey(notificationKey);
-            if (badgeInfo.getNotificationKeys().size() == 0) {
-                mPackageUserToBadgeInfos.remove(postedPackageUserKey);
+            dotShouldBeRefreshed = shouldBeFilteredOut
+                    ? dotInfo.removeNotificationKey(notificationKey)
+                    : dotInfo.addOrUpdateNotificationKey(notificationKey);
+            if (dotInfo.getNotificationKeys().size() == 0) {
+                mPackageUserToDotInfos.remove(postedPackageUserKey);
             }
         }
-        if (badgeShouldBeRefreshed) {
-            mLauncher.updateIconBadges(Utilities.singletonHashSet(postedPackageUserKey));
+        if (dotShouldBeRefreshed) {
+            mLauncher.updateNotificationDots(Utilities.singletonHashSet(postedPackageUserKey));
         }
     }
 
     @Override
     public void onNotificationRemoved(PackageUserKey removedPackageUserKey,
             NotificationKeyData notificationKey) {
-        BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(removedPackageUserKey);
-        if (oldBadgeInfo != null && oldBadgeInfo.removeNotificationKey(notificationKey)) {
-            if (oldBadgeInfo.getNotificationKeys().size() == 0) {
-                mPackageUserToBadgeInfos.remove(removedPackageUserKey);
+        DotInfo oldDotInfo = mPackageUserToDotInfos.get(removedPackageUserKey);
+        if (oldDotInfo != null && oldDotInfo.removeNotificationKey(notificationKey)) {
+            if (oldDotInfo.getNotificationKeys().size() == 0) {
+                mPackageUserToDotInfos.remove(removedPackageUserKey);
             }
-            mLauncher.updateIconBadges(Utilities.singletonHashSet(removedPackageUserKey));
-            trimNotifications(mPackageUserToBadgeInfos);
+            mLauncher.updateNotificationDots(Utilities.singletonHashSet(removedPackageUserKey));
+            trimNotifications(mPackageUserToDotInfos);
         }
     }
 
     @Override
     public void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications) {
         if (activeNotifications == null) return;
-        // This will contain the PackageUserKeys which have updated badges.
-        HashMap<PackageUserKey, BadgeInfo> updatedBadges = new HashMap<>(mPackageUserToBadgeInfos);
-        mPackageUserToBadgeInfos.clear();
+        // This will contain the PackageUserKeys which have updated dots.
+        HashMap<PackageUserKey, DotInfo> updatedDots = new HashMap<>(mPackageUserToDotInfos);
+        mPackageUserToDotInfos.clear();
         for (StatusBarNotification notification : activeNotifications) {
             PackageUserKey packageUserKey = PackageUserKey.fromNotification(notification);
-            BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(packageUserKey);
-            if (badgeInfo == null) {
-                badgeInfo = new BadgeInfo(packageUserKey);
-                mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
+            DotInfo dotInfo = mPackageUserToDotInfos.get(packageUserKey);
+            if (dotInfo == null) {
+                dotInfo = new DotInfo(packageUserKey);
+                mPackageUserToDotInfos.put(packageUserKey, dotInfo);
             }
-            badgeInfo.addOrUpdateNotificationKey(NotificationKeyData
-                    .fromNotification(notification));
+            dotInfo.addOrUpdateNotificationKey(NotificationKeyData.fromNotification(notification));
         }
 
-        // Add and remove from updatedBadges so it contains the PackageUserKeys of updated badges.
-        for (PackageUserKey packageUserKey : mPackageUserToBadgeInfos.keySet()) {
-            BadgeInfo prevBadge = updatedBadges.get(packageUserKey);
-            BadgeInfo newBadge = mPackageUserToBadgeInfos.get(packageUserKey);
-            if (prevBadge == null) {
-                updatedBadges.put(packageUserKey, newBadge);
+        // Add and remove from updatedDots so it contains the PackageUserKeys of updated dots.
+        for (PackageUserKey packageUserKey : mPackageUserToDotInfos.keySet()) {
+            DotInfo prevDot = updatedDots.get(packageUserKey);
+            DotInfo newDot = mPackageUserToDotInfos.get(packageUserKey);
+            if (prevDot == null) {
+                updatedDots.put(packageUserKey, newDot);
             } else {
-                if (!prevBadge.shouldBeInvalidated(newBadge)) {
-                    updatedBadges.remove(packageUserKey);
-                }
+                // No need to update the dot if it already existed (no visual change).
+                // Note that if the dot was removed entirely, we wouldn't reach this point because
+                // this loop only includes active notifications added above.
+                updatedDots.remove(packageUserKey);
             }
         }
 
-        if (!updatedBadges.isEmpty()) {
-            mLauncher.updateIconBadges(updatedBadges.keySet());
+        if (!updatedDots.isEmpty()) {
+            mLauncher.updateNotificationDots(updatedDots.keySet());
         }
-        trimNotifications(updatedBadges);
+        trimNotifications(updatedDots);
     }
 
-    private void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+    private void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
         PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
         if (openContainer != null) {
-            openContainer.trimNotifications(updatedBadges);
+            openContainer.trimNotifications(updatedDots);
         }
     }
 
@@ -163,17 +163,17 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return count == null ? 0 : count;
     }
 
-    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+    public DotInfo getDotInfoForItem(ItemInfo info) {
         if (!DeepShortcutManager.supportsShortcuts(info)) {
             return null;
         }
 
-        return mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
+        return mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
     }
 
     public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
-        BadgeInfo badgeInfo = getBadgeInfoForItem(info);
-        return badgeInfo == null ? Collections.EMPTY_LIST : badgeInfo.getNotificationKeys();
+        DotInfo dotInfo = getDotInfoForItem(info);
+        return dotInfo == null ? Collections.EMPTY_LIST : dotInfo.getNotificationKeys();
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */

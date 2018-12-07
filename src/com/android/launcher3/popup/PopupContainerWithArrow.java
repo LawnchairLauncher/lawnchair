@@ -53,7 +53,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
@@ -279,7 +279,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
 
         mLauncher.getDragController().addDragListener(this);
-        mOriginalIcon.forceHideBadge(true);
+        mOriginalIcon.forceHideDot(true);
 
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());
@@ -462,32 +462,32 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     /**
-     * Updates the notification header if the original icon's badge updated.
+     * Updates the notification header if the original icon's dot updated.
      */
-    public void updateNotificationHeader(Set<PackageUserKey> updatedBadges) {
+    public void updateNotificationHeader(Set<PackageUserKey> updatedDots) {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
-        if (updatedBadges.contains(packageUser)) {
+        if (updatedDots.contains(packageUser)) {
             updateNotificationHeader();
         }
     }
 
     private void updateNotificationHeader() {
         ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
-        BadgeInfo badgeInfo = mLauncher.getBadgeInfoForItem(itemInfo);
-        if (mNotificationItemView != null && badgeInfo != null) {
+        DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
+        if (mNotificationItemView != null && dotInfo != null) {
             mNotificationItemView.updateHeader(
-                    badgeInfo.getNotificationCount(), itemInfo.iconColor);
+                    dotInfo.getNotificationCount(), itemInfo.iconColor);
         }
     }
 
-    public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+    public void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
         if (mNotificationItemView == null) {
             return;
         }
         ItemInfo originalInfo = (ItemInfo) mOriginalIcon.getTag();
-        BadgeInfo badgeInfo = updatedBadges.get(PackageUserKey.fromItemInfo(originalInfo));
-        if (badgeInfo == null || badgeInfo.getNotificationKeys().size() == 0) {
+        DotInfo dotInfo = updatedDots.get(PackageUserKey.fromItemInfo(originalInfo));
+        if (dotInfo == null || dotInfo.getNotificationKeys().size() == 0) {
             // No more notifications, remove the notification views and expand all shortcuts.
             mNotificationItemView.removeAllViews();
             mNotificationItemView = null;
@@ -495,7 +495,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             updateDividers();
         } else {
             mNotificationItemView.trimNotifications(
-                    NotificationKeyData.extractKeysOnly(badgeInfo.getNotificationKeys()));
+                    NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));
         }
     }
 
@@ -540,14 +540,14 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     protected void onCreateCloseAnimation(AnimatorSet anim) {
         // Animate original icon's text back in.
         anim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
-        mOriginalIcon.forceHideBadge(false);
+        mOriginalIcon.forceHideDot(false);
     }
 
     @Override
     protected void closeComplete() {
         super.closeComplete();
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.forceHideBadge(false);
+        mOriginalIcon.forceHideDot(false);
     }
 
     @Override

@@ -34,4 +34,22 @@
         android:layout_gravity="top|center_horizontal"
         android:focusable="false"
         android:importantForAccessibility="no" />
+
+    <com.android.quickstep.views.DigitalWellBeingToast
+        android:id="@+id/digital_well_being_toast"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:importantForAccessibility="noHideDescendants"
+        android:background="#800000FF"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+    >
+        <TextView
+            android:id="@+id/remaining_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/white"
+        />
+    </com.android.quickstep.views.DigitalWellBeingToast>
 </com.android.quickstep.views.TaskView>

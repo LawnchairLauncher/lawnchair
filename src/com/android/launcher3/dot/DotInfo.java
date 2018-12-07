@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badge;
+package com.android.launcher3.dot;
 
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -24,17 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contains data to be used in an icon badge.
+ * Contains data to be used for a notification dot.
  */
-public class BadgeInfo {
+public class DotInfo {
 
     public static final int MAX_COUNT = 999;
 
-    /** Used to link this BadgeInfo to icons on the workspace and all apps */
+    /** Used to link this DotInfo to icons on the workspace and all apps */
     private PackageUserKey mPackageUserKey;
 
     /**
-     * The keys of the notifications that this badge represents. These keys can later be
+     * The keys of the notifications that this dot represents. These keys can later be
      * used to retrieve {@link NotificationInfo}'s.
      */
     private List<NotificationKeyData> mNotificationKeys;
@@ -45,7 +45,7 @@ public class BadgeInfo {
      */
     private int mTotalCount;
 
-    public BadgeInfo(PackageUserKey packageUserKey) {
+    public DotInfo(PackageUserKey packageUserKey) {
         mPackageUserKey = packageUserKey;
         mNotificationKeys = new ArrayList<>();
     }
@@ -91,18 +91,5 @@ public class BadgeInfo {
 
     public int getNotificationCount() {
         return Math.min(mTotalCount, MAX_COUNT);
-    }
-
-    /**
-     * Whether newBadge represents the same PackageUserKey as this badge, and icons with
-     * this badge should be invalidated. So, for instance, if a badge has 3 notifications
-     * and one of those notifications is updated, this method should return false because
-     * the badge still says "3" and the contents of those notifications are only retrieved
-     * upon long-click. This method always returns true when adding or removing notifications,
-     * or if the badge has a notification icon to show.
-     */
-    public boolean shouldBeInvalidated(BadgeInfo newBadge) {
-        return mPackageUserKey.equals(newBadge.mPackageUserKey)
-                && (getNotificationCount() != newBadge.getNotificationCount());
     }
 }
