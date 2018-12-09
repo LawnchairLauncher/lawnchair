@@ -102,7 +102,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         c.setBitmap(badgeBitmap);
         bg.drawShadow(c);
         bg.drawBackgroundStroke(c);
-        icon.drawBadge(c);
+        icon.drawDot(c);
 
         // Initialize preview
         final float sizeScaleFactor = 1 + 2 * AdaptiveIconDrawable.getExtraInsetFraction();

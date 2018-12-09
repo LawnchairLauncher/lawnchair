@@ -50,6 +50,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
+import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -224,8 +225,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
         @Override
         protected ActivityOptions makeLaunchOptions(Activity activity) {
+            final ActivityCompat act = new ActivityCompat(activity);
             final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition(
-                    activity.getDisplayId());
+                    act.getDisplayId());
             if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
                 return null;
             }

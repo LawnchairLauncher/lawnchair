@@ -97,7 +97,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                     // keep the current icon instead of reverting to the default icon.
                     LauncherIcons li = LauncherIcons.obtain(context);
                     shortcutInfo.applyFrom(li.createShortcutIcon(fullDetails, true,
-                            Provider.of(shortcutInfo.iconBitmap)));
+                            Provider.of(shortcutInfo)));
                     li.recycle();
                     updatedShortcutInfos.add(shortcutInfo);
                 }

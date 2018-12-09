@@ -204,4 +204,13 @@ public class ItemInfo {
     public boolean isDisabled() {
         return false;
     }
+
+    public int getViewId() {
+        // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+        // This cast is safe as long as the id < 0x00FFFFFF
+        // Since we jail all the dynamically generated views, there should be no clashes
+        // with any other views.
+        return id;
+    }
+
 }

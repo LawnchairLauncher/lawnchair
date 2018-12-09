@@ -38,10 +38,10 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
 /**
- * A {@link Preference} for indicating icon badging status.
- * Also has utility methods for updating UI based on badging status changes.
+ * A {@link Preference} for indicating notification dots status.
+ * Also has utility methods for updating UI based on dots status changes.
  */
-public class IconBadgingPreference extends Preference
+public class NotificationDotsPreference extends Preference
         implements SecureSettingsObserver.OnChangeListener {
 
     private boolean mWidgetFrameVisible = false;
@@ -49,20 +49,20 @@ public class IconBadgingPreference extends Preference
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
-    public IconBadgingPreference(
+    public NotificationDotsPreference(
             Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public IconBadgingPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NotificationDotsPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public IconBadgingPreference(Context context, AttributeSet attrs) {
+    public NotificationDotsPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public IconBadgingPreference(Context context) {
+    public NotificationDotsPreference(Context context) {
         super(context);
     }
 
@@ -85,7 +85,9 @@ public class IconBadgingPreference extends Preference
 
     @Override
     public void onSettingsChanged(boolean enabled) {
-        int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
+        int summary = enabled
+                ? R.string.notification_dots_desc_on
+                : R.string.notification_dots_desc_off;
 
         boolean serviceEnabled = true;
         if (enabled) {

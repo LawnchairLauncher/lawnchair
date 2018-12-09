@@ -58,7 +58,6 @@ abstract class BaseFlags {
     }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
-    public static final String AUTHORITY = "com.android.launcher3.settings".intern();
 
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
@@ -104,12 +103,6 @@ abstract class BaseFlags {
                     flag.initialize(context);
                 }
             }
-        } else {
-            synchronized (sLock) {
-                for (TogglableFlag flag : sFlags) {
-                    flag.currentValue = flag.defaultValue;
-                }
-            }
         }
     }
 
@@ -139,7 +132,7 @@ abstract class BaseFlags {
                 boolean defaultValue,
                 String description) {
             this.key = checkNotNull(key);
-            this.defaultValue = defaultValue;
+            this.currentValue = this.defaultValue = defaultValue;
             this.description = checkNotNull(description);
             synchronized (sLock) {
                 sFlags.add(this);

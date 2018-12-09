@@ -827,6 +827,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 return;
             }
             if (start == end || duration <= 0) {
+                mLauncherTransitionController.dispatchSetInterpolator(t -> end);
                 mLauncherTransitionController.getAnimationPlayer().end();
             } else {
                 // Adjust start progress and duration in case we are on a different thread.

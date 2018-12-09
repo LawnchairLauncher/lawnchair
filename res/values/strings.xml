@@ -66,6 +66,8 @@
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
+    <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
+    <string name="label_application">App</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
@@ -141,7 +143,7 @@
     <!-- The format string for when an app is temporarily disabled. -->
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
     <!-- The format string for when an app has a notification dot (meaning it has associated notifications). -->
-    <plurals name="badged_app_label">
+    <plurals name="dotted_app_label">
         <item quantity="one"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="1">%2$d</xliff:g> notification</item>
         <item quantity="other"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="3">%2$d</xliff:g> notifications</item>
     </plurals>
@@ -184,11 +186,11 @@
     <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
     <string name="allow_rotation_desc">When phone is rotated</string>
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
-    <string name="icon_badging_title">Notification dots</string>
-    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_on">On</string>
-    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_off">Off</string>
+    <string name="notification_dots_title">Notification dots</string>
+    <!-- Text to indicate that the system notification dots setting is on [CHAR LIMIT=100] -->
+    <string name="notification_dots_desc_on">On</string>
+    <!-- Text to indicate that the system notification dots setting is off [CHAR LIMIT=100] -->
+    <string name="notification_dots_desc_off">Off</string>
     <!-- Title for the dialog shown when the app does not has notification access, explaining the requirement for notification access [CHAR LIMIT=50] -->
     <string name="title_missing_notification_access">Notification access needed</string>
     <!-- Message explaining to the user that the notification access is required by the app for showing 'Notification dots' [CHAR LIMIT=NONE] -->
@@ -196,7 +198,7 @@
     <!-- Button text in the confirmation dialog which would take the user to the system settings [CHAR LIMIT=50] -->
     <string name="title_change_settings">Change settings</string>
     <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
-    <string name="icon_badging_service_title">Show notification dots</string>
+    <string name="notification_dots_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
     <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
@@ -350,4 +352,6 @@
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
+
+    <string name="task_contents_description_with_remaining_time" translatable="false"><xliff:g id="task_description" example="GMail">%1$s</xliff:g>, <xliff:g id="remaining_time" example="7 minutes">%2$s</xliff:g></string>
 </resources>
