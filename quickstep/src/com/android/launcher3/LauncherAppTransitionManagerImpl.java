@@ -618,7 +618,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 // Animate window corner radius from 100% to windowCornerRadius.
                 float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher)
                         .getWindowCornerRadius();
-                float circleRadius = scaledWindowWidth / 2f;
+                float circleRadius = iconWidth / 2f;
                 float windowRadius = Utilities.mapRange(easePercent, circleRadius,
                         windowCornerRadius);
 
