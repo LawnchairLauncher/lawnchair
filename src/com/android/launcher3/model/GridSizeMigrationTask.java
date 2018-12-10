@@ -13,14 +13,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.net.Uri;
 import android.util.Log;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -31,12 +29,14 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
@@ -180,11 +180,25 @@ public class GridSizeMigrationTask {
         return applyOperations();
     }
 
+    @VisibleForTesting
+    static IntArray getWorkspaceScreenIds(Context context) {
+        IntSet set = new IntSet();
+        try (Cursor c = context.getContentResolver().query(Favorites.CONTENT_URI,
+                new String[] {Favorites.SCREEN},
+                Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP,
+                null, Favorites.SCREEN)) {
+            while (c.moveToNext()) {
+                set.add(c.getInt(0));
+            }
+        }
+        return set.getArray();
+    }
+
     /**
      * @return true if any DB change was made
      */
     protected boolean migrateWorkspace() throws Exception {
-        IntArray allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+        IntArray allScreens = getWorkspaceScreenIds(mContext);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -216,9 +230,8 @@ public class GridSizeMigrationTask {
                     int newScreenId = LauncherSettings.Settings.call(
                             mContext.getContentResolver(),
                             LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                            .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+                                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
 
-                    allScreens.add(newScreenId);
                     for (DbEntry item : placement.finalPlacedItems) {
                         if (!mCarryOver.remove(itemMap.get(item.id))) {
                             throw new Exception("Unable to find matching items");
@@ -231,19 +244,6 @@ public class GridSizeMigrationTask {
                 }
 
             } while (!mCarryOver.isEmpty());
-
-            // Update screens
-            final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-            mUpdateOperations.add(ContentProviderOperation.newDelete(uri).build());
-            int count = allScreens.size();
-            for (int i = 0; i < count; i++) {
-                ContentValues v = new ContentValues();
-                int screenId = allScreens.get(i);
-                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                mUpdateOperations.add(ContentProviderOperation.newInsert(uri).withValues(
-                        v).build());
-            }
         }
         return applyOperations();
     }

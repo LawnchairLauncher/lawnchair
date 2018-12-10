@@ -26,16 +26,17 @@ import android.provider.BaseColumns;
  * Settings related utilities.
  */
 public class LauncherSettings {
-    /** Columns required on table staht will be subject to backup and restore. */
-    static interface ChangeLogColumns extends BaseColumns {
+
+    /**
+     * Favorites.
+     */
+    public static final class Favorites implements BaseColumns {
         /**
          * The time of the last update to this row.
          * <P>Type: INTEGER</P>
          */
         public static final String MODIFIED = "modified";
-    }
 
-    static public interface BaseLauncherColumns extends ChangeLogColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>
@@ -84,34 +85,6 @@ public class LauncherSettings {
          * <P>Type: BLOB</P>
          */
         public static final String ICON = "icon";
-    }
-
-    /**
-     * Workspace Screens.
-     *
-     * Tracks the order of workspace screens.
-     */
-    public static final class WorkspaceScreens implements ChangeLogColumns {
-
-        public static final String TABLE_NAME = "workspaceScreens";
-
-        /**
-         * The content:// style URL for this table
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The rank of this screen -- ie. how it is ordered relative to the other screens.
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SCREEN_RANK = "screenRank";
-    }
-
-    /**
-     * Favorites.
-     */
-    public static final class Favorites implements BaseLauncherColumns {
 
         public static final String TABLE_NAME = "favorites";
 

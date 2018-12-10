@@ -1747,7 +1747,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
-            LauncherModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
         } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get()
                 && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen

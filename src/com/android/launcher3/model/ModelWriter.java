@@ -333,7 +333,7 @@ public class ModelWriter {
      * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete()} is called).
      * Otherwise, we run the Runnable immediately.
      */
-    public void enqueueDeleteRunnable(Runnable r) {
+    private void enqueueDeleteRunnable(Runnable r) {
         if (mPreparingToUndo) {
             mDeleteRunnables.add(r);
         } else {

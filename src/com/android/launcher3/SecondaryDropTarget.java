@@ -150,7 +150,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         Intent intent = null;
         UserHandle user = null;
         if (item != null &&
-                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             intent = item.getIntent();
             user = item.user;
         }

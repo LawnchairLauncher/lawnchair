@@ -89,7 +89,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     private int mInstallProgress;
 
     public ShortcutInfo() {
-        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
     public ShortcutInfo(ShortcutInfo info) {
@@ -114,24 +114,23 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     @TargetApi(Build.VERSION_CODES.N)
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
     @Override
     public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
-        writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
-                .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
-                .put(LauncherSettings.Favorites.RESTORED, status);
+        writer.put(Favorites.TITLE, title)
+                .put(Favorites.INTENT, getIntent())
+                .put(Favorites.RESTORED, status);
 
         if (!usingLowResIcon()) {
             writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {
-            writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
-                    .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
-                            iconResource.resourceName);
+            writer.put(Favorites.ICON_PACKAGE, iconResource.packageName)
+                    .put(Favorites.ICON_RESOURCE, iconResource.resourceName);
         }
     }
 
@@ -189,7 +188,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     @Override
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
-        if (cn == null && (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+        if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT
                 || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
