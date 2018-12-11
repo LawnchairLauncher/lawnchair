@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ಮತ್ತಷ್ಟು ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"ಆ್ಯಪ್"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ಅಧಿಸೂಚನೆಗಳು"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್ ಆರಿಸಲು ಹೋಲ್ಡ್ ಮಾಡಿ."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್ ಆರಿಸಿಕೊಳ್ಳಲು ಹೋಲ್ಡ್ ಮಾಡಿ ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಿ."</string>
@@ -66,7 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d ರಲ್ಲಿ %1$d ಪುಟ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d ರಲ್ಲಿ %1$d ಮುಖಪುಟದ ಪರದೆ"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ಹೊಸ ಮುಖಪುಟ ಪರದೆ"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ನಿಮ್ಮ ನಿರ್ವಾಹಕರು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ್ದಾರೆ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ಆನ್ ಆಗಿದೆ"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"ಆಫ್ ಆಗಿದೆ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ಅಧಿಸೂಚನೆ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ಮುಖಪುಟದ ಪರದೆಗೆ ಐಕಾನ್ ಸೇರಿಸಿ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ಐಕಾನ್ ಆಕಾರವನ್ನು ಬದಲಿಸಿ"</string>
