@@ -22,8 +22,8 @@
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्य"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"अॅप इंस्टॉल केलेला नाही."</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"अॅप उपलब्ध नाही"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"अ‍ॅप इंस्टॉल केलेला नाही."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"अ‍ॅप उपलब्ध नाही"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड केलेला अ‍ॅप सुरक्षित मोड मध्‍ये अक्षम केला"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोडमध्ये अक्षम झाले"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"शॉर्टकट उपलब्ध नाही"</string>
@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अॅप्स लोड करत आहे…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अॅप्स आढळले नाहीत"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अॅप्स शोधा"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"अॅप"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचना"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"शॉर्टकट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"शॉर्टकट निवडण्यासाठी किंवा कस्टम क्रिया वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>
@@ -52,21 +51,24 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करा"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"अॅप माहिती"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"अ‍ॅप माहिती"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्टॉल करा"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट स्‍थापित करा"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अॅप ला अनुमती देते."</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग्ज आणि शॉर्टकट वाचा"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट वाचण्यास अॅप ला अनुमती देते."</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट वाचण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग्ज आणि शॉर्टकट लिहा"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अॅप ला अनुमती देते."</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला फोन कॉल करण्याची अनुमती नाही"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करण्यात समस्या"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
-    <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अ‍ॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>साठी<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>सूचना आहेत</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>साठी <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचना आहेत</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d पैकी %1$d पृष्ठ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d पैकी %1$d मुख्य स्क्रीन"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नवीन मुख्य स्क्रीन पृष्ठ"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनांच्या अ‍ॅक्सेसची आवश्यकता आहे"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना चालू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीनवर आयकन जोडा"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"चिन्हाचा आकार बदला"</string>
@@ -106,8 +104,8 @@
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"हा अॅप इंस्टॉल केलेला नाही"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"या चिन्हासाठी अॅप इंस्टॉल केलेला नाही. तुम्ही ते काढू शकता किंवा अॅपचा शोध घेऊ शकता आणि त्यास व्यक्तिचलितपणे इंस्टॉल करू शकता."</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"हा अ‍ॅप इंस्टॉल केलेला नाही"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"या चिन्हासाठी अ‍ॅप इंस्टॉल केलेला नाही. तुम्ही ते काढू शकता किंवा अ‍ॅपचा शोध घेऊ शकता आणि त्यास व्यक्तिचलितपणे इंस्टॉल करू शकता."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड होत आहे , <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करण्याची प्रतिक्षा करत आहे"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>

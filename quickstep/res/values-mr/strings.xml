@@ -25,7 +25,7 @@
     <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"अवलोकन"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"कोणतेही अलीकडील आयटम नाहीत"</string>
     <string name="accessibility_close_task" msgid="5354563209433803643">"बंद"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"अॅप वापर सेटिंग्ज"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"अ‍ॅप वापर सेटिंग्ज"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सर्व साफ करा"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"अलीकडील अॅप्स"</string>
 </resources>

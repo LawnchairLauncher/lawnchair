@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"جارٍ تحميل التطبيقات…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"لم يتم العثور على أي تطبيقات تتطابق مع \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"البحث عن مزيد من التطبيقات"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"تطبيق"</string>
     <string name="notifications_header" msgid="1404149926117359025">"الإشعارات"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"انقر مع الاستمرار لاختيار اختصار."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"يمكنك النقر مرّتين مع الاستمرار لاختيار اختصار أو استخدام الإجراءات المخصصة."</string>
@@ -66,7 +65,14 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"تم إيقاف <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="zero">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار.​</item>
+      <item quantity="two">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> إشعارين (<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>).</item>
+      <item quantity="few">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعارات.​</item>
+      <item quantity="many">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعارًا.</item>
+      <item quantity="other">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار.</item>
+      <item quantity="one">يتضمن تطبيق <xliff:g id="APP_NAME_0">%1$s</xliff:g> إشعارًا واحدًا (<xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>).</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏الصفحة %1$d من %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏الشاشة الرئيسية %1$d من %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"صفحة الشاشة الرئيسية الجديدة"</string>
@@ -82,17 +88,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"أوقف المشرف هذه الميزة"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"السماح بتدوير الشاشة الرئيسية"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"عند تدوير الهاتف"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"نقاط الإشعارات"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"مفعّل"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"غير مفعّل"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تفعيل الوصول إلى الإشعارات"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"عرض نقاط الإشعارات"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"إضافة رمز إلى الشاشة الرئيسية"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"للتطبيقات الجديدة"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"تغيير شكل الرمز"</string>
