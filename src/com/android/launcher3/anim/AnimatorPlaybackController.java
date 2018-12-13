@@ -16,6 +16,7 @@
 package com.android.launcher3.anim;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -23,10 +24,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
 
 /**
  * Helper class to control the playback of an {@link AnimatorSet}, with custom interpolators
@@ -36,6 +43,9 @@ import java.util.List;
  * sequential playbacks.
  */
 public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
+
+    private static final String TAG = "AnimatorPlaybackCtrler";
+    private static boolean DEBUG = false;
 
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
         return wrap(anim, duration, null);
@@ -60,12 +70,16 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     private final long mDuration;
 
     protected final AnimatorSet mAnim;
+    private Set<SpringAnimation> mSprings;
 
     protected float mCurrentFraction;
     private Runnable mEndAction;
 
     protected boolean mTargetCancelled = false;
     protected Runnable mOnCancelRunnable;
+
+    private OnAnimationEndDispatcher mEndListener;
+    private DynamicAnimation.OnAnimationEndListener mSpringEndListener;
 
     protected AnimatorPlaybackController(AnimatorSet anim, long duration,
             Runnable onCancelRunnable) {
@@ -75,7 +89,8 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
         mAnimationPlayer.setInterpolator(LINEAR);
-        mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
+        mEndListener = new OnAnimationEndDispatcher();
+        mAnimationPlayer.addListener(mEndListener);
         mAnimationPlayer.addUpdateListener(this);
 
         mAnim.addListener(new AnimatorListenerAdapter() {
@@ -99,6 +114,15 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
                 mTargetCancelled = false;
             }
         });
+
+        mSprings = new HashSet<>();
+        mSpringEndListener = (animation, canceled, value, velocity1) -> {
+            if (canceled) {
+                mEndListener.onAnimationCancel(mAnimationPlayer);
+            } else {
+                mEndListener.onAnimationEnd(mAnimationPlayer);
+            }
+        };
     }
 
     public AnimatorSet getTarget() {
@@ -178,6 +202,29 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         } else {
             return Math.min((long) playPos, mDuration);
         }
+    }
+
+    /**
+     * Starts playback and sets the spring.
+     */
+    public void dispatchOnStartWithVelocity(float end, float velocity) {
+        if (!QUICKSTEP_SPRINGS.get()) {
+            dispatchOnStart();
+            return;
+        }
+
+        if (DEBUG) Log.d(TAG, "dispatchOnStartWithVelocity#end=" + end + ", velocity=" + velocity);
+
+        for (Animator a : mAnim.getChildAnimations()) {
+            if (a instanceof SpringObjectAnimator) {
+                if (DEBUG) Log.d(TAG, "Found springAnimator=" + a);
+                SpringObjectAnimator springAnimator = (SpringObjectAnimator) a;
+                mSprings.add(springAnimator.getSpring());
+                springAnimator.startSpring(end, velocity, mSpringEndListener);
+            }
+        }
+
+        dispatchOnStart();
     }
 
     public void dispatchOnStart() {
@@ -282,6 +329,18 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
+    private boolean isAnySpringRunning() {
+        for (SpringAnimation spring : mSprings) {
+            if (spring.isRunning()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Only dispatches the on end actions once the animator and all springs have completed running.
+     */
     private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
         @Override
@@ -291,9 +350,12 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         @Override
         public void onAnimationSuccess(Animator animator) {
-            dispatchOnEndRecursively(mAnim);
-            if (mEndAction != null) {
-                mEndAction.run();
+            // We wait for the spring (if any) to finish running before completing the end callback.
+            if (mSprings.isEmpty() || !isAnySpringRunning()) {
+                dispatchOnEndRecursively(mAnim);
+                if (mEndAction != null) {
+                    mEndAction.run();
+                }
             }
         }
 
