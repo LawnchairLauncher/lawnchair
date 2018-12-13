@@ -39,7 +39,7 @@ public class TraceHelper {
     private static final boolean SYSTEM_TRACE = false;
     private static final ArrayMap<String, MutableLong> sUpTimes = ENABLED ? new ArrayMap<>() : null;
 
-    public static void beginSection(String sectionName) {
+    public static synchronized void beginSection(String sectionName) {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
             if (time == null) {
@@ -55,7 +55,7 @@ public class TraceHelper {
         }
     }
 
-    public static void partitionSection(String sectionName, String partition) {
+    public static synchronized void partitionSection(String sectionName, String partition) {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
             if (time != null && time.value >= 0) {
@@ -78,7 +78,7 @@ public class TraceHelper {
         }
     }
 
-    public static void endSection(String sectionName, String msg) {
+    public static synchronized void endSection(String sectionName, String msg) {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
             if (time != null && time.value >= 0) {
