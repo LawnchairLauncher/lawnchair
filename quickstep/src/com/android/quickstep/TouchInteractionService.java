@@ -249,7 +249,7 @@ public class TouchInteractionService extends Service {
         if (runningTaskInfo == null && !forceToLauncher) {
             return TouchConsumer.NO_OP;
         } else if (forceToLauncher ||
-                runningTaskInfo.topActivity.equals(mOverviewCommandHelper.overviewComponent)) {
+                mOverviewCommandHelper.getActivityControlHelper().isResumed()) {
             return OverviewTouchConsumer.newInstance(
                     mOverviewCommandHelper.getActivityControlHelper(), false, mTouchInteractionLog);
         } else {
@@ -257,10 +257,10 @@ public class TouchInteractionService extends Service {
                 tracker = VelocityTracker.obtain();
             }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                            mOverviewCommandHelper.overviewIntent,
-                            mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
-                            mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                            mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
+                    mOverviewCommandHelper.overviewIntent,
+                    mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
+                    mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
+                    mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
         }
     }
 
