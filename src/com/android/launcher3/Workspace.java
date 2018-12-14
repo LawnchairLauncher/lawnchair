@@ -3065,9 +3065,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
-                        && packageUserKey.updateFromItemInfo(info)) {
-                    if (updatedDots.contains(packageUserKey)) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    if (!packageUserKey.updateFromItemInfo(info)
+                            || updatedDots.contains(packageUserKey)) {
                         ((BubbleTextView) v).applyDotState(info, true /* animate */);
                         folderIds.add(info.container);
                     }
