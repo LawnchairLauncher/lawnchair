@@ -102,6 +102,19 @@ public class TaskView extends FrameLayout implements PageCallbacks {
                 }
             };
 
+    public static final FloatProperty<TaskView> FULLSCREEN_PROGRESS =
+            new FloatProperty<TaskView>("fullscreenProgress") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setFullscreenProgress(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mFullscreenProgress;
+                }
+            };
+
     private static final FloatProperty<TaskView> FOCUS_TRANSITION =
             new FloatProperty<TaskView>("focusTransition") {
                 @Override
@@ -140,7 +153,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     private DigitalWellBeingToast mDigitalWellBeingToast;
     private float mCurveScale;
     private float mZoomScale;
-    private boolean mIsFullscreen;
+    private float mFullscreenProgress;
 
     private Animator mIconAndDimAnimator;
     private float mFocusTransitionProgress = 1;
@@ -341,6 +354,10 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         setTranslationZ(0);
         setAlpha(1f);
         setIconScaleAndDim(1);
+        if (!getRecentsView().getQuickScrubController().isQuickSwitch()) {
+            // Reset full screen progress unless we are doing back to back quick switch.
+            setFullscreenProgress(0);
+        }
     }
 
     @Override
@@ -499,15 +516,21 @@ public class TaskView extends FrameLayout implements PageCallbacks {
 
     /**
      * Hides the icon and shows insets when this TaskView is about to be shown fullscreen.
+     * @param progress: 0 = show icon and no insets; 1 = don't show icon and show full insets.
      */
-    public void setFullscreen(boolean isFullscreen) {
-        mIsFullscreen = isFullscreen;
-        mIconView.setVisibility(mIsFullscreen ? INVISIBLE : VISIBLE);
-        setClipChildren(!mIsFullscreen);
-        setClipToPadding(!mIsFullscreen);
+    public void setFullscreenProgress(float progress) {
+        if (progress == mFullscreenProgress) {
+            return;
+        }
+        mFullscreenProgress = progress;
+        boolean isFullscreen = mFullscreenProgress > 0;
+        mIconView.setVisibility(isFullscreen ? INVISIBLE : VISIBLE);
+        setClipChildren(!isFullscreen);
+        setClipToPadding(!isFullscreen);
+        getThumbnail().invalidate();
     }
 
-    public boolean isFullscreen() {
-        return mIsFullscreen;
+    public float getFullscreenProgress() {
+        return mFullscreenProgress;
     }
 }

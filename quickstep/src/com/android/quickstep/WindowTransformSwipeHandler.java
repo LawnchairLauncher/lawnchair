@@ -615,6 +615,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
         }
+        // Update insets of the next previous task, as we might switch to it.
+        TaskView nextTaskView = mRecentsView == null ? null : mRecentsView.getNextTaskView();
+        if (mInteractionType == INTERACTION_NORMAL && nextTaskView != null) {
+            nextTaskView.setFullscreenProgress(1 - mCurrentShift.value);
+        }
 
         if (mLauncherTransitionController == null || mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
