@@ -25,12 +25,10 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.LawnchairPreferences
+import android.view.View
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
-import ch.deletescape.lawnchair.blurWallpaperProvider
-import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
@@ -58,7 +56,7 @@ import com.android.quickstep.views.ShelfScrimView
  * limitations under the License.
  */
 
-class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener {
 
     private val key_radius = "pref_dockRadius"
     private val key_opacity = "pref_allAppsOpacitySB"
@@ -93,15 +91,33 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val enableShadow get() = prefs.dockShadow && !useFlatColor
 
+    private var searchBlurDrawable: BlurDrawable? = null
+
     private fun createBlurDrawable(): BlurDrawable? {
-        blurDrawable?.apply { if (isAttachedToWindow) stopListening() }
+        blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         return if (BlurWallpaperProvider.isEnabled) {
-            provider.createDrawable(blurRadius, false).apply { callback = blurDrawableCallback }
+            provider.createDrawable(blurRadius, false)?.apply {
+                callback = blurDrawableCallback
+                setBounds(left, top, right, bottom)
+                if (isAttachedToWindow) startListening()
+            }
         } else {
             null
-        }?.apply {
-            setBounds(left, top, right, bottom)
-            if (isAttachedToWindow) startListening()
+        }
+    }
+
+    private fun createSearchBlurDrawable(): BlurDrawable? {
+        searchBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
+        val searchBox = mLauncher.hotseatSearchBox
+        return if (searchBox?.isVisible == true && BlurWallpaperProvider.isEnabled) {
+            val height = searchBox.height - searchBox.paddingTop - searchBox.paddingBottom
+            provider.createDrawable(height / 2f, false).apply {
+                callback = blurDrawableCallback
+                setBounds(left, top, right, bottom)
+                if (isAttachedToWindow) startListening()
+            }
+        } else {
+            null
         }
     }
 
@@ -129,7 +145,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onAttachedToWindow()
 
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
+        mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
         blurDrawable?.startListening()
+        searchBlurDrawable?.startListening()
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
@@ -157,7 +175,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onDetachedFromWindow()
 
         prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
+        mLauncher.hotseatSearchBox?.removeOnLayoutChangeListener(this)
         blurDrawable?.stopListening()
+        searchBlurDrawable?.stopListening()
     }
 
     override fun onDrawFlatColor(canvas: Canvas) {
@@ -165,6 +185,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             setBounds(0, 0, width, (height + mRadius).toInt())
             draw(canvas)
         }
+        drawSearchBlur(canvas)
     }
 
     override fun onDrawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint) {
@@ -183,7 +204,24 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 shadowHelper.drawVerticallyStretched(shadowBitmap, canvas, f, f2, f3, scrimHeight)
             }
         }
+        drawSearchBlur(canvas)
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
+    }
+
+    private fun drawSearchBlur(canvas: Canvas) {
+        if (blurDrawable?.alpha == 255) return // Already blurred
+        searchBlurDrawable?.run {
+            val hotseat = mLauncher.hotseat
+            val searchBox = mLauncher.hotseatSearchBox
+            val adjustment = Math.round(hotseat.top + hotseat.translationY + searchBox.translationY + 1)
+            val left = searchBox.left + searchBox.paddingLeft
+            val top = searchBox.top + adjustment + searchBox.paddingTop
+            val right = searchBox.right - searchBox.paddingRight
+            val bottom = searchBox.bottom + adjustment - searchBox.paddingBottom
+            setBounds(left, top, right, bottom)
+            alpha = (searchBox.alpha * 255).toInt()
+            draw(canvas)
+        }
     }
 
     override fun updateColors() {
@@ -213,5 +251,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     override fun getMidProgress(): Float {
         if (!prefs.dockGradientStyle) return OverviewState.getNormalVerticalProgress(mLauncher)
         return super.getMidProgress()
+    }
+
+    override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+        searchBlurDrawable = createSearchBlurDrawable()
     }
 }

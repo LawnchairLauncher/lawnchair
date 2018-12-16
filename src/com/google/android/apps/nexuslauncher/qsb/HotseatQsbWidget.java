@@ -308,4 +308,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     protected String getClipboardText() {
         return null;
     }
+
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        mActivity.findViewById(R.id.scrim_view).invalidate();
+    }
 }

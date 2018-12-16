@@ -146,16 +146,16 @@ class BlurDrawable internal constructor(
         if (!mShouldDraw || toDraw == null || toDraw.isRecycled) return
 
         // Don't draw when completely off screen
-        if (bounds.top > canvas.height) return
-        if (bounds.left > canvas.width) return
-        if (bounds.bottom < 0) return
-        if (bounds.right < 0) return
+        if (mBounds.top > canvas.height) return
+        if (mBounds.left > canvas.width) return
+        if (mBounds.bottom < 0) return
+        if (mBounds.right < 0) return
 
         val blurTranslateX = -mOffset - mPositionX
         val translateX = -mPositionX
         val translateY = -mPositionY
 
-        val bottomY = bounds.bottom - mBottomRadius
+        val bottomY = mBounds.bottom - mBottomRadius
 
         val saveCount = canvas.save()
         canvas.clipRect(mNormalBounds)
@@ -305,6 +305,10 @@ class BlurDrawable internal constructor(
             mShouldDraw = alpha > 0
             mPaint.alpha = alpha
         }
+    }
+
+    override fun getAlpha(): Int {
+        return mAlpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {

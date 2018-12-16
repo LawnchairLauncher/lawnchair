@@ -222,7 +222,7 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
     }
 
     fun createDrawable(radius: Float, allowTransparencyMode: Boolean): BlurDrawable {
-        return BlurDrawable(this, FloatArray(8, { radius }), allowTransparencyMode)
+        return BlurDrawable(this, FloatArray(8) { radius }, allowTransparencyMode)
     }
 
     fun setWallpaperOffset(offset: Float) {
