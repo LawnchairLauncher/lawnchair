@@ -273,7 +273,8 @@ public class NexusLauncher {
 
         private void updatePredictionsIfResumed() {
             if (mLauncher.hasBeenResumed()) {
-                ReflectionClient.getInstance(mLauncher).updatePredictionsNow(Client.HOME.id);
+                ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
+                        FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
             }
         }
 
