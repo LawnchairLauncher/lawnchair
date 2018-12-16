@@ -544,4 +544,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected void noGoogleAppSearch() {
     }
+
+    protected boolean isDarkBar() {
+        boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
+        boolean isDarkBar = Utilities.getLawnchairPrefs(getContext()).getDarkSearchbar();
+        return isDarkTheme && isDarkBar;
+    }
 }

@@ -29,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Themes;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,7 +142,13 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     private void setColors() {
         mUseTwoBubbles = Ds.useTwoBubbles();
         View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
-        ay(getResources().getColor(mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default));
+        int colorRes;
+        if (isDarkBar()) {
+            colorRes = R.color.qsb_background_hotseat_dark;
+        } else {
+            colorRes = mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default;
+        }
+        ay(getResources().getColor(colorRes));
         az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
     }
 

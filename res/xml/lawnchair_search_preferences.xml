@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference
         android:defaultValue="@string/config_default_search_provider"
@@ -73,7 +74,8 @@
             android:key="pref_darkSearchbar"
             android:persistent="true"
             android:title="@string/pref_dark_searchbar"
-            android:summary="-- temporary, rework this --"/>
+            android:summary="-- temporary, rework this --"
+            app:controllerClass=".DarkSearchBarController"/>
 
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

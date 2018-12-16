@@ -126,9 +126,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
         boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
-        boolean isDarkBar = Utilities.getLawnchairPrefs(getContext()).getDarkSearchbar();
         int colorRes;
-        if (isDarkBar) {
+        if (isDarkBar()) {
             colorRes = R.color.qsb_background_drawer_dark_bar;
         } else {
             colorRes = isDarkTheme ? R.color.qsb_background_drawer_dark : R.color.qsb_background_drawer_default;

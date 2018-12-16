@@ -60,6 +60,7 @@
 
     <color name="qsb_background_hotseat_default">#99fafafa</color>
     <color name="qsb_background_hotseat_white">#ccffffff</color>
+    <color name="qsb_background_hotseat_dark">#cc333333</color>
     <color name="qsb_background_drawer_default">#ccffffff</color>
     <color name="qsb_background_drawer_dark">#ebffffff</color>
     <color name="qsb_background_drawer_dark_bar">#f9333333</color>
