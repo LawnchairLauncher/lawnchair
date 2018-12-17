@@ -22,6 +22,9 @@ package com.android.launcher3.util;
  * orders.
  */
 public class RaceConditionTracker {
+    public final static boolean ENTER = true;
+    public final static boolean EXIT = false;
+
     public interface EventProcessor {
         void onEvent(String eventName);
     }
@@ -34,5 +37,23 @@ public class RaceConditionTracker {
 
     public static void onEvent(String eventName) {
         if (sEventProcessor != null) sEventProcessor.onEvent(eventName);
+    }
+
+    public static void onEvent(String eventName, boolean isEnter) {
+        if (sEventProcessor != null) {
+            sEventProcessor.onEvent(enterExitEvt(eventName, isEnter));
+        }
+    }
+
+    public static String enterExitEvt(String eventName, boolean isEnter) {
+        return eventName + ":" + (isEnter ? "enter" : "exit");
+    }
+
+    public static String enterEvt(String eventName) {
+        return enterExitEvt(eventName, ENTER);
+    }
+
+    public static String exitEvt(String eventName) {
+        return enterExitEvt(eventName, EXIT);
     }
 }

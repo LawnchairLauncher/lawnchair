@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.launcher3.util.RaceConditionTracker.ENTER;
+import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -47,6 +49,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -70,6 +73,7 @@ import java.util.concurrent.TimeUnit;
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
+    public static final String DOWN_EVT = "OtherActivityTouchConsumer.DOWN";
 
     private final SparseArray<RecentsAnimationState> mAnimationStates = new SparseArray<>();
     private final RunningTaskInfo mRunningTask;
@@ -135,6 +139,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mTouchInteractionLog.addMotionEvent(ev);
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
+                RaceConditionTracker.onEvent(DOWN_EVT, ENTER);
                 TraceHelper.beginSection("TouchInt");
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
@@ -151,6 +156,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 Display display = getSystemService(WindowManager.class).getDefaultDisplay();
                 mDisplayRotation = display.getRotation();
                 WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
+                RaceConditionTracker.onEvent(DOWN_EVT, EXIT);
                 break;
             }
             case ACTION_POINTER_UP: {

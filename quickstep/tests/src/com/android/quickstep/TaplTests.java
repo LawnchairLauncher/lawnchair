@@ -24,9 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import android.app.Instrumentation;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -66,7 +64,6 @@ import java.io.IOException;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTests extends AbstractQuickStepTest {
-    private static final int WAIT_TIME_MS = 60000;
     private static final String TAG = "TaplTests";
 
     private static int sScreenshotCount = 0;
@@ -112,13 +109,6 @@ public class TaplTests extends AbstractQuickStepTest {
         waitForResumed("Launcher internal state is still Background");
     }
 
-    private String resolveSystemApp(String category) {
-        return getInstrumentation().getContext().getPackageManager().resolveActivity(
-                new Intent(Intent.ACTION_MAIN).addCategory(category),
-                PackageManager.MATCH_SYSTEM_ONLY).
-                activityInfo.packageName;
-    }
-
     private boolean isInState(LauncherState state) {
         if (!TestHelpers.isInLauncherProcess()) return true;
         return getFromLauncher(launcher -> launcher.getStateManager().getState() == state);
@@ -141,17 +131,6 @@ public class TaplTests extends AbstractQuickStepTest {
 
     private boolean isInBackground(Launcher launcher) {
         return !launcher.hasBeenResumed();
-    }
-
-    private void startAppFast(String packageName) {
-        final Instrumentation instrumentation = getInstrumentation();
-        final Intent intent = instrumentation.getContext().getPackageManager().
-                getLaunchIntentForPackage(packageName);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        instrumentation.getTargetContext().startActivity(intent);
-        assertTrue(packageName + " didn't start",
-                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), WAIT_TIME_MS));
     }
 
     private void startTestApps() throws Exception {
@@ -338,7 +317,8 @@ public class TaplTests extends AbstractQuickStepTest {
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
         assertTrue("Contacts app didn't open from Overview", mDevice.wait(Until.hasObject(
-                By.pkg(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS)).depth(0)), WAIT_TIME_MS));
+                By.pkg(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS)).depth(0)),
+                LONG_WAIT_TIME_MS));
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",

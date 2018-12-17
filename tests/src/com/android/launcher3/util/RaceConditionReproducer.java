@@ -43,6 +43,11 @@ import java.util.concurrent.TimeUnit;
  * executing events in previously unseen order. It does it by postponing execution of threads that
  * would lead to an already seen sequence.
  *
+ * If an event A occurs before event B in the sequence, this is how execution order looks like:
+ * Events: ... A ... B ...
+ * Events and instructions, guaranteed order:
+ *   (instructions executed prior to A) A ... B (instructions executed after B)
+ *
  * Each iteration has 3 parts (phases).
  * Phase 1. Picking a previously seen event subsequence that we believe can have previously unseen
  * continuations. Reproducing this sequence by pausing threads that would lead to other sequences.
@@ -176,6 +181,10 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
      */
     public RaceConditionReproducer(String reproString) {
         mReproString = reproString;
+    }
+
+    public RaceConditionReproducer(String... reproSequence) {
+        this(String.join("|", reproSequence));
     }
 
     public synchronized String getCurrentSequenceString() {
