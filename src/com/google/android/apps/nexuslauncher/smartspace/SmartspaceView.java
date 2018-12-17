@@ -205,7 +205,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     private OnLongClickListener co() {
-        return ds ? this : null;
+        return this;
     }
 
     private void cs() {
