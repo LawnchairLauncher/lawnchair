@@ -16,6 +16,7 @@
 
 package com.android.quickstep;
 
+import static android.view.Display.DEFAULT_DISPLAY;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.Activity;
@@ -116,19 +117,20 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             mHandler = new Handler(Looper.getMainLooper());
         }
 
-        protected abstract boolean isAvailable(BaseDraggingActivity activity);
+        protected abstract boolean isAvailable(BaseDraggingActivity activity, int displayId);
         protected abstract ActivityOptions makeLaunchOptions(Activity activity);
         protected abstract boolean onActivityStarted(BaseDraggingActivity activity);
 
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
-            if (!isAvailable(activity)) {
-                return null;
-            }
             final Task task  = taskView.getTask();
             final int taskId = task.key.id;
+            final int displayId = task.key.displayId;
             if (!task.isDockable) {
+                return null;
+            }
+            if (!isAvailable(activity, displayId)) {
                 return null;
             }
             final RecentsView recentsView = activity.getOverviewPanel();
@@ -218,9 +220,13 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected boolean isAvailable(BaseDraggingActivity activity) {
-            // Don't show menu-item if already in multi-window
-            return !activity.getDeviceProfile().isMultiWindowMode;
+        protected boolean isAvailable(BaseDraggingActivity activity, int displayId) {
+            // Don't show menu-item if already in multi-window and the task is from
+            // the secondary display.
+            // TODO(b/118266305): Temporarily disable splitscreen for secondary display while new
+            // implementation is enabled
+            return !activity.getDeviceProfile().isMultiWindowMode
+                    && displayId == DEFAULT_DISPLAY;
         }
 
         @Override
@@ -256,7 +262,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected boolean isAvailable(BaseDraggingActivity activity) {
+        protected boolean isAvailable(BaseDraggingActivity activity, int displayId) {
             return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity);
         }
 
