@@ -37,6 +37,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -423,7 +424,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
             Launcher l = LauncherAppState.getInstance(context).getLauncher();
-            if (l != null) LawnchairUtilsKt.getBlurWallpaperProvider(l).updateAsync();
+            if (l != null) BlurWallpaperProvider.Companion.getInstance(l).updateAsync();
         } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
             forceReload();
         }

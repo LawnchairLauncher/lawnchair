@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair
 
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.PageIndicator
@@ -45,7 +46,7 @@ class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
     }
 
     fun updateBlur() {
-        launcher.blurWallpaperProvider.updateAsync()
+        BlurWallpaperProvider.getInstance(launcher).updateAsync()
     }
 
     fun resetAllApps() {

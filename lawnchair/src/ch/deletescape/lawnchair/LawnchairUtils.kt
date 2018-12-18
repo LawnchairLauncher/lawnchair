@@ -79,7 +79,6 @@ import kotlin.reflect.KProperty
 
 val Context.launcherAppState get() = LauncherAppState.getInstance(this)
 val Context.lawnchairPrefs get() = Utilities.getLawnchairPrefs(this)
-val Context.blurWallpaperProvider get() = LawnchairLauncher.getLauncher(launcherAppState.launcher).blurWallpaperProvider
 
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(

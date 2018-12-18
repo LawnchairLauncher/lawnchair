@@ -81,7 +81,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    private val provider by lazy { context.blurWallpaperProvider }
+    private val provider by lazy { BlurWallpaperProvider.getInstance(context) }
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
     private val blurRadius get() = if (useFlatColor) 0f else mRadius
     private var blurDrawable: BlurDrawable? = null

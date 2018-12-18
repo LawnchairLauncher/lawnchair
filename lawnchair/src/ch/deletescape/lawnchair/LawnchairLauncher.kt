@@ -51,7 +51,6 @@ import java.util.concurrent.Semaphore
 open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnPreferenceChangeListener {
     val hideStatusBarKey = "pref_hideStatusBar"
     val gestureController by lazy { GestureController(this) }
-    val blurWallpaperProvider by lazy { BlurWallpaperProvider(this, isScreenshotMode) }
     var updateWallpaper = true
 
     protected open val isScreenshotMode = false
@@ -95,11 +94,6 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         restartIfPending()
 
         paused = false
-
-        if (updateWallpaper) {
-            updateWallpaper = false
-            blurWallpaperProvider.updateAsync()
-        }
     }
 
     override fun onPause() {
@@ -185,7 +179,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
     override fun onRotationChanged() {
         super.onRotationChanged()
-        blurWallpaperProvider.updateAsync()
+        BlurWallpaperProvider.getInstance(this).updateAsync()
     }
 
     fun shouldRecreate() = !sRestart

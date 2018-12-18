@@ -14,6 +14,7 @@ import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -272,7 +273,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         private void setOffsetSafely(IBinder token) {
             try {
                 mWM.setWallpaperOffsets(token, mCurrentOffset, 0.5f);
-                LawnchairUtilsKt.getBlurWallpaperProvider(LauncherAppState.getInstance(mContext).getLauncher())
+                BlurWallpaperProvider.Companion.getInstance(mContext)
                         .setWallpaperOffset(mCurrentOffset);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating wallpaper offset: " + e);

@@ -26,6 +26,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
 import android.support.annotation.Keep
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.Utilities
@@ -43,6 +44,12 @@ class LawnchairApp : Application() {
     init {
         Thread.setDefaultUncaughtExceptionHandler(bugReporter)
         registerActivityLifecycleCallbacks(activityHandler)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        BlurWallpaperProvider.getInstance(this)
     }
 
     fun restart(recreateLauncher: Boolean = true) {

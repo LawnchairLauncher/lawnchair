@@ -31,7 +31,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import ch.deletescape.lawnchair.*
-import com.android.launcher3.LauncherAppState
+import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.hoko.blur.HokoBlur
@@ -39,7 +39,7 @@ import com.hoko.blur.task.AsyncBlurTask
 import java.util.*
 import java.util.concurrent.Future
 
-class BlurWallpaperProvider(val context: Context, private val forceDisable: Boolean) {
+class BlurWallpaperProvider(val context: Context) {
 
     private val prefs by lazy { context.lawnchairPrefs }
     private val mWallpaperManager: WallpaperManager = WallpaperManager.getInstance(context)
@@ -74,9 +74,10 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
     private var blurFuture: Future<Any>? = null
 
     init {
-        isEnabled = !forceDisable && mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        isEnabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
 
         updateBlurRadius()
+        updateAsync()
     }
 
     private fun updateBlurRadius() {
@@ -90,7 +91,7 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
             prefs.enableBlur = false
             return
         }
-        val enabled = !forceDisable && mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        val enabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
         if (enabled != isEnabled) {
             prefs.restart()
         }
@@ -256,37 +257,18 @@ class BlurWallpaperProvider(val context: Context, private val forceDisable: Bool
         fun setUseTransparency(useTransparency: Boolean)
     }
 
-    companion object {
+    companion object : SingletonHolder<BlurWallpaperProvider, Context>(ensureOnMainThread(useApplicationContext(::BlurWallpaperProvider))) {
 
         const val BLUR_QSB = 1
         const val BLUR_FOLDER = 2
         const val BLUR_ALLAPPS = 4
         const val DOWNSAMPLE_FACTOR = 8
 
-        @SuppressLint("StaticFieldLeak")
-        private var INSTANCE: BlurWallpaperProvider? = null
-
-        fun applyBlurBackground(activity: Activity) {
-            if (!isEnabled) return
-
-            var color = 0x45ffffff // TODO: replace this with theme attr
-//            var color = activity.getColorAttr(R.attr.blurTintColor)
-            color = ColorUtils.setAlphaComponent(color, 220)
-
-            val drawable = activity.blurWallpaperProvider.createDrawable()
-            drawable.setOverlayColor(color)
-            activity.findViewById<View>(android.R.id.content).background = drawable
-        }
-
         var isEnabled: Boolean = false
         private var sEnabledFlag: Int = 0
 
         fun isEnabled(flag: Int): Boolean {
             return isEnabled && sEnabledFlag and flag != 0
-        }
-
-        fun getInstance(context: Context): BlurWallpaperProvider? {
-            return LauncherAppState.getInstance(context)?.launcher?.blurWallpaperProvider
         }
     }
 }
