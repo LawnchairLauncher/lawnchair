@@ -56,7 +56,8 @@ import com.android.quickstep.views.ShelfScrimView
  * limitations under the License.
  */
 
-class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs), LawnchairPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener {
+class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
+        LawnchairPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener, BlurWallpaperProvider.Listener {
 
     private val key_radius = "pref_dockRadius"
     private val key_opacity = "pref_allAppsOpacitySB"
@@ -146,6 +147,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
         mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
+        BlurWallpaperProvider.getInstance(context).addListener(this)
         blurDrawable?.startListening()
         searchBlurDrawable?.startListening()
     }
@@ -176,6 +178,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
         mLauncher.hotseatSearchBox?.removeOnLayoutChangeListener(this)
+        BlurWallpaperProvider.getInstance(context).removeListener(this)
         blurDrawable?.stopListening()
         searchBlurDrawable?.stopListening()
     }
@@ -254,6 +257,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+        searchBlurDrawable = createSearchBlurDrawable()
+    }
+
+    override fun onEnabledChanged() {
+        reInitUi()
         searchBlurDrawable = createSearchBlurDrawable()
     }
 }

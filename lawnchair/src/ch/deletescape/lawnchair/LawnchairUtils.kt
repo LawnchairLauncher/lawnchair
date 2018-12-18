@@ -241,7 +241,7 @@ fun runOnMainThread(r: () -> Unit) {
 }
 
 fun runOnThread(handler: Handler, r: () -> Unit) {
-    if (handler.looper.thread.id == Looper.myLooper().thread.id) {
+    if (handler.looper.thread.id == Looper.myLooper()?.thread?.id) {
         r()
     } else {
         handler.post(r)
@@ -489,4 +489,10 @@ class ReverseInputInterpolator(private val base: Interpolator) : Interpolator {
     override fun getInterpolation(input: Float): Float {
         return base.getInterpolation(1 - input)
     }
+}
+
+inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {
+    val tmp = ArrayList<T>()
+    tmp.addAll(this)
+    for (element in tmp) action(element)
 }

@@ -32,12 +32,14 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
+import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.io.File
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : FrameLayout(context), View.OnClickListener {
+class DecorLayout(context: Context, private val window: Window) : FrameLayout(context),
+        View.OnClickListener, BlurWallpaperProvider.Listener {
 
     private var tapCount = 0
 
@@ -102,13 +104,25 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
         updateContentTopMargin()
 
-        if (BlurWallpaperProvider.isEnabled) {
-            findViewById<View>(R.id.blur_tint).visibility = View.VISIBLE
-            background = BlurWallpaperProvider.getInstance(context)?.createDrawable()
-        }
+        onEnabledChanged()
 
         if (shouldDrawBackground) {
             setWillNotDraw(false)
+        }
+    }
+
+    override fun onEnabledChanged() {
+        val enabled = BlurWallpaperProvider.isEnabled
+        findViewById<View>(R.id.blur_tint).isVisible = enabled
+        (background as? BlurDrawable)?.let {
+            if (!enabled) {
+                it.stopListening()
+                background = null
+            }
+        } ?: if (enabled) {
+            background = BlurWallpaperProvider.getInstance(context).createDrawable().apply {
+                startListening()
+            }
         }
     }
 
@@ -142,12 +156,14 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        BlurWallpaperProvider.getInstance(context).addListener(this)
         (background as BlurDrawable?)?.startListening()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
+        BlurWallpaperProvider.getInstance(context).removeListener(this)
         (background as BlurDrawable?)?.stopListening()
     }
 }

@@ -46,9 +46,19 @@ class BlurWallpaperProvider(val context: Context) {
     private val mListeners = ArrayList<Listener>()
     private val mDisplayMetrics = DisplayMetrics()
     var wallpaper: Bitmap? = null
-        private set
+        private set(value) {
+            if (field != value) {
+                field?.recycle()
+                field = value
+            }
+        }
     var placeholder: Bitmap? = null
-        private set
+        private set(value) {
+            if (field != value) {
+                field?.recycle()
+                field = value
+            }
+        }
     private var mOffset: Float = 0.5f
     var blurRadius = 25
         private set
@@ -74,11 +84,13 @@ class BlurWallpaperProvider(val context: Context) {
     private var blurFuture: Future<Any>? = null
 
     init {
-        isEnabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        isEnabled = getEnabledStatus()
 
         updateBlurRadius()
         updateAsync()
     }
+
+    private fun getEnabledStatus() = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
 
     private fun updateBlurRadius() {
         blurRadius = prefs.blurRadius.toInt() / DOWNSAMPLE_FACTOR
@@ -86,17 +98,23 @@ class BlurWallpaperProvider(val context: Context) {
     }
 
     private fun updateWallpaper() {
-        val launcher = context.launcherAppState.launcher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !context.hasStoragePermission){
             prefs.enableBlur = false
             return
         }
-        val enabled = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
+        val enabled = getEnabledStatus()
         if (enabled != isEnabled) {
-            prefs.restart()
+            isEnabled = enabled
+            runOnMainThread {
+                mListeners.safeForEach(Listener::onEnabledChanged)
+            }
         }
 
-        if (!isEnabled) return
+        if (!isEnabled) {
+            wallpaper = null
+            placeholder = null
+            return
+        }
 
         updateBlurRadius()
 
@@ -110,12 +128,8 @@ class BlurWallpaperProvider(val context: Context) {
 
         mWallpaperWidth = wallpaper.width
 
-        placeholder?.recycle()
         placeholder = createPlaceholder(wallpaper.width, wallpaper.height)
-        launcher?.runOnUiThread(mNotifyRunnable)
-        if (prefs.enableVibrancy) {
-            wallpaper = applyVibrancy(wallpaper)
-        }
+        wallpaper = applyVibrancy(wallpaper)
         Log.d("BWP", "starting blur")
         blurFuture?.cancel(true)
         blurFuture = HokoBlur.with(context)
@@ -128,23 +142,29 @@ class BlurWallpaperProvider(val context: Context) {
                 .processor()
                 .asyncBlur(wallpaper, object : AsyncBlurTask.Callback {
                     override fun onBlurSuccess(bitmap: Bitmap) {
-                        this@BlurWallpaperProvider.wallpaper?.recycle()
                         this@BlurWallpaperProvider.wallpaper = bitmap
                         Log.d("BWP", "blur done")
                         blurFuture = null
-                        launcher?.runOnUiThread(mNotifyRunnable)
+                        runOnMainThread(::notifyWallpaperChanged)
                         wallpaper.recycle()
                     }
 
                     override fun onBlurFailed(error: Throwable?) {
                         if (error is OutOfMemoryError) {
                             prefs.enableBlur = false
-                            launcher?.runOnUiThread { Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show() }
+                            runOnMainThread {
+                                Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
+                                notifyWallpaperChanged()
+                            }
                         }
                         blurFuture = null
                         wallpaper.recycle()
                     }
                 })
+    }
+
+    private fun notifyWallpaperChanged() {
+        mListeners.forEach(Listener::onWallpaperChanged)
     }
 
     private fun scaleToScreenSize(bitmap: Bitmap): Bitmap {
@@ -206,6 +226,8 @@ class BlurWallpaperProvider(val context: Context) {
         mVibrancyPaint.colorFilter = filter
         canvas.drawBitmap(wallpaper, 0f, 0f, mVibrancyPaint)
 
+        wallpaper.recycle()
+
         return bitmap
     }
 
@@ -252,9 +274,10 @@ class BlurWallpaperProvider(val context: Context) {
 
     interface Listener {
 
-        fun onWallpaperChanged()
-        fun onOffsetChanged(offset: Float)
-        fun setUseTransparency(useTransparency: Boolean)
+        fun onWallpaperChanged() {}
+        fun onOffsetChanged(offset: Float) {}
+        fun setUseTransparency(useTransparency: Boolean) {}
+        fun onEnabledChanged() {}
     }
 
     companion object : SingletonHolder<BlurWallpaperProvider, Context>(ensureOnMainThread(useApplicationContext(::BlurWallpaperProvider))) {
