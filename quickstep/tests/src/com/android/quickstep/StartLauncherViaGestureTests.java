@@ -29,26 +29,26 @@ import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.QuickStepOnOffRule.Mode;
 import com.android.quickstep.QuickStepOnOffRule.QuickstepOnOff;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RaceConditionsTests extends AbstractQuickStepTest {
+public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        // Start an activity where the gestures start.
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+    }
+
     private void runTest(String... eventSequence) {
         final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(eventSequence);
 
         // Destroy Launcher activity.
-        executeOnLauncher(launcher -> {
-            if (launcher != null) {
-                launcher.finish();
-            }
-        });
-        waitForLauncherCondition(
-                "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
-
-        // Start an activity where we'll press home.
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        closeLauncherActivity();
 
         // The test action.
         eventProcessor.startIteration();
@@ -58,7 +58,7 @@ public class RaceConditionsTests extends AbstractQuickStepTest {
 
     @Test
     @QuickstepOnOff(mode = Mode.ON)
-    public void testPressHomeToStartLauncher() {
+    public void testPressHome() {
         runTest(enterEvt(Launcher.ON_CREATE_EVT),
                 exitEvt(Launcher.ON_CREATE_EVT),
                 enterEvt(OtherActivityTouchConsumer.DOWN_EVT),
@@ -68,5 +68,12 @@ public class RaceConditionsTests extends AbstractQuickStepTest {
                 exitEvt(OtherActivityTouchConsumer.DOWN_EVT),
                 enterEvt(Launcher.ON_CREATE_EVT),
                 exitEvt(Launcher.ON_CREATE_EVT));
+    }
+
+    @Test
+    @QuickstepOnOff(mode = Mode.ON)
+    public void testSwipeToOverview() {
+        closeLauncherActivity();
+        mLauncher.getBackground().switchToOverview();
     }
 }

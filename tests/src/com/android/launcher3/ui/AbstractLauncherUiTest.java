@@ -347,4 +347,15 @@ public abstract class AbstractLauncherUiTest {
                 PackageManager.MATCH_SYSTEM_ONLY).
                 activityInfo.packageName;
     }
+
+    protected void closeLauncherActivity() {
+        // Destroy Launcher activity.
+        executeOnLauncher(launcher -> {
+            if (launcher != null) {
+                launcher.finish();
+            }
+        });
+        waitForLauncherCondition(
+                "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
+    }
 }
