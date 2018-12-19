@@ -49,7 +49,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private static final String TAG = "OverviewSwipeController";
 
     // Progress after which the transition is assumed to be a success in case user does not fling
-    private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
+    public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
     protected final T mActivity;
     private final SwipeDetector mDetector;

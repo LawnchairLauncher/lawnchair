@@ -44,6 +44,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -76,9 +78,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.

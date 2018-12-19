@@ -97,8 +97,8 @@ public class RecentsAnimationWrapper {
     }
 
     /**
-     * @param onFinishComplete A callback that runs after the animation controller has finished
-     *                         on the background thread.
+     * @param onFinishComplete A callback that runs on the main thread after the animation
+     *                         controller has finished on the background thread.
      */
     public void finish(boolean toHome, Runnable onFinishComplete) {
         if (!toHome) {
@@ -128,7 +128,7 @@ public class RecentsAnimationWrapper {
             controller.finish(toHome);
 
             if (onFinishComplete != null) {
-                onFinishComplete.run();
+                mMainThreadExecutor.execute(onFinishComplete);
             }
         }
     }

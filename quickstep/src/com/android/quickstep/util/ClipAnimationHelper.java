@@ -154,10 +154,11 @@ public class ClipAnimationHelper {
     public RectF applyTransform(RemoteAnimationTargetSet targetSet, TransformParams params) {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
-        Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
+        Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale * params.offsetScale);
         float offsetYProgress = mOffsetYInterpolator.getInterpolation(params.progress);
         float progress = mInterpolator.getInterpolation(params.progress);
         currentRect = mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
+        currentRect.offset(params.offsetX, 0);
 
         synchronized (mTargetOffset) {
             // Stay lined up with the center of the target, since it moves for quick scrub.
@@ -353,14 +354,28 @@ public class ClipAnimationHelper {
 
     public static class TransformParams {
         float progress;
+        float offsetX;
+        float offsetScale;
         SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
 
         public TransformParams() {
             progress = 0;
+            offsetX = 0;
+            offsetScale = 1;
         }
 
         public TransformParams setProgress(float progress) {
             this.progress = progress;
+            return this;
+        }
+
+        public TransformParams setOffsetX(float offsetX) {
+            this.offsetX = offsetX;
+            return this;
+        }
+
+        public TransformParams setOffsetScale(float offsetScale) {
+            this.offsetScale = offsetScale;
             return this;
         }
 
