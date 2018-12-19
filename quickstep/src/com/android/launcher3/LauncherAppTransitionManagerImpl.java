@@ -80,8 +80,8 @@ import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 /**
@@ -580,8 +580,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 MODE_OPENING);
         RemoteAnimationTargetSet closingTargets = new RemoteAnimationTargetSet(targets,
                 MODE_CLOSING);
-        SyncRtSurfaceTransactionApplier surfaceApplier = new SyncRtSurfaceTransactionApplier(
-                mFloatingView);
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(mFloatingView);
 
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
@@ -740,8 +740,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * Animator that controls the transformations of the windows the targets that are closing.
      */
     private Animator getClosingWindowAnimators(RemoteAnimationTargetCompat[] targets) {
-        SyncRtSurfaceTransactionApplier surfaceApplier =
-                new SyncRtSurfaceTransactionApplier(mDragLayer);
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;

@@ -46,8 +46,8 @@ import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -152,7 +152,7 @@ public class ClipAnimationHelper {
     }
 
     public RectF applyTransform(RemoteAnimationTargetSet targetSet, float progress,
-            @Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier) {
+            @Nullable SyncRtSurfaceTransactionApplierCompat syncTransactionApplier) {
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
         Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
@@ -218,14 +218,14 @@ public class ClipAnimationHelper {
         return mCurrentRectWithInsets;
     }
 
-    private void applyParams(@Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier,
+    private void applyParams(@Nullable SyncRtSurfaceTransactionApplierCompat syncTransactionApplier,
             SurfaceParams[] params) {
         if (syncTransactionApplier != null) {
             syncTransactionApplier.scheduleApply(params);
         } else {
             TransactionCompat t = new TransactionCompat();
             for (SurfaceParams param : params) {
-                SyncRtSurfaceTransactionApplier.applyParams(t, param);
+                SyncRtSurfaceTransactionApplierCompat.applyParams(t, param);
             }
             t.setEarlyWakeup();
             t.apply();

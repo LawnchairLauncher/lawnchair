@@ -85,7 +85,7 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 import java.util.StringJoiner;
@@ -213,7 +213,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private T mActivity;
     private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
-    private SyncRtSurfaceTransactionApplier mSyncTransactionApplier;
+    private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     private QuickScrubController mQuickScrubController;
     private AnimationFactory mAnimationFactory = (t, i) -> { };
 
@@ -403,7 +403,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mRecentsView = activity.getOverviewPanel();
-        SyncRtSurfaceTransactionApplier.create(mRecentsView, (applier) -> {
+        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView, (applier) -> {
             mSyncTransactionApplier = applier;
         });
         mQuickScrubController = mRecentsView.getQuickScrubController();
