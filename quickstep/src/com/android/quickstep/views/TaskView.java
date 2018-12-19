@@ -46,7 +46,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.RecentsModel;
@@ -119,7 +119,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
             new FloatProperty<TaskView>("focusTransition") {
                 @Override
                 public void setValue(TaskView taskView, float v) {
-                    taskView.setIconAndDimTransitionProgress(v);
+                    taskView.setIconAndDimTransitionProgress(v, false /* invert */);
                 }
 
                 @Override
@@ -316,11 +316,17 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         }
     }
 
-    private void setIconAndDimTransitionProgress(float progress) {
+    private void setIconAndDimTransitionProgress(float progress, boolean invert) {
+        if (invert) {
+            progress = 1 - progress;
+        }
         mFocusTransitionProgress = progress;
         mSnapshotView.setDimAlphaMultipler(progress);
-        float scale = FAST_OUT_SLOW_IN.getInterpolation(Utilities.boundToRange(
-                progress * DIM_ANIM_DURATION / SCALE_ICON_DURATION, 0, 1));
+        float iconScalePercentage = (float) SCALE_ICON_DURATION / DIM_ANIM_DURATION;
+        float lowerClamp = invert ? 1f - iconScalePercentage : 0;
+        float upperClamp = invert ? 1 : iconScalePercentage;
+        float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
+                .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
     }
@@ -341,10 +347,14 @@ public class TaskView extends FrameLayout implements PageCallbacks {
     }
 
     protected void setIconScaleAndDim(float iconScale) {
+        setIconScaleAndDim(iconScale, false);
+    }
+
+    private void setIconScaleAndDim(float iconScale, boolean invert) {
         if (mIconAndDimAnimator != null) {
             mIconAndDimAnimator.cancel();
         }
-        setIconAndDimTransitionProgress(iconScale);
+        setIconAndDimTransitionProgress(iconScale, invert);
     }
 
     public void resetVisualProperties() {
@@ -524,7 +534,8 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         }
         mFullscreenProgress = progress;
         boolean isFullscreen = mFullscreenProgress > 0;
-        mIconView.setVisibility(isFullscreen ? INVISIBLE : VISIBLE);
+        setIconScaleAndDim(progress, true /* invert */);
+        mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         setClipChildren(!isFullscreen);
         setClipToPadding(!isFullscreen);
         getThumbnail().invalidate();
