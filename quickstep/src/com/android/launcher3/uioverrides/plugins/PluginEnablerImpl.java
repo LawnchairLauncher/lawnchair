@@ -34,13 +34,27 @@ public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnab
     }
 
     @Override
-    public void setEnabled(ComponentName component, boolean enabled) {
+    public void setEnabled(ComponentName component) {
+        setState(component, true);
+    }
+
+    @Override
+    public void setDisabled(ComponentName component, int reason) {
+        setState(component, reason == ENABLED);
+    }
+
+    private void setState(ComponentName component, boolean enabled) {
         putBoolean(pluginEnabledKey(component), enabled);
     }
 
     @Override
     public boolean isEnabled(ComponentName component) {
         return getBoolean(pluginEnabledKey(component), true);
+    }
+
+    @Override
+    public int getDisableReason(ComponentName componentName) {
+        return isEnabled(componentName) ? ENABLED : DISABLED_MANUALLY;
     }
 
     @Override
