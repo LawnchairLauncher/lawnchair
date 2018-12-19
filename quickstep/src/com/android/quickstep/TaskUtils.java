@@ -43,7 +43,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 import java.util.List;
 
@@ -146,7 +146,8 @@ public class TaskUtils {
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
         ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplier(v));
+                .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(v));
+        
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {

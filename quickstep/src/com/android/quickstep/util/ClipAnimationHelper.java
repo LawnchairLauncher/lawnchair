@@ -46,8 +46,8 @@ import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -217,14 +217,14 @@ public class ClipAnimationHelper {
         return mCurrentRectWithInsets;
     }
 
-    private void applySurfaceParams(@Nullable SyncRtSurfaceTransactionApplier
+    private void applySurfaceParams(@Nullable SyncRtSurfaceTransactionApplierCompat
             syncTransactionApplier, SurfaceParams[] params) {
         if (syncTransactionApplier != null) {
             syncTransactionApplier.scheduleApply(params);
         } else {
             TransactionCompat t = new TransactionCompat();
             for (SurfaceParams param : params) {
-                SyncRtSurfaceTransactionApplier.applyParams(t, param);
+                SyncRtSurfaceTransactionApplierCompat.applyParams(t, param);
             }
             t.setEarlyWakeup();
             t.apply();
@@ -353,7 +353,7 @@ public class ClipAnimationHelper {
 
     public static class TransformParams {
         float progress;
-        SyncRtSurfaceTransactionApplier syncTransactionApplier;
+        SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
 
         public TransformParams() {
             progress = 0;
@@ -364,7 +364,8 @@ public class ClipAnimationHelper {
             return this;
         }
 
-        public TransformParams setSyncTransactionApplier(SyncRtSurfaceTransactionApplier applier) {
+        public TransformParams setSyncTransactionApplier(
+                SyncRtSurfaceTransactionApplierCompat applier) {
             this.syncTransactionApplier = applier;
             return this;
         }
