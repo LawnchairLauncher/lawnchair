@@ -20,14 +20,17 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertTrue;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
@@ -37,14 +40,15 @@ import com.android.launcher3.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.io.File;
 
 /**
  * Tests for {@link DbDowngradeHelper}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class DbDowngradeHelperTest {
 
     private static final String SCHEMA_FILE = "test_schema.json";
@@ -56,35 +60,47 @@ public class DbDowngradeHelperTest {
 
     @Before
     public void setup() {
-        mContext = InstrumentationRegistry.getTargetContext();
+        mContext = RuntimeEnvironment.application;
         mSchemaFile = mContext.getFileStreamPath(SCHEMA_FILE);
         mDbFile = mContext.getDatabasePath(DB_FILE);
     }
 
     @Test
+    public void testDowngradeSchemaMatchesVersion() throws Exception {
+        mSchemaFile.delete();
+        assertFalse(mSchemaFile.exists());
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 0, mContext);
+        assertEquals(LauncherProvider.SCHEMA_VERSION, DbDowngradeHelper.parse(mSchemaFile).version);
+    }
+
+    @Test
     public void testUpdateSchemaFile() throws Exception {
-        Context myContext = InstrumentationRegistry.getContext();
-        int testResId = myContext.getResources().getIdentifier(
-                "db_schema_v10", "raw", myContext.getPackageName());
+        // Setup mock resources
+        Resources res = spy(mContext.getResources());
+        doAnswer(i ->this.getClass().getResourceAsStream("/db_schema_v10.json"))
+                .when(res).openRawResource(eq(R.raw.downgrade_schema));
+        Context context = spy(mContext);
+        when(context.getResources()).thenReturn(res);
+
         mSchemaFile.delete();
         assertFalse(mSchemaFile.exists());
 
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, context);
         assertTrue(mSchemaFile.exists());
         assertEquals(10, DbDowngradeHelper.parse(mSchemaFile).version);
 
         // Schema is updated on version upgrade
         assertTrue(mSchemaFile.setLastModified(0));
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 11, myContext, testResId);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 11, context);
         assertNotSame(0, mSchemaFile.lastModified());
 
         // Schema is not updated when version is same
         assertTrue(mSchemaFile.setLastModified(0));
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, context);
         assertEquals(0, mSchemaFile.lastModified());
 
         // Schema is not updated on version downgrade
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 3, myContext, testResId);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, 3, context);
         assertEquals(0, mSchemaFile.lastModified());
     }
 
@@ -143,8 +159,7 @@ public class DbDowngradeHelperTest {
         mSchemaFile.delete();
         mDbFile.delete();
 
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, LauncherProvider.SCHEMA_VERSION, mContext,
-                R.raw.downgrade_schema);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, LauncherProvider.SCHEMA_VERSION, mContext);
 
         DatabaseHelper dbHelper = new DatabaseHelper(mContext, null, DB_FILE) {
             @Override

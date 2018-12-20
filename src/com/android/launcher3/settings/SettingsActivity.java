@@ -32,11 +32,9 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SecureSettingsObserver;
 
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragment.OnPreferenceStartFragmentCallback;
@@ -184,13 +182,6 @@ public class SettingsActivity extends Activity
 
                 case ADD_ICON_PREFERENCE_KEY:
                     return Utilities.ATLEAST_OREO;
-
-                case IconShapeOverride.KEY_PREFERENCE:
-                    if (!IconShapeOverride.isSupported(getActivity())) {
-                        return false;
-                    }
-                    IconShapeOverride.handlePreferenceUi((ListPreference) preference);
-                    return true;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
                     if (getResources().getBoolean(R.bool.allow_rotation)) {

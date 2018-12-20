@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Naglo-load ng mga app…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Walang nahanap na app na tumutugma sa \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Maghanap ng higit pang mga app"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Mga Notification"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Pindutin nang matagal para kumuha ng shortcut."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"I-double tap nang matagal para kumuha ng shortcut o gumamit ng mga custom na pagkilos."</string>
@@ -66,7 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Isa itong app ng system at hindi maaaring i-uninstall."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Walang Pangalang Folder"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Naka-disable ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one">May <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> (na) notification ang <xliff:g id="APP_NAME_2">%1$s</xliff:g></item>
+      <item quantity="other">May <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> (na) notification ang <xliff:g id="APP_NAME_2">%1$s</xliff:g></item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pahina %1$d ng %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d ng %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Bagong page ng home screen"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Na-disable ng iyong admin"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Payagan ang pag-rotate ng Home screen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kailan maro-rotate ang telepono"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"Mga notification dot"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Naka-on"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Naka-off"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Kinakailangan ng access sa notification"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Upang ipakita ang Mga Notification Dot, i-on ang mga notification ng app para sa <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Baguhin ang mga setting"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Ipakita ang mga notification dot"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Idagdag ang icon sa Home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para sa mga bagong app"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Baguhin ang hugis ng icon"</string>

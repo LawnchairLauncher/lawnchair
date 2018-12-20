@@ -18,7 +18,9 @@ import android.util.Pair;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
@@ -31,6 +33,8 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Tests for {@link AddWorkspaceItemsTask}
@@ -60,15 +64,11 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo item : items) {
             list.add(Pair.create(item, null));
         }
-        return new AddWorkspaceItemsTask(list) {
-
-            @Override
-            protected void updateScreens(Context context, IntArray workspaceScreens) { }
-        };
+        return new AddWorkspaceItemsTask(list);
     }
 
     @Test
-    public void testFindSpaceForItem_prefers_second() {
+    public void testFindSpaceForItem_prefers_second() throws Exception {
         // First screen has only one hole of size 1
         int nextId = setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
 
@@ -93,7 +93,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     public void testFindSpaceForItem_adds_new_screen() throws Exception {
         // First screen has 2 holes of sizes 3x2 and 2x3
         setupWorkspaceWithHoles(1, 1, new Rect(2, 0, 5, 2), new Rect(0, 2, 2, 5));
-        commitScreensToDb();
 
         IntArray oldScreens = existingScreens.clone();
         int[] spaceFound = newTask()
@@ -109,7 +108,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
         // Setup a screen with a hole
         setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
-        commitScreensToDb();
 
         // Nothing was added
         assertTrue(executeTaskForTest(newTask(info)).isEmpty());
@@ -125,7 +123,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
         // Setup a screen with a hole
         setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
-        commitScreensToDb();
 
         executeTaskForTest(newTask(info, info2)).get(0).run();
         ArgumentCaptor<ArrayList> notAnimated = ArgumentCaptor.forClass(ArrayList.class);
@@ -141,7 +138,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         assertTrue(animated.getValue().contains(info2));
     }
 
-    private int setupWorkspaceWithHoles(int startId, int screenId, Rect... holes) {
+    private int setupWorkspaceWithHoles(int startId, int screenId, Rect... holes) throws Exception {
         GridOccupancy occupancy = new GridOccupancy(idp.numColumns, idp.numRows);
         occupancy.markCells(0, 0, idp.numColumns, idp.numRows, true);
         for (Rect r : holes) {
@@ -151,6 +148,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         existingScreens.add(screenId);
         screenOccupancy.append(screenId, occupancy);
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         for (int x = 0; x < idp.numColumns; x++) {
             for (int y = 0; y < idp.numRows; y++) {
                 if (!occupancy.cells[x][y]) {
@@ -165,27 +163,19 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
                 info.cellY = y;
                 info.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
                 bgDataModel.addItem(targetContext, info, false);
+
+                executor.execute(() -> {
+                    ContentWriter writer = new ContentWriter(targetContext);
+                    info.writeToValues(writer);
+                    writer.put(Favorites._ID, info.id);
+                    targetContext.getContentResolver().insert(Favorites.CONTENT_URI,
+                            writer.getValues(targetContext));
+                });
             }
         }
+
+        executor.submit(() -> null).get();
+        executor.shutdown();
         return startId;
-    }
-
-    private void commitScreensToDb() throws Exception {
-        LauncherSettings.Settings.call(targetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-
-        Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-        // Clear the table
-        ops.add(ContentProviderOperation.newDelete(uri).build());
-        int count = existingScreens.size();
-        for (int i = 0; i < count; i++) {
-            ContentValues v = new ContentValues();
-            int screenId = existingScreens.get(i);
-            v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-            v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-            ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
-        }
-        targetContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
     }
 }

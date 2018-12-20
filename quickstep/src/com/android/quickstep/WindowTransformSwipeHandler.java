@@ -403,7 +403,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mRecentsView = activity.getOverviewPanel();
-        mSyncTransactionApplier = new SyncRtSurfaceTransactionApplier(mRecentsView);
+        SyncRtSurfaceTransactionApplier.create(mRecentsView, (applier) -> {
+            mSyncTransactionApplier = applier;
+        });
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mLayoutListener = mActivityControlHelper.createLayoutListener(mActivity);
 

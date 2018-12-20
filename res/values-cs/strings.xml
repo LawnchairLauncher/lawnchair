@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Načítání aplikací…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Dotazu „<xliff:g id="QUERY">%1$s</xliff:g>“ neodpovídají žádné aplikace"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Vyhledat další aplikace"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"Aplikace"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Oznámení"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Zkratku vyberete podržením."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dvojitým klepnutím a podržením vyberte zkratku, případně použijte vlastní akce."</string>
@@ -66,7 +65,12 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Toto je systémová aplikace a nelze ji odinstalovat."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Složka bez názvu"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> je zakázána"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="few">Aplikace <xliff:g id="APP_NAME_2">%1$s</xliff:g> má <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> oznámení</item>
+      <item quantity="many">Aplikace <xliff:g id="APP_NAME_2">%1$s</xliff:g> má <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> oznámení</item>
+      <item quantity="other">Aplikace <xliff:g id="APP_NAME_2">%1$s</xliff:g> má <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> oznámení</item>
+      <item quantity="one">Aplikace <xliff:g id="APP_NAME_0">%1$s</xliff:g> má <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> oznámení</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Strana %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>
@@ -82,17 +86,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Zakázáno administrátorem"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Povolit otáčení plochy"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Při otočení telefonu"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"Puntíky s oznámením"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Zapnuto"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Vypnuto"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Je třeba udělit přístup k oznámením"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Chcete-li zobrazovat puntíky s oznámením, zapněte oznámení z aplikace <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Změnit nastavení"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Zobrazovat puntíky s oznámením"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Přidat ikonu na plochu"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pro nové aplikace"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Změnit tvar ikony"</string>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2018 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/launcher_bg_color"
+    android:fitsSystemWindows="true" >
+
+    <GridView
+        android:id="@+id/pinned_app_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/app_grid_margin_top"
+        android:layout_marginStart="@dimen/app_grid_margin_left"
+        android:layout_marginEnd="@dimen/app_grid_margin_right"
+        android:columnWidth="@dimen/app_list_col_width"
+        android:verticalSpacing="@dimen/app_list_horizontal_spacing"
+        android:horizontalSpacing="@dimen/app_list_vertical_spacing"
+        android:numColumns="auto_fit" />
+
+    <ImageButton
+        android:id="@+id/OptionsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="@dimen/options_button_margin"
+        android:layout_marginBottom="@dimen/options_button_margin"
+        android:src="@drawable/ic_settings"
+        android:background="@null"/>
+
+    <FrameLayout
+        android:layout_width="@dimen/app_picker_width"
+        android:layout_height="@dimen/app_picker_height"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/app_picker_fab_margin"
+        android:layout_marginBottom="@dimen/app_picker_fab_margin">
+
+        <include layout="@layout/app_picker_layout"/>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

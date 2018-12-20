@@ -1,5 +1,7 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.GridSizeMigrationTask.getWorkspaceScreenIds;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -10,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FlagOverrideRule;
@@ -55,7 +56,6 @@ public class GridSizeMigrationTaskTest {
 
     @Before
     public void setUp() {
-
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
         mIdp = new InvariantDeviceProfile();
@@ -307,11 +307,6 @@ public class GridSizeMigrationTaskTest {
             LauncherSettings.Settings.call(mContext.getContentResolver(),
                     LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
 
-            ContentValues v = new ContentValues();
-            v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-            v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-            mContext.getContentResolver().insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
-
             ids[i] = new int[typeArray[i].length][];
             for (int y = 0; y < typeArray[i].length; y++) {
                 ids[i][y] = new int[typeArray[i][y].length];
@@ -326,7 +321,6 @@ public class GridSizeMigrationTaskTest {
             }
         }
 
-        IntArray allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         return ids;
     }
 
@@ -336,7 +330,7 @@ public class GridSizeMigrationTaskTest {
      *            represent the workspace grid.
      */
     private void verifyWorkspace(int[][][] ids) {
-        IntArray allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+        IntArray allScreens = getWorkspaceScreenIds(mContext);
         assertEquals(ids.length, allScreens.size());
         int total = 0;
 

@@ -108,7 +108,9 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    Launcher3CommonDepsLib \
+    SecondaryDisplayLauncherLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, src_shortcuts_overrides) \
