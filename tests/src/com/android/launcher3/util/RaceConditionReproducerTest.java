@@ -77,6 +77,46 @@ public class RaceConditionReproducerTest {
     }
 
     @Test
+    @Ignore // The test is too long for continuous testing.
+    // 2 threads, 3 events, including enter-exit pairs each.
+    public void test3_3_enter_exit() throws Exception {
+        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
+        boolean sawTheValidSequence = false;
+
+        for (; ; ) {
+            eventProcessor.startIteration();
+            Thread tb = new Thread(() -> {
+                RaceConditionTracker.onEvent("B1:enter");
+                RaceConditionTracker.onEvent("B1:exit");
+                RaceConditionTracker.onEvent("B2");
+                RaceConditionTracker.onEvent("B3:enter");
+                RaceConditionTracker.onEvent("B3:exit");
+            });
+            tb.start();
+
+            RaceConditionTracker.onEvent("A1");
+            RaceConditionTracker.onEvent("A2:enter");
+            RaceConditionTracker.onEvent("A2:exit");
+            RaceConditionTracker.onEvent("A3:enter");
+            RaceConditionTracker.onEvent("A3:exit");
+
+            tb.join();
+            final boolean needMoreIterations = eventProcessor.finishIteration();
+
+            sawTheValidSequence = sawTheValidSequence ||
+                    "B1:enter|B1:exit|A1|A2:enter|A2:exit|B2|A3:enter|A3:exit|B3:enter|B3:exit".
+                            equals(eventProcessor.getCurrentSequenceString());
+
+            if (!needMoreIterations) break;
+        }
+
+        assertEquals("Wrong number of leaf nodes",
+                factorial(3 + 3) / (factorial(3) * factorial(3)),
+                eventProcessor.numberOfLeafNodes());
+        assertTrue(sawTheValidSequence);
+    }
+
+    @Test
     // 2 threads, 3 events each; reproducing a particular event sequence.
     public void test3_3_ReproMode() throws Exception {
         final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(
@@ -111,6 +151,44 @@ public class RaceConditionReproducerTest {
 
             RaceConditionTracker.onEvent("A1");
             RaceConditionTracker.onEvent("A2");
+
+            tb.join();
+            tc.join();
+
+            if (!eventProcessor.finishIteration()) break;
+        }
+
+        assertEquals("Wrong number of leaf nodes",
+                factorial(2 + 2 + 1) / (factorial(2) * factorial(2) * factorial(1)),
+                eventProcessor.numberOfLeafNodes());
+    }
+
+    @Test
+    @Ignore // The test is too long for continuous testing.
+    // 2 threads with 2 events; 1 thread with 1 event. Includes enter-exit pairs.
+    public void test2_1_2_enter_exit() throws Exception {
+        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
+
+        for (; ; ) {
+            eventProcessor.startIteration();
+            Thread tb = new Thread(() -> {
+                RaceConditionTracker.onEvent("B1:enter");
+                RaceConditionTracker.onEvent("B1:exit");
+                RaceConditionTracker.onEvent("B2:enter");
+                RaceConditionTracker.onEvent("B2:exit");
+            });
+            tb.start();
+
+            Thread tc = new Thread(() -> {
+                RaceConditionTracker.onEvent("C1:enter");
+                RaceConditionTracker.onEvent("C1:exit");
+            });
+            tc.start();
+
+            RaceConditionTracker.onEvent("A1:enter");
+            RaceConditionTracker.onEvent("A1:exit");
+            RaceConditionTracker.onEvent("A2:enter");
+            RaceConditionTracker.onEvent("A2:exit");
 
             tb.join();
             tc.join();
