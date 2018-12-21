@@ -2256,7 +2256,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void finishBindingItems(int currentScreen) {
+    public void finishBindingItems(int pageBoundFirst) {
         TraceHelper.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
@@ -2271,7 +2271,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
-        mWorkspace.setCurrentPage(currentScreen);
+        // When undoing the removal of the last item on a page, return to that page.
+        mWorkspace.setCurrentPage(pageBoundFirst);
 
         TraceHelper.endSection("finishBindingItems");
     }

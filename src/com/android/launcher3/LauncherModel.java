@@ -153,7 +153,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
-        public void finishBindingItems(int currentScreen);
+        public void finishBindingItems(int pageBoundFirst);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
         public void preAddApps();
@@ -439,11 +439,16 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public void forceReload() {
+        forceReload(-1);
+    }
+
     /**
      * Reloads the workspace items from the DB and re-binds the workspace. This should generally
      * not be called as DB updates are automatically followed by UI update
+     * @param synchronousBindPage The page to bind first. Can pass -1 to use the current page.
      */
-    public void forceReload() {
+    public void forceReload(int synchronousBindPage) {
         synchronized (mLock) {
             // Stop any existing loaders first, so they don't set mModelLoaded to true later
             stopLoader();
@@ -454,7 +459,10 @@ public class LauncherModel extends BroadcastReceiver
         // the next time launcher starts
         Callbacks callbacks = getCallback();
         if (callbacks != null) {
-            startLoader(callbacks.getCurrentWorkspaceScreen());
+            if (synchronousBindPage < 0) {
+                synchronousBindPage = callbacks.getCurrentWorkspaceScreen();
+            }
+            startLoader(synchronousBindPage);
         }
     }
 
