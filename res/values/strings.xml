@@ -94,9 +94,11 @@
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
 
-    <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+    <!-- Label for remove drop target (from the homescreen only).
+         May appear next to uninstall_drop_target_label [CHAR_LIMIT=20] -->
     <string name="remove_drop_target_label">Remove</string>
-    <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
+    <!-- Label for uninstall drop target (from the device).
+         May appear next to remove_drop_target_label [CHAR_LIMIT=20]-->
     <string name="uninstall_drop_target_label">Uninstall</string>
     <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
     <string name="app_info_drop_target_label">App info</string>
