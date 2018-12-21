@@ -373,12 +373,12 @@ public class ModelWriter {
         mDeleteRunnables.clear();
     }
 
-    public void abortDelete() {
+    public void abortDelete(int pageToBindFirst) {
         mPreparingToUndo = false;
         mDeleteRunnables.clear();
         // We do a full reload here instead of just a rebind because Folders change their internal
         // state when dragging an item out, which clobbers the rebind unless we load from the DB.
-        mModel.forceReload();
+        mModel.forceReload(pageToBindFirst);
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
