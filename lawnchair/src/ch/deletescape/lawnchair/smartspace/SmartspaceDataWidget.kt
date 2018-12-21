@@ -198,7 +198,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?): LawnchairSmartspaceController.WeatherData? {
             return if (weatherIcon != null && temperature != null) {
                 try {
-                    val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { it < '0' || it > '9' })
+                    val temperatureAmount = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-'})
                     LawnchairSmartspaceController.WeatherData(weatherIcon, temperatureAmount.toInt(), temperature.contains("C"))
                 } catch (e: NumberFormatException) {
                     null
