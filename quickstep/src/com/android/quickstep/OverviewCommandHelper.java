@@ -343,14 +343,15 @@ public class OverviewCommandHelper {
             clipHelper.updateTargetRect(targetRect);
             clipHelper.prepareAnimation(false /* isOpening */);
 
-            SyncRtSurfaceTransactionApplier syncTransactionApplier =
-                    new SyncRtSurfaceTransactionApplier(rootView);
+            ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
+                    .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplier(rootView));
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-            valueAnimator.addUpdateListener((v) ->
-                    clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue(),
-                            syncTransactionApplier));
+            valueAnimator.addUpdateListener((v) -> {
+                params.setProgress((float) v.getAnimatedValue());
+                clipHelper.applyTransform(targetSet, params);
+            });
 
             if (targetSet.isAnimatingHome()) {
                 // If we are animating home, fade in the opening targets

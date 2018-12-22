@@ -126,11 +126,13 @@ public class QuickScrubController implements OnAlarmListener {
         if (mIsQuickSwitch) {
             mShouldSwitchToNext = true;
             mPrevProgressDelta = 0;
-            if (mRecentsView.getTaskViewCount() > 0) {
-                mRecentsView.getTaskViewAt(0).setFullscreen(true);
+            TaskView runningTaskView = mRecentsView.getRunningTaskView();
+            TaskView nextTaskView = mRecentsView.getNextTaskView();
+            if (runningTaskView != null) {
+                runningTaskView.setFullscreenProgress(1);
             }
-            if (mRecentsView.getTaskViewCount() > 1) {
-                mRecentsView.getTaskViewAt(1).setFullscreen(true);
+            if (nextTaskView != null) {
+                nextTaskView.setFullscreenProgress(1);
             }
         }
 
@@ -161,11 +163,13 @@ public class QuickScrubController implements OnAlarmListener {
                     mWaitingForTaskLaunch = false;
                     if (mIsQuickSwitch) {
                         mIsQuickSwitch = false;
-                        if (mRecentsView.getTaskViewCount() > 0) {
-                            mRecentsView.getTaskViewAt(0).setFullscreen(false);
+                        TaskView runningTaskView = mRecentsView.getRunningTaskView();
+                        TaskView nextTaskView = mRecentsView.getNextTaskView();
+                        if (runningTaskView != null) {
+                            runningTaskView.setFullscreenProgress(0);
                         }
-                        if (mRecentsView.getTaskViewCount() > 1) {
-                            mRecentsView.getTaskViewAt(1).setFullscreen(false);
+                        if (nextTaskView != null) {
+                            nextTaskView.setFullscreenProgress(0);
                         }
                     }
 
@@ -267,12 +271,12 @@ public class QuickScrubController implements OnAlarmListener {
 
     public void onQuickScrubProgress(float progress) {
         if (mIsQuickSwitch) {
-            TaskView currentPage = mRecentsView.getTaskViewAt(0);
-            TaskView nextPage = mRecentsView.getTaskViewAt(1);
+            TaskView currentPage = mRecentsView.getRunningTaskView();
+            TaskView nextPage = mRecentsView.getNextTaskView();
             if (currentPage == null || nextPage == null) {
                 return;
             }
-            if (!mFinishedTransitionToQuickScrub) {
+            if (!mFinishedTransitionToQuickScrub || mStartProgress <= 0) {
                 mStartProgress = mEndProgress = progress;
             } else {
                 float progressDelta = progress - mEndProgress;

@@ -52,6 +52,7 @@ import android.view.animation.Interpolator;
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -176,6 +177,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
     private final ClipAnimationHelper mClipAnimationHelper;
+    private final ClipAnimationHelper.TransformParams mTransformParams;
 
     protected Runnable mGestureEndCallback;
     protected boolean mIsGoingToHome;
@@ -256,6 +258,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewTouchProxyHandler);
         mClipAnimationHelper = new ClipAnimationHelper(context);
+        mTransformParams = new ClipAnimationHelper.TransformParams();
 
         initStateCallbacks();
     }
@@ -584,11 +587,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
-
-            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift,
-                    Looper.myLooper() == mMainThreadHandler.getLooper()
+            SyncRtSurfaceTransactionApplier syncTransactionApplier
+                    = Looper.myLooper() == mMainThreadHandler.getLooper()
                             ? mSyncTransactionApplier
-                            : null);
+                            : null;
+            mTransformParams.setProgress(shift).setSyncTransactionApplier(syncTransactionApplier);
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
+                    mTransformParams);
 
             boolean passedThreshold = shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
@@ -614,6 +619,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
+        }
+        // Update insets of the next previous task, as we might switch to it.
+        TaskView nextTaskView = mRecentsView == null ? null : mRecentsView.getNextTaskView();
+        if (mInteractionType == INTERACTION_NORMAL && nextTaskView != null) {
+            nextTaskView.setFullscreenProgress(1 - mCurrentShift.value);
         }
 
         if (mLauncherTransitionController == null || mLauncherTransitionController

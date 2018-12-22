@@ -760,14 +760,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (runningTaskView == null) {
             // Launch the first task
             if (getTaskViewCount() > 0) {
-                ((TaskView) getChildAt(0)).launchTask(true /* animate */);
+                getTaskViewAt(0).launchTask(true /* animate */);
             }
         } else {
-            // Get the next launch task
-            int runningTaskIndex = indexOfChild(runningTaskView);
-            int nextTaskIndex = Math.max(0, Math.min(getTaskViewCount() - 1, runningTaskIndex + 1));
-            if (nextTaskIndex < getTaskViewCount()) {
-                ((TaskView) getChildAt(nextTaskIndex)).launchTask(true /* animate */);
+            TaskView nextTaskView = getNextTaskView();
+            if (nextTaskView != null) {
+                nextTaskView.launchTask(true /* animate */);
+            } else {
+                runningTaskView.launchTask(true /* animate */);
             }
         }
     }
@@ -1140,6 +1140,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         child.setAlpha(mContentAlpha);
     }
 
+    /**
+     * @return The most recent task that is older than the currently running task. If there is
+     * currently no running task or there is no task older than it, then return null.
+     */
+    @Nullable
+    public TaskView getNextTaskView() {
+        TaskView runningTaskView = getRunningTaskView();
+        if (runningTaskView == null) {
+            return null;
+        }
+        return getTaskViewAt(indexOfChild(runningTaskView) + 1);
+    }
+
     public TaskView getTaskViewAt(int index) {
         View child = getChildAt(index);
         return child == mClearAllButton ? null : (TaskView) child;
@@ -1261,12 +1274,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                         toScale, toTranslationY);
                 scaleAndTranslation[1] = -scaleAndTranslation[1];
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
+                anim.play(ObjectAnimator.ofFloat(adjacentTask, TaskView.FULLSCREEN_PROGRESS, 1));
             }
             if (taskIndex + 1 < getTaskViewCount()) {
                 TaskView adjacentTask = getTaskViewAt(taskIndex + 1);
                 float[] scaleAndTranslation = getAdjacentScaleAndTranslation(centerTask,
                         toScale, toTranslationY);
                 anim.play(createAnimForChild(adjacentTask, scaleAndTranslation));
+                anim.play(ObjectAnimator.ofFloat(adjacentTask, TaskView.FULLSCREEN_PROGRESS, 1));
             }
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
