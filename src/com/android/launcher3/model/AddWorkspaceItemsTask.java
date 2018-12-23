@@ -15,11 +15,11 @@
  */
 package com.android.launcher3.model;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
+
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -27,7 +27,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
@@ -58,16 +57,12 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         if (mItemList.isEmpty()) {
             return;
         }
-        Context context = app.getContext();
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
 
-        // Get the list of workspace screens.  We need to append to this list and
-        // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
-        // called.
-        IntArray workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
+            IntArray workspaceScreens = dataModel.workspaceScreens.clone();
 
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : mItemList) {
@@ -116,9 +111,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             }
         }
 
-        // Update the workspace screens
-        updateScreens(context, workspaceScreens);
-
         if (!addedItemsFinal.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
@@ -141,10 +133,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
             });
         }
-    }
-
-    protected void updateScreens(Context context, IntArray workspaceScreens) {
-        LauncherModel.updateWorkspaceScreenOrder(context, workspaceScreens);
     }
 
     /**

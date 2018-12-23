@@ -20,12 +20,8 @@ import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -38,8 +34,8 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
@@ -51,7 +47,6 @@ import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
-import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
@@ -70,7 +65,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
@@ -262,53 +256,6 @@ public class LauncherModel extends BroadcastReceiver
             public void run() {
                 synchronized (sBgDataModel) {
                     checkItemInfoLocked(itemId, item, stackTrace);
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    /**
-     * Update the order of the workspace screens in the database. The array list contains
-     * a list of screen ids in the order that they should appear.
-     */
-    public static void updateWorkspaceScreenOrder(Context context, IntArray screens) {
-        final ContentResolver cr = context.getContentResolver();
-        final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-
-        // Create a copy with only non-negative values
-        final IntArray screensCopy = new IntArray();
-        for (int i = 0; i < screens.size(); i++) {
-            int id = screens.get(i);
-            if (id >= 0) {
-                screensCopy.add(id);
-            }
-        }
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-                // Clear the table
-                ops.add(ContentProviderOperation.newDelete(uri).build());
-                int count = screensCopy.size();
-                for (int i = 0; i < count; i++) {
-                    ContentValues v = new ContentValues();
-                    int screenId = screensCopy.get(i);
-                    v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-                    v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
-                }
-
-                try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                synchronized (sBgDataModel) {
-                    sBgDataModel.workspaceScreens.clear();
-                    sBgDataModel.workspaceScreens.addAll(screensCopy);
                 }
             }
         };
@@ -517,18 +464,6 @@ public class LauncherModel extends BroadcastReceiver
                 startLoaderForResults(results);
             }
         }
-    }
-
-    /**
-     * Loads the workspace screen ids in an ordered list.
-     */
-    public static IntArray loadWorkspaceScreensDb(Context context) {
-        final ContentResolver contentResolver = context.getContentResolver();
-        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-
-        // Get screens ordered by rank.
-        return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
-                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
     }
 
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {

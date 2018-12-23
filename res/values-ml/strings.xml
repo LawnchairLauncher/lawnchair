@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"ആപ്പ്"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"തിരഞ്ഞെടുക്കുന്നതിന് കുറുക്കുവഴി സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"കുറുക്കുവഴി തിരഞ്ഞെടുക്കാനോ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനോ 2 തവണ ടാപ്പ് ചെയ്‌ത് പിടിക്കുക."</string>
@@ -66,7 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ഇതൊരു സിസ്‌റ്റം അപ്ലിക്കേഷനായതിനാൽ അൺഇൻസ്‌റ്റാളുചെയ്യാനാവില്ല."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"പേരുനൽകാത്ത ഫോൾഡർ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> എന്ന ആപ്പിന്, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> അറിയിപ്പുകൾ ഉണ്ട്</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> എന്ന ആപ്പിന്, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> അറിയിപ്പുണ്ട്</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"പേജ് %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ഹോം സ്‌ക്രീൻ %1$d / %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"പുതിയ ഹോം സ്ക്രീൻ പേജ്"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ഹോം സ്ക്രീൻ തിരിക്കൽ അനുവദിക്കുക"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ഫോൺ തിരിച്ച നിലയിലായിരിക്കുമ്പോൾ"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"അറിയിപ്പ് ഡോട്ടുകൾ"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ഓണാണ്"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"ഓഫാണ്"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"അറിയിപ്പിനായുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>

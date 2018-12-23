@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
@@ -25,11 +26,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
 import android.view.Surface;
 
 import androidx.test.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
@@ -77,6 +80,7 @@ public abstract class AbstractLauncherUiTest {
 
     public static final long SHORT_UI_TIMEOUT= 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
+    protected static final int LONG_WAIT_TIME_MS = 60000;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected final UiDevice mDevice;
@@ -324,5 +328,34 @@ public abstract class AbstractLauncherUiTest {
             Intent intent = blockingGetIntent();
             return intent == null ? null : (Intent) intent.getParcelableExtra(Intent.EXTRA_INTENT);
         }
+    }
+
+    protected void startAppFast(String packageName) {
+        final Instrumentation instrumentation = getInstrumentation();
+        final Intent intent = instrumentation.getContext().getPackageManager().
+                getLaunchIntentForPackage(packageName);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        instrumentation.getTargetContext().startActivity(intent);
+        assertTrue(packageName + " didn't start",
+                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
+    }
+
+    protected String resolveSystemApp(String category) {
+        return getInstrumentation().getContext().getPackageManager().resolveActivity(
+                new Intent(Intent.ACTION_MAIN).addCategory(category),
+                PackageManager.MATCH_SYSTEM_ONLY).
+                activityInfo.packageName;
+    }
+
+    protected void closeLauncherActivity() {
+        // Destroy Launcher activity.
+        executeOnLauncher(launcher -> {
+            if (launcher != null) {
+                launcher.finish();
+            }
+        });
+        waitForLauncherCondition(
+                "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
     }
 }

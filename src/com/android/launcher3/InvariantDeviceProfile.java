@@ -24,6 +24,8 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
@@ -32,15 +34,12 @@ import android.view.WindowManager;
 
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -49,6 +48,8 @@ public class InvariantDeviceProfile {
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
             new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
+
+    private static final String KEY_IDP_GRIP_NAME = "idp_grid_name";
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -62,11 +63,6 @@ public class InvariantDeviceProfile {
 
     // used to offset float not being able to express extremely small weights in extreme cases.
     private static float WEIGHT_EFFICIENT = 100000f;
-
-    // Profile-defining invariant properties
-    private String name;
-    private float minWidthDps;
-    private float minHeightDps;
 
     /**
      * Number of icons per row and column in the workspace.
@@ -90,7 +86,7 @@ public class InvariantDeviceProfile {
      */
     public int numHotseatIcons;
 
-    int defaultLayoutId;
+    public int defaultLayoutId;
     int demoModeLayoutId;
 
     public DeviceProfile landscapeProfile;
@@ -105,37 +101,26 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile() {}
 
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
-        this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
-                p.numFolderRows, p.numFolderColumns,
-                p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
-                p.defaultLayoutId, p.demoModeLayoutId);
-    }
-
-    private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
-            float is, float lis, float its, int hs, int dlId, int dmlId) {
-        name = n;
-        minWidthDps = w;
-        minHeightDps = h;
-        numRows = r;
-        numColumns = c;
-        numFolderRows = fr;
-        numFolderColumns = fc;
-        iconSize = is;
-        landscapeIconSize = lis;
-        iconTextSize = its;
-        numHotseatIcons = hs;
-        defaultLayoutId = dlId;
-        demoModeLayoutId = dmlId;
+        numRows = p.numRows;
+        numColumns = p.numColumns;
+        numFolderRows = p.numFolderRows;
+        numFolderColumns = p.numFolderColumns;
+        iconSize = p.iconSize;
+        landscapeIconSize = p.landscapeIconSize;
+        iconTextSize = p.iconTextSize;
+        numHotseatIcons = p.numHotseatIcons;
+        defaultLayoutId = p.defaultLayoutId;
+        demoModeLayoutId = p.demoModeLayoutId;
     }
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
-        initGrid(context);
+        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRIP_NAME, null));
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
     }
 
-    private void initGrid(Context context) {
+    private void initGrid(Context context, String gridName) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -145,16 +130,18 @@ public class InvariantDeviceProfile {
         Point largestSize = new Point();
         display.getCurrentSizeRange(smallestSize, largestSize);
 
+        ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
         // This guarantees that width < height
-        minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
-        minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
+        float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
+        float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
+        // Sort the profiles based on the closeness to the device size
+        allOptions.sort((a, b) ->
+                Float.compare(dist(minWidthDps, minHeightDps, a.minWidthDps, a.minHeightDps),
+                        dist(minWidthDps, minHeightDps, b.minWidthDps, b.minHeightDps)));
+        DisplayOption interpolatedDisplayOption =
+                invDistWeightedInterpolate(minWidthDps,  minHeightDps, allOptions);
 
-        ArrayList<InvariantDeviceProfile> closestProfiles = findClosestDeviceProfiles(
-                minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
-        InvariantDeviceProfile interpolatedDeviceProfileOut =
-                invDistWeightedInterpolate(minWidthDps,  minHeightDps, closestProfiles);
-
-        InvariantDeviceProfile closestProfile = closestProfiles.get(0);
+        GridOption closestProfile = allOptions.get(0).grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
@@ -162,11 +149,15 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
+        if (!closestProfile.name.equals(gridName)) {
+            Utilities.getPrefs(context).edit()
+                    .putString(KEY_IDP_GRIP_NAME, closestProfile.name).apply();
+        }
 
-        iconSize = interpolatedDeviceProfileOut.iconSize;
-        landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        iconSize = interpolatedDisplayOption.iconSize;
+        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
-        iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
+        iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
@@ -210,7 +201,7 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
-        initGrid(context);
+        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRIP_NAME, null));
 
         int changeFlags = 0;
         if (numRows != oldProfile.numRows ||
@@ -234,41 +225,53 @@ public class InvariantDeviceProfile {
         }
     }
 
-    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
-        ArrayList<InvariantDeviceProfile> profiles = new ArrayList<>();
+    static ArrayList<DisplayOption> getPredefinedDeviceProfiles(Context context, String gridName) {
+        ArrayList<DisplayOption> profiles = new ArrayList<>();
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
 
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG) && "profile".equals(parser.getName())) {
-                    TypedArray a = context.obtainStyledAttributes(
-                            Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
-                    int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
-                    int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
-                    float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
-                    profiles.add(new InvariantDeviceProfile(
-                            a.getString(R.styleable.InvariantDeviceProfile_name),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
-                            numRows,
-                            numColumns,
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            iconSize,
-                            a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
-                    a.recycle();
+                if ((type == XmlPullParser.START_TAG) && "grid-option".equals(parser.getName())) {
+
+                    GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser));
+                    final int displayDepth = parser.getDepth();
+                    while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                            parser.getDepth() > displayDepth)
+                            && type != XmlPullParser.END_DOCUMENT) {
+                        if ((type == XmlPullParser.START_TAG) && "display-option".equals(
+                                parser.getName())) {
+                            profiles.add(new DisplayOption(
+                                    gridOption, context, Xml.asAttributeSet(parser)));
+                        }
+                    }
                 }
             }
         } catch (IOException|XmlPullParserException e) {
             throw new RuntimeException(e);
         }
-        return profiles;
+
+        ArrayList<DisplayOption> filteredProfiles = new ArrayList<>();
+        if (!TextUtils.isEmpty(gridName)) {
+            for (DisplayOption option : profiles) {
+                if (gridName.equals(option.grid.name)) {
+                    filteredProfiles.add(option);
+                }
+            }
+        }
+        if (filteredProfiles.isEmpty()) {
+            // No grid found, use the default options
+            for (DisplayOption option : profiles) {
+                if (option.canBeDefault) {
+                    filteredProfiles.add(option);
+                }
+            }
+        }
+        if (filteredProfiles.isEmpty()) {
+            throw new RuntimeException("No display option with canBeDefault=true");
+        }
+        return filteredProfiles;
     }
 
     private int getLauncherIconDensity(int requiredSize) {
@@ -307,60 +310,40 @@ public class InvariantDeviceProfile {
         }
     }
 
-    @Thunk float dist(float x0, float y0, float x1, float y1) {
+    private static float dist(float x0, float y0, float x1, float y1) {
         return (float) Math.hypot(x1 - x0, y1 - y0);
     }
 
     /**
      * Returns the closest device profiles ordered by closeness to the specified width and height
      */
-    // Package private visibility for testing.
-    ArrayList<InvariantDeviceProfile> findClosestDeviceProfiles(
-            final float width, final float height, ArrayList<InvariantDeviceProfile> points) {
-
-        // Sort the profiles by their closeness to the dimensions
-        ArrayList<InvariantDeviceProfile> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
-            public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
-                return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps));
-            }
-        });
-
-        return pointsByNearness;
+    @VisibleForTesting
+    static ArrayList<DisplayOption> sortByClosenessToSize(
+            float width, float height, ArrayList<DisplayOption> points) {
+        points.sort((a, b) ->
+                Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                        dist(width, height, b.minWidthDps, b.minHeightDps)));
+        return points;
     }
 
-    // Package private visibility for testing.
-    InvariantDeviceProfile invDistWeightedInterpolate(float width, float height,
-                ArrayList<InvariantDeviceProfile> points) {
+    @VisibleForTesting
+    static DisplayOption invDistWeightedInterpolate(float width, float height,
+                ArrayList<DisplayOption> points) {
         float weights = 0;
 
-        InvariantDeviceProfile p = points.get(0);
+        DisplayOption p = points.get(0);
         if (dist(width, height, p.minWidthDps, p.minHeightDps) == 0) {
             return p;
         }
 
-        InvariantDeviceProfile out = new InvariantDeviceProfile();
+        DisplayOption out = new DisplayOption();
         for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
-            p = new InvariantDeviceProfile(points.get(i));
+            p = points.get(i);
             float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
             weights += w;
-            out.add(p.multiply(w));
+            out.add(new DisplayOption().add(p).multiply(w));
         }
-        return out.multiply(1.0f/weights);
-    }
-
-    private void add(InvariantDeviceProfile p) {
-        iconSize += p.iconSize;
-        landscapeIconSize += p.landscapeIconSize;
-        iconTextSize += p.iconTextSize;
-    }
-
-    private InvariantDeviceProfile multiply(float w) {
-        iconSize *= w;
-        landscapeIconSize *= w;
-        iconTextSize *= w;
-        return this;
+        return out.multiply(1.0f / weights);
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
@@ -368,7 +351,7 @@ public class InvariantDeviceProfile {
                 == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
     }
 
-    private float weight(float x0, float y0, float x1, float y1, float pow) {
+    private static float weight(float x0, float y0, float x1, float y1, float pow) {
         float d = dist(x0, y0, x1, y1);
         if (Float.compare(d, 0f) == 0) {
             return Float.POSITIVE_INFINITY;
@@ -408,5 +391,95 @@ public class InvariantDeviceProfile {
     public interface OnIDPChangeListener {
 
         void onIdpChanged(int changeFlags, InvariantDeviceProfile profile);
+    }
+
+
+    private static final class GridOption {
+
+        private final String name;
+        private final int numRows;
+        private final int numColumns;
+
+        private final int numFolderRows;
+        private final int numFolderColumns;
+
+        private final int numHotseatIcons;
+
+        private final int defaultLayoutId;
+        private final int demoModeLayoutId;
+
+        GridOption(Context context, AttributeSet attrs) {
+            TypedArray a = context.obtainStyledAttributes(
+                    attrs, R.styleable.GridDisplayOption);
+            name = a.getString(R.styleable.GridDisplayOption_name);
+            numRows = a.getInt(R.styleable.GridDisplayOption_numRows, 0);
+            numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
+
+            defaultLayoutId = a.getResourceId(
+                    R.styleable.GridDisplayOption_defaultLayoutId, 0);
+            demoModeLayoutId = a.getResourceId(
+                    R.styleable.GridDisplayOption_demoModeLayoutId, defaultLayoutId);
+            numHotseatIcons = a.getInt(
+                    R.styleable.GridDisplayOption_numHotseatIcons, numColumns);
+            numFolderRows = a.getInt(
+                    R.styleable.GridDisplayOption_numFolderRows, numRows);
+            numFolderColumns = a.getInt(
+                    R.styleable.GridDisplayOption_numFolderColumns, numColumns);
+            a.recycle();
+        }
+    }
+
+    private static final class DisplayOption {
+        private final GridOption grid;
+
+        private final String name;
+        private final float minWidthDps;
+        private final float minHeightDps;
+        private final boolean canBeDefault;
+
+        private float iconSize;
+        private float landscapeIconSize;
+        private float iconTextSize;
+
+        DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
+            this.grid = grid;
+
+            TypedArray a = context.obtainStyledAttributes(
+                    attrs, R.styleable.ProfileDisplayOption);
+
+            name = a.getString(R.styleable.ProfileDisplayOption_name);
+            minWidthDps = a.getFloat(R.styleable.ProfileDisplayOption_minWidthDps, 0);
+            minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
+            canBeDefault = a.getBoolean(
+                    R.styleable.ProfileDisplayOption_canBeDefault, false);
+
+            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconSize, 0);
+            landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
+                    iconSize);
+            iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
+            a.recycle();
+        }
+
+        DisplayOption() {
+            grid = null;
+            name = null;
+            minWidthDps = 0;
+            minHeightDps = 0;
+            canBeDefault = false;
+        }
+
+        private DisplayOption multiply(float w) {
+            iconSize *= w;
+            landscapeIconSize *= w;
+            iconTextSize *= w;
+            return this;
+        }
+
+        private DisplayOption add(DisplayOption p) {
+            iconSize += p.iconSize;
+            landscapeIconSize += p.landscapeIconSize;
+            iconTextSize += p.iconTextSize;
+            return this;
+        }
     }
 }

@@ -25,11 +25,9 @@ import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.util.IntArray;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Locale;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -47,26 +45,25 @@ public class LauncherDbUtils {
      */
     public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            // Get the existing screens
-            IntArray screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
-                    null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
+            // Get the first screen
+            final int firstScreenId;
+            try (Cursor c = db.rawQuery(String.format(Locale.ENGLISH,
+                    "SELECT MIN(%1$s) from %2$s where %3$s = %4$d",
+                    Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
+                    Favorites.CONTAINER_DESKTOP), null)) {
 
-            if (screenIds.isEmpty()) {
-                // No update needed
-                t.commit();
-                return true;
-            }
-            if (screenIds.get(0) != 0) {
-                // First screen is not 0, we need to rename screens
-                if (screenIds.contains(0)) {
-                    // There is already a screen 0. First rename it to a different screen.
-                    int newScreenId = 1;
-                    while (screenIds.contains(newScreenId)) newScreenId++;
-                    renameScreen(db, 0, newScreenId);
+                if (!c.moveToNext()) {
+                    // No update needed
+                    t.commit();
+                    return true;
                 }
 
+                firstScreenId = c.getInt(0);
+            }
+
+            if (firstScreenId != 0) {
                 // Rename the first screen to 0.
-                renameScreen(db, screenIds.get(0), 0);
+                renameScreen(db, firstScreenId, 0);
             }
 
             // Check if the first row is empty
@@ -89,31 +86,19 @@ public class LauncherDbUtils {
 
     private static void renameScreen(SQLiteDatabase db, int oldScreen, int newScreen) {
         String[] whereParams = new String[] { Integer.toString(oldScreen) };
-
         ContentValues values = new ContentValues();
-        values.put(WorkspaceScreens._ID, newScreen);
-        db.update(WorkspaceScreens.TABLE_NAME, values, "_id = ?", whereParams);
-
-        values.clear();
         values.put(Favorites.SCREEN, newScreen);
         db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
     }
 
-    /**
-     * Parses the cursor containing workspace screens table and returns the list of screen IDs
-     */
-    public static IntArray getScreenIdsFromCursor(Cursor sc) {
-        try {
-            return iterateCursor(sc,
-                    sc.getColumnIndexOrThrow(WorkspaceScreens._ID), new IntArray());
-        } finally {
-            sc.close();
-        }
-    }
-
-    public static IntArray iterateCursor(Cursor c, int columnIndex, IntArray out) {
-        while (c.moveToNext()) {
-            out.add(c.getInt(columnIndex));
+    public static IntArray queryIntArray(SQLiteDatabase db, String tableName, String columnName,
+            String selection, String groupBy, String orderBy) {
+        IntArray out = new IntArray();
+        try (Cursor c = db.query(tableName, new String[] { columnName }, selection, null,
+                groupBy, null, orderBy)) {
+            while (c.moveToNext()) {
+                out.add(c.getInt(0));
+            }
         }
         return out;
     }

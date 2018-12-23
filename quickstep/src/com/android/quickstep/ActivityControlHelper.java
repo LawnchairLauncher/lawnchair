@@ -45,6 +45,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -113,6 +114,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     @Nullable
     T getCreatedActivity();
+
+    default boolean isResumed() {
+        BaseDraggingActivity activity = getCreatedActivity();
+        return activity != null && activity.hasBeenResumed();
+    }
 
     @UiThread
     @Nullable

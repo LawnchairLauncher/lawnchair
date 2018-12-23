@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"ઍપ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશનો"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"એક શૉર્ટકટ ચૂંટવા માટે સ્પર્શ કરી રાખો."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"એક શૉર્ટકટ ચૂંટવા અથવા કોઈ કસ્ટમ ક્રિયાઓનો ઉપયોગ કરવા માટે બે વાર ટૅપ કરીને દબાવી રાખો."</string>
@@ -66,7 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"અનામી ફોલ્ડર"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d માંથી %1$d પૃષ્ઠ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d માંથી %1$d હોમ સ્ક્રીન"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"નવું હોમ સ્ક્રીન પૃષ્ઠ"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"નોટિફિકેશન માટેના ચિહ્નો"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ચાલુ છે"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"બંધ છે"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"નોટિફિકેશનનો ઍક્સેસની જરૂરી છે"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>

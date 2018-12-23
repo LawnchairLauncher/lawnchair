@@ -619,9 +619,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // if this is the last screen, convert it to the empty screen
             mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, finalScreen);
             mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
-
-            // Update the model if we have changed any screens
-            LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
         }
     }
 
@@ -728,9 +725,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWorkspaceScreens.put(newId, cl);
         mScreenOrder.add(newId);
 
-        // Update the model for the new screen
-        LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
-
         return newId;
     }
 
@@ -826,13 +820,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
                 mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
             }
-        }
-
-        if (!removeScreens.isEmpty()) {
-            // Update the model if we have changed any screens
-            mLauncher.getModelWriter().enqueueDeleteRunnable(
-                    () -> LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder));
-
         }
 
         if (pageShift >= 0) {
@@ -3078,9 +3065,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
-                        && packageUserKey.updateFromItemInfo(info)) {
-                    if (updatedDots.contains(packageUserKey)) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    if (!packageUserKey.updateFromItemInfo(info)
+                            || updatedDots.contains(packageUserKey)) {
                         ((BubbleTextView) v).applyDotState(info, true /* animate */);
                         folderIds.add(info.container);
                     }

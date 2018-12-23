@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"აპები იტვირთება…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"„<xliff:g id="QUERY">%1$s</xliff:g>“-ის თანხვედრი აპები არ მოიძებნა"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"მეტი აპის პოვნა"</string>
-    <!-- no translation found for label_application (8531721983832654978) -->
-    <skip />
+    <string name="label_application" msgid="8531721983832654978">"აპი"</string>
     <string name="notifications_header" msgid="1404149926117359025">"შეტყობინებები"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"შეეხეთ და დააყოვნეთ მალსახმობის ასარჩევად."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ორმაგად შეეხეთ და გეჭიროთ მალსახმობის ასარჩევად ან მორგებული მოქმედებების გამოსაყენებლად."</string>
@@ -66,7 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ეს სისტემური აპია და მისი წაშლა შეუძლებელია."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"უსახელო საქაღალდე"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> გაითიშა"</string>
-    <!-- no translation found for dotted_app_label (5194538107138265416) -->
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>-ში არის <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> შეტყობინება</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>-ში არის <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> შეტყობინება</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"გვერდი %1$d %2$d-დან"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"მთავარი ეკრანი %1$d, %2$d-დან"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"მთავარი ეკრანის ახალი გვერდი"</string>
@@ -82,17 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"გათიშულია თქვენი ადმინისტრატორის მიერ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"მთავარი ეკრანის შეტრიალების დაშვება"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ტელეფონის შეტრიალებისას"</string>
-    <!-- no translation found for notification_dots_title (9062440428204120317) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_on (1679848116452218908) -->
-    <skip />
-    <!-- no translation found for notification_dots_desc_off (1760796511504341095) -->
-    <skip />
+    <string name="notification_dots_title" msgid="9062440428204120317">"შეტყობინების ნიშნულები"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ჩართულია"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"გამორთულია"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"საჭიროა შეტყობინებებზე წვდომა"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"შეტყობინებათა ნიშნულების საჩვენებლად, ჩართეთ აპის შეტყობინებები <xliff:g id="NAME">%1$s</xliff:g>-ისთვის"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"პარამეტრების შეცვლა"</string>
-    <!-- no translation found for notification_dots_service_title (4284221181793592871) -->
-    <skip />
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"შეტყობინების ნიშნულების ჩვენება"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ხატულას მთავარ ეკრანზე დამატება"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ახალი აპებისთვის"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ხატულას ფორმის შეცვლა"</string>

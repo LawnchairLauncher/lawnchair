@@ -17,158 +17,109 @@
 
 <profiles xmlns:launcher="http://schemas.android.com/apk/res-auto" >
 
-    <profile
-        launcher:name="Super Short Stubby"
-        launcher:minWidthDps="255"
-        launcher:minHeightDps="300"
-        launcher:numRows="2"
+    <grid-option
+        launcher:name="3_by_3"
+        launcher:numRows="3"
         launcher:numColumns="3"
         launcher:numFolderRows="2"
         launcher:numFolderColumns="3"
-        launcher:iconSize="48"
-        launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="3"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_3x3" >
 
-    <profile
-        launcher:name="Shorter Stubby"
-        launcher:minWidthDps="255"
-        launcher:minHeightDps="400"
-        launcher:numRows="3"
-        launcher:numColumns="3"
-        launcher:numFolderRows="3"
-        launcher:numFolderColumns="3"
-        launcher:iconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="3"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        />
+        <display-option
+            launcher:name="Super Short Stubby"
+            launcher:minWidthDps="255"
+            launcher:minHeightDps="300"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Short Stubby"
-        launcher:minWidthDps="275"
-        launcher:minHeightDps="420"
-        launcher:numRows="3"
-        launcher:numColumns="4"
-        launcher:numFolderRows="3"
-        launcher:numFolderColumns="4"
-        launcher:iconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        <display-option
+            launcher:name="Shorter Stubby"
+            launcher:minWidthDps="255"
+            launcher:minHeightDps="400"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Stubby"
-        launcher:minWidthDps="255"
-        launcher:minHeightDps="450"
-        launcher:numRows="3"
+    </grid-option>
+
+    <grid-option
+        launcher:name="4_by_4"
+        launcher:numRows="4"
         launcher:numColumns="4"
         launcher:numFolderRows="3"
         launcher:numFolderColumns="4"
-        launcher:iconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:numHotseatIcons="4"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" >
 
-    <profile
-        launcher:name="Nexus S"
-        launcher:minWidthDps="296"
-        launcher:minHeightDps="491.33"
-        launcher:numRows="4"
-        launcher:numColumns="4"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:iconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        <display-option
+            launcher:name="Short Stubby"
+            launcher:minWidthDps="275"
+            launcher:minHeightDps="420"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Nexus 4"
-        launcher:minWidthDps="359"
-        launcher:minHeightDps="567"
-        launcher:numRows="4"
-        launcher:numColumns="4"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:iconSize="54"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        <display-option
+            launcher:name="Stubby"
+            launcher:minWidthDps="255"
+            launcher:minHeightDps="450"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Nexus 5"
-        launcher:minWidthDps="335"
-        launcher:minHeightDps="567"
-        launcher:numRows="4"
-        launcher:numColumns="4"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:iconSize="54"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        <display-option
+            launcher:name="Nexus S"
+            launcher:minWidthDps="296"
+            launcher:minHeightDps="491.33"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Large Phone"
-        launcher:minWidthDps="406"
-        launcher:minHeightDps="694"
+        <display-option
+            launcher:name="Nexus 4"
+            launcher:minWidthDps="359"
+            launcher:minHeightDps="567"
+            launcher:iconSize="54"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
+
+        <display-option
+            launcher:name="Nexus 5"
+            launcher:minWidthDps="335"
+            launcher:minHeightDps="567"
+            launcher:iconSize="54"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
+    <grid-option
+        launcher:name="5_by_5"
         launcher:numRows="5"
         launcher:numColumns="5"
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
-        launcher:iconSize="56"
-        launcher:iconTextSize="14.4"
         launcher:numHotseatIcons="5"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" >
 
-    <profile
-        launcher:name="Nexus 7"
-        launcher:minWidthDps="575"
-        launcher:minHeightDps="904"
-        launcher:numRows="6"
-        launcher:numColumns="6"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="5"
-        launcher:iconSize="64"
-        launcher:iconTextSize="14.4"
-        launcher:numHotseatIcons="6"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+        <display-option
+            launcher:name="Large Phone"
+            launcher:minWidthDps="406"
+            launcher:minHeightDps="694"
+            launcher:iconSize="56"
+            launcher:iconTextSize="14.4"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="Nexus 10"
-        launcher:minWidthDps="727"
-        launcher:minHeightDps="1207"
-        launcher:numRows="6"
-        launcher:numColumns="7"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="5"
-        launcher:iconSize="76"
-        launcher:iconTextSize="14.4"
-        launcher:numHotseatIcons="7"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+        <display-option
+            launcher:name="Shorter Stubby"
+            launcher:minWidthDps="255"
+            launcher:minHeightDps="400"
+            launcher:iconSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
 
-    <profile
-        launcher:name="20-inch Tablet"
-        launcher:minWidthDps="1527"
-        launcher:minHeightDps="2527"
-        launcher:numRows="7"
-        launcher:numColumns="7"
-        launcher:numFolderRows="6"
-        launcher:numFolderColumns="6"
-        launcher:iconSize="100"
-        launcher:iconTextSize="20.0"
-        launcher:numHotseatIcons="7"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+    </grid-option>
 
 </profiles>
