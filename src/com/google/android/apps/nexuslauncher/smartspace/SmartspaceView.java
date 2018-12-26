@@ -4,6 +4,8 @@ import android.animation.ValueAnimator;
 import android.content.*;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -34,7 +36,8 @@ import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import org.jetbrains.annotations.NotNull;
 
-public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener, View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
+public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
+        View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private View mTitleSeparator;
@@ -65,11 +68,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private boolean mWeatherAvailable;
     private LawnchairPreferences mPrefs;
 
+    private ShadowGenerator mShadowGenerator;
+
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
         mController = LawnchairAppKt.getLawnchairApp(context).getSmartspace();
         mPrefs = Utilities.getLawnchairPrefs(context);
+
+        mShadowGenerator = new ShadowGenerator(context);
 
         mCalendarClickListener = v -> {
             final Uri content_URI = CalendarContract.CONTENT_URI;
@@ -82,7 +89,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 final Context context1 = getContext();
                 Launcher.getLauncher(context1).startActivitySafely(v, addFlags, null);
             } catch (ActivityNotFoundException ex) {
-                LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         };
 
@@ -176,9 +184,14 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     private Bitmap addShadowToBitmap(Bitmap bitmap) {
-        // TODO: implement this properly
-//        return mEnableShadow ? ShadowGenerator.getInstance(getContext()).recreateIcon(bitmap, false) : bitmap;
-        return bitmap;
+        if (mEnableShadow && !bitmap.isRecycled()) {
+            Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+            Canvas canvas = new Canvas(newBitmap);
+            mShadowGenerator.recreateIcon(bitmap, canvas);
+            return newBitmap;
+        } else {
+            return bitmap;
+        }
     }
 
     private void loadViews() {
@@ -201,7 +214,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private String cn() {
         final boolean b = true;
         final SmartspaceCard dp = dq.dP;
-        return dp.cC(TextUtils.ellipsize(dp.cB(b), dB, getWidth() - getPaddingLeft() - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
+        return dp.cC(TextUtils.ellipsize(dp.cB(b), dB, getWidth() - getPaddingLeft()
+                - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
     }
 
     private OnLongClickListener co() {
@@ -346,12 +360,14 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             final Uri content_URI = CalendarContract.CONTENT_URI;
             final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
             ContentUris.appendId(appendPath, System.currentTimeMillis());
-            final Intent addFlags = new Intent(Intent.ACTION_VIEW).setData(appendPath.build()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            final Intent addFlags = new Intent(Intent.ACTION_VIEW).setData(appendPath.build())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
                 final Context context = dZ.getContext();
                 Launcher.getLauncher(context).startActivitySafely(view, addFlags, null);
             } catch (ActivityNotFoundException ex) {
-                LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         }
     }
