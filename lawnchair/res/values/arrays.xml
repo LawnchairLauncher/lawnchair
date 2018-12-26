@@ -37,9 +37,11 @@
     <string-array name="unitsTexts">
         <item>@string/units_metric</item>
         <item>@string/units_imperial</item>
+        <item>@string/units_kelvin</item>
     </string-array>
     <string-array name="unitsValues">
         <item>metric</item>
         <item>imperial</item>
+        <item>kelvin</item>
     </string-array>
 </resources>

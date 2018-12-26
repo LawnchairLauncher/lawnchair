@@ -28,6 +28,7 @@ import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
@@ -193,24 +194,12 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     data class WeatherData(val icon: Bitmap,
-                           private val temperature: Int,
-                           private val isMetric: Boolean,
+                           private val temperature: Temperature,
                            val forecastUrl: String = "https://www.google.com/search?q=weather") {
 
-        fun getTitle(inMetric: Boolean): String {
-            val newTemp = if (isMetric == inMetric) {
-                temperature
-            } else {
-                if (isMetric) {
-                    ((temperature.toFloat() * 9f / 5f) + 32).roundToInt()
-                } else {
-                    ((temperature.toFloat() - 32) * 5f / 9f).roundToInt()
-                }
-            }
-            return "$newTemp°${getUnit(inMetric)}"
+        fun getTitle(unit: Temperature.Unit): String {
+            return "${temperature.inUnit(unit)} ${unit.suffix}"
         }
-
-        private fun getUnit(inMetric: Boolean) = if (inMetric) "C" else "F"
     }
 
     data class CardData(val icon: Bitmap,

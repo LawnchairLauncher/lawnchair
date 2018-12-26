@@ -573,8 +573,9 @@
     <string name="pref_weather_city_summary">For best results include country code</string>
     <string name="pref_weather_city_title">City</string>
     <string name="pref_weather_units">Weather Units</string>
-    <string name="units_metric">Metric</string>
-    <string name="units_imperial">Imperial</string>
+    <string name="units_metric">Celsius</string>
+    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_kelvin">Kelvin</string>
     <string name="all_icons">All icons</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
     <string name="no_icon_found">No icon found</string>

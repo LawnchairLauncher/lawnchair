@@ -25,13 +25,13 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.TypedValue
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
-import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
 import ch.deletescape.lawnchair.theme.ThemeManager
+import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
@@ -124,8 +124,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
     var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
-    var weatherUnit by StringPref("pref_weather_units", "metric", ::updateSmartspaceProvider)
-    val useMetricWeatherUnit get() = weatherUnit == "metric"
+    val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
+        Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock

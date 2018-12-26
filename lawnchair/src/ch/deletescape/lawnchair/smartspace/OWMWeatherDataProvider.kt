@@ -22,6 +22,7 @@ import android.os.HandlerThread
 import android.support.annotation.Keep
 import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Utilities
 import net.aksingh.owmjapis.core.OWM
 import java.util.concurrent.TimeUnit
@@ -52,7 +53,12 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) : Lawnch
             val temp = if (currentWeatherList.hasMainData()) currentWeatherList.mainData!!.temp else -1.0
             val icon = if (currentWeatherList.hasMainData()) currentWeatherList.weatherList?.get(0)?.iconCode else "-1"
             val forecastUrl = "https://openweathermap.org/city/${currentWeatherList.cityId}"
-            val weather = LawnchairSmartspaceController.WeatherData(iconProvider.getIcon(icon), temp!!.roundToInt(), owm.unit == OWM.Unit.METRIC, forecastUrl)
+            val weather = LawnchairSmartspaceController.WeatherData(iconProvider.getIcon(icon),
+                    Temperature(temp!!.roundToInt(), when (owm.unit) {
+                        OWM.Unit.METRIC -> Temperature.Unit.Celsius
+                        OWM.Unit.IMPERIAL -> Temperature.Unit.Fahrenheit
+                        OWM.Unit.STANDARD -> Temperature.Unit.Kelvin
+                    }), forecastUrl)
             super.updateData(weather, null)
         } catch (e:Exception){
             Log.w("OWM", "Updating weather data failed", e)
@@ -73,10 +79,10 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) : Lawnch
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (key in arrayOf("pref_weatherApiKey", "pref_weather_city", "pref_weather_units")) {
             if (key == "pref_weather_units") {
-                owm.unit = if (prefs.weatherUnit == "metric") {
-                    OWM.Unit.METRIC
-                } else {
-                    OWM.Unit.IMPERIAL
+                owm.unit = when (prefs.weatherUnit) {
+                    Temperature.Unit.Celsius -> OWM.Unit.METRIC
+                    Temperature.Unit.Fahrenheit -> OWM.Unit.IMPERIAL
+                    else -> OWM.Unit.STANDARD
                 }
             } else if (key == "pref_weatherApiKey") {
                 owm.apiKey = prefs.weatherApiKey
