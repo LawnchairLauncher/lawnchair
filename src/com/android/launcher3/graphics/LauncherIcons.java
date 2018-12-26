@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import com.android.launcher3.*;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -325,10 +326,14 @@ public class LauncherIcons implements AutoCloseable {
         } else {
             icon.setBounds(left, top, left+width, top+height);
         }
-        mCanvas.save();
+        int count = mCanvas.save();
         mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
         icon.draw(mCanvas);
-        mCanvas.restore();
+        try {
+            mCanvas.restoreToCount(count);
+        } catch (Exception e) {
+            Log.e("LauncherIcons", "This shouldn't be happening really", e);
+        }
         icon.setBounds(mOldBounds);
         mCanvas.setBitmap(null);
 
