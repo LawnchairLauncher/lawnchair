@@ -183,6 +183,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
+        if (getRecentsView() == null) return;
         mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setDrawable(getRecentsView().getIconForTask(task));
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
