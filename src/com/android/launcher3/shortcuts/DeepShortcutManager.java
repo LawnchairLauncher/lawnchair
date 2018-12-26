@@ -114,6 +114,17 @@ public class DeepShortcutManager {
     }
 
     /**
+     * Gets all the manifest and dynamic shortcuts associated with the given package and user, to be
+     * displayed in the shortcuts container on long press.
+     */
+    public List<ShortcutInfoCompat> queryForShortcutsContainer(String packageName,
+            List<String> ids, UserHandle user) {
+        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
+                packageName, null, ids, user);
+    }
+
+
+    /**
      * Removes the given shortcut from the current list of pinned shortcuts.
      * (Runs on background thread)
      */

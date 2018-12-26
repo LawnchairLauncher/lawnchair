@@ -17,12 +17,14 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import android.text.TextUtils;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.ShortcutInfo;
@@ -126,6 +128,7 @@ public class PopupPopulator {
             final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys) {
         final ComponentName activity = originalInfo.getTargetComponent();
+        final Intent intent = originalInfo.getIntent();
         final UserHandle user = originalInfo.user;
         return () -> {
             if (!notificationKeys.isEmpty()) {
@@ -139,8 +142,14 @@ public class PopupPopulator {
                 uiHandler.post(() -> container.applyNotificationInfos(infos));
             }
 
-            List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
-                    .queryForShortcutsContainer(activity, shortcutIds, user);
+            List<ShortcutInfoCompat> shortcuts = Collections.emptyList();
+            if (activity != null) {
+                shortcuts = DeepShortcutManager.getInstance(launcher)
+                        .queryForShortcutsContainer(activity, shortcutIds, user);
+            } else if (intent != null && !TextUtils.isEmpty(intent.getPackage())) {
+                shortcuts = DeepShortcutManager.getInstance(launcher)
+                        .queryForShortcutsContainer(intent.getPackage(), shortcutIds, user);
+            }
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
