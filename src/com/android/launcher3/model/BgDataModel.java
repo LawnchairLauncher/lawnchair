@@ -27,6 +27,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
@@ -37,6 +38,7 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.google.protobuf.nano.MessageNano;
 
@@ -81,11 +83,6 @@ public class BgDataModel {
     public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
 
     /**
-     * Ordered list of workspace screens ids.
-     */
-    public final IntArray workspaceScreens = new IntArray();
-
-    /**
      * Map of ShortcutKey to the number of times it is pinned.
      */
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
@@ -118,9 +115,24 @@ public class BgDataModel {
         appWidgets.clear();
         folders.clear();
         itemsIdMap.clear();
-        workspaceScreens.clear();
         pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
+    }
+
+    /**
+     * Creates an array of valid workspace screens based on current items in the model.
+     */
+    public synchronized IntArray collectWorkspaceScreens() {
+        IntSet screenSet = new IntSet();
+        for (ItemInfo item: itemsIdMap) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                screenSet.add(item.screenId);
+            }
+        }
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() || screenSet.isEmpty()) {
+            screenSet.add(Workspace.FIRST_SCREEN_ID);
+        }
+        return screenSet.getArray();
     }
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
@@ -130,11 +142,6 @@ public class BgDataModel {
             return;
         }
         writer.println(prefix + "Data Model:");
-        writer.print(prefix + " ---- workspace screens: ");
-        for (int i = 0; i < workspaceScreens.size(); i++) {
-            writer.print(" " + workspaceScreens.get(i));
-        }
-        writer.println();
         writer.println(prefix + " ---- workspace items ");
         for (int i = 0; i < workspaceItems.size(); i++) {
             writer.println(prefix + '\t' + workspaceItems.get(i).toString());
@@ -167,6 +174,7 @@ public class BgDataModel {
         // Add top parent nodes. (L1)
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
         IntSparseArrayMap<DumpTargetWrapper> workspaces = new IntSparseArrayMap<>();
+        IntArray workspaceScreens = collectWorkspaceScreens();
         for (int i = 0; i < workspaceScreens.size(); i++) {
             workspaces.put(workspaceScreens.get(i),
                     new DumpTargetWrapper(ContainerType.WORKSPACE, i));

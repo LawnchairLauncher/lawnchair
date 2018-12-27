@@ -62,7 +62,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         final IntArray addedWorkspaceScreensFinal = new IntArray();
 
         synchronized(dataModel) {
-            IntArray workspaceScreens = dataModel.workspaceScreens.clone();
+            IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
 
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : mItemList) {
