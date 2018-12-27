@@ -21,25 +21,6 @@
     <!-- String representing the fragment class for settings activity.-->
     <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
-    <!-- Values for icon shape overrides. These should correspond to entries defined
-     in icon_shape_override_paths_names -->
-    <string-array translatable="false" name="icon_shape_override_paths_values">
-        <item></item>
-        <item>M50,0L100,0 100,100 0,100 0,0z</item>
-        <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
-        <item>M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
-        <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
-    </string-array>
-
-    <string-array translatable="false" name="icon_shape_override_paths_names">
-        <!-- Option to not change the icon shape on home screen. [CHAR LIMIT=50] -->
-        <item>@string/icon_shape_system_default</item>
-        <item>@string/icon_shape_square</item>
-        <item>@string/icon_shape_squircle</item>
-        <item>@string/icon_shape_circle</item>
-        <item>@string/icon_shape_teardrop</item>
-    </string-array>
-
 <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
