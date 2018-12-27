@@ -672,6 +672,11 @@ public class LoaderTask implements Runnable {
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
                                 appWidgetInfo.user = c.user;
 
+                                if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
+                                    c.markDeleted("Widget has invalid size: "
+                                            + appWidgetInfo.spanX + "x" + appWidgetInfo.spanY);
+                                    continue;
+                                }
                                 if (!c.isOnWorkspaceOrHotseat()) {
                                     c.markDeleted("Widget found where container != " +
                                             "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
