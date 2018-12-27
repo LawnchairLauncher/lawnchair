@@ -132,16 +132,6 @@
             </intent-filter>
         </activity>
 
-        <!-- TODO: Remove -->
-        <activity android:name="com.android.launcher3.util.MyActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <!--
         Should point to the content provider which can be used to dump Launcher3 compatible
         worspace configuration to the dump's file descriptor by using launcher_dump.proto
