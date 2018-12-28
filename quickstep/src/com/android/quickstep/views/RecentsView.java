@@ -24,6 +24,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -60,6 +61,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -545,8 +547,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // Keep this logic in sync with ActivityControlHelper.getTranslationYForQuickScrub.
         mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
-                dp.availableWidthPx + mInsets.left - mTempRect.right,
-                dp.availableHeightPx + mInsets.top - mTempRect.bottom);
+                dp.widthPx - mInsets.right - mTempRect.right,
+                dp.heightPx - mInsets.bottom - mTempRect.bottom);
     }
 
     protected abstract void getTaskSize(DeviceProfile dp, Rect outRect);

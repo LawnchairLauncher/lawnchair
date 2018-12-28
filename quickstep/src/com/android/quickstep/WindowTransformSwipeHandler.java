@@ -27,6 +27,7 @@ import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_S
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -1028,10 +1029,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.animateUpRunningTaskIconScale();
         if (mQuickScrubController.isQuickSwitch()) {
+            // Adjust the running task so that it is centered and fills the screen.
             TaskView runningTask = mRecentsView.getRunningTaskView();
             if (runningTask != null) {
-                runningTask.setTranslationY(-mActivity.getResources().getDimension(
-                        R.dimen.task_thumbnail_half_top_margin) * 1f / mRecentsView.getScaleX());
+                float insetHeight = mDp.heightPx - mDp.getInsets().top - mDp.getInsets().bottom;
+                // Usually insetDiff will be 0, unless we allow apps to draw under the insets. In
+                // that case (insetDiff != 0), we need to center in the system-specified available
+                // height rather than launcher's inset height by adding half the insetDiff.
+                float insetDiff = mDp.availableHeightPx - insetHeight;
+                float topMargin = mActivity.getResources().getDimension(
+                        R.dimen.task_thumbnail_half_top_margin);
+                runningTask.setTranslationY((insetDiff / 2 - topMargin) / mRecentsView.getScaleX());
             }
         }
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
