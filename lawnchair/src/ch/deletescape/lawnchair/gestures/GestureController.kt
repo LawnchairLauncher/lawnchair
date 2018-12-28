@@ -46,6 +46,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
     var touchDownPoint = PointF()
 
+    private var swipeUpOverride: Pair<GestureHandler, Long>? = null
+
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         return false
     }
@@ -70,6 +72,23 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         pressBackGesture.isEnabled && pressBackGesture.onEvent()
     }
 
+    fun setSwipeUpOverride(handler: GestureHandler, downTime: Long) {
+        if (swipeUpOverride?.second != downTime) {
+            swipeUpOverride = Pair(handler, downTime)
+        }
+    }
+
+    fun getSwipeUpOverride(downTime: Long): GestureHandler? {
+        swipeUpOverride?.let {
+            if (it.second == downTime) {
+                return it.first
+            } else {
+                swipeUpOverride = null
+            }
+        }
+        return null
+    }
+
     fun createHandlerPref(key: String, defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
             key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString, GestureHandler::onDestroy)
 
@@ -83,7 +102,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerAccessibility",
                 "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerRoot")
 
-        fun createGestureHandler(context: Context, jsonString: String, fallback: GestureHandler): GestureHandler {
+        fun createGestureHandler(context: Context, jsonString: String?, fallback: GestureHandler): GestureHandler {
             if (!TextUtils.isEmpty(jsonString)) {
                 val config: JSONObject? = try {
                     JSONObject(jsonString)

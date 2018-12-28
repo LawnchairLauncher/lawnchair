@@ -43,6 +43,10 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
         return info.customTitle?.toString()
     }
 
+    fun getSwipeUpAction(info: ShortcutInfo): String? {
+        return info.swipeUpAction
+    }
+
     override fun setTitle(info: ShortcutInfo, title: String?) {
         info.setTitle(context, title)
     }
@@ -58,6 +62,10 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
         } else {
             info.setIcon(context, null)
         }
+    }
+
+    fun setSwipeUpAction(info: ShortcutInfo, action: String?) {
+        info.setSwipeUpAction(context, action)
     }
 
     override fun getIcon(info: ShortcutInfo): IconPackManager.CustomIconEntry? {

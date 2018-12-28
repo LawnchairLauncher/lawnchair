@@ -23,6 +23,10 @@
         android:defaultValue="false"
         android:persistent="false"/>
 
+    <ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference
+        android:key="pref_swipe_up_gesture"
+        android:title="@string/gesture_swipe_up"/>
+
     <!--
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
         android:key="pref_app_prediction_hide"

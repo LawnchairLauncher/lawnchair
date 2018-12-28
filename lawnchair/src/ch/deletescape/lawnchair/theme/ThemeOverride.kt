@@ -39,18 +39,18 @@ import java.lang.ref.WeakReference
  * limitations under the License.
  */
 
-class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideListener) {
+class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideListener?) {
 
     constructor(themeSet: ThemeSet, activity: Activity) : this(themeSet, ActivityListener(activity))
 
-    val isAlive get() = listener.isAlive
+    val isAlive get() = listener?.isAlive == true
 
     fun applyTheme(context: Context) {
-        listener.applyTheme(getTheme(context))
+        listener?.applyTheme(getTheme(context))
     }
 
     fun applyTheme(themeFlags: Int) {
-        listener.applyTheme(getTheme(themeFlags))
+        listener?.applyTheme(getTheme(themeFlags))
     }
 
     fun getTheme(context: Context): Int {
@@ -72,7 +72,7 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
     }
 
     fun onThemeChanged(themeFlags: Int) {
-        listener.reloadTheme()
+        listener?.reloadTheme()
     }
 
     class Launcher : ThemeSet {
@@ -113,6 +113,16 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         override val darkDarkTextTheme = R.style.SettingsTheme_V2_Dark_Transparent
         override val blackTheme = R.style.SettingsTheme_V2_Black_Transparent
         override val blackDarkTextTheme = R.style.SettingsTheme_V2_Black_Transparent
+    }
+
+    class LauncherDialog : ThemeSet {
+
+        override val lightTheme = android.R.style.Theme_Material_Light
+        override val darkTextTheme = android.R.style.Theme_Material_Light
+        override val darkTheme = android.R.style.Theme_Material
+        override val darkDarkTextTheme = android.R.style.Theme_Material
+        override val blackTheme = android.R.style.Theme_Material
+        override val blackDarkTextTheme = android.R.style.Theme_Material
     }
 
     interface ThemeSet {

@@ -40,14 +40,23 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private val triggerVelocity = 2.25f
     private val notificationsCloseVelocity = 0.35f
 
-    private val gesture = LawnchairLauncher.getLauncher(launcher).gestureController.verticalSwipeGesture
+    private val controller = LawnchairLauncher.getLauncher(launcher).gestureController
+    private val gesture = controller.verticalSwipeGesture
     private val detector = SwipeDetector(launcher, this, SwipeDetector.VERTICAL)
     private var noIntercept = false
 
+    private var hasSwipeUpOverride = false
     private var state = GestureState.Free
+    private var downTime = 0L
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+        downTime = ev.downTime
+        val isDown = ev.actionMasked == MotionEvent.ACTION_DOWN
+        val overrideAppeared = !hasSwipeUpOverride && controller.getSwipeUpOverride(ev.downTime) != null
+        if (isDown || overrideAppeared) {
+            if (isDown) {
+                hasSwipeUpOverride = false
+            }
             noIntercept = !canInterceptTouch(ev)
             if (noIntercept) {
                 return false
@@ -80,6 +89,10 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private fun getSwipeDirection(ev: MotionEvent): Int {
         return when {
+            controller.getSwipeUpOverride(ev.downTime) != null -> {
+                hasSwipeUpOverride = true
+                SwipeDetector.DIRECTION_BOTH
+            }
             gesture.customSwipeUp && !isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
             gesture.customDockSwipeUp && isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
             else -> SwipeDetector.DIRECTION_NEGATIVE
@@ -106,13 +119,14 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 }
             }
 
-            if (gesture.customSwipeUp) {
-                if (velocity < -triggerVelocity && state == GestureState.Free) {
+            if (velocity < -triggerVelocity && state == GestureState.Free) {
+                controller.getSwipeUpOverride(downTime)?.let {
+                    state = GestureState.Triggered
+                    it.onGestureTrigger(controller)
+                } ?: if (gesture.customSwipeUp) {
                     state = GestureState.Triggered
                     gesture.onSwipeUp()
-                }
-            } else if (gesture.customDockSwipeUp) {
-                if (velocity < -triggerVelocity && state == GestureState.Free) {
+                } else if (gesture.customDockSwipeUp) {
                     state = GestureState.Triggered
                     gesture.onDockSwipeUp()
                 }

@@ -39,7 +39,11 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
+import ch.deletescape.lawnchair.gestures.GestureController;
+import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
@@ -53,6 +57,7 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
+import org.json.JSONObject;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -131,6 +136,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
+
+    private GestureHandler mSwipeUpHandler;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -213,6 +220,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info);
+        applySwipeUpAction(info);
         setTag(info);
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
@@ -257,6 +265,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
+        }
+    }
+
+    private void applySwipeUpAction(ShortcutInfo info) {
+        mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), new JSONObject()));
+        if (mSwipeUpHandler instanceof BlankGestureHandler) {
+            mSwipeUpHandler = null;
         }
     }
 
@@ -334,6 +350,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 }
                 break;
         }
+
+        Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
+        if (launcher instanceof LawnchairLauncher && mSwipeUpHandler != null) {
+            ((LawnchairLauncher) launcher).getGestureController()
+                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
+        }
+
         return result;
     }
 

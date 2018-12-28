@@ -27,9 +27,7 @@ public class CustomEditShortcut extends SystemShortcut.Custom {
                 if (!mOpened) {
                     mOpened = true;
                     AbstractFloatingView.closeAllOpenViews(launcher);
-                    CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
-                            .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
-                    cbs.populateAndShow(itemInfo);
+                    CustomBottomSheet.show(launcher, itemInfo);
                 }
             }
         } : null;
