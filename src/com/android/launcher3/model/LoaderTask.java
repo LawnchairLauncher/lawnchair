@@ -295,6 +295,8 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.TITLE_ALIAS);
                 final int customIconEntryIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.CUSTOM_ICON_ENTRY);
+                final int swipeUpActionEntryIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.SWIPE_UP_ACTION);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
@@ -331,6 +333,7 @@ public class LoaderTask implements Runnable {
                 String targetPkg;
                 String titleAlias;
                 String customIconEntry;
+                String swipeUpAction;
 
                 FolderIconPreviewVerifier verifier =
                         new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
@@ -359,6 +362,7 @@ public class LoaderTask implements Runnable {
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
                             titleAlias = c.getString(titleAliasIndex);
                             customIconEntry = c.getString(customIconEntryIndex);
+                            swipeUpAction = c.getString(swipeUpActionEntryIndex);
 
                             if (!Process.myUserHandle().equals(c.user)) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -535,7 +539,7 @@ public class LoaderTask implements Runnable {
                             if (info != null) {
                                 c.applyCommonProperties(info);
 
-                                info.onLoadCustomizations(titleAlias,
+                                info.onLoadCustomizations(titleAlias, swipeUpAction,
                                         IconPackManager.CustomIconEntry.Companion.fromNullableString(customIconEntry),
                                         c.loadCustomIcon(info));
                                 info.intent = intent;

@@ -206,10 +206,12 @@ public class ModelWriter {
     }
 
     public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
+                                            String swipeUpAction,
                                             IconPackManager.CustomIconEntry iconEntry, Bitmap icon,
                                             boolean updateIcon, boolean reload) {
         final ContentWriter writer = new ContentWriter(context);
         writer.put(Favorites.TITLE_ALIAS, alias);
+        writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
         if (updateIcon) {
             writer.put(LauncherSettings.Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
             writer.put(Favorites.CUSTOM_ICON_ENTRY, iconEntry != null ? iconEntry.toString() : null);

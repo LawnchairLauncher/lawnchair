@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
@@ -99,6 +100,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public Bitmap customIcon;
 
     public IconPackManager.CustomIconEntry customIconEntry;
+
+    public String swipeUpAction;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -215,15 +218,19 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
         if (updateIcon)
-            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, customIconEntry, customIcon, true, reload);
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
+                    , customIconEntry, customIcon, true, reload);
         else
-            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, null, null, false, reload);
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
+                    , null, null, false, reload);
     }
 
-    public void onLoadCustomizations(String titleAlias, IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
+    public void onLoadCustomizations(String titleAlias, String swipeUpAction,
+            IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
         customTitle = titleAlias;
         customIconEntry = customIcon;
         this.customIcon = icon;
+        this.swipeUpAction = swipeUpAction;
     }
 
     public void setTitle(@NotNull Context context, @Nullable String title) {
@@ -239,5 +246,10 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public void setIcon(@NotNull Context context, @Nullable Bitmap icon) {
         customIcon = icon;
         updateDatabase(context, true, true);
+    }
+
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        updateDatabase(context, false, true);
     }
 }
