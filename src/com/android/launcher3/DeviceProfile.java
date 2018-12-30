@@ -78,6 +78,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
     // Workspace icons
     public int iconSizePx;
+    public int iconSizeOriginalPx;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
@@ -298,8 +299,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
-                    - verticalDragHandleSizePx;
+            int extraSpace = getCellSizeOriginal().y - iconSizeOriginalPx
+                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx;
             hotseatBarSizePx += extraSpace;
             hotseatBarBottomPaddingPx += extraSpace;
 
@@ -357,7 +358,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
+        iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
+        iconSizePx = (int) (iconSizeOriginalPx * scale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
@@ -480,6 +482,18 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 - cellLayoutPaddingLeftRightPx * 2, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, inv.numRows);
+        return result;
+    }
+
+    public Point getCellSizeOriginal() {
+        Point result = new Point();
+        // Since we are only concerned with the overall padding, layout direction does
+        // not matter.
+        Point padding = getTotalWorkspacePadding();
+        result.x = calculateCellWidth(availableWidthPx - padding.x
+                - cellLayoutPaddingLeftRightPx * 2, inv.numColumnsOriginal);
+        result.y = calculateCellHeight(availableHeightPx - padding.y
+                - cellLayoutBottomPaddingPx, inv.numRowsOriginal);
         return result;
     }
 

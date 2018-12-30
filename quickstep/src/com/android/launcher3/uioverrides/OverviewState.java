@@ -123,8 +123,9 @@ public class OverviewState extends LauncherState {
     }
 
     public static float getNormalVerticalProgress(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
         return 1 - (getDefaultSwipeHeight(launcher)
-                / launcher.getAllAppsController().getShiftRange());
+                / dp.availableHeightPx);
     }
 
     @Override
@@ -135,13 +136,13 @@ public class OverviewState extends LauncherState {
     public static float getDefaultSwipeHeight(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(launcher);
-        int qsbHeight = launcher.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
 
         if (prefs.getDockHide()) {
             return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
         } else {
-            return dp.allAppsCellHeightPx - (prefs.getDockSearchBar() && prefs.getCompactDock()
-                    ? qsbHeight : 0) - dp.allAppsIconTextSizePx;
+            return dp.hotseatCellHeightPx * prefs.getDockRowsCount() +
+                    (prefs.getDockSearchBar() ? dp.verticalDragHandleSizePx
+                            : dp.hotseatBarTopPaddingPx);
         }
     }
 }
