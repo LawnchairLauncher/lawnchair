@@ -22,6 +22,7 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
@@ -234,12 +235,19 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
-        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
+        LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
+        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
+        if (prefs.getAllAppsSearch()) {
+            setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
+        } else if (toState == OVERVIEW) {
+            mAppsView.getSearchView().setVisibility(View.INVISIBLE);
+        } else {
+            mAppsView.getSearchView().setVisibility(View.GONE);
+        }
         setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter,
