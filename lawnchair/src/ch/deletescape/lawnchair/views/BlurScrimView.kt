@@ -29,6 +29,7 @@ import android.view.View
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.states.HomeState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
@@ -252,7 +253,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun getMidProgress(): Float {
-        if (!prefs.dockGradientStyle) return OverviewState.getNormalVerticalProgress(mLauncher)
+        if (!prefs.dockGradientStyle) {
+            return Math.max(HomeState.getNormalProgress(mLauncher), OverviewState.getNormalVerticalProgress(mLauncher))
+        }
         return super.getMidProgress()
     }
 

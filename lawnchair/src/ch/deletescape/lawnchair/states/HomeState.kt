@@ -20,16 +20,36 @@ package ch.deletescape.lawnchair.states
 import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
-import com.android.launcher3.uioverrides.OverviewState
+import com.android.launcher3.Utilities
 
 open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags: Int) :
         LauncherState(id, containerType, transitionDuration, flags) {
 
     override fun getScrimProgress(launcher: Launcher): Float {
         if (!launcher.lawnchairPrefs.dockGradientStyle) {
-            // TODO: implement actual desktop scrim height calculation
-            return OverviewState.getNormalVerticalProgress(launcher)
+            return getNormalProgress(launcher)
         }
         return super.getScrimProgress(launcher)
+    }
+
+    companion object {
+
+        fun getNormalProgress(launcher: Launcher): Float {
+            return 1 - (getScrimHeight(launcher) / launcher.allAppsController.shiftRange)
+        }
+
+        private fun getScrimHeight(launcher: Launcher): Float {
+            val dp = launcher.deviceProfile
+            val prefs = Utilities.getLawnchairPrefs(launcher)
+
+            return if (prefs.dockHide) {
+                dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx
+            } else {
+                (dp.hotseatCellHeightPx * prefs.dockRowsCount + if (prefs.dockSearchBar)
+                    dp.verticalDragHandleSizePx
+                else
+                    dp.hotseatBarTopPaddingPx).toFloat()
+            }
+        }
     }
 }
