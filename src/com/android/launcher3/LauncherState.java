@@ -27,6 +27,7 @@ import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.states.HomeState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.FastOverviewState;
@@ -80,7 +81,7 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
     /**
      * TODO: Create a separate class for NORMAL state.
      */
-    public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
+    public static final LauncherState NORMAL = new HomeState(0, ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
             FLAG_HAS_SYS_UI_SCRIM);
 
@@ -230,6 +231,10 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
      */
     public float getVerticalProgress(Launcher launcher) {
         return 1f;
+    }
+
+    public float getScrimProgress(Launcher launcher) {
+        return getVerticalProgress(launcher);
     }
 
     public float getWorkspaceScrimAlpha(Launcher launcher) {

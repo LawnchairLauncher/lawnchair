@@ -181,7 +181,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setState(LauncherState state) {
         float targetProgress = state.getVerticalProgress(mLauncher);
         setProgress(targetProgress);
-        setScrimProgress(getScrimProgress(state, targetProgress));
+        setScrimProgress(state.getScrimProgress(mLauncher));
         setAlphas(state, null, new AnimatorSetBuilder());
         onProgressAnimationEnd();
     }
@@ -194,7 +194,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setStateWithAnimation(LauncherState toState,
                                       AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
-        float targetScrimProgress = getScrimProgress(toState, targetProgress);
+        float targetScrimProgress = toState.getScrimProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0
                 && Float.compare(mScrimProgress, targetScrimProgress) == 0) {
             setAlphas(toState, config, builder);
@@ -306,14 +306,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     public void reset() {
         setProgress(1f);
-    }
-
-    private float getScrimProgress(LauncherState state, float targetProgress) {
-        if (Utilities.getLawnchairPrefs(mLauncher).getDockGradientStyle()) return targetProgress;
-        if (state == NORMAL || state == SPRING_LOADED || state == OVERVIEW) {
-            return OverviewState.getNormalVerticalProgress(mLauncher);
-        }
-        return targetProgress;
     }
 
     public AllAppsContainerView getAppsView() {
