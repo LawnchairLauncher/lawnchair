@@ -27,7 +27,7 @@ import com.android.launcher3.states.RotationHelper
 @Keep
 class AllowRotationController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = context.resources.getBoolean(R.bool.allow_rotation)
+    override val isVisible = !context.resources.getBoolean(R.bool.allow_rotation)
 
     override fun onPreferenceAdded(preference: Preference): Boolean {
         if (!super.onPreferenceAdded(preference)) return false
