@@ -48,7 +48,7 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
                 (dp.hotseatCellHeightPx * prefs.dockRowsCount + if (prefs.dockSearchBar)
                     dp.verticalDragHandleSizePx
                 else
-                    dp.hotseatBarTopPaddingPx).toFloat()
+                    0).toFloat()
             }
         }
     }
