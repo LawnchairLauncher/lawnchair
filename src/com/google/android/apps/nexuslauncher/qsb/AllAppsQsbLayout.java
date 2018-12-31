@@ -38,7 +38,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private Bitmap Dv;
     private boolean mUseFallbackSearch;
     private FallbackAppsSearchView mFallback;
-    private float Dy;
+    public float Dy;
     private TextView mHint;
     private AllAppsContainerView mAppsView;
     boolean mDoNotRemoveFallback;
@@ -70,14 +70,21 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void setInsets(Rect rect) {
         c(Utilities.getDevicePrefs(getContext()));
-        MarginLayoutParams layoutParams = (MarginLayoutParams) getLayoutParams();
-        layoutParams.topMargin = getTopMargin(rect);
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.topMargin = getTopMargin(rect);
         requestLayout();
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
             float range = ((float) HotseatQsbWidget.c(this.mActivity)) + (
-                    ((float) (layoutParams.height + layoutParams.topMargin)) + this.Dy);
+                    ((float) (mlp.height + mlp.topMargin)) + this.Dy);
+            LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
+            if (!prefs.getDockSearchBar()) {
+                range -= mlp.height;
+                range -= mlp.topMargin;
+                range -= mlp.bottomMargin;
+                range += Dy;
+            }
             mActivity.getAllAppsController().setScrollRangeDelta(Math.round(range));
         }
     }
