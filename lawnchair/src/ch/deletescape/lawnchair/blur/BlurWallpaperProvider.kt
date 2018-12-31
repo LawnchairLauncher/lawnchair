@@ -38,6 +38,7 @@ import com.hoko.blur.HokoBlur
 import com.hoko.blur.task.AsyncBlurTask
 import java.util.*
 import java.util.concurrent.Future
+import kotlin.collections.ArrayList
 
 class BlurWallpaperProvider(val context: Context) {
 
@@ -261,7 +262,7 @@ class BlurWallpaperProvider(val context: Context) {
         mOffset = Utilities.boundToRange((-xPixels).toFloat(),
                 0f, (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat())
 
-        for (listener in mListeners) {
+        for (listener in ArrayList(mListeners)) {
             listener.onOffsetChanged(mOffset)
         }
     }
