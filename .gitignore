@@ -1,5 +1,6 @@
 db_files
 *.iml
+*.md5sum
 .project
 .settings
 .classpath
@@ -10,6 +11,7 @@ WallpaperPicker/gen/
 WallpaperPicker/.project.properties
 bin/
 .gradle/
+changelog.txt
 local.properties
 build/
 .DS_Store
