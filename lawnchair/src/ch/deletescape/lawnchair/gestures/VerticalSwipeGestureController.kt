@@ -57,11 +57,12 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             if (isDown) {
                 hasSwipeUpOverride = false
             }
-            noIntercept = !canInterceptTouch(ev)
+            val swipeDirection = getSwipeDirection(ev)
+            noIntercept = !canInterceptTouch(ev) && !hasSwipeUpOverride
             if (noIntercept) {
                 return false
             }
-            detector.setDetectableScrollConditions(getSwipeDirection(ev), false)
+            detector.setDetectableScrollConditions(swipeDirection, false)
         } else if (ev.pointerCount > 1) {
             noIntercept = true
         }
@@ -91,7 +92,10 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return when {
             controller.getSwipeUpOverride(ev.downTime) != null -> {
                 hasSwipeUpOverride = true
-                SwipeDetector.DIRECTION_BOTH
+                if (canInterceptTouch(ev))
+                    SwipeDetector.DIRECTION_BOTH
+                else
+                    SwipeDetector.DIRECTION_POSITIVE
             }
             gesture.customSwipeUp && !isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
             gesture.customDockSwipeUp && isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
