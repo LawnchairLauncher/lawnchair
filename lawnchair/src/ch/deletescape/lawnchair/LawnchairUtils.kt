@@ -17,10 +17,12 @@
 
 package ch.deletescape.lawnchair
 
+import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -30,6 +32,8 @@ import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.ColorUtils
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -40,6 +44,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
+import android.widget.Switch
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.*
@@ -49,6 +54,7 @@ import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
@@ -489,6 +495,31 @@ class ReverseInputInterpolator(private val base: Interpolator) : Interpolator {
     override fun getInterpolation(input: Float): Float {
         return base.getInterpolation(1 - input)
     }
+}
+
+fun Switch.applyColor(color: Int) {
+    val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
+    val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
+    val switchThumbNormal = context.resources.getColor(android.support.v7.preference.R.color.switch_thumb_normal_material_light)
+    val switchThumbDisabled = context.resources.getColor(android.support.v7.appcompat.R.color.switch_thumb_disabled_material_light)
+    val thstateList = ColorStateList(arrayOf(
+            intArrayOf(-R.attr.state_enabled),
+            intArrayOf(R.attr.state_checked),
+            intArrayOf()),
+            intArrayOf(
+                    switchThumbDisabled,
+                    color,
+                    switchThumbNormal))
+    val trstateList = ColorStateList(arrayOf(
+            intArrayOf(-R.attr.state_enabled),
+            intArrayOf(R.attr.state_checked),
+            intArrayOf()),
+            intArrayOf(
+                    ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
+                    color,
+                    colorForeground))
+    DrawableCompat.setTintList(thumbDrawable, thstateList)
+    DrawableCompat.setTintList(trackDrawable, trstateList)
 }
 
 inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {

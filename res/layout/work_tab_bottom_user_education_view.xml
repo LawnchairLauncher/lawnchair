@@ -47,6 +47,7 @@
         android:src="@drawable/ic_close"/>
 
     <TextView
+        android:id="@+id/education_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -57,6 +58,7 @@
         android:textSize="20sp"/>
 
     <TextView
+        android:id="@+id/education_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"

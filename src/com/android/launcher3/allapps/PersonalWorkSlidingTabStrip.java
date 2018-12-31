@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnAccentChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -35,7 +37,8 @@ import com.android.launcher3.util.Themes;
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
-public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
+public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator,
+        OnAccentChangeListener {
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
@@ -55,6 +58,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private int mLastActivePage = 0;
     private boolean mIsRtl;
 
+    private int mTextColorTertiary;
+    private int mAccent;
+
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(HORIZONTAL);
@@ -64,8 +70,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
 
         mSelectedIndicatorPaint = new Paint();
-        mSelectedIndicatorPaint.setColor(
-                Themes.getAttrColor(context, android.R.attr.colorAccent));
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
@@ -74,6 +78,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
         mIsRtl = Utilities.isRtl(getResources());
+
+        mTextColorTertiary = Themes.getAttrColor(getContext(), android.R.attr.textColorTertiary);
+        ColorEngine.Companion.getInstance(context).addAccentChangeListener(this);
     }
 
     private void updateIndicatorPosition(float scrollOffset) {
@@ -85,7 +92,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
-            tab.setSelected(i == pos);
+            tab.setTextColor(pos == i ? mAccent : mTextColorTertiary);
         }
     }
 
@@ -172,5 +179,12 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    @Override
+    public void onAccentChange(int color, int foregroundColor) {
+        mAccent = color;
+        mSelectedIndicatorPaint.setColor(color);
+        updateTabTextColor(mSelectedPosition);
     }
 }

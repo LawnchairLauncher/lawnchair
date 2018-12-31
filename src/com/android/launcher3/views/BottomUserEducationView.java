@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,6 +25,9 @@ import android.view.TouchDelegate;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
+import android.widget.ImageView;
+import android.widget.TextView;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -101,6 +105,16 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
         }
     }
 
+    private void applyColors() {
+        ColorEngine engine = ColorEngine.Companion.getInstance(getContext());
+        int accent = engine.getAccent();
+        int foreground = engine.getAccentForeground();
+        setBackgroundColor(accent);
+        ((TextView) findViewById(R.id.education_title)).setTextColor(foreground);
+        ((TextView) findViewById(R.id.education_text)).setTextColor(foreground);
+        ((ImageView) mCloseButton).setImageTintList(ColorStateList.valueOf(foreground));
+    }
+
     private void open(boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
@@ -126,6 +140,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
                 (BottomUserEducationView) layoutInflater.inflate(
                         R.layout.work_tab_bottom_user_education_view, launcher.getDragLayer(),
                         false);
+        bottomUserEducationView.applyColors();
         launcher.getDragLayer().addView(bottomUserEducationView);
         bottomUserEducationView.open(true);
     }
