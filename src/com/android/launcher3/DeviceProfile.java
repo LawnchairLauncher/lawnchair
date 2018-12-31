@@ -257,7 +257,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean fullWidthWidgets = Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets();
         boolean dockSearchBar = prefs.getDockSearchBar();
         boolean dockHidden = prefs.getDockHide();
-        boolean compactDock = prefs.getCompactDock();
         int dockRows = prefs.getDockRowsCount();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
@@ -294,7 +293,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (!isVerticalBarLayout() && isPhone && isTallDevice && !compactDock) {
+        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.

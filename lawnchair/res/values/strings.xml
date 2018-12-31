@@ -42,8 +42,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
 
     <!-- Dock -->
-    <string name="compact_dock">Compact dock</string>
-    <string name="compact_dock_summary">Minimizes the amount of padding in the dock</string>
 
     <string name="dismiss_drop_target_label">"Don't show"</string>
     <string name="suggested_action_content_description">%1$s opens in %2$s</string>

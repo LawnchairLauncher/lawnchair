@@ -59,12 +59,6 @@
             android:title="@string/hotseat_show_page_indicator"
             android:defaultValue="true"
             android:persistent="true"/>
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:key="pref_compactDock"
-            android:title="@string/compact_dock"
-            android:summary="@string/compact_dock_summary"
-            android:defaultValue="false"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
