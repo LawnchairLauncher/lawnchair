@@ -123,7 +123,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
         var dockRadius by prefs.FloatPref("pref_dockRadius", 16f, onChangeListener)
         var dockShadow by prefs.BooleanPref("pref_dockShadow", true, onChangeListener)
         var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", false, onChangeListener)
-        var dockGradient by prefs.BooleanPref("pref_dockGradient", false, onChangeListener)
+        var dockGradient by prefs.BooleanPref("pref_dockGradient", false, ::onGradientChanged)
         var dockHidden by prefs.BooleanPref("pref_hideHotseat", false, onChangeListener)
 
         val styles = arrayListOf(CustomStyle(this), RoundedStyle(this), GradientStyle(this), FlatStyle(this),
@@ -132,6 +132,11 @@ abstract class DockStyle(protected val manager: StyleManager) {
         private var oldStyle = styles[dockPreset]
 
         private val listeners = HashSet<() -> Unit>()
+
+        private fun onGradientChanged() {
+            onPresetChange()
+            onValueChanged()
+        }
 
         private fun onValueChanged() {
             currentStyle = styles[dockPreset]
