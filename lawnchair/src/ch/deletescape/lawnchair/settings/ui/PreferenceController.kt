@@ -23,6 +23,7 @@ import android.support.v7.preference.Preference
 open class PreferenceController(val context: Context) {
 
     open val title: String? = null
+    open val summary: String? = null
     open val isVisible = true
 
     open fun onPreferenceAdded(preference: Preference): Boolean {
@@ -31,6 +32,7 @@ open class PreferenceController(val context: Context) {
             return false
         }
         title?.let { preference.title = it }
+        summary?.let { preference.summary = it }
         return true
     }
 

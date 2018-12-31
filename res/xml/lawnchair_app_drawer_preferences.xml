@@ -94,6 +94,7 @@
             android:title="@string/title_app_suggestions"
             android:summary="@string/summary_app_suggestions"
             android:defaultValue="true"
+            app:controllerClass=".AppSuggestionsController"
             app:searchTitle="@string/title_app_suggestions_in_search" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat

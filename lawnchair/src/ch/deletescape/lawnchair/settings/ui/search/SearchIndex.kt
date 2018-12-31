@@ -85,7 +85,7 @@ class SearchIndex(private val context: Context) {
                     if (controller?.isVisible != false) {
                         val key = parser.getAttributeValue(nsAndroid, attrKey)
                         val title = getTitle(parser, controller)
-                        val summary = parseString(parser.getAttributeValue(nsAndroid, attrSummary))
+                        val summary = getSummary(parser, controller)
                         if (parent != null && key != null && title != null) {
                             entries.add(SettingsEntry(key, title, summary, parent))
                         }
@@ -101,6 +101,11 @@ class SearchIndex(private val context: Context) {
         return controller?.title ?:
             parseString(parser.getAttributeValue(nsApp, attrSearchTitle)) ?:
             parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+    }
+
+    private fun getSummary(parser: XmlPullParser, controller: PreferenceController?): String? {
+        return controller?.summary ?:
+            parseString(parser.getAttributeValue(nsAndroid, attrSummary))
     }
 
     private fun createController(parser: XmlPullParser): PreferenceController? {
