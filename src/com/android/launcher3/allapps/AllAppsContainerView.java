@@ -300,8 +300,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             if (!LawnchairPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
                 AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
                 mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
-                mlp.leftMargin = mlp.rightMargin = 0;
             }
+            mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
         }
         setLayoutParams(mlp);
