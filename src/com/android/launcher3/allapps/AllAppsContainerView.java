@@ -37,6 +37,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -56,6 +57,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 /**
  * The all apps view container.
@@ -295,7 +297,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mlp.rightMargin = insets.right;
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            mlp.leftMargin = mlp.rightMargin = 0;
+            if (!LawnchairPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
+                AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
+                mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
+                mlp.leftMargin = mlp.rightMargin = 0;
+            }
             setPadding(0, 0, 0, 0);
         }
         setLayoutParams(mlp);

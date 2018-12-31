@@ -20,6 +20,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -33,10 +34,12 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
+import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 /**
  * Handles AllApps view transition.
@@ -139,9 +142,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     public void setProgress(float progress) {
         mProgress = progress;
-        float shiftCurrent = progress * mShiftRange;
+        float shiftCurrent = getShiftApps(progress, true);
 
-        mAppsView.setTranslationY(shiftCurrent);
+        mAppsView.setTranslationY(getShiftApps(progress, false));
         float hotseatTranslation = -mShiftRange + shiftCurrent;
 
         if (!mIsVerticalLayout) {
@@ -158,6 +161,30 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         } else {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
+    }
+
+    private float getShiftApps(float progress, boolean inverted) {
+        float normalShift = progress * mShiftRange;
+        if (!LawnchairPreferences.Companion.getInstanceNoCreate().getAllAppsSearch()) {
+            float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            float overviewShift = getQsbHeight();
+            if (progress < overviewProgress) {
+                overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
+                        inverted ? -overviewShift : 0,
+                        inverted ? 0 : overviewShift,
+                        Interpolators.LINEAR);
+            } else if (inverted) {
+                overviewShift = 0;
+            }
+            return normalShift + overviewShift;
+        } else {
+            return normalShift;
+        }
+    }
+
+    private int getQsbHeight() {
+        MarginLayoutParams mlp = (MarginLayoutParams) mAppsView.getSearchView().getLayoutParams();
+        return mlp.topMargin + mlp.height;
     }
 
     public float getProgress() {
@@ -241,13 +268,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        if (prefs.getAllAppsSearch()) {
-            setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
-        } else if (toState == OVERVIEW) {
-            mAppsView.getSearchView().setVisibility(View.INVISIBLE);
-        } else {
-            mAppsView.getSearchView().setVisibility(View.GONE);
-        }
+        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter,

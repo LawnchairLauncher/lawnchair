@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -69,16 +70,20 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void setInsets(Rect rect) {
         c(Utilities.getDevicePrefs(getContext()));
-        MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
-        marginLayoutParams.topMargin = Math.max((int) (-this.Dy), rect.top - this.Dt);
+        MarginLayoutParams layoutParams = (MarginLayoutParams) getLayoutParams();
+        layoutParams.topMargin = getTopMargin(rect);
         requestLayout();
-        if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            this.mActivity.mAllAppsController.setScrollRangeDelta(0.0f);
-            return;
+        if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
+            mActivity.getAllAppsController().setScrollRangeDelta(0);
+        } else {
+            float range = ((float) HotseatQsbWidget.c(this.mActivity)) + (
+                    ((float) (layoutParams.height + layoutParams.topMargin)) + this.Dy);
+            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(range));
         }
-        float range = ((float) HotseatQsbWidget.c(this.mActivity)) + (
-                ((float) (marginLayoutParams.height + marginLayoutParams.topMargin)) + this.Dy);
-        this.mActivity.mAllAppsController.setScrollRangeDelta(Math.round(range));
+    }
+
+    public int getTopMargin(Rect rect) {
+        return Math.max((int) (-this.Dy), rect.top - this.Dt);
     }
 
     protected void onAttachedToWindow() {
