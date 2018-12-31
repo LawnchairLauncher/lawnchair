@@ -244,9 +244,11 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == PrefsFragment.requestCode && resultCode == Activity.RESULT_OK) {
-                selectedHandler.onConfigResult(data);
-                updatePref();
+            if (requestCode == PrefsFragment.requestCode) {
+                if (resultCode == Activity.RESULT_OK) {
+                    selectedHandler.onConfigResult(data);
+                    updatePref();
+                }
                 reopen.run();
             } else {
                 unsetForceOpen.run();
