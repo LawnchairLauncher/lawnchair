@@ -39,10 +39,12 @@ import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
@@ -91,12 +93,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             }
             if (mInfoProvider != null) {
-                icon.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LawnchairLauncher.Companion.getLauncher(getContext()).startEditIcon((ItemInfoWithIcon) mItemInfo);
-                    }
-                });
+                icon.setOnClickListener(
+                        v -> LawnchairLauncher.Companion.getLauncher(getContext()).startEditIcon((ItemInfoWithIcon) mItemInfo));
             }
         }
         if (mInfoProvider != null) {
@@ -167,12 +165,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private ComponentKey mKey;
 
         private ItemInfo itemInfo;
+        private GestureHandler previousHandler;
         private GestureHandler selectedHandler;
         private Runnable setForceOpen;
         private Runnable unsetForceOpen;
         private Runnable reopen;
 
         private String previousSwipeUpAction;
+
+        CustomInfoProvider mProvider;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -185,6 +186,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             this.setForceOpen = setForceOpen;
             this.unsetForceOpen = unsetForceOpen;
             this.reopen = reopen;
+
+            mProvider = CustomInfoProvider.Companion.forItem(getActivity(), info);
 
             Context context = getActivity();
             boolean isApp = itemInfo instanceof AppInfo || itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -200,8 +203,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 getPreferenceScreen().removePreference(mPrefHide);
             }
 
-            if (itemInfo instanceof ShortcutInfo) {
-                previousSwipeUpAction = ((ShortcutInfo) itemInfo).swipeUpAction;
+            if (mProvider != null && mProvider.supportsSwipeUp()) {
+                previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
                 mSwipeUpPref.setValue(previousSwipeUpAction);
                 mSwipeUpPref.setOnSelectHandler(gestureHandler -> {
                     onSelectHandler(gestureHandler);
@@ -216,7 +219,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mPrefHidePredictions.setOnPreferenceChangeListener(this);
             }
 
-            if (prefs.getShowDebugInfo()) {
+            if (prefs.getShowDebugInfo() && mKey.componentName != null) {
                 Preference componentPref = getPreferenceScreen().findPreference("componentName");
                 componentPref.setOnPreferenceClickListener(this);
                 componentPref.setSummary(mKey.toString());
@@ -233,6 +236,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         private void onSelectHandler(GestureHandler handler) {
+            previousHandler = selectedHandler;
             selectedHandler = handler;
             if (handler.getConfigIntent() != null) {
                 setForceOpen.run();
@@ -248,6 +252,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 if (resultCode == Activity.RESULT_OK) {
                     selectedHandler.onConfigResult(data);
                     updatePref();
+                } else {
+                    selectedHandler = previousHandler;
                 }
                 reopen.run();
             } else {
@@ -256,9 +262,14 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         private void updatePref() {
-            if (itemInfo instanceof ShortcutInfo) {
+            if (mProvider != null && selectedHandler != null) {
                 setForceOpen.run();
-                String stringValue = selectedHandler.toString();
+                String stringValue;
+                if (selectedHandler instanceof BlankGestureHandler) {
+                    stringValue = null;
+                } else {
+                    stringValue = selectedHandler.toString();
+                }
 
                 Dialog dialog = mSwipeUpPref.getDialog();
                 if (dialog != null) {
@@ -269,15 +280,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
         }
 
+        @SuppressWarnings({"ConstantConditions", "unchecked"})
         @Override
         public void onDetach() {
             super.onDetach();
 
-            if (itemInfo instanceof ShortcutInfo && selectedHandler != null) {
+            if (mProvider != null && selectedHandler != null) {
                 String stringValue = selectedHandler.toString();
 
-                ShortcutInfo shortcut = (ShortcutInfo) itemInfo;
-                shortcut.setSwipeUpAction(getActivity(), stringValue);
+                CustomInfoProvider provider = CustomInfoProvider.Companion.forItem(getActivity(), itemInfo);
+                provider.setSwipeUpAction(itemInfo, stringValue);
             }
         }
 

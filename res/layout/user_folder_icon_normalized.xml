@@ -69,6 +69,15 @@
             android:elevation="1dp"
             />
 
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_marginEnd="-8dp"
+            android:src="@drawable/dots_vertical"/>
+
     </LinearLayout>
 
 </com.android.launcher3.folder.Folder>

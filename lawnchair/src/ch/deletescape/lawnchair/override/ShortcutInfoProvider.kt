@@ -17,17 +17,19 @@
 
 package ch.deletescape.lawnchair.override
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.os.Build
+import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.iconpack.IconPackManager
+import ch.deletescape.lawnchair.useApplicationContext
+import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.graphics.LauncherIcons
 
-class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<ShortcutInfo>() {
+class ShortcutInfoProvider private constructor(context: Context) : CustomInfoProvider<ShortcutInfo>(context) {
 
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
 
@@ -41,10 +43,6 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
 
     override fun getCustomTitle(info: ShortcutInfo): String? {
         return info.customTitle?.toString()
-    }
-
-    fun getSwipeUpAction(info: ShortcutInfo): String? {
-        return info.swipeUpAction
     }
 
     override fun setTitle(info: ShortcutInfo, title: String?) {
@@ -64,28 +62,24 @@ class ShortcutInfoProvider(private val context: Context) : CustomInfoProvider<Sh
         }
     }
 
-    fun setSwipeUpAction(info: ShortcutInfo, action: String?) {
+    override fun getIcon(info: ShortcutInfo): IconPackManager.CustomIconEntry? {
+        return info.customIconEntry
+    }
+
+    override fun supportsSwipeUp() = true
+
+    override fun setSwipeUpAction(info: ShortcutInfo, action: String?) {
         info.setSwipeUpAction(context, action)
     }
 
-    override fun getIcon(info: ShortcutInfo): IconPackManager.CustomIconEntry? {
-        return info.customIconEntry
+    override fun getSwipeUpAction(info: ShortcutInfo): String? {
+        return info.swipeUpAction
     }
 
     private fun getLauncherActivityInfo(info: ShortcutInfo): LauncherActivityInfo? {
         return launcherApps.resolveActivity(info.getIntent(), info.user)
     }
 
-    companion object {
-
-        @SuppressLint("StaticFieldLeak")
-        private var INSTANCE: ShortcutInfoProvider? = null
-
-        fun getInstance(context: Context): ShortcutInfoProvider {
-            if (INSTANCE == null) {
-                INSTANCE = ShortcutInfoProvider(context.applicationContext)
-            }
-            return INSTANCE!!
-        }
-    }
+    companion object : SingletonHolder<ShortcutInfoProvider, Context>(ensureOnMainThread(
+            useApplicationContext(::ShortcutInfoProvider)))
 }

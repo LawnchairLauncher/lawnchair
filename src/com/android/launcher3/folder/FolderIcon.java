@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -38,6 +37,11 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
+import ch.deletescape.lawnchair.gestures.GestureController;
+import ch.deletescape.lawnchair.gestures.GestureHandler;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -113,6 +117,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private float mBadgeScale;
     private Point mTempSpaceForBadgeOffset = new Point();
 
+    private GestureHandler mSwipeUpHandler;
+
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
         @Override
@@ -182,6 +188,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         folderInfo.addListener(icon);
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
+        icon.applySwipeUpAction(folderInfo);
         return icon;
     }
 
@@ -588,6 +595,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
+        applySwipeUpAction(mInfo);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));
     }
 
@@ -617,6 +625,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 }
                 break;
         }
+
+        Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
+        if (launcher instanceof LawnchairLauncher && mSwipeUpHandler != null) {
+            ((LawnchairLauncher) launcher).getGestureController()
+                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
+        }
+
         return result;
     }
 
@@ -651,5 +666,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void onFolderClose(int currentPage) {
         mPreviewItemManager.onFolderClose(currentPage);
+    }
+
+    private void applySwipeUpAction(FolderInfo info) {
+        mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        if (mSwipeUpHandler instanceof BlankGestureHandler) {
+            mSwipeUpHandler = null;
+        }
     }
 }

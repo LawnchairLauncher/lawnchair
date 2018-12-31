@@ -57,7 +57,6 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
-import org.json.JSONObject;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -270,7 +269,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private void applySwipeUpAction(ShortcutInfo info) {
         mSwipeUpHandler = GestureController.Companion.createGestureHandler(
-                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), new JSONObject()));
+                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
         if (mSwipeUpHandler instanceof BlankGestureHandler) {
             mSwipeUpHandler = null;
         }

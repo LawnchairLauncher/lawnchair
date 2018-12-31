@@ -20,14 +20,17 @@ package ch.deletescape.lawnchair.override
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.useApplicationContext
+import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
 
-class AppInfoProvider private constructor(private val context: Context) : CustomInfoProvider<AppInfo>() {
+class AppInfoProvider private constructor(context: Context) : CustomInfoProvider<AppInfo>(context) {
 
     private val prefs by lazy { context.lawnchairPrefs }
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
@@ -85,16 +88,6 @@ class AppInfoProvider private constructor(private val context: Context) : Custom
 
     private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName, app.user)
 
-    companion object {
-
-        @SuppressLint("StaticFieldLeak")
-        private var INSTANCE: AppInfoProvider? = null
-
-        fun getInstance(context: Context): AppInfoProvider {
-            if (INSTANCE == null) {
-                INSTANCE = AppInfoProvider(context.applicationContext)
-            }
-            return INSTANCE!!
-        }
-    }
+    companion object : SingletonHolder<AppInfoProvider, Context>(ensureOnMainThread(
+            useApplicationContext(::AppInfoProvider)))
 }

@@ -16,12 +16,15 @@
 
 package com.android.launcher3;
 
+import android.content.Context;
 import android.os.Process;
 
+import android.support.annotation.NonNull;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -53,6 +56,8 @@ public class FolderInfo extends ItemInfo {
     public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+
+    public String swipeUpAction;
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -155,5 +160,10 @@ public class FolderInfo extends ItemInfo {
         if (writer != null && oldOptions != options) {
             writer.updateItemInDatabase(this);
         }
+    }
+
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
     }
 }

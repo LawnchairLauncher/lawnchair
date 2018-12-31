@@ -576,6 +576,8 @@ public class LoaderTask implements Runnable {
                             folderInfo.spanY = 1;
                             folderInfo.options = c.getInt(optionsIndex);
 
+                            folderInfo.swipeUpAction = c.getString(swipeUpActionEntryIndex);
+
                             // no special handling required for restored folders
                             c.markRestored();
 
