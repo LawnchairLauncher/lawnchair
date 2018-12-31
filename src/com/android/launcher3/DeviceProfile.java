@@ -302,7 +302,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             int extraSpace = getCellSizeOriginal().y - iconSizeOriginalPx
                     - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx;
             hotseatBarSizePx += extraSpace;
-            hotseatBarBottomPaddingPx += extraSpace;
+            hotseatBarBottomPaddingPx += extraSpace / 2;
+            hotseatBarTopPaddingPx += extraSpace / 2;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
