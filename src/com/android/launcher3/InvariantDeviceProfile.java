@@ -40,6 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -135,7 +136,7 @@ public class InvariantDeviceProfile {
         float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
         float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
         // Sort the profiles based on the closeness to the device size
-        allOptions.sort((a, b) ->
+        Collections.sort(allOptions, (a, b) ->
                 Float.compare(dist(minWidthDps, minHeightDps, a.minWidthDps, a.minHeightDps),
                         dist(minWidthDps, minHeightDps, b.minWidthDps, b.minHeightDps)));
         DisplayOption interpolatedDisplayOption =
@@ -312,18 +313,6 @@ public class InvariantDeviceProfile {
 
     private static float dist(float x0, float y0, float x1, float y1) {
         return (float) Math.hypot(x1 - x0, y1 - y0);
-    }
-
-    /**
-     * Returns the closest device profiles ordered by closeness to the specified width and height
-     */
-    @VisibleForTesting
-    static ArrayList<DisplayOption> sortByClosenessToSize(
-            float width, float height, ArrayList<DisplayOption> points) {
-        points.sort((a, b) ->
-                Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps)));
-        return points;
     }
 
     @VisibleForTesting
