@@ -329,13 +329,14 @@ public class ClipAnimationHelper {
         canvas.concat(mTmpMatrix);
         canvas.translate(mTargetRect.left, mTargetRect.top);
 
+        float scale = mTargetRect.width() / mSourceRect.width();
         float insetProgress = (1 - progress);
         ttv.drawOnCanvas(canvas,
                 -mSourceWindowClipInsets.left * insetProgress,
                 -mSourceWindowClipInsets.top * insetProgress,
                 ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
                 ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
-                Utilities.mapRange(progress, mWindowCornerRadius, ttv.getCornerRadius()));
+                Utilities.mapRange(progress, mWindowCornerRadius * scale, ttv.getCornerRadius()));
     }
 
     public RectF getTargetRect() {
