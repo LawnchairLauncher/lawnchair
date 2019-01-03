@@ -204,7 +204,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         mLauncher.getStateManager().setCurrentAnimation(anim);
 
                         Rect windowTargetBounds = getWindowTargetBounds(targetCompats);
-                        playIconAnimators(anim, v, windowTargetBounds);
+                        boolean isAllOpeningTargetTrs = true;
+                        for (int i = 0; i < targetCompats.length; i++) {
+                            RemoteAnimationTargetCompat target = targetCompats[i];
+                            if (target.mode == MODE_OPENING) {
+                                isAllOpeningTargetTrs &= target.isTranslucent;
+                            }
+                            if (!isAllOpeningTargetTrs) break;
+                        }
+                        playIconAnimators(anim, v, windowTargetBounds, !isAllOpeningTargetTrs);
                         if (launcherClosing) {
                             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                                     getLauncherContentAnimator(true /* isAppOpening */);
@@ -432,7 +440,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Animators for the "floating view" of the view used to launch the target.
      */
-    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
+    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
+            boolean toggleVisibility) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
@@ -485,7 +494,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
         // Swap the two views in place.
         ((ViewGroup) mDragLayer.getParent()).addView(mFloatingView);
-        v.setVisibility(View.INVISIBLE);
+        if (toggleVisibility) {
+            v.setVisibility(View.INVISIBLE);
+        }
 
         int[] dragLayerBounds = new int[2];
         mDragLayer.getLocationOnScreen(dragLayerBounds);
