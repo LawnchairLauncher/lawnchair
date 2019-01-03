@@ -749,7 +749,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setRunningTaskIconScaledDown(runningTaskIconScaledDown);
         setRunningTaskHidden(runningTaskTileHidden);
 
-        setCurrentPage(0);
+        TaskView tv = getRunningTaskView();
+        setCurrentPage(tv == null ? 0 : indexOfChild(tv));
 
         // Load the tasks (if the loading is already
         mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);

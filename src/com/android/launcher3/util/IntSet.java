@@ -49,8 +49,27 @@ public class IntSet {
         return mArray.size();
     }
 
+    public void clear() {
+        mArray.clear();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return (obj instanceof IntSet) && ((IntSet) obj).mArray.equals(mArray);
+    }
+
     public IntArray getArray() {
         return mArray;
+    }
+
+    /**
+     * Sets this set to be same as {@param other}
+     */
+    public void copyFrom(IntSet other) {
+        mArray.copyFrom(other.mArray);
     }
 
     public static IntSet wrap(IntArray array) {

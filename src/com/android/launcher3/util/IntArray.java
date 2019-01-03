@@ -100,6 +100,14 @@ public class IntArray implements Cloneable {
     }
 
     /**
+     * Sets the array to be same as {@param other}
+     */
+    public void copyFrom(IntArray other) {
+        clear();
+        addAll(other);
+    }
+
+    /**
      * Ensures capacity to append at least <code>count</code> values.
      */
     private void ensureCapacity(int count) {
@@ -125,6 +133,25 @@ public class IntArray implements Cloneable {
     @Override
     public IntArray clone() {
         return wrap(toArray());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof IntArray) {
+            IntArray arr = (IntArray) obj;
+            if (mSize == arr.mSize) {
+                for (int i = 0; i < mSize; i++) {
+                    if (arr.mValues[i] != mValues[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
