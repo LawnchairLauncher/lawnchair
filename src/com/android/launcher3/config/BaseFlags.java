@@ -96,7 +96,7 @@ abstract class BaseFlags {
             "APPLY_CONFIG_AT_RUNTIME", false, "Apply display changes dynamically");
 
     public static final TogglableFlag ENABLE_TASK_STABILIZER = new TogglableFlag(
-            "ENABLE_TASK_STABILIZER", true, "Stable task list across fast task switches");
+            "ENABLE_TASK_STABILIZER", false, "Stable task list across fast task switches");
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
