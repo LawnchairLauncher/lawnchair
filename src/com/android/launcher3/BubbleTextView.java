@@ -345,7 +345,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
         if (mIcon != null) {
-            mIcon.setVisible(getWindowVisibility() == VISIBLE && isShown(), false);
+            mIcon.setVisible(isVisible, false);
         }
     }
 
@@ -581,6 +581,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             applyCompoundDrawables(icon);
         }
         mIcon = icon;
+        if (mIcon != null) {
+            mIcon.setVisible(getWindowVisibility() == VISIBLE && isShown(), false);
+        }
     }
 
     public void setIconVisible(boolean visible) {
