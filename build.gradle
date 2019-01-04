@@ -70,7 +70,7 @@ android {
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src', 'src_shortcuts_overrides']
+            java.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
@@ -93,7 +93,7 @@ android {
         }
 
         aosp {
-            java.srcDirs = ['src_flags', "src_ui_overrides"]
+            java.srcDirs = ['src_flags', "src_ui_overrides", 'src_shortcuts_overrides']
         }
 
         l3go {
@@ -104,7 +104,7 @@ android {
 
         quickstep {
             res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['src_flags', 'quickstep/src']
+            java.srcDirs = ['src_flags', 'quickstep/src', 'src_shortcuts_overrides']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
