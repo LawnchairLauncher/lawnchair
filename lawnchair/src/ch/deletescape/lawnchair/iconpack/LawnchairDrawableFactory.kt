@@ -34,6 +34,7 @@ class LawnchairDrawableFactory(context: Context) : DynamicDrawableFactory(contex
     val customClockDrawer = CustomClock(context)
 
     override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
-        return iconPackManager.newIcon((info as? ShortcutInfo)?.customIcon ?: info.iconBitmap, info, this)
+        return iconPackManager.newIcon((info as? ShortcutInfo)?.customIcon ?: info.iconBitmap,
+                info, this).also { it.setIsDisabled(info.isDisabled) }
     }
 }
