@@ -484,6 +484,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task);
         }
+        TaskView runningTaskView = getRunningTaskView();
+        if (runningTaskView != null) {
+            setCurrentPage(indexOfChild(runningTaskView));
+        }
+
         if (mIgnoreResetTaskId != -1 && getTaskView(mIgnoreResetTaskId) != ignoreRestTaskView) {
             // If the taskView mapping is changing, do not preserve the visuals. Since we are
             // mostly preserving the first task, and new taskViews are added to the end, it should
