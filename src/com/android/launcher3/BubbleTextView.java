@@ -44,6 +44,7 @@ import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
+import ch.deletescape.lawnchair.gestures.handlers.ViewSwipeUpGestureHandler;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
@@ -268,10 +269,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     private void applySwipeUpAction(ShortcutInfo info) {
-        mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+        GestureHandler handler = GestureController.Companion.createGestureHandler(
                 getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
-        if (mSwipeUpHandler instanceof BlankGestureHandler) {
+        if (handler instanceof BlankGestureHandler) {
             mSwipeUpHandler = null;
+        } else {
+            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
         }
     }
 

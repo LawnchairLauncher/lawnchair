@@ -26,6 +26,7 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.touch.SwipeDetector
 import java.lang.reflect.InvocationTargetException
 import android.annotation.SuppressLint
+import ch.deletescape.lawnchair.gestures.handlers.VerticalSwipeGestureHandler
 
 class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SwipeDetector.Listener {
 
@@ -45,7 +46,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private val detector = SwipeDetector(launcher, this, SwipeDetector.VERTICAL)
     private var noIntercept = false
 
-    private var hasSwipeUpOverride = false
+    private var swipeUpOverride: GestureHandler? = null
+    private val hasSwipeUpOverride get() = swipeUpOverride != null
     private var state = GestureState.Free
     private var downTime = 0L
 
@@ -54,15 +56,16 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         val isDown = ev.actionMasked == MotionEvent.ACTION_DOWN
         val overrideAppeared = !hasSwipeUpOverride && controller.getSwipeUpOverride(ev.downTime) != null
         if (isDown || overrideAppeared) {
-            if (isDown) {
-                hasSwipeUpOverride = false
+            swipeUpOverride = if (isDown) {
+                null
+            } else {
+                controller.getSwipeUpOverride(ev.downTime)
             }
-            val swipeDirection = getSwipeDirection(ev)
             noIntercept = !canInterceptTouch(ev) && !hasSwipeUpOverride
             if (noIntercept) {
                 return false
             }
-            detector.setDetectableScrollConditions(swipeDirection, false)
+            detector.setDetectableScrollConditions(getSwipeDirection(ev), false)
         } else if (ev.pointerCount > 1) {
             noIntercept = true
         }
@@ -91,7 +94,6 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun getSwipeDirection(ev: MotionEvent): Int {
         return when {
             controller.getSwipeUpOverride(ev.downTime) != null -> {
-                hasSwipeUpOverride = true
                 if (canInterceptTouch(ev))
                     SwipeDetector.DIRECTION_BOTH
                 else
@@ -105,10 +107,12 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     override fun onDragStart(start: Boolean) {
         state = GestureState.Free
+        (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragStart(start)
     }
 
     override fun onDrag(displacement: Float, velocity: Float): Boolean {
         if (state != GestureState.Locked) {
+            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDrag(displacement, velocity)
             if (gesture.customSwipeDown) {
                 if (velocity > triggerVelocity && state == GestureState.Free) {
                     state = GestureState.Triggered
@@ -141,6 +145,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     override fun onDragEnd(velocity: Float, fling: Boolean) {
         launcher.workspace.postDelayed(detector::finishedScrolling, 200)
+        (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
     }
 
     @SuppressLint("WrongConstant", "PrivateApi")

@@ -19,6 +19,8 @@
 <resources>
     <dimen name="action_view_compound_drawable_padding">5dp</dimen>
     <dimen name="all_apps_action_spacing">8dp</dimen>
+    <dimen name="swipe_up_negative_max">400dp</dimen>
+    <dimen name="swipe_up_positive_max">100dp</dimen>
 
     <!-- Dashboard padding in its container -->
     <dimen name="dashboard_padding_start">0dp</dimen>

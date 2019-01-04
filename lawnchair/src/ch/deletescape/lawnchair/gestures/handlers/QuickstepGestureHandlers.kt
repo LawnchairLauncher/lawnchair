@@ -36,7 +36,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper
 import org.json.JSONObject
 
 @Keep
-open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config), VerticalSwipeGestureHandler {
+open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
+        VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
     override val displayName = context.getString(R.string.action_switch_apps)!!
     override val isAvailable: Boolean

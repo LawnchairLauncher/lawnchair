@@ -41,7 +41,8 @@ import com.android.launcher3.widget.WidgetsFullSheet
 import org.json.JSONObject
 
 @Keep
-open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config), VerticalSwipeGestureHandler {
+open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
+        VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
     override val displayName = context.getString(R.string.action_open_drawer)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
@@ -276,7 +277,14 @@ class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : Ge
     }
 }
 
-interface VerticalSwipeGestureHandler : StateChangeGestureHandler
+interface VerticalSwipeGestureHandler {
+
+    fun onDragStart(start: Boolean) { }
+
+    fun onDrag(displacement: Float, velocity: Float) { }
+
+    fun onDragEnd(velocity: Float, fling: Boolean) { }
+}
 
 interface StateChangeGestureHandler {
 
