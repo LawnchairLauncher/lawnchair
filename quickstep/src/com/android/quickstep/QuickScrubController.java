@@ -21,6 +21,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASK_STABILIZER;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -289,16 +290,20 @@ public class QuickScrubController implements OnAlarmListener {
                 }
                 mPrevPrevProgressDelta = mPrevProgressDelta;
                 mPrevProgressDelta = progressDelta;
-                float scrollDiff = nextPage.getWidth() + mRecentsView.getPageSpacing();
-                int scrollDir = mRecentsView.isRtl() ? -1 : 1;
-                int linearScrollDiff = (int) (progress * scrollDiff * scrollDir);
-                float accelScrollDiff = ACCEL.getInterpolation(progress) * scrollDiff * scrollDir;
+                int startScroll = mRecentsView.getScrollForPage(
+                        mRecentsView.indexOfChild(currentPage));
+                int scrollDiff = mRecentsView.getScrollForPage(mRecentsView.indexOfChild(nextPage))
+                        - startScroll;
+
+                int linearScrollDiff = (int) (progress * scrollDiff);
                 currentPage.setZoomScale(1 - DEACCEL_3.getInterpolation(progress)
                         * TaskView.EDGE_SCALE_DOWN_FACTOR);
-                currentPage.setTranslationX(linearScrollDiff + accelScrollDiff);
+                if (!ENABLE_TASK_STABILIZER.get()) {
+                    float accelScrollDiff = ACCEL.getInterpolation(progress) * scrollDiff;
+                    currentPage.setTranslationX(linearScrollDiff + accelScrollDiff);
+                }
                 nextPage.setTranslationZ(1);
                 nextPage.setTranslationY(currentPage.getTranslationY());
-                int startScroll = mRecentsView.isRtl() ? mRecentsView.getMaxScrollX() : 0;
                 mRecentsView.setScrollX(startScroll + linearScrollDiff);
             }
             return;
@@ -358,9 +363,16 @@ public class QuickScrubController implements OnAlarmListener {
                     : mStartedFromHome
                         ? QUICK_SCRUB_FROM_HOME_START_DURATION
                         : QUICK_SCRUB_FROM_APP_START_DURATION;
-            int pageToGoTo = mStartedFromHome || mIsQuickSwitch
-                    ? 0
-                    : mRecentsView.getNextPage() + 1;
+            final int pageToGoTo;
+            if (mStartedFromHome) {
+                pageToGoTo = 0;
+            } else if (mIsQuickSwitch) {
+                TaskView tv = mRecentsView.getRunningTaskView();
+                pageToGoTo = tv != null ? mRecentsView.indexOfChild(tv)
+                        : mRecentsView.getNextPage();
+            } else {
+                pageToGoTo = mRecentsView.getNextPage() + 1;
+            }
             goToPageWithHaptic(pageToGoTo, duration, true /* forceHaptic */,
                     QUICK_SCRUB_START_INTERPOLATOR);
         }
