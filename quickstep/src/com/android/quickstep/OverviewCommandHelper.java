@@ -66,7 +66,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 
 import java.util.ArrayList;
@@ -344,7 +344,7 @@ public class OverviewCommandHelper {
             clipHelper.prepareAnimation(false /* isOpening */);
 
             ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                    .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplier(rootView));
+                    .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
