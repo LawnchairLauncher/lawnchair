@@ -36,27 +36,31 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    flavorDimensions "default"
+    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
+    // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
+    flavorDimensions "app", "recents"
 
     productFlavors {
         aosp {
-            dimension "default"
+            dimension "app"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
-            dimension "default"
+            dimension "app"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
-        quickstep {
-            dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+        withQuickstep {
+            dimension "recents"
 
             minSdkVersion 28
+        }
+
+        withoutQuickstep {
+            dimension "recents"
         }
     }
 
@@ -93,18 +97,23 @@ android {
         }
 
         aosp {
-            java.srcDirs = ['src_flags', "src_ui_overrides", 'src_shortcuts_overrides']
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src', "src_ui_overrides"]
+            java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
         }
 
-        quickstep {
+        withoutQuickstep {
+            java.srcDirs = ['src_ui_overrides']
+        }
+
+        withQuickstep {
             res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['src_flags', 'quickstep/src', 'src_shortcuts_overrides']
+            java.srcDirs = ['quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -124,11 +133,11 @@ dependencies {
     implementation project(':IconLoader')
     implementation fileTree(dir: "libs", include: 'launcher_protos.jar')
 
-    // This is already included in sysui_shared
-    aospImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
-    l3goImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
+    // Recents lib dependency
+    withQuickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
-    quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    withoutQuickstepImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"
