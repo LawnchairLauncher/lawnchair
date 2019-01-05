@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -52,9 +53,9 @@ import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -294,8 +295,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             AnimatorSet anim = new AnimatorSet();
             if (!activity.getDeviceProfile().isVerticalBarLayout()) {
-                Animator shiftAnim = new SpringObjectAnimator(activity.getAllAppsController(),
-                        activity.getAllAppsController().getShiftRange(),
+                AllAppsTransitionController controller = activity.getAllAppsController();
+                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
                         fromState.getVerticalProgress(activity),
                         endState.getVerticalProgress(activity));
                 shiftAnim.setInterpolator(LINEAR);
