@@ -59,6 +59,12 @@ android {
             minSdkVersion 28
         }
 
+        withQuickstepIconRecents {
+            dimension "recents"
+
+            minSdkVersion 28
+        }
+
         withoutQuickstep {
             dimension "recents"
         }
@@ -67,7 +73,12 @@ android {
     // Disable release builds for now
     android.variantFilter { variant ->
         if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
+            variant.setIgnore(true)
+        }
+
+        // Icon recents is Go only
+        if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {
+            variant.setIgnore(true)
         }
     }
 
@@ -112,8 +123,14 @@ android {
         }
 
         withQuickstep {
-            res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['quickstep/src']
+            res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
+            java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+
+        withQuickstepIconRecents {
+            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
+            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -135,6 +152,9 @@ dependencies {
 
     // Recents lib dependency
     withQuickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+
+    // Recents lib dependency for Go
+    withQuickstepIconRecentsImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
