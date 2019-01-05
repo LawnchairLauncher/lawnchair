@@ -49,7 +49,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Անձնական հավելվածների ցանկ"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Աշխատանքային հավելվածների ցանկ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Հիմնական"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"Հեռացնել"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Ապատեղադրել"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Հեռացնել"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Հավելվածի տվյալներ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Տեղադրել"</string>
@@ -93,14 +93,6 @@
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Ցուցադրել ծանուցումների կետիկները"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ավելացնել պատկերակը Հիմնական էկրանին"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Նոր հավելվածների համար"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"Փոխել պատկերակների տեսքը"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"հիմնական էկրանին"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Օգտագործել համակարգի կանխադրված կարգավորումը"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"Քառակուսի"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Քառանկյուն"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"Օղակ"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Արցունքաձև"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Պատկերակների տեսքի փոփոխությունները կիրառվում են"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Անհայտ է"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ապատեղադրել"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Գտնել"</string>

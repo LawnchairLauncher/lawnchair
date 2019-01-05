@@ -16,8 +16,10 @@
 
 package com.android.quickstep;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Process;
 import android.util.SparseBooleanArray;
 import com.android.launcher3.MainThreadExecutor;
@@ -36,16 +38,20 @@ import java.util.function.Consumer;
 /**
  * Manages the recent task list from the system, caching it as necessary.
  */
+@TargetApi(Build.VERSION_CODES.P)
 public class RecentTasksList extends TaskStackChangeListener {
 
     private final KeyguardManagerCompat mKeyguardManager;
     private final MainThreadExecutor mMainThreadExecutor;
     private final BackgroundExecutor mBgThreadExecutor;
+    private final TaskListStabilizer mStabilizer = new TaskListStabilizer();
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
     // The last change id when the list was last loaded completely, must be <= the list change id
     private int mLastLoadedId;
+    // The last change id was loaded with keysOnly  = true
+    private boolean mLastLoadHadKeysOnly;
 
     ArrayList<Task> mTasks = new ArrayList<>();
 
@@ -57,41 +63,43 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     /**
-     * Asynchronously fetches the list of recent tasks.
+     * Fetches the task keys skipping any local cache.
+     */
+    public void getTaskKeys(int numTasks, Consumer<ArrayList<Task>> callback) {
+        // Kick off task loading in the background
+        mBgThreadExecutor.submit(() -> {
+            ArrayList<Task> tasks = loadTasksInBackground(numTasks, true /* loadKeysOnly */);
+            mMainThreadExecutor.execute(() -> callback.accept(tasks));
+        });
+    }
+
+    /**
+     * Asynchronously fetches the list of recent tasks, reusing cached list if available.
      *
-     * @param numTasks The maximum number of tasks to fetch
      * @param loadKeysOnly Whether to load other associated task data, or just the key
      * @param callback The callback to receive the list of recent tasks
      * @return The change id of the current task list
      */
-    public synchronized int getTasks(int numTasks, boolean loadKeysOnly,
-            Consumer<ArrayList<Task>> callback) {
+    public synchronized int getTasks(boolean loadKeysOnly, Consumer<ArrayList<Task>> callback) {
         final int requestLoadId = mChangeId;
-        final int numLoadTasks = numTasks > 0
-                ? numTasks
-                : Integer.MAX_VALUE;
+        Runnable resultCallback = callback == null
+                ? () -> { }
+                : () -> callback.accept(mStabilizer.reorder(mTasks));
 
-        if (mLastLoadedId == mChangeId) {
+        if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
             // The list is up to date, callback with the same list
-            mMainThreadExecutor.execute(() -> {
-                if (callback != null) {
-                    callback.accept(mTasks);
-                }
-            });
+            mMainThreadExecutor.execute(resultCallback);
         }
 
         // Kick off task loading in the background
         mBgThreadExecutor.submit(() -> {
-            ArrayList<Task> tasks = loadTasksInBackground(numLoadTasks,
-                    loadKeysOnly);
+            ArrayList<Task> tasks = loadTasksInBackground(Integer.MAX_VALUE, loadKeysOnly);
 
             mMainThreadExecutor.execute(() -> {
                 mTasks = tasks;
                 mLastLoadedId = requestLoadId;
-
-                if (callback != null) {
-                    callback.accept(tasks);
-                }
+                mLastLoadHadKeysOnly = loadKeysOnly;
+                resultCallback.run();
             });
         });
 

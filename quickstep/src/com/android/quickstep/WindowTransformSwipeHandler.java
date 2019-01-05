@@ -27,6 +27,7 @@ import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_S
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -52,6 +53,7 @@ import android.view.animation.Interpolator;
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -176,6 +178,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
     private final ClipAnimationHelper mClipAnimationHelper;
+    private final ClipAnimationHelper.TransformParams mTransformParams;
 
     protected Runnable mGestureEndCallback;
     protected boolean mIsGoingToHome;
@@ -256,6 +259,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewTouchProxyHandler);
         mClipAnimationHelper = new ClipAnimationHelper(context);
+        mTransformParams = new ClipAnimationHelper.TransformParams();
 
         initStateCallbacks();
     }
@@ -584,11 +588,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
-
-            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift,
-                    Looper.myLooper() == mMainThreadHandler.getLooper()
+            SyncRtSurfaceTransactionApplierCompat syncTransactionApplier
+                    = Looper.myLooper() == mMainThreadHandler.getLooper()
                             ? mSyncTransactionApplier
-                            : null);
+                            : null;
+            mTransformParams.setProgress(shift).setSyncTransactionApplier(syncTransactionApplier);
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
+                    mTransformParams);
 
             boolean passedThreshold = shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
@@ -614,6 +620,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
+        }
+        // Update insets of the next previous task, as we might switch to it.
+        TaskView nextTaskView = mRecentsView == null ? null : mRecentsView.getNextTaskView();
+        if (mInteractionType == INTERACTION_NORMAL && nextTaskView != null) {
+            nextTaskView.setFullscreenProgress(1 - mCurrentShift.value);
         }
 
         if (mLauncherTransitionController == null || mLauncherTransitionController
@@ -1018,10 +1029,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mRecentsView.animateUpRunningTaskIconScale();
         if (mQuickScrubController.isQuickSwitch()) {
+            // Adjust the running task so that it is centered and fills the screen.
             TaskView runningTask = mRecentsView.getRunningTaskView();
             if (runningTask != null) {
-                runningTask.setTranslationY(-mActivity.getResources().getDimension(
-                        R.dimen.task_thumbnail_half_top_margin) * 1f / mRecentsView.getScaleX());
+                float insetHeight = mDp.heightPx - mDp.getInsets().top - mDp.getInsets().bottom;
+                // Usually insetDiff will be 0, unless we allow apps to draw under the insets. In
+                // that case (insetDiff != 0), we need to center in the system-specified available
+                // height rather than launcher's inset height by adding half the insetDiff.
+                float insetDiff = mDp.availableHeightPx - insetHeight;
+                float topMargin = mActivity.getResources().getDimension(
+                        R.dimen.task_thumbnail_half_top_margin);
+                runningTask.setTranslationY((insetDiff / 2 - topMargin) / mRecentsView.getScaleX());
             }
         }
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);

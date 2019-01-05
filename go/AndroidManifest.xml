@@ -22,7 +22,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3" >
 
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
+    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="21"/>
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"

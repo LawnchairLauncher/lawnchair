@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Binder;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
@@ -103,10 +104,22 @@ public class LauncherDbUtils {
         return out;
     }
 
+    public static boolean tableExists(SQLiteDatabase db, String tableName) {
+        try (Cursor c = db.query(true, "sqlite_master", new String[] {"tbl_name"},
+                "tbl_name = ?", new String[] {tableName},
+                null, null, null, null, null)) {
+            return c.getCount() > 0;
+        }
+    }
+
+    public static void dropTable(SQLiteDatabase db, String tableName) {
+        db.execSQL("DROP TABLE IF EXISTS " + tableName);
+    }
+
     /**
      * Utility class to simplify managing sqlite transactions
      */
-    public static class SQLiteTransaction implements AutoCloseable {
+    public static class SQLiteTransaction extends Binder implements AutoCloseable {
         private final SQLiteDatabase mDb;
 
         public SQLiteTransaction(SQLiteDatabase db) {
@@ -121,6 +134,10 @@ public class LauncherDbUtils {
         @Override
         public void close() {
             mDb.endTransaction();
+        }
+
+        public SQLiteDatabase getDb() {
+            return mDb;
         }
     }
 }

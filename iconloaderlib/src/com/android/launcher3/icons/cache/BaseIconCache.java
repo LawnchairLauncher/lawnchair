@@ -151,7 +151,7 @@ public abstract class BaseIconCache {
     private synchronized void updateIconParamsBg(int iconDpi, int iconPixelSize) {
         mIconDpi = iconDpi;
         mDefaultIcons.clear();
-
+        mIconDb.clear();
         mIconDb.close();
         mIconDb = new IconDB(mContext, mDbFileName, iconPixelSize);
         mCache.clear();

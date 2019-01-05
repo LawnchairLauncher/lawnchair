@@ -23,6 +23,11 @@ public class TestLauncherProvider extends LauncherProvider {
         }
     }
 
+    public SQLiteDatabase getDb() {
+        createDbIfNotExists();
+        return mOpenHelper.getWritableDatabase();
+    }
+
     @Override
     protected void notifyListeners() { }
 

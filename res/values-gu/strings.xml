@@ -93,14 +93,6 @@
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"હોમ સ્ક્રીન પર"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"સિસ્ટમ ડિફૉલ્ટનો ઉપયોગ કરો"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"ચોરસ"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"ચોરસ જેવું ગોળ"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"વર્તુળ"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"ટિઅરડ્રોપ"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"આઇકનના આકારમાં કરેલ ફેરફારો લાગુ કરી રહ્યા છીએ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
     <string name="abandoned_search" msgid="891119232568284442">"શોધો"</string>
