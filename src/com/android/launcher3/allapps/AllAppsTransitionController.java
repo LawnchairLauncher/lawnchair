@@ -1,6 +1,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
@@ -14,7 +15,9 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.util.Property;
+import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -26,14 +29,9 @@ import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.anim.SpringObjectAnimator.SpringProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
-
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
 
 /**
  * Handles AllApps view transition.
@@ -60,53 +58,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             controller.setProgress(progress);
         }
     };
-
-    public static final FloatPropertyCompat<AllAppsTransitionController> ALL_APPS_PROGRESS_SPRING
-            = new FloatPropertyCompat<AllAppsTransitionController>("allAppsProgressSpring") {
-        @Override
-        public float getValue(AllAppsTransitionController controller) {
-            return controller.mProgress;
-        }
-
-        @Override
-        public void setValue(AllAppsTransitionController controller, float progress) {
-            controller.setProgress(progress);
-        }
-    };
-
-    /**
-     * Property that either sets the progress directly or animates the progress via a spring.
-     */
-    public static class AllAppsSpringProperty extends
-            SpringProperty<AllAppsTransitionController, Float> {
-
-        SpringAnimation mSpring;
-        boolean useSpring = false;
-
-        public AllAppsSpringProperty(SpringAnimation spring) {
-            super(Float.class, "allAppsSpringProperty");
-            mSpring = spring;
-        }
-
-        @Override
-        public Float get(AllAppsTransitionController controller) {
-            return controller.getProgress();
-        }
-
-        @Override
-        public void set(AllAppsTransitionController controller, Float progress) {
-            if (useSpring) {
-                mSpring.animateToFinalPosition(progress);
-            } else {
-                controller.setProgress(progress);
-            }
-        }
-
-        @Override
-        public void switchToSpring() {
-            useSpring = true;
-        }
-    }
 
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
@@ -223,8 +174,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
                 ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = new SpringObjectAnimator(this, 1f / mShiftRange, mProgress,
-                targetProgress);
+        ObjectAnimator anim =
+                ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());

@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherStateManager.ATOMIC_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -46,7 +45,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -430,8 +428,8 @@ public abstract class AbstractStateChangeTouchController
         maybeUpdateAtomicAnim(mFromState, targetState, targetState == mToState ? 1f : 0f);
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
-        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, velocity);
-        if (fling && targetState == LauncherState.ALL_APPS && !QUICKSTEP_SPRINGS.get()) {
+        mCurrentAnimation.dispatchOnStart();
+        if (fling && targetState == LauncherState.ALL_APPS) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();

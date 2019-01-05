@@ -19,7 +19,6 @@ import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_OVERSHOOT_DURATION;
 
@@ -42,6 +41,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Utility class to handle long swipe from an app.
@@ -113,7 +113,7 @@ public class LongSwipeHelper {
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
 
-            if (blockedFling && !toAllApps && !QUICKSTEP_SPRINGS.get()) {
+            if (blockedFling && !toAllApps) {
                 Interpolators.OvershootParams overshoot = new OvershootParams(currentFraction,
                         currentFraction, endProgress, velocityPxPerMs, (int) mMaxSwipeDistance);
                 duration = (overshoot.duration + duration);
@@ -145,12 +145,7 @@ public class LongSwipeHelper {
         ValueAnimator animator = mAnimator.getAnimationPlayer();
         animator.setDuration(duration).setInterpolator(interpolator);
         animator.setFloatValues(currentFraction, endProgress);
-
-        if (QUICKSTEP_SPRINGS.get()) {
-            mAnimator.dispatchOnStartWithVelocity(endProgress, velocityPxPerMs);
-        } else {
-            animator.start();
-        }
+        animator.start();
     }
 
     private void onSwipeAnimationComplete(boolean toAllApps, boolean isFling, Runnable callback) {
