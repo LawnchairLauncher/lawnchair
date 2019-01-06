@@ -25,7 +25,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -123,7 +127,14 @@ public class TaskMenuView extends AbstractFloatingView {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
+        taskMenuView.setBackgroundRadius();
         return taskMenuView.populateAndShowForTask(taskView);
+    }
+
+    private void setBackgroundRadius() {
+        float radius = Utilities.getLawnchairPrefs(getContext()).getRecentsRadius();
+        GradientDrawable background = (GradientDrawable) ((LayerDrawable) getBackground()).getDrawable(1);
+        background.setCornerRadii(new float[] {radius, radius, radius, radius, 0, 0, 0, 0});
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
