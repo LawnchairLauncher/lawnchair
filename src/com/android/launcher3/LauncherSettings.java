@@ -89,6 +89,11 @@ public class LauncherSettings {
         public static final String TABLE_NAME = "favorites";
 
         /**
+         * Backup table created when when the favorites table is modified during grid migration
+         */
+        public static final String BACKUP_TABLE_NAME = "favorites_bakup";
+
+        /**
          * The content:// style URL for this table
          */
         public static final Uri CONTENT_URI = Uri.parse("content://" +
@@ -231,8 +236,13 @@ public class LauncherSettings {
         public static final String OPTIONS = "options";
 
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
+            addTableToDb(db, myProfileId, optional, TABLE_NAME);
+        }
+
+        public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional,
+                String tableName) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
-            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
+            db.execSQL("CREATE TABLE " + ifNotExists + tableName + " (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
                     "intent TEXT," +
@@ -278,6 +288,10 @@ public class LauncherSettings {
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 
         public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
+
+        public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
+
+        public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
 
         public static final String EXTRA_VALUE = "value";
 

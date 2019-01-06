@@ -37,26 +37,18 @@ import java.util.ArrayList;
  */
 public class LossyScreenMigrationTask extends GridSizeMigrationTask {
 
-    private final SQLiteDatabase mDb;
-
     private final IntSparseArrayMap<DbEntry> mOriginalItems;
     private final IntSparseArrayMap<DbEntry> mUpdates;
 
     protected LossyScreenMigrationTask(
             Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
         // Decrease the rows count by 1
-        super(context, idp, getValidPackages(context),
+        super(context, db, getValidPackages(context),
                 new Point(idp.numColumns, idp.numRows + 1),
                 new Point(idp.numColumns, idp.numRows));
 
-        mDb = db;
         mOriginalItems = new IntSparseArrayMap<>();
         mUpdates = new IntSparseArrayMap<>();
-    }
-
-    @Override
-    protected Cursor queryWorkspace(String[] columns, String where) {
-        return mDb.query(Favorites.TABLE_NAME, columns, where, null, null, null, null);
     }
 
     @Override

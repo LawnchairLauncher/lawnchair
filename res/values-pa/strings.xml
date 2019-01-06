@@ -93,14 +93,6 @@
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ਸੂਚਨਾ ਬਿੰਦੂ ਦਿਖਾਓ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"ਪ੍ਰਤੀਕ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"ਸਿਸਟਮ ਦੀ ਪੂਰਵ-ਨਿਰਧਾਰਤ ਸੈਟਿੰਗ ਵਰਤੋ"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"ਵਰਗ"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"ਵਰਗਾਕਾਰ-ਚੱਕਰ"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"ਚੱਕਰ"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"ਹੰਝੂ ਦੀ ਬੂੰਦ"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"ਪ੍ਰਤੀਕ ਦੀ ਆਕ੍ਰਿਤੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ਖੋਜੋ"</string>

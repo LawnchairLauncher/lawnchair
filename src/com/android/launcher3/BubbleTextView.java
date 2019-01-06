@@ -342,6 +342,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+        if (mIcon != null) {
+            mIcon.setVisible(isVisible, false);
+        }
+    }
+
+    @Override
     public void onLauncherResume() {
         // Reset the pressed state of icon that was locked in the press state while activity
         // was launching
@@ -573,6 +581,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             applyCompoundDrawables(icon);
         }
         mIcon = icon;
+        if (mIcon != null) {
+            mIcon.setVisible(getWindowVisibility() == VISIBLE && isShown(), false);
+        }
     }
 
     public void setIconVisible(boolean visible) {

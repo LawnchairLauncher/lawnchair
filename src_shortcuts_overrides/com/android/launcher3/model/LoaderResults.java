@@ -42,26 +42,13 @@ public class LoaderResults extends BaseLoaderResults {
         synchronized (mBgDataModel) {
             shortcutMapCopy = new HashMap<>(mBgDataModel.deepShortcutMap);
         }
-        mUiExecutor.execute(() -> {
-            Callbacks callbacks = mCallbacks.get();
-            if (callbacks != null) {
-                callbacks.bindDeepShortcutMap(shortcutMapCopy);
-            }
-        });
+        executeCallbacksTask(c -> c.bindDeepShortcutMap(shortcutMapCopy), mUiExecutor);
     }
 
     @Override
     public void bindWidgets() {
         final ArrayList<WidgetListRowEntry> widgets =
                 mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
-        Runnable r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindAllWidgets(widgets);
-                }
-            }
-        };
-        mUiExecutor.execute(r);
+        executeCallbacksTask(c -> c.bindAllWidgets(widgets), mUiExecutor);
     }
 }

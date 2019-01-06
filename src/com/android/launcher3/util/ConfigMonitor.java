@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities.Consumer;
 
@@ -39,6 +40,8 @@ import com.android.launcher3.Utilities.Consumer;
 public class ConfigMonitor extends BroadcastReceiver implements DisplayListener {
 
     private static final String TAG = "ConfigMonitor";
+
+    private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
 
     private final Point mTmpPoint1 = new Point();
     private final Point mTmpPoint2 = new Point();
@@ -72,7 +75,15 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
 
         mCallback = callback;
 
+        // Listen for configuration change
         mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
+
+        // Listen for {@link OverlayManager} change
+        IntentFilter filter = new IntentFilter(ACTION_OVERLAY_CHANGED);
+        filter.addDataScheme("package");
+        mContext.registerReceiver(this, filter);
+
+        // Listen for display manager change
         mContext.getSystemService(DisplayManager.class)
                 .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
     }
@@ -80,8 +91,14 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
     @Override
     public void onReceive(Context context, Intent intent) {
         Configuration config = context.getResources().getConfiguration();
+        // TODO: when overlay manager service encodes more information to the Uri such as category
+        // of the overlay, only listen to the ones that are of interest to launcher.
+        if (intent != null && ACTION_OVERLAY_CHANGED.equals(intent.getAction())) {
+            Log.d(TAG, "Overlay changed.");
+            notifyChange();
+        }
         if (mFontScale != config.fontScale || mDensity != config.densityDpi) {
-            Log.d(TAG, "Configuration changed");
+            Log.d(TAG, "Configuration changed.");
             notifyChange();
         }
     }

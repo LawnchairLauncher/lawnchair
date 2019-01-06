@@ -21,7 +21,7 @@
      to come from a domain that you own or have control over. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.aardwolf">
-    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"/>
+    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="21"/>
     <application android:label="Aardwolf">
         <activity
             android:name="Activity1"

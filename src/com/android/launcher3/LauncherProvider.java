@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
@@ -210,6 +213,7 @@ public class LauncherProvider extends ContentProvider {
         addModifiedTime(initialValues);
         final int rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
         if (rowId < 0) return null;
+        mOpenHelper.onAddOrDeleteOp(db);
 
         uri = ContentUris.withAppendedId(uri, rowId);
         notifyListeners();
@@ -282,6 +286,7 @@ public class LauncherProvider extends ContentProvider {
                     return 0;
                 }
             }
+            mOpenHelper.onAddOrDeleteOp(db);
             t.commit();
         }
 
@@ -290,15 +295,30 @@ public class LauncherProvider extends ContentProvider {
         return values.length;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
         createDbIfNotExists();
         try (SQLiteTransaction t = new SQLiteTransaction(mOpenHelper.getWritableDatabase())) {
-            ContentProviderResult[] result =  super.applyBatch(operations);
+            boolean isAddOrDelete = !Utilities.ATLEAST_MARSHMALLOW;
+
+            final int numOperations = operations.size();
+            final ContentProviderResult[] results = new ContentProviderResult[numOperations];
+            for (int i = 0; i < numOperations; i++) {
+                ContentProviderOperation op = operations.get(i);
+                results[i] = op.apply(this, results, i);
+
+                isAddOrDelete |= (op.isInsert() || op.isDelete()) &&
+                        results[i].count != null && results[i].count > 0;
+            }
+            if (isAddOrDelete) {
+                mOpenHelper.onAddOrDeleteOp(t.getDb());
+            }
+
             t.commit();
             reloadLauncherIfExternal();
-            return result;
+            return results;
         }
     }
 
@@ -315,6 +335,7 @@ public class LauncherProvider extends ContentProvider {
         }
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
+            mOpenHelper.onAddOrDeleteOp(db);
             notifyListeners();
             reloadLauncherIfExternal();
         }
@@ -379,6 +400,17 @@ public class LauncherProvider extends ContentProvider {
             }
             case LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS: {
                 mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_NEW_TRANSACTION: {
+                Bundle result = new Bundle();
+                result.putBinder(LauncherSettings.Settings.EXTRA_VALUE,
+                        new SQLiteTransaction(mOpenHelper.getWritableDatabase()));
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_REFRESH_BACKUP_TABLE: {
+                mOpenHelper.mBackupTableExists =
+                        tableExists(mOpenHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
                 return null;
             }
         }
@@ -528,17 +560,19 @@ public class LauncherProvider extends ContentProvider {
         private final Context mContext;
         private int mMaxItemId = -1;
         private int mMaxScreenId = -1;
+        private boolean mBackupTableExists;
 
         DatabaseHelper(Context context, Handler widgetHostResetHandler) {
             this(context, widgetHostResetHandler, LauncherFiles.LAUNCHER_DB);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
-            if (!tableExists(Favorites.TABLE_NAME)) {
+            if (!tableExists(getReadableDatabase(), Favorites.TABLE_NAME)) {
                 Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
                 // This operation is a no-op if the table already exists.
                 addFavoritesTable(getWritableDatabase(), true);
             }
+            mBackupTableExists = tableExists(getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
 
             initIds();
         }
@@ -564,18 +598,6 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
-        private boolean tableExists(String tableName) {
-            Cursor c = getReadableDatabase().query(
-                    true, "sqlite_master", new String[] {"tbl_name"},
-                    "tbl_name = ?", new String[] {tableName},
-                    null, null, null, null, null);
-            try {
-                return c.getCount() > 0;
-            } finally {
-                c.close();
-            }
-        }
-
         @Override
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(TAG, "creating new launcher database");
@@ -588,6 +610,13 @@ public class LauncherProvider extends ContentProvider {
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
             onEmptyDbCreated();
+        }
+
+        protected void onAddOrDeleteOp(SQLiteDatabase db) {
+            if (mBackupTableExists) {
+                dropTable(db, Favorites.BACKUP_TABLE_NAME);
+                mBackupTableExists = false;
+            }
         }
 
         /**
@@ -733,7 +762,7 @@ public class LauncherProvider extends ContentProvider {
                                 Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP);
                         db.execSQL(query);
                     }
-                    db.execSQL("DROP TABLE IF EXISTS workspaceScreens");
+                    dropTable(db, "workspaceScreens");
                 }
                 case 28:
                     // DB Upgraded successfully
@@ -762,8 +791,8 @@ public class LauncherProvider extends ContentProvider {
          */
         public void createEmptyDB(SQLiteDatabase db) {
             try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-                db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
-                db.execSQL("DROP TABLE IF EXISTS workspaceScreens");
+                dropTable(db, Favorites.TABLE_NAME);
+                dropTable(db, "workspaceScreens");
                 onCreate(db);
                 t.commit();
             }

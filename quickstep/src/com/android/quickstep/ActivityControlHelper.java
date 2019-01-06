@@ -45,7 +45,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -194,7 +193,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             int topMargin = context.getResources()
                     .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
             int paddingTop = targetRect.rect.top - topMargin - dp.getInsets().top;
-            int paddingBottom = dp.availableHeightPx + dp.getInsets().top - targetRect.rect.bottom;
+            int paddingBottom = dp.heightPx - dp.getInsets().bottom - targetRect.rect.bottom;
 
             return FastOverviewState.OVERVIEW_TRANSLATION_FACTOR * (paddingBottom - paddingTop);
         }

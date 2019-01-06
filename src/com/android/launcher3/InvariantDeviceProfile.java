@@ -17,10 +17,12 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
+import static com.android.launcher3.Utilities.getDevicePrefs;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -40,29 +42,36 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import androidx.annotation.VisibleForTesting;
 
 public class InvariantDeviceProfile {
 
+    public static final String TAG = "IDP";
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
             new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
 
-    private static final String KEY_IDP_GRIP_NAME = "idp_grid_name";
+    private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
     public static final int CHANGE_FLAG_GRID = 1 << 0;
-    public static final int CHANGE_FLAG_ICON_SIZE = 1 << 1;
+    public static final int CHANGE_FLAG_ICON_PARAMS = 1 << 1;
+
+    public static final String KEY_ICON_PATH_REF = "pref_icon_shape_path";
 
     // Constants that affects the interpolation curve between statically defined device profile
     // buckets.
-    private static float KNEARESTNEIGHBOR = 3;
-    private static float WEIGHT_POWER = 5;
+    private static final float KNEARESTNEIGHBOR = 3;
+    private static final float WEIGHT_POWER = 5;
 
     // used to offset float not being able to express extremely small weights in extreme cases.
-    private static float WEIGHT_EFFICIENT = 100000f;
+    private static final float WEIGHT_EFFICIENT = 100000f;
+
+    private static final int CONFIG_ICON_MASK_RES_ID = Resources.getSystem().getIdentifier(
+            "config_icon_mask", "string", "android");
 
     /**
      * Number of icons per row and column in the workspace.
@@ -76,6 +85,7 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public String iconShapePath;
     public float landscapeIconSize;
     public int iconBitmapSize;
     public int fillResIconDpi;
@@ -106,6 +116,7 @@ public class InvariantDeviceProfile {
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
         iconSize = p.iconSize;
+        iconShapePath = p.iconShapePath;
         landscapeIconSize = p.landscapeIconSize;
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
@@ -115,9 +126,20 @@ public class InvariantDeviceProfile {
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
-        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRIP_NAME, null));
+        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+    }
+
+    /**
+     * Retrieve system defined or RRO overriden icon shape.
+     */
+    private static String getIconShapePath(Context context) {
+        if (CONFIG_ICON_MASK_RES_ID == 0) {
+            Log.e(TAG, "Icon mask res identifier failed to retrieve.");
+            return "";
+        }
+        return context.getResources().getString(CONFIG_ICON_MASK_RES_ID);
     }
 
     private void initGrid(Context context, String gridName) {
@@ -135,7 +157,7 @@ public class InvariantDeviceProfile {
         float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
         float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
         // Sort the profiles based on the closeness to the device size
-        allOptions.sort((a, b) ->
+        Collections.sort(allOptions, (a, b) ->
                 Float.compare(dist(minWidthDps, minHeightDps, a.minWidthDps, a.minHeightDps),
                         dist(minWidthDps, minHeightDps, b.minWidthDps, b.minHeightDps)));
         DisplayOption interpolatedDisplayOption =
@@ -151,10 +173,11 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
         if (!closestProfile.name.equals(gridName)) {
             Utilities.getPrefs(context).edit()
-                    .putString(KEY_IDP_GRIP_NAME, closestProfile.name).apply();
+                    .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
         }
 
         iconSize = interpolatedDisplayOption.iconSize;
+        iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
@@ -196,12 +219,26 @@ public class InvariantDeviceProfile {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
+    public void verifyConfigChangedInBackground(final Context context) {
+
+        String savedIconMaskPath = getDevicePrefs(context).getString(KEY_ICON_PATH_REF, "");
+        // Good place to check if grid size changed in themepicker when launcher was dead.
+        if (savedIconMaskPath.isEmpty()) {
+            getDevicePrefs(context).edit().putString(KEY_ICON_PATH_REF, getIconShapePath(context))
+                    .apply();
+        } else if (!savedIconMaskPath.equals(getIconShapePath(context))) {
+            getDevicePrefs(context).edit().putString(KEY_ICON_PATH_REF, getIconShapePath(context))
+                    .apply();
+            apply(context, CHANGE_FLAG_ICON_PARAMS);
+        }
+    }
+
     private void onConfigChanged(Context context) {
         // Config changes, what shall we do?
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
-        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRIP_NAME, null));
+        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
 
         int changeFlags = 0;
         if (numRows != oldProfile.numRows ||
@@ -212,10 +249,14 @@ public class InvariantDeviceProfile {
             changeFlags |= CHANGE_FLAG_GRID;
         }
 
-        if (iconSize != oldProfile.iconSize || iconBitmapSize != oldProfile.iconBitmapSize) {
-            changeFlags |= CHANGE_FLAG_ICON_SIZE;
+        if (iconSize != oldProfile.iconSize || iconBitmapSize != oldProfile.iconBitmapSize ||
+                !iconShapePath.equals(oldProfile.iconShapePath)) {
+            changeFlags |= CHANGE_FLAG_ICON_PARAMS;
         }
+        apply(context, changeFlags);
+    }
 
+    private void apply(Context context, int changeFlags) {
         // Create a new config monitor
         mConfigMonitor.unregister();
         mConfigMonitor = new ConfigMonitor(context, this::onConfigChanged);
@@ -230,7 +271,6 @@ public class InvariantDeviceProfile {
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
-
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "grid-option".equals(parser.getName())) {
@@ -312,18 +352,6 @@ public class InvariantDeviceProfile {
 
     private static float dist(float x0, float y0, float x1, float y1) {
         return (float) Math.hypot(x1 - x0, y1 - y0);
-    }
-
-    /**
-     * Returns the closest device profiles ordered by closeness to the specified width and height
-     */
-    @VisibleForTesting
-    static ArrayList<DisplayOption> sortByClosenessToSize(
-            float width, float height, ArrayList<DisplayOption> points) {
-        points.sort((a, b) ->
-                Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps)));
-        return points;
     }
 
     @VisibleForTesting
