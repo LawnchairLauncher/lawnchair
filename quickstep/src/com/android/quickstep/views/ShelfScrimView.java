@@ -88,8 +88,7 @@ public class ShelfScrimView extends ScrimView {
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mShelfOffset = mLauncher
-                .getDeviceProfile().verticalDragHandleSizePx; //context.getResources().getDimension(R.dimen.shelf_surface_offset);
+        mShelfOffset = context.getResources().getDimension(R.dimen.shelf_surface_offset);
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
         prefs = Utilities.getLawnchairPrefs(context);

@@ -58,7 +58,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         setOnClickListener(this);
         this.Ds = k.getInstance(context);
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
-        this.Dy = getTranslationY();
+        this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
         prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
     }
@@ -76,8 +76,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            float range = ((float) HotseatQsbWidget.c(this.mActivity)) + (
-                    ((float) (mlp.height + mlp.topMargin)) + this.Dy);
+            float range = HotseatQsbWidget.c(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
             LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
             if (!prefs.getDockSearchBar()) {
                 range -= mlp.height;
