@@ -281,6 +281,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
         prefs.getGridSize();
         prefs.getDockGridSize();
+        prefs.getDrawerGridSize();
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
         initDeviceProfile(app.getInvariantDeviceProfile());
