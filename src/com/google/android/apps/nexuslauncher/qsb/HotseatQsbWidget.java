@@ -29,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -184,7 +185,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
 
     private void startGoogleSearch() {
         final ConfigBuilder f = new ConfigBuilder(this, false);
-        if (mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+        if (!forceFallbackSearch() && mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
             SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
             devicePrefs.edit().putInt("key_hotseat_qsb_tap_count", devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
             mActivity.playQsbAnimation();
@@ -201,6 +202,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
                         }
                     }, null, 0, null, null);
         }
+    }
+
+    private boolean forceFallbackSearch() {
+        return !PackageManagerHelper.isAppEnabled(getContext().getPackageManager(),
+                "com.google.android.apps.nexuslauncher", 0);
     }
 
     @Override
