@@ -39,6 +39,7 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
     val customSwipeDown get() = swipeDownHandler !is NotificationsOpenGestureHandler
 
     val swipeUpAppsSearch get() = swipeUpHandler is StartAppSearchGestureHandler
+    val dockSwipeUpAppsSearch get() = dockSwipeUpHandler is StartAppSearchGestureHandler
 
     fun onSwipeUp() {
         swipeUpHandler.onGestureTrigger(controller)
@@ -52,8 +53,8 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
         swipeDownHandler.onGestureTrigger(controller)
     }
 
-    fun onSwipeUpAllAppsComplete() {
-        if (swipeUpAppsSearch) {
+    fun onSwipeUpAllAppsComplete(fromDock: Boolean) {
+        if (if (fromDock) dockSwipeUpAppsSearch else swipeUpAppsSearch) {
             controller.launcher.appsView.searchUiManager.startSearch()
         }
     }

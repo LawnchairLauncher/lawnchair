@@ -274,7 +274,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
         } else if (mStartState == NORMAL && targetState == ALL_APPS) {
             LawnchairLauncher.Companion.getLauncher(mLauncher).getGestureController()
-                    .getVerticalSwipeGesture().onSwipeUpAllAppsComplete();
+                    .getVerticalSwipeGesture().onSwipeUpAllAppsComplete(mStartedFromHotseat);
         }
     }
 
