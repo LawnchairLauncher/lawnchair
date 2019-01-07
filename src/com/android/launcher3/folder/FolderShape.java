@@ -49,6 +49,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Themes;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -387,6 +388,8 @@ public abstract class FolderShape {
 
             final int depth = parser.getDepth();
             int[] radiusAttr = new int[] {R.attr.folderIconRadius};
+            IntArray keysToIgnore = new IntArray(0);
+
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
 
@@ -396,7 +399,7 @@ public abstract class FolderShape {
                     FolderShape shape = getShapeDefinition(parser.getName(), a.getFloat(0, 1));
                     a.recycle();
 
-                    shape.mAttrs = Themes.createValueMap(context, attrs);
+                    shape.mAttrs = Themes.createValueMap(context, attrs, keysToIgnore);
                     result.add(shape);
                 }
             }

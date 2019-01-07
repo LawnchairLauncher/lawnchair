@@ -112,16 +112,19 @@ public class Themes {
      * Creates a map for attribute-name to value for all the values in {@param attrs} which can be
      * held in memory for later use.
      */
-    public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet) {
+    public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet,
+            IntArray keysToIgnore) {
         int count = attrSet.getAttributeCount();
-        int[] attrNames = new int[count];
+        IntArray attrNameArray = new IntArray(count);
         for (int i = 0; i < count; i++) {
-            attrNames[i] = attrSet.getAttributeNameResource(i);
+            attrNameArray.add(attrSet.getAttributeNameResource(i));
         }
+        attrNameArray.removeAllValues(keysToIgnore);
 
-        SparseArray<TypedValue> result = new SparseArray<>(count);
+        int[] attrNames = attrNameArray.toArray();
+        SparseArray<TypedValue> result = new SparseArray<>(attrNames.length);
         TypedArray ta = context.obtainStyledAttributes(attrSet, attrNames);
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < attrNames.length; i++) {
             TypedValue tv = new TypedValue();
             ta.getValue(i, tv);
             result.put(attrNames[i], tv);
