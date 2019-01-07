@@ -290,17 +290,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     }
 
     static int c(Launcher launcher) {
-        Resources resources = launcher.getResources();
-        DeviceProfile profile = launcher.getDeviceProfile();
-        Rect rect = profile.getInsets();
-        Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
-        float f = (((float) (((profile.hotseatBarSizePx + rect.bottom) - hotseatLayoutPadding.top)
-                - hotseatLayoutPadding.bottom)) + (((float) profile.iconSizePx) * 0.92f)) / 2.0f;
-        float f2 = ((float) rect.bottom) * 0.67f;
-        return Math.round(f2 + (
-                ((((((float) (profile.hotseatBarSizePx + rect.bottom)) - f2) - f) - resources
-                        .getDimension(R.dimen.qsb_widget_height))
-                        - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
+        return launcher.getDeviceProfile().getInsets().bottom + launcher.getResources().getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
     }
 
     @Nullable
