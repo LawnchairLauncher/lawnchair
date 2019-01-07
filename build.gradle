@@ -121,8 +121,8 @@ dependencies {
     implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
-    implementation PROTOBUF_DEPENDENCY
     implementation project(':IconLoader')
+    implementation fileTree(dir: "libs", include: 'launcher_protos.jar')
 
     // This is already included in sysui_shared
     aospImplementation fileTree(dir: "libs", include: 'plugin_core.jar')
