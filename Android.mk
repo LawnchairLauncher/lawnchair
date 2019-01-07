@@ -187,10 +187,13 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
     $(call all-java-files-under, src_flags) \
     $(call all-java-files-under, src_shortcuts_overrides)
 
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
+LOCAL_RESOURCE_DIR := \
+    $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
 LOCAL_PROGUARD_ENABLED := disabled
 
 
@@ -217,7 +220,9 @@ LOCAL_PACKAGE_NAME := Launcher3QuickStep
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
+LOCAL_RESOURCE_DIR := \
+    $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/AndroidManifest.xml \
@@ -249,16 +254,63 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
     $(call all-java-files-under, go/src)
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res \
     $(LOCAL_PATH)/go/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_PROGUARD_ENABLED := full
 
 LOCAL_PACKAGE_NAME := Launcher3QuickStepGo
+LOCAL_PRIVILEGED_MODULE := true
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
+
+LOCAL_FULL_LIBS_MANIFEST_FILES := \
+    $(LOCAL_PATH)/go/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest.xml \
+    $(LOCAL_PATH)/AndroidManifest-common.xml
+
+LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml
+LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
+include $(BUILD_PACKAGE)
+
+#
+# Build rule for Launcher3 Go app with quickstep and Go-specific
+# version of recents for Android Go devices.
+#
+include $(CLEAR_VARS)
+LOCAL_USE_AAPT2 := true
+LOCAL_MODULE_TAGS := optional
+
+ifneq (,$(wildcard frameworks/base))
+  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
+  LOCAL_PRIVATE_PLATFORM_APIS := true
+else
+  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
+  LOCAL_SDK_VERSION := system_current
+  LOCAL_MIN_SDK_VERSION := 26
+endif
+LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
+
+LOCAL_SRC_FILES := \
+    $(call all-java-files-under, src) \
+    $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, go/src) \
+    $(call all-java-files-under, go/quickstep/src)
+
+LOCAL_RESOURCE_DIR := \
+    $(LOCAL_PATH)/quickstep/res \
+    $(LOCAL_PATH)/go/res \
+    $(LOCAL_PATH)/go/quickstep/res
+
+LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_PROGUARD_ENABLED := full
+
+LOCAL_PACKAGE_NAME := Launcher3QuickStepGoIconRecents
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
 
