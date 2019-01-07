@@ -48,7 +48,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Listi yfir vinnuforrit"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Heim"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"Fjarlægja"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Taka niður"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Fjarlægja"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Forritsupplýsingar"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Setja upp"</string>
@@ -101,7 +101,7 @@
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Dropi"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Breytir formi tákns"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Óþekkt"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"Fjarlægja"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Taka niður"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Leita"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Þetta forrit er ekki uppsett"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Forritið fyrir þetta tákn er ekki uppsett. Þú getur fjarlægt það eða leitað að forritinu og sett það upp handvirkt."</string>

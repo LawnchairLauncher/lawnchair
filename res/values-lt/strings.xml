@@ -103,7 +103,7 @@
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Ašara"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Taikomi piktogramos formos pakeitimai"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nežinoma"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"Pašalinti"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Panaikinti"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Ieškoti"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ši programa neįdiegta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šios piktogramos programa neįdiegta. Galite ją pašalinti arba bandyti ieškoti programos ir ją įdiegti patys."</string>

@@ -80,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ajustes de la pantalla de inicio"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitada por el administrador"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"Burbujas de notificación"</string>
@@ -133,7 +133,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Se ha modificado el tamaño del widget a <xliff:g id="NUMBER_0">%1$s</xliff:g> de ancho y <xliff:g id="NUMBER_1">%2$s</xliff:g> de alto"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Accesos directos"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Accesos directos y notificaciones"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Cerrar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificación ignorada"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabajo"</string>
