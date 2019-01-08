@@ -44,6 +44,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.UiThreadHelper;
+import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
@@ -57,6 +59,9 @@ import java.util.ArrayList;
 import java.util.zip.Deflater;
 
 public class UiFactory {
+
+    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
+            WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
@@ -175,10 +180,10 @@ public class UiFactory {
         LauncherState state = launcher.getStateManager().getState();
         if (!OverviewInteractionState.INSTANCE.get(launcher).swipeGestureInitializing()) {
             DeviceProfile profile = launcher.getDeviceProfile();
-            WindowManagerWrapper.getInstance().setShelfHeight(
-                    (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
-                            && !profile.isVerticalBarLayout(),
-                    profile.hotseatBarSizePx);
+            boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                    && !profile.isVerticalBarLayout();
+            UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
+                    visible ? 1 : 0, profile.hotseatBarSizePx);
         }
 
         if (state == NORMAL) {
