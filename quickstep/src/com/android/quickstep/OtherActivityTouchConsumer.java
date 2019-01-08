@@ -21,11 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
-import static com.android.systemui.shared.system.ActivityManagerWrapper
-        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
@@ -192,7 +190,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 if (mPassedInitialSlop && mInteractionHandler != null) {
                     // Move
-                    mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
+                    dispatchMotion(ev, displacement - mStartDisplacement);
                 }
                 break;
             }
@@ -204,6 +202,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 finishTouchTracking(ev);
                 break;
             }
+        }
+    }
+
+    private void dispatchMotion(MotionEvent ev, float displacement) {
+        mInteractionHandler.updateDisplacement(displacement);
+        boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
+        if (!isLandscape) {
+            mInteractionHandler.dispatchMotionEventToRecentsView(ev);
         }
     }
 
@@ -297,15 +303,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (mPassedInitialSlop && mInteractionHandler != null) {
-            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
+            dispatchMotion(ev, getDisplacement(ev) - mStartDisplacement);
 
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
-            float velocity = isNavBarOnRight() ? mVelocityTracker.getXVelocity(mActivePointerId)
-                    : isNavBarOnLeft() ? -mVelocityTracker.getXVelocity(mActivePointerId)
+            float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
+            float velocity = isNavBarOnRight() ? velocityX
+                    : isNavBarOnLeft() ? -velocityX
                             : mVelocityTracker.getYVelocity(mActivePointerId);
-            mInteractionHandler.onGestureEnded(velocity);
+            mInteractionHandler.onGestureEnded(velocity, velocityX);
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
