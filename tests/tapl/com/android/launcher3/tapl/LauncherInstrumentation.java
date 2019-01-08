@@ -83,13 +83,13 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
-    static final String LAUNCHER_PKG = "com.google.android.apps.nexuslauncher";
     public static final int WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
     private final UiDevice mDevice;
+    final String mLauncherPackageName;
     private final boolean mSwipeUpEnabled;
     private Boolean mSwipeUpEnabledOverride = null;
     private final Instrumentation mInstrumentation;
@@ -101,6 +101,7 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
+        mLauncherPackageName = mDevice.getLauncherPackageName();
         final boolean swipeUpEnabledDefault =
                 !SwipeUpSetting.isSwipeUpSettingAvailable() ||
                         SwipeUpSetting.isSwipeUpEnabledDefaultValue();
@@ -385,8 +386,8 @@ public final class LauncherInstrumentation {
         return object;
     }
 
-    static BySelector getLauncherObjectSelector(String resName) {
-        return By.res(LAUNCHER_PKG, resName);
+    BySelector getLauncherObjectSelector(String resName) {
+        return By.res(mLauncherPackageName, resName);
     }
 
     @NonNull
