@@ -58,6 +58,8 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
     private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
             "config_swipe_up_gesture_setting_available";
+    private static final String CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
+            "config_custom_swipe_up_gesture_setting_available";
     private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
             "config_swipe_up_gesture_default";
 
@@ -234,7 +236,19 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     }
 
     public static boolean isSwipeUpSettingsAvailable() {
-        return getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
+        return getSystemBooleanRes(CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME,
+                SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
+    }
+
+    private static boolean getSystemBooleanRes(String resName, String fallback) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
+
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            return getSystemBooleanRes(fallback);
+        }
     }
 
     private static boolean getSystemBooleanRes(String resName) {
