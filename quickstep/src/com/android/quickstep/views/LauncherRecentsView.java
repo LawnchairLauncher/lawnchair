@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewDebug;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -70,6 +71,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     private float mTranslationYFactor;
 
     private final TransformParams mTransformParams = new TransformParams();
+    final LauncherLayoutListener mLauncherLayoutListener;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -82,6 +84,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
+        mLauncherLayoutListener = new LauncherLayoutListener(BaseActivity.fromContext(context));
     }
 
     @Override

@@ -154,7 +154,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @Override
         public LayoutListener createLayoutListener(Launcher activity) {
-            return new LauncherLayoutListener(activity);
+            return LauncherLayoutListener.resetAndGet(activity);
         }
 
         @Override

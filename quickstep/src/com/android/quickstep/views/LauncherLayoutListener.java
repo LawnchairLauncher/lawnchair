@@ -40,17 +40,35 @@ import com.android.quickstep.WindowTransformSwipeHandler;
 public class LauncherLayoutListener extends AbstractFloatingView
         implements Insettable, LayoutListener {
 
+    public static LauncherLayoutListener resetAndGet(Launcher launcher) {
+        LauncherRecentsView lrv = launcher.getOverviewPanel();
+        LauncherLayoutListener listener = lrv.mLauncherLayoutListener;
+        if (listener.isOpen()) {
+            listener.close(false);
+        }
+        listener.setHandler(null);
+        return listener;
+    }
+
     private final Launcher mLauncher;
     private final Paint mPaint = new Paint();
     private WindowTransformSwipeHandler mHandler;
     private RectF mCurrentRect;
     private float mCornerRadius;
 
-    public LauncherLayoutListener(Launcher launcher) {
+    private boolean mWillNotDraw;
+
+    /**
+     * package private
+     */
+    LauncherLayoutListener(Launcher launcher) {
         super(launcher, null);
         mLauncher = launcher;
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        mWillNotDraw = willNotDraw();
+        super.setWillNotDraw(false);
     }
 
     @Override
@@ -66,6 +84,12 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
         setWillNotDraw(mCurrentRect == null || isLongSwipe);
         invalidate();
+    }
+
+    @Override
+    public void setWillNotDraw(boolean willNotDraw) {
+        // Prevent super call as that causes additional relayout.
+        mWillNotDraw = willNotDraw;
     }
 
     @Override
@@ -125,6 +149,8 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        if (!mWillNotDraw) {
+            canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        }
     }
 }
