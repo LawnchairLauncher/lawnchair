@@ -58,6 +58,8 @@ import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -354,6 +356,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         float[] scale = isAppOpening
                 ? new float[] {1, mContentScale}
                 : new float[] {mContentScale, 1};
+        float[] blurAlphas = isAppOpening
+                ? new float[] {0, 1}
+                : new float[] {1, 0};
 
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
@@ -441,6 +446,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 transY.setDuration(350);
                 launcherAnimator.play(transY);
             }
+
+            LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
+            background.setBlurProgress(blurAlphas[0]);
+            ObjectAnimator blurAlpha = ObjectAnimator.ofFloat(background,
+                    LawnchairBackgroundView.getBlurProgressProperty(), blurAlphas);
+            blurAlpha.setDuration(217);
+            blurAlpha.setInterpolator(LINEAR);
+            launcherAnimator.play(blurAlpha);
 
             mDragLayer.getScrim().hideSysUiScrim(true);
             // Pause page indicator animations as they lead to layer trashing.
@@ -880,6 +893,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
 
+            LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
+            background.setBlurProgress(1f);
+            workspaceAnimator.play(ObjectAnimator.ofFloat(background,
+                    LawnchairBackgroundView.getBlurProgressProperty(), 1f, 0f));
+
             mDragLayer.getScrim().hideSysUiScrim(true);
 
             // Pause page indicator animations as they lead to layer trashing.
@@ -904,6 +922,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mDragLayer.setScaleX(1f);
         mDragLayer.setScaleY(1f);
         mDragLayer.getScrim().hideSysUiScrim(false);
+        LawnchairLauncher.getLauncher(mLauncher).getBackground().setBlurProgress(0f);
     }
 
     private boolean hasControlRemoteAppTransitionPermission() {
