@@ -91,6 +91,8 @@ public class ClipAnimationHelper {
     private final float mWindowCornerRadius;
     // Corner radius of windows when they're in overview mode.
     private final float mTaskCornerRadius;
+    // If windows can have real time rounded corners.
+    private final boolean mSupportsRoundedCornersOnWindows;
 
     // Corner radius currently applied to transformed window.
     private float mCurrentCornerRadius;
@@ -107,8 +109,12 @@ public class ClipAnimationHelper {
             (t, a1) -> a1;
 
     public ClipAnimationHelper(Context context) {
-        mTaskCornerRadius = context.getResources().getDimension(R.dimen.task_corner_radius);
-        mWindowCornerRadius  = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
+        mWindowCornerRadius = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
+        mSupportsRoundedCornersOnWindows = RecentsModel.INSTANCE.get(context)
+                .supportsRoundedCornersOnWindows();
+        int taskCornerRadiusRes = mSupportsRoundedCornersOnWindows ?
+                R.dimen.task_corner_radius : R.dimen.task_corner_radius_small;
+        mTaskCornerRadius = context.getResources().getDimension(taskCornerRadiusRes);
     }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
@@ -197,9 +203,10 @@ public class ClipAnimationHelper {
                     mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
                     mClipRectF.roundOut(crop);
-                    cornerRadius = Utilities.mapRange(params.progress, mWindowCornerRadius,
-                            mTaskCornerRadius);
-                    mCurrentCornerRadius = cornerRadius;
+                    if (mSupportsRoundedCornersOnWindows) {
+                        cornerRadius = Utilities.mapRange(params.progress, mWindowCornerRadius,
+                                mTaskCornerRadius);
+                    }
                 }
                 alpha = mTaskAlphaCallback.apply(app, params.targetAlpha);
             } else if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
