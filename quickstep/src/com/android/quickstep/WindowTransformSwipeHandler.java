@@ -422,7 +422,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mSyncTransactionApplier = applier;
         });
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            updateFinalShift();
+            if (!mBgLongSwipeMode) {
+                updateFinalShift();
+            }
         });
         mRecentsView.setRecentsAnimationWrapper(mRecentsAnimationWrapper);
         mRecentsView.setClipAnimationHelper(mClipAnimationHelper);
