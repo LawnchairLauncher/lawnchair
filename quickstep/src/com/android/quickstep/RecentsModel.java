@@ -66,6 +66,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private final TaskThumbnailCache mThumbnailCache;
 
     private float mWindowCornerRadius = -1;
+    private Boolean mSupportsRoundedCornersOnWindows;
 
 
     private RecentsModel(Context context) {
@@ -198,6 +199,26 @@ public class RecentsModel extends TaskStackChangeListener {
             }
         }
         return mWindowCornerRadius;
+    }
+
+    public boolean supportsRoundedCornersOnWindows() {
+        if (mSupportsRoundedCornersOnWindows == null) {
+            if (mSystemUiProxy != null) {
+                try {
+                    mSupportsRoundedCornersOnWindows =
+                            mSystemUiProxy.supportsRoundedCornersOnWindows();
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Connection to ISystemUIProxy was lost, ignoring window corner "
+                            + "radius");
+                    return false;
+                }
+            } else {
+                Log.w(TAG, "ISystemUIProxy is null, ignoring window corner radius");
+                return false;
+            }
+        }
+
+        return mSupportsRoundedCornersOnWindows;
     }
 
     public void onTrimMemory(int level) {
