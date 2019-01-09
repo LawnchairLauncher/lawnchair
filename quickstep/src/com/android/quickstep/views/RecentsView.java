@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -69,6 +70,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -105,7 +107,8 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
-        TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback {
+        TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
+        InvariantDeviceProfile.OnIDPChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -150,6 +153,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
     private final SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
+
+    private final InvariantDeviceProfile mIdp;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -293,6 +298,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity = (T) BaseActivity.fromContext(context);
         mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.INSTANCE.get(context);
+        mIdp = InvariantDeviceProfile.INSTANCE.get(context);
+
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
         mClearAllButton.setOnClickListener(this::dismissAllTasks);
@@ -335,6 +342,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Override
+    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) == 0) {
+            return;
+        }
+        mModel.getIconCache().clear();
+        reset();
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateTaskStackListenerState();
@@ -342,6 +358,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = new SyncRtSurfaceTransactionApplierCompat(this);
+        mIdp.addOnChangeListener(this);
     }
 
     @Override
@@ -352,6 +369,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = null;
+        mIdp.removeOnChangeListener(this);
     }
 
     @Override
