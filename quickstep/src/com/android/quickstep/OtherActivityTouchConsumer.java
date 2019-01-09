@@ -99,7 +99,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
-    private boolean mIsGoingToHome;
+    private boolean mIsGoingToLauncher;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
@@ -333,7 +333,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             final WindowTransformSwipeHandler handler = mInteractionHandler;
             mInteractionHandler = null;
-            mIsGoingToHome = handler.mIsGoingToHome;
+            mIsGoingToLauncher = handler.mIsGoingToRecents;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -417,7 +417,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public boolean forceToLauncherConsumer() {
-        return mIsGoingToHome;
+        return mIsGoingToLauncher;
     }
 
     @Override
