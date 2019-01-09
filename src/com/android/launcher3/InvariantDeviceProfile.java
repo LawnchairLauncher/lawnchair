@@ -30,12 +30,16 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.TypedValue;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.Themes;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -44,6 +48,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 public class InvariantDeviceProfile {
@@ -91,6 +96,8 @@ public class InvariantDeviceProfile {
     public int fillResIconDpi;
     public float iconTextSize;
 
+    private SparseArray<TypedValue> mExtraAttrs;
+
     /**
      * Number of icons inside the hotseat area.
      */
@@ -122,6 +129,7 @@ public class InvariantDeviceProfile {
         numHotseatIcons = p.numHotseatIcons;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
+        mExtraAttrs = p.mExtraAttrs;
     }
 
     @TargetApi(23)
@@ -171,6 +179,8 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
+        mExtraAttrs = closestProfile.extraAttrs;
+
         if (!closestProfile.name.equals(gridName)) {
             Utilities.getPrefs(context).edit()
                     .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
@@ -208,6 +218,11 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+    }
+
+    @Nullable
+    public TypedValue getAttrValue(int attr) {
+        return mExtraAttrs == null ? null : mExtraAttrs.get(attr);
     }
 
     public void addOnChangeListener(OnIDPChangeListener listener) {
@@ -440,6 +455,8 @@ public class InvariantDeviceProfile {
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
+        private final SparseArray<TypedValue> extraAttrs;
+
         GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
@@ -458,6 +475,9 @@ public class InvariantDeviceProfile {
             numFolderColumns = a.getInt(
                     R.styleable.GridDisplayOption_numFolderColumns, numColumns);
             a.recycle();
+
+            extraAttrs = Themes.createValueMap(context, attrs,
+                    IntArray.wrap(R.styleable.GridDisplayOption));
         }
     }
 
