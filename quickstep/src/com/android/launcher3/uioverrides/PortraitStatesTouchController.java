@@ -16,9 +16,11 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_BLUR_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
@@ -32,7 +34,6 @@ import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -164,6 +165,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 0, ALL_APPS_CONTENT_FADE_THRESHOLD));
         builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(DEACCEL,
                 RECENTS_FADE_THRESHOLD, 1));
+        builder.setInterpolator(ANIM_BLUR_FADE, Interpolators.constant(0));
         return builder;
     }
 
@@ -173,6 +175,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
         builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(ACCEL,
                 0f, 1 - RECENTS_FADE_THRESHOLD));
+        builder.setInterpolator(ANIM_BLUR_FADE, Interpolators.constant(1));
+        return builder;
+    }
+
+    private AnimatorSetBuilder getSkipBlurAnimation() {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        builder.setInterpolator(ANIM_BLUR_FADE, Interpolators.constant(1));
         return builder;
     }
 
@@ -186,6 +195,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             builder = getOverviewToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == OVERVIEW) {
             builder = getAllAppsToOverviewAnimation();
+        } else if (fromState == ALL_APPS && (toState == NORMAL || toState == FAST_OVERVIEW)) {
+            builder = getSkipBlurAnimation();
         }
         return builder;
     }

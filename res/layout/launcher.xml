@@ -20,6 +20,11 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <ch.deletescape.lawnchair.views.LawnchairBackgroundView
+        android:id="@+id/lawnchair_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.android.launcher3.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"

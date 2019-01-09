@@ -170,6 +170,10 @@ public class Interpolators {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 
+    public static Interpolator constant(float value) {
+        return t -> value;
+    }
+
     /**
      * Computes parameters necessary for an overshoot effect.
      */

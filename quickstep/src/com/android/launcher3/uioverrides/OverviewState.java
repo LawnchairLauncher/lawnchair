@@ -114,6 +114,11 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getWorkspaceBlurAlpha(Launcher launcher) {
+        return 1f;
+    }
+
+    @Override
     public float getVerticalProgress(Launcher launcher) {
         if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
             // We have no all apps content, so we're still at the fully down progress.

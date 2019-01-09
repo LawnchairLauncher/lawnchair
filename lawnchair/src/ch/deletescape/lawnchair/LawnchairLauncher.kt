@@ -40,6 +40,7 @@ import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.views.LauncherRecentsView
@@ -51,6 +52,7 @@ import java.util.concurrent.Semaphore
 open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnPreferenceChangeListener {
     val hideStatusBarKey = "pref_hideStatusBar"
     val gestureController by lazy { GestureController(this) }
+    val background by lazy { findViewById<LawnchairBackgroundView>(R.id.lawnchair_background)!! }
     var updateWallpaper = true
 
     protected open val isScreenshotMode = false
@@ -251,6 +253,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         var currentEditInfo: ItemInfo? = null
         var currentEditIcon: Drawable? = null
 
+        @JvmStatic
         fun getLauncher(context: Context): LawnchairLauncher {
             return context as? LawnchairLauncher ?: (context as ContextWrapper).baseContext as LawnchairLauncher
         }

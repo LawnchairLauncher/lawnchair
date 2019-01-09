@@ -36,6 +36,7 @@ public class AnimatorSetBuilder {
     public static final int ANIM_OVERVIEW_SCALE = 3;
     public static final int ANIM_OVERVIEW_FADE = 4;
     public static final int ANIM_ALL_APPS_FADE = 5;
+    public static final int ANIM_BLUR_FADE = 6;
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 

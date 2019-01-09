@@ -241,6 +241,10 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
         return 0;
     }
 
+    public float getWorkspaceBlurAlpha(Launcher launcher) {
+        return 0;
+    }
+
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
