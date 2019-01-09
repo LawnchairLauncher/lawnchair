@@ -22,6 +22,7 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -866,7 +867,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         animateToProgress(startShift, endShift, duration, interpolator, goingToHome,
-                goingToNewTask);
+                goingToNewTask, velocityPxPerMs);
     }
 
     private void doLogGesture(boolean toLauncher) {
@@ -891,14 +892,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
-    private void animateToProgress(float start, float end, long duration,
-            Interpolator interpolator, boolean goingToHome, boolean goingToNewTask) {
+    private void animateToProgress(float start, float end, long duration, Interpolator interpolator,
+            boolean goingToHome, boolean goingToNewTask, float velocityPxPerMs) {
         mRecentsAnimationWrapper.runOnInit(() -> animateToProgressInternal(start, end, duration,
-                interpolator, goingToHome, goingToNewTask));
+                interpolator, goingToHome, goingToNewTask, velocityPxPerMs));
     }
 
     private void animateToProgressInternal(float start, float end, long duration,
-            Interpolator interpolator, boolean goingToHome, boolean goingToNewTask) {
+            Interpolator interpolator, boolean goingToHome, boolean goingToNewTask,
+            float velocityPxPerMs) {
         mIsGoingToHome = goingToHome;
         ObjectAnimator anim = mCurrentShift.animateToValue(start, end).setDuration(duration);
         anim.setInterpolator(interpolator);
@@ -936,7 +938,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 mLauncherTransitionController.dispatchSetInterpolator(Interpolators.mapToProgress(
                         interpolator, adjustedStart, end));
                 mLauncherTransitionController.getAnimationPlayer().setDuration(adjustedDuration);
-                mLauncherTransitionController.getAnimationPlayer().start();
+
+                if (QUICKSTEP_SPRINGS.get()) {
+                    mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs);
+                } else {
+                    mLauncherTransitionController.getAnimationPlayer().start();
+                }
             }
         });
     }
@@ -1098,7 +1105,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 ? QUICK_SWITCH_FROM_APP_START_DURATION
                 : QUICK_SCRUB_FROM_APP_START_DURATION;
         animateToProgress(mCurrentShift.value, 1f, duration, LINEAR, true /* goingToHome */,
-                false /* goingToNewTask */);
+                false /* goingToNewTask */, 1f);
     }
 
     private void onQuickScrubStartUi() {
