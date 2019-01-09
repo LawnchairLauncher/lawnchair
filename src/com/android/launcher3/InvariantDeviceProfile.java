@@ -214,6 +214,10 @@ public class InvariantDeviceProfile {
         mChangeListeners.add(listener);
     }
 
+    public void removeOnChangeListener(OnIDPChangeListener listener) {
+        mChangeListeners.remove(listener);
+    }
+
     private void killProcess(Context context) {
         Log.e("ConfigMonitor", "restarting launcher");
         android.os.Process.killProcess(android.os.Process.myPid());
