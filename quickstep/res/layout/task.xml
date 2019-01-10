@@ -42,14 +42,8 @@
         android:importantForAccessibility="noHideDescendants"
         android:background="#800000FF"
         android:layout_gravity="bottom"
+        android:gravity="center"
+        android:textColor="@android:color/white"
         android:visibility="gone"
-    >
-        <TextView
-            android:id="@+id/remaining_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textColor="@android:color/white"
         />
-    </com.android.quickstep.views.DigitalWellBeingToast>
 </com.android.quickstep.views.TaskView>

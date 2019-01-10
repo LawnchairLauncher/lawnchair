@@ -203,7 +203,7 @@ public class TouchInteractionService extends Service {
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, TouchConsumer.NO_OP);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
-        mTaskOverlayFactory = TaskOverlayFactory.get(this);
+        mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
         mTouchInteractionLog = new TouchInteractionLog();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();

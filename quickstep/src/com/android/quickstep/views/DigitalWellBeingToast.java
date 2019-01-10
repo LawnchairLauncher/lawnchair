@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher;
@@ -32,7 +31,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.recents.model.Task;
 
-public final class DigitalWellBeingToast extends LinearLayout {
+public final class DigitalWellBeingToast extends TextView {
+
     public interface InitializeCallback {
         void call(float saturation, String contentDescription);
     }
@@ -56,12 +56,11 @@ public final class DigitalWellBeingToast extends LinearLayout {
             final long appRemainingTimeMs = -1;
             final boolean isGroupLimit = true;
             post(() -> {
-                final TextView remainingTimeText = findViewById(R.id.remaining_time);
                 if (appUsageLimitTimeMs < 0) {
                     setVisibility(GONE);
                 } else {
                     setVisibility(VISIBLE);
-                    remainingTimeText.setText(getText(appRemainingTimeMs, isGroupLimit));
+                    setText(getText(appRemainingTimeMs, isGroupLimit));
                 }
 
                 callback.call(
