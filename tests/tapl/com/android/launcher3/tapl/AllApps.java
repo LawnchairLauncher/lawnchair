@@ -54,7 +54,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public AppIcon getAppIcon(String appName) {
         final UiObject2 allAppsContainer = verifyActiveContainer();
-        final BySelector appIconSelector = AppIcon.getAppIconSelector(appName);
+        final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
         if (!allAppsContainer.hasObject(appIconSelector)) {
             scrollBackToBeginning();
             int attempts = 0;

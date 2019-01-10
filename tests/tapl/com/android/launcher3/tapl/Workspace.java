@@ -69,7 +69,7 @@ public final class Workspace extends Home {
     @Nullable
     public AppIcon tryGetWorkspaceAppIcon(String appName) {
         final UiObject2 workspace = verifyActiveContainer();
-        final UiObject2 icon = workspace.findObject(AppIcon.getAppIconSelector(appName));
+        final UiObject2 icon = workspace.findObject(AppIcon.getAppIconSelector(appName, mLauncher));
         return icon != null ? new AppIcon(mLauncher, icon) : null;
     }
 
@@ -85,7 +85,7 @@ public final class Workspace extends Home {
         return new AppIcon(mLauncher,
                 mLauncher.getObjectInContainer(
                         verifyActiveContainer(),
-                        AppIcon.getAppIconSelector(appName)));
+                        AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
     /**
@@ -108,7 +108,7 @@ public final class Workspace extends Home {
     @NonNull
     private AppIcon getHotseatAppIcon(String appName) {
         return new AppIcon(mLauncher, mLauncher.getObjectInContainer(
-                mHotseat, AppIcon.getAppIconSelector(appName)));
+                mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
     private void dragIconToNextScreen(AppIcon app, UiObject2 workspace) {
