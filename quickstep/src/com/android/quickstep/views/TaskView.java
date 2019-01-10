@@ -214,7 +214,7 @@ public class TaskView extends FrameLayout implements PageCallbacks {
      */
     public void bind(Task task) {
         mTask = task;
-        mSnapshotView.bind();
+        mSnapshotView.bind(task);
     }
 
     public Task getTask() {
