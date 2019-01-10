@@ -56,8 +56,10 @@ public class LauncherLayoutListener extends AbstractFloatingView
     @Override
     public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
                   float cornerRadius) {
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get() && shouldFinish) {
-            finish();
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (shouldFinish) {
+                finish();
+            }
             return;
         }
 
