@@ -14,6 +14,12 @@
         android:persistent="true"
         android:title="@string/swipe_left_to_go_back_title" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="pref_recents_blur_background"
+        android:persistent="true"
+        android:title="Blur background" /> <!-- TODO Move this to blur pref with toggles for other sections -->
+
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_recents_radius"
         android:title="@string/pref_recents_radius"

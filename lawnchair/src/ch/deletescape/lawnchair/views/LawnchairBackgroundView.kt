@@ -26,6 +26,7 @@ import android.util.Property
 import android.view.View
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.Insettable
 import com.android.launcher3.Utilities
@@ -94,7 +95,8 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
 
     private fun createFullBlurDrawable() {
         fullBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
-        fullBlurDrawable = if (Utilities.isRecentsEnabled() && BlurWallpaperProvider.isEnabled) {
+        fullBlurDrawable = if (Utilities.isRecentsEnabled() && BlurWallpaperProvider.isEnabled
+                && context.lawnchairPrefs.recentsBlurredBackground) {
             blurProvider.createDrawable(0f, false).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)

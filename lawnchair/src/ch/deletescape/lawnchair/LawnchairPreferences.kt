@@ -185,6 +185,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
         OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
     }
+    val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
+        onChangeCallback?.launcher?.background?.onEnabledChanged()
+    }
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
