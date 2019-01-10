@@ -380,9 +380,10 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForLauncherObject(String resName) {
-        final UiObject2 object = mDevice.wait(Until.findObject(getLauncherObjectSelector(resName)),
-                WAIT_TIME_MS);
-        assertNotNull("Can't find a launcher object; id: " + resName, object);
+        final BySelector selector = getLauncherObjectSelector(resName);
+        final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object; selector: " + selector + ", current launcher: "
+                + mDevice.getLauncherPackageName(), object);
         return object;
     }
 
