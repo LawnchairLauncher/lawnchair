@@ -21,13 +21,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
-
-import java.lang.annotation.Retention;
-
 import androidx.annotation.AnyThread;
 import androidx.annotation.IntDef;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
+
+import java.lang.annotation.Retention;
 
 public class LayoutUtils {
 
@@ -112,7 +113,14 @@ public class LayoutUtils {
                 Math.round(x + outWidth), Math.round(y + outHeight));
     }
 
-    public static int getShelfTrackingDistance(DeviceProfile dp) {
+    public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            // Track the bottom of the window rather than the top of the shelf.
+            int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+            int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
+                    R.dimen.task_card_vert_space);
+            return shelfHeight + spaceBetweenShelfAndRecents;
+        }
         // Start from a third of bottom inset to provide some shelf overlap.
         return dp.hotseatBarSizePx + dp.getInsets().bottom / 3 - dp.edgeMarginPx * 2;
     }

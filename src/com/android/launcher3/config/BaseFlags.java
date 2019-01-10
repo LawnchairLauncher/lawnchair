@@ -104,6 +104,10 @@ abstract class BaseFlags {
     public static final TogglableFlag ENABLE_QUICKSTEP_LIVE_TILE = new TogglableFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
+    public static final ToggleableGlobalSettingsFlag SWIPE_HOME
+            = new ToggleableGlobalSettingsFlag("SWIPE_HOME", false,
+            "[WIP] Swiping up on the nav bar goes home. Swipe and hold goes to recent apps.");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {

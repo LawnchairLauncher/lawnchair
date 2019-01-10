@@ -216,7 +216,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + hotseatInset;
             } else {
-                return LayoutUtils.getShelfTrackingDistance(dp);
+                return LayoutUtils.getShelfTrackingDistance(context, dp);
             }
         }
 
