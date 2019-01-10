@@ -24,6 +24,7 @@ import android.content.Intent
 import android.os.Build
 import android.support.annotation.Keep
 import android.util.Log
+import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.mainHandler
@@ -44,7 +45,7 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
         get() = TouchInteractionService.isConnected()
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_lawnstep) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.stateManager.goToState(LauncherState.OVERVIEW)
     }
 
@@ -63,7 +64,7 @@ open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObje
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         RecentsModel.getInstance(context).loadTasks(-1) {
             val opts = ActivityOptions.makeBasic()
             it.taskStack.mostRecentTask?.let { mostRecentTask -> {

@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable
 import android.os.UserHandle
 import android.support.annotation.Keep
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
@@ -31,7 +32,6 @@ import ch.deletescape.lawnchair.getIcon
 import com.android.launcher3.LauncherState
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -47,7 +47,7 @@ open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : Ges
     override val displayName = context.getString(R.string.action_open_drawer)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.stateManager.goToState(LauncherState.ALL_APPS, true, getOnCompleteRunnable(controller))
     }
 
@@ -64,7 +64,7 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
     override val displayName = context.getString(R.string.action_open_widgets)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_widget) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         WidgetsFullSheet.show(controller.launcher, true)
     }
 }
@@ -75,7 +75,7 @@ class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val displayName = context.getString(R.string.action_open_settings)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.startActivity(Intent(Intent.ACTION_APPLICATION_PREFERENCES).apply {
             `package` = controller.launcher.packageName
         })
@@ -88,7 +88,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val displayName = context.getString(R.string.action_open_overview)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
     }
 }
@@ -100,7 +100,7 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
     override val displayName = context.getString(R.string.action_global_search)!!
     override val icon: Drawable = searchProvider.getIcon()
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         searchProvider.startSearch {
             try {
                 context.startActivity(it)
@@ -128,7 +128,7 @@ class OpenOverlayGestureHandler(context: Context, config: JSONObject?) : Gesture
     override val displayName = context.getString(R.string.action_overlay)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_super_g_color) }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.googleNow.showOverlay(true)
     }
 }
@@ -219,12 +219,20 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
         }
     }
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
+        if (view == null) {
+            val down = controller.touchDownPoint
+            controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
+                onGestureTrigger(controller, it)
+            }
+            return
+        }
+        val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
         when (type) {
             "app" -> {
                 try {
                     LauncherAppsCompat.getInstance(context)
-                            .startActivityForProfile(target!!.componentName, target!!.user, null, null)
+                            .startActivityForProfile(target!!.componentName, target!!.user, null, opts)
                 } catch (e: NullPointerException){
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.app_gesture_failed_toast, Toast.LENGTH_LONG).show()
@@ -232,7 +240,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             }
             "shortcut" -> {
                 DeepShortcutManager.getInstance(context)
-                        .startShortcut(packageName, id, intent, null, user)
+                        .startShortcut(packageName, id, intent, opts, user)
             }
         }
     }
@@ -247,7 +255,7 @@ class StartAssistantGestureHandler(context: Context, config: JSONObject?) : Gest
     override val displayName = context.getString(R.string.action_assistant)
     override val icon: Drawable? = searchProvider.getAssistantIcon()
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         SearchProviderController.getInstance(context).searchProvider.startAssistant {
             try {
                 context.startActivity(it)
@@ -266,7 +274,7 @@ class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : Ge
     override val displayName = context.getString(R.string.action_voice_search)
     override val icon: Drawable? = searchProvider.getVoiceIcon()
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         SearchProviderController.getInstance(context).searchProvider.startVoiceSearch {
             try {
                 context.startActivity(it)

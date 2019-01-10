@@ -33,7 +33,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
+import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
@@ -53,6 +55,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     val hideStatusBarKey = "pref_hideStatusBar"
     val gestureController by lazy { GestureController(this) }
     val background by lazy { findViewById<LawnchairBackgroundView>(R.id.lawnchair_background)!! }
+    val dummyView by lazy { findViewById<View>(R.id.dummy_view)!! }
     var updateWallpaper = true
 
     protected open val isScreenshotMode = false
@@ -70,6 +73,26 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
         Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
         Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
+    }
+
+    inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {
+        prepareDummyView(view.left, view.top, view.right, view.bottom, callback)
+    }
+
+    inline fun prepareDummyView(left: Int, top: Int, crossinline callback: (View) -> Unit) {
+        val size = resources.getDimensionPixelSize(R.dimen.options_menu_thumb_size)
+        val halfSize = size / 2
+        prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback)
+    }
+
+    inline fun prepareDummyView(left: Int, top: Int, right: Int, bottom: Int,
+                                crossinline callback: (View) -> Unit) {
+        dummyView.layoutParams = FrameLayout.LayoutParams(right - left, bottom - top).also {
+            it.leftMargin = left
+            it.topMargin = top
+        }
+        dummyView.requestLayout()
+        dummyView.post { callback(dummyView) }
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {

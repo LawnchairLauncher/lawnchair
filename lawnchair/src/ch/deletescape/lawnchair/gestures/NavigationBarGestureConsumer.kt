@@ -207,7 +207,7 @@ class SwitchAppsGestureHandler(context: Context, config: JSONObject?) : GestureH
 
     override val displayName = context.getString(R.string.action_switch_apps)!!
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
 
     }
 

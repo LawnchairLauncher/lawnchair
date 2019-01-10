@@ -26,12 +26,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
 import android.support.annotation.Keep
+import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.lawnchairApp
@@ -39,17 +38,14 @@ import ch.deletescape.lawnchair.root.IRootHelper
 import ch.deletescape.lawnchair.root.RootHelperManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import eu.chainfire.libsuperuser.Shell
 import org.json.JSONObject
-import java.io.DataOutputStream
-import java.io.IOException
 import java.lang.reflect.Method
 
 @Keep
 class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
     override val displayName = context.getString(R.string.action_sleep)
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         method!!.sleep(controller)
     }
 
@@ -139,7 +135,7 @@ class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : Gestur
 
     override val displayName = context.getString(R.string.action_sleep_timeout)!!
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         val launcher = controller.launcher
         if (!Utilities.ATLEAST_MARSHMALLOW || Settings.System.canWrite(launcher)) {
             launcher.startActivity(Intent(launcher, SleepTimeoutActivity::class.java))

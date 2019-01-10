@@ -18,24 +18,12 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
-import android.os.UserHandle
 import android.support.annotation.Keep
-import android.widget.Toast
+import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
-import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
-import com.android.launcher3.LauncherState
-import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.compat.LauncherAppsCompat
-import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.shortcuts.DeepShortcutManager
-import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.views.OptionsPopupView
-import com.android.launcher3.widget.WidgetsFullSheet
 import org.json.JSONObject
 
 @Keep
@@ -43,7 +31,7 @@ open class PlayDespacitoGestureHandler(context: Context, config: JSONObject?) : 
 
     override val displayName = context.getString(R.string.action_despacito)
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         val mp = MediaPlayer.create(context, R.raw.despacito)
         mp.start()
     }

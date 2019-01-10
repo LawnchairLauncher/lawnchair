@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.gestures.handlers
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.annotation.Keep
+import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
@@ -32,7 +33,7 @@ class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : G
     override val displayName = context.getString(R.string.action_open_notifications)!!
 
     @SuppressLint("PrivateApi", "WrongConstant")
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         try {
             Class.forName("android.app.StatusBarManager")
                     .getMethod("expandNotificationsPanel")
@@ -51,7 +52,7 @@ class NotificationsCloseGestureHandler(context: Context, config: JSONObject?) : 
     override val displayName = context.getString(R.string.action_close_notifications)!!
 
     @SuppressLint("PrivateApi", "WrongConstant")
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
         try {
             Class.forName("android.app.StatusBarManager")
                     .getMethod("collapsePanels")

@@ -20,7 +20,7 @@ package ch.deletescape.lawnchair.gestures
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import ch.deletescape.lawnchair.getIcon
+import android.view.View
 import com.android.launcher3.R
 import org.json.JSONObject
 
@@ -33,7 +33,7 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
     open val icon: Drawable? = null
     open val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_launcher) }
 
-    abstract fun onGestureTrigger(controller: GestureController)
+    abstract fun onGestureTrigger(controller: GestureController, view: View? = null)
 
     protected open fun saveConfig(config: JSONObject) {
 
@@ -65,7 +65,7 @@ class BlankGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 
     override val displayName = context.getString(R.string.action_none)!!
 
-    override fun onGestureTrigger(controller: GestureController) {
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
 
     }
 }
