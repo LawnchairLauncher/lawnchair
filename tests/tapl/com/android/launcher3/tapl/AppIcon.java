@@ -32,7 +32,7 @@ public final class AppIcon extends Launchable {
     }
 
     static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
-        return By.clazz(TextView.class).text(appName).pkg(launcher.mLauncherPackageName);
+        return By.clazz(TextView.class).text(appName).pkg(launcher.getLauncherPackageName());
     }
 
     /**
