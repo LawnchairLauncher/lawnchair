@@ -443,7 +443,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
             boolean toggleVisibility) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
-        mFloatingView = new View(mLauncher);
+        if (mFloatingView == null) {
+            mFloatingView = new View(mLauncher);
+        } else {
+            mFloatingView.setTranslationX(0);
+            mFloatingView.setTranslationY(0);
+            mFloatingView.setScaleX(1);
+            mFloatingView.setScaleY(1);
+            mFloatingView.setAlpha(1);
+            mFloatingView.setBackground(null);
+        }
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
             mFloatingView.setBackground(DrawableFactory.INSTANCE.get(mLauncher)
@@ -481,19 +490,17 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 : viewLocationLeft;
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
-        lp.setMarginStart(viewLocationStart);
+        lp.leftMargin = viewLocationStart;
         lp.topMargin = viewLocationTop;
         mFloatingView.setLayoutParams(lp);
 
         // Set the properties here already to make sure they'are available when running the first
         // animation frame.
-        mFloatingView.setLeft(viewLocationLeft);
-        mFloatingView.setTop(viewLocationTop);
-        mFloatingView.setRight(viewLocationLeft + rect.width());
-        mFloatingView.setBottom(viewLocationTop + rect.height());
+        mFloatingView.layout(viewLocationLeft, viewLocationTop,
+                viewLocationLeft + rect.width(), viewLocationTop + rect.height());
 
         // Swap the two views in place.
-        ((ViewGroup) mDragLayer.getParent()).addView(mFloatingView);
+        ((ViewGroup) mDragLayer.getParent()).getOverlay().add(mFloatingView);
         if (toggleVisibility) {
             v.setVisibility(View.INVISIBLE);
         }
@@ -562,7 +569,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     ((BubbleTextView) v).setStayPressed(false);
                 }
                 v.setVisibility(View.VISIBLE);
-                ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
+                ((ViewGroup) mDragLayer.getParent()).getOverlay().remove(mFloatingView);
             }
         });
     }
