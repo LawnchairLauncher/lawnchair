@@ -629,9 +629,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 // Animate window corner radius from 100% to windowCornerRadius.
                 float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher)
                         .getWindowCornerRadius();
-                float circleRadius = iconWidth / 2f;
-                float windowRadius = Utilities.mapRange(easePercent, circleRadius,
-                        windowCornerRadius);
+                float windowRadius = 0;
+                if (RecentsModel.INSTANCE.get(mLauncher).supportsRoundedCornersOnWindows()) {
+                    float circleRadius = iconWidth / 2f;
+                    windowRadius = Utilities.mapRange(easePercent, circleRadius,
+                            windowCornerRadius);
+                }
 
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
