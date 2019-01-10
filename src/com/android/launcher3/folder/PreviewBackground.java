@@ -308,10 +308,10 @@ public class PreviewBackground {
         float radius = getScaledRadius();
         if (mShapePath != null) {
             int count = canvas.save();
-            float scale = ((radius + deltaRadius) * 2) / 100.0f;
+            float scale = (radius * 2) / 100.0f;
 
+            canvas.translate(getOffsetX(), getOffsetY());
             canvas.scale(scale, scale);
-            canvas.translate(getOffsetX() / scale, getOffsetY() / scale);
             canvas.drawPath(mShapePath, mPaint);
             canvas.restoreToCount(count);
         } else {
