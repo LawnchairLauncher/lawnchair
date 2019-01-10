@@ -116,8 +116,12 @@ public class TaskThumbnailView extends View {
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
     }
 
-    public void bind() {
+    public void bind(Task task) {
         mOverlay.reset();
+        mTask = task;
+        int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
+        mPaint.setColor(color);
+        mBackgroundPaint.setColor(color);
     }
 
     /**
@@ -125,10 +129,6 @@ public class TaskThumbnailView extends View {
      */
     public void setThumbnail(Task task, ThumbnailData thumbnailData) {
         mTask = task;
-        int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
-        mPaint.setColor(color);
-        mBackgroundPaint.setColor(color);
-
         if (thumbnailData != null && thumbnailData.thumbnail != null) {
             Bitmap bm = thumbnailData.thumbnail;
             bm.prepareToDraw();
@@ -255,15 +255,14 @@ public class TaskThumbnailView extends View {
 
     private void updateThumbnailPaintFilter() {
         int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
+        ColorFilter filter = getColorFilter(mul, mIsDarkTextTheme, mSaturation);
+        mBackgroundPaint.setColorFilter(filter);
         mDimmingPaintAfterClearing.setAlpha(255 - mul);
         if (mBitmapShader != null) {
-            ColorFilter filter = getColorFilter(mul, mIsDarkTextTheme, mSaturation);
             mPaint.setColorFilter(filter);
-            mBackgroundPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
             mPaint.setColor(Color.argb(255, mul, mul, mul));
-            mBackgroundPaint.setColorFilter(null);
         }
         invalidate();
     }
