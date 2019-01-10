@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
@@ -188,7 +189,7 @@ public class ClipAnimationHelper {
             mTmpMatrix.setTranslate(app.position.x, app.position.y);
             Rect crop = app.sourceContainerBounds;
             float alpha = 1f;
-            int layer;
+            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             float cornerRadius = 0f;
             float scale = params.currentRect.width() / crop.width();
             if (app.mode == targetSet.targetMode) {
@@ -201,8 +202,7 @@ public class ClipAnimationHelper {
                     mCurrentCornerRadius = cornerRadius;
                 }
                 alpha = mTaskAlphaCallback.apply(app, params.targetAlpha);
-                layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
-            } else {
+            } else if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 crop = null;
                 layer = Integer.MAX_VALUE;
             }
