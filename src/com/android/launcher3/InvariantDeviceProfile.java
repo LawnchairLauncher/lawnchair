@@ -139,6 +139,13 @@ public class InvariantDeviceProfile {
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
     }
 
+    public InvariantDeviceProfile(Context context, String gridName) {
+        String newName = initGrid(context, gridName);
+        if (newName == null || !newName.equals(gridName)) {
+            throw new IllegalArgumentException("Unknown grid name");
+        }
+    }
+
     /**
      * Retrieve system defined or RRO overriden icon shape.
      */
@@ -150,7 +157,7 @@ public class InvariantDeviceProfile {
         return context.getResources().getString(CONFIG_ICON_MASK_RES_ID);
     }
 
-    private void initGrid(Context context, String gridName) {
+    private String initGrid(Context context, String gridName) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -218,6 +225,7 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+        return closestProfile.name;
     }
 
     @Nullable
@@ -441,11 +449,11 @@ public class InvariantDeviceProfile {
     }
 
 
-    private static final class GridOption {
+    public static final class GridOption {
 
-        private final String name;
-        private final int numRows;
-        private final int numColumns;
+        public final String name;
+        public final int numRows;
+        public final int numColumns;
 
         private final int numFolderRows;
         private final int numFolderColumns;
@@ -457,7 +465,7 @@ public class InvariantDeviceProfile {
 
         private final SparseArray<TypedValue> extraAttrs;
 
-        GridOption(Context context, AttributeSet attrs) {
+        public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
             name = a.getString(R.styleable.GridDisplayOption_name);

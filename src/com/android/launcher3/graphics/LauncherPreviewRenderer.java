@@ -61,6 +61,7 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -72,7 +73,7 @@ import java.util.concurrent.CountDownLatch;
  *   4) Measure and draw the view on a canvas
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherPreviewRenderer {
+public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
     private static final String TAG = "LauncherPreviewRenderer";
 
@@ -110,7 +111,8 @@ public class LauncherPreviewRenderer {
                 context.getString(R.string.label_application);
     }
 
-    public Bitmap createScreenShot() {
+    @Override
+    public Bitmap call() {
         return BitmapRenderer.createHardwareBitmap(mDp.widthPx, mDp.heightPx, c -> {
 
             if (Looper.myLooper() == Looper.getMainLooper()) {
