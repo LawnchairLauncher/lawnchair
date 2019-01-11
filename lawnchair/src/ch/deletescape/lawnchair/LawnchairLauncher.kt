@@ -41,6 +41,7 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
+import ch.deletescape.lawnchair.root.RootHelperManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
@@ -71,8 +72,12 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
         hookGoogleSansDialogTitle()
 
-        Utilities.getLawnchairPrefs(this).registerCallback(prefCallback)
-        Utilities.getLawnchairPrefs(this).addOnPreferenceChangeListener(hideStatusBarKey, this)
+        lawnchairPrefs.registerCallback(prefCallback)
+        lawnchairPrefs.addOnPreferenceChangeListener(hideStatusBarKey, this)
+
+        if (lawnchairPrefs.autoLaunchRoot) {
+            RootHelperManager.getInstance(this).run {  }
+        }
     }
 
     inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {

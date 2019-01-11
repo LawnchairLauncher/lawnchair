@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.root
 
 import android.content.Context
 import ch.deletescape.lawnchair.ensureOnMainThread
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.BuildConfig
@@ -56,6 +57,8 @@ class RootHelperManager(private val context: Context) {
     }
 
     private fun launchRootHelper() {
+        context.lawnchairPrefs.autoLaunchRoot = isAvailable
+        if (!isAvailable) return
         if (rootHelper != null) return
         if (rootShell == null || rootShell?.isRunning != true) {
             rootShell = Shell.Builder()
