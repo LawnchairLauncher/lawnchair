@@ -274,6 +274,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());
 
+        if (!DeepShortcutManager.supportsShortcuts(originalItemInfo)) {
+            return;
+        }
+
         // Load the shortcuts on a background thread and update the container as it animates.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
