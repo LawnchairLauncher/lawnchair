@@ -213,7 +213,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy,
                     onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
-            totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher.getDeviceProfile());
+            totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
+                    mLauncher.getDeviceProfile());
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
                     .createAnimationToNewWorkspace(mToState, builder, maxAccuracy, this::clearState,

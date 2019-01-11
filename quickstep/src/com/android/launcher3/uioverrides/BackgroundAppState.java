@@ -41,7 +41,8 @@ public class BackgroundAppState extends OverviewState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return super.getVerticalProgress(launcher);
         }
-        int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher.getDeviceProfile());
+        int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher,
+                launcher.getDeviceProfile());
         AllAppsTransitionController controller = launcher.getAllAppsController();
         float scrollRange = Math.max(controller.getShiftRange(), 1);
         float progressDelta = (transitionLength / scrollRange);
