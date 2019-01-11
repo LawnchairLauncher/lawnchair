@@ -25,6 +25,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -40,6 +42,9 @@ import java.util.concurrent.Future;
  *          is_default: true if this grid is currently active
  *
  *     /preview: Opens a file stream for the grid preview
+ *
+ *     /default_grid: Call update to set the current grid, with values
+ *          name: name of the grid to apply
  */
 public class GridOptionsProvider extends ContentProvider {
 
@@ -50,6 +55,9 @@ public class GridOptionsProvider extends ContentProvider {
     private static final String KEY_COLS = "cols";
     private static final String KEY_PREVIEW_COUNT = "preview_count";
     private static final String KEY_IS_DEFAULT = "is_default";
+
+    private static final String KEY_LIST_OPTIONS = "/list_options";
+    private static final String KEY_DEFAULT_GRID = "/default_grid";
 
     private static final String KEY_PREVIEW = "preview";
     private static final String MIME_TYPE_PNG = "image/png";
@@ -75,33 +83,41 @@ public class GridOptionsProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-        // TODO: Validate the query uri
+        if (!KEY_LIST_OPTIONS.equals(uri.getPath())) {
+            return null;
+        }
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
+        for (GridOption gridOption : parseAllGridOptions()) {
+            cursor.newRow()
+                    .add(KEY_NAME, gridOption.name)
+                    .add(KEY_ROWS, gridOption.numRows)
+                    .add(KEY_COLS, gridOption.numColumns)
+                    .add(KEY_PREVIEW_COUNT, 1)
+                    .add(KEY_IS_DEFAULT, idp.numColumns == gridOption.numColumns
+                            && idp.numRows == gridOption.numRows);
+        }
+        return cursor;
+    }
+
+    private List<GridOption> parseAllGridOptions() {
+        List<GridOption> result = new ArrayList<>();
         try (XmlResourceParser parser = getContext().getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG) && "grid-option".equals(parser.getName())) {
-                    GridOption gridOption = new GridOption(
-                            getContext(), Xml.asAttributeSet(parser));
-
-                    cursor.newRow()
-                            .add(KEY_NAME, gridOption.name)
-                            .add(KEY_ROWS, gridOption.numRows)
-                            .add(KEY_COLS, gridOption.numColumns)
-                            .add(KEY_PREVIEW_COUNT, 1)
-                            .add(KEY_IS_DEFAULT, idp.numColumns == gridOption.numColumns
-                                    && idp.numRows == gridOption.numRows);
+                if ((type == XmlPullParser.START_TAG)
+                        && GridOption.TAG_NAME.equals(parser.getName())) {
+                    result.add(new GridOption(getContext(), Xml.asAttributeSet(parser)));
                 }
             }
         } catch (IOException | XmlPullParserException e) {
             Log.e(TAG, "Error parsing device profile", e);
+            return Collections.emptyList();
         }
-
-        return cursor;
+        return result;
     }
 
     @Override
@@ -125,7 +141,25 @@ public class GridOptionsProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        if (!KEY_DEFAULT_GRID.equals(uri.getPath())) {
+            return 0;
+        }
+
+        String gridName = values.getAsString(KEY_NAME);
+        // Verify that this is a valid grid option
+        GridOption match = null;
+        for (GridOption option : parseAllGridOptions()) {
+            if (option.name.equals(gridName)) {
+                match = option;
+                break;
+            }
+        }
+        if (match == null) {
+            return 0;
+        }
+
+        InvariantDeviceProfile.INSTANCE.get(getContext()).setCurrentGrid(getContext(), gridName);
+        return 1;
     }
 
     @Override
