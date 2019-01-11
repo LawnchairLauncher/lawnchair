@@ -247,7 +247,6 @@ public class InvariantDeviceProfile {
     }
 
     public void verifyConfigChangedInBackground(final Context context) {
-
         String savedIconMaskPath = getDevicePrefs(context).getString(KEY_ICON_PATH_REF, "");
         // Good place to check if grid size changed in themepicker when launcher was dead.
         if (savedIconMaskPath.isEmpty()) {
@@ -258,6 +257,12 @@ public class InvariantDeviceProfile {
                     .apply();
             apply(context, CHANGE_FLAG_ICON_PARAMS);
         }
+    }
+
+    public void setCurrentGrid(Context context, String gridName) {
+        Context appContext = context.getApplicationContext();
+        Utilities.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
+        new MainThreadExecutor().execute(() -> onConfigChanged(appContext));
     }
 
     private void onConfigChanged(Context context) {
@@ -300,7 +305,8 @@ public class InvariantDeviceProfile {
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG) && "grid-option".equals(parser.getName())) {
+                if ((type == XmlPullParser.START_TAG)
+                        && GridOption.TAG_NAME.equals(parser.getName())) {
 
                     GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser));
                     final int displayDepth = parser.getDepth();
@@ -450,6 +456,8 @@ public class InvariantDeviceProfile {
 
 
     public static final class GridOption {
+
+        public static final String TAG_NAME = "grid-option";
 
         public final String name;
         public final int numRows;
