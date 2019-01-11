@@ -41,6 +41,7 @@ import com.android.quickstep.SwipeUpSetting;
 import org.junit.Assert;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -364,6 +365,11 @@ public final class LauncherInstrumentation {
         final UiObject2 object = container.findObject(selector);
         assertNotNull("Can't find an object with selector: " + selector, object);
         return object;
+    }
+
+    @NonNull
+    List<UiObject2> getObjectsInContainer(UiObject2 container, String resName) {
+        return container.findObjects(getLauncherObjectSelector(resName));
     }
 
     @NonNull

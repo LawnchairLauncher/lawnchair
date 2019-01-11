@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.List;
+
 /**
  * Context menu of an app icon.
  */
@@ -37,10 +39,9 @@ public class AppIconMenu {
      * Returns a menu item with a given number. Fails if it doesn't exist.
      */
     public AppIconMenuItem getMenuItem(int itemNumber) {
-        assertTrue(mDeepShortcutsContainer.getChildCount() > itemNumber);
-
-        final UiObject2 shortcut = mLauncher.waitForObjectInContainer(
-                mDeepShortcutsContainer.getChildren().get(itemNumber), "bubble_text");
-        return new AppIconMenuItem(mLauncher, shortcut);
+        final List<UiObject2> menuItems = mLauncher.getObjectsInContainer(mDeepShortcutsContainer,
+                "bubble_text");
+        assertTrue(menuItems.size() > itemNumber);
+        return new AppIconMenuItem(mLauncher, menuItems.get(itemNumber));
     }
 }
