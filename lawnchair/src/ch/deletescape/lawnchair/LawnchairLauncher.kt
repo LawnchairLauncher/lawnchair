@@ -34,6 +34,7 @@ import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
@@ -92,7 +93,9 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
     inline fun prepareDummyView(left: Int, top: Int, right: Int, bottom: Int,
                                 crossinline callback: (View) -> Unit) {
-        dummyView.layoutParams = FrameLayout.LayoutParams(right - left, bottom - top).also {
+        (dummyView.layoutParams as ViewGroup.MarginLayoutParams).let {
+            it.width = right - left
+            it.height = bottom - top
             it.leftMargin = left
             it.topMargin = top
         }
