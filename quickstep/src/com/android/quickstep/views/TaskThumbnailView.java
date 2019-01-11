@@ -107,7 +107,7 @@ public class TaskThumbnailView extends View {
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
-        mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
+        mOverlay = TaskOverlayFactory.INSTANCE.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));

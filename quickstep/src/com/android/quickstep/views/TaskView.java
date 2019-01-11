@@ -52,6 +52,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
@@ -70,7 +71,7 @@ import java.util.function.Consumer;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements PageCallbacks {
+public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
 
@@ -399,17 +400,27 @@ public class TaskView extends FrameLayout implements PageCallbacks {
         setIconAndDimTransitionProgress(iconScale, invert);
     }
 
-    public void resetVisualProperties() {
+    private void resetViewTransforms() {
         setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
         setAlpha(1f);
         setIconScaleAndDim(1);
+    }
+
+    public void resetVisualProperties() {
+        resetViewTransforms();
         if (!getRecentsView().getQuickScrubController().isQuickSwitch()) {
             // Reset full screen progress unless we are doing back to back quick switch.
             setFullscreenProgress(0);
         }
+    }
+
+    @Override
+    public void onRecycle() {
+        resetViewTransforms();
+        setFullscreenProgress(0);
     }
 
     @Override
