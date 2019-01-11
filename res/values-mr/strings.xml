@@ -39,7 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अॅप्स लोड करत आहे…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अॅप्स आढळले नाहीत"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अॅप्स शोधा"</string>
-    <string name="label_application" msgid="8531721983832654978">"अॅप"</string>
+    <string name="label_application" msgid="8531721983832654978">"ॲप"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचना"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"शॉर्टकट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"शॉर्टकट निवडण्यासाठी किंवा कस्टम क्रिया वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>

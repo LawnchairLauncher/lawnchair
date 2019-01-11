@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8116646702313548897">"Стартер на секундарен екран"</string>
     <string name="couldnt_launch" msgid="7873588052226763866">"Не можеше да се стартува активноста"</string>
     <string name="add_app_shortcut" msgid="2756755330707509435">"Додајте кратенка за апликација"</string>
     <string name="set_wallpaper" msgid="6475195450505435904">"Поставете го тапетот"</string>
