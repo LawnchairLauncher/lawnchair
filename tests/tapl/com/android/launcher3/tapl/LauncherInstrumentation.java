@@ -89,7 +89,6 @@ public final class LauncherInstrumentation {
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
     private final UiDevice mDevice;
-    final String mLauncherPackageName;
     private final boolean mSwipeUpEnabled;
     private Boolean mSwipeUpEnabledOverride = null;
     private final Instrumentation mInstrumentation;
@@ -101,7 +100,6 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
-        mLauncherPackageName = mDevice.getLauncherPackageName();
         final boolean swipeUpEnabledDefault =
                 !SwipeUpSetting.isSwipeUpSettingAvailable() ||
                         SwipeUpSetting.isSwipeUpEnabledDefaultValue();
@@ -382,13 +380,16 @@ public final class LauncherInstrumentation {
     UiObject2 waitForLauncherObject(String resName) {
         final BySelector selector = getLauncherObjectSelector(resName);
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
-        assertNotNull("Can't find a launcher object; selector: " + selector + ", current launcher: "
-                + mDevice.getLauncherPackageName(), object);
+        assertNotNull("Can't find a launcher object; selector: " + selector, object);
         return object;
     }
 
     BySelector getLauncherObjectSelector(String resName) {
-        return By.res(mLauncherPackageName, resName);
+        return By.res(getLauncherPackageName(), resName);
+    }
+
+    String getLauncherPackageName() {
+        return mDevice.getLauncherPackageName();
     }
 
     @NonNull
