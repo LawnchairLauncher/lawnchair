@@ -16,10 +16,12 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
+
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS_SPRING;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -31,6 +33,7 @@ import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
@@ -44,6 +47,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.animation.Interpolator;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -56,6 +62,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -104,6 +111,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             @InteractionType int interactionType, TransformedRect outRect);
 
     void onSwipeUpComplete(T activity);
+
+    @NonNull HomeAnimationFactory prepareHomeUI(T activity);
 
     AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback);
@@ -234,6 +243,32 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             DiscoveryBounce.showForOverviewIfNeeded(activity);
         }
 
+        @NonNull
+        @Override
+        public HomeAnimationFactory prepareHomeUI(Launcher activity) {
+            DeviceProfile dp = activity.getDeviceProfile();
+
+            return new HomeAnimationFactory() {
+                @NonNull
+                @Override
+                public RectF getWindowTargetRect() {
+                    int halfIconSize = dp.iconSizePx / 2;
+                    float targetCenterX = dp.availableWidthPx / 2;
+                    float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
+                    return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
+                            targetCenterX + halfIconSize, targetCenterY + halfIconSize);
+                }
+
+                @NonNull
+                @Override
+                public Animator createActivityAnimationToHome() {
+                    long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
+                    return activity.getStateManager().createAnimationToNewWorkspace(
+                            NORMAL, accuracy).getTarget();
+                }
+            };
+        }
+
         @Override
         public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
                 boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
@@ -263,6 +298,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
 
             return new AnimationFactory() {
+                private Animator mShelfAnim;
+                private ShelfAnimState mShelfState;
+
                 @Override
                 public void createActivityController(long transitionLength,
                         @InteractionType int interactionType) {
@@ -273,6 +311,40 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 @Override
                 public void onTransitionCancelled() {
                     activity.getStateManager().goToState(startState, false /* animate */);
+                }
+
+                @Override
+                public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
+                        long duration) {
+                    if (mShelfState == shelfState) {
+                        return;
+                    }
+                    mShelfState = shelfState;
+                    if (mShelfAnim != null) {
+                        mShelfAnim.cancel();
+                    }
+                    if (mShelfState == ShelfAnimState.CANCEL) {
+                        return;
+                    }
+                    float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(activity);
+                    float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
+                    float shelfPeekingProgress = shelfHiddenProgress
+                            - (shelfHiddenProgress - shelfOverviewProgress) * 0.25f;
+                    float toProgress = mShelfState == ShelfAnimState.HIDE
+                            ? shelfHiddenProgress
+                            : mShelfState == ShelfAnimState.PEEK
+                                    ? shelfPeekingProgress
+                                    : shelfOverviewProgress;
+                    mShelfAnim = createShelfAnim(activity, toProgress);
+                    mShelfAnim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mShelfAnim = null;
+                        }
+                    });
+                    mShelfAnim.setInterpolator(interpolator);
+                    mShelfAnim.setDuration(duration);
+                    mShelfAnim.start();
                 }
             };
         }
@@ -295,13 +367,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
 
             AnimatorSet anim = new AnimatorSet();
-            if (!activity.getDeviceProfile().isVerticalBarLayout()) {
-                Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
-                        ALL_APPS_PROGRESS_SPRING, "allAppsSpringFromACH",
-                        activity.getAllAppsController().getShiftRange(),
+            if (!activity.getDeviceProfile().isVerticalBarLayout()
+                    && !FeatureFlags.SWIPE_HOME.get()) {
+                // Don't animate the shelf when SWIPE_HOME is true, because we update it atomically.
+                Animator shiftAnim = createShelfAnim(activity,
                         fromState.getVerticalProgress(activity),
                         endState.getVerticalProgress(activity));
-                shiftAnim.setInterpolator(LINEAR);
                 anim.play(shiftAnim);
             }
 
@@ -320,6 +391,14 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         controller.getInterpolatedProgress() > 0.5 ? endState : fromState, false);
             });
             callback.accept(controller);
+        }
+
+        private Animator createShelfAnim(Launcher activity, float ... progressValues) {
+            Animator shiftAnim = new SpringObjectAnimator(activity.getAllAppsController(),
+                    ALL_APPS_PROGRESS_SPRING, "allAppsSpringFromACH",
+                    activity.getAllAppsController().getShiftRange(), progressValues);
+            shiftAnim.setInterpolator(LINEAR);
+            return shiftAnim;
         }
 
         /**
@@ -512,6 +591,35 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             // TODO:
         }
 
+        @NonNull
+        @Override
+        public HomeAnimationFactory prepareHomeUI(RecentsActivity activity) {
+            RecentsView recentsView = activity.getOverviewPanel();
+
+            return new HomeAnimationFactory() {
+                @NonNull
+                @Override
+                public RectF getWindowTargetRect() {
+                    float centerX = recentsView.getPivotX();
+                    float centerY = recentsView.getPivotY();
+                    return new RectF(centerX, centerY, centerX, centerY);
+                }
+
+                @NonNull
+                @Override
+                public Animator createActivityAnimationToHome() {
+                    Animator anim = ObjectAnimator.ofFloat(recentsView, CONTENT_ALPHA, 0);
+                    anim.addListener(new AnimationSuccessListener() {
+                        @Override
+                        public void onAnimationSuccess(Animator animator) {
+                            recentsView.startHome();
+                        }
+                    });
+                    return anim;
+                }
+            };
+        }
+
         @Override
         public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
                 boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
@@ -524,12 +632,12 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             return new AnimationFactory() {
 
-                boolean isAnimatingHome = false;
+                boolean isAnimatingToRecents = false;
 
                 @Override
                 public void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) {
-                    isAnimatingHome = targets != null && targets.isAnimatingHome();
-                    if (!isAnimatingHome) {
+                    isAnimatingToRecents = targets != null && targets.isAnimatingHome();
+                    if (!isAnimatingToRecents) {
                         rv.setContentAlpha(1);
                     }
                     createActivityController(getSwipeUpDestinationAndLength(
@@ -539,7 +647,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
                 @Override
                 public void createActivityController(long transitionLength, int interactionType) {
-                    if (!isAnimatingHome) {
+                    if (!isAnimatingToRecents) {
                         return;
                     }
 
@@ -667,10 +775,30 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     interface AnimationFactory {
 
+        enum ShelfAnimState {
+            HIDE(true), PEEK(true), OVERVIEW(false), CANCEL(false);
+
+            ShelfAnimState(boolean shouldPreformHaptic) {
+                this.shouldPreformHaptic = shouldPreformHaptic;
+            }
+
+            public final boolean shouldPreformHaptic;
+        }
+
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
         void createActivityController(long transitionLength, @InteractionType int interactionType);
 
         default void onTransitionCancelled() { }
+
+        default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
+                long duration) { }
+    }
+
+    interface HomeAnimationFactory {
+
+        @NonNull RectF getWindowTargetRect();
+
+        @NonNull Animator createActivityAnimationToHome();
     }
 }
