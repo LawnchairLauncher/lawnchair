@@ -32,6 +32,8 @@ import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListen
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+
 /**
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
  * a {@link SpringAnimation}. It extends ValueAnimator so it can be used in an AnimatorSet.
@@ -109,7 +111,8 @@ public class SpringObjectAnimator extends ValueAnimator {
                     + mSpringEnded + ", mEnded=" + mEnded);
         }
 
-        if (mAnimatorEnded && mSpringEnded && !mEnded) {
+        // If springs are disabled, ignore value of mSpringEnded
+        if (mAnimatorEnded && (mSpringEnded || !QUICKSTEP_SPRINGS.get()) && !mEnded) {
             for (AnimatorListener l : mListeners) {
                 l.onAnimationEnd(this);
             }
