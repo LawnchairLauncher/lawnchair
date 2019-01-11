@@ -383,9 +383,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             // Deferred gesture, start the animation and gesture tracking once we pass the actual
             // touch slop
             startTouchTrackingForWindowAnimation(ev.getEventTime());
-            mPassedInitialSlop = true;
-            mStartDisplacement = getDisplacement(ev);
         }
+        mPassedInitialSlop = true;
+        mStartDisplacement = getDisplacement(ev);
         notifyGestureStarted();
     }
 
