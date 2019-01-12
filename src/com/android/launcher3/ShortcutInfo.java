@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -121,6 +122,12 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
+    }
+
+    public ShortcutInfo(String title, Intent intent, UserHandle user) {
+        this.title = title;
+        this.intent = intent;
+        this.user = user;
     }
 
     /**

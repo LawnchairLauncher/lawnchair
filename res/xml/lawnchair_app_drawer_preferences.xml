@@ -65,6 +65,11 @@
             android:dependency="pref_hideAllAppsAppLabels"
             android:defaultValue="false"
             android:persistent="true" />
+
+        <Preference
+            android:key="pref_drawerTabs"
+            android:title="@string/drawer_tabs"
+            android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

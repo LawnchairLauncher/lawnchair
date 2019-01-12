@@ -15,32 +15,20 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.settings.ui
+package ch.deletescape.lawnchair.preferences
 
-import android.content.Intent
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import com.android.launcher3.R
-import me.jfenn.attribouter.Attribouter
+import android.content.Context
+import ch.deletescape.lawnchair.LawnchairAppFilter
+import com.android.launcher3.util.ComponentKey
 
-class SettingsAboutActivity : SettingsActivity() {
+class DrawerTabEditAdapter(context: Context, tabIndex: Int, callback: Callback? = null)
+    : SelectableAppsAdapter(context, callback, LawnchairAppFilter(context)) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun getInitialSelections(): Set<ComponentKey> {
+        return emptySet()
     }
 
-    override fun createLaunchFragment(intent: Intent): Fragment {
-        return Attribouter.from(this).withFile(R.xml.attribouter).toFragment()
-    }
+    override fun setSelections(selections: Set<ComponentKey>) {
 
-    override fun shouldUseLargeTitle(): Boolean {
-        return false
-    }
-
-    override fun shouldShowSearch(): Boolean {
-        return false
     }
 }

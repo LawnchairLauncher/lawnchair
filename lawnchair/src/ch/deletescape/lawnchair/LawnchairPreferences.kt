@@ -27,6 +27,7 @@ import android.util.TypedValue
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
+import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
@@ -66,7 +67,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
 
     val doNothing = { }
-    private val recreate = { recreate() }
+    val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
     val restart = { restart() }
@@ -163,6 +164,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
     private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
     val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
+    val drawerTabs by lazy { DrawerTabs(this) }
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)

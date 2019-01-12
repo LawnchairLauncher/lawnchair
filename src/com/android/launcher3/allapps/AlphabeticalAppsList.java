@@ -146,7 +146,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // Is it the work profile app list.
-    private final boolean mIsWork;
+    private boolean mIsWork;
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
@@ -462,6 +462,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             mCachedSectionNames.put(title, sectionName);
         }
         return sectionName;
+    }
+
+    public void setIsWork(boolean isWork) {
+        mIsWork = isWork;
     }
 
 }

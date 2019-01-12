@@ -93,6 +93,7 @@ import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Settings activity for Launcher.
@@ -118,14 +119,18 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     private final static String BRIDGE_TAG = "tag_bridge";
 
+    public final static String EXTRA_FRAGMENT = "fragment";
+    public final static String EXTRA_FRAGMENT_ARGS = "fragmentArgs";
+
     private boolean isSubSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
 
+        String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
-        isSubSettings = content != 0;
+        isSubSettings = content != 0 || fragmentName != null;
 
         boolean showSearch = shouldShowSearch();
 
@@ -135,7 +140,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
 
         if (savedInstanceState == null) {
-            Fragment fragment = createLaunchFragment(content);
+            Fragment fragment = createLaunchFragment(getIntent());
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content, fragment)
@@ -152,7 +157,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    protected Fragment createLaunchFragment(int content) {
+    protected Fragment createLaunchFragment(Intent intent) {
+        String fragment = intent.getStringExtra(EXTRA_FRAGMENT);
+        if (fragment != null) {
+            return Fragment.instantiate(this, fragment, intent.getBundleExtra(EXTRA_FRAGMENT_ARGS));
+        }
+        int content = intent.getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         return content != 0
                 ? SubSettingsFragment.newInstance(getIntent())
                 : new LauncherSettingsFragment();
@@ -865,5 +875,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onStart();
             LawnchairUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
+    }
+
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.putExtra(EXTRA_FRAGMENT, fragment);
+        intent.putExtra(EXTRA_FRAGMENT_ARGS, args);
+        context.startActivity(intent);
     }
 }

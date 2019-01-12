@@ -22,12 +22,15 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.allapps.AllAppsTabs;
+import ch.deletescape.lawnchair.allapps.AllAppsTabs.Tab;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -108,15 +111,21 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private void updateIndicatorPosition() {
         int left = -1, right = -1;
         final View leftTab = getLeftTab();
-        if (leftTab != null) {
-            left = (int) (leftTab.getLeft() + leftTab.getWidth() * mScrollOffset);
+        final View rightTab = getRightTab();
+        if (leftTab != null && rightTab != null) {
+            int width = rightTab.getRight() - leftTab.getRight();
+            left = (int) (leftTab.getLeft() + width * mScrollOffset);
             right = left + leftTab.getWidth();
         }
         setIndicatorPosition(left, right);
     }
 
     private View getLeftTab() {
-        return mIsRtl ? getChildAt(1) : getChildAt(0);
+        return mIsRtl ? getChildAt(getChildCount() - 1) : getChildAt(0);
+    }
+
+    private View getRightTab() {
+        return mIsRtl ? getChildAt(0) : getChildAt(getChildCount() - 1);
     }
 
     private void setIndicatorPosition(int left, int right) {
@@ -190,6 +199,22 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             mAccent = color;
             mSelectedIndicatorPaint.setColor(color);
             updateTabTextColor(mSelectedPosition);
+        }
+    }
+
+    void inflateButtons(AllAppsTabs tabs) {
+        int childCount = getChildCount();
+        int count = tabs.getCount();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        for (int i = childCount; i < count; i++) {
+            inflater.inflate(R.layout.all_apps_tab, this);
+        }
+        while (getChildCount() > count) {
+            removeViewAt(0);
+        }
+        for (int i = 0; i < tabs.getCount(); i++) {
+            Tab tab = tabs.get(i);
+            ((Button) getChildAt(i)).setText(tab.getName());
         }
     }
 }
