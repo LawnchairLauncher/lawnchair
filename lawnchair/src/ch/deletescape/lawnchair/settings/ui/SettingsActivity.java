@@ -24,7 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -52,7 +52,6 @@ import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -60,6 +59,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import ch.deletescape.lawnchair.FakeLauncherKt;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
@@ -79,16 +79,11 @@ import ch.deletescape.lawnchair.views.SpringRecyclerView;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
-import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
-import com.android.quickstep.OverviewInteractionState;
-import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.PixelBridge;
 import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
@@ -167,6 +162,34 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     protected boolean shouldShowSearch() {
         return BuildConfig.FEATURE_SETTINGS_SEARCH && !isSubSettings;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (shouldShowSearch()) {
+            Toolbar toolbar = findViewById(R.id.search_action_bar);
+            toolbar.getMenu().clear();
+            if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
+                toolbar.inflateMenu(R.menu.menu_change_default_home);
+                toolbar.setOnMenuItemClickListener(menuItem -> {
+                    FakeLauncherKt.changeDefaultHome(this);
+                    return false;
+                });
+            }
+        }
+    }
+
+    private String resolveDefaultHome() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo info = getPackageManager().resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (info != null && info.activityInfo != null) {
+            return info.activityInfo.packageName;
+        } else {
+            return null;
+        }
     }
 
     @Override
