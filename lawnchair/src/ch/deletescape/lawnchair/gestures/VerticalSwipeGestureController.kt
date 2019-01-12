@@ -50,6 +50,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private val hasSwipeUpOverride get() = swipeUpOverride != null
     private var state = GestureState.Free
     private var downTime = 0L
+    private var downSent = false
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
@@ -57,6 +58,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         val overrideAppeared = !hasSwipeUpOverride && controller.getSwipeUpOverride(ev.downTime) != null
         if (isDown || overrideAppeared) {
             swipeUpOverride = if (isDown) {
+                downSent = false
                 null
             } else {
                 controller.getSwipeUpOverride(ev.downTime)
@@ -72,7 +74,13 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         if (noIntercept) {
             return false
         }
+        val action = ev.action
+        if (!isDown && !downSent) {
+            ev.action = MotionEvent.ACTION_DOWN
+        }
+        downSent = true
         onControllerTouchEvent(ev)
+        ev.action = action
         return detector.isDraggingOrSettling
     }
 
