@@ -112,11 +112,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    protected boolean useTwoBubbles() {
-        return super.useTwoBubbles() && mMicIconView.getVisibility() == View.VISIBLE;
-    }
-
-    @Override
     protected Drawable getIcon(boolean colored) {
         if (prefs.getAllAppsGlobalSearch()) {
             return super.getIcon(colored);

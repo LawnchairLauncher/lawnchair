@@ -504,6 +504,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         } else if (provider.getSupportsVoiceSearch()) {
             return provider.getVoiceIcon(colored);
         } else {
+            mMicIconView.setVisibility(GONE);
             return new ColorDrawable(Color.TRANSPARENT);
         }
     }
@@ -571,6 +572,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected boolean useTwoBubbles() {
-        return Utilities.getLawnchairPrefs(mActivity).getDualBubbleSearch();
+        return mMicIconView.getVisibility() == View.VISIBLE && Utilities
+                .getLawnchairPrefs(mActivity).getDualBubbleSearch();
     }
 }
