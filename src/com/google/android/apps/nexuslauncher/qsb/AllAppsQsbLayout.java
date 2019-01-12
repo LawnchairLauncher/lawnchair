@@ -119,6 +119,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
+    protected boolean logoCanOpenFeed() {
+        return super.logoCanOpenFeed() && prefs.getAllAppsGlobalSearch();
+    }
+
+    @Override
     protected Drawable getMicIcon(boolean colored) {
         if (prefs.getAllAppsGlobalSearch()) {
             mMicIconView.setVisibility(View.VISIBLE);

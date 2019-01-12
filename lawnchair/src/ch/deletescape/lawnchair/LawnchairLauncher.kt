@@ -286,7 +286,9 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
 
         @JvmStatic
         fun getLauncher(context: Context): LawnchairLauncher {
-            return context as? LawnchairLauncher ?: (context as ContextWrapper).baseContext as LawnchairLauncher
+            return context as? LawnchairLauncher
+                    ?: (context as ContextWrapper).baseContext as? LawnchairLauncher
+                    ?: LauncherAppState.getInstance(context).launcher as LawnchairLauncher
         }
 
         fun takeScreenshotSync(context: Context): Uri? {

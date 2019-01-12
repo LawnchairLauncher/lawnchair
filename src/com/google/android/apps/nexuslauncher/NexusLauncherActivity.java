@@ -3,6 +3,7 @@ package com.google.android.apps.nexuslauncher;
 import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
@@ -47,6 +48,7 @@ public class NexusLauncherActivity extends Launcher {
         return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
     }
 
+    @Nullable
     public LauncherClient getGoogleNow() {
         return mLauncher.mClient;
     }

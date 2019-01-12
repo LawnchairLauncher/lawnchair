@@ -157,6 +157,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         mLogoIconView = findViewById(R.id.g_icon);
         mMicIconView = findViewById(R.id.mic_icon);
         mMicIconView.setOnClickListener(this);
+        mLogoIconView.setOnClickListener(this);
     }
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
@@ -418,9 +419,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public void onClick(View view) {
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
         if (view == mMicIconView) {
-            SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
-            SearchProvider provider = controller.getSearchProvider();
             if (controller.isGoogle()) {
                 fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
             } else if(mShowAssistant && provider.getSupportsAssistant()) {
@@ -434,7 +436,20 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                     return null;
                 });
             }
+        } else if (view == mLogoIconView) {
+            if (provider.getSupportsFeed() && logoCanOpenFeed()) {
+                provider.startFeed(intent -> {
+                    getContext().startActivity(intent);
+                    return null;
+                });
+            } else {
+                startSearch("", Di);
+            }
         }
+    }
+
+    protected boolean logoCanOpenFeed() {
+        return true;
     }
 
     protected final void k(String str) {

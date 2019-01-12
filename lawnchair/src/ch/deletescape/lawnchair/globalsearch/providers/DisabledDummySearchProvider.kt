@@ -26,10 +26,9 @@ import ch.deletescape.lawnchair.globalsearch.SearchProvider
 class DisabledDummySearchProvider(context: Context) : SearchProvider(context) {
     override val name: String
         get() = ""
-    override val supportsVoiceSearch: Boolean
-        get() = false
-    override val supportsAssistant: Boolean
-        get() = false
+    override val supportsVoiceSearch = false
+    override val supportsAssistant = false
+    override val supportsFeed = false
 
     override val isAvailable: Boolean
         get() = false

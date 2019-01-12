@@ -10,6 +10,7 @@ abstract class SearchProvider(protected val context: Context) {
     abstract val name: String
     abstract val supportsVoiceSearch: Boolean
     abstract val supportsAssistant: Boolean
+    abstract val supportsFeed: Boolean
     open val isAvailable: Boolean = true
 
     abstract fun startSearch(callback: (intent: Intent) -> Unit = {})
@@ -18,6 +19,10 @@ abstract class SearchProvider(protected val context: Context) {
     }
     open fun startAssistant(callback: (intent: Intent) -> Unit = {}) {
         if (supportsAssistant) throw RuntimeException("Assistant supported but not implemented")
+    }
+
+    open fun startFeed(callback: (intent: Intent) -> Unit = {}) {
+        if (supportsFeed) throw RuntimeException("Feed supported but not implemented")
     }
 
     protected fun wrapInShadowDrawable(d: Drawable): Drawable {

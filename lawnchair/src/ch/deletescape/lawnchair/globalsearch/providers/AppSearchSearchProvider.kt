@@ -14,10 +14,9 @@ import com.android.launcher3.R
 class AppSearchSearchProvider(context: Context) : SearchProvider(context) {
 
     override val name = context.getString(R.string.search_provider_appsearch)!!
-    override val supportsVoiceSearch: Boolean
-        get() = false
-    override val supportsAssistant: Boolean
-        get() = false
+    override val supportsVoiceSearch = false
+    override val supportsAssistant = false
+    override val supportsFeed = false
 
     override fun startSearch(callback: (intent: Intent) -> Unit){
         val launcher = LauncherAppState.getInstanceNoCreate().launcher
