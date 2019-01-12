@@ -32,7 +32,7 @@ pipeline:
     commands:
       - bash ./gradlew assembleQuickstepLawnchairCiOptimized;
 
-  # Step 3: Upload to Telegram or Transfer.sh, depending on the event
+  # Step 3: Upload to Telegram, APKMirror or Transfer.sh, depending on the event or branch
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
@@ -47,8 +47,11 @@ pipeline:
       status: success
   mirror:
     image: lawnchairlauncher/drone-apkmirror:latest
+    secrets: [ bot_token, notify_email, mail_server, mail_user, mail_password ]
     apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/src-quickstep-lawnchair-ci-optimized.apk
     mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
+    channel_id: "-1001400906236"
+    mail_sender: "buildbot@lawnchair.info"
     environment:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:
