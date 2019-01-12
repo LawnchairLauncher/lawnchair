@@ -91,6 +91,11 @@ public class SpringLoadedState extends HomeState {
     }
 
     @Override
+    public float getWorkspaceBlurAlpha(Launcher launcher) {
+        return 1f;
+    }
+
+    @Override
     public void onStateDisabled(final Launcher launcher) {
         launcher.getWorkspace().getPageIndicator().setShouldAutoHide(true);
 

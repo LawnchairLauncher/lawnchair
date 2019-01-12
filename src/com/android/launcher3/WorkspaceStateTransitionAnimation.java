@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static ch.deletescape.lawnchair.views.LawnchairBackgroundView.ALPHA_INDEX_STATE;
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -32,6 +33,8 @@ import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROG
 import android.view.View;
 import android.view.animation.Interpolator;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha;
+import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha.InvertedAlphaProperty;
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -116,8 +119,9 @@ public class WorkspaceStateTransitionAnimation {
                 LINEAR);
         propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
 
-        propertySetter.setFloat(LawnchairLauncher.getLauncher(mLauncher).getBackground(),
-                LawnchairBackgroundView.getBlurProgressProperty(),
+        LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
+        propertySetter.setFloat(background.getBlurAlphas().getProperty(ALPHA_INDEX_STATE),
+                InvertedMultiValueAlpha.VALUE,
                 state.getWorkspaceBlurAlpha(mLauncher),
                 builder.getInterpolator(ANIM_BLUR_FADE, LINEAR));
     }

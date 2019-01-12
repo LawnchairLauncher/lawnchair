@@ -51,6 +51,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -1228,6 +1230,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // device I've tried, translating the launcher causes things to get quite laggy.
         mLauncher.getDragLayer().setTranslationX(transX);
         mLauncher.getDragLayer().getAlphaProperty(ALPHA_INDEX_OVERLAY).setValue(alpha);
+
+        if (mLauncher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) mLauncher).getBackground().getBlurAlphas().getProperty(
+                    LawnchairBackgroundView.ALPHA_INDEX_OVERLAY).setValue(1 - alpha);
+        }
 
         // TODO: implement this
 //        if (mPillQsb)

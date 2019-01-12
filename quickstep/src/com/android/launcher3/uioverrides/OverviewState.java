@@ -115,7 +115,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float getWorkspaceBlurAlpha(Launcher launcher) {
-        return 1f;
+        boolean blurEnabled = Utilities.getLawnchairPrefs(launcher).getRecentsBlurredBackground();
+        return blurEnabled ? 1f : 0f;
     }
 
     @Override

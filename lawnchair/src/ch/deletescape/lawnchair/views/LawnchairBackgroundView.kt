@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha
 import com.android.launcher3.Insettable
 import com.android.launcher3.Utilities
 
@@ -36,14 +37,10 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
 
     private val blurProvider by lazy { BlurWallpaperProvider.getInstance(context) }
     private var fullBlurDrawable: BlurDrawable? = null
-    var blurProgress: Float = 0f
-        set(value)  {
-            if (field != value) {
-                field = value
-                blurAlpha = Math.round(255 * field)
-                invalidate()
-            }
-        }
+    val blurAlphas = InvertedMultiValueAlpha({ alpha ->
+        blurAlpha = Math.round(255 * alpha)
+        invalidate()
+    }, 3)
     private var blurAlpha = 0
 
     private val blurDrawableCallback by lazy {
@@ -95,8 +92,7 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
 
     private fun createFullBlurDrawable() {
         fullBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
-        fullBlurDrawable = if (Utilities.isRecentsEnabled() && BlurWallpaperProvider.isEnabled
-                && context.lawnchairPrefs.recentsBlurredBackground) {
+        fullBlurDrawable = if (BlurWallpaperProvider.isEnabled) {
             blurProvider.createDrawable(0f, false).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
@@ -117,16 +113,8 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
 
     companion object {
 
-        @JvmStatic
-        val blurProgressProperty: Property<LawnchairBackgroundView, Float> =
-                object : Property<LawnchairBackgroundView, Float>(java.lang.Float.TYPE, "blurProgress") {
-            override fun get(scrim: LawnchairBackgroundView): Float {
-                return scrim.blurProgress
-            }
-
-            override fun set(scrim: LawnchairBackgroundView, value: Float) {
-                scrim.blurProgress = value
-            }
-        }
+        const val ALPHA_INDEX_OVERLAY = 0
+        const val ALPHA_INDEX_STATE = 1
+        const val ALPHA_INDEX_TRANSITIONS = 2
     }
 }
