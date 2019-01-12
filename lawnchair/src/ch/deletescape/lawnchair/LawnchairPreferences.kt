@@ -175,6 +175,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
+    val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
 
     // Gestures
     val doubleTapDelay = 350L

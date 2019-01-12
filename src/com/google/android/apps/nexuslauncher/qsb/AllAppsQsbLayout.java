@@ -110,6 +110,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
+    protected boolean useTwoBubbles() {
+        return super.useTwoBubbles() && mMicIconView.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
     protected Drawable getIcon(boolean colored) {
         if (prefs.getAllAppsGlobalSearch()) {
             return super.getIcon(colored);
@@ -181,7 +186,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         az(this.Dc);
         h(this.Ds.micStrokeWidth());
         this.Dh = this.Ds.hintIsForAssistant();
-        this.mUseTwoBubbles = this.Ds.useTwoBubbles();
+        mUseTwoBubbles = useTwoBubbles();
         setHintText(this.Ds.hintTextValue(), this.mHint);
         dH();
     }

@@ -76,6 +76,7 @@
     <string name="hide_from_predictions_summary">Never show this app in the suggested apps strip</string>
 
     <!-- SEARCH STRINGS -->
+    <string name="bubble_searchbar">Use dual bubble style searchbar</string>
 
     <!-- Button to clear all search history in Settings [CHAR LIMIT=40]-->
     <string name="search_clear_history">Clear history</string>

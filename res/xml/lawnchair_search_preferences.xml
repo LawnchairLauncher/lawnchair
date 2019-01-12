@@ -25,6 +25,19 @@
             android:dependency="opa_enabled"
             android:summary="@string/pref_show_as_assistant_summary"
             android:title="@string/pref_show_as_assistant_title" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_bubbleSearchStyle"
+            android:title="@string/bubble_searchbar"
+            android:defaultValue="false"/>
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_darkSearchbar"
+            android:persistent="true"
+            android:title="@string/pref_dark_searchbar"
+            android:summary="-- temporary, rework this --"
+            app:controllerClass=".DarkSearchBarController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -69,13 +82,6 @@
             android:dependency="pref_allAppsGoogleSearch"
             android:defaultValue="false" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_darkSearchbar"
-            android:persistent="true"
-            android:title="@string/pref_dark_searchbar"
-            android:summary="-- temporary, rework this --"
-            app:controllerClass=".DarkSearchBarController"/>
 
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

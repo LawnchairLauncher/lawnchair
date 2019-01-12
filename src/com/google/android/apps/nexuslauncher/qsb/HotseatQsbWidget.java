@@ -141,7 +141,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     }
 
     private void setColors() {
-        mUseTwoBubbles = Ds.useTwoBubbles();
         View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
         int colorRes;
         if (isDarkBar()) {

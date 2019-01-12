@@ -34,6 +34,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
@@ -464,6 +465,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         switch (str) {
             case "opa_enabled":
             case "opa_assistant":
+            case "pref_bubbleSearchStyle":
                 loadPreferences(sharedPreferences);
         }
     }
@@ -478,6 +480,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         mLogoIconView.setImageDrawable(getIcon());
         mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
         mMicIconView.setImageDrawable(getMicIcon());
+        mUseTwoBubbles = useTwoBubbles();
+        invalidate();
     }
 
     protected Drawable getIcon() {
@@ -564,5 +568,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
         boolean isDarkBar = Utilities.getLawnchairPrefs(getContext()).getDarkSearchbar();
         return isDarkTheme && isDarkBar;
+    }
+
+    protected boolean useTwoBubbles() {
+        return Utilities.getLawnchairPrefs(mActivity).getDualBubbleSearch();
     }
 }
