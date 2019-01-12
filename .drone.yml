@@ -45,6 +45,16 @@ pipeline:
     when:
       event: push
       status: success
+  mirror:
+    image: lawnchairlauncher/drone-apkmirror:latest
+    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/src-quickstep-lawnchair-ci-optimized.apk
+    mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
+    environment:
+      - MAJOR_MINOR=${DRONE_BRANCH}
+    when:
+      event: push
+      branch: alpha
+      status: success
   upload:
     image: divadsn/drone-transfer.sh:latest
     upload: app/build/outputs/apk/debug/app-debug.apk
