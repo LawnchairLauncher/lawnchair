@@ -45,6 +45,15 @@
             android:summary="@string/pref_legacy_colored_backgrounds_summary"
             android:title="@string/pref_legacy_colored_backgrounds"
             app:controllerClass=".IconShapeOverrideController"/>
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="@bool/config_enable_white_only_treatment"
+            android:key="pref_enableWhiteOnlyTreatment"
+            android:persistent="true"
+            android:dependency="pref_colorizeGeneratedBackgrounds"
+            android:summary="@string/pref_white_only_treatment_summary"
+            android:title="@string/pref_white_only_treatment"
+            app:controllerClass=".IconShapeOverrideController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

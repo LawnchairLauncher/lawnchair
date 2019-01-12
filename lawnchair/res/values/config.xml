@@ -25,6 +25,8 @@
     <string name="config_default_icon_pack" translatable="false"/>
     <!-- Wether or not adaptive icons should be generated for legacy icons -->
     <bool name="config_enable_legacy_treatment">true</bool>
+    <!-- Wether or not new adaptive icons should be generated for adaptive icons with purely white background -->
+    <bool name="config_enable_white_only_treatment">false</bool>
     <!-- If set to true lawnchair will generate colorized background for legacy masked icons -->
     <bool name="config_enable_colorized_legacy_treatment">true</bool>
     <!-- Wether the status bar should be hidden on the home screen -->

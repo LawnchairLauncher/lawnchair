@@ -99,20 +99,32 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         }
         val component = key.componentName
         val packageName = component.packageName
-        val originalIcon = info.getIcon(iconDpi)
+        val originalIcon = info.getIcon(iconDpi).apply { mutate() }
         if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            val ipm = IconPackManager.getInstance(context)
-            if (Utilities.ATLEAST_OREO && originalIcon !is AdaptiveIconDrawable &&
-                    prefs.enableLegacyTreatment && !(prefs.iconPackMasking && ipm.maskSupported())) {
+            if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
                 return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
             }
             if (roundIcon != null) return roundIcon as Drawable
         }
         return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: originalIcon
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun shouldWrapToAdaptive(icon: Drawable): Boolean {
+        val ipm = IconPackManager.getInstance(context)
+        if (!prefs.enableLegacyTreatment || (prefs.iconPackMasking && ipm.maskSupported())) {
+            return false
+        }
+        return if (icon is AdaptiveIconDrawable) {
+            prefs.colorizedLegacyTreatment &&
+                    prefs.enableWhiteOnlyTreatment &&
+                    (icon.background as? ColorDrawable)?.color == Color.WHITE
+        } else true
+
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
@@ -184,25 +196,36 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun wrapToAdaptiveIcon(icon: Drawable): Drawable {
-        val outShape = BooleanArray(1)
-        val dr = wrapperIcon as AdaptiveIconDrawable
-        dr.setBounds(0, 0, 1, 1)
-        /*val scale = */ normalizer.getScale(icon, null, dr.iconMask, outShape)
-        return if (!outShape[0]) {
-            val foreground = dr.foreground as FixedScaleDrawable
-            val background = dr.background as ColorDrawable
-            foreground.drawable = icon
-            //foreground.setScale(scale)
-            background.color = if (prefs.colorizedLegacyTreatment) {
-                val color = ColorExtractor.findDominantColorByOccurrence(icon.toBitmap())
-                IconPalette.getMutedColor(color, 0.5f)
-            } else {
-                Color.WHITE
+        return if (icon is AdaptiveIconDrawable) {
+            icon.apply {
+                (background as? ColorDrawable)?.color = extractColor(foreground)
             }
-            dr
         } else {
-            icon
+            val dr = (wrapperIcon as AdaptiveIconDrawable).apply {
+                mutate()
+                setBounds(0, 0, 1, 1)
+            }
+            val outShape = BooleanArray(1)
+            val scale = normalizer.getScale(icon, null, dr.iconMask, outShape)
+            if (!outShape[0]) {
+                dr.apply {
+                    (dr.foreground as FixedScaleDrawable).drawable = icon
+                    (dr.background as ColorDrawable).color = extractColor(icon)
+                }
+            } else {
+                FixedScaleDrawable().apply {
+                    drawable = icon
+                    setScale(scale)
+                }
+            }
         }
+    }
+
+    private fun extractColor(drawable: Drawable): Int = if (prefs.colorizedLegacyTreatment) {
+        val color = ColorExtractor.findDominantColorByOccurrence(drawable.toBitmap())
+        IconPalette.getMutedColor(color, 0.5f)
+    } else {
+        Color.WHITE
     }
 
     class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {

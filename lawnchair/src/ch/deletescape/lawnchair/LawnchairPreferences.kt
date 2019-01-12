@@ -98,6 +98,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
     val accentColor by IntPref("pref_accentColor", context.resources.getColor(R.color.colorAccent), doNothing)
     val darkSearchbar by BooleanPref("pref_darkSearchbar", false, doNothing)
     val hideStatusBar by BooleanPref("pref_hideStatusBar", context.resources.getBoolean(R.bool.config_hide_statusbar), doNothing)

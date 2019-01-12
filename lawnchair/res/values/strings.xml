@@ -38,6 +38,8 @@
 
     <string name="pref_legacy_colored_backgrounds">Generate colored backgrounds</string>
     <string name="pref_legacy_colored_backgrounds_summary">Color generated adaptive icons based on the icon</string>
+    <string name="pref_white_only_treatment">Replace white icon backgrounds</string>
+    <string name="pref_white_only_treatment_summary">Replace white icon background with a generated color on supported icons</string>
 
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
 
