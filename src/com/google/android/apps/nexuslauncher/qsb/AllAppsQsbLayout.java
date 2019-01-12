@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -43,6 +44,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private AllAppsContainerView mAppsView;
     boolean mDoNotRemoveFallback;
     private LawnchairPreferences prefs;
+    private int mColor;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -154,7 +156,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             colorRes = isDarkTheme ? R.color.qsb_background_drawer_dark : R.color.qsb_background_drawer_default;
         }
         int color = getResources().getColor(colorRes);
-        ay(ColorUtils.compositeColors(ColorUtils.compositeColors(color, Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor)), wallpaperColorInfo.getMainColor()));
+        mColor = ColorUtils.compositeColors(ColorUtils
+                        .compositeColors(color, Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor)),
+                wallpaperColorInfo.getMainColor());
+        ay(mColor);
     }
 
     protected final int aA(int i) {
@@ -266,6 +271,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mFallback.mAppsView = allAppsContainerView;
         mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback, Launcher.getLauncher(mFallback.getContext()), mFallback);
         addView(this.mFallback);
+        mFallback.setTextColor(new Palette.Swatch(mColor, 0xFF).getBodyTextColor());
     }
 
     private void removeFallbackView() {
