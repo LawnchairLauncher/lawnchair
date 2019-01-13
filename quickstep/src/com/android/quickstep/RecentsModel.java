@@ -36,6 +36,7 @@ import android.util.LruCache;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
+import ch.deletescape.lawnchair.LawnchairIconLoader;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -112,7 +113,7 @@ public class RecentsModel extends TaskStackChangeListener {
             protected IconLoader createNewIconLoader(Context context,
                     TaskKeyLruCache<Drawable> iconCache,
                     LruCache<ComponentName, ActivityInfo> activityInfoCache) {
-                return new NormalizedIconLoader(context, iconCache, activityInfoCache);
+                return new LawnchairIconLoader(context, iconCache, activityInfoCache);
             }
         };
         mRecentsTaskLoader.startLoader(mContext);

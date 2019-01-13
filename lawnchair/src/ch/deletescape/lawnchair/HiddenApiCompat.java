@@ -18,10 +18,13 @@
 package ch.deletescape.lawnchair;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.TaskDescription;
 import android.app.ActivityOptions;
 import android.app.WindowConfiguration;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
@@ -40,5 +43,17 @@ public class HiddenApiCompat {
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchWindowingMode(WindowConfiguration.WINDOWING_MODE_FREEFORM);
         return options;
+    }
+
+    public static boolean isInstantApp(ApplicationInfo applicationInfo) {
+        return applicationInfo.isInstantApp();
+    }
+
+    public static int getIconResource(TaskDescription desc) {
+        return desc.getIconResource();
+    }
+
+    public static Bitmap loadTaskDescriptionIcon(TaskDescription desc, int userId) {
+        return ActivityManager.TaskDescription.loadTaskDescriptionIcon(desc.getIconFilename(), userId);
     }
 }
