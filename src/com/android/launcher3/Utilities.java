@@ -27,16 +27,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -45,7 +49,6 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
@@ -66,22 +69,18 @@ import android.util.Pair;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Interpolator;
-
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Interpolator;
 import android.widget.Toast;
-import ch.deletescape.lawnchair.LawnchairApp;
 import ch.deletescape.lawnchair.LawnchairAppKt;
-import com.android.launcher3.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.config.FeatureFlags;
-
-import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.uioverrides.OverviewState;
-import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -89,7 +88,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -97,11 +95,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -915,28 +908,6 @@ public final class Utilities {
 
     public static void startAssistant(Context context) {
         context.startActivity(new Intent(Intent.ACTION_VOICE_COMMAND));
-    }
-
-    public static Drawable getIconForTask(Context context, Task task) {
-        IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
-        LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
-        String packageName = task.key.getComponent().getPackageName();
-        UserHandle user = UserHandle.of(task.key.userId);
-        List<LauncherActivityInfo> al = lac.getActivityList(packageName, user);
-        if (!al.isEmpty()) {
-            Drawable fullResIcon = ic.getFullResIcon(al.get(0));
-            if (user == Process.myUserHandle()) {
-                return fullResIcon;
-            } else {
-                LauncherIcons li = LauncherIcons.obtain(context);
-                BitmapInfo bitmapInfo = li.createBadgedIconBitmap(fullResIcon, user, 24);
-                li.recycle();
-
-                return new BitmapDrawable(context.getResources(), bitmapInfo.icon);
-            }
-        } else {
-            return task.icon;
-        }
     }
 
     public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
