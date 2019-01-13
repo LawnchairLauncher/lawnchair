@@ -213,10 +213,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                     (dr.background as ColorDrawable).color = extractColor(icon)
                 }
             } else {
-                FixedScaleDrawable().apply {
-                    drawable = icon
-                    setScale(scale)
-                }
+                icon
             }
         }
     }
