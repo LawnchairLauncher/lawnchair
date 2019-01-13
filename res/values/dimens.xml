@@ -279,8 +279,8 @@
     <dimen name="qsb_min_width_with_mic">124dp</dimen>
     <dimen name="smartspace_preview_height">100dp</dimen>
     <dimen name="smartspace_preview_widget_margin">24dp</dimen>
-    <dimen name="color_preview_height">80dp</dimen>
-    <dimen name="color_preview_width">100dp</dimen>
+    <dimen name="color_preview_height">60dp</dimen>
+    <dimen name="color_preview_width">80dp</dimen>
     <dimen name="chroma_view_height">505dp</dimen>
 
 <!-- Overview -->
