@@ -178,7 +178,7 @@ public class LauncherModel extends BroadcastReceiver
 
     /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
      * posted on the worker thread handler. */
-    public static void runOnWorkerThread(Runnable r) {
+    private static void runOnWorkerThread(Runnable r) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             r.run();
         } else {

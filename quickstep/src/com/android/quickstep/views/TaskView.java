@@ -184,7 +184,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
-        mIconView.setDrawable(getRecentsView().getIconForTask(task));
+        mIconView.setDrawable(Utilities.getIconForTask(getContext(), task));
         mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
         mIconView.setOnLongClickListener(icon -> {
             requestDisallowInterceptTouchEvent(true);
@@ -354,7 +354,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         return super.performAccessibilityAction(action, arguments);
     }
 
-    public RecentsView getRecentsView() {
+    private RecentsView getRecentsView() {
         return (RecentsView) getParent();
     }
 

@@ -67,7 +67,6 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.OverviewCallbacks;
@@ -87,8 +86,6 @@ import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -132,8 +129,6 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
     private final SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
-
-    private final ConcurrentHashMap<ComponentKey, Drawable> mIconMap = new ConcurrentHashMap<>();
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -469,8 +464,6 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
                 addView(mClearAllButton);
             }
         }
-
-        loadTaskIconsInBackground(tasks);
 
         // Unload existing visible task data
         unloadVisibleTaskData();
@@ -1392,32 +1385,5 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
 
     public RecentsModel getModel() {
         return mModel;
-    }
-
-    private void loadTaskIconsInBackground(ArrayList<Task> tasks) {
-        LauncherModel.runOnWorkerThread(() -> loadTaskIcons(tasks));
-    }
-
-    private void loadTaskIcons(ArrayList<Task> tasks) {
-        HashMap<ComponentKey, Drawable> tmpMap = new HashMap<>(mIconMap);
-        mIconMap.clear();
-        for (Task task : tasks) {
-            ComponentKey component = Utilities.getKeyForTask(task);
-            Drawable icon = tmpMap.get(component);
-            if (icon == null) {
-                icon = Utilities.getIconForTask(getContext(), task);
-            }
-            mIconMap.put(component, icon);
-        }
-    }
-
-    Drawable getIconForTask(Task task) {
-        ComponentKey component = Utilities.getKeyForTask(task);
-        Drawable icon = mIconMap.get(component);
-        if (icon == null) {
-            icon = Utilities.getIconForTask(getContext(), task);
-            mIconMap.put(component, icon);
-        }
-        return icon;
     }
 }
