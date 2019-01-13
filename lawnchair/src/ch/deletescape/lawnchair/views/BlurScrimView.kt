@@ -40,6 +40,7 @@ import com.android.launcher3.graphics.ShadowGenerator
 import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
+import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -83,6 +84,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
+    private val bubbleGap = resources.getDimensionPixelSize(R.dimen.qsb_two_bubble_gap)
+    private val micWidth = resources.getDimensionPixelSize(R.dimen.qsb_mic_width)
+    private val isRtl = Utilities.isRtl(resources)
     private val provider by lazy { BlurWallpaperProvider.getInstance(context) }
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
     private val blurRadius get() = if (useFlatColor) 0f else mRadius
@@ -222,9 +226,19 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             val top = searchBox.top + adjustment + searchBox.paddingTop
             val right = searchBox.right - searchBox.paddingRight
             val bottom = searchBox.bottom + adjustment - searchBox.paddingBottom
-            setBounds(left, top, right, bottom)
+            val isBubbleUi = (searchBox as? AbstractQsbLayout)?.useTwoBubbles() != false
+            val bubbleAdjustmentLeft = if (isBubbleUi && isRtl) micWidth + bubbleGap else 0
+            val bubbleAdjustmentRight = if (isBubbleUi && !isRtl) micWidth + bubbleGap else 0
+            setBounds(left + bubbleAdjustmentLeft, top, right - bubbleAdjustmentRight, bottom)
             alpha = (searchBox.alpha * 255).toInt()
             draw(canvas)
+            if (isBubbleUi) {
+                setBounds(if (!isRtl) right - micWidth else left,
+                        top,
+                        if (isRtl) left + micWidth else right,
+                        bottom)
+                draw(canvas)
+            }
         }
     }
 

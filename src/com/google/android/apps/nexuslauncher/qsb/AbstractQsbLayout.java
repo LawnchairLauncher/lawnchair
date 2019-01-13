@@ -65,7 +65,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected Bitmap Db;
     protected int Dc;
     protected int Dd;
-    protected float micStrokeWidth;
+    public float micStrokeWidth;
     private ImageView mLogoIconView;
     protected ImageView mMicIconView;
     protected String Dg;
@@ -571,7 +571,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return isDarkTheme && isDarkBar;
     }
 
-    protected boolean useTwoBubbles() {
+    public boolean useTwoBubbles() {
         return mMicIconView.getVisibility() == View.VISIBLE && Utilities
                 .getLawnchairPrefs(mActivity).getDualBubbleSearch();
     }
