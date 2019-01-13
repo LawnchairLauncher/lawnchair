@@ -32,7 +32,7 @@ import com.android.launcher3.R
 
 
 open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, ColorEngine.OnAccentChangeListener {
+        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, ColorEngine.OnColorChangeListener {
 
     private var mSeekbar: SeekBar? = null
     protected var mValueText: TextView? = null
@@ -76,21 +76,23 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         updateDisplayedValue()
 
         if (allowResetToDefault) view.setOnCreateContextMenuListener(this)
-        ColorEngine.getInstance(context).addAccentChangeListener(this)
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val stateList = ColorStateList.valueOf(color)
-        mSeekbar?.apply {
-            thumbTintList = stateList
-            progressTintList = stateList
-            progressBackgroundTintList = stateList
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            val stateList = ColorStateList.valueOf(color)
+            mSeekbar?.apply {
+                thumbTintList = stateList
+                progressTintList = stateList
+                progressBackgroundTintList = stateList
+            }
         }
     }
 
     override fun onDetached() {
         super.onDetached()
-        ColorEngine.getInstance(context).removeAccentChangeListener(this)
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     fun setValue(value: Float) {

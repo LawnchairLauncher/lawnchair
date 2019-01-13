@@ -49,7 +49,7 @@ class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLay
 
     private inline fun performMeasure(spec: Int, childSize: Int, crossinline measureChild: (View, Int) -> Unit): Boolean {
         val available = MeasureSpec.getSize(spec)
-        if (childSize * childCount >= available) return false
+        if (childSize * childCount >= available || childCount == 0) return false
         val width = available / childCount
         val used = width * childCount
         val remaining = available - used

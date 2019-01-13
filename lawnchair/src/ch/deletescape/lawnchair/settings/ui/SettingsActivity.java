@@ -63,6 +63,7 @@ import ch.deletescape.lawnchair.FakeLauncherKt;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.overrides.ThemedEditTextPreferenceDialogFragmentCompat;
 import ch.deletescape.lawnchair.colors.overrides.ThemedListPreferenceDialogFragment;
 import ch.deletescape.lawnchair.colors.overrides.ThemedMultiSelectListPreferenceDialogFragmentCompat;
@@ -193,10 +194,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public void onAccentChange(int color, int foregroundColor) {
-        super.onAccentChange(color, foregroundColor);
+    public void onColorChange(String resolver, int color, int foregroundColor) {
+        super.onColorChange(resolver, color, foregroundColor);
 
-        if (shouldShowSearch()) {
+        if (resolver.equals(ColorEngine.Resolvers.ACCENT) && shouldShowSearch()) {
             Drawable search = getResources().getDrawable(R.drawable.ic_settings_search, null);
             search.setTint(color);
 

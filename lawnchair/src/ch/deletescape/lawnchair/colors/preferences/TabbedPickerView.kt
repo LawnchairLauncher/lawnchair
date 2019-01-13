@@ -32,18 +32,11 @@ import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
 import me.priyesh.chroma.*
 
 @SuppressLint("ViewConstructor")
-class TabbedPickerView(context: Context, initialColor: Int, private val dismiss: () -> Unit)
+class TabbedPickerView(context: Context, val key: String, initialColor: Int, val colorMode: ColorMode, val resolvers: Array<String>, private val dismiss: () -> Unit)
     : RelativeLayout(context, null) {
 
     private val engine = ColorEngine.getInstance(context)
-
-    private val colors = listOf(
-            PixelAccentResolver(ColorEngine.ColorResolver.Config(engine)),
-            SystemAccentResolver(ColorEngine.ColorResolver.Config(engine)),
-            WallpaperMainColorResolver(ColorEngine.ColorResolver.Config(engine)),
-            WallpaperSecondaryColorResolver(ColorEngine.ColorResolver.Config(engine)),
-            WallpaperTertiaryColorResolver(ColorEngine.ColorResolver.Config(engine)))
-            .filter { Color.alpha(it.resolveColor()) > 0 }
+    private val colors = resolvers.mapToResolvers(engine)
 
     private val isLandscape = orientation(context) == Configuration.ORIENTATION_LANDSCAPE
 
@@ -51,16 +44,18 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
     private val minItemWidthLandscape = context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
     private val chromaViewHeight = context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
     private val viewHeightLandscape = context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
+    private var resolver by ColorEngine.getInstance(context).getOrCreateResolver(key)
 
-    val chromaView = ChromaView(initialColor, ColorMode.RGB, context).apply {
+    val chromaView = ChromaView(initialColor, colorMode, context).apply {
         enableButtonBar(object : ChromaView.ButtonBarListener {
             override fun onNegativeButtonClick() = dismiss()
             override fun onPositiveButtonClick(color: Int) {
+                //TODO support HSV and RGBA aswell (create new resolvers for those two)
                 val red = Color.red(color)
                 val green = Color.green(color)
                 val blue = Color.blue(color)
-                engine.accentResolver = RGBColorResolver(
-                        ColorEngine.ColorResolver.Config(engine, args = listOf("$red", "$green", "$blue")))
+                resolver = RGBColorResolver(
+                        ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
                 dismiss()
             }
         })
@@ -83,7 +78,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
         val color = engine.accent
         tabLayout.tabRippleColor = ColorStateList.valueOf(color)
         tabLayout.setSelectedTabIndicatorColor(color)
-        if (engine.accentResolver is RGBColorResolver) {
+        if (resolver is RGBColorResolver) {
             viewPager.currentItem = 1
         }
     }
@@ -99,7 +94,7 @@ class TabbedPickerView(context: Context, initialColor: Int, private val dismiss:
                 val preview = LayoutInflater.from(context).inflate(R.layout.color_preview, null) as ColorPreviewView
                 preview.colorResolver = it
                 preview.setOnClickListener { _ ->
-                    engine.accentResolver = it
+                    resolver = it
                     dismiss()
                 }
                 addView(preview)

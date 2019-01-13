@@ -35,7 +35,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @SuppressLint("Registered")
-open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChangeListener, ThemeManager.ThemeableActivity {
+open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChangeListener, ThemeManager.ThemeableActivity {
     val decorLayout by lazy { DecorLayout(this, window) }
 
     protected open val themeSet: ThemeOverride.ThemeSet get() = ThemeOverride.Settings()
@@ -93,18 +93,22 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnAccentChang
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        ColorEngine.getInstance(this).addAccentChangeListener(this)
+        ColorEngine.getInstance(this).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-        arrowBack?.setTint(color)
-        supportActionBar?.setHomeAsUpIndicator(arrowBack)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        when (resolver) {
+            ColorEngine.Resolvers.ACCENT -> {
+                val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
+                arrowBack?.setTint(color)
+                supportActionBar?.setHomeAsUpIndicator(arrowBack)
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        ColorEngine.getInstance(this).removeAccentChangeListener(this)
+        ColorEngine.getInstance(this).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onResume() {

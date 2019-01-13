@@ -29,49 +29,64 @@ import java.util.HashSet
 
 class ColorEngine private constructor(val context: Context) : LawnchairPreferences.OnPreferenceChangeListener {
 
-    private val KEY_ACCENT_RESOLVER = "pref_accentColorResolver"
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
-    private val accentListeners = HashSet<OnAccentChangeListener>()
+    private val colorListeners = mutableMapOf<String, MutableSet<OnColorChangeListener>>()
 
-    private val defaultColorResolver = createColorResolver(context.resources.getString(R.string.config_default_color_resolver))
+    private val resolverMap = mutableMapOf<String, LawnchairPreferences.StringBasedPref<ColorResolver>>()
+    private val resolverCache = mutableMapOf<String, ColorResolver>()
 
-    var accentResolver by createResolverPref(KEY_ACCENT_RESOLVER)
+    private var accentResolver by getOrCreateResolver(Resolvers.ACCENT)
     val accent get() = accentResolver.resolveColor()
     val accentForeground get() = accentResolver.computeForegroundColor()
 
-    init {
-        prefs.addOnPreferenceChangeListener(this, KEY_ACCENT_RESOLVER)
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        val resolver by getOrCreateResolver(key)
+        resolver.startListening()
+        onColorChanged(key, getOrCreateResolver(key).onGetValue())
     }
 
-    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        when(key) {
-            KEY_ACCENT_RESOLVER -> {
-                accentResolver.startListening()
-                notifyAccentChanged()
+    private fun onColorChanged(key: String, colorResolver: ColorResolver) {
+        runOnMainThread { colorListeners[key]?.forEach { it.onColorChange(key, colorResolver.resolveColor(), colorResolver.computeForegroundColor()) } }
+    }
+
+    fun addColorChangeListeners(listener: OnColorChangeListener, vararg keys: String) {
+        if (keys.isEmpty()) {
+            throw RuntimeException("At least one key is required")
+        }
+        prefs.addOnPreferenceChangeListener(this, *keys)
+        for (key in keys) {
+            if (colorListeners[key] == null) {
+                colorListeners[key] = HashSet()
+            }
+            colorListeners[key]?.add(listener)
+            val resolver by getOrCreateResolver(key)
+            listener.onColorChange(key, resolver.resolveColor(), resolver.computeForegroundColor())
+        }
+    }
+
+    fun removeColorChangeListeners(listener: OnColorChangeListener, vararg keys: String) {
+        if (keys.isEmpty()) {
+            throw RuntimeException("At least one key is required")
+        }
+        for (key in keys) {
+            colorListeners[key]?.remove(listener)
+            if (colorListeners[key]?.isEmpty() != false) {
+                prefs.removeOnPreferenceChangeListener(key, this)
             }
         }
     }
 
-    private fun onColorChanged(colorResolver: ColorResolver) {
-        notifyAccentChanged()
-    }
-
-    private fun notifyAccentChanged() {
-        runOnMainThread { accentListeners.forEach { it.onAccentChange(accent, accentForeground) } }
-    }
-
-    fun addAccentChangeListener(listener: OnAccentChangeListener) {
-        accentListeners.add(listener)
-        listener.onAccentChange(accent, accentForeground)
-    }
-
-    fun removeAccentChangeListener(listener: OnAccentChangeListener) = accentListeners.remove(listener)
-
-    private fun createResolverPref(key: String, defaultValue: ColorResolver = defaultColorResolver) =
-            prefs.StringBasedPref(key, defaultValue, prefs.doNothing, ::createColorResolver,
+    private fun createResolverPref(key: String, defaultValue: ColorResolver = createDefaultColorResolver(key)) =
+            prefs.StringBasedPref(key, defaultValue, prefs.doNothing, { string -> createColorResolver(key, string) },
                     ColorResolver::toString, ColorResolver::onDestroy)
 
-    private fun createColorResolver(string: String): ColorResolver {
+    fun createDefaultColorResolver(key: String) = createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
+
+    fun createColorResolver(key: String, string: String): ColorResolver {
+        val cacheKey = "$key@$string"
+        // Prevent having to expensively use reflection every time
+        if (resolverCache.containsKey(cacheKey)) return resolverCache[cacheKey]!!
+        var resolver: ColorResolver? = null
         try {
             val parts = string.split("|")
             val className = parts[0]
@@ -79,18 +94,32 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
             val clazz = Class.forName(className)
             val constructor = clazz.getConstructor(ColorResolver.Config::class.java)
-            return constructor.newInstance(ColorResolver.Config(this, ::onColorChanged, args)) as ColorResolver
+            resolver = constructor.newInstance(ColorResolver.Config(key, this, ::onColorChanged, args)) as ColorResolver
         } catch (e: IllegalStateException) {
         } catch (e: ClassNotFoundException) {
         } catch (e: InstantiationException) {
         }
-        return PixelAccentResolver(ColorResolver.Config(this))
+        return (resolver ?: PixelAccentResolver(ColorResolver.Config(key, this))).also {
+            resolverCache[cacheKey] = it
+        }
+    }
+
+    fun getOrCreateResolver(key: String, defaultValue: ColorResolver = createDefaultColorResolver(key)): LawnchairPreferences.StringBasedPref<ColorResolver> {
+        return resolverMap[key] ?: createResolverPref(key, defaultValue).also {
+            resolverMap[key] = it
+        }
     }
 
     companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine)))
 
-    interface OnAccentChangeListener {
-        fun onAccentChange(color: Int, foregroundColor: Int)
+    interface OnColorChangeListener {
+        fun onColorChange(resolver: String, color: Int, foregroundColor: Int)
+    }
+
+    internal class Resolvers {
+        companion object {
+            const val ACCENT = "pref_accentColorResolver"
+        }
     }
 
     abstract class ColorResolver(val config: Config) {
@@ -118,7 +147,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
 
         fun notifyChanged() {
-            config.listener?.invoke(this)
+            config.listener?.invoke(config.key, this)
         }
 
         fun onDestroy() {
@@ -128,8 +157,9 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
 
         class Config(
+                val key: String,
                 val engine: ColorEngine,
-                val listener: ((ColorResolver) -> Unit)? = null,
+                val listener: ((String, ColorResolver) -> Unit)? = null,
                 val args: List<String> = emptyList())
     }
 }

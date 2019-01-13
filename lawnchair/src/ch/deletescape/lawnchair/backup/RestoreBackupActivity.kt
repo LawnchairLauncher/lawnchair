@@ -37,7 +37,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.provider.RestoreDbTask
 
-class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback, ColorEngine.OnAccentChangeListener {
+class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback, ColorEngine.OnColorChangeListener {
     private val backupName by lazy { findViewById<AppCompatEditText>(R.id.name) }
     private val backupTimestamp by lazy { findViewById<AppCompatEditText>(R.id.timestamp) }
 
@@ -236,32 +236,36 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        ColorEngine.getInstance(this).addAccentChangeListener(this)
+        ColorEngine.getInstance(this).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val tintList = ColorStateList.valueOf(color)
-        startButton.apply {
-            DrawableCompat.setTint(background, color)
-            DrawableCompat.setTint(drawable, foregroundColor)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        when (resolver) {
+            ColorEngine.Resolvers.ACCENT -> {
+                val tintList = ColorStateList.valueOf(color)
+                startButton.apply {
+                    DrawableCompat.setTint(background, color)
+                    DrawableCompat.setTint(drawable, foregroundColor)
+                }
+                backupName.apply {
+                    highlightColor = color
+                    supportBackgroundTintList = tintList
+                }
+                backupTimestamp.apply {
+                    highlightColor = color
+                    supportBackgroundTintList = tintList
+                }
+                backupHomescreen.buttonTintList = tintList
+                backupSettings.buttonTintList = tintList
+                backupWallpaper.buttonTintList = tintList
+                progressBar.indeterminateTintList = tintList
+            }
         }
-        backupName.apply {
-            highlightColor = color
-            supportBackgroundTintList = tintList
-        }
-        backupTimestamp.apply {
-            highlightColor = color
-            supportBackgroundTintList = tintList
-        }
-        backupHomescreen.buttonTintList = tintList
-        backupSettings.buttonTintList = tintList
-        backupWallpaper.buttonTintList = tintList
-        progressBar.indeterminateTintList = tintList
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        ColorEngine.getInstance(this).removeAccentChangeListener(this)
+        ColorEngine.getInstance(this).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     companion object {

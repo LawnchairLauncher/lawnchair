@@ -22,19 +22,21 @@ import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.colors.ColorEngine
 
-open class StyledIconPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), ColorEngine.OnAccentChangeListener {
+open class StyledIconPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
     override fun onAttached() {
         super.onAttached()
-        ColorEngine.getInstance(context).addAccentChangeListener(this)
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        icon?.setTint(color)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            icon?.setTint(color)
+        }
     }
 
     override fun onDetached() {
         super.onDetached()
-        ColorEngine.getInstance(context).removeAccentChangeListener(this)
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 }

@@ -22,47 +22,68 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.support.v4.app.FragmentManager
 import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
-import me.priyesh.chroma.ColorSelectListener
-import android.view.WindowManager
-
 
 
 class ColorPickerPreference(context: Context, attrs: AttributeSet?)
-    : Preference(context, attrs), ColorEngine.OnAccentChangeListener {
+    : Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
     private val engine = ColorEngine.getInstance(context)
+    private val colorMode: ColorMode
+    private val resolvers: Array<String>
+    private val resolverPref: LawnchairPreferences.StringBasedPref<ColorEngine.ColorResolver>
 
     init {
         fragment = key
         layoutResource = R.layout.pref_with_preview_icon
+        val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorPickerPreference)
+        //TODO: actually support more than just rgb
+        colorMode = getColorMode(ta.getInt(R.styleable.ColorPickerPreference_colorMode, 0))
+        resolvers = context.resources.getStringArray(ta.getResourceId(R.styleable.ColorPickerPreference_resolvers, -1))
+        ta.recycle()
+        resolverPref = engine.getOrCreateResolver(key,
+                resolvers.mapToResolvers(engine).getOrNull(0)
+                        ?: engine.createDefaultColorResolver(key))
+    }
+
+    private fun getColorMode(mode: Int): ColorMode = when (mode) {
+        0 -> ColorMode.RGB
+        1 -> ColorMode.ARGB
+        2 -> ColorMode.HSV
+        else -> ColorMode.RGB
     }
 
     override fun onAttached() {
         super.onAttached()
 
-        engine.addAccentChangeListener(this)
+        engine.addColorChangeListeners(this, key)
     }
 
     override fun onDetached() {
         super.onDetached()
 
-        engine.removeAccentChangeListener(this)
+        engine.removeColorChangeListeners(this, key)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        summary = engine.accentResolver.getDisplayName()
-        if (icon == null){
-            icon = context.resources.getDrawable(R.drawable.color_preview, null)
+    override fun onColorChange(resolverKey: String, color: Int, foregroundColor: Int) {
+        if (resolverKey == key) {
+            val resolver by resolverPref
+            summary = resolver.getDisplayName()
+            if (icon == null) {
+                icon = context.resources.getDrawable(R.drawable.color_preview, null)
+            }
+            icon.setColorFilter(color, PorterDuff.Mode.SRC)
         }
-        icon.setColorFilter(color, PorterDuff.Mode.SRC)
     }
 
     fun showDialog(fragmentManager: FragmentManager) {
-        ColorPickerDialog.newInstance(engine.accent).show(fragmentManager, key)
+        val resolver by resolverPref
+        ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers).show(fragmentManager, key)
     }
 }
+
+internal fun Array<String>.mapToResolvers(engine: ColorEngine) = map { engine.createColorResolver("PickerPreference", it) }.filter { Color.alpha(it.resolveColor()) > 0 }

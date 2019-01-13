@@ -70,10 +70,9 @@
             android:title="@string/theme_pref_title" />
 
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
-            android:key="pref_accentColor"
-            android:persistent="true"
+            android:key="pref_accentColorResolver"
             android:title="@string/pref_accent_color"
-            app:defaultColor="@color/colorAccent"/>
+            app:resolvers="@array/resolvers_accent"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_default_enable_blur"

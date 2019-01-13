@@ -12,7 +12,7 @@ import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 
-class SearchProviderController(private val context: Context) : ColorEngine.OnAccentChangeListener {
+class SearchProviderController(private val context: Context) : ColorEngine.OnColorChangeListener {
 
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     private var cache: SearchProvider? = null
@@ -26,7 +26,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
 
     init {
         ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.Launcher(), ThemeListener()))
-        ColorEngine.getInstance(context).addAccentChangeListener(this)
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     fun addOnProviderChangeListener(listener: OnProviderChangeListener) {
@@ -66,9 +66,11 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnAcc
             return cache!!
         }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        cache = null
-        notifyProviderChanged()
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            cache = null
+            notifyProviderChanged()
+        }
     }
 
     inner class ThemeListener : ThemeOverride.ThemeOverrideListener {

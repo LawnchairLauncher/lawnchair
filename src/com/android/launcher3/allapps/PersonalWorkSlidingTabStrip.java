@@ -27,7 +27,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
-import ch.deletescape.lawnchair.colors.ColorEngine.OnAccentChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -38,7 +38,7 @@ import com.android.launcher3.util.Themes;
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator,
-        OnAccentChangeListener {
+        OnColorChangeListener {
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
@@ -80,7 +80,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mIsRtl = Utilities.isRtl(getResources());
 
         mTextColorTertiary = Themes.getAttrColor(getContext(), android.R.attr.textColorTertiary);
-        ColorEngine.Companion.getInstance(context).addAccentChangeListener(this);
+        ColorEngine.Companion.getInstance(context)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
 
     private void updateIndicatorPosition(float scrollOffset) {
@@ -182,9 +183,11 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void onAccentChange(int color, int foregroundColor) {
-        mAccent = color;
-        mSelectedIndicatorPaint.setColor(color);
-        updateTabTextColor(mSelectedPosition);
+    public void onColorChange(String resolver, int color, int foregroundColor) {
+        if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
+            mAccent = color;
+            mSelectedIndicatorPaint.setColor(color);
+            updateTabTextColor(mSelectedPosition);
+        }
     }
 }

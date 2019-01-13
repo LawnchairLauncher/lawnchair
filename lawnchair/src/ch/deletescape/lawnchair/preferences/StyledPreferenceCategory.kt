@@ -24,21 +24,23 @@ import android.util.AttributeSet
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 
-class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : PreferenceCategory(context, attrs), ColorEngine.OnAccentChangeListener {
+class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : PreferenceCategory(context, attrs), ColorEngine.OnColorChangeListener {
     var title: TextView? = null
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         title = holder.findViewById(android.R.id.title) as TextView
-        ColorEngine.getInstance(context).addAccentChangeListener(this)
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        title?.setTextColor(color)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            title?.setTextColor(color)
+        }
     }
 
     override fun onDetached() {
         super.onDetached()
-        ColorEngine.getInstance(context).removeAccentChangeListener(this)
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 }

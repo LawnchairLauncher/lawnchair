@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnAccentChangeListener {
+class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnColorChangeListener {
 
     private val gridSizePreference get() = preference as SingleDimensionGridSizePreference
 
@@ -58,7 +58,7 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
         numRowsPicker.setOnSeekBarChangeListener(this)
 
         numRowsLabel.text = "${numRowsPicker.progress + minValue}"
-        ColorEngine.getInstance(context!!).addAccentChangeListener(this)
+        ColorEngine.getInstance(context!!).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -93,12 +93,14 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
 
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val tintList = ColorStateList.valueOf(color)
-        numRowsPicker.apply {
-            progressBackgroundTintList = tintList
-            progressTintList = tintList
-            thumbTintList = tintList
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            val tintList = ColorStateList.valueOf(color)
+            numRowsPicker.apply {
+                progressBackgroundTintList = tintList
+                progressTintList = tintList
+                thumbTintList = tintList
+            }
         }
     }
 
@@ -109,7 +111,7 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
 
     override fun onDetach() {
         super.onDetach()
-        ColorEngine.getInstance(context!!).removeAccentChangeListener(this)
+        ColorEngine.getInstance(context!!).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     companion object {

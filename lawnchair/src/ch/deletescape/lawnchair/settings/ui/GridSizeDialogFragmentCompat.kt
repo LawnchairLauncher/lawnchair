@@ -17,10 +17,8 @@
 
 package ch.deletescape.lawnchair.settings.ui
 
-import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.util.Log
@@ -30,7 +28,7 @@ import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngine.OnAccentChangeListener {
+class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngine.OnColorChangeListener {
 
     private val gridSizePreference get() = preference as GridSizePreference
 
@@ -62,7 +60,7 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
 
-        ColorEngine.getInstance(context!!).addAccentChangeListener(this)
+        ColorEngine.getInstance(context!!).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -86,16 +84,18 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         outState.putInt(SAVE_STATE_COLUMNS, numColumnsPicker.value)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        try {
-            val mSelectionDivider = NumberPicker::class.java.getDeclaredField("mSelectionDivider")
-            mSelectionDivider.isAccessible = true
-            val drawable = mSelectionDivider.get(numColumnsPicker) as Drawable
-            drawable.setTint(color)
-            mSelectionDivider.set(numColumnsPicker, drawable)
-            mSelectionDivider.set(numRowsPicker, drawable)
-        } catch (e: Exception) {
-            Log.e("GridSizeDialog","Failed to set mSelectionDivider", e)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        if (resolver == ColorEngine.Resolvers.ACCENT) {
+            try {
+                val mSelectionDivider = NumberPicker::class.java.getDeclaredField("mSelectionDivider")
+                mSelectionDivider.isAccessible = true
+                val drawable = mSelectionDivider.get(numColumnsPicker) as Drawable
+                drawable.setTint(color)
+                mSelectionDivider.set(numColumnsPicker, drawable)
+                mSelectionDivider.set(numRowsPicker, drawable)
+            } catch (e: Exception) {
+                Log.e("GridSizeDialog", "Failed to set mSelectionDivider", e)
+            }
         }
     }
 
@@ -106,7 +106,7 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
 
     override fun onDetach() {
         super.onDetach()
-        ColorEngine.getInstance(context!!).removeAccentChangeListener(this)
+        ColorEngine.getInstance(context!!).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     companion object {

@@ -44,7 +44,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnAccentChangeListener {
+class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListener {
 
     private val permissionRequestReadExternalStorage = 0
 
@@ -176,37 +176,41 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnAccentChangeList
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        ColorEngine.getInstance(this).addAccentChangeListener(this)
+        ColorEngine.getInstance(this).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onAccentChange(color: Int, foregroundColor: Int) {
-        val tintList = ColorStateList.valueOf(color)
-        startButton.apply {
-            DrawableCompat.setTint(background, color)
-            DrawableCompat.setTint(drawable, foregroundColor)
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        when (resolver) {
+            ColorEngine.Resolvers.ACCENT -> {
+                val tintList = ColorStateList.valueOf(color)
+                startButton.apply {
+                    DrawableCompat.setTint(background, color)
+                    DrawableCompat.setTint(drawable, foregroundColor)
+                }
+                backupName.apply {
+                    highlightColor = color
+                    supportBackgroundTintList = tintList
+                }
+                try {
+                    val focusedTextColor = TextInputLayout::class.java.getDeclaredField("focusedTextColor")
+                    focusedTextColor.isAccessible = true
+                    focusedTextColor.set(backupNameLayout, tintList)
+                } catch (e: Exception) {
+                    lawnchairApp.bugReporter.writeReport("Failed to set focusedTextColor on TextInputLayout", e)
+                }
+                backupHomescreen.buttonTintList = tintList
+                backupSettings.buttonTintList = tintList
+                backupWallpaper.buttonTintList = tintList
+                backupLocationDevice.buttonTintList = tintList
+                backupLocationDocuments.buttonTintList = tintList
+                progressBar.indeterminateTintList = tintList
+            }
         }
-        backupName.apply {
-            highlightColor = color
-            supportBackgroundTintList = tintList
-        }
-        try {
-            val focusedTextColor = TextInputLayout::class.java.getDeclaredField("focusedTextColor")
-            focusedTextColor.isAccessible = true
-            focusedTextColor.set(backupNameLayout, tintList)
-        } catch (e: Exception) {
-            lawnchairApp.bugReporter.writeReport("Failed to set focusedTextColor on TextInputLayout", e)
-        }
-        backupHomescreen.buttonTintList = tintList
-        backupSettings.buttonTintList = tintList
-        backupWallpaper.buttonTintList = tintList
-        backupLocationDevice.buttonTintList = tintList
-        backupLocationDocuments.buttonTintList = tintList
-        progressBar.indeterminateTintList = tintList
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        ColorEngine.getInstance(this).removeAccentChangeListener(this)
+        ColorEngine.getInstance(this).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     @SuppressLint("StaticFieldLeak")
