@@ -22,6 +22,8 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v7.graphics.Palette
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.colors.resolvers.DockQsbAutoResolver
+import ch.deletescape.lawnchair.colors.resolvers.DrawerQsbAutoResolver
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -76,11 +78,9 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
     }
 
-    private fun createResolverPref(key: String, defaultValue: ColorResolver = createDefaultColorResolver(key)) =
+    private fun createResolverPref(key: String, defaultValue: ColorResolver = Resolvers.getDefaultResolver(key, context, this)) =
             prefs.StringBasedPref(key, defaultValue, prefs.doNothing, { string -> createColorResolver(key, string) },
                     ColorResolver::toString, ColorResolver::onDestroy)
-
-    fun createDefaultColorResolver(key: String) = createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
 
     fun createColorResolver(key: String, string: String): ColorResolver {
         val cacheKey = "$key@$string"
@@ -99,12 +99,12 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         } catch (e: ClassNotFoundException) {
         } catch (e: InstantiationException) {
         }
-        return (resolver ?: PixelAccentResolver(ColorResolver.Config(key, this))).also {
+        return (resolver ?: Resolvers.getDefaultResolver(key, context, this)).also {
             resolverCache[cacheKey] = it
         }
     }
 
-    fun getOrCreateResolver(key: String, defaultValue: ColorResolver = createDefaultColorResolver(key)): LawnchairPreferences.StringBasedPref<ColorResolver> {
+    fun getOrCreateResolver(key: String, defaultValue: ColorResolver = Resolvers.getDefaultResolver(key, context, this)): LawnchairPreferences.StringBasedPref<ColorResolver> {
         return resolverMap[key] ?: createResolverPref(key, defaultValue).also {
             resolverMap[key] = it
         }
@@ -119,6 +119,20 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     internal class Resolvers {
         companion object {
             const val ACCENT = "pref_accentColorResolver"
+            const val HOTSEAT_QSB_BG = "pref_hotseatQsbColorResolver"
+            const val ALLAPPS_QSB_BG = "pref_allappsQsbColorResolver"
+            fun getDefaultResolver(key: String, context: Context, engine: ColorEngine): ColorResolver {
+                return when (key) {
+                    HOTSEAT_QSB_BG -> {
+                        DockQsbAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                    }
+                    ALLAPPS_QSB_BG -> {
+                        DrawerQsbAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                    }
+                    ACCENT -> engine.createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
+                    else -> engine.createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
+                }
+            }
         }
     }
 

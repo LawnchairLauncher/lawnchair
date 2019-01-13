@@ -616,7 +616,6 @@
     <string name="color_wallpaper_main">Wallpaper primary</string>
     <string name="color_wallpaper_secondary">Wallpaper secondary</string>
     <string name="color_wallpaper_tertiary">Wallpaper tertiary</string>
-    <string name="pref_dark_searchbar">Use dark searchbar</string>
 
     <!-- Label of tab to indicate personal apps -->
     <string name="all_apps_personal_tab">Personal</string>

@@ -46,7 +46,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         ta.recycle()
         resolverPref = engine.getOrCreateResolver(key,
                 resolvers.mapToResolvers(engine).getOrNull(0)
-                        ?: engine.createDefaultColorResolver(key))
+                        ?: ColorEngine.Resolvers.getDefaultResolver(key, context, engine))
     }
 
     private fun getColorMode(mode: Int): ColorMode = when (mode) {

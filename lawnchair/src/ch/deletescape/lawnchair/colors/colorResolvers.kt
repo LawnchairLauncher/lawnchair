@@ -27,6 +27,28 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 @Keep
+class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config), ColorEngine.OnColorChangeListener {
+
+    override fun startListening() {
+        super.startListening()
+        engine.addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+    }
+
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        notifyChanged()
+    }
+
+    override fun stopListening() {
+        super.stopListening()
+        engine.removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+    }
+
+    override fun resolveColor() = engine.accent
+
+    override fun getDisplayName() = engine.context.getString(R.string.lawnchair_accent) as String
+}
+
+@Keep
 class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     override fun resolveColor(): Int {

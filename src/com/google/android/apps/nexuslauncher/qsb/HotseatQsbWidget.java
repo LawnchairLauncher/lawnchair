@@ -23,6 +23,8 @@ import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -34,7 +36,8 @@ import com.android.launcher3.util.Themes;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairPreferences.OnPreferenceChangeListener {
+public class HotseatQsbWidget extends AbstractQsbLayout implements o,
+        LawnchairPreferences.OnPreferenceChangeListener, ColorEngine.OnColorChangeListener {
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
     public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
@@ -72,6 +75,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
     protected void onAttachedToWindow() {
         Utilities.getLawnchairPrefs(getContext())
                 .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
+        ColorEngine.Companion.getInstance(getContext())
+                .addColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
         dW();
         super.onAttachedToWindow();
         getContext().registerReceiver(this.DK, new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
@@ -85,8 +90,18 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
         Utilities.getLawnchairPrefs(getContext())
                 .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
                         KEY_DOCK_SEARCHBAR);
+        ColorEngine.Companion.getInstance(getContext())
+                .removeColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
         getContext().unregisterReceiver(this.DK);
         this.Ds.b(this);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        if (resolver.equals(Resolvers.HOTSEAT_QSB_BG)) {
+            ay(color);
+            az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
+        }
     }
 
     @Override
@@ -142,17 +157,17 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o, LawnchairP
 
     private void setColors() {
         View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
-        int colorRes;
+        /*int colorRes;
         if (isDarkBar()) {
             colorRes = R.color.qsb_background_hotseat_dark;
         } else {
             colorRes = mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default;
         }
         ay(getResources().getColor(colorRes));
-        az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
+        az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));*/
     }
 
-    private boolean isGoogleColored() {
+    public boolean isGoogleColored() {
         if (Utilities.getLawnchairPrefs(getContext()).getDockColoredGoogle()) {
             return true;
         }

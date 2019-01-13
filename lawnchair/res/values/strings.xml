@@ -72,6 +72,7 @@
     <string name="theme_dark_dark_text">Dark (with dark text)</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black (with dark text)</string>
+    <string name="pref_qsb_color">Search bar color</string>
 
     <!-- Per app options -->
     <string name="hide_from_predictions">Hide in suggestions</string>
@@ -94,6 +95,10 @@
     <string name="search_no_results">No results</string>
     <string name="search_menu">Search settings</string>
     <string name="search_provider_s_finder">S Finder</string>
+
+    <!-- Colors -->
+    <string name="lawnchair_accent">Lawnchair accent</string>
+    <string name="color_theme_based">Theme based</string>
 
     <!-- Suggestions -->
     <string name="suggestion_pref_screen_title">Suggestions</string>

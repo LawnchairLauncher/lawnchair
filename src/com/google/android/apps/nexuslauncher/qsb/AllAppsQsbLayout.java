@@ -15,8 +15,9 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
-import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
@@ -28,11 +29,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
-import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
+import org.jetbrains.annotations.NotNull;
 
-public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, OnChangeListener, o {
+public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o,
+        ColorEngine.OnColorChangeListener {
     private final k Ds;
     private final int Dt;
     private int mShadowAlpha;
@@ -44,7 +45,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private AllAppsContainerView mAppsView;
     boolean mDoNotRemoveFallback;
     private LawnchairPreferences prefs;
-    private int mColor;
+    private int mForegroundColor;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -96,11 +97,18 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
-        instance.addOnChangeListener(this);
-        onExtractedColorsChanged(instance);
+        ColorEngine.Companion.getInstance(getContext())
+                .addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         dN();
         Ds.a(this);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        if (resolver.equals(Resolvers.ALLAPPS_QSB_BG)) {
+            mForegroundColor = foregroundColor;
+            ay(color);
+        }
     }
 
     @Override
@@ -137,24 +145,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected void onDetachedFromWindow() {
-        WallpaperColorInfo.getInstance(getContext()).removeOnChangeListener(this);
+        ColorEngine.Companion.getInstance(getContext())
+                .removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         super.onDetachedFromWindow();
         Ds.b(this);
-    }
-
-    public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
-        boolean isDarkTheme = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark);
-        int colorRes;
-        if (isDarkBar()) {
-            colorRes = R.color.qsb_background_drawer_dark_bar;
-        } else {
-            colorRes = isDarkTheme ? R.color.qsb_background_drawer_dark : R.color.qsb_background_drawer_default;
-        }
-        int color = getResources().getColor(colorRes);
-        mColor = ColorUtils.compositeColors(ColorUtils
-                        .compositeColors(color, Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor)),
-                wallpaperColorInfo.getMainColor());
-        ay(mColor);
     }
 
     protected final int aA(int i) {
@@ -266,7 +260,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mFallback.mAppsView = allAppsContainerView;
         mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback, Launcher.getLauncher(mFallback.getContext()), mFallback);
         addView(this.mFallback);
-        mFallback.setTextColor(new Palette.Swatch(mColor, 0xFF).getBodyTextColor());
+        mFallback.setTextColor(mForegroundColor);
     }
 
     private void removeFallbackView() {
