@@ -51,7 +51,7 @@
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:key="pref_useWindowToIcon"
         android:title="Use window to icon transition"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
