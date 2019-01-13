@@ -50,12 +50,15 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
         enableButtonBar(object : ChromaView.ButtonBarListener {
             override fun onNegativeButtonClick() = dismiss()
             override fun onPositiveButtonClick(color: Int) {
-                //TODO support HSV and RGBA aswell (create new resolvers for those two)
+                //TODO support HSV if ever needed
+                val alpha = Color.alpha(color)
                 val red = Color.red(color)
                 val green = Color.green(color)
                 val blue = Color.blue(color)
-                resolver = RGBColorResolver(
-                        ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
+                resolver = if (colorMode == ColorMode.RGB)
+                    RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
+                else
+                    ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue")))
                 dismiss()
             }
         })

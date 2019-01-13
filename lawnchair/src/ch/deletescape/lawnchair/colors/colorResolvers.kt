@@ -73,6 +73,24 @@ class RGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
     override fun getDisplayName() = "#${String.format("%06X", color and 0xFFFFFF)}"
 }
 
+@Keep
+class ARGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
+
+    val color: Int
+
+    init {
+        if (args.size < 4) throw IllegalArgumentException("not enough args")
+        val argb = args.subList(0, 4).map {
+            it.toIntOrNull() ?: throw IllegalArgumentException("args malformed: $it")
+        }
+        color = Color.argb(argb[0], argb[1], argb[2], argb[3])
+    }
+
+    override fun resolveColor() = color
+
+    override fun getDisplayName() = "#${String.format("%07X", color.toLong() and 0xFFFFFFFF)}"
+}
+
 abstract class WallpaperColorResolver(config: Config)
     : ColorEngine.ColorResolver(config), WallpaperColorInfo.OnChangeListener {
 

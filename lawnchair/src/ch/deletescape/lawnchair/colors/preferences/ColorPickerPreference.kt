@@ -41,7 +41,6 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         fragment = key
         layoutResource = R.layout.pref_with_preview_icon
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorPickerPreference)
-        //TODO: actually support more than just rgb
         colorMode = getColorMode(ta.getInt(R.styleable.ColorPickerPreference_colorMode, 0))
         resolvers = context.resources.getStringArray(ta.getResourceId(R.styleable.ColorPickerPreference_resolvers, -1))
         ta.recycle()
