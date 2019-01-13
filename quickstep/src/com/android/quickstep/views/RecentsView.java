@@ -1407,7 +1407,6 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
             if (icon == null) {
                 icon = Utilities.getIconForTask(getContext(), task);
             }
-            if (icon == null) continue;
             mIconMap.put(component, icon);
         }
     }
