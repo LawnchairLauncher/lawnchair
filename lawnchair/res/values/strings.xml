@@ -105,4 +105,5 @@
     <string name="app_actions_pref_title_in_search">Action suggestions</string>
     <string name="app_actions_pref_desc">At the top of your All Apps list</string>
     <string name="change_default_home">Change default home app</string>
+    <string name="recent_task_option_popup_window">Popup window</string>
 </resources>

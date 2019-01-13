@@ -60,6 +60,7 @@ public class TaskMenuView extends AbstractFloatingView {
     public static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[] {
             new TaskSystemShortcut.AppInfo(),
             new TaskSystemShortcut.SplitScreen(),
+            new TaskSystemShortcut.PopupWindow(),
             new TaskSystemShortcut.Pin(),
             new TaskSystemShortcut.Install(),
             new TaskSystemShortcut.ForceStop(),

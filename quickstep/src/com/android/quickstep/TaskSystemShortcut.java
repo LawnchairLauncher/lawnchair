@@ -19,6 +19,7 @@ package com.android.quickstep;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,15 +28,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
 import android.view.View.OnClickListener;
+import ch.deletescape.lawnchair.HiddenApiCompat;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BuildConfig;
@@ -66,6 +71,7 @@ import java.util.function.Consumer;
 /**
  * Represents a system shortcut that can be shown for a recent task.
  */
+@RequiresApi(VERSION_CODES.P)
 public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut {
 
     private static final String TAG = "TaskSystemShortcut";
@@ -322,6 +328,73 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             } else {
                 return null;
             }
+        }
+    }
+
+    public static class PopupWindow extends TaskSystemShortcut {
+
+        public PopupWindow() {
+            super(R.drawable.ic_popup_window, R.string.recent_task_option_popup_window);
+        }
+
+        @Override
+        public OnClickListener getOnClickListener(BaseDraggingActivity activity, TaskView view) {
+            if (activity.getPackageManager().hasSystemFeature("android.software.freeform_window_management")) {
+                if (HiddenApiCompat.supportsMultiWindow(activity)) {
+                    Task task = view.getTask();
+                    if (HiddenApiCompat.isResizeableMode(task.resizeMode)) {
+                        return v -> {
+                            TaskSystemShortcut.dismissTaskMenuView(activity);
+                            ActivityOptions options = HiddenApiCompat.makePopupWindowOptions();
+                            options.setLaunchBounds(getPopupWindowLaunchBounds(view, activity.getDeviceProfile()));
+                            if (ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key.id, options)) {
+                                Log.d(TAG, "Launch popup window(" + task.key.id + ")");
+                                ((RecentsView) activity.getOverviewPanel()).resetTaskVisuals();
+                                return;
+                            }
+                            Log.d(TAG, "Launch popup window through startActivityFromRecents failed");
+                        };
+                    } else {
+                        Log.d(TAG, "Popup window isn't supported because it's not a resizable task");
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private Rect getPopupWindowLaunchBounds(TaskView taskView, DeviceProfile deviceProfile) {
+            float f = 0.67f;
+            float f2 = 0.5f;
+            if (!deviceProfile.isLandscape) {
+                f2 = 0.67f;
+                f = 0.5f;
+            }
+            int i = (int) (((float) deviceProfile.widthPx) * f2);
+            int i2 = (int) (((float) deviceProfile.heightPx) * f);
+            int[] iArr = new int[2];
+            taskView.getLocationOnScreen(iArr);
+            int width = iArr[0] + (((int) ((((float) taskView.getWidth()) * taskView.getScaleX()) - ((float) i))) / 2);
+            int height = iArr[1] + (((int) ((((float) taskView.getHeight()) * taskView.getScaleY()) - ((float) i2))) / 2);
+            Rect bounds = new Rect(width, height, width + i, height + i2);
+            if (bounds.left < 0) {
+                bounds.left = 0;
+                bounds.right = i;
+            }
+            if (bounds.right > deviceProfile.widthPx) {
+                bounds.left = deviceProfile.widthPx - i;
+                bounds.right = deviceProfile.widthPx;
+            }
+            if (bounds.top < 0) {
+                bounds.top = 0;
+                bounds.bottom = i2;
+            }
+            if (bounds.bottom > deviceProfile.heightPx) {
+                bounds.top = deviceProfile.heightPx - i2;
+                bounds.bottom = deviceProfile.heightPx;
+            }
+            Log.d(TAG, "Popup window launch bounds=" + bounds);
+            return bounds;
         }
     }
 
