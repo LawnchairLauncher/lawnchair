@@ -108,6 +108,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (resolver.equals(Resolvers.ALLAPPS_QSB_BG)) {
             mForegroundColor = foregroundColor;
             ay(color);
+            az(this.Dc);
         }
     }
 
