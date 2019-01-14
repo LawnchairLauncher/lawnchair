@@ -64,12 +64,13 @@ class LawnchairIconLoader(private val context: Context, iconCache: TaskKeyLruCac
         }
 
         getAndUpdateActivityInfo(taskKey)?.let { activityInfo ->
-            val icon = Utilities.getIconForTask(context, userId, activityInfo.packageName)
-            getBadgedActivityIcon(icon, activityInfo, userId, desc)?.let {
-                return it
+            Utilities.getIconForTask(context, userId, activityInfo.packageName)?.let { icon ->
+                getBadgedActivityIcon(icon, activityInfo, userId, desc)?.let {
+                    return it
+                }
             }
         }
-        return if (returnDefault) getDefaultIcon(taskKey.userId) else null
+        return super.createNewIconForTask(taskKey, desc, returnDefault)
     }
 
     private fun getBadgedActivityIcon(icon: Drawable, activityInfo: ActivityInfo, userId: Int,
