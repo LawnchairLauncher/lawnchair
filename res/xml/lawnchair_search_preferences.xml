@@ -52,6 +52,7 @@
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_hotseatQsbColorResolver"
             android:title="@string/pref_qsb_color"
+            android:dependency="pref_dockSearchBar"
             app:colorMode="ARGB"
             app:resolvers="@array/resolvers_hotseat_qsb"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
@@ -83,6 +84,7 @@
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_allappsQsbColorResolver"
             android:title="@string/pref_qsb_color"
+            android:dependency="pref_allAppsSearch"
             app:colorMode="ARGB"
             app:resolvers="@array/resolvers_allapps_qsb"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>

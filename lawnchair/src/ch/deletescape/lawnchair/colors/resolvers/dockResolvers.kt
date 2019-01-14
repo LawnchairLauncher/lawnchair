@@ -60,7 +60,7 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), L
 class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
     val launcher = LawnchairLauncher.getLauncher(engine.context)
-    val qsb = launcher.hotseatSearchBox as HotseatQsbWidget
+    val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
 
     override fun startListening() {
         super.startListening()
@@ -77,7 +77,7 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
-            if (qsb.isGoogleColored)
+            if (qsb?.isGoogleColored == true)
                 R.color.qsb_background_hotseat_white
             else
                 R.color.qsb_background_hotseat_default
