@@ -47,19 +47,27 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
     private var resolver by ColorEngine.getInstance(context).getOrCreateResolver(key)
 
     val chromaView = ChromaView(initialColor, colorMode, context).apply {
+        val applyColor = { color: Int ->
+            //TODO support HSV if ever needed
+            val alpha = Color.alpha(color)
+            val red = Color.red(color)
+            val green = Color.green(color)
+            val blue = Color.blue(color)
+            resolver = if (colorMode == ColorMode.RGB)
+                RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
+            else
+                ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue")))
+            dismiss()
+        }
         enableButtonBar(object : ChromaView.ButtonBarListener {
             override fun onNegativeButtonClick() = dismiss()
             override fun onPositiveButtonClick(color: Int) {
-                //TODO support HSV if ever needed
-                val alpha = Color.alpha(color)
-                val red = Color.red(color)
-                val green = Color.green(color)
-                val blue = Color.blue(color)
-                resolver = if (colorMode == ColorMode.RGB)
-                    RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
-                else
-                    ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue")))
-                dismiss()
+                applyColor(color)
+            }
+        })
+        enablePreviewClick(object : ChromaView.PreviewClickListener {
+            override fun onClick(color: Int) {
+                applyColor(color)
             }
         })
     }
