@@ -141,6 +141,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         private var listening = false
         val engine get() = config.engine
         val args get() = config.args
+        open val isCustom = false
 
         abstract fun resolveColor(): Int
 

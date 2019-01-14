@@ -83,6 +83,7 @@ class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 class RGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     val color: Int
+    override val isCustom = true
 
     init {
         if (args.size < 3) throw IllegalArgumentException("not enough args")
@@ -99,6 +100,7 @@ class RGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 class ARGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     val color: Int
+    override val isCustom = true
 
     init {
         if (args.size < 4) throw IllegalArgumentException("not enough args")

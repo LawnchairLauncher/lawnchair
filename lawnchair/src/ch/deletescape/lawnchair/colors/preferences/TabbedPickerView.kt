@@ -89,7 +89,7 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
         val color = engine.accent
         tabLayout.tabRippleColor = ColorStateList.valueOf(color)
         tabLayout.setSelectedTabIndicatorColor(color)
-        if (resolver is RGBColorResolver) {
+        if (resolver.isCustom) {
             viewPager.currentItem = 1
         }
     }
