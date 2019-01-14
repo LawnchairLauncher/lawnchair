@@ -230,7 +230,7 @@ dependencies {
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'net.aksingh:owm-japis:2.5.2.2'
-    implementation 'com.github.LawnchairLauncher:chroma:1.2.4'
+    implementation 'com.github.LawnchairLauncher:chroma:1.2.5'
     implementation 'com.github.LawnchairLauncher:hoko-lite:master-SNAPSHOT'
     implementation('com.github.LawnchairLauncher:attribouter-y:0.1.6') {
         // The "MaterialButton" styleable defines an attr named iconSize which breaks compatibility with our source base
