@@ -130,13 +130,13 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
 
     private fun findWorkspaceIconForComponent(component: ComponentKey): View? {
         return findInContainers(Workspace.ItemOperator { info, _ ->
-            info?.targetComponent == component.componentName && info?.user == component.user
+            info?.targetComponent?.packageName == component.componentName.packageName && info?.user == component.user
         }, launcher.workspace.currentContainer, launcher.hotseat.layout.shortcutsAndWidgets)
     }
 
     private fun findAllAppsIconForComponent(component: ComponentKey): View? {
         return findInViews(Workspace.ItemOperator { info, _ ->
-            info?.targetComponent == component.componentName && info?.user == component.user
+            info?.targetComponent?.packageName == component.componentName.packageName && info?.user == component.user
         }, launcher.allAppsController.appsView.activeRecyclerView)
     }
 
