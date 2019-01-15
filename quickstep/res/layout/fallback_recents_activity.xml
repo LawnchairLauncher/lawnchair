@@ -20,25 +20,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <com.android.quickstep.views.RecentsViewContainer
-        android:id="@+id/overview_panel_container"
+    <com.android.quickstep.fallback.FallbackRecentsView
+        android:id="@id/overview_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
-    >
-        <include layout="@layout/overview_clear_all_button"/>
-
-        <com.android.quickstep.fallback.FallbackRecentsView
-            android:id="@id/overview_panel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:outlineProvider="none"
-            android:focusableInTouchMode="true"
-            android:theme="@style/HomeScreenElementTheme"
-        >
-
-        </com.android.quickstep.fallback.FallbackRecentsView>
-    </com.android.quickstep.views.RecentsViewContainer>
+        android:clipToPadding="false"
+        android:outlineProvider="none"
+        android:theme="@style/HomeScreenElementTheme" />
 </com.android.quickstep.fallback.RecentsRootView>

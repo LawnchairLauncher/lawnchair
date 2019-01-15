@@ -17,10 +17,11 @@
 <resources>
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
+    <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
-    <dimen name="task_menu_background_radius">12dp</dimen>
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
+    <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
     <dimen name="quickscrub_adjacent_visible_width">20dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
@@ -41,6 +42,9 @@
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
     <dimen name="task_card_vert_space">40dp</dimen>
+    <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_menu_shadow_height">3dp</dimen>
+    <dimen name="task_card_menu_horizontal_padding">0dp</dimen>
     <dimen name="portrait_task_card_horz_space">136dp</dimen>
     <dimen name="landscape_task_card_horz_space">200dp</dimen>
     <dimen name="multi_window_task_card_horz_space">100dp</dimen>
@@ -48,8 +52,7 @@
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
 
-    <!-- Width of the space behind the last task in Overview. In the center of it, there is "Clear all" button. -->
-    <dimen name="clear_all_container_width">168dp</dimen>
-
     <dimen name="shelf_surface_radius">16dp</dimen>
+    <!-- same as vertical_drag_handle_size -->
+    <dimen name="shelf_surface_offset">24dp</dimen>
 </resources>
