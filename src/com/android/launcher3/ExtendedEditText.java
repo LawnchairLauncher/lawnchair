@@ -99,6 +99,10 @@ public class ExtendedEditText extends EditText {
         mShowImeAfterFirstLayout = !showSoftInput();
     }
 
+    public void hideKeyboard() {
+        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
+    }
+
     private boolean showSoftInput() {
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -106,7 +110,7 @@ public class ExtendedEditText extends EditText {
     }
 
     public void dispatchBackKey() {
-        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
+        hideKeyboard();
         if (mBackKeyListener != null) {
             mBackKeyListener.onBackKey();
         }
@@ -135,6 +139,6 @@ public class ExtendedEditText extends EditText {
                 nextFocus.requestFocus();
             }
         }
-        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
+        hideKeyboard();
     }
 }

@@ -157,10 +157,10 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
-                lp.width = grid.hotseatBarSizePx + insets.left + grid.hotseatBarSidePaddingPx;
+                lp.width = grid.hotseatBarSizePx + insets.left;
             } else {
                 lp.gravity = Gravity.RIGHT;
-                lp.width = grid.hotseatBarSizePx + insets.right + grid.hotseatBarSidePaddingPx;
+                lp.width = grid.hotseatBarSizePx + insets.right;
             }
         } else {
             lp.gravity = Gravity.BOTTOM;

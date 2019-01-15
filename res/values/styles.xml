@@ -56,7 +56,7 @@
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
-    <style name="LauncherThemeDark" parent="@style/LauncherTheme">
+    <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
         <item name="android:textColorPrimary">#FFFFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFFFF</item>
         <item name="android:textColorTertiary">#CCFFFFFF</item>
@@ -73,7 +73,7 @@
         <item name="isMainColorDark">true</item>
     </style>
 
-    <style name="LauncherThemeDark.DarKText" parent="@style/LauncherThemeDark">
+    <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
@@ -82,6 +82,13 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
+
+    <!-- A derivative project can extend these themes to customize the application theme without
+         affecting the base theme -->
+    <style name="AppTheme" parent="@style/LauncherTheme" />
+    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
+    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
@@ -115,6 +122,7 @@
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:importantForAccessibility">no</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->

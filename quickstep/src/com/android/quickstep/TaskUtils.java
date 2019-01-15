@@ -46,6 +46,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 
 import java.util.List;
 
@@ -74,8 +75,11 @@ public class TaskUtils {
             applicationInfo.loadLabel(packageManager), user);
     }
 
-    public static ComponentKey getComponentKeyForTask(Task.TaskKey taskKey) {
-        return new ComponentKey(taskKey.getComponent(), UserHandle.of(taskKey.userId));
+    public static ComponentKey getLaunchComponentKeyForTask(Task.TaskKey taskKey) {
+        final ComponentName cn = taskKey.sourceComponent != null
+                ? taskKey.sourceComponent
+                : taskKey.getComponent();
+        return new ComponentKey(cn, UserHandle.of(taskKey.userId));
     }
 
 
@@ -100,8 +104,8 @@ public class TaskUtils {
             ComponentName componentName = itemInfo.getTargetComponent();
             int userId = itemInfo.user.getIdentifier();
             if (componentName != null) {
-                for (int i = 0; i < recentsView.getChildCount(); i++) {
-                    TaskView taskView = recentsView.getPageAt(i);
+                for (int i = 0; i < recentsView.getTaskViewCount(); i++) {
+                    TaskView taskView = recentsView.getTaskViewAt(i);
                     if (recentsView.isTaskViewVisible(taskView)) {
                         Task.TaskKey key = taskView.getTask().key;
                         if (componentName.equals(key.getComponent()) && userId == key.userId) {
@@ -144,6 +148,8 @@ public class TaskUtils {
      */
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
+        SyncRtSurfaceTransactionApplier syncTransactionApplier =
+                new SyncRtSurfaceTransactionApplier(v);
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -155,18 +161,10 @@ public class TaskUtils {
             final RemoteAnimationTargetSet mTargetSet;
 
             final RectF mThumbnailRect;
-            private Surface mSurface;
-            private long mFrameNumber;
 
             {
                 mTargetSet = new RemoteAnimationTargetSet(targets, MODE_OPENING);
-                inOutHelper.setTaskTransformCallback((t, app) -> {
-                    t.setAlpha(app.leash, mTaskAlpha.value);
-
-                    if (!skipViewChanges) {
-                        t.deferTransactionUntil(app.leash, mSurface, mFrameNumber);
-                    }
-                });
+                inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
 
                 inOutHelper.prepareAnimation(true /* isOpening */);
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
@@ -179,15 +177,8 @@ public class TaskUtils {
 
             @Override
             public void onUpdate(float percent) {
-                mSurface = getSurface(v);
-                mFrameNumber = mSurface != null ? getNextFrameNumber(mSurface) : -1;
-                if (mFrameNumber == -1) {
-                    // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
-                    Log.w(TAG, "Failed to animate, surface got destroyed.");
-                    return;
-                }
-
-                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, 1 - percent);
+                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, 1 - percent,
+                        syncTransactionApplier);
                 if (!skipViewChanges) {
                     float scale = taskBounds.width() / mThumbnailRect.width();
                     v.setScaleX(scale);
