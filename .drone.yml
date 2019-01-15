@@ -51,7 +51,7 @@ pipeline:
     apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/src-quickstep-lawnchair-ci-optimized.apk
     mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001400906236"
-    mail_sender: "buildbot@lawnchair.info"
+    mail_from: "buildbot@lawnchair.info"
     environment:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:
