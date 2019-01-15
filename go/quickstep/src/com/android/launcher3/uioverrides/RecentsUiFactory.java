@@ -23,9 +23,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -56,7 +54,6 @@ public final class RecentsUiFactory {
      * @return state handler for recents
      */
     public static StateHandler createRecentsViewStateController(Launcher launcher) {
-        //TODO Override RecentsViewStateController on low RAM.
         return new RecentsViewStateController(launcher);
     }
 
