@@ -23,17 +23,16 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.ProgressInterface;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.anim.SpringObjectAnimator.SpringProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
 
 /**
  * Handles AllApps view transition.
@@ -45,7 +44,8 @@ import androidx.dynamicanimation.animation.SpringAnimation;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
+        ProgressInterface {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
@@ -73,40 +73,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             controller.setProgress(progress);
         }
     };
-
-    /**
-     * Property that either sets the progress directly or animates the progress via a spring.
-     */
-    public static class AllAppsSpringProperty extends
-            SpringProperty<AllAppsTransitionController, Float> {
-
-        SpringAnimation mSpring;
-        boolean useSpring = false;
-
-        public AllAppsSpringProperty(SpringAnimation spring) {
-            super(Float.class, "allAppsSpringProperty");
-            mSpring = spring;
-        }
-
-        @Override
-        public Float get(AllAppsTransitionController controller) {
-            return controller.getProgress();
-        }
-
-        @Override
-        public void set(AllAppsTransitionController controller, Float progress) {
-            if (useSpring) {
-                mSpring.animateToFinalPosition(progress);
-            } else {
-                controller.setProgress(progress);
-            }
-        }
-
-        @Override
-        public void switchToSpring() {
-            useSpring = true;
-        }
-    }
 
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
@@ -161,6 +127,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * @see #setState(LauncherState)
      * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
      */
+    @Override
     public void setProgress(float progress) {
         mProgress = progress;
         mScrimView.setProgress(progress);
@@ -185,6 +152,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
+    @Override
     public float getProgress() {
         return mProgress;
     }
@@ -223,8 +191,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
                 ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = new SpringObjectAnimator(this, 1f / mShiftRange, mProgress,
-                targetProgress);
+        Animator anim = new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS_SPRING,
+                "allAppsSpringFromAATC", 1f / mShiftRange, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
