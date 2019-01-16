@@ -69,7 +69,8 @@ public class WidgetsModel {
         WidgetItemComparator widgetComparator = new WidgetItemComparator();
         for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : mWidgetsList.entrySet()) {
             WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
-            row.titleSectionName = indexer.computeSectionName(row.pkgItem.title);
+            row.titleSectionName = (row.pkgItem.title == null) ? "" :
+                    indexer.computeSectionName(row.pkgItem.title);
             Collections.sort(row.widgets, widgetComparator);
             result.add(row);
         }
