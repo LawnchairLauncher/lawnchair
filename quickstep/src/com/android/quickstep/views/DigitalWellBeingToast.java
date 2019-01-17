@@ -20,11 +20,13 @@ import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +42,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.recents.model.Task;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Locale;
 
@@ -72,23 +75,53 @@ public final class DigitalWellBeingToast extends LinearLayout {
     public void initialize(Task task, InitializeCallback callback) {
         mTask = task;
         Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
-            final long appUsageLimitTimeMs = -1;
-            final long appRemainingTimeMs = -1;
-            final boolean isGroupLimit = true;
+            long appUsageLimitTimeMs = -1;
+            long appRemainingTimeMs = -1;
+            boolean isGroupLimit = true;
+
+            try {
+                final Method getAppUsageLimit = LauncherApps.class.getMethod(
+                        "getAppUsageLimit",
+                        String.class,
+                        UserHandle.class);
+                final Object usageLimit = getAppUsageLimit.invoke(
+                        getContext().getSystemService(LauncherApps.class),
+                        task.getTopComponent().getPackageName(),
+                        UserHandle.of(task.key.userId));
+
+                if (usageLimit != null) {
+                    final Class appUsageLimitClass = usageLimit.getClass();
+                    appUsageLimitTimeMs = (long) appUsageLimitClass.getMethod("getTotalUsageLimit").
+                            invoke(usageLimit);
+                    appRemainingTimeMs = (long) appUsageLimitClass.getMethod("getUsageRemaining").
+                            invoke(usageLimit);
+                    isGroupLimit = (boolean) appUsageLimitClass.getMethod("isGroupLimit").
+                            invoke(usageLimit);
+                }
+            } catch (Exception e) {
+                // Do nothing
+            }
+
+            final long appUsageLimitTimeMsFinal = appUsageLimitTimeMs;
+            final long appRemainingTimeMsFinal = appRemainingTimeMs;
+            final boolean isGroupLimitFinal = isGroupLimit;
+
             post(() -> {
-                if (appUsageLimitTimeMs < 0) {
+                if (appUsageLimitTimeMsFinal < 0) {
                     setVisibility(GONE);
                 } else {
                     setVisibility(VISIBLE);
-                    mText.setText(getText(appRemainingTimeMs, isGroupLimit));
-                    mImage.setImageResource(appRemainingTimeMs > 0 ?
+                    mText.setText(getText(appRemainingTimeMsFinal, isGroupLimitFinal));
+                    mImage.setImageResource(appRemainingTimeMsFinal > 0 ?
                             R.drawable.hourglass_top : R.drawable.hourglass_bottom);
                 }
 
                 callback.call(
-                        appUsageLimitTimeMs >= 0 && appRemainingTimeMs < 0 ? 0 : 1,
+                        appUsageLimitTimeMsFinal >= 0 && appRemainingTimeMsFinal <= 0 ? 0 : 1,
                         getContentDescriptionForTask(
-                                task, appUsageLimitTimeMs, appRemainingTimeMs, isGroupLimit));
+                                task, appUsageLimitTimeMsFinal,
+                                appRemainingTimeMsFinal,
+                                isGroupLimitFinal));
             });
         });
     }
@@ -154,7 +187,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
     private String getText(long remainingTime, boolean isGroupLimit) {
         final Resources resources = getResources();
-        return (remainingTime < 0) ?
+        return (remainingTime <= 0) ?
                 resources.getString(R.string.app_in_grayscale) :
                 resources.getString(
                         isGroupLimit ? R.string.time_left_for_group : R.string.time_left_for_app,
@@ -182,7 +215,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
     private String getContentDescriptionForTask(
             Task task, long appUsageLimitTimeMs, long appRemainingTimeMs, boolean isGroupLimit) {
-        return appUsageLimitTimeMs > 0 ?
+        return appUsageLimitTimeMs >= 0 ?
                 getResources().getString(
                         R.string.task_contents_description_with_remaining_time,
                         task.titleDescription,
