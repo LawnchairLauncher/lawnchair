@@ -23,12 +23,12 @@ import android.animation.ValueAnimator;
 import android.util.Log;
 import android.util.Property;
 
-import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.allapps.AllAppsTransitionController.AllAppsSpringProperty;
+import com.android.launcher3.ProgressInterface;
 
 import java.util.ArrayList;
 
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
@@ -38,17 +38,17 @@ import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
  * a {@link SpringAnimation}. It extends ValueAnimator so it can be used in an AnimatorSet.
  */
-public class SpringObjectAnimator extends ValueAnimator {
+public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnimator {
 
     private static final String TAG = "SpringObjectAnimator";
     private static boolean DEBUG = false;
 
-    private AllAppsTransitionController mObject;
+    private T mObject;
     private ObjectAnimator mObjectAnimator;
     private float[] mValues;
 
     private SpringAnimation mSpring;
-    private AllAppsSpringProperty mProperty;
+    private SpringProperty<T> mProperty;
 
     private ArrayList<AnimatorListener> mListeners;
     private boolean mSpringEnded = false;
@@ -58,16 +58,16 @@ public class SpringObjectAnimator extends ValueAnimator {
     private static final float SPRING_DAMPING_RATIO = 0.9f;
     private static final float SPRING_STIFFNESS = 600f;
 
-    public SpringObjectAnimator(AllAppsTransitionController object, float minimumVisibleChange,
-            float... values) {
+    public SpringObjectAnimator(T object, FloatPropertyCompat<T> floatProperty,
+            String name, float minimumVisibleChange, float... values) {
         mObject = object;
-        mSpring = new SpringAnimation(object, AllAppsTransitionController.ALL_APPS_PROGRESS_SPRING);
+        mSpring = new SpringAnimation(object, floatProperty);
         mSpring.setMinimumVisibleChange(minimumVisibleChange);
         mSpring.setSpring(new SpringForce(0)
                 .setDampingRatio(SPRING_DAMPING_RATIO)
                 .setStiffness(SPRING_STIFFNESS));
         mSpring.setStartVelocity(0.01f);
-        mProperty = new AllAppsSpringProperty(mSpring);
+        mProperty = new SpringProperty<T>(name, mSpring);
         mObjectAnimator = ObjectAnimator.ofFloat(object, mProperty, values);
         mValues = values;
         mListeners = new ArrayList<>();
@@ -261,13 +261,32 @@ public class SpringObjectAnimator extends ValueAnimator {
         mObjectAnimator.setCurrentPlayTime(playTime);
     }
 
-    public static abstract class SpringProperty<T, V> extends Property<T, V> {
+    public static class SpringProperty<T extends ProgressInterface> extends Property<T, Float> {
 
-        public SpringProperty(Class<V> type, String name) {
-            super(type, name);
+        boolean useSpring = false;
+        final SpringAnimation mSpring;
+
+        public SpringProperty(String name, SpringAnimation spring) {
+            super(Float.class, name);
+            mSpring = spring;
         }
 
-        abstract public void switchToSpring();
-    }
+        public void switchToSpring() {
+            useSpring = true;
+        }
 
+        @Override
+        public Float get(T object) {
+            return object.getProgress();
+        }
+
+        @Override
+        public void set(T object, Float progress) {
+            if (useSpring) {
+                mSpring.animateToFinalPosition(progress);
+            } else {
+                object.setProgress(progress);
+            }
+        }
+    }
 }

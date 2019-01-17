@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS_SPRING;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -295,7 +296,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             AnimatorSet anim = new AnimatorSet();
             if (!activity.getDeviceProfile().isVerticalBarLayout()) {
-                Animator shiftAnim = new SpringObjectAnimator(activity.getAllAppsController(),
+                Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
+                        ALL_APPS_PROGRESS_SPRING, "allAppsSpringFromACH",
                         activity.getAllAppsController().getShiftRange(),
                         fromState.getVerticalProgress(activity),
                         endState.getVerticalProgress(activity));
