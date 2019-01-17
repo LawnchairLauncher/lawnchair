@@ -226,7 +226,7 @@ public abstract class BaseActivity extends Activity
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     * @see LauncherAppTransitionManagerImpl#getWallpaperOpenRunner()
+     * @see QuickstepAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
