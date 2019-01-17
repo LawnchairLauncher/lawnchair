@@ -21,6 +21,7 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -29,6 +30,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -281,7 +283,6 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             // Additional measure for views which use auto text size API
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
 
-            canvas.drawColor(Color.GRAY);
             mRootView.draw(canvas);
             dispatchVisibilityAggregated(mRootView, false);
         }
