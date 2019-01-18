@@ -60,15 +60,14 @@ public class UiFactory {
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
-                .isSwipeUpGestureEnabled();
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
 
-        if (!swipeUpEnabled || launcher.getDeviceProfile().isVerticalBarLayout()) {
-            list.add(new OverviewToAllAppsTouchController(launcher));
+        TouchController overviewToAllAppsController =
+                RecentsUiFactory.createOverviewToAllAppsTouchController(launcher);
+        if (overviewToAllAppsController != null) {
+            list.add(overviewToAllAppsController);
         }
-
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             list.add(new LandscapeEdgeSwipeController(launcher));
         } else {
