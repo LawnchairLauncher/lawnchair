@@ -38,9 +38,11 @@
     <com.android.quickstep.views.DigitalWellBeingToast
         android:id="@+id/digital_well_being_toast"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="48dp"
         android:importantForAccessibility="noHideDescendants"
-        android:background="#800000FF"
+        android:fontFamily="sans-serif"
+        android:textSize="14sp"
+        android:background="@drawable/bg_wellbeing_toast"
         android:layout_gravity="bottom"
         android:gravity="center"
         android:textColor="@android:color/white"

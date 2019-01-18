@@ -336,6 +336,4 @@
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
-
-    <string name="task_contents_description_with_remaining_time" translatable="false"><xliff:g id="task_description" example="GMail">%1$s</xliff:g>, <xliff:g id="remaining_time" example="7 minutes">%2$s</xliff:g></string>
 </resources>
