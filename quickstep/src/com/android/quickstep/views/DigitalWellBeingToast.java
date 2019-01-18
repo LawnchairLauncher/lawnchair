@@ -28,6 +28,8 @@ import android.icu.util.MeasureUnit;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -41,8 +43,7 @@ import com.android.systemui.shared.recents.model.Task;
 import java.time.Duration;
 import java.util.Locale;
 
-public final class DigitalWellBeingToast extends TextView {
-
+public final class DigitalWellBeingToast extends LinearLayout {
     public interface InitializeCallback {
         void call(float saturation, String contentDescription);
     }
@@ -50,13 +51,22 @@ public final class DigitalWellBeingToast extends TextView {
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
 
     private Task mTask;
+    private ImageView mImage;
+    private TextView mText;
 
     public DigitalWellBeingToast(Context context, AttributeSet attrs) {
         super(context, attrs);
         setLayoutDirection(Utilities.isRtl(getResources()) ?
                 View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         setOnClickListener((view) -> openAppUsageSettings());
+    }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mText = findViewById(R.id.digital_well_being_remaining_time);
+        mImage = findViewById(R.id.digital_well_being_hourglass);
     }
 
     public void initialize(Task task, InitializeCallback callback) {
@@ -70,7 +80,9 @@ public final class DigitalWellBeingToast extends TextView {
                     setVisibility(GONE);
                 } else {
                     setVisibility(VISIBLE);
-                    setText(getText(appRemainingTimeMs, isGroupLimit));
+                    mText.setText(getText(appRemainingTimeMs, isGroupLimit));
+                    mImage.setImageResource(appRemainingTimeMs > 0 ?
+                            R.drawable.hourglass_top : R.drawable.hourglass_bottom);
                 }
 
                 callback.call(
