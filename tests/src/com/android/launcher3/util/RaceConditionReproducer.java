@@ -16,6 +16,9 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.RaceConditionTracker.ENTER_POSTFIX;
+import static com.android.launcher3.util.RaceConditionTracker.EXIT_POSTFIX;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -46,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * If an event A occurs before event B in the sequence, this is how execution order looks like:
  * Events: ... A ... B ...
  * Events and instructions, guaranteed order:
- *   (instructions executed prior to A) A ... B (instructions executed after B)
+ * (instructions executed prior to A) A ... B (instructions executed after B)
  *
  * Each iteration has 3 parts (phases).
  * Phase 1. Picking a previously seen event subsequence that we believe can have previously unseen
@@ -58,6 +61,8 @@ import java.util.concurrent.TimeUnit;
  * Phase 3. Releasing all threads and letting the test iteration run till its end.
  *
  * The iterations end when all seen paths have been declared “uncontinuable”.
+ *
+ * When we register event XXX:enter, we hold all other events until we register XXX:exit.
  */
 public class RaceConditionReproducer implements RaceConditionTracker.EventProcessor {
     private static final String TAG = "RaceConditionReproducer";
@@ -81,7 +86,7 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
         private final Map<String, EventNode> mNextEvents = new HashMap<>();
         // Whether we believe that further iterations will not be able to add more events to
         // mNextEvents.
-        private boolean mStoppedAddingChildren = false;
+        private boolean mStoppedAddingChildren = true;
 
         private void debugDump(StringBuilder sb, int indent, String name) {
             for (int i = 0; i < indent; ++i) sb.append('.');
@@ -134,6 +139,8 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
                 }
             }
             if (!mStoppedAddingChildren) {
+                // Mark that we have finished adding children. It will remain true if no new
+                // children are added, or will be set to false upon adding a new child.
                 mStoppedAddingChildren = true;
                 return true;
             }
@@ -216,6 +223,7 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
         RaceConditionTracker.setEventProcessor(null);
         runResumeAllEventsCallbackLocked();
         assertTrue("Non-empty postponed events", mPostponedEvents.isEmpty());
+        assertTrue("Last registered event is :enter", lastEventAsEnter() == null);
 
         // No events came after mLastRegisteredEvent. It doesn't make sense to come to it again
         // because we won't see new continuations.
@@ -246,11 +254,35 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
     }
 
     /**
+     * Returns whether the last event was not an XXX:enter, or this event is a matching XXX:exit.
+     */
+    private boolean canRegisterEventNowLocked(String event) {
+        final String lastEventAsEnter = lastEventAsEnter();
+        final String thisEventAsExit = eventAsExit(event);
+
+        if (lastEventAsEnter != null) {
+            if (!lastEventAsEnter.equals(thisEventAsExit)) {
+                assertTrue("YYY:exit after XXX:enter", thisEventAsExit == null);
+                // Last event was :enter, but this event is not :exit.
+                return false;
+            }
+        } else {
+            // Previous event was not :enter.
+            assertTrue(":exit after a non-enter event", thisEventAsExit == null);
+        }
+        return true;
+    }
+
+    /**
      * Registers an event issued by the app and returns null or decides that the event must be
      * postponed, and returns an object to wait on.
      */
     private synchronized Semaphore tryRegisterEvent(String event) {
         Log.d(TAG, "Event issued by the app: " + event);
+
+        if (!canRegisterEventNowLocked(event)) {
+            return createWaitObjectForPostponedEventLocked(event);
+        }
 
         if (mRegisteredEventCount < mSequenceToFollow.size()) {
             // We are in the first part of the iteration. We only register events that follow the
@@ -288,9 +320,14 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
                 return createWaitObjectForPostponedEventLocked(event);
             }
         } else {
-            // The second phase of the iteration. We are past the growth point and register
+            // The third phase of the iteration. We are past the growth point and register
             // everything that comes.
             registerEventLocked(event);
+            // Register events that may have been postponed while waiting for an :exit event
+            // during the third phase. We don't do this if just registered event is :enter.
+            if (eventAsEnter(event) == null && mRegisteredEventCount > mSequenceToFollow.size()) {
+                registerPostponedEventsLocked(new HashSet<>(mPostponedEvents.keySet()));
+            }
         }
         return null;
     }
@@ -347,6 +384,11 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
     private void registerPostponedEventsLocked(Collection<String> events) {
         for (String event : events) {
             registerPostponedEventLocked(event);
+            if (eventAsEnter(event) != null) {
+                // Once :enter is registered, switch to waiting for :exit to come. Won't register
+                // other postponed events.
+                break;
+            }
         }
     }
 
@@ -355,14 +397,51 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
         registerEventLocked(event);
     }
 
+    /**
+     * If the last registered event was XXX:enter, returns XXX, otherwise, null.
+     */
+    private String lastEventAsEnter() {
+        return eventAsEnter(mCurrentSequence.substring(mCurrentSequence.lastIndexOf("|") + 1));
+    }
+
+    /**
+     * If the event is XXX:postfix, returns XXX, otherwise, null.
+     */
+    private static String prefixFromPostfixedEvent(String event, String postfix) {
+        final int columnPos = event.indexOf(':');
+        if (columnPos != -1 && postfix.equals(event.substring(columnPos + 1))) {
+            return event.substring(0, columnPos);
+        }
+        return null;
+    }
+
+    /**
+     * If the event is XXX:enter, returns XXX, otherwise, null.
+     */
+    private static String eventAsEnter(String event) {
+        return prefixFromPostfixedEvent(event, ENTER_POSTFIX);
+    }
+
+    /**
+     * If the event is XXX:exit, returns XXX, otherwise, null.
+     */
+    private static String eventAsExit(String event) {
+        return prefixFromPostfixedEvent(event, EXIT_POSTFIX);
+    }
+
     private void registerEventLocked(String event) {
+        assertTrue(canRegisterEventNowLocked(event));
+
         Log.d(TAG, "Actually registering event: " + event);
         EventNode next = mLastRegisteredEvent.mNextEvents.get(event);
         if (next == null) {
             // This event wasn't seen after mLastRegisteredEvent.
             next = new EventNode();
             mLastRegisteredEvent.mNextEvents.put(event, next);
-            mLastRegisteredEvent.mStoppedAddingChildren = false;
+            // The fact that we've added a new event after the previous one means that the
+            // previous event is still a growth point, unless this event is :exit, which means
+            // that the previous event is :enter.
+            mLastRegisteredEvent.mStoppedAddingChildren = eventAsExit(event) != null;
         }
 
         mLastRegisteredEvent = next;
@@ -371,12 +450,6 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
         if (mCurrentSequence.length() > 0) mCurrentSequence.append("|");
         mCurrentSequence.append(event);
         Log.d(TAG, "Repro sequence: " + mCurrentSequence);
-
-        if (mRegisteredEventCount == mSequenceToFollow.size() + 1) {
-            // We just entered the third phase of the iteration, i.e. registered an event after
-            // the growth point. Now we can let go of all postponed events.
-            runResumeAllEventsCallbackLocked();
-        }
     }
 
     private void runResumeAllEventsCallbackLocked() {
