@@ -30,7 +30,7 @@ public class SmaliTask extends DefaultTask {
 
     public void setSource(FileTree source) {
         mSource = source;
-        getInputs().file(source);
+        getInputs().files(source);
     }
 
     @OutputFile
