@@ -54,7 +54,11 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
         if (resolver == ColorEngine.Resolvers.ACCENT) {
             val palette = ColorPalette.getPalette(color, count)
             icon = icon?.mutate()?.apply {
-                setTint(palette[index, true])
+                setTint(try {
+                    palette[index, true]
+                } catch (ignored: Exception) {
+                    color
+                })
             }
         }
     }
