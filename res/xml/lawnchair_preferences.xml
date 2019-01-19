@@ -17,13 +17,13 @@
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/pixel_ui_pref_title"
         android:summary="@string/pixel_ui_pref_summary"
-        android:icon="@drawable/ic_ui"
+        android:icon="@drawable/ic_theme"
         android:key="theme"
         app:content="@xml/lawnchair_theme_preferences"
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:icon="@drawable/ic_desktop"
+        android:icon="@drawable/ic_pref_desktop"
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"
         android:key="desktop"
@@ -57,7 +57,7 @@
 
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:icon="@drawable/ic_settings_search"
+        android:icon="@drawable/ic_pref_search"
         android:summary="@string/search_pref_summary"
         android:title="@string/search_pref_title"
         android:key="search"
@@ -65,18 +65,18 @@
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:icon="@drawable/ic_gesture"
+        android:icon="@drawable/ic_gestures"
         android:summary="@string/gestures_pref_summary"
         android:title="@string/gestures_pref_title"
         android:key="gestures"
         app:content="@xml/lawnchair_gesture_preferences"
         android:layout="@layout/home_preference" />
-
+    s
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:key="quickstep"
         android:summary="@string/quickstep_pref_summary"
         android:title="@string/quickstep_pref_title"
-        android:icon="@drawable/ic_lawnstep"
+        android:icon="@drawable/ic_pref_lawnstep"
         app:content="@xml/lawnchair_quickstep_preferences"
         app:controllerClass=".LawnstepController"
         android:layout="@layout/home_preference" />
@@ -105,7 +105,7 @@
     <ch.deletescape.lawnchair.preferences.StyledIconPreference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
-        android:icon="@drawable/ic_information"
+        android:icon="@drawable/ic_pref_about"
         android:layout="@layout/home_preference"
         android:key="about"/>
 

@@ -38,7 +38,7 @@
     <dimen name="search_bar_text_size">16dp</dimen>
 
     <!-- Dashboard image tile size -->
-    <dimen name="dashboard_tile_image_size">24dp</dimen>
+    <dimen name="dashboard_tile_image_size">38dp</dimen>
 
     <!-- Dashboard tile image margin start / end -->
     <dimen name="dashboard_tile_image_margin">24dp</dimen>
@@ -46,6 +46,6 @@
     <!-- search_bar_margin + search_bar_height -->
     <dimen name="search_results_top_margin">64dp</dimen>
     <dimen name="dashboard_tile_minimum_height">72dp</dimen>
-    <dimen name="dashboard_tile_foreground_image_size">24dp</dimen>
+    <dimen name="dashboard_tile_foreground_image_size">@dimen/dashboard_tile_image_size</dimen>
     <dimen name="dashboard_tile_foreground_image_inset">6dp</dimen>
 </resources>

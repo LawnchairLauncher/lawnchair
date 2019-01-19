@@ -1,12 +1,35 @@
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
+    android:width="@dimen/dashboard_tile_image_size"
+    android:height="@dimen/dashboard_tile_image_size"
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
-      android:pathData="M7.7966,12.9341L12,8.7307L16.2033,12.9341C16.6258,13.3566 17.3083,13.3566 17.7308,12.9341C18.1533,12.5116 18.1533,11.8291 17.7308,11.4066L12.7583,6.4341C12.3358,6.0116 11.6533,6.0116 11.2308,6.4341L6.2583,11.4066C5.8358,11.8291 5.8358,12.5116 6.2583,12.9341C6.6808,13.3457 7.3741,13.3566 7.7966,12.9341Z"
-      android:fillColor="#FFFFFFFF"/>
+      android:pathData="M12,12m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0"
+      android:strokeAlpha="0.2"
+      android:fillColor="#1774F5"
+      android:fillAlpha="0.2"/>
   <path
-      android:pathData="M6.5835,16.5013C6.5835,15.903 7.0685,15.418 7.6668,15.418L16.3335,15.418C16.9318,15.418 17.4168,15.903 17.4168,16.5013C17.4168,17.0996 16.9318,17.5846 16.3335,17.5846L7.6668,17.5846C7.0685,17.5846 6.5835,17.0996 6.5835,16.5013Z"
-      android:fillColor="#FFFFFFFF"/>
+      android:pathData="M7,14h10v2h-10z"
+      android:fillColor="#1774F5"/>
+  <path
+      android:pathData="M6.9411,12H8.5589L11.2929,9.266C11.6834,8.8755 12.3166,8.8755 12.7071,9.266L15.4411,12H17.0589L17.0589,10.7893L14.1213,7.8518C12.9498,6.6802 11.0503,6.6802 9.8787,7.8518L6.9411,10.7893V12Z"
+      android:fillColor="#1774F5"
+      android:fillType="evenOdd"/>
 </vector>

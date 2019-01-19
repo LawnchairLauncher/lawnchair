@@ -26,10 +26,8 @@
       android:fillColor="#1774F5"
       android:fillAlpha="0.2"/>
   <path
-      android:pathData="M17,12C17,14.7614 14.7614,17 12,17V19C15.866,19 19,15.866 19,12C19,8.134 15.866,5 12,5C8.134,5 5,8.134 5,12H7C7,9.2386 9.2386,7 12,7C14.7614,7 17,9.2386 17,12Z"
-      android:fillColor="#1774F5"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M9,12H3L6,15L9,12Z"
-      android:fillColor="#1774F5"/>
+      android:pathData="M12.6489,6.8679L17,10.5791V15C17,15.5523 16.5523,16 16,16H8C7.4477,16 7,15.5523 7,15V10.5791L11.3511,6.8679C11.7249,6.549 12.2751,6.549 12.6489,6.8679Z"
+      android:strokeWidth="2"
+      android:fillColor="#00000000"
+      android:strokeColor="#1774F5"/>
 </vector>
