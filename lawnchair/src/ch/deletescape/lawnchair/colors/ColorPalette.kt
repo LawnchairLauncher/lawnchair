@@ -19,11 +19,15 @@ package ch.deletescape.lawnchair.colors
 
 import android.support.annotation.ColorInt
 import android.support.v4.graphics.ColorUtils
+import kotlin.math.max
 
 class ColorPalette private constructor(@ColorInt color: Int, size: Int) {
 
     private val colorHSL = FloatArray(3).apply {
         ColorUtils.colorToHSL(color, this)
+        // Workaround for default colors being too bright
+        this[1] = max(0f, this[1] - 0.03f)
+        this[2] = max(0f, this[2] - 0.03f)
     }
     private val fraction = 360f / size
     private val colors = IntArray(size).apply {
