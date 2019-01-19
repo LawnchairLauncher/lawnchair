@@ -18,14 +18,15 @@ package com.android.launcher3.util;
 
 import android.os.Looper;
 
+import android.support.annotation.Keep;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
  * A set of utility methods for thread verification.
  */
+@Keep
 public class Preconditions {
-
     public static void assertNotNull(Object o) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && o == null) {
             throw new IllegalStateException();
