@@ -18,6 +18,7 @@
         android:title="@string/pixel_ui_pref_title"
         android:summary="@string/pixel_ui_pref_summary"
         android:icon="@drawable/ic_ui"
+        android:key="theme"
         app:content="@xml/lawnchair_theme_preferences"
         android:layout="@layout/home_preference" />
 
@@ -25,6 +26,7 @@
         android:icon="@drawable/ic_desktop"
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"
+        android:key="desktop"
         app:content="@xml/lawnchair_desktop_preferences"
         android:layout="@layout/home_preference" />
 
@@ -32,6 +34,7 @@
         android:icon="@drawable/ic_smartspace"
         android:summary="@string/smartspace_preferences_in_settings_desc"
         android:title="@string/home_widget"
+        android:key="smartspace"
         app:content="@xml/lawnchair_smartspace_preferences"
         app:hasPreview="true"
         android:layout="@layout/home_preference"/>
@@ -40,6 +43,7 @@
         android:icon="@drawable/ic_dock"
         android:summary="@string/dock_pref_summary"
         android:title="@string/dock_pref_title"
+        android:key="dock"
         app:content="@xml/lawnchair_dock_preferences"
         android:layout="@layout/home_preference" />
 
@@ -47,6 +51,7 @@
         android:icon="@drawable/ic_app_drawer"
         android:summary="@string/app_drawer_pref_summary"
         android:title="@string/app_drawer_pref_title"
+        android:key="drawer"
         app:content="@xml/lawnchair_app_drawer_preferences"
         android:layout="@layout/home_preference" />
 
@@ -55,6 +60,7 @@
         android:icon="@drawable/ic_settings_search"
         android:summary="@string/search_pref_summary"
         android:title="@string/search_pref_title"
+        android:key="search"
         app:content="@xml/lawnchair_search_preferences"
         android:layout="@layout/home_preference" />
 
@@ -62,6 +68,7 @@
         android:icon="@drawable/ic_gesture"
         android:summary="@string/gestures_pref_summary"
         android:title="@string/gestures_pref_title"
+        android:key="gestures"
         app:content="@xml/lawnchair_gesture_preferences"
         android:layout="@layout/home_preference" />
 

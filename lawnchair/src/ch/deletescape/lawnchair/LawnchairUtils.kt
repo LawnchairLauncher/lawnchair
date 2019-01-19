@@ -37,6 +37,8 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.preference.Preference
+import android.support.v7.preference.PreferenceGroup
 import android.util.AttributeSet
 import android.util.Property
 import android.util.TypedValue
@@ -526,4 +528,9 @@ inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {
     val tmp = ArrayList<T>()
     tmp.addAll(this)
     for (element in tmp) action(element)
+}
+
+operator fun PreferenceGroup.get(index: Int): Preference = getPreference(index)
+inline fun PreferenceGroup.forEachIndexed(action: (i: Int, pref: Preference) -> Unit) {
+    for (i in 0 until preferenceCount) action(i, this[i])
 }

@@ -21,17 +21,29 @@ import android.content.Context
 import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.ColorPalette
+import ch.deletescape.lawnchair.forEachIndexed
 
 open class StyledIconPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
+    var count = 1
+    var index = 0
+
     override fun onAttached() {
         super.onAttached()
+        parent?.forEachIndexed { i, pref ->
+            if (pref.key == key) index = i
+            if (pref is StyledIconPreference) count++
+        }
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
         if (resolver == ColorEngine.Resolvers.ACCENT) {
-            icon?.setTint(color)
+            val palette = ColorPalette.getPalette(color, count)
+            icon = icon?.mutate()?.apply {
+                setTint(palette[index, true])
+            }
         }
     }
 
