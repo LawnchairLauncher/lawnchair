@@ -31,6 +31,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.toTitleCase
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -96,8 +97,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     val name = parseXml.name
                     val isCalendar = name == "calendar"
                     if (isCalendar || name == "item") {
-                        var componentName: String? = parseXml.getAttributeValue(null, "component")
-                        val drawableName = parseXml.getAttributeValue(null, if (isCalendar) "prefix" else "drawable")
+                        var componentName: String? = parseXml[null, "component"]
+                        val drawableName = parseXml[if (isCalendar) "prefix" else "drawable"]
                         if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
                             componentName = componentName.substring(compStartlength, componentName.length - compEndLength)
                             val parsed = ComponentName.unflattenFromString(componentName)
@@ -114,7 +115,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             }
                         }
                     } else if (name == "dynamic-clock") {
-                        val drawableName = parseXml.getAttributeValue(null, "drawable")
+                        val drawableName = parseXml["drawable"]
                         if (drawableName != null) {
                             val drawableId = res.getIdentifier(drawableName, "drawable", packPackageName)
                             if (parseXml is XmlResourceParser && drawableId != 0) {
@@ -128,13 +129,13 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             }
                         }
                     } else if (name == "scale") {
-                        packMask.scale = parseXml.getAttributeValue(null, "factor").toFloat()
+                        packMask.scale = parseXml["factor"]!!.toFloat()
                         if (packMask.scale > 0x7f070000) {
                             packMask.scale = packResources.getDimension(packMask.scale.toInt())
                         }
                         Log.d("IconPack", "scale ${packMask.scale}")
                     } else if (name == "iconback") {
-                        val drawableName = parseXml.getAttributeValue(null, "img1")
+                        val drawableName = parseXml["img1"]
                         if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
                             val drawabledId = res.getIdentifier(drawableName, "drawable", packPackageName)
                             val entry = Entry(drawableName, drawabledId)
@@ -147,7 +148,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             } catch (ignored: Exception) { }
                         }
                     } else if (name == "iconmask") {
-                        val drawableName = parseXml.getAttributeValue(null, "img1")
+                        val drawableName = parseXml["img1"]
                         if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
                             val drawabledId = res.getIdentifier(drawableName, "drawable", packPackageName)
                             val entry = Entry(drawableName, drawabledId)
@@ -160,7 +161,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             } catch (ignored: Exception) { }
                         }
                     } else if (name == "iconupon") {
-                        val drawableName = parseXml.getAttributeValue(null, "img1")
+                        val drawableName = parseXml["img1"]
                         if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
                             val drawabledId = res.getIdentifier(drawableName, "drawable", packPackageName)
                             val entry = Entry(drawableName, drawabledId)
@@ -173,9 +174,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             } catch (ignored: Exception) { }
                         }
                     } else if (name == "config") {
-                        val onlyMaskLegacy = parseXml.getAttributeValue(null, "onlyMaskLegacy")
+                        val onlyMaskLegacy = parseXml["onlyMaskLegacy"]
                         if (!TextUtils.isEmpty(onlyMaskLegacy)) {
-                            packMask.onlyMaskLegacy = onlyMaskLegacy.toBoolean()
+                            packMask.onlyMaskLegacy = onlyMaskLegacy!!.toBoolean()
                         }
                     }
                 }
@@ -186,14 +187,13 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     if (parseDrawableXml.eventType == XmlPullParser.START_TAG) {
                         val name = parseDrawableXml.name
                         if (name == "item") {
-                            val dynamicDrawable = parseDrawableXml.getAttributeValue(null,
-                                    "dynamic_drawable")
+                            val dynamicDrawable = parseDrawableXml["dynamic_drawable"]
                             if (dynamicDrawable != null) {
                                 val drawableId = res.getIdentifier(dynamicDrawable, "drawable",
                                         packPackageName)
                                 if (drawableId != 0) {
                                     packDynamicDrawables[drawableId] = DynamicDrawable.Metadata(
-                                            parseDrawableXml.getAttributeValue(null, "xml"),
+                                            parseDrawableXml["xml"]!!,
                                             packPackageName)
                                 }
                             }
@@ -308,11 +308,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 if (cancel()) return
                 if (parser.eventType != XmlPullParser.START_TAG) continue
                 if ("category" == parser.name) {
-                    val title = parser.getAttributeValue(null, "title")
-                    tmpList.add(CategoryTitle(title))
+                    tmpList.add(CategoryTitle(parser["title"]!!))
                     sendResults(false)
                 } else if ("item" == parser.name) {
-                    val drawableName = parser.getAttributeValue(null, "drawable")
+                    val drawableName = parser["drawable"]!!
                     val resId = Utilities.parseResourceIdentifier(packResources, "@drawable/$drawableName", packPackageName)
                     if (resId != 0) {
                         entry = Entry(drawableName, resId)

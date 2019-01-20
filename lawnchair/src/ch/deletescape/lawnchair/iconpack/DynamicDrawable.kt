@@ -27,6 +27,7 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RotateDrawable
 import android.util.Log
 import android.util.Xml
+import ch.deletescape.lawnchair.get
 import com.android.launcher3.FastBitmapDrawable
 import com.google.android.apps.nexuslauncher.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
@@ -99,8 +100,8 @@ class DynamicDrawable {
                     if (parser.eventType == XmlPullParser.START_TAG) {
                         if (parser.name == "item") {
                             val item = Item(
-                                    parser.getAttributeValue(null, "type"),
-                                    parser.getAttributeValue(null, "key"))
+                                    parser["type"]!!,
+                                    parser["key"]!!)
                             item.parseItem(parser)
                             mutableItems.add(item)
                         }
@@ -178,27 +179,27 @@ class DynamicDrawable {
                     while (!(parser.next() == XmlPullParser.END_TAG && parser.name == "item")) {
                         if (parser.eventType == XmlPullParser.START_TAG && parser.name == "drawable") {
                             drawables.add(DrawableItem(
-                                    parser.getAttributeValue(null, "value"),
-                                    parser.getAttributeValue(null, "res")
+                                    parser["value"]!!,
+                                    parser["res"]!!
                             ))
                         }
                     }
                 }
                 "text" -> {
                     textAttributes = TextAttributes(
-                            parser.getAttributeValue(null, "alignX"),
-                            parser.getAttributeValue(null, "alignY"),
-                            parser.getAttributeValue(null, "offsetX"),
-                            parser.getAttributeValue(null, "offsetY"),
-                            parser.getAttributeValue(null, "textSize"),
-                            parser.getAttributeValue(null, "font"),
-                            parser.getAttributeValue(null, "color"),
-                            parser.getAttributeValue(null, "shadowLayerX"),
-                            parser.getAttributeValue(null, "shadowLayerY"),
-                            parser.getAttributeValue(null, "shadowLayerRadius")?.toInt(),
-                            parser.getAttributeValue(null, "shadowLayerColor"),
-                            parser.getAttributeValue(null, "shadowLayerAlpha"),
-                            parser.getAttributeValue(null, "enabled")?.toBoolean() ?: true
+                            parser["alignX"],
+                            parser["alignY"],
+                            parser["offsetX"],
+                            parser["offsetY"],
+                            parser["textSize"],
+                            parser["font"],
+                            parser["color"],
+                            parser["shadowLayerX"],
+                            parser["shadowLayerY"],
+                            parser["shadowLayerRadius"]?.toInt(),
+                            parser["shadowLayerColor"],
+                            parser["shadowLayerAlpha"],
+                            parser["enabled"]?.toBoolean() ?: true
                     )
                 }
             }

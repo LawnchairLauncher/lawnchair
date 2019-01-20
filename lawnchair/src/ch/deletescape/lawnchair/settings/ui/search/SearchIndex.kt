@@ -18,7 +18,9 @@
 package ch.deletescape.lawnchair.settings.ui.search
 
 import android.content.Context
+
 import android.support.v7.preference.PreferenceCategory
+import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.settings.ui.SubPreference
 import ch.deletescape.lawnchair.settings.ui.SwitchSubPreference
@@ -63,14 +65,18 @@ class SearchIndex(private val context: Context) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            val cls = try { Class.forName(parser.name) } catch (e: ClassNotFoundException) { null }
+            val cls = try {
+                Class.forName(parser.name)
+            } catch (e: ClassNotFoundException) {
+                null
+            }
             when {
                 cls != null && SubPreference::class.java.isAssignableFrom(cls) -> {
                     val controller = createController(parser)
                     if (controller?.isVisible != false) {
                         val title = getTitle(parser, controller)!!
                         val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
-                        val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
+                        val hasPreview = java.lang.Boolean.parseBoolean(parser[nsApp, attrHasPreview])
                         var canIndex = true
                         if (SwitchSubPreference::class.java.isAssignableFrom(cls)) {
                             val key = parser.getAttributeValue(nsAndroid, attrKey)
@@ -90,7 +96,7 @@ class SearchIndex(private val context: Context) {
                     skip(parser)
                 }
                 cls != null && PreferenceCategory::class.java.isAssignableFrom(cls) -> {
-                    val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+                    val title = parseString(parser[nsAndroid, attrTitle])
                     if (parent != null) {
                         indexSection(parser, SettingsCategory(parent.title, title!!,
                                 parent, parent.contentRes, parent.hasPreview))
@@ -101,7 +107,7 @@ class SearchIndex(private val context: Context) {
                 else -> {
                     val controller = createController(parser)
                     if (controller?.isVisible != false) {
-                        val key = parser.getAttributeValue(nsAndroid, attrKey)
+                        val key = parser[nsAndroid, attrKey]
                         val title = getTitle(parser, controller)
                         val summary = getSummary(parser, controller)
                         if (parent != null && key != null && title != null) {
@@ -118,18 +124,16 @@ class SearchIndex(private val context: Context) {
     }
 
     private fun getTitle(parser: XmlPullParser, controller: PreferenceController?): String? {
-        return controller?.title ?:
-            parseString(parser.getAttributeValue(nsApp, attrSearchTitle)) ?:
-            parseString(parser.getAttributeValue(nsAndroid, attrTitle))
+        return controller?.title ?: parseString(parser[nsApp, attrSearchTitle])
+        ?: parseString(parser[nsAndroid, attrTitle])
     }
 
     private fun getSummary(parser: XmlPullParser, controller: PreferenceController?): String? {
-        return controller?.summary ?:
-            parseString(parser.getAttributeValue(nsAndroid, attrSummary))
+        return controller?.summary ?: parseString(parser[nsAndroid, attrSummary])
     }
 
     private fun createController(parser: XmlPullParser): PreferenceController? {
-        val controllerClass = parseString(parser.getAttributeValue(nsApp, attrControllerClass))
+        val controllerClass = parseString(parser[nsApp, attrControllerClass])
         return PreferenceController.create(context, controllerClass)
     }
 
@@ -174,13 +178,14 @@ class SearchIndex(private val context: Context) {
                                     val parent: SettingsScreen?,
                                     val contentRes: Int, val hasPreview: Boolean) {
 
-        val breadcrumbs: String get() {
-            return if (parent == null) {
-                categoryTitle
-            } else {
-                context.getString(R.string.search_breadcrumb_connector, parent.breadcrumbs, categoryTitle)
+        val breadcrumbs: String
+            get() {
+                return if (parent == null) {
+                    categoryTitle
+                } else {
+                    context.getString(R.string.search_breadcrumb_connector, parent.breadcrumbs, categoryTitle)
+                }
             }
-        }
     }
 
     inner class SettingsEntry(val key: String, val title: String, val summary: String?, val parent: SettingsScreen?) {
