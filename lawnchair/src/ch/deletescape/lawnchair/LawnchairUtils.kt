@@ -61,6 +61,7 @@ import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
+import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -534,3 +535,7 @@ operator fun PreferenceGroup.get(index: Int): Preference = getPreference(index)
 inline fun PreferenceGroup.forEachIndexed(action: (i: Int, pref: Preference) -> Unit) {
     for (i in 0 until preferenceCount) action(i, this[i])
 }
+
+operator fun XmlPullParser.get(index: Int): String? = getAttributeValue(index)
+operator fun XmlPullParser.get(namespace: String?, key: String): String? = getAttributeValue(namespace, key)
+operator fun XmlPullParser.get(key: String): String? = this[null, key]
