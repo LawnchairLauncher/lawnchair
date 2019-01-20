@@ -211,7 +211,8 @@ class IconPackManager(private val context: Context) {
                 "com.gau.go.launcherex.theme",
                 "org.adw.launcher.THEMES",
                 "org.adw.launcher.icons.ACTION_PICK_ICON",
-                "net.oneplus.launcher.icons.ACTION_PICK_ICON")
+                "net.oneplus.launcher.icons.ACTION_PICK_ICON",
+                "ch.deletescape.lawnchair.ICONPACK")
 
         internal fun isPackProvider(context: Context, packageName: String?): Boolean {
             if (packageName != null && !packageName.isEmpty()) {
