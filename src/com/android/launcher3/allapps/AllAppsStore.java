@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A utility class to maintain the collection of all apps.
@@ -58,6 +59,16 @@ public class AllAppsStore {
 
     public AppInfo getApp(ComponentKey key) {
         return mComponentToAppMap.get(key);
+    }
+
+    @Nullable
+    public AppInfo getApp(String packageName) {
+        for (AppInfo app : mComponentToAppMap.values()) {
+            if (app.componentName.getPackageName().equals(packageName)) {
+                return app;
+            }
+        }
+        return null;
     }
 
     public void setDeferUpdates(boolean deferUpdates) {

@@ -326,10 +326,9 @@
     <!-- Search -->
     <string name="pref_global_search_provider">Global search provider</string>
     <string name="searchbar_appearance_title">Appearance</string>
-    <string name="search_provider_google">Google</string>
+    <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_yandex">Yandex</string>
-    <string name="search_provider_sesame">Sesame</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
@@ -450,4 +449,24 @@
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="tab_hide_from_main">Hide from all apps</string>
     <string name="tab_color">Tab color</string>
+
+    <!-- Sesame -->
+    <string name="shortcut_sesame">Edit Shortcuts</string>
+    <string name="pref_integrations">Integrations</string>
+    <string name="pref_integrations_summary">Search, Sesame, Google, …</string>
+    <string name="sesame">Sesame</string>
+    <string name="sesame_data_integration">Data integration</string>
+    <string name="sesame_upsell">Sesame isn\'t installed. Tap to install it now.</string>
+    <string name="sesame_search_upsell">Search</string>
+    <string name="sesame_search_upsell_on">Sesame is set as search provider.</string>
+    <string name="sesame_search_upsell_off">Sesame isn\'t set as search provider.</string>
+    <string name="pref_sesame_enabled">Sesame shortcut data is being shared.</string>
+    <string name="pref_sesame_disabled">No data is being shared</string>
+    <string name="pref_sesame_show_shortcuts">App shortcuts</string>
+    <string name="pref_sesame_show_shortcuts_summary">Show sesame shortcuts as app shortcuts.</string>
+    <string name="allow">Allow</string>
+    <string name="sesame_enable_integration_title">Enable integration?</string>
+    <string name="sesame_enable_integration_description"><![CDATA[This enables data sharing between Lawnchair and Sesame to provide Sesame Shortcuts inside Lawnchair.\n\nYou can change this anytime under Lawnchair Settings > Integrations or from Sesame.]]></string>
+    <string name="sesame_version">Integration version</string>
+    <string name="sesame_shortcut_disabled">Sesame shortcuts aren\'t available without integration.</string>
 </resources>

@@ -31,8 +31,12 @@ import ch.deletescape.lawnchair.font.FontLoader
 import ch.deletescape.lawnchair.font.FontLoaderManager
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
+import com.android.launcher3.BuildConfig
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
+import ninja.sesame.lib.bridge.v1.SesameFrontend
+import ninja.sesame.lib.bridge.v1.SesameInitOnComplete
 
 class LawnchairApp : Application() {
 
@@ -53,6 +57,18 @@ class LawnchairApp : Application() {
 
         ThemeManager.getInstance(this)
         BlurWallpaperProvider.getInstance(this)
+        if (BuildConfig.FEATURE_QUINOA) {
+            SesameFrontend.init(this, object: SesameInitOnComplete {
+                override fun onConnect() {
+                    SesameFrontend.setIntegrationDialog(this@LawnchairApp, R.layout.dialog_sesame_integration, android.R.id.button2, android.R.id.button1)
+                }
+
+                override fun onDisconnect() {
+                    // do nothing
+                }
+
+            })
+        }
     }
 
     fun restart(recreateLauncher: Boolean = true) {

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference
+        android:defaultValue="@string/config_default_search_provider"
+        android:key="pref_globalSearchProvider"
+        android:title="@string/pref_global_search_provider" />
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:title="@string/sesame">
+
+        <ch.deletescape.lawnchair.sesame.preferences.SesameIntegrationPreference
+            android:key="sesame_integration"
+            android:title="@string/sesame_data_integration" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:dependency="sesame_integration"
+            android:defaultValue="true"
+            android:key="pref_sesame_show_shortcuts"
+            android:summary="@string/pref_sesame_show_shortcuts_summary"
+            android:title="@string/pref_sesame_show_shortcuts" />
+
+        <ch.deletescape.lawnchair.sesame.preferences.SesameSearchUpsellPreference
+            android:dependency="sesame_integration"
+            android:key="sesame_search_upsell"
+            android:title="@string/sesame_search_upsell"
+            android:summaryOn="@string/sesame_search_upsell_on"
+            android:summaryOff="@string/sesame_search_upsell_off"/>
+
+        <ch.deletescape.lawnchair.sesame.preferences.SesameVersionPreference
+            android:key="sesame_version"
+            android:title="@string/sesame_version" />
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:title="@string/google">
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_enable_minus_one"
+            android:summary="@string/pref_show_google_now_summary"
+            android:title="@string/title_show_google_app"
+            app:controllerClass=".MinusOneController"/>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/feedThemes"
+            android:entryValues="@array/feedThemeValues"
+            android:key="pref_feedTheme"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/feed_theme_pref_title"
+            android:dependency="pref_enable_minus_one"/>
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

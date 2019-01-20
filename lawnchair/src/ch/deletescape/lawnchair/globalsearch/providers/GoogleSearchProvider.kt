@@ -10,10 +10,16 @@ import com.android.launcher3.R
 @Keep
 class GoogleSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_google)!!
+    override val name = context.getString(R.string.google)!!
     override val supportsVoiceSearch = true
     override val supportsAssistant = true
     override val supportsFeed = true
+    override val settingsIntent: Intent
+        get() = Intent("com.google.android.apps.gsa.nowoverlayservice.PIXEL_DOODLE_QSB_SETTINGS")
+                .setPackage(PACKAGE).addFlags(268435456)
+    override val isBroadcast: Boolean
+        get() = true
+
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
 

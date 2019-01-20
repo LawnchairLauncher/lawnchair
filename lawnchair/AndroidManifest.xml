@@ -222,6 +222,24 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:label="@string/pref_integrations"
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsIntegrationActivity"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme.V2">
+            <intent-filter>
+                <action android:name="ninja.sesame.app.action.CONFIG_INTEGRATION"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:label="@string/search_pref_title"
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsSearchActivity"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme.V2" />
+
         <!-- Mimetype for .shed backup files -->
         <provider
             android:authorities="${applicationId}.provider"

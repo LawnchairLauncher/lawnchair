@@ -3,7 +3,7 @@ package ch.deletescape.lawnchair.globalsearch
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.util.Log
+import ch.deletescape.lawnchair.settings.ui.SettingsSearchActivity
 import com.android.launcher3.R
 import com.android.launcher3.graphics.ShadowDrawable
 
@@ -12,6 +12,11 @@ abstract class SearchProvider(protected val context: Context) {
     abstract val supportsVoiceSearch: Boolean
     abstract val supportsAssistant: Boolean
     abstract val supportsFeed: Boolean
+    open val settingsIntent: Intent = Intent().setClass(context, SettingsSearchActivity::class.java)
+    /**
+     * Whether the settings intent needs to be sent as broadcast
+     */
+    open val isBroadcast = false
     open val isAvailable: Boolean = true
 
     abstract fun startSearch(callback: (intent: Intent) -> Unit = {})

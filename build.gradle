@@ -239,11 +239,13 @@ dependencies {
         // The "MaterialButton" styleable defines an attr named iconSize which breaks compatibility with our source base
         exclude group: 'com.android.support', module: 'design'
     }
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
     implementation 'eu.chainfire:librootjava:1.0.0'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+    lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"

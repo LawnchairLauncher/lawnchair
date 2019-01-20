@@ -13,8 +13,6 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
-    private val PACKAGE = "com.duckduckgo.mobile.android"
-
     override val name = context.getString(R.string.search_provider_ddg)!!
     override val supportsVoiceSearch: Boolean
         get() = false
@@ -29,4 +27,7 @@ class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_ddg)
 
+    companion object {
+    private const val PACKAGE = "com.duckduckgo.mobile.android"
+    }
 }

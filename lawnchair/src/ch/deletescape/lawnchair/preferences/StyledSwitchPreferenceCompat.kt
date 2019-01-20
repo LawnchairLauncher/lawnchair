@@ -39,7 +39,8 @@ import com.android.launcher3.util.Themes
 open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
         SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener, ControlledPreference, SearchIndex.Slice {
 
-    private var checkableView: View? = null
+    protected var checkableView: View? = null
+        private set
 
     private val delegate = ControlledPreference.Delegate(context)
 

@@ -525,12 +525,13 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected boolean dK() {
         String clipboardText = getClipboardText();
+        Intent settingsBroadcast = createSettingsBroadcast();
         Intent settingsIntent = createSettingsIntent();
-        if (settingsIntent == null && clipboardText == null) {
+        if (settingsIntent == null && settingsBroadcast == null && clipboardText == null) {
             return false;
         }
         if (Utilities.ATLEAST_MARSHMALLOW) {
-            startActionMode(new b(this, clipboardText, settingsIntent), 1);
+            startActionMode(new QsbActionMode(this, clipboardText, settingsBroadcast, settingsIntent), 1);
         }
         return true;
     }
@@ -548,6 +549,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                 }
             }
         }
+        return null;
+    }
+
+    protected Intent createSettingsBroadcast() {
         return null;
     }
 

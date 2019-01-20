@@ -68,9 +68,15 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
 
+    /**
+     * Indicates that the icon is disabled as the sesame integration is currently disabled.
+     */
+    public static final int FLAG_DISABLED_BY_SESAME = 1 << 10;
+
     public static final int FLAG_DISABLED_MASK = FLAG_DISABLED_SAFEMODE |
             FLAG_DISABLED_NOT_AVAILABLE | FLAG_DISABLED_SUSPENDED |
-            FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER | FLAG_DISABLED_LOCKED_USER;
+            FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER |
+            FLAG_DISABLED_LOCKED_USER | FLAG_DISABLED_BY_SESAME;
 
     /**
      * The item points to a system app.

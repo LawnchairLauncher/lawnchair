@@ -72,6 +72,9 @@ class SwitchSubPreference(context: Context, attrs: AttributeSet) : SubPreference
 
         divider = holder.findViewById(R.id.two_target_divider)
         divider?.isVisible = isChecked
+
+        // Add listener again as switch was probably still null when it first fired
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {

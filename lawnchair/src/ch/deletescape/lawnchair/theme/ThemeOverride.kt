@@ -42,6 +42,7 @@ import java.lang.ref.WeakReference
 class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideListener?) {
 
     constructor(themeSet: ThemeSet, activity: Activity) : this(themeSet, ActivityListener(activity))
+    constructor(themeSet: ThemeSet, context: Context) : this(themeSet, ContextListener(context))
 
     val isAlive get() = listener?.isAlive == true
 
@@ -154,6 +155,20 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
 
         override fun reloadTheme() {
             activityRef.get()?.recreate()
+        }
+    }
+
+    class ContextListener(context: Context) : ThemeOverrideListener {
+
+        private val contextRef = WeakReference(context)
+        override val isAlive = contextRef.get() != null
+
+        override fun applyTheme(themeRes: Int) {
+            contextRef.get()?.setTheme(themeRes)
+        }
+
+        override fun reloadTheme() {
+            // Unsupported
         }
     }
 }

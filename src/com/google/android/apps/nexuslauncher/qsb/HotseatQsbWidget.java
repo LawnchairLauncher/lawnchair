@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Process;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
@@ -24,6 +25,7 @@ import android.view.View;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -181,12 +183,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
             startGoogleSearch();
         } else {
             controller.getSearchProvider().startSearch(intent -> {
-                mActivity.openQsb().addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        getContext().startActivity(intent);
-                    }
-                });
+                mActivity.openQsb();
+                getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(this, 0, 0, getWidth(), getHeight()).toBundle());
                 return null;
             });
         }
@@ -280,17 +278,24 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         }
     }
 
-    protected final Intent createSettingsIntent() {
-        Intent addFlags = new Intent(
-                "com.google.android.apps.gsa.nowoverlayservice.PIXEL_DOODLE_QSB_SETTINGS")
-                .setPackage("com.google.android.googlequicksearchbox").addFlags(268435456);
-        int i = 0;
-        List queryBroadcastReceivers = getContext().getPackageManager()
-                .queryBroadcastReceivers(addFlags, 0);
-        if (!(queryBroadcastReceivers == null || queryBroadcastReceivers.isEmpty())) {
-            i = 1;
+    protected final Intent createSettingsBroadcast() {
+        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        if (provider.isBroadcast()) {
+            Intent intent = provider.getSettingsIntent();
+            List queryBroadcastReceivers = getContext().getPackageManager()
+                    .queryBroadcastReceivers(intent, 0);
+            if (!(queryBroadcastReceivers == null || queryBroadcastReceivers.isEmpty())) {
+                return intent;
+            }
         }
-        return i != 0 ? addFlags : null;
+        return null;
+    }
+
+    protected final Intent createSettingsIntent() {
+        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        return provider.isBroadcast() ? null : provider.getSettingsIntent();
     }
 
     public final void l(String str) {

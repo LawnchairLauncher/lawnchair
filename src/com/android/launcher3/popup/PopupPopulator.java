@@ -48,9 +48,9 @@ import java.util.List;
  */
 public class PopupPopulator {
 
-    public static final int MAX_SHORTCUTS = 4;
+    public static final int MAX_SHORTCUTS = 6;
     @VisibleForTesting static final int NUM_DYNAMIC = 2;
-    public static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
+    public static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 4;
 
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.

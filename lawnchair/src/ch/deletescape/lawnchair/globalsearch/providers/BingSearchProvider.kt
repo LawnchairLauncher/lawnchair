@@ -12,10 +12,6 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class BingSearchProvider(context: Context) : SearchProvider(context) {
 
-    private val PACKAGE = "com.microsoft.bing"
-    private val PACKAGE_CORTANA = "com.microsoft.cortana"
-    private val PACKAGE_ALEXA = "com.amazon.dee.app"
-
     private val cortanaInstalled: Boolean
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE_CORTANA, 0)
     private val alexaInstalled: Boolean
@@ -56,5 +52,11 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
             return wrapInShadowDrawable(context.getDrawable(R.drawable.ic_cortana_shadow)!!)
         }
         return super.getShadowAssistantIcon()
+    }
+
+    companion object {
+        private const val PACKAGE = "com.microsoft.bing"
+        private const val PACKAGE_CORTANA = "com.microsoft.cortana"
+        private const val PACKAGE_ALEXA = "com.amazon.dee.app"
     }
 }

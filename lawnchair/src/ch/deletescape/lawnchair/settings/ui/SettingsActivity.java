@@ -30,8 +30,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceFragment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.XmlRes;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -75,6 +78,7 @@ import ch.deletescape.lawnchair.gestures.ui.SelectGestureHandlerFragment;
 import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
 import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.preferences.ResumablePreference;
 import ch.deletescape.lawnchair.settings.ui.search.SettingsSearchActivity;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
@@ -123,6 +127,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public final static String EXTRA_FRAGMENT_ARGS = "fragmentArgs";
 
     private boolean isSubSettings;
+    protected boolean forceSubSettings = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +135,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
-        isSubSettings = content != 0 || fragmentName != null;
+        isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
 
         boolean showSearch = shouldShowSearch();
 
@@ -428,7 +433,25 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public void onResume() {
             super.onResume();
             highlightPreferenceIfNeeded();
+
+            dispatchOnResume(getPreferenceScreen());
         }
+
+        public void dispatchOnResume(PreferenceGroup group) {
+            int count = group.getPreferenceCount();
+            for (int i = 0; i < count; i++) {
+                Preference preference = group.getPreference(i);
+
+                if (preference instanceof ResumablePreference) {
+                    ((ResumablePreference) preference).onResume();
+                }
+
+                if (preference instanceof PreferenceGroup) {
+                    dispatchOnResume((PreferenceGroup) preference);
+                }
+            }
+        }
+
 
         @Override
         protected void onBindPreferences() {
@@ -593,8 +616,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
 
-            if (getContent() == R.xml.lawnchair_desktop_preferences) {
-                SwitchSubPreference minusOne = (SwitchSubPreference) findPreference(
+            if (getContent() == R.xml.lawnchair_integration_preferences) {
+                SwitchPreference minusOne = (SwitchPreference) findPreference(
                         ENABLE_MINUS_ONE_PREF);
                 if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
                         .isInstalled()) {
@@ -657,6 +680,15 @@ public class SettingsActivity extends SettingsBaseActivity implements
             Bundle b = new Bundle(2);
             b.putString(TITLE, intent.getStringExtra(TITLE));
             b.putInt(CONTENT_RES_ID, intent.getIntExtra(CONTENT_RES_ID, 0));
+            fragment.setArguments(b);
+            return fragment;
+        }
+
+        public static SubSettingsFragment newInstance(String title, @XmlRes int content) {
+            SubSettingsFragment fragment = new SubSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, title);
+            b.putInt(CONTENT_RES_ID, content);
             fragment.setArguments(b);
             return fragment;
         }

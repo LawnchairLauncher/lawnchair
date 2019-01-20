@@ -19,6 +19,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_BY_SESAME;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
@@ -186,6 +187,8 @@ public class ItemClickHandler {
                 } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0 ||
                         (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
                     error = R.string.shortcut_not_available;
+                } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_SESAME) != 0) {
+                    error = R.string.sesame_shortcut_disabled;
                 }
                 Toast.makeText(launcher, error, Toast.LENGTH_SHORT).show();
                 return;

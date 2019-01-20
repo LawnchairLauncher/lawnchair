@@ -27,19 +27,21 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import ch.deletescape.lawnchair.sesame.Sesame;
+import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.popup.PopupPopulator;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import ch.deletescape.lawnchair.override.CustomInfoProvider;
-import ch.deletescape.lawnchair.sesame.SesameDataProvider;
-import ch.deletescape.lawnchair.sesame.SesameShortcutInfoCompat;
+import ninja.sesame.lib.bridge.v1.SesameFrontend;
+import ninja.sesame.lib.bridge.v1.SesameShortcut;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
@@ -110,7 +112,8 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
             List<String> ids, UserHandle user) {
-        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC, activity.getPackageName(), activity, ids, user);
+        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
+                activity.getPackageName(), activity, ids, user);
     }
 
     /**
@@ -183,12 +186,9 @@ public class DeepShortcutManager {
 
     @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        if (BuildConfig.FEATURE_QUINOA) {
-            if (shortcutInfo instanceof SesameShortcutInfoCompat) {
-                return ((SesameShortcutInfoCompat) shortcutInfo).getIcon(mContext, density);
-            }
-        }
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
+        if (shortcutInfo instanceof SesameShortcutInfo) {
+            return ((SesameShortcutInfo) shortcutInfo).getIcon(density);
+        } else if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 Drawable icon = mLauncherApps.getShortcutIconDrawable(
                         shortcutInfo.getShortcutInfo(), density);
@@ -244,12 +244,15 @@ public class DeepShortcutManager {
     private List<ShortcutInfoCompat> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandle user) {
         List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>();
-        if (BuildConfig.FEATURE_QUINOA) {
-            SesameDataProvider provider = SesameDataProvider.Companion.getInstance(mContext);
-            List<SesameDataProvider.SesameResult> results = provider
-                    .queryShortcutsForPackage(packageName);
-            for (SesameDataProvider.SesameResult result : results) {
-                shortcutInfoCompats.add(new SesameShortcutInfoCompat(result));
+        if (Sesame.isAvailable(mContext) && Sesame.getShowShortcuts()) {
+            List<SesameShortcut> shortcuts = SesameFrontend
+                    .getRecentAppShortcuts(packageName, false, PopupPopulator.MAX_SHORTCUTS);
+            for (SesameShortcut shortcut : shortcuts) {
+                shortcutInfoCompats.add(new SesameShortcutInfo(mContext, shortcut));
+            }
+            // TODO: I have no idea why I added this. investigate
+            if (!shortcuts.isEmpty()) {
+                flags = ShortcutQuery.FLAG_MATCH_PINNED;
             }
         }
         if (Utilities.ATLEAST_NOUGAT_MR1) {
@@ -268,13 +271,17 @@ public class DeepShortcutManager {
                 Log.e(TAG, "Failed to query for shortcuts", e);
                 mWasLastCallSuccess = false;
             }
-            if (shortcutInfos != null) {
-                for (ShortcutInfo shortcutInfo : shortcutInfos) {
-                    shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
-                }
+            if (shortcutInfos == null) {
+                return Collections.EMPTY_LIST;
+            }
+            for (ShortcutInfo shortcutInfo : shortcutInfos) {
+                shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
             }
         } else {
-            shortcutInfoCompats.addAll(DeepShortcutManagerBackport.getForPackage(mContext, mLauncherApps, activity, packageName));
+            if (!Sesame.isAvailable(mContext) && Sesame.getShowShortcuts()) {
+                shortcutInfoCompats.addAll(DeepShortcutManagerBackport
+                        .getForPackage(mContext, mLauncherApps, activity, packageName));
+            }
         }
         return shortcutInfoCompats;
     }

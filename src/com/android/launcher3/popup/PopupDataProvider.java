@@ -23,6 +23,8 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.popup.SesameSettings;
+import ch.deletescape.lawnchair.sesame.Sesame;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -46,8 +48,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import ch.deletescape.lawnchair.sesame.SesameDataProvider;
+import ninja.sesame.lib.bridge.v1.SesameFrontend;
+import ninja.sesame.lib.bridge.v1.SesameShortcut;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -73,6 +75,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         mLauncher = launcher;
         mSystemShortcuts = new SystemShortcut[] {
                 Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
+                new SesameSettings(),
                 new SystemShortcut.AppInfo(),
                 new SystemShortcut.Widgets(),
                 new SystemShortcut.Install()
@@ -176,7 +179,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
         List<String> ids = new ArrayList<>();
-        if (!Utilities.ATLEAST_NOUGAT_MR1) {
+        if (Sesame.isAvailable(mLauncher) && Sesame.getShowShortcuts()) {
+            List<SesameShortcut> shortcuts = SesameFrontend
+                    .getRecentAppShortcuts(component.getPackageName(), false, PopupPopulator.MAX_SHORTCUTS);
+            for (SesameShortcut shortcut : shortcuts) {
+                ids.add(shortcut.id);
+            }
+        } else if (!Utilities.ATLEAST_NOUGAT_MR1) {
             for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
                     (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),
                     info.getTargetComponent(),
@@ -186,13 +195,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         } else {
             List<String> tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
             if(tmp != null) ids.addAll(tmp);
-        }
-        if (BuildConfig.FEATURE_QUINOA) {
-            for (SesameDataProvider.SesameResult result : SesameDataProvider.Companion
-                    .getInstance(mLauncher)
-                    .queryShortcutsForPackage(info.getTargetComponent().getPackageName())) {
-                ids.add(result.getUri());
-            }
         }
         return ids;
     }

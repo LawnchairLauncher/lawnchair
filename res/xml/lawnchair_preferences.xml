@@ -65,6 +65,14 @@
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_integrations"
+        android:summary="@string/pref_integrations_summary"
+        android:title="@string/pref_integrations"
+        android:key="integrations"
+        app:content="@xml/lawnchair_integration_preferences"
+        android:layout="@layout/home_preference" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_gestures"
         android:summary="@string/gestures_pref_summary"
         android:title="@string/gestures_pref_title"
