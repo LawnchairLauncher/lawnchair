@@ -293,5 +293,7 @@
     </style>
 
     <style name="TextAppearance.Small" parent="@android:style/TextAppearance.Material.Small" />
-    <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead" />
+    <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+    </style>
 </resources>
