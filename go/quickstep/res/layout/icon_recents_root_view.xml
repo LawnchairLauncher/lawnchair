@@ -14,11 +14,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- TODO(114136250): Remove this temporary placeholder view for Go recents -->
-<TextView
+<com.android.quickstep.views.IconRecentsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:text="Stub!"
-    android:textSize="40sp"/>
+    android:gravity="center">
+    <!-- TODO(114136250): Remove this temporary placeholder view for Go recents -->
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Stub!"
+        android:textSize="40sp"/>
+</com.android.quickstep.views.IconRecentsView>

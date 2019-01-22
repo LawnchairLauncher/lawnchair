@@ -67,6 +67,10 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 }
             };
 
+    /**
+     * A ratio representing the view's relative placement within its padded space. For example, 0
+     * is top aligned and 0.5 is centered vertically.
+     */
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationYFactor;
 
