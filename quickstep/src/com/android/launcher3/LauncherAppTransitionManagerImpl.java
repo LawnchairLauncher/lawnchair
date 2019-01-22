@@ -429,10 +429,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
             mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-            endListener = () -> {
-                resetContentView();
-                mDragLayer.getScrim().hideSysUiScrim(false);
-            };
+            endListener = this::resetContentView;
         }
         return new Pair<>(launcherAnimator, endListener);
     }
@@ -877,6 +874,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
 
+            mDragLayer.getScrim().hideSysUiScrim(true);
+
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
             mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -896,6 +895,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mDragLayerAlpha.setValue(1f);
         mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
         mDragLayer.setTranslationY(0f);
+        mDragLayer.getScrim().hideSysUiScrim(false);
     }
 
     private boolean hasControlRemoteAppTransitionPermission() {
