@@ -422,9 +422,6 @@ public class LauncherModel extends BroadcastReceiver
                     enqueueModelUpdateTask(new UserLockStateChangedTask(user));
                 }
             }
-        } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            Launcher l = LauncherAppState.getInstance(context).getLauncher();
-            if (l != null) BlurWallpaperProvider.Companion.getInstance(l).updateAsync();
         } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
             forceReload();
         }

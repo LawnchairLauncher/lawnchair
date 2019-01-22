@@ -179,6 +179,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mWallpaperIsLiveWallpaper =
                 WallpaperManager.getInstance(mWorkspace.getContext()).getWallpaperInfo() != null;
+        BlurWallpaperProvider.Companion.getInstance(context).updateAsync();
         updateOffset();
     }
 
