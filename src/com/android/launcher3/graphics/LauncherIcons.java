@@ -29,6 +29,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import ch.deletescape.lawnchair.NonAdaptiveIconDrawable;
 import com.android.launcher3.*;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -240,7 +241,7 @@ public class LauncherIcons implements AutoCloseable {
             AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            /*if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
+            if (!outShape[0] && (icon instanceof NonAdaptiveIconDrawable)) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -248,7 +249,7 @@ public class LauncherIcons implements AutoCloseable {
                 scale = getNormalizer().getScale(icon, outIconBounds, null, null);
 
                 ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
-            }*/
+            }
         } else {
             scale = getNormalizer().getScale(icon, outIconBounds, null, null);
         }

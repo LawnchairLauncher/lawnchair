@@ -24,7 +24,10 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableWrapper
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Log
@@ -60,7 +63,7 @@ class LawnchairIconLoader(private val context: Context, iconCache: TaskKeyLruCac
         }
 
         HiddenApiCompat.loadTaskDescriptionIcon(desc, userId)?.let { tdIcon ->
-            return createDrawableFromBitmap(tdIcon, userId, desc)
+            return createNonAdaptive(tdIcon, userId, desc)
         }
 
         getAndUpdateActivityInfo(taskKey)?.let { activityInfo ->
@@ -73,6 +76,10 @@ class LawnchairIconLoader(private val context: Context, iconCache: TaskKeyLruCac
         return super.createNewIconForTask(taskKey, desc, returnDefault)
     }
 
+    private fun createNonAdaptive(icon: Bitmap, userId: Int, desc: ActivityManager.TaskDescription): Drawable {
+        return createBadgedDrawable(NonAdaptiveIconDrawable(BitmapDrawable(mContext.resources, icon)), userId, desc)
+    }
+
     private fun getBadgedActivityIcon(icon: Drawable, activityInfo: ActivityInfo, userId: Int,
                                       desc: ActivityManager.TaskDescription): Drawable? {
         val bitmapInfo = getBitmapInfo(icon, userId, desc.primaryColor,
@@ -80,3 +87,5 @@ class LawnchairIconLoader(private val context: Context, iconCache: TaskKeyLruCac
         return mDrawableFactory.newIcon(bitmapInfo, activityInfo)
     }
 }
+
+class NonAdaptiveIconDrawable(dr: Drawable?) : DrawableWrapper(dr)
