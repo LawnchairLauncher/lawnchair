@@ -24,6 +24,8 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.util.RaceConditionTracker.ENTER;
+import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -74,6 +76,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
@@ -182,6 +185,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.7f;
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
+    private static final String SCREENSHOT_CAPTURED_EVT = "ScreenshotCaptured";
 
     private final ClipAnimationHelper mClipAnimationHelper;
     private final ClipAnimationHelper.TransformParams mTransformParams;
@@ -1078,7 +1082,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
             if (!finishTransitionPosted) {
                 // If we haven't posted a draw callback, set the state immediately.
+                RaceConditionTracker.onEvent(SCREENSHOT_CAPTURED_EVT, ENTER);
                 setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+                RaceConditionTracker.onEvent(SCREENSHOT_CAPTURED_EVT, EXIT);
             }
         }
     }

@@ -72,6 +72,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
     public static final String DOWN_EVT = "OtherActivityTouchConsumer.DOWN";
+    private static final String UP_EVT = "OtherActivityTouchConsumer.UP";
 
     private final SparseArray<RecentsAnimationState> mAnimationStates = new SparseArray<>();
     private final RunningTaskInfo mRunningTask;
@@ -197,9 +198,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             case ACTION_CANCEL:
                 // TODO: Should be different than ACTION_UP
             case ACTION_UP: {
+                RaceConditionTracker.onEvent(UP_EVT, ENTER);
                 TraceHelper.endSection("TouchInt");
 
                 finishTouchTracking(ev);
+                RaceConditionTracker.onEvent(UP_EVT, EXIT);
                 break;
             }
         }
@@ -428,6 +431,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     private class RecentsAnimationState implements RecentsAnimationListener {
 
+        private static final String ANIMATION_START_EVT = "RecentsAnimationState.onAnimationStart";
         private final int id;
 
         private RecentsAnimationControllerCompat mController;
@@ -446,11 +450,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 RecentsAnimationControllerCompat controller,
                 RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
                 Rect minimizedHomeBounds) {
+            RaceConditionTracker.onEvent(ANIMATION_START_EVT, ENTER);
             mController = controller;
             mTargets = new RemoteAnimationTargetSet(apps, MODE_CLOSING);
             mHomeContentInsets = homeContentInsets;
             mMinimizedHomeBounds = minimizedHomeBounds;
             mEventQueue.onCommand(id);
+            RaceConditionTracker.onEvent(ANIMATION_START_EVT, EXIT);
         }
 
         @Override
