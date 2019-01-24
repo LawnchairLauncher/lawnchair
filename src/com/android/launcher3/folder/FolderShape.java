@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.Workspace.MAP_NO_RECURSE;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
@@ -43,9 +41,6 @@ import android.util.TypedValue;
 import android.util.Xml;
 import android.view.ViewOutlineProvider;
 
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
@@ -358,7 +353,7 @@ public abstract class FolderShape {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
-        new MainThreadExecutor().execute(() -> pickShapeInBackground(context));
+        pickBestShape(context);
     }
 
     private static FolderShape getShapeDefinition(String type, float radius) {
@@ -410,7 +405,7 @@ public abstract class FolderShape {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    protected static void pickShapeInBackground(Context context) {
+    protected static void pickBestShape(Context context) {
         // Pick any large size
         int size = 200;
 
@@ -447,25 +442,7 @@ public abstract class FolderShape {
         }
 
         if (closestShape != null) {
-            FolderShape shape = closestShape;
-            new MainThreadExecutor().execute(() -> updateFolderShape(shape));
-        }
-    }
-
-    private static void updateFolderShape(FolderShape shape) {
-        sInstance = shape;
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app == null) {
-            return;
-        }
-        Launcher launcher = (Launcher) app.getModel().getCallback();
-        if (launcher != null) {
-            launcher.getWorkspace().mapOverItems(MAP_NO_RECURSE, (i, v) -> {
-                if (v instanceof FolderIcon) {
-                    v.invalidate();
-                }
-                return false;
-            });
+            sInstance = closestShape;
         }
     }
 }
