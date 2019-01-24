@@ -22,8 +22,6 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
 import android.view.View;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
@@ -44,21 +42,8 @@ public final class RecentsUiFactory {
      * @param launcher the launcher activity
      * @return the touch controller for recents tasks
      */
-    public static @Nullable TouchController createTaskSwipeController(Launcher launcher) {
+    public static TouchController createTaskSwipeController(Launcher launcher) {
         // We leave all input handling to the view itself.
-        return null;
-    }
-
-    /**
-     * Creates and returns a touch controller for swiping from overview state to the all apps state
-     * if such an action is supported.
-     *
-     * @param launcher the launcher activity
-     * @return the touch controller for swiping from overview to all apps
-     */
-    public static @Nullable TouchController createOverviewToAllAppsTouchController(
-            Launcher launcher) {
-        // Go does not support overview to all apps transition.
         return null;
     }
 

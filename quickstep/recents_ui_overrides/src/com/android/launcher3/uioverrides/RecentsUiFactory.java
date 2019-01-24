@@ -22,14 +22,11 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -48,25 +45,8 @@ public final class RecentsUiFactory {
      * @param launcher the launcher activity
      * @return the touch controller for recents tasks
      */
-    public static @Nullable TouchController createTaskSwipeController(Launcher launcher) {
+    public static TouchController createTaskSwipeController(Launcher launcher) {
         return new LauncherTaskViewController(launcher);
-    }
-
-    /**
-     * Creates and returns a touch controller for swiping from overview state to the all apps state
-     * if such an action is supported.
-     *
-     * @param launcher the launcher activity
-     * @return the touch controller for swiping from overview to all apps
-     */
-    public static @Nullable TouchController createOverviewToAllAppsTouchController(
-            Launcher launcher) {
-        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
-                .isSwipeUpGestureEnabled();
-        if (!swipeUpEnabled || launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return new OverviewToAllAppsTouchController(launcher);
-        }
-        return null;
     }
 
     /**
