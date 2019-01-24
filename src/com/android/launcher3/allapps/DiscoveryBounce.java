@@ -25,6 +25,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.view.MotionEvent;
 
@@ -43,6 +44,10 @@ public class DiscoveryBounce extends AbstractFloatingView {
 
     public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
     public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
+    public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
+    public static final String SHELF_BOUNCE_COUNT = "launcher.shelf_bounce_count";
+
+    public static final int BOUNCE_MAX_COUNT = 3;
 
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
@@ -137,6 +142,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             new Handler().postDelayed(() -> showForHomeIfNeeded(launcher, false), DELAY_MS);
             return;
         }
+        incrementHomeBounceCount(launcher);
 
         new DiscoveryBounce(launcher, 0).show(HOTSEAT);
     }
@@ -165,6 +171,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             // TODO: Move these checks to the top and call this method after invalidate handler.
             return;
         }
+        incrementShelfBounceCount(launcher);
 
         new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
                 .show(PREDICTION);
@@ -196,5 +203,23 @@ public class DiscoveryBounce extends AbstractFloatingView {
         return !launcher.getSharedPrefs().getBoolean(
                 PersonalWorkSlidingTabStrip.KEY_SHOWED_PEEK_WORK_TAB, false)
                 && UserManagerCompat.getInstance(launcher).hasWorkProfile();
+    }
+
+    private static void incrementShelfBounceCount(Launcher launcher) {
+        SharedPreferences sharedPrefs = launcher.getSharedPrefs();
+        int count = sharedPrefs.getInt(SHELF_BOUNCE_COUNT, 0);
+        if (count > BOUNCE_MAX_COUNT) {
+            return;
+        }
+        sharedPrefs.edit().putInt(SHELF_BOUNCE_COUNT, count + 1).apply();
+    }
+
+    private static void incrementHomeBounceCount(Launcher launcher) {
+        SharedPreferences sharedPrefs = launcher.getSharedPrefs();
+        int count = sharedPrefs.getInt(HOME_BOUNCE_COUNT, 0);
+        if (count > BOUNCE_MAX_COUNT) {
+            return;
+        }
+        sharedPrefs.edit().putInt(HOME_BOUNCE_COUNT, count + 1).apply();
     }
 }
