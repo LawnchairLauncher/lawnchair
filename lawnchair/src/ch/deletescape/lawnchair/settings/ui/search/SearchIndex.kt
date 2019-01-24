@@ -41,6 +41,7 @@ class SearchIndex(private val context: Context) {
     private val attrSearchTitle = "searchTitle"
 
     val entries = ArrayList<SettingsEntry>()
+    val addedKeys = HashSet<String>()
 
     init {
         indexScreen(R.xml.lawnchair_preferences, null)
@@ -87,7 +88,9 @@ class SearchIndex(private val context: Context) {
                         val title = getTitle(parser, controller)
                         val summary = getSummary(parser, controller)
                         if (parent != null && key != null && title != null) {
-                            entries.add(SettingsEntry(key, title, summary, parent))
+                            if (addedKeys.add(key)) {
+                                entries.add(SettingsEntry(key, title, summary, parent))
+                            }
                         }
                     }
 
