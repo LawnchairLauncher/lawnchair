@@ -358,4 +358,17 @@ public abstract class AbstractLauncherUiTest {
         waitForLauncherCondition(
                 "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
     }
+
+    protected boolean isInBackground(Launcher launcher) {
+        return !launcher.hasBeenResumed();
+    }
+
+    protected boolean isInState(LauncherState state) {
+        if (!TestHelpers.isInLauncherProcess()) return true;
+        return getFromLauncher(launcher -> launcher.getStateManager().getState() == state);
+    }
+
+    protected int getAllAppsScroll(Launcher launcher) {
+        return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
+    }
 }
