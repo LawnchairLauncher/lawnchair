@@ -62,8 +62,4 @@
     <!-- Annotation shown on an app card in Recents, telling that the app has a usage limit set by
     the user, and a given time is left for it today [CHAR LIMIT=20] -->
     <string name="time_left_for_app"><xliff:g id="time" example="7 minutes">%1$s</xliff:g> left today</string>
-
-    <!-- Annotation shown on an app card in Recents, telling that the app is in a group that has a
-    usage limit set by the user, and a given time is left for the group today [CHAR LIMIT=20] -->
-    <string name="time_left_for_group"><xliff:g id="time" example="1 hour">%1$s</xliff:g> left for group</string>
 </resources>
