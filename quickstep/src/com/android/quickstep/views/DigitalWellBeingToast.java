@@ -77,7 +77,6 @@ public final class DigitalWellBeingToast extends LinearLayout {
         Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
             long appUsageLimitTimeMs = -1;
             long appRemainingTimeMs = -1;
-            boolean isGroupLimit = true;
 
             try {
                 final Method getAppUsageLimit = LauncherApps.class.getMethod(
@@ -95,8 +94,6 @@ public final class DigitalWellBeingToast extends LinearLayout {
                             invoke(usageLimit);
                     appRemainingTimeMs = (long) appUsageLimitClass.getMethod("getUsageRemaining").
                             invoke(usageLimit);
-                    isGroupLimit = (boolean) appUsageLimitClass.getMethod("isGroupLimit").
-                            invoke(usageLimit);
                 }
             } catch (Exception e) {
                 // Do nothing
@@ -104,14 +101,13 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
             final long appUsageLimitTimeMsFinal = appUsageLimitTimeMs;
             final long appRemainingTimeMsFinal = appRemainingTimeMs;
-            final boolean isGroupLimitFinal = isGroupLimit;
 
             post(() -> {
                 if (appUsageLimitTimeMsFinal < 0) {
                     setVisibility(GONE);
                 } else {
                     setVisibility(VISIBLE);
-                    mText.setText(getText(appRemainingTimeMsFinal, isGroupLimitFinal));
+                    mText.setText(getText(appRemainingTimeMsFinal));
                     mImage.setImageResource(appRemainingTimeMsFinal > 0 ?
                             R.drawable.hourglass_top : R.drawable.hourglass_bottom);
                 }
@@ -119,9 +115,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 callback.call(
                         appUsageLimitTimeMsFinal >= 0 && appRemainingTimeMsFinal <= 0 ? 0 : 1,
                         getContentDescriptionForTask(
-                                task, appUsageLimitTimeMsFinal,
-                                appRemainingTimeMsFinal,
-                                isGroupLimitFinal));
+                                task, appUsageLimitTimeMsFinal, appRemainingTimeMsFinal));
             });
         });
     }
@@ -185,12 +179,12 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 duration, FormatWidth.NARROW, R.string.shorter_duration_less_than_one_minute);
     }
 
-    private String getText(long remainingTime, boolean isGroupLimit) {
+    private String getText(long remainingTime) {
         final Resources resources = getResources();
         return (remainingTime <= 0) ?
                 resources.getString(R.string.app_in_grayscale) :
                 resources.getString(
-                        isGroupLimit ? R.string.time_left_for_group : R.string.time_left_for_app,
+                        R.string.time_left_for_app,
                         getShorterReadableDuration(Duration.ofMillis(remainingTime)));
     }
 
@@ -214,12 +208,12 @@ public final class DigitalWellBeingToast extends LinearLayout {
     }
 
     private String getContentDescriptionForTask(
-            Task task, long appUsageLimitTimeMs, long appRemainingTimeMs, boolean isGroupLimit) {
+            Task task, long appUsageLimitTimeMs, long appRemainingTimeMs) {
         return appUsageLimitTimeMs >= 0 ?
                 getResources().getString(
                         R.string.task_contents_description_with_remaining_time,
                         task.titleDescription,
-                        getText(appRemainingTimeMs, isGroupLimit)) :
+                        getText(appRemainingTimeMs)) :
                 task.titleDescription;
     }
 }
