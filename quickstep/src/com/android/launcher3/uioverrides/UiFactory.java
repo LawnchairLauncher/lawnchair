@@ -34,10 +34,10 @@ import android.util.Base64;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
@@ -198,8 +198,8 @@ public class UiFactory {
 
     public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
             CancellationSignal cancellationSignal) {
-        LauncherAppTransitionManagerImpl appTransitionManager =
-                (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+        QuickstepAppTransitionManagerImpl appTransitionManager =
+                (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider((targets) -> {
 
             // On the first call clear the reference.
