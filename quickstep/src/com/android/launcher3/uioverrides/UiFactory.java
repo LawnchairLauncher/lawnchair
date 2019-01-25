@@ -21,7 +21,10 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
 import android.animation.AnimatorSet;
@@ -136,7 +139,8 @@ public class UiFactory {
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
-                            && finalState == ALL_APPS && prevState == NORMAL))) {
+                            && finalState == ALL_APPS && prevState == NORMAL) || BOUNCE_MAX_COUNT <=
+                            launcher.getSharedPrefs().getInt(HOME_BOUNCE_COUNT, 0))) {
                         launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
                         launcher.getStateManager().removeStateListener(this);
                     }
@@ -159,7 +163,8 @@ public class UiFactory {
                 public void onStateTransitionComplete(LauncherState finalState) {
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
-                    if (finalState == ALL_APPS && prevState == OVERVIEW) {
+                    if ((finalState == ALL_APPS && prevState == OVERVIEW) || BOUNCE_MAX_COUNT <=
+                            launcher.getSharedPrefs().getInt(SHELF_BOUNCE_COUNT, 0)) {
                         launcher.getSharedPrefs().edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
                         launcher.getStateManager().removeStateListener(this);
                     }
