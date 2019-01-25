@@ -996,7 +996,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     protected void overScroll(int amount) {
-        boolean shouldScrollOverlay = mLauncherOverlay != null &&
+        boolean shouldScrollOverlay = mLauncherOverlay != null && !mScroller.isSpringing() &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&

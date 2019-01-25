@@ -26,6 +26,11 @@ import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
+
 /**
  * Based on {@link android.widget.OverScroller} supporting only 1-d scrolling and with more
  * customization options.
@@ -196,6 +201,9 @@ public class OverScroller {
 
         switch (mMode) {
             case SCROLL_MODE:
+                if (isSpringing()) {
+                    return true;
+                }
                 long time = AnimationUtils.currentAnimationTimeMillis();
                 // Any scroller can be used for time, since they were started
                 // together in scroll mode. We use X here.
@@ -251,6 +259,22 @@ public class OverScroller {
     public void startScroll(int start, int delta, int duration) {
         mMode = SCROLL_MODE;
         mScroller.startScroll(start, delta, duration);
+    }
+
+    /**
+     * Start scrolling using a spring by providing a starting point and the distance to travel.
+     *
+     * @param start Starting scroll offset in pixels. Positive
+     *        numbers will scroll the content to the left.
+     * @param delta Distance to travel. Positive numbers will scroll the
+     *        content to the left.
+     * @param duration Duration of the scroll in milliseconds.
+     * @param velocity The starting velocity for the spring in px per ms.
+     */
+    public void startScrollSpring(int start, int delta, int duration, float velocity) {
+        mMode = SCROLL_MODE;
+        mScroller.mState = mScroller.SPRING;
+        mScroller.startScroll(start, delta, duration, velocity);
     }
 
     /**
@@ -354,6 +378,10 @@ public class OverScroller {
         return (int) (time - mScroller.mStartTime);
     }
 
+    public boolean isSpringing() {
+        return mScroller.mState == SplineOverScroller.SPRING && !isFinished();
+    }
+
     static class SplineOverScroller {
         // Initial position
         private int mStart;
@@ -397,6 +425,8 @@ public class OverScroller {
         // Current state of the animation.
         private int mState = SPLINE;
 
+        private SpringAnimation mSpring;
+
         // Constant gravity value, used in the deceleration phase.
         private static final float GRAVITY = 2000.0f;
 
@@ -417,6 +447,20 @@ public class OverScroller {
         private static final int SPLINE = 0;
         private static final int CUBIC = 1;
         private static final int BALLISTIC = 2;
+        private static final int SPRING = 3;
+
+        private static final FloatPropertyCompat<SplineOverScroller> SPRING_PROPERTY =
+                new FloatPropertyCompat<SplineOverScroller>("splineOverScrollerSpring") {
+                    @Override
+                    public float getValue(SplineOverScroller scroller) {
+                        return scroller.mCurrentPosition;
+                    }
+
+                    @Override
+                    public void setValue(SplineOverScroller scroller, float value) {
+                        scroller.mCurrentPosition = (int) value;
+                    }
+                };
 
         static {
             float x_min = 0.0f;
@@ -465,6 +509,9 @@ public class OverScroller {
         }
 
         void updateScroll(float q) {
+            if (mState == SPRING) {
+                return;
+            }
             mCurrentPosition = mStart + Math.round(q * (mFinal - mStart));
         }
 
@@ -495,6 +542,10 @@ public class OverScroller {
         }
 
         void startScroll(int start, int distance, int duration) {
+            startScroll(start, distance, duration, 0);
+        }
+
+        void startScroll(int start, int distance, int duration, float velocity) {
             mFinished = false;
 
             mCurrentPosition = mStart = start;
@@ -503,12 +554,31 @@ public class OverScroller {
             mStartTime = AnimationUtils.currentAnimationTimeMillis();
             mDuration = duration;
 
+            if (mState == SPRING) {
+                if (mSpring != null) {
+                    mSpring.cancel();
+                }
+                mSpring = new SpringAnimation(this, SPRING_PROPERTY);
+
+                mSpring.setSpring(new SpringForce(mFinal)
+                        .setStiffness(SpringForce.STIFFNESS_LOW)
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY));
+                mSpring.setStartVelocity(velocity);
+                mSpring.animateToFinalPosition(mFinal);
+                mSpring.addEndListener((animation, canceled, value, velocity1) -> {
+                    finish();
+                    mState = SPLINE;
+                    mSpring = null;
+                });
+            }
             // Unused
             mDeceleration = 0.0f;
             mVelocity = 0;
         }
 
         void finish() {
+            if (mSpring != null && mSpring.isRunning()) mSpring.cancel();
+
             mCurrentPosition = mFinal;
             // Not reset since WebView relies on this value for fast fling.
             // TODO: restore when WebView uses the fast fling implemented in this class.
@@ -518,6 +588,9 @@ public class OverScroller {
 
         void setFinalPosition(int position) {
             mFinal = position;
+            if (mState == SPRING && mSpring != null) {
+                mSpring.animateToFinalPosition(mFinal);
+            }
             mSplineDistance = mFinal - mStart;
             mFinished = false;
         }
@@ -722,6 +795,10 @@ public class OverScroller {
          * reached.
          */
         boolean update() {
+            if (mState == SPRING) {
+                return mFinished;
+            }
+
             final long time = AnimationUtils.currentAnimationTimeMillis();
             final long currentTime = time - mStartTime;
 
