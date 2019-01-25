@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8116646702313548897">"SecondaryDisplayLauncher"</string>
     <string name="couldnt_launch" msgid="7873588052226763866">"アクティビティを開始できませんでした"</string>
     <string name="add_app_shortcut" msgid="2756755330707509435">"アプリのショートカットを追加"</string>
     <string name="set_wallpaper" msgid="6475195450505435904">"壁紙を設定"</string>

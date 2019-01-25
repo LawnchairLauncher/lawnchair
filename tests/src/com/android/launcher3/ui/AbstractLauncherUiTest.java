@@ -123,7 +123,7 @@ public abstract class AbstractLauncherUiTest {
                 public void evaluate() throws Throwable {
                     try {
                         // Create launcher activity if necessary and bring it to the front.
-                        mDevice.pressHome();
+                        mLauncher.pressHome();
                         waitForLauncherCondition("Launcher activity wasn't created",
                                 launcher -> launcher != null);
 

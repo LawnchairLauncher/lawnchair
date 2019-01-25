@@ -16,16 +16,13 @@
 
 package com.android.quickstep;
 
-import android.content.Context;
 import android.graphics.Matrix;
 import android.view.View;
-
-import androidx.annotation.AnyThread;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -34,11 +31,12 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.AnyThread;
+
 /**
  * Factory class to create and add an overlays on the TaskView
  */
 public class TaskOverlayFactory implements ResourceBasedOverride {
-    private static TaskOverlayFactory sInstance;
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[]{
@@ -49,14 +47,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             new TaskSystemShortcut.Freeform()
     };
 
-    public static TaskOverlayFactory get(Context context) {
-        Preconditions.assertUIThread();
-        if (sInstance == null) {
-            sInstance = Overrides.getObject(TaskOverlayFactory.class,
-                    context.getApplicationContext(), R.string.task_overlay_factory_class);
-        }
-        return sInstance;
-    }
+    public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
+            new MainThreadInitializedObject<>(c -> Overrides.getObject(TaskOverlayFactory.class,
+                    c, R.string.task_overlay_factory_class));
 
     @AnyThread
     public boolean needAssist() {

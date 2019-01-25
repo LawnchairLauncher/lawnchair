@@ -68,7 +68,6 @@ public class RecentsModel extends TaskStackChangeListener {
     private float mWindowCornerRadius = -1;
     private Boolean mSupportsRoundedCornersOnWindows;
 
-
     private RecentsModel(Context context) {
         mContext = context;
 

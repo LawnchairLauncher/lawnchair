@@ -24,6 +24,8 @@ package com.android.launcher3.util;
 public class RaceConditionTracker {
     public final static boolean ENTER = true;
     public final static boolean EXIT = false;
+    static final String ENTER_POSTFIX = "enter";
+    static final String EXIT_POSTFIX = "exit";
 
     public interface EventProcessor {
         void onEvent(String eventName);
@@ -46,7 +48,7 @@ public class RaceConditionTracker {
     }
 
     public static String enterExitEvt(String eventName, boolean isEnter) {
-        return eventName + ":" + (isEnter ? "enter" : "exit");
+        return eventName + ":" + (isEnter ? ENTER_POSTFIX : EXIT_POSTFIX);
     }
 
     public static String enterEvt(String eventName) {

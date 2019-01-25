@@ -29,6 +29,7 @@ import android.content.res.Resources;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.UiThreadHelper;
 
 /**
  * Utility class to manage launcher rotation
@@ -154,7 +155,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         }
         if (activityFlags != mLastActivityFlags) {
             mLastActivityFlags = activityFlags;
-            mActivity.setRequestedOrientation(activityFlags);
+            UiThreadHelper.setOrientationAsync(mActivity, activityFlags);
         }
     }
 

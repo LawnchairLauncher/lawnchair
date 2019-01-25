@@ -21,6 +21,7 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -29,6 +30,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -61,6 +63,7 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -72,7 +75,7 @@ import java.util.concurrent.CountDownLatch;
  *   4) Measure and draw the view on a canvas
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherPreviewRenderer {
+public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
     private static final String TAG = "LauncherPreviewRenderer";
 
@@ -110,7 +113,8 @@ public class LauncherPreviewRenderer {
                 context.getString(R.string.label_application);
     }
 
-    public Bitmap createScreenShot() {
+    @Override
+    public Bitmap call() {
         return BitmapRenderer.createHardwareBitmap(mDp.widthPx, mDp.heightPx, c -> {
 
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -279,7 +283,6 @@ public class LauncherPreviewRenderer {
             // Additional measure for views which use auto text size API
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
 
-            canvas.drawColor(Color.GRAY);
             mRootView.draw(canvas);
             dispatchVisibilityAggregated(mRootView, false);
         }

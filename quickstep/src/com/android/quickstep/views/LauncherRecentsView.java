@@ -15,10 +15,12 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
+import static com.android.launcher3.AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -32,6 +34,8 @@ import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -40,6 +44,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
 
 /**
@@ -62,8 +67,15 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 }
             };
 
+    /**
+     * A ratio representing the view's relative placement within its padded space. For example, 0
+     * is top aligned and 0.5 is centered vertically.
+     */
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTranslationYFactor;
+
+    private final TransformParams mTransformParams = new TransformParams();
+    final LauncherLayoutListener mLauncherLayoutListener;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -76,11 +88,17 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
+        mLauncherLayoutListener = new LauncherLayoutListener(BaseActivity.fromContext(context));
     }
 
     @Override
     protected void startHome() {
-        mActivity.getStateManager().goToState(NORMAL);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            takeScreenshotAndFinishRecentsAnimation(true,
+                    () -> mActivity.getStateManager().goToState(NORMAL));
+        } else {
+            mActivity.getStateManager().goToState(NORMAL);
+        }
     }
 
     @Override
@@ -92,6 +110,9 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
         setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            redrawLiveTile(false);
+        }
     }
 
     public float computeTranslationYForFactor(float translationYFactor) {
@@ -167,5 +188,46 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
         return mActivity.isInMultiWindowModeCompat();
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, y);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile) {
+            redrawLiveTile(true);
+        }
+    }
+
+    @Override
+    public void redrawLiveTile(boolean mightNeedToRefill) {
+        AbstractFloatingView layoutListener = AbstractFloatingView.getTopOpenViewWithType(
+                mActivity, TYPE_QUICKSTEP_PREVIEW);
+        if (layoutListener != null && layoutListener.isOpen()) {
+            return;
+        }
+        if (mRecentsAnimationWrapper == null || mClipAnimationHelper == null) {
+            return;
+        }
+        TaskView taskView = getRunningTaskView();
+        if (taskView != null) {
+            taskView.getThumbnail().getGlobalVisibleRect(mTempRect);
+            int offsetX = (int) (mTaskWidth * taskView.getScaleX() * getScaleX()
+                    - mTempRect.width());
+            int offsetY = (int) (mTaskHeight * taskView.getScaleY() * getScaleY()
+                    - mTempRect.height());
+            if (((mCurrentPage != 0) || mightNeedToRefill) && offsetX > 0) {
+                mTempRect.right += offsetX;
+            }
+            if (mightNeedToRefill && offsetY > 0) {
+                mTempRect.top -= offsetY;
+            }
+            mTempRectF.set(mTempRect);
+            mTransformParams.setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
+                    .setSyncTransactionApplier(mSyncTransactionApplier);
+            if (mRecentsAnimationWrapper.targetSet != null) {
+                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
+                        mTransformParams);
+            }
+        }
     }
 }

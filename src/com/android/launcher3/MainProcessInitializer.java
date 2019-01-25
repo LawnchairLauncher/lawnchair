@@ -38,6 +38,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
         FeatureFlags.initialize(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
-        FolderShape.init();
+        FolderShape.init(context);
     }
 }

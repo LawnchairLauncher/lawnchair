@@ -33,8 +33,10 @@
     <attr name="workspaceKeyShadowColor" format="color" />
     <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
-    <attr name="folderDotColor" format="color" />
     <attr name="loadingIconColor" format="color" />
+
+    <attr name="folderDotColor" format="color" />
+    <attr name="folderIconRadius" format="float" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">

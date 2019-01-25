@@ -16,12 +16,12 @@
 
 package com.android.launcher3.tapl;
 
-import java.util.Collections;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Common overview pane for both Launcher and fallback recents
@@ -69,7 +69,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public OverviewTask getCurrentTask() {
         verifyActiveContainer();
         final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                LauncherInstrumentation.getLauncherObjectSelector("snapshot"));
+                mLauncher.getLauncherObjectSelector("snapshot"));
         LauncherInstrumentation.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
         // taskViews contains up to 3 task views: the 'main' (having the widest visible

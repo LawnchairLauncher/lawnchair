@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -43,19 +42,17 @@ import android.util.MutableInt;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
-import com.android.launcher3.ItemInfoWithIcon;
-import com.android.launcher3.icons.ComponentWithLabel;
-import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
-import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -63,16 +60,18 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
+import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherActivtiyCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -158,9 +157,9 @@ public class LoaderTask implements Runnable {
             allItems.addAll(mBgDataModel.workspaceItems);
             allItems.addAll(mBgDataModel.appWidgets);
         }
-        int firstScreen = mBgDataModel.workspaceScreens.isEmpty()
-                ? -1 // In this case, we can still look at the items in the hotseat.
-                : mBgDataModel.workspaceScreens.get(0);
+        // Screen set is never empty
+        final int firstScreen = mBgDataModel.collectWorkspaceScreens().get(0);
+
         filterCurrentWorkspaceItems(firstScreen, allItems, firstScreenItems,
                 new ArrayList<>() /* otherScreenItems are ignored */);
         mFirstScreenBroadcast.sendBroadcasts(mApp.getContext(), firstScreenItems);
@@ -784,16 +783,6 @@ public class LoaderTask implements Runnable {
                         null,
                         new Handler(LauncherModel.getWorkerLooper()));
             }
-
-            // Initialize the screens array. Using an InstSet ensures that the screen ids
-            // are sorted.
-            IntSet screenSet = new IntSet();
-            for (ItemInfo item: mBgDataModel.itemsIdMap) {
-                if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    screenSet.add(item.screenId);
-                }
-            }
-            mBgDataModel.workspaceScreens.addAll(screenSet.getArray());
         }
     }
 

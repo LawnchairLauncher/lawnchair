@@ -21,7 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS_SPRING;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -44,6 +44,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -53,9 +55,9 @@ import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -76,9 +78,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -150,11 +149,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      */
     int getContainerType();
 
+    boolean isInLiveTileMode();
+
     class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
 
         @Override
         public LayoutListener createLayoutListener(Launcher activity) {
-            return new LauncherLayoutListener(activity);
+            return LauncherLayoutListener.resetAndGet(activity);
         }
 
         @Override
@@ -216,7 +217,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
                 return dp.hotseatBarSizePx + hotseatInset;
             } else {
-                return LayoutUtils.getShelfTrackingDistance(dp);
+                return LayoutUtils.getShelfTrackingDistance(context, dp);
             }
         }
 
@@ -295,8 +296,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
             AnimatorSet anim = new AnimatorSet();
             if (!activity.getDeviceProfile().isVerticalBarLayout()) {
-                AllAppsTransitionController controller = activity.getAllAppsController();
-                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
+                Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
+                        ALL_APPS_PROGRESS_SPRING, "allAppsSpringFromACH",
+                        activity.getAllAppsController().getShiftRange(),
                         fromState.getVerticalProgress(activity),
                         endState.getVerticalProgress(activity));
                 shiftAnim.setInterpolator(LINEAR);
@@ -441,6 +443,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             final Launcher launcher = getVisibleLaucher();
             return launcher != null ? launcher.getStateManager().getState().containerType
                     : LauncherLogProto.ContainerType.APP;
+        }
+
+        @Override
+        public boolean isInLiveTileMode() {
+            Launcher launcher = getCreatedActivity();
+            return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
+                    launcher.isStarted();
         }
     }
 
@@ -626,6 +635,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public int getContainerType() {
             return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
+        }
+
+        @Override
+        public boolean isInLiveTileMode() {
+            return false;
         }
     }
 

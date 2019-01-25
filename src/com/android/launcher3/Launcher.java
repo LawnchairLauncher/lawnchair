@@ -189,6 +189,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
     public static final String ON_CREATE_EVT = "Launcher.onCreate";
+    private static final String ON_START_EVT = "Launcher.onStart";
+    private static final String ON_RESUME_EVT = "Launcher.onResume";
 
     private LauncherStateManager mStateManager;
 
@@ -762,12 +764,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
+        RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
     }
 
     private void logOnDelayedResume() {
@@ -780,6 +784,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onResume() {
+        RaceConditionTracker.onEvent(ON_RESUME_EVT, ENTER);
         TraceHelper.beginSection("ON_RESUME");
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
@@ -802,6 +807,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         UiFactory.onLauncherStateOrResumeChanged(this);
 
         TraceHelper.endSection("ON_RESUME");
+        RaceConditionTracker.onEvent(ON_RESUME_EVT, EXIT);
     }
 
     @Override
@@ -1377,6 +1383,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private void setWorkspaceLoading(boolean value) {
+        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
+            android.util.Log.d("b/117332845", "setWorkspaceLoading " + value + " @ " +
+                    android.util.Log.getStackTraceString(new Throwable()));
+        }
         mWorkspaceLoading = value;
     }
 
