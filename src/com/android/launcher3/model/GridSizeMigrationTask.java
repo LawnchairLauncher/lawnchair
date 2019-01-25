@@ -47,8 +47,6 @@ import androidx.annotation.VisibleForTesting;
  */
 public class GridSizeMigrationTask {
 
-    public static boolean ENABLED = Utilities.ATLEAST_NOUGAT;
-
     private static final String TAG = "GridSizeMigrationTask";
     private static final boolean DEBUG = true;
 

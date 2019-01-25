@@ -174,8 +174,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
         }
         try {
-            boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof ShortcutInfo)
+            boolean isShortcut = (item instanceof ShortcutInfo)
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
                     && !((ShortcutInfo) item).isPromise();

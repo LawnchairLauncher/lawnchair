@@ -83,8 +83,4 @@ public abstract class LauncherAppsCompat {
             UserHandle user);
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
             @Nullable PackageUserKey packageUser);
-
-    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
-        showAppDetailsForProfile(component, user, null, null);
-    }
 }

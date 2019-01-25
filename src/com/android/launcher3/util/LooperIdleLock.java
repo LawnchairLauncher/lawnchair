@@ -19,8 +19,6 @@ package com.android.launcher3.util;
 import android.os.Looper;
 import android.os.MessageQueue;
 
-import com.android.launcher3.Utilities;
-
 /**
  * Utility class to block execution until the UI looper is idle.
  */
@@ -33,13 +31,7 @@ public class LooperIdleLock implements MessageQueue.IdleHandler, Runnable {
     public LooperIdleLock(Object lock, Looper looper) {
         mLock = lock;
         mIsLocked = true;
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            looper.getQueue().addIdleHandler(this);
-        } else {
-            // Looper.myQueue() only gives the current queue. Move the execution to the UI thread
-            // so that the IdleHandler is attached to the correct message queue.
-            new LooperExecutor(looper).execute(this);
-        }
+        looper.getQueue().addIdleHandler(this);
     }
 
     @Override

@@ -54,7 +54,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
@@ -68,6 +67,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import androidx.annotation.Nullable;
 
@@ -542,10 +542,8 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
-            sWorker.post(mShortcutPermissionCheckRunnable);
-        }
+        sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
+        sWorker.post(mShortcutPermissionCheckRunnable);
     }
 
     /**
@@ -611,7 +609,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Utility method to update a shortcut on the background thread.
      */
-    public void updateAndBindShortcutInfo(final Provider<ShortcutInfo> shortcutProvider) {
+    public void updateAndBindShortcutInfo(final Supplier<ShortcutInfo> shortcutProvider) {
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {

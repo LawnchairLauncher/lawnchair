@@ -47,7 +47,8 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Provider;
+
+import java.util.function.Supplier;
 
 import androidx.annotation.NonNull;
 
@@ -156,7 +157,7 @@ public class IconCache extends BaseIconCache {
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
         CacheEntry entry = cacheLocked(application.componentName,
-                application.user, Provider.of(null), mLauncherActivityInfoCachingLogic,
+                application.user, () -> null, mLauncherActivityInfoCachingLogic,
                 false, application.usingLowResIcon());
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);
@@ -169,7 +170,7 @@ public class IconCache extends BaseIconCache {
     public synchronized void getTitleAndIcon(ItemInfoWithIcon info,
             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
         // If we already have activity info, no need to use package icon
-        getTitleAndIcon(info, Provider.of(activityInfo), false, useLowResIcon);
+        getTitleAndIcon(info, () -> activityInfo, false, useLowResIcon);
     }
 
     /**
@@ -191,7 +192,7 @@ public class IconCache extends BaseIconCache {
     }
 
     public synchronized String getTitleNoCache(ComponentWithLabel info) {
-        CacheEntry entry = cacheLocked(info.getComponent(), info.getUser(), Provider.of(info),
+        CacheEntry entry = cacheLocked(info.getComponent(), info.getUser(), () -> info,
                 mComponentWithLabelCachingLogic, false /* usePackageIcon */,
                 true /* useLowResIcon */, false /* addToMemCache */);
         return Utilities.trim(entry.title);
@@ -202,7 +203,7 @@ public class IconCache extends BaseIconCache {
      */
     private synchronized void getTitleAndIcon(
             @NonNull ItemInfoWithIcon infoInOut,
-            @NonNull Provider<LauncherActivityInfo> activityInfoProvider,
+            @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
             boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), infoInOut.user,
                 activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon, useLowResIcon);

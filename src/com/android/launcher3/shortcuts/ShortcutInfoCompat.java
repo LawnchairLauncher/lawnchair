@@ -16,12 +16,10 @@
 
 package com.android.launcher3.shortcuts;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
-import android.os.Build;
 import android.os.UserHandle;
 
 import com.android.launcher3.R;
@@ -31,7 +29,6 @@ import com.android.launcher3.R;
  *
  * Not to be confused with {@link com.android.launcher3.ShortcutInfo}.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class ShortcutInfoCompat {
     private static final String INTENT_CATEGORY = "com.android.launcher3.DEEP_SHORTCUT";
     private static final String EXTRA_BADGEPKG = "badge_package";
@@ -42,7 +39,6 @@ public class ShortcutInfoCompat {
         mShortcutInfo = shortcutInfo;
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     public Intent makeIntent() {
         return new Intent(Intent.ACTION_MAIN)
                 .addCategory(INTENT_CATEGORY)
