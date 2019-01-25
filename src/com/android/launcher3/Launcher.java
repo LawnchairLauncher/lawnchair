@@ -1383,11 +1383,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private void setWorkspaceLoading(boolean value) {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845", "setWorkspaceLoading " + value + " @ " +
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
         mWorkspaceLoading = value;
     }
 

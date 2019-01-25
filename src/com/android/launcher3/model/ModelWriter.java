@@ -109,11 +109,6 @@ public class ModelWriter {
     }
 
     private void checkItemInfoLocked(int itemId, ItemInfo item, StackTraceElement[] stackTrace) {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Checking item: " + android.util.Log.getStackTraceString(new Throwable()));
-        }
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
@@ -363,11 +358,6 @@ public class ModelWriter {
         private final int mItemId;
 
         UpdateItemRunnable(ItemInfo item, ContentWriter writer) {
-            if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                    && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-                android.util.Log.d("b/117332845",
-                        android.util.Log.getStackTraceString(new Throwable()));
-            }
             mItem = item;
             mWriter = writer;
             mItemId = item.id;

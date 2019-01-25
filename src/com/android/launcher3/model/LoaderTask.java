@@ -126,11 +126,6 @@ public class LoaderTask implements Runnable {
         mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(mApp.getContext());
         mIconCache = mApp.getIconCache();
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
     }
 
     protected synchronized void waitForIdle() {

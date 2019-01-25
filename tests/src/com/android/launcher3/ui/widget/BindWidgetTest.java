@@ -84,11 +84,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
         super.setUp();
 
         mResolver = mTargetContext.getContentResolver();
@@ -110,11 +105,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         }
 
         super.tearDown();
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
     }
 
     @Test
@@ -157,10 +147,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testPendingWidget_autoRestored() {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
-        }
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
 
@@ -170,21 +156,10 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         setupContents(item);
         verifyWidgetPresent(info);
-
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Test Ended @ " + android.util.Log.getStackTraceString(new Throwable()));
-        }
     }
 
     @Test
     public void testPendingWidget_withConfigScreen() {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Test Started @ " + android.util.Log.getStackTraceString(new Throwable()));
-        }
         // A non-restored widget with config screen get bound and shows a 'Click to setup' UI.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
 
@@ -206,11 +181,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         assertNotNull(AppWidgetManager.getInstance(mTargetContext)
                 .getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
                         LauncherSettings.Favorites.APPWIDGET_ID))));
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Test Ended @ " + android.util.Log.getStackTraceString(new Throwable()));
-        }
     }
 
     @Test @Ignore
