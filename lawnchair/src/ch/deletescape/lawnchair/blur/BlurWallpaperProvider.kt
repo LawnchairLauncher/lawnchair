@@ -17,17 +17,12 @@
 
 package ch.deletescape.lawnchair.blur
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
-import android.support.v4.graphics.ColorUtils
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import ch.deletescape.lawnchair.*
@@ -36,9 +31,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.hoko.blur.HokoBlur
 import com.hoko.blur.task.AsyncBlurTask
-import java.util.*
 import java.util.concurrent.Future
-import kotlin.collections.ArrayList
 
 class BlurWallpaperProvider(val context: Context) {
 
@@ -119,7 +112,18 @@ class BlurWallpaperProvider(val context: Context) {
 
         updateBlurRadius()
 
-        var wallpaper = scaleToScreenSize((mWallpaperManager.drawable as BitmapDrawable).bitmap)
+        var wallpaper = try {
+            Utilities.drawableToBitmap(mWallpaperManager.drawable, true) as Bitmap
+        } catch (e: Exception) {
+            prefs.enableBlur = false
+            runOnMainThread {
+                val msg = "${context.getString(R.string.blur_wallpaper_failed)}: ${e.message}"
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                notifyWallpaperChanged()
+            }
+            return
+        }
+        wallpaper = scaleToScreenSize(wallpaper)
         val wallpaperHeight = wallpaper.height
         wallpaperYOffset = if (wallpaperHeight > mDisplayHeight) {
             (wallpaperHeight - mDisplayHeight) * 0.5f

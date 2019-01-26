@@ -712,7 +712,11 @@ public final class Utilities {
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
+        return Utilities.drawableToBitmap(drawable, true);
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean forceCreate) {
+        if (!forceCreate && drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
 
