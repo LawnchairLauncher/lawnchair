@@ -176,9 +176,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
 
-    // Gestures
-    val doubleTapDelay = 350L
-
     // Quickstep
     val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
     val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
