@@ -18,9 +18,10 @@
 package ch.deletescape.lawnchair.settings.ui.search
 
 import android.content.Context
-import ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+import android.support.v7.preference.PreferenceCategory
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.settings.ui.SubPreference
+import ch.deletescape.lawnchair.settings.ui.SwitchSubPreference
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.xmlpull.v1.XmlPullParser
@@ -39,6 +40,7 @@ class SearchIndex(private val context: Context) {
     private val attrHasPreview = "hasPreview"
     private val attrControllerClass = "controllerClass"
     private val attrSearchTitle = "searchTitle"
+    private val attrDefaultValue = "defaultValue"
 
     val entries = ArrayList<SettingsEntry>()
     val addedKeys = HashSet<String>()
@@ -61,18 +63,33 @@ class SearchIndex(private val context: Context) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
+            val cls = try { Class.forName(parser.name) } catch (e: ClassNotFoundException) { null }
             when {
-                parser.name == SubPreference::class.java.name -> {
+                cls != null && SubPreference::class.java.isAssignableFrom(cls) -> {
                     val controller = createController(parser)
                     if (controller?.isVisible != false) {
-                        val title = getTitle(parser, controller)
+                        val title = getTitle(parser, controller)!!
                         val content = parseIdentifier(parser.getAttributeValue(nsApp, attrContent))
                         val hasPreview = java.lang.Boolean.parseBoolean(parser.getAttributeValue(nsApp, attrHasPreview))
-                        indexScreen(content, SettingsScreen(title!!, title, findScreen(parent), content, hasPreview))
+                        var canIndex = true
+                        if (SwitchSubPreference::class.java.isAssignableFrom(cls)) {
+                            val key = parser.getAttributeValue(nsAndroid, attrKey)
+                            val defaultValue = parser.getAttributeValue(nsAndroid, attrDefaultValue)
+                            val summary = getSummary(parser, controller)
+                            if (parent != null && key != null) {
+                                if (addedKeys.add(key)) {
+                                    entries.add(SettingsEntry(key, title, summary, parent))
+                                }
+                            }
+                            canIndex = Utilities.getPrefs(context).getBoolean(key, defaultValue == "true")
+                        }
+                        if (canIndex) {
+                            indexScreen(content, SettingsScreen(title, title, findScreen(parent), content, hasPreview))
+                        }
                     }
                     skip(parser)
                 }
-                parser.name == StyledPreferenceCategory::class.java.name -> {
+                cls != null && PreferenceCategory::class.java.isAssignableFrom(cls) -> {
                     val title = parseString(parser.getAttributeValue(nsAndroid, attrTitle))
                     if (parent != null) {
                         indexSection(parser, SettingsCategory(parent.title, title!!,

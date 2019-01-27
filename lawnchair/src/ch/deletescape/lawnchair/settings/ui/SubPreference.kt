@@ -18,13 +18,14 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import ch.deletescape.lawnchair.preferences.StyledIconPreference
 import com.android.launcher3.R
 
-class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPreference(context, attrs),
+open class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPreference(context, attrs),
         View.OnLongClickListener, ControlledPreference {
 
     private var mContent: Int = 0
@@ -78,5 +79,13 @@ class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPreferenc
             return true
         }
         return false
+    }
+
+    open fun start(context: Context) {
+        val intent = Intent(context, SettingsActivity::class.java)
+        intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, title)
+        intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, content)
+        intent.putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, hasPreview())
+        context.startActivity(intent)
     }
 }

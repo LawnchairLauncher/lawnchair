@@ -227,11 +227,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
         if (preference instanceof SubPreference) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra(SubSettingsFragment.TITLE, preference.getTitle());
-            intent.putExtra(SubSettingsFragment.CONTENT_RES_ID, ((SubPreference) preference).getContent());
-            intent.putExtra(SubSettingsFragment.HAS_PREVIEW, ((SubPreference) preference).hasPreview());
-            startActivity(intent);
+            ((SubPreference) preference).start(this);
             return true;
         } else if (preference instanceof ColorPickerPreference) {
             ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
