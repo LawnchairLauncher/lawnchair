@@ -153,7 +153,8 @@ import java.util.Set;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate{
+        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        InvariantDeviceProfile.OnIDPChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -283,8 +284,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
-        initDeviceProfile(app.getInvariantDeviceProfile());
-
+        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+        initDeviceProfile(idp);
+        idp.addOnChangeListener(this);
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
@@ -402,6 +404,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mWorkspace.setCurrentPage(currentPage);
             setWorkspaceLoading(true);
         }
+    }
+
+    @Override
+    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        initDeviceProfile(idp);
+        getRootView().dispatchInsets();
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -1316,7 +1324,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         TextKeyListener.getInstance().release();
         clearPendingBinds();
-
+        LauncherAppState.getIDP(this).removeOnChangeListener(this);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
         }
