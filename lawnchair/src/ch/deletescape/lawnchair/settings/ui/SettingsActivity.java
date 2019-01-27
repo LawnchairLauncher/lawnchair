@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -173,13 +172,23 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (shouldShowSearch()) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_restart_lawnchair);
             if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
                 toolbar.inflateMenu(R.menu.menu_change_default_home);
-                toolbar.setOnMenuItemClickListener(menuItem -> {
-                    FakeLauncherKt.changeDefaultHome(this);
-                    return false;
-                });
             }
+            toolbar.setOnMenuItemClickListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_change_default_home:
+                        FakeLauncherKt.changeDefaultHome(this);
+                        break;
+                    case R.id.action_restart_lawnchair:
+                        Utilities.killLauncher();
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            });
         }
     }
 
