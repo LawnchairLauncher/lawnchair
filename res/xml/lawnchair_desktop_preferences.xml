@@ -10,12 +10,13 @@
             android:key="pref_desktop_grid_size"
             android:title="@string/grid_size" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        <ch.deletescape.lawnchair.settings.ui.SwitchSubPreference
             android:defaultValue="true"
             android:key="pref_enable_minus_one"
             android:summary="@string/pref_show_google_now_summary"
             android:title="@string/title_show_google_app"
-            app:controllerClass=".MinusOneController"/>
+            app:controllerClass=".MinusOneController"
+            app:content="@xml/lawnchair_google_feed_preferences"/>
 
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 

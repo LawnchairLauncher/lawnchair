@@ -110,6 +110,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public final static String ICON_PACK_PREF = "pref_icon_pack";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
+    public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     private final static String BRIDGE_TAG = "tag_bridge";
 
@@ -560,7 +561,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             getActivity().setTitle(getArguments().getString(TITLE));
 
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
-                SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
+                SwitchSubPreference minusOne = (SwitchSubPreference) findPreference(ENABLE_MINUS_ONE_PREF);
                 if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
                     minusOne.setChecked(false);
                 }

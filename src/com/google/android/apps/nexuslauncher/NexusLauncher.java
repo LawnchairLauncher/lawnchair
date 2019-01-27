@@ -6,14 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.graphics.ColorUtils;
-import android.view.Menu;
 import android.view.View;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.PredictionUiStateManager.Client;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
@@ -109,6 +106,7 @@ public class NexusLauncher {
             mQsbAnimationController = new QsbAnimationController(mLauncher);
 
             mUiInformation.putInt("system_ui_visibility", mLauncher.getWindow().getDecorView().getSystemUiVisibility());
+            applyFeedTheme(false);
             WallpaperColorInfo instance = WallpaperColorInfo.getInstance(mLauncher);
             instance.addOnChangeListener(this);
             onExtractedColorsChanged(instance);
@@ -247,16 +245,21 @@ public class NexusLauncher {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (SettingsActivity.ENABLE_MINUS_ONE_PREF.equals(key)) {
-                LauncherClient launcherClient = mClient;
-                StaticInteger i = new StaticInteger(
-                        (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8);
-                if (i.mData != launcherClient.mFlags) {
-                    launcherClient.mFlags = i.mData;
-                    if (launcherClient.mLayoutParams != null) {
-                        launcherClient.exchangeConfig();
+            switch (key) {
+                case SettingsActivity.ENABLE_MINUS_ONE_PREF:
+                    LauncherClient launcherClient = mClient;
+                    StaticInteger i = new StaticInteger(
+                            (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8);
+                    if (i.mData != launcherClient.mFlags) {
+                        launcherClient.mFlags = i.mData;
+                        if (launcherClient.mLayoutParams != null) {
+                            launcherClient.exchangeConfig();
+                        }
                     }
-                }
+                    break;
+                case SettingsActivity.FEED_THEME_PREF:
+                    applyFeedTheme(true);
+                    break;
             }
         }
 
@@ -266,9 +269,26 @@ public class NexusLauncher {
 
             mUiInformation.putInt("background_color_hint", primaryColor(wallpaperColorInfo, mLauncher, alpha));
             mUiInformation.putInt("background_secondary_color_hint", secondaryColor(wallpaperColorInfo, mLauncher, alpha));
-            mUiInformation.putBoolean("is_background_dark", Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark));
 
-            mClient.redraw(mUiInformation);
+            applyFeedTheme(true);
+        }
+
+        private void applyFeedTheme(boolean redraw) {
+            String prefValue = Utilities.getPrefs(mLauncher).getString(SettingsActivity.FEED_THEME_PREF, null);
+            int feedTheme;
+            try {
+                feedTheme = Integer.valueOf(prefValue == null ? "1" : prefValue);
+            } catch (Exception e) {
+                feedTheme = 1;
+            }
+            boolean auto = (feedTheme & 1) != 0;
+            boolean preferDark = (feedTheme & 2) != 0;
+            boolean isDark = auto ? Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark) : preferDark;
+            mUiInformation.putBoolean("is_background_dark", isDark);
+
+            if (redraw) {
+                mClient.redraw(mUiInformation);
+            }
         }
 
         private void updatePredictionsIfResumed() {

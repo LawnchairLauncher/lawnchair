@@ -44,4 +44,16 @@
         <item>imperial</item>
         <item>kelvin</item>
     </string-array>
+
+    <string-array name="feedThemes">
+        <item>@string/feed_theme_follow_launcher</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+
+    <string-array name="feedThemeValues">
+        <item>1</item>  <!-- 01 -->
+        <item>0</item>  <!-- 00 -->
+        <item>2</item>  <!-- 10 -->
+    </string-array>
 </resources>
