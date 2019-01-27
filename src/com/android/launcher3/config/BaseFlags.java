@@ -95,9 +95,8 @@ abstract class BaseFlags {
     public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
             "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
 
-    public static final ToggleableGlobalSettingsFlag ENABLE_TASK_STABILIZER
-            = new ToggleableGlobalSettingsFlag("ENABLE_TASK_STABILIZER", false,
-            "Stable task list across fast task switches");
+    public static final TogglableFlag ENABLE_TASK_STABILIZER = new TogglableFlag(
+            "ENABLE_TASK_STABILIZER", false, "Stable task list across fast task switches");
 
     public static final TogglableFlag QUICKSTEP_SPRINGS = new TogglableFlag("QUICKSTEP_SPRINGS",
             false, "Enable springs for quickstep animations");
